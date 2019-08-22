@@ -363,6 +363,8 @@ class ComponentbuilderModelAdmin_custom_tabs extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+			// run the perprocess of the data
+			$this->preprocessData('com_componentbuilder.admin_custom_tabs', $data);
 		}
 
 		return $data;

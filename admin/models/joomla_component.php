@@ -767,6 +767,8 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+			// run the perprocess of the data
+			$this->preprocessData('com_componentbuilder.joomla_component', $data);
 		}
 
 		return $data;

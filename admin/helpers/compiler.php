@@ -20,25 +20,25 @@ ComponentbuilderHelper::autoLoader();
  */
 class Compiler extends Infusion
 {
-	/*
+	/**
 	 * The Temp path
-	 * 
+	 *
 	 * @var      string
 	 */
 	private $tempPath;
 
-	/*
+	/**
 	 * The timer
-	 * 
+	 *
 	 * @var      string
 	 */
 	private $time_start;
 	private $time_end;
 	public $secondsCompiled;
 
-	/*
+	/**
 	 * The file path array
-	 * 
+	 *
 	 * @var      string
 	 */
 	public $filepath = array(
@@ -203,11 +203,11 @@ class Compiler extends Infusion
 
 	/**
 	 * Set the line number in comments
-	 * 
+	 *
 	 * @param   int   $nr  The line number
-	 * 
+	 *
 	 * @return  void
-	 * 
+	 *
 	 */
 	private function setLine($nr)
 	{
@@ -260,12 +260,48 @@ class Compiler extends Infusion
 			// free up some memory
 			unset($this->newFiles['dynamic']);
 			// do plugins if found
-			if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+			if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
 			{
-				foreach ($this->componentData->joomla_plugins as $plugin)
+				foreach ($this->joomlaPlugins as $plugin)
 				{
 					if (ComponentbuilderHelper::checkObject($plugin) && isset($this->newFiles[$plugin->key]) && ComponentbuilderHelper::checkArray($this->newFiles[$plugin->key]))
 					{
+						// move field or rule if needed
+						if (isset($plugin->fields_rules_paths) && $plugin->fields_rules_paths == 2)
+						{
+							// check the config fields
+							if (isset($plugin->config_fields) && ComponentbuilderHelper::checkArray($plugin->config_fields))
+							{
+								foreach ($plugin->config_fields as $field_name => $fieldsets)
+								{
+									foreach ($fieldsets as $fieldset => $fields)
+									{
+										foreach ($fields as $field)
+										{
+											$this->moveFieldsRules($field, $plugin->folder_path);
+										}
+									}
+								}
+							}
+							// check the fieldsets
+							if (isset($plugin->form_files) && ComponentbuilderHelper::checkArray($plugin->form_files))
+							{
+								foreach($plugin->form_files as $file => $files)
+								{
+									foreach ($files as $field_name => $fieldsets)
+									{
+										foreach ($fieldsets as $fieldset => $fields)
+										{
+											foreach ($fields as $field)
+											{
+												$this->moveFieldsRules($field, $plugin->folder_path);
+											}
+										}
+									}
+								}
+							}
+						}
+						// now move the files
 						foreach ($this->newFiles[$plugin->key] as $plugin_file)
 						{
 							if (JFile::exists($plugin_file['path']))
@@ -355,9 +391,9 @@ class Compiler extends Infusion
 			}
 		}
 		// move the plugins update server to host
-		if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+		if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
 		{
-			foreach ($this->componentData->joomla_plugins as $plugin)
+			foreach ($this->joomlaPlugins as $plugin)
 			{
 				if (ComponentbuilderHelper::checkObject($plugin)
 					&& isset($plugin->add_update_server) && $plugin->add_update_server == 1
@@ -528,9 +564,9 @@ class Compiler extends Infusion
 			$this->triggerEvent('jcb_ce_onAfterUpdateRepo', array(&$this->componentContext, &$this->componentPath, &$repoFullPath, &$this->componentData));
 
 			// move the plugins to local folder repos
-			if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+			if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
 			{
-				foreach ($this->componentData->joomla_plugins as $plugin)
+				foreach ($this->joomlaPlugins as $plugin)
 				{
 					if (ComponentbuilderHelper::checkObject($plugin) && isset($plugin->file_name))
 					{
@@ -596,9 +632,9 @@ class Compiler extends Infusion
 
 	private function zipPlugins()
 	{
-		if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+		if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
 		{
-			foreach ($this->componentData->joomla_plugins as $plugin)
+			foreach ($this->joomlaPlugins as $plugin)
 			{
 				if (ComponentbuilderHelper::checkObject($plugin) && isset($plugin->zip_name)
 					&& ComponentbuilderHelper::checkString($plugin->zip_name)

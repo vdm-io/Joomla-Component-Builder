@@ -16296,13 +16296,7 @@ function vdm_dkim() {
 
 	public function getPluginMainXML(&$plugin)
 	{
-		// tweak system to set stuff to the plugin domain
-		$_backup_target = $this->target;
-		$_backup_lang = $this->lang;
-		$_backup_langPrefix = $this->langPrefix;
-		$this->target = $plugin->key;
-		$this->lang = $plugin->key;
-		$this->langPrefix = $plugin->lang_prefix;
+		// set some defaults
 		$view = '';
 		$viewType = 0;
 		// set the custom table key
@@ -16310,31 +16304,21 @@ function vdm_dkim() {
 		// build the xml
 		$xml = '';
 		// build the config fields
-		$config_field = '';
+		$config_fields = array();
 		if (isset($plugin->config_fields) && ComponentbuilderHelper::checkArray($plugin->config_fields))
 		{
-			foreach ($plugin->config_fields as $field)
+			foreach ($plugin->config_fields as $field_name => $fieldsets)
 			{
-				// check the field builder type
-				if ($this->fieldBuilderType == 1)
+				foreach ($fieldsets as $fieldset => $fields)
 				{
-					// string manipulation
-					$xmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
-				}
-				else
-				{
-					// simpleXMLElement class
-					$newxmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
-					if (isset($newxmlField->fieldXML))
+					// get the field set
+					$xmlFields = $this->getPluginFieldsetXML($plugin, $fields, $dbkey);
+					// make sure the xml is set and a string
+					if (isset($xmlFields) && ComponentbuilderHelper::checkString($xmlFields))
 					{
-						$xmlField = dom_import_simplexml($newxmlField->fieldXML);
-						$xmlField = PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " " . $newxmlField->comment . ' -->' . PHP_EOL . $this->_t(1) . $this->xmlPrettyPrint($xmlField, 'field');
+						$config_fields[$field_name.$fieldset] = $xmlFields;
 					}
-				}
-				// make sure the xml is set and a string
-				if (isset($xmlField) && ComponentbuilderHelper::checkString($xmlField))
-				{
-					$config_field .= $xmlField;
+					$dbkey++;
 				}
 			}
 		}
@@ -16348,8 +16332,8 @@ function vdm_dkim() {
 				return $placeholder . '="' . $langstring . '"';
 			}, $this->langContent[$plugin->key], array_keys($this->langContent[$plugin->key]));
 			// add to language file
-			$this->writeFile($plugin->folder_path . '/language/' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->name) . '.ini', implode(PHP_EOL, $lang));
-			$this->writeFile($plugin->folder_path . '/language/' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->name) . '.sys.ini', implode(PHP_EOL, $lang));
+			$this->writeFile($plugin->folder_path . '/language/' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->code_name) . '.ini', implode(PHP_EOL, $lang));
+			$this->writeFile($plugin->folder_path . '/language/' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->code_name) . '.sys.ini', implode(PHP_EOL, $lang));
 			// set the line counter
 			$this->lineCount = $this->lineCount + count((array) $lang);
 			unset($lang);
@@ -16392,8 +16376,8 @@ function vdm_dkim() {
 		{
 			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Language files -->';
 			$xml .= PHP_EOL . $this->_t(1) . '<languages folder="language">';
-			$xml .= PHP_EOL . $this->_t(2) . '<language tag="en-GB">' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->name) . '.ini</language>';
-			$xml .= PHP_EOL . $this->_t(2) . '<language tag="en-GB">' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->name) . '.sys.ini</language>';
+			$xml .= PHP_EOL . $this->_t(2) . '<language tag="en-GB">' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->code_name) . '.ini</language>';
+			$xml .= PHP_EOL . $this->_t(2) . '<language tag="en-GB">' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->code_name) . '.sys.ini</language>';
 			$xml .= PHP_EOL . $this->_t(1) . '</languages>';
 		}
 		// add the plugin files
@@ -16436,15 +16420,49 @@ function vdm_dkim() {
 		}
 		$xml .= PHP_EOL . $this->_t(1) . '</files>';
 		// now add the Config Params if needed
-		if (ComponentbuilderHelper::checkString($config_field))
+		if (ComponentbuilderHelper::checkArray($config_fields))
 		{
 			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Config parameter -->';
-			$xml .= PHP_EOL . $this->_t(1) . '<config>';
-			$xml .= PHP_EOL . $this->_t(1) . '<fields name="params">';
-			$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="basic">';
-			$xml .= $config_field;
-			$xml .= PHP_EOL . $this->_t(1) . '</fieldset>';
-			$xml .= PHP_EOL . $this->_t(1) . '</fields>';
+			// add path to plugin rules and custom fields
+			$xml .= PHP_EOL . $this->_t(1) . '<config';
+			$xml .= PHP_EOL . $this->_t(2) . 'addrulepath="/administrator/components/com_' . $this->componentCodeName . '/models/rules"';
+			$xml .= PHP_EOL . $this->_t(2) . 'addfieldpath="/administrator/components/com_' . $this->componentCodeName . '/models/fields"';
+			$xml .= PHP_EOL . $this->_t(1) . '>';
+			
+			foreach ($plugin->config_fields as $field_name => $fieldsets)
+			{
+				$xml .= PHP_EOL . $this->_t(1) . '<fields name="' . $field_name . '">';
+				foreach ($fieldsets as $fieldset => $fields)
+				{
+					// default to the field set name
+					$label = $fieldset;
+					if (isset($plugin->fieldsets_label[$field_name.$fieldset]))
+					{
+						$label = $plugin->fieldsets_label[$field_name.$fieldset];
+					}
+					// add path to plugin rules and custom fields
+					if (isset($plugin->fieldsets_paths[$field_name.$fieldset]) && $plugin->fieldsets_paths[$field_name.$fieldset] == 2)
+					{
+						$xml .= PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' default paths of ' . $fieldset . ' fieldset points to the plugin -->';
+						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="' . $fieldset . '" label="' . $label . '"';
+						$xml .= PHP_EOL . $this->_t(2) . 'addrulepath="/plugins/' . strtolower($plugin->group) . '/' . strtolower($plugin->code_name) . '/rules"';
+						$xml .= PHP_EOL . $this->_t(2) . 'addfieldpath="/plugins/' . strtolower($plugin->group) . '/' . strtolower($plugin->code_name) . '/fields"';
+						$xml .= PHP_EOL . $this->_t(1) . '>';
+					}
+					else
+					{
+						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="' . $fieldset . '" label="' . $label . '">';
+					}
+					// load the fields
+					if (isset($config_fields[$field_name.$fieldset]))
+					{
+						$xml .= $config_fields[$field_name.$fieldset];
+						unset($config_fields[$field_name.$fieldset]);
+					}
+					$xml .= PHP_EOL . $this->_t(1) . '</fieldset>';
+				}
+				$xml .= PHP_EOL . $this->_t(1) . '</fields>';
+			}
 			$xml .= PHP_EOL . $this->_t(1) . '</config>';
 		}
 		// set update server if found
@@ -16455,12 +16473,46 @@ function vdm_dkim() {
 			$xml .= PHP_EOL . $this->_t(2) . '<server type="extension" priority="1" name="' . $plugin->official_name . '">' . $plugin->update_server_url . '</server>';
 			$xml .= PHP_EOL . $this->_t(1) . '</updateservers>';
 		}
-		// rest globals
-		$this->target = $_backup_target;
-		$this->lang = $_backup_lang;
-		$this->langPrefix = $_backup_langPrefix;
 
 		return $xml;
+	}
+
+	public function getPluginFieldsetXML(&$plugin, &$fields, $dbkey = 'zz')
+	{
+		// set some defaults
+		$view = '';
+		$viewType = 0;
+		// build the fieldset
+		$fieldset = '';
+
+		if (ComponentbuilderHelper::checkArray($fields))
+		{
+			foreach ($fields as $field)
+			{
+				// check the field builder type
+				if ($this->fieldBuilderType == 1)
+				{
+					// string manipulation
+					$xmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
+				}
+				else
+				{
+					// simpleXMLElement class
+					$newxmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
+					if (isset($newxmlField->fieldXML))
+					{
+						$xmlField = dom_import_simplexml($newxmlField->fieldXML);
+						$xmlField = PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " " . $newxmlField->comment . ' -->' . PHP_EOL . $this->_t(1) . $this->xmlPrettyPrint($xmlField, 'field');
+					}
+				}
+				// make sure the xml is set and a string
+				if (isset($xmlField) && ComponentbuilderHelper::checkString($xmlField))
+				{
+					$fieldset .= $xmlField;
+				}
+			}
+		}
+		return $fieldset;
 	}
 
 	public function getPluginInstallClass(&$plugin)

@@ -431,6 +431,8 @@ class ComponentbuilderModelComponent_files_folders extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+			// run the perprocess of the data
+			$this->preprocessData('com_componentbuilder.component_files_folders', $data);
 		}
 
 		return $data;

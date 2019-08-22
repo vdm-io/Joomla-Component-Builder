@@ -288,7 +288,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 				$pluginId = $jinput->post->get('install_item_id', 0, 'INT');
 				if ($pluginId > 0 && isset($fileNames[$pluginId]) && $this->installExtension($fileNames[$pluginId]))
 				{
-					$message = JText::sprintf('COM_COMPONENTBUILDER_ONLY_SZIP_FILE_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileName);
+					$message = JText::sprintf('COM_COMPONENTBUILDER_ONLY_SZIP_FILE_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileNames[$pluginId]);
 					$this->setRedirect($redirect_url, $message, 'message');
 					return true;
 				}

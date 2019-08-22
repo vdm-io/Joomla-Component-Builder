@@ -435,6 +435,8 @@ class ComponentbuilderModelCustom_code extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+			// run the perprocess of the data
+			$this->preprocessData('com_componentbuilder.custom_code', $data);
 		}
 
 		return $data;

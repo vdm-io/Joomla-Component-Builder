@@ -94,7 +94,7 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 				'readme'
 			)
 		),
-		'configparams' => array(
+		'forms_fields' => array(
 			'fullwidth' => array(
 				'fields'
 			)
@@ -572,6 +572,8 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+			// run the perprocess of the data
+			$this->preprocessData('com_componentbuilder.joomla_plugin', $data);
 		}
 
 		return $data;

@@ -242,6 +242,8 @@ class ###Component###Model###View### extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+			// run the perprocess of the data
+			$this->preprocessData('com_###component###.###view###', $data);
 		}
 
 		return $data;

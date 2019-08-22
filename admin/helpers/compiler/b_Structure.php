@@ -372,7 +372,7 @@ class Structure extends Get
 			// load the libraries files/folders and url's
 			$this->setLibraries();
 			// load the plugin files/folders and url's
-			$this->setPlugins();
+			$this->buildPlugins();
 			// set the Joomla Version Data
 			$this->joomlaVersionData = $this->setJoomlaVersionData();
 			// Trigger Event: jcb_ce_onAfterSetJoomlaVersionData
@@ -422,13 +422,13 @@ class Structure extends Get
 	 * @return  void
 	 * 
 	 */
-	private function setPlugins()
+	private function buildPlugins()
 	{
-		if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+		if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
 		{
 			// Trigger Event: jcb_ce_onBeforeSetPlugins
-			$this->triggerEvent('jcb_ce_onBeforeSetPlugins', array(&$this->componentContext, &$this->componentData->joomla_plugins));
-			foreach ($this->componentData->joomla_plugins as $plugin)
+			$this->triggerEvent('jcb_ce_onBeforeBuildPlugins', array(&$this->componentContext, &$this->joomlaPlugins));
+			foreach ($this->joomlaPlugins as $plugin)
 			{
 				if (ComponentbuilderHelper::checkObject($plugin) && isset($plugin->folder_name)
 					&& ComponentbuilderHelper::checkString($plugin->folder_name))
@@ -490,6 +490,88 @@ class Structure extends Get
 						$this->newFiles[$plugin->key][] = $fileDetails;
 						// count the file created
 						$this->fileCount++;
+					}
+					// set fields & rules folders if needed
+					if (isset($plugin->fields_rules_paths) && $plugin->fields_rules_paths == 2)
+					{
+						// create fields folder
+						if (!JFolder::exists($plugin->folder_path . '/fields'))
+						{
+							JFolder::create($plugin->folder_path . '/fields');
+							// count the folder created
+							$this->folderCount++;
+							$this->indexHTML($plugin->folder_name . '/fields', $this->compilerPath);
+						}
+						// create rules folder
+						if (!JFolder::exists($plugin->folder_path . '/rules'))
+						{
+							JFolder::create($plugin->folder_path . '/rules');
+							// count the folder created
+							$this->folderCount++;
+							$this->indexHTML($plugin->folder_name . '/rules', $this->compilerPath);
+						}
+					}
+					// set forms folder if needed
+					if (isset($plugin->form_files) && ComponentbuilderHelper::checkArray($plugin->form_files))
+					{
+						// create forms folder
+						if (!JFolder::exists($plugin->folder_path . '/forms'))
+						{
+							JFolder::create($plugin->folder_path . '/forms');
+							// count the folder created
+							$this->folderCount++;
+							$this->indexHTML($plugin->folder_name . '/forms', $this->compilerPath);
+						}
+						// set the template files
+						foreach($plugin->form_files as $file => $fields)
+						{
+							// set file details
+							$fileDetails = array('path' => $plugin->folder_path . '/forms/' . $file . '.xml',
+								'name' => $file . '.xml', 'zip' => 'forms/' . $file . '.xml');
+							// biuld basic XML
+							$xml = '<?xml version="1.0" encoding="utf-8"?>';
+							$xml .= PHP_EOL . '<!--' . $this->setLine(__LINE__) . ' default paths of ' . $file . ' form points to ' . $this->componentCodeName . ' -->';
+							$xml .= PHP_EOL . '<form';
+							$xml .= PHP_EOL . $this->_t(1) . 'addrulepath="/administrator/components/com_' . $this->componentCodeName . '/models/rules"';
+							$xml .= PHP_EOL . $this->_t(1) . 'addfieldpath="/administrator/components/com_' . $this->componentCodeName . '/models/fields"';
+							$xml .= PHP_EOL . '>';
+							foreach ($fields as $field_name => $fieldsets)
+							{
+								$xml .= PHP_EOL . $this->_t(1) . '<fields name="' . $field_name . '">';
+								foreach ($fieldsets as $fieldset => $field)
+								{
+									// default to the field set name
+									$label = $fieldset;
+									if (isset($plugin->fieldsets_label[$file.$field_name.$fieldset]))
+									{
+										$label = $plugin->fieldsets_label[$file.$field_name.$fieldset];
+									}
+									// add path to plugin rules and custom fields
+									if (isset($plugin->fieldsets_paths[$file.$field_name.$fieldset]) && $plugin->fieldsets_paths[$file.$field_name.$fieldset] == 2)
+									{
+										$xml .= PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' default paths of ' . $fieldset . ' fieldset points to the plugin -->';
+										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="' . $fieldset . '" label="' . $label . '"';
+										$xml .= PHP_EOL . $this->_t(2) . 'addrulepath="/plugins/' . strtolower($plugin->group) . '/' . strtolower($plugin->code_name) . '/rules"';
+										$xml .= PHP_EOL . $this->_t(2) . 'addfieldpath="/plugins/' . strtolower($plugin->group) . '/' . strtolower($plugin->code_name) . '/fields"';
+										$xml .= PHP_EOL . $this->_t(1) . '>';
+									}
+									else
+									{
+										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="' . $fieldset . '" label="' . $label . '">';
+									}
+									// add the placeholder of the fields
+									$xml .= $this->hhh . 'FIELDSET_' . $file.$field_name.$fieldset . $this->hhh;
+									$xml .= PHP_EOL . $this->_t(1) . '</fieldset>';
+								}
+								$xml .= PHP_EOL . $this->_t(1) . '</fields>';
+							}
+							$xml .= PHP_EOL . '</form>';
+							// add xml to file
+							$this->writeFile($fileDetails['path'], $xml);
+							$this->newFiles[$plugin->key][] = $fileDetails;
+							// count the file created
+							$this->fileCount++;
+						}
 					}
 					// set SQL stuff if needed
 					if ($plugin->add_sql || $plugin->add_sql_uninstall)
@@ -1280,12 +1362,49 @@ class Structure extends Get
 	}
 
 	/**
+	 * move the fields and Rules
+	 *
+	 * @param   array   $field  The field data
+	 * @param   string  $path   The path to move to
+	 *
+	 * @return void
+	 *
+	 */
+	public function moveFieldsRules($field, $path)
+	{
+		// check if this is a custom field that should be moved
+		if (isset($this->extentionCustomfields[$field['type_name']]))
+		{
+			// check files exist
+			if (JFile::exists($this->componentPath . '/admin/models/fields/' . $field['type_name'] . '.php'))
+			{
+				// move the custom field
+				JFile::copy($this->componentPath . '/admin/models/fields/' . $field['type_name'] . '.php', $path . '/fields/' . $field['type_name'] . '.php');
+			}
+			// do this just once
+			unset($this->extentionCustomfields[$field['type_name']]);
+		}
+		// check if this has validation that should be moved
+		if (isset($this->validationLinkedFields[$field['field']]))
+		{
+			// check files exist
+			if (JFile::exists($this->componentPath . '/admin/models/rules/' . $this->validationLinkedFields[$field['field']] . '.php'))
+			{
+				// move the custom field
+				JFile::copy($this->componentPath . '/admin/models/rules/' . $this->validationLinkedFields[$field['field']] . '.php', $path . '/rules/' . $this->validationLinkedFields[$field['field']] . '.php');
+			}
+			// do this just once
+			unset($this->validationLinkedFields[$field['field']]);
+		}
+	}
+
+	/**
 	 * get the created date of the (view)
-	 *  
+	 *
 	 * @param   array   $view  The view values
-	 * 
+	 *
 	 * @return  string Last Modified Date
-	 * 
+	 *
 	 */
 	public function getCreatedDate($view)
 	{
@@ -1304,11 +1423,11 @@ class Structure extends Get
 
 	/**
 	 * get the last modified date of a MVC (view)
-	 *  
+	 *
 	 * @param   array   $view  The view values
-	 * 
+	 *
 	 * @return  string Last Modified Date
-	 * 
+	 *
 	 */
 	public function getLastModifiedDate($view)
 	{
@@ -1487,10 +1606,9 @@ class Structure extends Get
 
 	/**
 	 * set the Joomla Version Data
-	 * 
 	 *
 	 * @return  oject The version data
-	 * 
+	 *
 	 */
 	private function setJoomlaVersionData()
 	{
@@ -1722,11 +1840,11 @@ class Structure extends Get
 
 	/**
 	 * set the index.html file in a folder path
-	 * 
+	 *
 	 * @param   string   $path  The path to place the index.html file in
 	 *
 	 * @return  void
-	 * 
+	 *
 	 */
 	private function indexHTML($path, $root = 'component')
 	{

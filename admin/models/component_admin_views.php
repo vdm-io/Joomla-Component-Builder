@@ -395,6 +395,8 @@ class ComponentbuilderModelComponent_admin_views extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+			// run the perprocess of the data
+			$this->preprocessData('com_componentbuilder.component_admin_views', $data);
 		}
 
 		return $data;

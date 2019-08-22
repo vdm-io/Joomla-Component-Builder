@@ -363,6 +363,8 @@ class ComponentbuilderModelLibrary_config extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+			// run the perprocess of the data
+			$this->preprocessData('com_componentbuilder.library_config', $data);
 		}
 
 		return $data;

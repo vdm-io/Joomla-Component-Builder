@@ -397,6 +397,8 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+			// run the perprocess of the data
+			$this->preprocessData('com_componentbuilder.language_translation', $data);
 		}
 
 		return $data;

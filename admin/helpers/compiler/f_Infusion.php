@@ -1033,12 +1033,19 @@ class Infusion extends Interpretation
 			}
 
 			// infuze plugin data if set
-			if (ComponentbuilderHelper::checkArray($this->componentData->joomla_plugins))
+			if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
 			{
-				foreach ($this->componentData->joomla_plugins as $plugin)
+				foreach ($this->joomlaPlugins as $plugin)
 				{
 					if (ComponentbuilderHelper::checkObject($plugin))
 					{
+						// tweak system to set stuff to the plugin domain
+						$_backup_target = $this->target;
+						$_backup_lang = $this->lang;
+						$_backup_langPrefix = $this->langPrefix;
+						$this->target = $plugin->key;
+						$this->lang = $plugin->key;
+						$this->langPrefix = $plugin->lang_prefix;
 						// MAINCLASS
 						$this->fileContentDynamic[$plugin->key][$this->hhh . 'MAINCLASS' . $this->hhh] = $this->getPluginMainClass($plugin);
 						// only add install script if needed
@@ -1047,8 +1054,28 @@ class Infusion extends Interpretation
 							// INSTALLCLASS
 							$this->fileContentDynamic[$plugin->key][$this->hhh . 'INSTALLCLASS' . $this->hhh] = $this->getPluginInstallClass($plugin);
 						}
+						// FIELDSET
+						if (isset($plugin->form_files) && ComponentbuilderHelper::checkArray($plugin->form_files))
+						{
+							foreach($plugin->form_files as $file => $files)
+							{
+								foreach ($files as $field_name => $fieldsets)
+								{
+									foreach ($fieldsets as $fieldset => $fields)
+									{
+										// FIELDSET_ . $file.$field_name.$fieldset
+										$this->fileContentDynamic[$plugin->key][$this->hhh . 'FIELDSET_' . $file.$field_name.$fieldset . $this->hhh] = 
+											$this->getPluginFieldsetXML($plugin, $fields);
+									}
+								}
+							}
+						}
 						// MAINXML
 						$this->fileContentDynamic[$plugin->key][$this->hhh . 'MAINXML' . $this->hhh] = $this->getPluginMainXML($plugin);
+						// rest globals
+						$this->target = $_backup_target;
+						$this->lang = $_backup_lang;
+						$this->langPrefix = $_backup_langPrefix;
 					}
 				}
 			}

@@ -65,12 +65,12 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'joomla_pluginTab', 'configparams', JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CONFIGPARAMS', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'joomla_pluginTab', 'forms_fields', JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FORMS_FIELDS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('joomla_plugin.configparams_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('joomla_plugin.forms_fields_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
