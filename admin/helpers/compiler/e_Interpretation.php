@@ -15703,7 +15703,11 @@ function vdm_dkim() {
 		$this->componentGlobal = array();
 		$this->permissionViews = array();
 
+		// Trigger Event: jcb_ce_onBeforeBuildAccessSections
+		$this->triggerEvent('jcb_ce_onBeforeBuildAccessSections', array(&$this->componentContext, $this));
+
 		$this->componentHead[] = '<section name="component">';
+
 		$this->componentHead[] = $this->_t(2) . '<action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />';
 		$this->componentHead[] = $this->_t(2) . '<action name="core.options" title="JACTION_OPTIONS" description="JACTION_OPTIONS_COMPONENT_DESC" />';
 		$this->componentHead[] = $this->_t(2) . '<action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" />';
@@ -15938,6 +15942,10 @@ function vdm_dkim() {
 					$this->buildPermissions($view, $nameView, $nameViews, $menuControllers);
 				}
 			}
+
+			// Trigger Event: jcb_ce_onAfterBuildAccessSections
+			$this->triggerEvent('jcb_ce_onAfterBuildAccessSections', array(&$this->componentContext, $this));
+
 			// set the views permissions now
 			if (ComponentbuilderHelper::checkArray($this->permissionViews))
 			{

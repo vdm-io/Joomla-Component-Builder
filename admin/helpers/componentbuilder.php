@@ -5216,9 +5216,6 @@ abstract class ComponentbuilderHelper
 		&& ($timestamp >= ~PHP_INT_MAX);
 	}
 
-
-	// Privacy integration with Joomla Privacy suite
-
 	/**
 	* Load the Component xml manifest.
 	**/

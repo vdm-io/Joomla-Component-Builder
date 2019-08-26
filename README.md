@@ -150,10 +150,10 @@ TODO
 + *Version*: 2.10.0
 + *Copyright*: Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **247882**
++ *Line count*: **247734**
 + *Field count*: **1343**
-+ *File count*: **1608**
-+ *Folder count*: **253**
++ *File count*: **1604**
++ *Folder count*: **250**
 
 > This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](http://joomlacomponentbuilder.com).
 > Developed by [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
