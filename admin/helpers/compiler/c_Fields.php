@@ -1800,7 +1800,7 @@ class Fields extends Structure
 
 								foreach ($grouped_[$key_][$_id] as $option_)
 								{
-									$groupOptionXML = $groupXML->fieldXML->addChild('option');
+									$groupOptionXML = $groupXML->addChild('option');
 									$groupOptionXML->addAttribute('value', $option_['value']);
 									$groupOptionXML[] = $option_['text'];
 								}

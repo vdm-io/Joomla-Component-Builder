@@ -361,7 +361,9 @@ abstract class ComponentbuilderHelper
 				{
 					// set the correct order
 					ksort($comment);
-					return implode(PHP_EOL, $comment);
+					$replace = array('Foo' => '[[[Plugin_name]]]', '[PACKAGE_NAME]' => '[[[Plugin]]]', '1.0.0' => '[[[plugin.version]]]', '1.0' => '[[[plugin.version]]]');
+					// now update with JCB placeholders
+					return str_replace(array_keys($replace), array_values($replace), implode(PHP_EOL, $comment));
 				}
 			}
 		}
@@ -5213,6 +5215,9 @@ abstract class ComponentbuilderHelper
 		&& ($timestamp <= PHP_INT_MAX)
 		&& ($timestamp >= ~PHP_INT_MAX);
 	}
+
+
+	// Privacy integration with Joomla Privacy suite
 
 	
 	public static function jsonToString($value, $sperator = ", ", $table = null, $id = 'id', $name = 'name')

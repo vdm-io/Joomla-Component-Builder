@@ -862,7 +862,7 @@ class Get
 					end($version);
 					$key = key($version);
 					// just increment the last
-					$version[$key] ++;
+					$version[$key]++;
 					// set the old version
 					$this->componentData->old_component_version = $this->componentData->component_version;
 					// set the new version, and set update switch
@@ -5695,8 +5695,8 @@ class Get
 	/**
 	 * Set a type of placeholder with set of values
 	 * 
-	 * @param   string   $key     The main string for placeholder key
-	 * @param   array    $values  The values to add
+	 * @param   string   $key         The main string for placeholder key
+	 * @param   array    $values      The values to add
 	 *
 	 * @return  void
 	 */
@@ -6283,6 +6283,14 @@ class Get
 				$plugin->file_name = strtolower($plugin->code_name);
 				// set official_name lang strings
 				$this->setLangContent($plugin->key, $this->langPrefix, $plugin->official_name);
+				// set some placeholder for this plugin
+				$this->placeholders[$this->bbb . 'Plugin_name' . $this->ddd] = $plugin->official_name;
+				$this->placeholders[$this->bbb . 'Plugin' . $this->ddd] = ucfirst($plugin->code_name);
+				$this->placeholders[$this->bbb . 'plugin' . $this->ddd] = strtolower($plugin->code_name);
+				$this->placeholders[$this->bbb . 'Plugin_group' . $this->ddd] = ucfirst($plugin->group);
+				$this->placeholders[$this->bbb . 'plugin_group' . $this->ddd] = strtolower($plugin->group);
+				$this->placeholders[$this->bbb . 'plugin.version' . $this->ddd] = $plugin->plugin_version;
+				$this->placeholders[$this->bbb . 'plugin_version' . $this->ddd] = str_replace('.', '_', $plugin->plugin_version);
 				// set description (TODO) add description field to plugin
 				if (!isset($plugin->description) || !ComponentbuilderHelper::checkString($plugin->description))
 				{
@@ -6591,6 +6599,14 @@ class Get
 				$this->target = $_backup_target;
 				$this->lang = $_backup_lang;
 				$this->langPrefix = $_backup_langPrefix;
+
+				unset($this->placeholders[$this->bbb . 'Plugin_name' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'Plugin' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'plugin' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'Plugin_group' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'plugin_group' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'plugin.version' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'plugin_version' . $this->ddd]);
 
 				$this->joomlaPlugins[$id] = $plugin;
 
