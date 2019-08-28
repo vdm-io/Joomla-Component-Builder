@@ -4702,8 +4702,8 @@ class Get
 		// check if we should continue
 		if (ComponentbuilderHelper::checkArray($langStringTargets))
 		{
-			// insure string is not broken
-			$content = str_replace('COM_' . $this->hhh . 'COMPONENT' . $this->hhh, $this->langPrefix, $content);
+			// test add an placeholder updater here
+			$content = $this->setPlaceholders($content, $this->placeholders);
 			// reset some buckets
 			$langHolders = array();
 			$langCheck = array();
@@ -7362,6 +7362,7 @@ class Get
 		// check if we should continue
 		if (ComponentbuilderHelper::checkArray($langStringTargets))
 		{
+			// start lang holder
 			$langHolders = array();
 			// set the lang for both since we don't know what area is being targeted
 			$_tmp = $this->lang;
