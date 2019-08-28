@@ -3937,6 +3937,666 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('All related items was removed from the <b>#__assets</b> table'));
 		}
 
+
+		/// Remove Componentbuilder from the action_logs_extensions table
+		$componentbuilder_action_logs_extensions = array( $db->quoteName('extension') . ' = ' . $db->quote('com_componentbuilder') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_logs_extensions'));
+		$query->where($componentbuilder_action_logs_extensions);
+		$db->setQuery($query);
+		// Execute the query to remove Componentbuilder
+		$componentbuilder_removed_done = $db->execute();
+		if ($componentbuilder_removed_done)
+		{
+			// If successfully remove Componentbuilder add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder extension was removed from the <b>#__action_logs_extensions</b> table'));
+		}
+
+		// Remove Componentbuilder Joomla_component from the action_log_config table
+		$joomla_component_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_component') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($joomla_component_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.joomla_component
+		$joomla_component_action_log_config_done = $db->execute();
+		if ($joomla_component_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Joomla_component add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_component type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Joomla_plugin from the action_log_config table
+		$joomla_plugin_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($joomla_plugin_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.joomla_plugin
+		$joomla_plugin_action_log_config_done = $db->execute();
+		if ($joomla_plugin_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Joomla_plugin add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_plugin type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Admin_view from the action_log_config table
+		$admin_view_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_view') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($admin_view_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.admin_view
+		$admin_view_action_log_config_done = $db->execute();
+		if ($admin_view_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Admin_view add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_view type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Custom_admin_view from the action_log_config table
+		$custom_admin_view_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.custom_admin_view') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($custom_admin_view_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.custom_admin_view
+		$custom_admin_view_action_log_config_done = $db->execute();
+		if ($custom_admin_view_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Custom_admin_view add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.custom_admin_view type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Site_view from the action_log_config table
+		$site_view_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.site_view') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($site_view_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.site_view
+		$site_view_action_log_config_done = $db->execute();
+		if ($site_view_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Site_view add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.site_view type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Template from the action_log_config table
+		$template_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.template') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($template_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.template
+		$template_action_log_config_done = $db->execute();
+		if ($template_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Template add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.template type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Layout from the action_log_config table
+		$layout_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.layout') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($layout_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.layout
+		$layout_action_log_config_done = $db->execute();
+		if ($layout_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Layout add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.layout type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Dynamic_get from the action_log_config table
+		$dynamic_get_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.dynamic_get') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($dynamic_get_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.dynamic_get
+		$dynamic_get_action_log_config_done = $db->execute();
+		if ($dynamic_get_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Dynamic_get add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.dynamic_get type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Custom_code from the action_log_config table
+		$custom_code_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.custom_code') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($custom_code_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.custom_code
+		$custom_code_action_log_config_done = $db->execute();
+		if ($custom_code_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Custom_code add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.custom_code type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Class_property from the action_log_config table
+		$class_property_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.class_property') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($class_property_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.class_property
+		$class_property_action_log_config_done = $db->execute();
+		if ($class_property_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Class_property add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.class_property type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Class_method from the action_log_config table
+		$class_method_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.class_method') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($class_method_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.class_method
+		$class_method_action_log_config_done = $db->execute();
+		if ($class_method_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Class_method add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.class_method type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Placeholder from the action_log_config table
+		$placeholder_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.placeholder') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($placeholder_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.placeholder
+		$placeholder_action_log_config_done = $db->execute();
+		if ($placeholder_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Placeholder add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.placeholder type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Library from the action_log_config table
+		$library_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($library_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.library
+		$library_action_log_config_done = $db->execute();
+		if ($library_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Library add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.library type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Snippet from the action_log_config table
+		$snippet_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.snippet') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($snippet_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.snippet
+		$snippet_action_log_config_done = $db->execute();
+		if ($snippet_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Snippet add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.snippet type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Validation_rule from the action_log_config table
+		$validation_rule_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.validation_rule') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($validation_rule_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.validation_rule
+		$validation_rule_action_log_config_done = $db->execute();
+		if ($validation_rule_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Validation_rule add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.validation_rule type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Field from the action_log_config table
+		$field_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.field') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($field_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.field
+		$field_action_log_config_done = $db->execute();
+		if ($field_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Field add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.field type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Fieldtype from the action_log_config table
+		$fieldtype_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fieldtype') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($fieldtype_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.fieldtype
+		$fieldtype_action_log_config_done = $db->execute();
+		if ($fieldtype_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Fieldtype add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.fieldtype type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Language_translation from the action_log_config table
+		$language_translation_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language_translation') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($language_translation_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.language_translation
+		$language_translation_action_log_config_done = $db->execute();
+		if ($language_translation_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Language_translation add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.language_translation type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Language from the action_log_config table
+		$language_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($language_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.language
+		$language_action_log_config_done = $db->execute();
+		if ($language_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Language add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.language type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Server from the action_log_config table
+		$server_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.server') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($server_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.server
+		$server_action_log_config_done = $db->execute();
+		if ($server_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Server add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.server type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Help_document from the action_log_config table
+		$help_document_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.help_document') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($help_document_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.help_document
+		$help_document_action_log_config_done = $db->execute();
+		if ($help_document_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Help_document add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.help_document type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Admin_fields from the action_log_config table
+		$admin_fields_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($admin_fields_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.admin_fields
+		$admin_fields_action_log_config_done = $db->execute();
+		if ($admin_fields_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Admin_fields add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_fields type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Admin_fields_conditions from the action_log_config table
+		$admin_fields_conditions_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields_conditions') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($admin_fields_conditions_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.admin_fields_conditions
+		$admin_fields_conditions_action_log_config_done = $db->execute();
+		if ($admin_fields_conditions_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Admin_fields_conditions add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_fields_conditions type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Admin_fields_relations from the action_log_config table
+		$admin_fields_relations_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields_relations') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($admin_fields_relations_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.admin_fields_relations
+		$admin_fields_relations_action_log_config_done = $db->execute();
+		if ($admin_fields_relations_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Admin_fields_relations add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_fields_relations type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Admin_custom_tabs from the action_log_config table
+		$admin_custom_tabs_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_custom_tabs') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($admin_custom_tabs_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.admin_custom_tabs
+		$admin_custom_tabs_action_log_config_done = $db->execute();
+		if ($admin_custom_tabs_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Admin_custom_tabs add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_custom_tabs type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Component_admin_views from the action_log_config table
+		$component_admin_views_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_admin_views') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_admin_views_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_admin_views
+		$component_admin_views_action_log_config_done = $db->execute();
+		if ($component_admin_views_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_admin_views add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.component_admin_views type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Component_site_views from the action_log_config table
+		$component_site_views_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_site_views') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_site_views_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_site_views
+		$component_site_views_action_log_config_done = $db->execute();
+		if ($component_site_views_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_site_views add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.component_site_views type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Component_custom_admin_views from the action_log_config table
+		$component_custom_admin_views_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_custom_admin_views') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_custom_admin_views_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_custom_admin_views
+		$component_custom_admin_views_action_log_config_done = $db->execute();
+		if ($component_custom_admin_views_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_custom_admin_views add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.component_custom_admin_views type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Component_updates from the action_log_config table
+		$component_updates_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_updates') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_updates_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_updates
+		$component_updates_action_log_config_done = $db->execute();
+		if ($component_updates_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_updates add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.component_updates type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Component_mysql_tweaks from the action_log_config table
+		$component_mysql_tweaks_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_mysql_tweaks') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_mysql_tweaks_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_mysql_tweaks
+		$component_mysql_tweaks_action_log_config_done = $db->execute();
+		if ($component_mysql_tweaks_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_mysql_tweaks add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.component_mysql_tweaks type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Component_custom_admin_menus from the action_log_config table
+		$component_custom_admin_menus_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_custom_admin_menus') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_custom_admin_menus_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_custom_admin_menus
+		$component_custom_admin_menus_action_log_config_done = $db->execute();
+		if ($component_custom_admin_menus_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_custom_admin_menus add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.component_custom_admin_menus type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Component_config from the action_log_config table
+		$component_config_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_config') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_config_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_config
+		$component_config_action_log_config_done = $db->execute();
+		if ($component_config_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_config add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.component_config type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Component_dashboard from the action_log_config table
+		$component_dashboard_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_dashboard') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_dashboard_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_dashboard
+		$component_dashboard_action_log_config_done = $db->execute();
+		if ($component_dashboard_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_dashboard add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.component_dashboard type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Component_files_folders from the action_log_config table
+		$component_files_folders_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_files_folders') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_files_folders_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_files_folders
+		$component_files_folders_action_log_config_done = $db->execute();
+		if ($component_files_folders_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_files_folders add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.component_files_folders type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Component_placeholders from the action_log_config table
+		$component_placeholders_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_placeholders') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_placeholders_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_placeholders
+		$component_placeholders_action_log_config_done = $db->execute();
+		if ($component_placeholders_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_placeholders add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.component_placeholders type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Component_plugins from the action_log_config table
+		$component_plugins_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_plugins') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_plugins_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_plugins
+		$component_plugins_action_log_config_done = $db->execute();
+		if ($component_plugins_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_plugins add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.component_plugins type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Snippet_type from the action_log_config table
+		$snippet_type_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.snippet_type') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($snippet_type_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.snippet_type
+		$snippet_type_action_log_config_done = $db->execute();
+		if ($snippet_type_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Snippet_type add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.snippet_type type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Library_config from the action_log_config table
+		$library_config_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library_config') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($library_config_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.library_config
+		$library_config_action_log_config_done = $db->execute();
+		if ($library_config_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Library_config add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.library_config type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Library_files_folders_urls from the action_log_config table
+		$library_files_folders_urls_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library_files_folders_urls') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($library_files_folders_urls_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.library_files_folders_urls
+		$library_files_folders_urls_action_log_config_done = $db->execute();
+		if ($library_files_folders_urls_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Library_files_folders_urls add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.library_files_folders_urls type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Class_extends from the action_log_config table
+		$class_extends_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.class_extends') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($class_extends_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.class_extends
+		$class_extends_action_log_config_done = $db->execute();
+		if ($class_extends_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Class_extends add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.class_extends type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Joomla_plugin_group from the action_log_config table
+		$joomla_plugin_group_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_group') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($joomla_plugin_group_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.joomla_plugin_group
+		$joomla_plugin_group_action_log_config_done = $db->execute();
+		if ($joomla_plugin_group_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Joomla_plugin_group add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_plugin_group type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Joomla_plugin_updates from the action_log_config table
+		$joomla_plugin_updates_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_updates') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($joomla_plugin_updates_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.joomla_plugin_updates
+		$joomla_plugin_updates_action_log_config_done = $db->execute();
+		if ($joomla_plugin_updates_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Joomla_plugin_updates add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_plugin_updates type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Remove Componentbuilder Joomla_plugin_files_folders_urls from the action_log_config table
+		$joomla_plugin_files_folders_urls_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_files_folders_urls') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($joomla_plugin_files_folders_urls_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.joomla_plugin_files_folders_urls
+		$joomla_plugin_files_folders_urls_action_log_config_done = $db->execute();
+		if ($joomla_plugin_files_folders_urls_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Joomla_plugin_files_folders_urls add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_plugin_files_folders_urls type alias was removed from the <b>#__action_log_config</b> table'));
+		}
 		// little notice as after service, in case of bad experience with component.
 		echo '<h2>Did something go wrong? Are you disappointed?</h2>
 		<p>Please let me know at <a href="mailto:llewellyn@joomlacomponentbuilder.com">llewellyn@joomlacomponentbuilder.com</a>.
@@ -4933,6 +5593,529 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>';
+
+			// Create the componentbuilder action logs extensions object.
+			$componentbuilder_action_logs_extensions = new stdClass();
+			$componentbuilder_action_logs_extensions->extension = 'com_componentbuilder';
+
+			// Set the object into the action logs extensions table.
+			$componentbuilder_action_logs_extensions_Inserted = $db->insertObject('#__action_logs_extensions', $componentbuilder_action_logs_extensions);
+
+			// Create the joomla_component action log config object.
+			$joomla_component_action_log_config = new stdClass();
+			$joomla_component_action_log_config->type_title = 'JOOMLA_COMPONENT';
+			$joomla_component_action_log_config->type_alias = 'com_componentbuilder.joomla_component';
+			$joomla_component_action_log_config->id_holder = 'id';
+			$joomla_component_action_log_config->title_holder = 'system_name';
+			$joomla_component_action_log_config->table_name = '#__componentbuilder_joomla_component';
+			$joomla_component_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$joomla_component_Inserted = $db->insertObject('#__action_log_config', $joomla_component_action_log_config);
+
+			// Create the joomla_plugin action log config object.
+			$joomla_plugin_action_log_config = new stdClass();
+			$joomla_plugin_action_log_config->type_title = 'JOOMLA_PLUGIN';
+			$joomla_plugin_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin';
+			$joomla_plugin_action_log_config->id_holder = 'id';
+			$joomla_plugin_action_log_config->title_holder = 'system_name';
+			$joomla_plugin_action_log_config->table_name = '#__componentbuilder_joomla_plugin';
+			$joomla_plugin_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$joomla_plugin_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_action_log_config);
+
+			// Create the admin_view action log config object.
+			$admin_view_action_log_config = new stdClass();
+			$admin_view_action_log_config->type_title = 'ADMIN_VIEW';
+			$admin_view_action_log_config->type_alias = 'com_componentbuilder.admin_view';
+			$admin_view_action_log_config->id_holder = 'id';
+			$admin_view_action_log_config->title_holder = '';
+			$admin_view_action_log_config->table_name = '#__componentbuilder_admin_view';
+			$admin_view_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$admin_view_Inserted = $db->insertObject('#__action_log_config', $admin_view_action_log_config);
+
+			// Create the custom_admin_view action log config object.
+			$custom_admin_view_action_log_config = new stdClass();
+			$custom_admin_view_action_log_config->type_title = 'CUSTOM_ADMIN_VIEW';
+			$custom_admin_view_action_log_config->type_alias = 'com_componentbuilder.custom_admin_view';
+			$custom_admin_view_action_log_config->id_holder = 'id';
+			$custom_admin_view_action_log_config->title_holder = 'name';
+			$custom_admin_view_action_log_config->table_name = '#__componentbuilder_custom_admin_view';
+			$custom_admin_view_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$custom_admin_view_Inserted = $db->insertObject('#__action_log_config', $custom_admin_view_action_log_config);
+
+			// Create the site_view action log config object.
+			$site_view_action_log_config = new stdClass();
+			$site_view_action_log_config->type_title = 'SITE_VIEW';
+			$site_view_action_log_config->type_alias = 'com_componentbuilder.site_view';
+			$site_view_action_log_config->id_holder = 'id';
+			$site_view_action_log_config->title_holder = 'name';
+			$site_view_action_log_config->table_name = '#__componentbuilder_site_view';
+			$site_view_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$site_view_Inserted = $db->insertObject('#__action_log_config', $site_view_action_log_config);
+
+			// Create the template action log config object.
+			$template_action_log_config = new stdClass();
+			$template_action_log_config->type_title = 'TEMPLATE';
+			$template_action_log_config->type_alias = 'com_componentbuilder.template';
+			$template_action_log_config->id_holder = 'id';
+			$template_action_log_config->title_holder = 'name';
+			$template_action_log_config->table_name = '#__componentbuilder_template';
+			$template_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$template_Inserted = $db->insertObject('#__action_log_config', $template_action_log_config);
+
+			// Create the layout action log config object.
+			$layout_action_log_config = new stdClass();
+			$layout_action_log_config->type_title = 'LAYOUT';
+			$layout_action_log_config->type_alias = 'com_componentbuilder.layout';
+			$layout_action_log_config->id_holder = 'id';
+			$layout_action_log_config->title_holder = 'name';
+			$layout_action_log_config->table_name = '#__componentbuilder_layout';
+			$layout_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$layout_Inserted = $db->insertObject('#__action_log_config', $layout_action_log_config);
+
+			// Create the dynamic_get action log config object.
+			$dynamic_get_action_log_config = new stdClass();
+			$dynamic_get_action_log_config->type_title = 'DYNAMIC_GET';
+			$dynamic_get_action_log_config->type_alias = 'com_componentbuilder.dynamic_get';
+			$dynamic_get_action_log_config->id_holder = 'id';
+			$dynamic_get_action_log_config->title_holder = 'name';
+			$dynamic_get_action_log_config->table_name = '#__componentbuilder_dynamic_get';
+			$dynamic_get_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$dynamic_get_Inserted = $db->insertObject('#__action_log_config', $dynamic_get_action_log_config);
+
+			// Create the custom_code action log config object.
+			$custom_code_action_log_config = new stdClass();
+			$custom_code_action_log_config->type_title = 'CUSTOM_CODE';
+			$custom_code_action_log_config->type_alias = 'com_componentbuilder.custom_code';
+			$custom_code_action_log_config->id_holder = 'id';
+			$custom_code_action_log_config->title_holder = 'component';
+			$custom_code_action_log_config->table_name = '#__componentbuilder_custom_code';
+			$custom_code_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$custom_code_Inserted = $db->insertObject('#__action_log_config', $custom_code_action_log_config);
+
+			// Create the class_property action log config object.
+			$class_property_action_log_config = new stdClass();
+			$class_property_action_log_config->type_title = 'CLASS_PROPERTY';
+			$class_property_action_log_config->type_alias = 'com_componentbuilder.class_property';
+			$class_property_action_log_config->id_holder = 'id';
+			$class_property_action_log_config->title_holder = 'name';
+			$class_property_action_log_config->table_name = '#__componentbuilder_class_property';
+			$class_property_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$class_property_Inserted = $db->insertObject('#__action_log_config', $class_property_action_log_config);
+
+			// Create the class_method action log config object.
+			$class_method_action_log_config = new stdClass();
+			$class_method_action_log_config->type_title = 'CLASS_METHOD';
+			$class_method_action_log_config->type_alias = 'com_componentbuilder.class_method';
+			$class_method_action_log_config->id_holder = 'id';
+			$class_method_action_log_config->title_holder = 'name';
+			$class_method_action_log_config->table_name = '#__componentbuilder_class_method';
+			$class_method_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$class_method_Inserted = $db->insertObject('#__action_log_config', $class_method_action_log_config);
+
+			// Create the placeholder action log config object.
+			$placeholder_action_log_config = new stdClass();
+			$placeholder_action_log_config->type_title = 'PLACEHOLDER';
+			$placeholder_action_log_config->type_alias = 'com_componentbuilder.placeholder';
+			$placeholder_action_log_config->id_holder = 'id';
+			$placeholder_action_log_config->title_holder = 'target';
+			$placeholder_action_log_config->table_name = '#__componentbuilder_placeholder';
+			$placeholder_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$placeholder_Inserted = $db->insertObject('#__action_log_config', $placeholder_action_log_config);
+
+			// Create the library action log config object.
+			$library_action_log_config = new stdClass();
+			$library_action_log_config->type_title = 'LIBRARY';
+			$library_action_log_config->type_alias = 'com_componentbuilder.library';
+			$library_action_log_config->id_holder = 'id';
+			$library_action_log_config->title_holder = 'name';
+			$library_action_log_config->table_name = '#__componentbuilder_library';
+			$library_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$library_Inserted = $db->insertObject('#__action_log_config', $library_action_log_config);
+
+			// Create the snippet action log config object.
+			$snippet_action_log_config = new stdClass();
+			$snippet_action_log_config->type_title = 'SNIPPET';
+			$snippet_action_log_config->type_alias = 'com_componentbuilder.snippet';
+			$snippet_action_log_config->id_holder = 'id';
+			$snippet_action_log_config->title_holder = 'name';
+			$snippet_action_log_config->table_name = '#__componentbuilder_snippet';
+			$snippet_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$snippet_Inserted = $db->insertObject('#__action_log_config', $snippet_action_log_config);
+
+			// Create the validation_rule action log config object.
+			$validation_rule_action_log_config = new stdClass();
+			$validation_rule_action_log_config->type_title = 'VALIDATION_RULE';
+			$validation_rule_action_log_config->type_alias = 'com_componentbuilder.validation_rule';
+			$validation_rule_action_log_config->id_holder = 'id';
+			$validation_rule_action_log_config->title_holder = 'name';
+			$validation_rule_action_log_config->table_name = '#__componentbuilder_validation_rule';
+			$validation_rule_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$validation_rule_Inserted = $db->insertObject('#__action_log_config', $validation_rule_action_log_config);
+
+			// Create the field action log config object.
+			$field_action_log_config = new stdClass();
+			$field_action_log_config->type_title = 'FIELD';
+			$field_action_log_config->type_alias = 'com_componentbuilder.field';
+			$field_action_log_config->id_holder = 'id';
+			$field_action_log_config->title_holder = 'name';
+			$field_action_log_config->table_name = '#__componentbuilder_field';
+			$field_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$field_Inserted = $db->insertObject('#__action_log_config', $field_action_log_config);
+
+			// Create the fieldtype action log config object.
+			$fieldtype_action_log_config = new stdClass();
+			$fieldtype_action_log_config->type_title = 'FIELDTYPE';
+			$fieldtype_action_log_config->type_alias = 'com_componentbuilder.fieldtype';
+			$fieldtype_action_log_config->id_holder = 'id';
+			$fieldtype_action_log_config->title_holder = 'name';
+			$fieldtype_action_log_config->table_name = '#__componentbuilder_fieldtype';
+			$fieldtype_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$fieldtype_Inserted = $db->insertObject('#__action_log_config', $fieldtype_action_log_config);
+
+			// Create the language_translation action log config object.
+			$language_translation_action_log_config = new stdClass();
+			$language_translation_action_log_config->type_title = 'LANGUAGE_TRANSLATION';
+			$language_translation_action_log_config->type_alias = 'com_componentbuilder.language_translation';
+			$language_translation_action_log_config->id_holder = 'id';
+			$language_translation_action_log_config->title_holder = 'source';
+			$language_translation_action_log_config->table_name = '#__componentbuilder_language_translation';
+			$language_translation_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$language_translation_Inserted = $db->insertObject('#__action_log_config', $language_translation_action_log_config);
+
+			// Create the language action log config object.
+			$language_action_log_config = new stdClass();
+			$language_action_log_config->type_title = 'LANGUAGE';
+			$language_action_log_config->type_alias = 'com_componentbuilder.language';
+			$language_action_log_config->id_holder = 'id';
+			$language_action_log_config->title_holder = 'name';
+			$language_action_log_config->table_name = '#__componentbuilder_language';
+			$language_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$language_Inserted = $db->insertObject('#__action_log_config', $language_action_log_config);
+
+			// Create the server action log config object.
+			$server_action_log_config = new stdClass();
+			$server_action_log_config->type_title = 'SERVER';
+			$server_action_log_config->type_alias = 'com_componentbuilder.server';
+			$server_action_log_config->id_holder = 'id';
+			$server_action_log_config->title_holder = 'name';
+			$server_action_log_config->table_name = '#__componentbuilder_server';
+			$server_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$server_Inserted = $db->insertObject('#__action_log_config', $server_action_log_config);
+
+			// Create the help_document action log config object.
+			$help_document_action_log_config = new stdClass();
+			$help_document_action_log_config->type_title = 'HELP_DOCUMENT';
+			$help_document_action_log_config->type_alias = 'com_componentbuilder.help_document';
+			$help_document_action_log_config->id_holder = 'id';
+			$help_document_action_log_config->title_holder = 'title';
+			$help_document_action_log_config->table_name = '#__componentbuilder_help_document';
+			$help_document_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$help_document_Inserted = $db->insertObject('#__action_log_config', $help_document_action_log_config);
+
+			// Create the admin_fields action log config object.
+			$admin_fields_action_log_config = new stdClass();
+			$admin_fields_action_log_config->type_title = 'ADMIN_FIELDS';
+			$admin_fields_action_log_config->type_alias = 'com_componentbuilder.admin_fields';
+			$admin_fields_action_log_config->id_holder = 'id';
+			$admin_fields_action_log_config->title_holder = 'admin_view';
+			$admin_fields_action_log_config->table_name = '#__componentbuilder_admin_fields';
+			$admin_fields_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$admin_fields_Inserted = $db->insertObject('#__action_log_config', $admin_fields_action_log_config);
+
+			// Create the admin_fields_conditions action log config object.
+			$admin_fields_conditions_action_log_config = new stdClass();
+			$admin_fields_conditions_action_log_config->type_title = 'ADMIN_FIELDS_CONDITIONS';
+			$admin_fields_conditions_action_log_config->type_alias = 'com_componentbuilder.admin_fields_conditions';
+			$admin_fields_conditions_action_log_config->id_holder = 'id';
+			$admin_fields_conditions_action_log_config->title_holder = 'admin_view';
+			$admin_fields_conditions_action_log_config->table_name = '#__componentbuilder_admin_fields_conditions';
+			$admin_fields_conditions_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$admin_fields_conditions_Inserted = $db->insertObject('#__action_log_config', $admin_fields_conditions_action_log_config);
+
+			// Create the admin_fields_relations action log config object.
+			$admin_fields_relations_action_log_config = new stdClass();
+			$admin_fields_relations_action_log_config->type_title = 'ADMIN_FIELDS_RELATIONS';
+			$admin_fields_relations_action_log_config->type_alias = 'com_componentbuilder.admin_fields_relations';
+			$admin_fields_relations_action_log_config->id_holder = 'id';
+			$admin_fields_relations_action_log_config->title_holder = 'admin_view';
+			$admin_fields_relations_action_log_config->table_name = '#__componentbuilder_admin_fields_relations';
+			$admin_fields_relations_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$admin_fields_relations_Inserted = $db->insertObject('#__action_log_config', $admin_fields_relations_action_log_config);
+
+			// Create the admin_custom_tabs action log config object.
+			$admin_custom_tabs_action_log_config = new stdClass();
+			$admin_custom_tabs_action_log_config->type_title = 'ADMIN_CUSTOM_TABS';
+			$admin_custom_tabs_action_log_config->type_alias = 'com_componentbuilder.admin_custom_tabs';
+			$admin_custom_tabs_action_log_config->id_holder = 'id';
+			$admin_custom_tabs_action_log_config->title_holder = 'admin_view';
+			$admin_custom_tabs_action_log_config->table_name = '#__componentbuilder_admin_custom_tabs';
+			$admin_custom_tabs_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$admin_custom_tabs_Inserted = $db->insertObject('#__action_log_config', $admin_custom_tabs_action_log_config);
+
+			// Create the component_admin_views action log config object.
+			$component_admin_views_action_log_config = new stdClass();
+			$component_admin_views_action_log_config->type_title = 'COMPONENT_ADMIN_VIEWS';
+			$component_admin_views_action_log_config->type_alias = 'com_componentbuilder.component_admin_views';
+			$component_admin_views_action_log_config->id_holder = 'id';
+			$component_admin_views_action_log_config->title_holder = 'joomla_component';
+			$component_admin_views_action_log_config->table_name = '#__componentbuilder_component_admin_views';
+			$component_admin_views_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_admin_views_Inserted = $db->insertObject('#__action_log_config', $component_admin_views_action_log_config);
+
+			// Create the component_site_views action log config object.
+			$component_site_views_action_log_config = new stdClass();
+			$component_site_views_action_log_config->type_title = 'COMPONENT_SITE_VIEWS';
+			$component_site_views_action_log_config->type_alias = 'com_componentbuilder.component_site_views';
+			$component_site_views_action_log_config->id_holder = 'id';
+			$component_site_views_action_log_config->title_holder = 'joomla_component';
+			$component_site_views_action_log_config->table_name = '#__componentbuilder_component_site_views';
+			$component_site_views_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_site_views_Inserted = $db->insertObject('#__action_log_config', $component_site_views_action_log_config);
+
+			// Create the component_custom_admin_views action log config object.
+			$component_custom_admin_views_action_log_config = new stdClass();
+			$component_custom_admin_views_action_log_config->type_title = 'COMPONENT_CUSTOM_ADMIN_VIEWS';
+			$component_custom_admin_views_action_log_config->type_alias = 'com_componentbuilder.component_custom_admin_views';
+			$component_custom_admin_views_action_log_config->id_holder = 'id';
+			$component_custom_admin_views_action_log_config->title_holder = 'joomla_component';
+			$component_custom_admin_views_action_log_config->table_name = '#__componentbuilder_component_custom_admin_views';
+			$component_custom_admin_views_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_custom_admin_views_Inserted = $db->insertObject('#__action_log_config', $component_custom_admin_views_action_log_config);
+
+			// Create the component_updates action log config object.
+			$component_updates_action_log_config = new stdClass();
+			$component_updates_action_log_config->type_title = 'COMPONENT_UPDATES';
+			$component_updates_action_log_config->type_alias = 'com_componentbuilder.component_updates';
+			$component_updates_action_log_config->id_holder = 'id';
+			$component_updates_action_log_config->title_holder = 'joomla_component';
+			$component_updates_action_log_config->table_name = '#__componentbuilder_component_updates';
+			$component_updates_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_updates_Inserted = $db->insertObject('#__action_log_config', $component_updates_action_log_config);
+
+			// Create the component_mysql_tweaks action log config object.
+			$component_mysql_tweaks_action_log_config = new stdClass();
+			$component_mysql_tweaks_action_log_config->type_title = 'COMPONENT_MYSQL_TWEAKS';
+			$component_mysql_tweaks_action_log_config->type_alias = 'com_componentbuilder.component_mysql_tweaks';
+			$component_mysql_tweaks_action_log_config->id_holder = 'id';
+			$component_mysql_tweaks_action_log_config->title_holder = 'joomla_component';
+			$component_mysql_tweaks_action_log_config->table_name = '#__componentbuilder_component_mysql_tweaks';
+			$component_mysql_tweaks_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_mysql_tweaks_Inserted = $db->insertObject('#__action_log_config', $component_mysql_tweaks_action_log_config);
+
+			// Create the component_custom_admin_menus action log config object.
+			$component_custom_admin_menus_action_log_config = new stdClass();
+			$component_custom_admin_menus_action_log_config->type_title = 'COMPONENT_CUSTOM_ADMIN_MENUS';
+			$component_custom_admin_menus_action_log_config->type_alias = 'com_componentbuilder.component_custom_admin_menus';
+			$component_custom_admin_menus_action_log_config->id_holder = 'id';
+			$component_custom_admin_menus_action_log_config->title_holder = 'joomla_component';
+			$component_custom_admin_menus_action_log_config->table_name = '#__componentbuilder_component_custom_admin_menus';
+			$component_custom_admin_menus_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_custom_admin_menus_Inserted = $db->insertObject('#__action_log_config', $component_custom_admin_menus_action_log_config);
+
+			// Create the component_config action log config object.
+			$component_config_action_log_config = new stdClass();
+			$component_config_action_log_config->type_title = 'COMPONENT_CONFIG';
+			$component_config_action_log_config->type_alias = 'com_componentbuilder.component_config';
+			$component_config_action_log_config->id_holder = 'id';
+			$component_config_action_log_config->title_holder = 'joomla_component';
+			$component_config_action_log_config->table_name = '#__componentbuilder_component_config';
+			$component_config_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_config_Inserted = $db->insertObject('#__action_log_config', $component_config_action_log_config);
+
+			// Create the component_dashboard action log config object.
+			$component_dashboard_action_log_config = new stdClass();
+			$component_dashboard_action_log_config->type_title = 'COMPONENT_DASHBOARD';
+			$component_dashboard_action_log_config->type_alias = 'com_componentbuilder.component_dashboard';
+			$component_dashboard_action_log_config->id_holder = 'id';
+			$component_dashboard_action_log_config->title_holder = 'joomla_component';
+			$component_dashboard_action_log_config->table_name = '#__componentbuilder_component_dashboard';
+			$component_dashboard_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_dashboard_Inserted = $db->insertObject('#__action_log_config', $component_dashboard_action_log_config);
+
+			// Create the component_files_folders action log config object.
+			$component_files_folders_action_log_config = new stdClass();
+			$component_files_folders_action_log_config->type_title = 'COMPONENT_FILES_FOLDERS';
+			$component_files_folders_action_log_config->type_alias = 'com_componentbuilder.component_files_folders';
+			$component_files_folders_action_log_config->id_holder = 'id';
+			$component_files_folders_action_log_config->title_holder = 'joomla_component';
+			$component_files_folders_action_log_config->table_name = '#__componentbuilder_component_files_folders';
+			$component_files_folders_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_files_folders_Inserted = $db->insertObject('#__action_log_config', $component_files_folders_action_log_config);
+
+			// Create the component_placeholders action log config object.
+			$component_placeholders_action_log_config = new stdClass();
+			$component_placeholders_action_log_config->type_title = 'COMPONENT_PLACEHOLDERS';
+			$component_placeholders_action_log_config->type_alias = 'com_componentbuilder.component_placeholders';
+			$component_placeholders_action_log_config->id_holder = 'id';
+			$component_placeholders_action_log_config->title_holder = 'joomla_component';
+			$component_placeholders_action_log_config->table_name = '#__componentbuilder_component_placeholders';
+			$component_placeholders_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_placeholders_Inserted = $db->insertObject('#__action_log_config', $component_placeholders_action_log_config);
+
+			// Create the component_plugins action log config object.
+			$component_plugins_action_log_config = new stdClass();
+			$component_plugins_action_log_config->type_title = 'COMPONENT_PLUGINS';
+			$component_plugins_action_log_config->type_alias = 'com_componentbuilder.component_plugins';
+			$component_plugins_action_log_config->id_holder = 'id';
+			$component_plugins_action_log_config->title_holder = 'joomla_component';
+			$component_plugins_action_log_config->table_name = '#__componentbuilder_component_plugins';
+			$component_plugins_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_plugins_Inserted = $db->insertObject('#__action_log_config', $component_plugins_action_log_config);
+
+			// Create the snippet_type action log config object.
+			$snippet_type_action_log_config = new stdClass();
+			$snippet_type_action_log_config->type_title = 'SNIPPET_TYPE';
+			$snippet_type_action_log_config->type_alias = 'com_componentbuilder.snippet_type';
+			$snippet_type_action_log_config->id_holder = 'id';
+			$snippet_type_action_log_config->title_holder = 'name';
+			$snippet_type_action_log_config->table_name = '#__componentbuilder_snippet_type';
+			$snippet_type_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$snippet_type_Inserted = $db->insertObject('#__action_log_config', $snippet_type_action_log_config);
+
+			// Create the library_config action log config object.
+			$library_config_action_log_config = new stdClass();
+			$library_config_action_log_config->type_title = 'LIBRARY_CONFIG';
+			$library_config_action_log_config->type_alias = 'com_componentbuilder.library_config';
+			$library_config_action_log_config->id_holder = 'id';
+			$library_config_action_log_config->title_holder = 'library';
+			$library_config_action_log_config->table_name = '#__componentbuilder_library_config';
+			$library_config_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$library_config_Inserted = $db->insertObject('#__action_log_config', $library_config_action_log_config);
+
+			// Create the library_files_folders_urls action log config object.
+			$library_files_folders_urls_action_log_config = new stdClass();
+			$library_files_folders_urls_action_log_config->type_title = 'LIBRARY_FILES_FOLDERS_URLS';
+			$library_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.library_files_folders_urls';
+			$library_files_folders_urls_action_log_config->id_holder = 'id';
+			$library_files_folders_urls_action_log_config->title_holder = 'library';
+			$library_files_folders_urls_action_log_config->table_name = '#__componentbuilder_library_files_folders_urls';
+			$library_files_folders_urls_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$library_files_folders_urls_Inserted = $db->insertObject('#__action_log_config', $library_files_folders_urls_action_log_config);
+
+			// Create the class_extends action log config object.
+			$class_extends_action_log_config = new stdClass();
+			$class_extends_action_log_config->type_title = 'CLASS_EXTENDS';
+			$class_extends_action_log_config->type_alias = 'com_componentbuilder.class_extends';
+			$class_extends_action_log_config->id_holder = 'id';
+			$class_extends_action_log_config->title_holder = 'name';
+			$class_extends_action_log_config->table_name = '#__componentbuilder_class_extends';
+			$class_extends_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$class_extends_Inserted = $db->insertObject('#__action_log_config', $class_extends_action_log_config);
+
+			// Create the joomla_plugin_group action log config object.
+			$joomla_plugin_group_action_log_config = new stdClass();
+			$joomla_plugin_group_action_log_config->type_title = 'JOOMLA_PLUGIN_GROUP';
+			$joomla_plugin_group_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_group';
+			$joomla_plugin_group_action_log_config->id_holder = 'id';
+			$joomla_plugin_group_action_log_config->title_holder = 'name';
+			$joomla_plugin_group_action_log_config->table_name = '#__componentbuilder_joomla_plugin_group';
+			$joomla_plugin_group_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$joomla_plugin_group_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_group_action_log_config);
+
+			// Create the joomla_plugin_updates action log config object.
+			$joomla_plugin_updates_action_log_config = new stdClass();
+			$joomla_plugin_updates_action_log_config->type_title = 'JOOMLA_PLUGIN_UPDATES';
+			$joomla_plugin_updates_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_updates';
+			$joomla_plugin_updates_action_log_config->id_holder = 'id';
+			$joomla_plugin_updates_action_log_config->title_holder = 'joomla_plugin';
+			$joomla_plugin_updates_action_log_config->table_name = '#__componentbuilder_joomla_plugin_updates';
+			$joomla_plugin_updates_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$joomla_plugin_updates_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_updates_action_log_config);
+
+			// Create the joomla_plugin_files_folders_urls action log config object.
+			$joomla_plugin_files_folders_urls_action_log_config = new stdClass();
+			$joomla_plugin_files_folders_urls_action_log_config->type_title = 'JOOMLA_PLUGIN_FILES_FOLDERS_URLS';
+			$joomla_plugin_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_files_folders_urls';
+			$joomla_plugin_files_folders_urls_action_log_config->id_holder = 'id';
+			$joomla_plugin_files_folders_urls_action_log_config->title_holder = 'joomla_plugin';
+			$joomla_plugin_files_folders_urls_action_log_config->table_name = '#__componentbuilder_joomla_plugin_files_folders_urls';
+			$joomla_plugin_files_folders_urls_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$joomla_plugin_files_folders_urls_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_files_folders_urls_action_log_config);
 		}
 		// do any updates needed
 		if ($type === 'update')
@@ -6455,6 +7638,1271 @@ class com_componentbuilderInstallerScript
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
 				<h3>Upgrade to Version 2.10.0 Was Successful! Let us know if anything is not working as expected.</h3>';
+
+			// Create the componentbuilder action logs extensions object.
+			$componentbuilder_action_logs_extensions = new stdClass();
+			$componentbuilder_action_logs_extensions->extension = 'com_componentbuilder';
+
+			// Check if componentbuilder action log extension is already in action logs extensions DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_logs_extensions'));
+			$query->where($db->quoteName('extension') . ' LIKE '. $db->quote($componentbuilder_action_logs_extensions->extension));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the action logs extensions table if not found.
+			if (!$db->getNumRows())
+			{
+				$componentbuilder_action_logs_extensions_Inserted = $db->insertObject('#__action_logs_extensions', $componentbuilder_action_logs_extensions);
+			}
+
+			// Create the joomla_component action log config object.
+			$joomla_component_action_log_config = new stdClass();
+			$joomla_component_action_log_config->id = null;
+			$joomla_component_action_log_config->type_title = 'JOOMLA_COMPONENT';
+			$joomla_component_action_log_config->type_alias = 'com_componentbuilder.joomla_component';
+			$joomla_component_action_log_config->id_holder = 'id';
+			$joomla_component_action_log_config->title_holder = 'system_name';
+			$joomla_component_action_log_config->table_name = '#__componentbuilder_joomla_component';
+			$joomla_component_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if joomla_component action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_component_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_component_action_log_config->id = $db->loadResult();
+				$joomla_component_action_log_config_Updated = $db->updateObject('#__action_log_config', $joomla_component_action_log_config, 'id');
+			}
+			else
+			{
+				$joomla_component_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_component_action_log_config);
+			}
+
+			// Create the joomla_plugin action log config object.
+			$joomla_plugin_action_log_config = new stdClass();
+			$joomla_plugin_action_log_config->id = null;
+			$joomla_plugin_action_log_config->type_title = 'JOOMLA_PLUGIN';
+			$joomla_plugin_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin';
+			$joomla_plugin_action_log_config->id_holder = 'id';
+			$joomla_plugin_action_log_config->title_holder = 'system_name';
+			$joomla_plugin_action_log_config->table_name = '#__componentbuilder_joomla_plugin';
+			$joomla_plugin_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if joomla_plugin action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_plugin_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_plugin_action_log_config->id = $db->loadResult();
+				$joomla_plugin_action_log_config_Updated = $db->updateObject('#__action_log_config', $joomla_plugin_action_log_config, 'id');
+			}
+			else
+			{
+				$joomla_plugin_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_action_log_config);
+			}
+
+			// Create the admin_view action log config object.
+			$admin_view_action_log_config = new stdClass();
+			$admin_view_action_log_config->id = null;
+			$admin_view_action_log_config->type_title = 'ADMIN_VIEW';
+			$admin_view_action_log_config->type_alias = 'com_componentbuilder.admin_view';
+			$admin_view_action_log_config->id_holder = 'id';
+			$admin_view_action_log_config->title_holder = '';
+			$admin_view_action_log_config->table_name = '#__componentbuilder_admin_view';
+			$admin_view_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if admin_view action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($admin_view_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$admin_view_action_log_config->id = $db->loadResult();
+				$admin_view_action_log_config_Updated = $db->updateObject('#__action_log_config', $admin_view_action_log_config, 'id');
+			}
+			else
+			{
+				$admin_view_action_log_config_Inserted = $db->insertObject('#__action_log_config', $admin_view_action_log_config);
+			}
+
+			// Create the custom_admin_view action log config object.
+			$custom_admin_view_action_log_config = new stdClass();
+			$custom_admin_view_action_log_config->id = null;
+			$custom_admin_view_action_log_config->type_title = 'CUSTOM_ADMIN_VIEW';
+			$custom_admin_view_action_log_config->type_alias = 'com_componentbuilder.custom_admin_view';
+			$custom_admin_view_action_log_config->id_holder = 'id';
+			$custom_admin_view_action_log_config->title_holder = 'name';
+			$custom_admin_view_action_log_config->table_name = '#__componentbuilder_custom_admin_view';
+			$custom_admin_view_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if custom_admin_view action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($custom_admin_view_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$custom_admin_view_action_log_config->id = $db->loadResult();
+				$custom_admin_view_action_log_config_Updated = $db->updateObject('#__action_log_config', $custom_admin_view_action_log_config, 'id');
+			}
+			else
+			{
+				$custom_admin_view_action_log_config_Inserted = $db->insertObject('#__action_log_config', $custom_admin_view_action_log_config);
+			}
+
+			// Create the site_view action log config object.
+			$site_view_action_log_config = new stdClass();
+			$site_view_action_log_config->id = null;
+			$site_view_action_log_config->type_title = 'SITE_VIEW';
+			$site_view_action_log_config->type_alias = 'com_componentbuilder.site_view';
+			$site_view_action_log_config->id_holder = 'id';
+			$site_view_action_log_config->title_holder = 'name';
+			$site_view_action_log_config->table_name = '#__componentbuilder_site_view';
+			$site_view_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if site_view action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($site_view_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$site_view_action_log_config->id = $db->loadResult();
+				$site_view_action_log_config_Updated = $db->updateObject('#__action_log_config', $site_view_action_log_config, 'id');
+			}
+			else
+			{
+				$site_view_action_log_config_Inserted = $db->insertObject('#__action_log_config', $site_view_action_log_config);
+			}
+
+			// Create the template action log config object.
+			$template_action_log_config = new stdClass();
+			$template_action_log_config->id = null;
+			$template_action_log_config->type_title = 'TEMPLATE';
+			$template_action_log_config->type_alias = 'com_componentbuilder.template';
+			$template_action_log_config->id_holder = 'id';
+			$template_action_log_config->title_holder = 'name';
+			$template_action_log_config->table_name = '#__componentbuilder_template';
+			$template_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if template action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($template_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$template_action_log_config->id = $db->loadResult();
+				$template_action_log_config_Updated = $db->updateObject('#__action_log_config', $template_action_log_config, 'id');
+			}
+			else
+			{
+				$template_action_log_config_Inserted = $db->insertObject('#__action_log_config', $template_action_log_config);
+			}
+
+			// Create the layout action log config object.
+			$layout_action_log_config = new stdClass();
+			$layout_action_log_config->id = null;
+			$layout_action_log_config->type_title = 'LAYOUT';
+			$layout_action_log_config->type_alias = 'com_componentbuilder.layout';
+			$layout_action_log_config->id_holder = 'id';
+			$layout_action_log_config->title_holder = 'name';
+			$layout_action_log_config->table_name = '#__componentbuilder_layout';
+			$layout_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if layout action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($layout_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$layout_action_log_config->id = $db->loadResult();
+				$layout_action_log_config_Updated = $db->updateObject('#__action_log_config', $layout_action_log_config, 'id');
+			}
+			else
+			{
+				$layout_action_log_config_Inserted = $db->insertObject('#__action_log_config', $layout_action_log_config);
+			}
+
+			// Create the dynamic_get action log config object.
+			$dynamic_get_action_log_config = new stdClass();
+			$dynamic_get_action_log_config->id = null;
+			$dynamic_get_action_log_config->type_title = 'DYNAMIC_GET';
+			$dynamic_get_action_log_config->type_alias = 'com_componentbuilder.dynamic_get';
+			$dynamic_get_action_log_config->id_holder = 'id';
+			$dynamic_get_action_log_config->title_holder = 'name';
+			$dynamic_get_action_log_config->table_name = '#__componentbuilder_dynamic_get';
+			$dynamic_get_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if dynamic_get action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($dynamic_get_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$dynamic_get_action_log_config->id = $db->loadResult();
+				$dynamic_get_action_log_config_Updated = $db->updateObject('#__action_log_config', $dynamic_get_action_log_config, 'id');
+			}
+			else
+			{
+				$dynamic_get_action_log_config_Inserted = $db->insertObject('#__action_log_config', $dynamic_get_action_log_config);
+			}
+
+			// Create the custom_code action log config object.
+			$custom_code_action_log_config = new stdClass();
+			$custom_code_action_log_config->id = null;
+			$custom_code_action_log_config->type_title = 'CUSTOM_CODE';
+			$custom_code_action_log_config->type_alias = 'com_componentbuilder.custom_code';
+			$custom_code_action_log_config->id_holder = 'id';
+			$custom_code_action_log_config->title_holder = 'component';
+			$custom_code_action_log_config->table_name = '#__componentbuilder_custom_code';
+			$custom_code_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if custom_code action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($custom_code_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$custom_code_action_log_config->id = $db->loadResult();
+				$custom_code_action_log_config_Updated = $db->updateObject('#__action_log_config', $custom_code_action_log_config, 'id');
+			}
+			else
+			{
+				$custom_code_action_log_config_Inserted = $db->insertObject('#__action_log_config', $custom_code_action_log_config);
+			}
+
+			// Create the class_property action log config object.
+			$class_property_action_log_config = new stdClass();
+			$class_property_action_log_config->id = null;
+			$class_property_action_log_config->type_title = 'CLASS_PROPERTY';
+			$class_property_action_log_config->type_alias = 'com_componentbuilder.class_property';
+			$class_property_action_log_config->id_holder = 'id';
+			$class_property_action_log_config->title_holder = 'name';
+			$class_property_action_log_config->table_name = '#__componentbuilder_class_property';
+			$class_property_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if class_property action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($class_property_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$class_property_action_log_config->id = $db->loadResult();
+				$class_property_action_log_config_Updated = $db->updateObject('#__action_log_config', $class_property_action_log_config, 'id');
+			}
+			else
+			{
+				$class_property_action_log_config_Inserted = $db->insertObject('#__action_log_config', $class_property_action_log_config);
+			}
+
+			// Create the class_method action log config object.
+			$class_method_action_log_config = new stdClass();
+			$class_method_action_log_config->id = null;
+			$class_method_action_log_config->type_title = 'CLASS_METHOD';
+			$class_method_action_log_config->type_alias = 'com_componentbuilder.class_method';
+			$class_method_action_log_config->id_holder = 'id';
+			$class_method_action_log_config->title_holder = 'name';
+			$class_method_action_log_config->table_name = '#__componentbuilder_class_method';
+			$class_method_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if class_method action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($class_method_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$class_method_action_log_config->id = $db->loadResult();
+				$class_method_action_log_config_Updated = $db->updateObject('#__action_log_config', $class_method_action_log_config, 'id');
+			}
+			else
+			{
+				$class_method_action_log_config_Inserted = $db->insertObject('#__action_log_config', $class_method_action_log_config);
+			}
+
+			// Create the placeholder action log config object.
+			$placeholder_action_log_config = new stdClass();
+			$placeholder_action_log_config->id = null;
+			$placeholder_action_log_config->type_title = 'PLACEHOLDER';
+			$placeholder_action_log_config->type_alias = 'com_componentbuilder.placeholder';
+			$placeholder_action_log_config->id_holder = 'id';
+			$placeholder_action_log_config->title_holder = 'target';
+			$placeholder_action_log_config->table_name = '#__componentbuilder_placeholder';
+			$placeholder_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if placeholder action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($placeholder_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$placeholder_action_log_config->id = $db->loadResult();
+				$placeholder_action_log_config_Updated = $db->updateObject('#__action_log_config', $placeholder_action_log_config, 'id');
+			}
+			else
+			{
+				$placeholder_action_log_config_Inserted = $db->insertObject('#__action_log_config', $placeholder_action_log_config);
+			}
+
+			// Create the library action log config object.
+			$library_action_log_config = new stdClass();
+			$library_action_log_config->id = null;
+			$library_action_log_config->type_title = 'LIBRARY';
+			$library_action_log_config->type_alias = 'com_componentbuilder.library';
+			$library_action_log_config->id_holder = 'id';
+			$library_action_log_config->title_holder = 'name';
+			$library_action_log_config->table_name = '#__componentbuilder_library';
+			$library_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if library action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($library_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$library_action_log_config->id = $db->loadResult();
+				$library_action_log_config_Updated = $db->updateObject('#__action_log_config', $library_action_log_config, 'id');
+			}
+			else
+			{
+				$library_action_log_config_Inserted = $db->insertObject('#__action_log_config', $library_action_log_config);
+			}
+
+			// Create the snippet action log config object.
+			$snippet_action_log_config = new stdClass();
+			$snippet_action_log_config->id = null;
+			$snippet_action_log_config->type_title = 'SNIPPET';
+			$snippet_action_log_config->type_alias = 'com_componentbuilder.snippet';
+			$snippet_action_log_config->id_holder = 'id';
+			$snippet_action_log_config->title_holder = 'name';
+			$snippet_action_log_config->table_name = '#__componentbuilder_snippet';
+			$snippet_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if snippet action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($snippet_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$snippet_action_log_config->id = $db->loadResult();
+				$snippet_action_log_config_Updated = $db->updateObject('#__action_log_config', $snippet_action_log_config, 'id');
+			}
+			else
+			{
+				$snippet_action_log_config_Inserted = $db->insertObject('#__action_log_config', $snippet_action_log_config);
+			}
+
+			// Create the validation_rule action log config object.
+			$validation_rule_action_log_config = new stdClass();
+			$validation_rule_action_log_config->id = null;
+			$validation_rule_action_log_config->type_title = 'VALIDATION_RULE';
+			$validation_rule_action_log_config->type_alias = 'com_componentbuilder.validation_rule';
+			$validation_rule_action_log_config->id_holder = 'id';
+			$validation_rule_action_log_config->title_holder = 'name';
+			$validation_rule_action_log_config->table_name = '#__componentbuilder_validation_rule';
+			$validation_rule_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if validation_rule action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($validation_rule_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$validation_rule_action_log_config->id = $db->loadResult();
+				$validation_rule_action_log_config_Updated = $db->updateObject('#__action_log_config', $validation_rule_action_log_config, 'id');
+			}
+			else
+			{
+				$validation_rule_action_log_config_Inserted = $db->insertObject('#__action_log_config', $validation_rule_action_log_config);
+			}
+
+			// Create the field action log config object.
+			$field_action_log_config = new stdClass();
+			$field_action_log_config->id = null;
+			$field_action_log_config->type_title = 'FIELD';
+			$field_action_log_config->type_alias = 'com_componentbuilder.field';
+			$field_action_log_config->id_holder = 'id';
+			$field_action_log_config->title_holder = 'name';
+			$field_action_log_config->table_name = '#__componentbuilder_field';
+			$field_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if field action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($field_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$field_action_log_config->id = $db->loadResult();
+				$field_action_log_config_Updated = $db->updateObject('#__action_log_config', $field_action_log_config, 'id');
+			}
+			else
+			{
+				$field_action_log_config_Inserted = $db->insertObject('#__action_log_config', $field_action_log_config);
+			}
+
+			// Create the fieldtype action log config object.
+			$fieldtype_action_log_config = new stdClass();
+			$fieldtype_action_log_config->id = null;
+			$fieldtype_action_log_config->type_title = 'FIELDTYPE';
+			$fieldtype_action_log_config->type_alias = 'com_componentbuilder.fieldtype';
+			$fieldtype_action_log_config->id_holder = 'id';
+			$fieldtype_action_log_config->title_holder = 'name';
+			$fieldtype_action_log_config->table_name = '#__componentbuilder_fieldtype';
+			$fieldtype_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if fieldtype action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($fieldtype_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$fieldtype_action_log_config->id = $db->loadResult();
+				$fieldtype_action_log_config_Updated = $db->updateObject('#__action_log_config', $fieldtype_action_log_config, 'id');
+			}
+			else
+			{
+				$fieldtype_action_log_config_Inserted = $db->insertObject('#__action_log_config', $fieldtype_action_log_config);
+			}
+
+			// Create the language_translation action log config object.
+			$language_translation_action_log_config = new stdClass();
+			$language_translation_action_log_config->id = null;
+			$language_translation_action_log_config->type_title = 'LANGUAGE_TRANSLATION';
+			$language_translation_action_log_config->type_alias = 'com_componentbuilder.language_translation';
+			$language_translation_action_log_config->id_holder = 'id';
+			$language_translation_action_log_config->title_holder = 'source';
+			$language_translation_action_log_config->table_name = '#__componentbuilder_language_translation';
+			$language_translation_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if language_translation action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($language_translation_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$language_translation_action_log_config->id = $db->loadResult();
+				$language_translation_action_log_config_Updated = $db->updateObject('#__action_log_config', $language_translation_action_log_config, 'id');
+			}
+			else
+			{
+				$language_translation_action_log_config_Inserted = $db->insertObject('#__action_log_config', $language_translation_action_log_config);
+			}
+
+			// Create the language action log config object.
+			$language_action_log_config = new stdClass();
+			$language_action_log_config->id = null;
+			$language_action_log_config->type_title = 'LANGUAGE';
+			$language_action_log_config->type_alias = 'com_componentbuilder.language';
+			$language_action_log_config->id_holder = 'id';
+			$language_action_log_config->title_holder = 'name';
+			$language_action_log_config->table_name = '#__componentbuilder_language';
+			$language_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if language action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($language_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$language_action_log_config->id = $db->loadResult();
+				$language_action_log_config_Updated = $db->updateObject('#__action_log_config', $language_action_log_config, 'id');
+			}
+			else
+			{
+				$language_action_log_config_Inserted = $db->insertObject('#__action_log_config', $language_action_log_config);
+			}
+
+			// Create the server action log config object.
+			$server_action_log_config = new stdClass();
+			$server_action_log_config->id = null;
+			$server_action_log_config->type_title = 'SERVER';
+			$server_action_log_config->type_alias = 'com_componentbuilder.server';
+			$server_action_log_config->id_holder = 'id';
+			$server_action_log_config->title_holder = 'name';
+			$server_action_log_config->table_name = '#__componentbuilder_server';
+			$server_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if server action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($server_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$server_action_log_config->id = $db->loadResult();
+				$server_action_log_config_Updated = $db->updateObject('#__action_log_config', $server_action_log_config, 'id');
+			}
+			else
+			{
+				$server_action_log_config_Inserted = $db->insertObject('#__action_log_config', $server_action_log_config);
+			}
+
+			// Create the help_document action log config object.
+			$help_document_action_log_config = new stdClass();
+			$help_document_action_log_config->id = null;
+			$help_document_action_log_config->type_title = 'HELP_DOCUMENT';
+			$help_document_action_log_config->type_alias = 'com_componentbuilder.help_document';
+			$help_document_action_log_config->id_holder = 'id';
+			$help_document_action_log_config->title_holder = 'title';
+			$help_document_action_log_config->table_name = '#__componentbuilder_help_document';
+			$help_document_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if help_document action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($help_document_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$help_document_action_log_config->id = $db->loadResult();
+				$help_document_action_log_config_Updated = $db->updateObject('#__action_log_config', $help_document_action_log_config, 'id');
+			}
+			else
+			{
+				$help_document_action_log_config_Inserted = $db->insertObject('#__action_log_config', $help_document_action_log_config);
+			}
+
+			// Create the admin_fields action log config object.
+			$admin_fields_action_log_config = new stdClass();
+			$admin_fields_action_log_config->id = null;
+			$admin_fields_action_log_config->type_title = 'ADMIN_FIELDS';
+			$admin_fields_action_log_config->type_alias = 'com_componentbuilder.admin_fields';
+			$admin_fields_action_log_config->id_holder = 'id';
+			$admin_fields_action_log_config->title_holder = 'admin_view';
+			$admin_fields_action_log_config->table_name = '#__componentbuilder_admin_fields';
+			$admin_fields_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if admin_fields action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($admin_fields_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$admin_fields_action_log_config->id = $db->loadResult();
+				$admin_fields_action_log_config_Updated = $db->updateObject('#__action_log_config', $admin_fields_action_log_config, 'id');
+			}
+			else
+			{
+				$admin_fields_action_log_config_Inserted = $db->insertObject('#__action_log_config', $admin_fields_action_log_config);
+			}
+
+			// Create the admin_fields_conditions action log config object.
+			$admin_fields_conditions_action_log_config = new stdClass();
+			$admin_fields_conditions_action_log_config->id = null;
+			$admin_fields_conditions_action_log_config->type_title = 'ADMIN_FIELDS_CONDITIONS';
+			$admin_fields_conditions_action_log_config->type_alias = 'com_componentbuilder.admin_fields_conditions';
+			$admin_fields_conditions_action_log_config->id_holder = 'id';
+			$admin_fields_conditions_action_log_config->title_holder = 'admin_view';
+			$admin_fields_conditions_action_log_config->table_name = '#__componentbuilder_admin_fields_conditions';
+			$admin_fields_conditions_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if admin_fields_conditions action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($admin_fields_conditions_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$admin_fields_conditions_action_log_config->id = $db->loadResult();
+				$admin_fields_conditions_action_log_config_Updated = $db->updateObject('#__action_log_config', $admin_fields_conditions_action_log_config, 'id');
+			}
+			else
+			{
+				$admin_fields_conditions_action_log_config_Inserted = $db->insertObject('#__action_log_config', $admin_fields_conditions_action_log_config);
+			}
+
+			// Create the admin_fields_relations action log config object.
+			$admin_fields_relations_action_log_config = new stdClass();
+			$admin_fields_relations_action_log_config->id = null;
+			$admin_fields_relations_action_log_config->type_title = 'ADMIN_FIELDS_RELATIONS';
+			$admin_fields_relations_action_log_config->type_alias = 'com_componentbuilder.admin_fields_relations';
+			$admin_fields_relations_action_log_config->id_holder = 'id';
+			$admin_fields_relations_action_log_config->title_holder = 'admin_view';
+			$admin_fields_relations_action_log_config->table_name = '#__componentbuilder_admin_fields_relations';
+			$admin_fields_relations_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if admin_fields_relations action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($admin_fields_relations_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$admin_fields_relations_action_log_config->id = $db->loadResult();
+				$admin_fields_relations_action_log_config_Updated = $db->updateObject('#__action_log_config', $admin_fields_relations_action_log_config, 'id');
+			}
+			else
+			{
+				$admin_fields_relations_action_log_config_Inserted = $db->insertObject('#__action_log_config', $admin_fields_relations_action_log_config);
+			}
+
+			// Create the admin_custom_tabs action log config object.
+			$admin_custom_tabs_action_log_config = new stdClass();
+			$admin_custom_tabs_action_log_config->id = null;
+			$admin_custom_tabs_action_log_config->type_title = 'ADMIN_CUSTOM_TABS';
+			$admin_custom_tabs_action_log_config->type_alias = 'com_componentbuilder.admin_custom_tabs';
+			$admin_custom_tabs_action_log_config->id_holder = 'id';
+			$admin_custom_tabs_action_log_config->title_holder = 'admin_view';
+			$admin_custom_tabs_action_log_config->table_name = '#__componentbuilder_admin_custom_tabs';
+			$admin_custom_tabs_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if admin_custom_tabs action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($admin_custom_tabs_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$admin_custom_tabs_action_log_config->id = $db->loadResult();
+				$admin_custom_tabs_action_log_config_Updated = $db->updateObject('#__action_log_config', $admin_custom_tabs_action_log_config, 'id');
+			}
+			else
+			{
+				$admin_custom_tabs_action_log_config_Inserted = $db->insertObject('#__action_log_config', $admin_custom_tabs_action_log_config);
+			}
+
+			// Create the component_admin_views action log config object.
+			$component_admin_views_action_log_config = new stdClass();
+			$component_admin_views_action_log_config->id = null;
+			$component_admin_views_action_log_config->type_title = 'COMPONENT_ADMIN_VIEWS';
+			$component_admin_views_action_log_config->type_alias = 'com_componentbuilder.component_admin_views';
+			$component_admin_views_action_log_config->id_holder = 'id';
+			$component_admin_views_action_log_config->title_holder = 'joomla_component';
+			$component_admin_views_action_log_config->table_name = '#__componentbuilder_component_admin_views';
+			$component_admin_views_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_admin_views action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_admin_views_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_admin_views_action_log_config->id = $db->loadResult();
+				$component_admin_views_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_admin_views_action_log_config, 'id');
+			}
+			else
+			{
+				$component_admin_views_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_admin_views_action_log_config);
+			}
+
+			// Create the component_site_views action log config object.
+			$component_site_views_action_log_config = new stdClass();
+			$component_site_views_action_log_config->id = null;
+			$component_site_views_action_log_config->type_title = 'COMPONENT_SITE_VIEWS';
+			$component_site_views_action_log_config->type_alias = 'com_componentbuilder.component_site_views';
+			$component_site_views_action_log_config->id_holder = 'id';
+			$component_site_views_action_log_config->title_holder = 'joomla_component';
+			$component_site_views_action_log_config->table_name = '#__componentbuilder_component_site_views';
+			$component_site_views_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_site_views action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_site_views_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_site_views_action_log_config->id = $db->loadResult();
+				$component_site_views_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_site_views_action_log_config, 'id');
+			}
+			else
+			{
+				$component_site_views_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_site_views_action_log_config);
+			}
+
+			// Create the component_custom_admin_views action log config object.
+			$component_custom_admin_views_action_log_config = new stdClass();
+			$component_custom_admin_views_action_log_config->id = null;
+			$component_custom_admin_views_action_log_config->type_title = 'COMPONENT_CUSTOM_ADMIN_VIEWS';
+			$component_custom_admin_views_action_log_config->type_alias = 'com_componentbuilder.component_custom_admin_views';
+			$component_custom_admin_views_action_log_config->id_holder = 'id';
+			$component_custom_admin_views_action_log_config->title_holder = 'joomla_component';
+			$component_custom_admin_views_action_log_config->table_name = '#__componentbuilder_component_custom_admin_views';
+			$component_custom_admin_views_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_custom_admin_views action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_custom_admin_views_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_custom_admin_views_action_log_config->id = $db->loadResult();
+				$component_custom_admin_views_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_custom_admin_views_action_log_config, 'id');
+			}
+			else
+			{
+				$component_custom_admin_views_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_custom_admin_views_action_log_config);
+			}
+
+			// Create the component_updates action log config object.
+			$component_updates_action_log_config = new stdClass();
+			$component_updates_action_log_config->id = null;
+			$component_updates_action_log_config->type_title = 'COMPONENT_UPDATES';
+			$component_updates_action_log_config->type_alias = 'com_componentbuilder.component_updates';
+			$component_updates_action_log_config->id_holder = 'id';
+			$component_updates_action_log_config->title_holder = 'joomla_component';
+			$component_updates_action_log_config->table_name = '#__componentbuilder_component_updates';
+			$component_updates_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_updates action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_updates_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_updates_action_log_config->id = $db->loadResult();
+				$component_updates_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_updates_action_log_config, 'id');
+			}
+			else
+			{
+				$component_updates_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_updates_action_log_config);
+			}
+
+			// Create the component_mysql_tweaks action log config object.
+			$component_mysql_tweaks_action_log_config = new stdClass();
+			$component_mysql_tweaks_action_log_config->id = null;
+			$component_mysql_tweaks_action_log_config->type_title = 'COMPONENT_MYSQL_TWEAKS';
+			$component_mysql_tweaks_action_log_config->type_alias = 'com_componentbuilder.component_mysql_tweaks';
+			$component_mysql_tweaks_action_log_config->id_holder = 'id';
+			$component_mysql_tweaks_action_log_config->title_holder = 'joomla_component';
+			$component_mysql_tweaks_action_log_config->table_name = '#__componentbuilder_component_mysql_tweaks';
+			$component_mysql_tweaks_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_mysql_tweaks action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_mysql_tweaks_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_mysql_tweaks_action_log_config->id = $db->loadResult();
+				$component_mysql_tweaks_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_mysql_tweaks_action_log_config, 'id');
+			}
+			else
+			{
+				$component_mysql_tweaks_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_mysql_tweaks_action_log_config);
+			}
+
+			// Create the component_custom_admin_menus action log config object.
+			$component_custom_admin_menus_action_log_config = new stdClass();
+			$component_custom_admin_menus_action_log_config->id = null;
+			$component_custom_admin_menus_action_log_config->type_title = 'COMPONENT_CUSTOM_ADMIN_MENUS';
+			$component_custom_admin_menus_action_log_config->type_alias = 'com_componentbuilder.component_custom_admin_menus';
+			$component_custom_admin_menus_action_log_config->id_holder = 'id';
+			$component_custom_admin_menus_action_log_config->title_holder = 'joomla_component';
+			$component_custom_admin_menus_action_log_config->table_name = '#__componentbuilder_component_custom_admin_menus';
+			$component_custom_admin_menus_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_custom_admin_menus action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_custom_admin_menus_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_custom_admin_menus_action_log_config->id = $db->loadResult();
+				$component_custom_admin_menus_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_custom_admin_menus_action_log_config, 'id');
+			}
+			else
+			{
+				$component_custom_admin_menus_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_custom_admin_menus_action_log_config);
+			}
+
+			// Create the component_config action log config object.
+			$component_config_action_log_config = new stdClass();
+			$component_config_action_log_config->id = null;
+			$component_config_action_log_config->type_title = 'COMPONENT_CONFIG';
+			$component_config_action_log_config->type_alias = 'com_componentbuilder.component_config';
+			$component_config_action_log_config->id_holder = 'id';
+			$component_config_action_log_config->title_holder = 'joomla_component';
+			$component_config_action_log_config->table_name = '#__componentbuilder_component_config';
+			$component_config_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_config action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_config_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_config_action_log_config->id = $db->loadResult();
+				$component_config_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_config_action_log_config, 'id');
+			}
+			else
+			{
+				$component_config_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_config_action_log_config);
+			}
+
+			// Create the component_dashboard action log config object.
+			$component_dashboard_action_log_config = new stdClass();
+			$component_dashboard_action_log_config->id = null;
+			$component_dashboard_action_log_config->type_title = 'COMPONENT_DASHBOARD';
+			$component_dashboard_action_log_config->type_alias = 'com_componentbuilder.component_dashboard';
+			$component_dashboard_action_log_config->id_holder = 'id';
+			$component_dashboard_action_log_config->title_holder = 'joomla_component';
+			$component_dashboard_action_log_config->table_name = '#__componentbuilder_component_dashboard';
+			$component_dashboard_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_dashboard action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_dashboard_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_dashboard_action_log_config->id = $db->loadResult();
+				$component_dashboard_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_dashboard_action_log_config, 'id');
+			}
+			else
+			{
+				$component_dashboard_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_dashboard_action_log_config);
+			}
+
+			// Create the component_files_folders action log config object.
+			$component_files_folders_action_log_config = new stdClass();
+			$component_files_folders_action_log_config->id = null;
+			$component_files_folders_action_log_config->type_title = 'COMPONENT_FILES_FOLDERS';
+			$component_files_folders_action_log_config->type_alias = 'com_componentbuilder.component_files_folders';
+			$component_files_folders_action_log_config->id_holder = 'id';
+			$component_files_folders_action_log_config->title_holder = 'joomla_component';
+			$component_files_folders_action_log_config->table_name = '#__componentbuilder_component_files_folders';
+			$component_files_folders_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_files_folders action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_files_folders_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_files_folders_action_log_config->id = $db->loadResult();
+				$component_files_folders_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_files_folders_action_log_config, 'id');
+			}
+			else
+			{
+				$component_files_folders_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_files_folders_action_log_config);
+			}
+
+			// Create the component_placeholders action log config object.
+			$component_placeholders_action_log_config = new stdClass();
+			$component_placeholders_action_log_config->id = null;
+			$component_placeholders_action_log_config->type_title = 'COMPONENT_PLACEHOLDERS';
+			$component_placeholders_action_log_config->type_alias = 'com_componentbuilder.component_placeholders';
+			$component_placeholders_action_log_config->id_holder = 'id';
+			$component_placeholders_action_log_config->title_holder = 'joomla_component';
+			$component_placeholders_action_log_config->table_name = '#__componentbuilder_component_placeholders';
+			$component_placeholders_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_placeholders action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_placeholders_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_placeholders_action_log_config->id = $db->loadResult();
+				$component_placeholders_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_placeholders_action_log_config, 'id');
+			}
+			else
+			{
+				$component_placeholders_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_placeholders_action_log_config);
+			}
+
+			// Create the component_plugins action log config object.
+			$component_plugins_action_log_config = new stdClass();
+			$component_plugins_action_log_config->id = null;
+			$component_plugins_action_log_config->type_title = 'COMPONENT_PLUGINS';
+			$component_plugins_action_log_config->type_alias = 'com_componentbuilder.component_plugins';
+			$component_plugins_action_log_config->id_holder = 'id';
+			$component_plugins_action_log_config->title_holder = 'joomla_component';
+			$component_plugins_action_log_config->table_name = '#__componentbuilder_component_plugins';
+			$component_plugins_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_plugins action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_plugins_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_plugins_action_log_config->id = $db->loadResult();
+				$component_plugins_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_plugins_action_log_config, 'id');
+			}
+			else
+			{
+				$component_plugins_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_plugins_action_log_config);
+			}
+
+			// Create the snippet_type action log config object.
+			$snippet_type_action_log_config = new stdClass();
+			$snippet_type_action_log_config->id = null;
+			$snippet_type_action_log_config->type_title = 'SNIPPET_TYPE';
+			$snippet_type_action_log_config->type_alias = 'com_componentbuilder.snippet_type';
+			$snippet_type_action_log_config->id_holder = 'id';
+			$snippet_type_action_log_config->title_holder = 'name';
+			$snippet_type_action_log_config->table_name = '#__componentbuilder_snippet_type';
+			$snippet_type_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if snippet_type action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($snippet_type_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$snippet_type_action_log_config->id = $db->loadResult();
+				$snippet_type_action_log_config_Updated = $db->updateObject('#__action_log_config', $snippet_type_action_log_config, 'id');
+			}
+			else
+			{
+				$snippet_type_action_log_config_Inserted = $db->insertObject('#__action_log_config', $snippet_type_action_log_config);
+			}
+
+			// Create the library_config action log config object.
+			$library_config_action_log_config = new stdClass();
+			$library_config_action_log_config->id = null;
+			$library_config_action_log_config->type_title = 'LIBRARY_CONFIG';
+			$library_config_action_log_config->type_alias = 'com_componentbuilder.library_config';
+			$library_config_action_log_config->id_holder = 'id';
+			$library_config_action_log_config->title_holder = 'library';
+			$library_config_action_log_config->table_name = '#__componentbuilder_library_config';
+			$library_config_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if library_config action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($library_config_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$library_config_action_log_config->id = $db->loadResult();
+				$library_config_action_log_config_Updated = $db->updateObject('#__action_log_config', $library_config_action_log_config, 'id');
+			}
+			else
+			{
+				$library_config_action_log_config_Inserted = $db->insertObject('#__action_log_config', $library_config_action_log_config);
+			}
+
+			// Create the library_files_folders_urls action log config object.
+			$library_files_folders_urls_action_log_config = new stdClass();
+			$library_files_folders_urls_action_log_config->id = null;
+			$library_files_folders_urls_action_log_config->type_title = 'LIBRARY_FILES_FOLDERS_URLS';
+			$library_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.library_files_folders_urls';
+			$library_files_folders_urls_action_log_config->id_holder = 'id';
+			$library_files_folders_urls_action_log_config->title_holder = 'library';
+			$library_files_folders_urls_action_log_config->table_name = '#__componentbuilder_library_files_folders_urls';
+			$library_files_folders_urls_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if library_files_folders_urls action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($library_files_folders_urls_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$library_files_folders_urls_action_log_config->id = $db->loadResult();
+				$library_files_folders_urls_action_log_config_Updated = $db->updateObject('#__action_log_config', $library_files_folders_urls_action_log_config, 'id');
+			}
+			else
+			{
+				$library_files_folders_urls_action_log_config_Inserted = $db->insertObject('#__action_log_config', $library_files_folders_urls_action_log_config);
+			}
+
+			// Create the class_extends action log config object.
+			$class_extends_action_log_config = new stdClass();
+			$class_extends_action_log_config->id = null;
+			$class_extends_action_log_config->type_title = 'CLASS_EXTENDS';
+			$class_extends_action_log_config->type_alias = 'com_componentbuilder.class_extends';
+			$class_extends_action_log_config->id_holder = 'id';
+			$class_extends_action_log_config->title_holder = 'name';
+			$class_extends_action_log_config->table_name = '#__componentbuilder_class_extends';
+			$class_extends_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if class_extends action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($class_extends_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$class_extends_action_log_config->id = $db->loadResult();
+				$class_extends_action_log_config_Updated = $db->updateObject('#__action_log_config', $class_extends_action_log_config, 'id');
+			}
+			else
+			{
+				$class_extends_action_log_config_Inserted = $db->insertObject('#__action_log_config', $class_extends_action_log_config);
+			}
+
+			// Create the joomla_plugin_group action log config object.
+			$joomla_plugin_group_action_log_config = new stdClass();
+			$joomla_plugin_group_action_log_config->id = null;
+			$joomla_plugin_group_action_log_config->type_title = 'JOOMLA_PLUGIN_GROUP';
+			$joomla_plugin_group_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_group';
+			$joomla_plugin_group_action_log_config->id_holder = 'id';
+			$joomla_plugin_group_action_log_config->title_holder = 'name';
+			$joomla_plugin_group_action_log_config->table_name = '#__componentbuilder_joomla_plugin_group';
+			$joomla_plugin_group_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if joomla_plugin_group action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_plugin_group_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_plugin_group_action_log_config->id = $db->loadResult();
+				$joomla_plugin_group_action_log_config_Updated = $db->updateObject('#__action_log_config', $joomla_plugin_group_action_log_config, 'id');
+			}
+			else
+			{
+				$joomla_plugin_group_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_group_action_log_config);
+			}
+
+			// Create the joomla_plugin_updates action log config object.
+			$joomla_plugin_updates_action_log_config = new stdClass();
+			$joomla_plugin_updates_action_log_config->id = null;
+			$joomla_plugin_updates_action_log_config->type_title = 'JOOMLA_PLUGIN_UPDATES';
+			$joomla_plugin_updates_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_updates';
+			$joomla_plugin_updates_action_log_config->id_holder = 'id';
+			$joomla_plugin_updates_action_log_config->title_holder = 'joomla_plugin';
+			$joomla_plugin_updates_action_log_config->table_name = '#__componentbuilder_joomla_plugin_updates';
+			$joomla_plugin_updates_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if joomla_plugin_updates action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_plugin_updates_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_plugin_updates_action_log_config->id = $db->loadResult();
+				$joomla_plugin_updates_action_log_config_Updated = $db->updateObject('#__action_log_config', $joomla_plugin_updates_action_log_config, 'id');
+			}
+			else
+			{
+				$joomla_plugin_updates_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_updates_action_log_config);
+			}
+
+			// Create the joomla_plugin_files_folders_urls action log config object.
+			$joomla_plugin_files_folders_urls_action_log_config = new stdClass();
+			$joomla_plugin_files_folders_urls_action_log_config->id = null;
+			$joomla_plugin_files_folders_urls_action_log_config->type_title = 'JOOMLA_PLUGIN_FILES_FOLDERS_URLS';
+			$joomla_plugin_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_files_folders_urls';
+			$joomla_plugin_files_folders_urls_action_log_config->id_holder = 'id';
+			$joomla_plugin_files_folders_urls_action_log_config->title_holder = 'joomla_plugin';
+			$joomla_plugin_files_folders_urls_action_log_config->table_name = '#__componentbuilder_joomla_plugin_files_folders_urls';
+			$joomla_plugin_files_folders_urls_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if joomla_plugin_files_folders_urls action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_plugin_files_folders_urls_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_plugin_files_folders_urls_action_log_config->id = $db->loadResult();
+				$joomla_plugin_files_folders_urls_action_log_config_Updated = $db->updateObject('#__action_log_config', $joomla_plugin_files_folders_urls_action_log_config, 'id');
+			}
+			else
+			{
+				$joomla_plugin_files_folders_urls_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_files_folders_urls_action_log_config);
+			}
 		}
 		return true;
 	}
