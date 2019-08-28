@@ -846,8 +846,12 @@ class Get
 					// get the custom code from installed files
 					$this->customCodeFactory($paths, $today);
 				}
+				// Trigger Event: jcb_ce_onBeforeGetComponentData
+				$this->triggerEvent('jcb_ce_onBeforeGetComponentData', array(&$this->componentContext, $this));
 				// get the component data
 				$this->componentData = $this->getComponentData();
+				// Trigger Event: jcb_ce_onAfterGetComponentData
+				$this->triggerEvent('jcb_ce_onAfterGetComponentData', array(&$this->componentContext, $this));
 				// make sure we have a version
 				if (strpos($this->componentData->component_version, '.') === FALSE)
 				{
@@ -986,6 +990,8 @@ class Get
 		$bucket[$this->bbb . 'component' . $this->ddd] = $bucket[$this->hhh . 'component' . $this->hhh];
 		$bucket[$this->bbb . 'Component' . $this->ddd] = $bucket[$this->hhh . 'Component' . $this->hhh];
 		$bucket[$this->bbb . 'COMPONENT' . $this->ddd] = $bucket[$this->hhh . 'COMPONENT' . $this->hhh];
+		$bucket[$this->hhh . 'LANG_PREFIX' . $this->hhh] = $this->langPrefix;
+		$bucket[$this->bbb . 'LANG_PREFIX' . $this->ddd] = $bucket[$this->hhh . 'LANG_PREFIX' . $this->hhh];
 		// get the current components overides
 		if (($_placeholders = ComponentbuilderHelper::getVar('component_placeholders', $this->componentID, 'joomla_component', 'addplaceholders')) !== false
 			&&  ComponentbuilderHelper::checkJson($_placeholders))
@@ -4702,7 +4708,7 @@ class Get
 		// check if we should continue
 		if (ComponentbuilderHelper::checkArray($langStringTargets))
 		{
-			// test add an placeholder updater here
+			// insure string is not broken
 			$content = $this->setPlaceholders($content, $this->placeholders);
 			// reset some buckets
 			$langHolders = array();
@@ -4733,7 +4739,7 @@ class Get
 				// combine into one array
 				$scTEXT = ComponentbuilderHelper::mergeArrays($scTEXT);
 				// we need to add a check to insure these JavaScript lang matchup
-				if (ComponentbuilderHelper::checkArray($scTEXT)) //<-- not really needed hmmm
+				if (ComponentbuilderHelper::checkArray($scTEXT))
 				{
 					// load the Script text to match array
 					$langCheck[] = $scTEXT;
