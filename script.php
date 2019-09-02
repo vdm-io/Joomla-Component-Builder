@@ -7637,7 +7637,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.10.0 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.10.1 Was Successful! Let us know if anything is not working as expected.</h3>';
 
 			// Create the componentbuilder action logs extensions object.
 			$componentbuilder_action_logs_extensions = new stdClass();

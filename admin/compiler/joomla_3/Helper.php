@@ -308,14 +308,19 @@ abstract class ###Component###Helper
 	* @param  string   $views       The related list view name
 	* @param  mixed    $target      Only get this permission (like edit, create, delete)
 	* @param  string   $component   The target component
+	* @param  object   $user        The user whose permissions we are loading
 	*
 	* @return  object   The JObject of permission/authorised actions
 	* 
 	**/
-	public static function getActions($view, &$record = null, $views = null, $target = null, $component = '###component###')
+	public static function getActions($view, &$record = null, $views = null, $target = null, $component = '###component###', $user = 'null')
 	{
-		// get the user object
-		$user = JFactory::getUser();
+		// load the user if not given
+		if (!self::checkObject($user))
+		{
+			// get the user object
+			$user = JFactory::getUser();
+		}
 		// load the JObject
 		$result = new JObject;
 		// make view name safe (just incase)
