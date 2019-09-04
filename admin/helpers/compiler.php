@@ -93,16 +93,25 @@ class Compiler extends Infusion
 				$componentXML = str_replace(array('<files folder="site">' . $textToSite . "</files>", '<languages folder="site">' . $textToSiteLang . "</languages>"), array('', ''), $componentXML);
 				$this->writeFile($xmlPath, $componentXML);
 			}
+			// Trigger Event: jcb_ce_onBeforeUpdateFiles
+			$this->triggerEvent('jcb_ce_onBeforeUpdateFiles', array(&$this->componentContext, $this));
 			// now update the files
 			if (!$this->updateFiles())
 			{
 				return false;
 			}
+			// Trigger Event: jcb_ce_onBeforeGetCustomCode
+			$this->triggerEvent('jcb_ce_onBeforeGetCustomCode', array(&$this->componentContext, $this));
 			// now insert into the new files
 			if ($this->getCustomCode())
 			{
+				// Trigger Event: jcb_ce_onBeforeAddCustomCode
+				$this->triggerEvent('jcb_ce_onBeforeAddCustomCode', array(&$this->componentContext, $this));
+
 				$this->addCustomCode();
 			}
+			// Trigger Event: jcb_ce_onBeforeSetLangFileData
+			$this->triggerEvent('jcb_ce_onBeforeSetLangFileData', array(&$this->componentContext, $this));
 			// set the lang data now
 			$this->setLangFileData();
 			// set the language notice if it was set

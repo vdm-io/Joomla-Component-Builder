@@ -725,20 +725,6 @@ class Get
 	public $setTidyWarning = false;
 
 	/**
-	 * Tab/spacer bucket (to speed-up the build)
-	 * 
-	 * @var   array
-	 */
-	public $tabSpacerBucket = array();
-
-	/**
-	 * Set tab/spacer
-	 * 
-	 * @var   string
-	 */
-	public $tabSpacer = "\t";
-
-	/**
 	 * mysql table setting keys
 	 * 
 	 * @var    array
@@ -894,14 +880,8 @@ class Get
 	 */
 	public function _t($nr)
 	{
-		// check if we already have the string
-		if (!isset($this->tabSpacerBucket[$nr]))
-		{
-			// get the string
-			$this->tabSpacerBucket[$nr] = str_repeat($this->tabSpacer, (int) $nr);
-		}
-		// return stored string
-		return $this->tabSpacerBucket[$nr];
+		// use global method for conformity
+		return ComponentbuilderHelper::_t($nr);
 	}
 
 	/**

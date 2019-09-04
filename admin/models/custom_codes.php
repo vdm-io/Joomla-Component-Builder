@@ -302,15 +302,18 @@ class ComponentbuilderModelCustom_codes extends JModelList
 	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getExportData($pks)
+	public function getExportData($pks, $user = null)
 	{
 		// setup the query
 		if (ComponentbuilderHelper::checkArray($pks))
 		{
-			// Set a value to know this is exporting method.
+			// Set a value to know this is exporting method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
 			$_export = true;
-			// Get the user object.
-			$user = JFactory::getUser();
+			// Get the user object if not set.
+			if (ComponentbuilderHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			// Create a new query object.
 			$db = JFactory::getDBO();
 			$query = $db->getQuery(true);

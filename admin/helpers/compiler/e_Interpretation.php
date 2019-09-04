@@ -9139,15 +9139,18 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(1) . " *";
 			$query .= PHP_EOL . $this->_t(1) . " * @return mixed  An array of data items on success, false on failure.";
 			$query .= PHP_EOL . $this->_t(1) . " */";
-			$query .= PHP_EOL . $this->_t(1) . "public function getExportData(\$pks)";
+			$query .= PHP_EOL . $this->_t(1) . "public function getExportData(\$pks, \$user = null)";
 			$query .= PHP_EOL . $this->_t(1) . "{";
 			$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " setup the query";
 			$query .= PHP_EOL . $this->_t(2) . "if (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkArray(\$pks))";
 			$query .= PHP_EOL . $this->_t(2) . "{";
-			$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set a value to know this is exporting method.";
+			$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set a value to know this is exporting method. (USE IN CUSTOM CODE TO ALTER OUTCOME)";
 			$query .= PHP_EOL . $this->_t(3) . "\$_export = true;";
-			$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Get the user object.";
-			$query .= PHP_EOL . $this->_t(3) . "\$user = JFactory::getUser();";
+			$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Get the user object if not set.";
+			$query .= PHP_EOL . $this->_t(3) . "if (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkObject(\$user))";
+			$query .= PHP_EOL . $this->_t(3) . "{";
+			$query .= PHP_EOL . $this->_t(4) . "\$user = JFactory::getUser();";
+			$query .= PHP_EOL . $this->_t(3) . "}";
 			$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Create a new query object.";
 			$query .= PHP_EOL . $this->_t(3) . "\$db = JFactory::getDBO();";
 			$query .= PHP_EOL . $this->_t(3) . "\$query = \$db->getQuery(true);";
@@ -16103,93 +16106,133 @@ function vdm_dkim() {
 					$w_NameList = $view['settings']->name;
 					$w_NameSingle = $view['settings']->name;
 				}
-				// set the title based on the name builder
-				switch ($nameBuilder)
+				// set title (only if not set already)
+				if (!isset($permission['title']) || !ComponentbuilderHelper::checkString($permission['title']))
 				{
-					case 'edit':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Edit';
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to edit the ' . $w_NameSingle;
-						break;
-					case 'edit___own':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Edit Own';
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to edit ' . $w_NameList . ' created by them';
-						break;
-					case 'edit___access':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Edit Access';
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to change the access of the ' . $w_NameList;
-						break;
-					case 'edit___state':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Edit State';
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to update the state of the ' . $w_NameSingle;
-						break;
-					case 'edit___created_by':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Edit Created By';
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to update the created by of the ' . $w_NameList;
-						break;
-					case 'edit___created':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Edit Created Date';
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to update the created date of the ' . $w_NameList;
-						break;
-					case 'create':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Create';
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to create ' . $w_NameList;
-						break;
-					case 'delete':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Delete';
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to delete ' . $w_NameList;
-						break;
-					case 'access':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Access';
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to access ' . $w_NameList;
-						break;
-					case 'export':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Export';
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to export ' . $w_NameList;
-						break;
-					case 'import':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Import';
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to import ' . $w_NameList;
-						break;
-					case 'version':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Edit Version';
-						// set edit description
-						$permission['description'] = ' Allows users in this group to edit versions of ' . $w_NameList;
-						break;
-					case 'batch':
-						// set edit title
-						$permission['title'] = $W_NameList . ' Batch Use';
-						// set edit description
-						$permission['description'] = ' Allows users in this group to use batch copy/update method of ' . $w_NameList;
-						break;
-					default:
-						// set edit title
-						$permission['title'] = $W_NameList . ' ' . ComponentbuilderHelper::safeString($customName, 'W');
-						// set edit description
-						$permission['description'] = ' Allows the users in this group to ' . ComponentbuilderHelper::safeString($customName, 'w') . ' of ' . $w_NameSingle;
-						break;
+					// set the title based on the name builder
+					switch ($nameBuilder)
+					{
+						case 'edit':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Edit';
+							break;
+						case 'edit___own':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Edit Own';
+							break;
+						case 'edit___access':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Edit Access';
+							break;
+						case 'edit___state':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Edit State';
+							break;
+						case 'edit___created_by':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Edit Created By';
+							break;
+						case 'edit___created':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Edit Created Date';
+							break;
+						case 'create':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Create';
+							break;
+						case 'delete':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Delete';
+							break;
+						case 'access':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Access';
+							break;
+						case 'export':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Export';
+							break;
+						case 'import':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Import';
+							break;
+						case 'version':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Edit Version';
+							break;
+						case 'batch':
+							// set edit title
+							$permission['title'] = $W_NameList . ' Batch Use';
+							break;
+						default:
+							// set edit title
+							$permission['title'] = $W_NameList . ' ' . ComponentbuilderHelper::safeString($customName, 'W');
+							break;
+					}
+				}
+				// set description (only if not set already)
+				if (!isset($permission['description']) || !ComponentbuilderHelper::checkString($permission['description']))
+				{
+					// set the title based on the name builder
+					switch ($nameBuilder)
+					{
+						case 'edit':
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to edit the ' . $w_NameSingle;
+							break;
+						case 'edit___own':
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to edit ' . $w_NameList . ' created by them';
+							break;
+						case 'edit___access':
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to change the access of the ' . $w_NameList;
+							break;
+						case 'edit___state':
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to update the state of the ' . $w_NameSingle;
+							break;
+						case 'edit___created_by':
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to update the created by of the ' . $w_NameList;
+							break;
+						case 'edit___created':
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to update the created date of the ' . $w_NameList;
+							break;
+						case 'create':
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to create ' . $w_NameList;
+							break;
+						case 'delete':
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to delete ' . $w_NameList;
+							break;
+						case 'access':
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to access ' . $w_NameList;
+							break;
+						case 'export':
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to export ' . $w_NameList;
+							break;
+						case 'import':
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to import ' . $w_NameList;
+							break;
+						case 'version':
+							// set edit description
+							$permission['description'] = ' Allows users in this group to edit versions of ' . $w_NameList;
+							break;
+						case 'batch':
+							// set edit description
+							$permission['description'] = ' Allows users in this group to use batch copy/update method of ' . $w_NameList;
+							break;
+						default:
+							// set edit description
+							$permission['description'] = ' Allows the users in this group to ' . ComponentbuilderHelper::safeString($customName, 'w') . ' of ' . $w_NameSingle;
+							break;
+					}
 				}
 				// if core is not used update all core strings
 				$coreCheck = explode('.', $action);

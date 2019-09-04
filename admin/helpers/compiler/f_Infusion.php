@@ -1172,6 +1172,7 @@ class Infusion extends Interpretation
 	 */
 	public function setLangFileData()
 	{
+		// reset values
 		$values = array();
 		$mainLangLoader = array();
 		// check the admin lang is set

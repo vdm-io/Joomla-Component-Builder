@@ -3938,7 +3938,7 @@ class com_componentbuilderInstallerScript
 		}
 
 
-		/// Remove Componentbuilder from the action_logs_extensions table
+		// Remove Componentbuilder from the action_logs_extensions table
 		$componentbuilder_action_logs_extensions = array( $db->quoteName('extension') . ' = ' . $db->quote('com_componentbuilder') );
 		// Create a new query object.
 		$query = $db->getQuery(true);
