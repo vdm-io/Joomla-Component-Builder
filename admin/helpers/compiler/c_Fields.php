@@ -947,7 +947,7 @@ class Fields extends Structure
 			$this->fieldCount++;
 		}
 		// load the dynamic fields now
-		if (count($dynamicFieldsXML))
+		if (count((array) $dynamicFieldsXML))
 		{
 			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Dynamic Fields.");
 			foreach ($dynamicFieldsXML as $dynamicfield)
@@ -2331,7 +2331,7 @@ class Fields extends Structure
 	 * @param   string   $langLabel         The language string for field label
 	 * @param   string   $langView          The language string of the view
 	 * @param   string   $view_name_list    The list view name
-	 * @param   string   $view_name_single  The singel view name
+	 * @param   string   $view_name_single  The single view name
 	 * @param   array    $placeholders      The place holder and replace values
 	 * @param   boolean  $repeatable        The repeatable field switch
 	 *
@@ -2657,7 +2657,7 @@ class Fields extends Structure
 	 *
 	 * @param   string   $langLabel         The language string for field label
 	 * @param   string   $langView          The language string of the view
-	 * @param   string   $view_name_single  The singel view name
+	 * @param   string   $view_name_single  The single view name
 	 * @param   string   $view_name_list    The list view name
 	 * @param   string   $name              The field name
 	 * @param   array    $view              The view data
@@ -3073,7 +3073,7 @@ class Fields extends Structure
 				// so we have name spacing in custom field type name
 				$dotTypeArray = explode('.', $data['type']);
 				// set the J prefix
-				if (count($dotTypeArray) > 1)
+				if (count((array) $dotTypeArray) > 1)
 				{
 					$jprefix = strtoupper(array_shift($dotTypeArray));
 				}

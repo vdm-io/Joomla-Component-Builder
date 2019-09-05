@@ -174,7 +174,7 @@ class Compiler extends Infusion
 				if (isset($mismatch) && ComponentbuilderHelper::checkArray($mismatch))
 				{
 					$this->app->enqueueMessage(JText::_('<hr /><h3>Language Warning</h3>'), 'Warning');
-					if (count($mismatch) > 1)
+					if (count((array) $mismatch) > 1)
 					{
 						$this->app->enqueueMessage(JText::_('<h3>Please check the following mismatching Joomla.JText language constants.</h3>'), 'Warning');
 					}
@@ -742,7 +742,7 @@ class Compiler extends Infusion
 							// we musk keep last three lines to dynamic find target entry
 							$fingerPrint[$lineNumber] = trim($lineContent);
 							// check lines each time if it fits our target
-							if (count($fingerPrint) === $sizeEnd && !$foundEnd)
+							if (count((array) $fingerPrint) === $sizeEnd && !$foundEnd)
 							{
 								$fingerTest = md5(implode('', $fingerPrint));
 								if ($fingerTest === $hashEnd)
@@ -766,7 +766,7 @@ class Compiler extends Infusion
 						// we musk keep last three lines to dynamic find target entry
 						$fingerPrint[$lineNumber] = trim($lineContent);
 						// check lines each time if it fits our target
-						if (count($fingerPrint) === $size && !$found)
+						if (count((array) $fingerPrint) === $size && !$found)
 						{
 							$fingerTest = md5(implode('', $fingerPrint));
 							if ($fingerTest === $hash)

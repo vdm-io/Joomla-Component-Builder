@@ -843,7 +843,7 @@ class Structure extends Get
 		{
 			// set the default view
 			$getter = explode('_', $this->componentData->dashboard);
-			if (count($getter) == 2 && is_numeric($getter[1]))
+			if (count((array) $getter) == 2 && is_numeric($getter[1]))
 			{
 				// the pointers
 				$t = ComponentbuilderHelper::safeString($getter[0], 'U');
@@ -1212,7 +1212,7 @@ class Structure extends Get
 							$this->app->enqueueMessage(JText::sprintf('A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folder/s are copied into the correct place when this componet is installed!'), 'Notice');
 						}
 					}
-					elseif (count($checker) == 2 && ComponentbuilderHelper::checkString($checker[0]))
+					elseif (count((array) $checker) == 2 && ComponentbuilderHelper::checkString($checker[0]))
 					{
 						$add_to_extra = false;
 						// set the target

@@ -219,9 +219,15 @@ class ComponentbuilderModelSnippets extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
+			// Get the user object if not set.
+			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			foreach ($items as $nr => &$item)
 			{
-				$access = (JFactory::getUser()->authorise('snippet.access', 'com_componentbuilder.snippet.' . (int) $item->id) && JFactory::getUser()->authorise('snippet.access', 'com_componentbuilder'));
+				// Remove items the user can't access.
+				$access = ($user->authorise('snippet.access', 'com_componentbuilder.snippet.' . (int) $item->id) && $user->authorise('snippet.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -327,6 +333,9 @@ class ComponentbuilderModelSnippets extends JModelList
 	/**
 	 * Method to get list export data.
 	 *
+	 * @param   array  $pks  The ids of the items to get
+	 * @param   JUser  $user  The user making the request
+	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
 	public function getExportData($pks, $user = null)
@@ -334,10 +343,10 @@ class ComponentbuilderModelSnippets extends JModelList
 		// setup the query
 		if (ComponentbuilderHelper::checkArray($pks))
 		{
-			// Set a value to know this is exporting method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
+			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
 			$_export = true;
 			// Get the user object if not set.
-			if (ComponentbuilderHelper::checkObject($user))
+			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
 			{
 				$user = JFactory::getUser();
 			}
@@ -373,7 +382,8 @@ class ComponentbuilderModelSnippets extends JModelList
 				{
 					foreach ($items as $nr => &$item)
 					{
-						$access = (JFactory::getUser()->authorise('snippet.access', 'com_componentbuilder.snippet.' . (int) $item->id) && JFactory::getUser()->authorise('snippet.access', 'com_componentbuilder'));
+						// Remove items the user can't access.
+						$access = ($user->authorise('snippet.access', 'com_componentbuilder.snippet.' . (int) $item->id) && $user->authorise('snippet.access', 'com_componentbuilder'));
 						if (!$access)
 						{
 							unset($items[$nr]);

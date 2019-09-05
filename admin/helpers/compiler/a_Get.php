@@ -922,7 +922,7 @@ class Get
 			$results = $dispatcher->trigger($event, $data);
 
 			// Check for errors encountered while trigger the event
-			if (count($results) && in_array(false, $results, true))
+			if (count((array) $results) && in_array(false, $results, true))
 			{
 				// Get the last error.
 				$error = $dispatcher->getError();
@@ -3862,7 +3862,7 @@ class Get
 								$id_range = (array) array_map('trim', explode('=>', $id));
 								unset($id_array[$key]);
 								// build range
-								if (count($id_range) == 2)
+								if (count((array) $id_range) == 2)
 								{
 									$range = range($id_range[0], $id_range[1]);
 									$id_array_new = array_merge($id_array_new, $range);
@@ -5890,7 +5890,7 @@ class Get
 	 */
 	protected function setNewLangStrings($when = 1)
 	{
-		if (count($this->newLangStrings) >= $when)
+		if (count((array) $this->newLangStrings) >= $when)
 		{
 			// Create a new query object.
 			$query = $this->db->getQuery(true);
@@ -5902,7 +5902,7 @@ class Get
 			$query->columns($this->db->quoteName($columns));
 			foreach ($this->newLangStrings as $values)
 			{
-				if (count($values) == 7)
+				if (count((array) $values) == 7)
 				{
 					$query->values(implode(',', $values));
 					$continue = true;
@@ -5934,7 +5934,7 @@ class Get
 	 */
 	protected function setExistingLangStrings($when = 1)
 	{
-		if (count($this->existingLangStrings) >= $when)
+		if (count((array) $this->existingLangStrings) >= $when)
 		{
 			foreach ($this->existingLangStrings as $values)
 			{
@@ -6663,7 +6663,7 @@ class Get
 	 */
 	protected function setNewCustomCode($when = 1)
 	{
-		if (count($this->newCustomCode) >= $when)
+		if (count((array) $this->newCustomCode) >= $when)
 		{
 			// Create a new query object.
 			$query = $this->db->getQuery(true);
@@ -6675,7 +6675,7 @@ class Get
 			$query->columns($this->db->quoteName($columns));
 			foreach ($this->newCustomCode as $values)
 			{
-				if (count($values) == 15)
+				if (count((array) $values) == 15)
 				{
 					$query->values(implode(',', $values));
 					$continue = true;
@@ -6707,7 +6707,7 @@ class Get
 	 */
 	protected function setExistingCustomCode($when = 1)
 	{
-		if (count($this->existingCustomCode) >= $when)
+		if (count((array) $this->existingCustomCode) >= $when)
 		{
 			foreach ($this->existingCustomCode as $code)
 			{
@@ -6903,7 +6903,7 @@ class Get
 						}
 					}
 					// check if the endfingerprint is ready to save
-					if (count($endFingerPrint) === 3)
+					if (count((array) $endFingerPrint) === 3)
 					{
 						$hashendtarget = '3__' . md5(implode('', $endFingerPrint));
 						// all new records we can do a bulk insert
@@ -7045,15 +7045,15 @@ class Get
 				}
 			}
 			// make sure only a few lines is kept at a time
-			if (count($fingerPrint) > 10)
+			if (count((array) $fingerPrint) > 10)
 			{
 				$fingerPrint = array_slice($fingerPrint, -6, 6, true);
 			}
 		}
 		// if the code is at the end of the page and there were not three more lines
-		if (count($endFingerPrint) > 0 || $loadEndFingerPrint)
+		if (count((array) $endFingerPrint) > 0 || $loadEndFingerPrint)
 		{
-			if (count($endFingerPrint) > 0)
+			if (count((array) $endFingerPrint) > 0)
 			{
 				$leng = count($endFingerPrint);
 				$hashendtarget = $leng . '__' . md5(implode('', $endFingerPrint));

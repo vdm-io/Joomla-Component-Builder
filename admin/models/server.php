@@ -247,9 +247,15 @@ class ComponentbuilderModelServer extends JModelAdmin
 			// set values to display correctly.
 			if (ComponentbuilderHelper::checkArray($items))
 			{
+				// Get the user object if not set.
+				if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+				{
+					$user = JFactory::getUser();
+				}
 				foreach ($items as $nr => &$item)
 				{
-					$access = (JFactory::getUser()->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && JFactory::getUser()->authorise('joomla_component.access', 'com_componentbuilder'));
+					// Remove items the user can't access.
+					$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
 					if (!$access)
 					{
 						unset($items[$nr]);

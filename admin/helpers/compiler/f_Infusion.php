@@ -475,7 +475,7 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$viewName_list][$this->hhh . 'LISTQUERY' . $this->hhh] = $this->setListQuery($viewName_single, $viewName_list);
 
 					// MODELEXPORTMETHOD <<<DYNAMIC>>>
-					$this->fileContentDynamic[$viewName_list][$this->hhh . 'MODELEXPORTMETHOD' . $this->hhh] = $this->setModelExportMethod($viewName_single, $viewName_list);
+					$this->fileContentDynamic[$viewName_list][$this->hhh . 'MODELEXPORTMETHOD' . $this->hhh] = $this->setGetItemsModelMethod($viewName_single, $viewName_list);
 
 					// MODELEXIMPORTMETHOD <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_list][$this->hhh . 'CONTROLLEREXIMPORTMETHOD' . $this->hhh] = $this->setControllerEximportMethod($viewName_single, $viewName_list);

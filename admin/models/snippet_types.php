@@ -93,9 +93,15 @@ class ComponentbuilderModelSnippet_types extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
+			// Get the user object if not set.
+			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			foreach ($items as $nr => &$item)
 			{
-				$access = (JFactory::getUser()->authorise('snippet_type.access', 'com_componentbuilder.snippet_type.' . (int) $item->id) && JFactory::getUser()->authorise('snippet_type.access', 'com_componentbuilder'));
+				// Remove items the user can't access.
+				$access = ($user->authorise('snippet_type.access', 'com_componentbuilder.snippet_type.' . (int) $item->id) && $user->authorise('snippet_type.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);

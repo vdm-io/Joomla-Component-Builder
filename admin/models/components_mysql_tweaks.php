@@ -87,9 +87,15 @@ class ComponentbuilderModelComponents_mysql_tweaks extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
+			// Get the user object if not set.
+			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			foreach ($items as $nr => &$item)
 			{
-				$access = (JFactory::getUser()->authorise('component_mysql_tweaks.access', 'com_componentbuilder.component_mysql_tweaks.' . (int) $item->id) && JFactory::getUser()->authorise('component_mysql_tweaks.access', 'com_componentbuilder'));
+				// Remove items the user can't access.
+				$access = ($user->authorise('component_mysql_tweaks.access', 'com_componentbuilder.component_mysql_tweaks.' . (int) $item->id) && $user->authorise('component_mysql_tweaks.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);

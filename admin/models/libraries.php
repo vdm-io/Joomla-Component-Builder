@@ -101,17 +101,23 @@ class ComponentbuilderModelLibraries extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
+			// Get the user object if not set.
+			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			foreach ($items as $nr => &$item)
 			{
-				$access = (JFactory::getUser()->authorise('library.access', 'com_componentbuilder.library.' . (int) $item->id) && JFactory::getUser()->authorise('library.access', 'com_componentbuilder'));
+				// Remove items the user can't access.
+				$access = ($user->authorise('library.access', 'com_componentbuilder.library.' . (int) $item->id) && $user->authorise('library.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
 					continue;
 				}
 
-  				// convert how
-  				$item->how = $this->selectionTranslation($item->how, 'how');
+				// convert how
+				$item->how = $this->selectionTranslation($item->how, 'how');
 
 
 			}

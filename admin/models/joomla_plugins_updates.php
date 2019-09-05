@@ -87,9 +87,15 @@ class ComponentbuilderModelJoomla_plugins_updates extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
+			// Get the user object if not set.
+			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			foreach ($items as $nr => &$item)
 			{
-				$access = (JFactory::getUser()->authorise('joomla_plugin_updates.access', 'com_componentbuilder.joomla_plugin_updates.' . (int) $item->id) && JFactory::getUser()->authorise('joomla_plugin_updates.access', 'com_componentbuilder'));
+				// Remove items the user can't access.
+				$access = ($user->authorise('joomla_plugin_updates.access', 'com_componentbuilder.joomla_plugin_updates.' . (int) $item->id) && $user->authorise('joomla_plugin_updates.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);

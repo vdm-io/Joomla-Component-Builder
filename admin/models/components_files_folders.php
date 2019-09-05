@@ -87,9 +87,15 @@ class ComponentbuilderModelComponents_files_folders extends JModelList
 		// set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
+			// Get the user object if not set.
+			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			foreach ($items as $nr => &$item)
 			{
-				$access = (JFactory::getUser()->authorise('component_files_folders.access', 'com_componentbuilder.component_files_folders.' . (int) $item->id) && JFactory::getUser()->authorise('component_files_folders.access', 'com_componentbuilder'));
+				// Remove items the user can't access.
+				$access = ($user->authorise('component_files_folders.access', 'com_componentbuilder.component_files_folders.' . (int) $item->id) && $user->authorise('component_files_folders.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);

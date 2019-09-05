@@ -1826,7 +1826,7 @@ abstract class ComponentbuilderHelper
 			$field = $db->loadObject();
 			// load the values form params
 			$field->xml = json_decode($field->xml);
-			$field->type_name = self::safeString($field->type_name);
+			$field->type_name = self::safeTypeName($field->type_name);
 			$load = true;
 			// if category then name must be catid (only one per view)
 			if ($field->type_name == 'category')
@@ -5601,7 +5601,7 @@ abstract class ComponentbuilderHelper
 				}
 			}
 			// check if there are any view values remaining
-			if (count($_result))
+			if (count((array) $_result))
 			{
 				$_result = json_encode($_result);
 				$_result = array($_result);
