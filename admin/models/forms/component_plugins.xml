@@ -120,6 +120,23 @@
 					default="0"
 					button="false"
 				/>
+				<!-- Target Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="target"
+					label="COM_COMPONENTBUILDER_COMPONENT_PLUGINS_TARGET_LABEL"
+					description="COM_COMPONENTBUILDER_COMPONENT_PLUGINS_TARGET_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					default="0">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_COMPONENT_PLUGINS_COMPILE_ONLY</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_COMPONENT_PLUGINS_EXPORT_ONLY</option>
+					<option value="0">
+						COM_COMPONENTBUILDER_COMPONENT_PLUGINS_COMPILE_AMP_EXPORT</option>
+				</field>
 			</form>
 		</field>
 		<!-- Note_on_joomla_plugins Field. Type: Note. A None Database Field. (joomla) -->

@@ -3212,13 +3212,14 @@ class ComponentbuilderModelAjax extends JModelList
 		{
 			// secure path
 			$path = ComponentbuilderHelper::safeString(str_replace('.json','',$path), 'filename', '', false).'.json';
+			// base path
+			$base_path = basename($path);
 			// set url
-			$url = ComponentbuilderHelper::$snippetPath.rawurlencode(basename($path));
+			$url = ComponentbuilderHelper::$snippetPath.rawurlencode($base_path);
 			// get the snippets
-			$snippet = ComponentbuilderHelper::getFileContents($url);
-			if (ComponentbuilderHelper::checkJson($snippet))
+			if (($snippet = ComponentbuilderHelper::getGithubRepoData('lib_snippet_' . $base_path, $url)) !== false)
 			{
-				return $this->saveSnippet(json_decode($snippet, true), $status, $user);
+				return $this->saveSnippet($snippet, $status, $user);
 			}
 			return array('message' => JText::_('COM_COMPONENTBUILDER_ERROR_THE_PATH_HAS_A_MISMATCH_AND_COULD_THEREFORE_NOT_RETRIEVE_THE_SNIPPET_FROM_GITHUB'), 'status' => 'danger');
 		}

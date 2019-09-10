@@ -67,6 +67,21 @@
 			folder="extension"
 			filter="cmd"
 		/>
+		<!-- Github_access_token Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="github_access_token"
+			label="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_LABEL"
+			size="128"
+			maxlength="128"
+			description="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_DESCRIPTION"
+			class="text_area full-width"
+			required="false"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_HINT"
+			autocomplete="off"
+		/>
 		<!-- Spacer_hr_one Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_one" hr="true" class="spacer_hr_one" />
 		<!-- Manage_jcb_package_directories Field. Type: Radio. (joomla) -->

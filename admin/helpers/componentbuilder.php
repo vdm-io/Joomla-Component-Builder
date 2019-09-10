@@ -12,6 +12,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Componentbuilder component helper.
  */
@@ -61,23 +63,20 @@ abstract class ComponentbuilderHelper
 	/**
 	* The VDM packages paths
 	**/
-	public static $vdmGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Packages/git/trees/master";
 	public static $vdmGithubPackageUrl = "https://github.com/vdm-io/JCB-Packages/raw/master/";
+	public static $vdmGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Packages/git/trees/master";
 
 	/**
 	* The JCB packages paths
 	**/
-	public static $jcbGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Community-Packages/git/trees/master";
 	public static $jcbGithubPackageUrl = "https://github.com/vdm-io/JCB-Community-Packages/raw/master/";
+	public static $jcbGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Community-Packages/git/trees/master";
 
 	/**
 	* The bolerplate paths
 	**/
 	public static $bolerplatePath = 'https://raw.githubusercontent.com/vdm-io/boilerplate/jcb/';
 	public static $bolerplateAPI = 'https://api.github.com/repos/vdm-io/boilerplate/git/trees/jcb';
-
-	// not needed at this time (maybe latter)
-	public static $accessToken = "";
 
 	/**
 	 * The array of constant paths
@@ -2413,66 +2412,163 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	*	get the github repo file list
-	*
-	*	@return  array on success
-	* 
-	*/
+	* The github access token
+	**/
+	protected static $gitHubAccessToken = "";
+
+	/**
+	* The github repo get data errors
+	**/
+	public static $githubRepoDataErrors = array();
+
+	/**
+	 * get the github repo file list
+	 *
+	 * @return  array on success
+	 * 
+	 */
 	public static function getGithubRepoFileList($type, $target)
 	{
-		// get the current Packages (public)
-		if (!$repoData = self::get($type))
+		// get the repo data
+		if (($repoData = self::getGithubRepoData($type, $target, 'tree')) !== false)
 		{
-			if (self::urlExists($target))
-			{
-				$repoData = self::getFileContents($target);
-				if (self::checkJson($repoData))
-				{
-					$test = json_decode($repoData);
-					if (self::checkObject($test) && isset($test->tree) && self::checkArray($test->tree) )
-					{
-						// remember to set it
-						self::set($type, $repoData);
-					}
-					// check if we have error message from github
-					elseif ($errorMessage = self::githubErrorHandeler(array('error' => null), $test))
-					{
-						if (self::checkString($errorMessage['error']))
-						{
-							JFactory::getApplication()->enqueueMessage($errorMessage['error'], 'Error');
-						}
-						$repoData = false;
-					}
-				}
-				else
-				{
-					$repoData = false;
-				}
-			}
-			else
-			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DOES_NOT_EXIST', $target), 'Error');
-			}
-		}
-		// check if we could find packages
-		if (isset($repoData) && self::checkJson($repoData))
-		{
-			$repoData = json_decode($repoData);
-			if (self::checkObject($repoData) && isset($repoData->tree) && self::checkArray($repoData->tree) )
-			{
-				return $repoData->tree;
-			}
+			return $repoData->tree;
 		}
 		return false;
 	}
 
 	/**
-	*	get the github error messages
-	*
-	*	@return  array of errors on success
-	* 
-	*/
-	protected static function githubErrorHandeler($message, &$github)
+	 * get the github repo file list
+	 *
+	 * @return  array on success
+	 * 
+	 */
+	public static function getGithubRepoData($type, $url, $target = null, $return_type = 'object')
+	{
+		// always reset errors per/request
+		self::$githubRepoDataErrors = array();
+		// get the current Packages (public)
+		if ('nomemory' === $type || !$repoData = self::get($type))
+		{
+			// add the token if not already added
+			$_url = self::setGithubToken($url);
+			// check if the url exist
+			if (self::urlExists($_url))
+			{
+				// get the data from github
+				if (($repoData = self::getFileContents($_url)) !== false && self::checkJson($repoData))
+				{
+					$github_returned = json_decode($repoData);
+					if (self::checkString($target) && self::checkObject($github_returned) &&
+						isset($github_returned->{$target}) && self::checkArray($github_returned->{$target}) )
+					{
+						if ('nomemory' !== $type)
+						{
+							// remember to set it
+							self::set($type, $repoData);
+						}
+					}
+					elseif (!self::checkString($target) && self::checkObject($github_returned) && !isset($github_returned->message))
+					{
+						if ('nomemory' !== $type)
+						{
+							// remember to set it
+							self::set($type, $repoData);
+						}
+					}
+					// check if we have error message from github
+					elseif (($errorMessage = self::githubErrorHandeler(array('error' => null), $github_returned, $type)) !== false)
+					{
+						if (isset($errorMessage['error']) && self::checkString($errorMessage['error']))
+						{
+							// set the error in the application
+							JFactory::getApplication()->enqueueMessage($errorMessage['error'], 'Error');
+							// set the error also in the class encase it is and Ajax call
+							self::$githubRepoDataErrors[] = $errorMessage['error'];
+						}
+						return false;
+					}
+					elseif (self::checkString($target))
+					{
+						// setup error string
+						$error = JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DID_NOT_RETURN_S_DATA', $url, $target);
+						// set the error in the application
+						JFactory::getApplication()->enqueueMessage($error, 'Error');
+						// set the error also in the class encase it is and Ajax call
+						self::$githubRepoDataErrors[] = $error;
+						// we are done here
+						return false;
+					}
+					elseif ('nomemory' !== $type)
+					{
+						// setup error string
+						$error = JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DID_NOT_RETURN_S_DATA', $url, $type);
+						// set the error in the application
+						JFactory::getApplication()->enqueueMessage($error, 'Error');
+						// set the error also in the class encase it is and Ajax call
+						self::$githubRepoDataErrors[] = $error;
+						// we are done here
+						return false;
+					}
+					else
+					{
+						// setup error string
+						$error = JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DID_NOT_RETURN_VALID_DATA', $url, $type);
+						// set the error in the application
+						JFactory::getApplication()->enqueueMessage($error, 'Error');
+						// set the error also in the class encase it is and Ajax call
+						self::$githubRepoDataErrors[] = $error;
+						// we are done here
+						return false;
+					}
+				}
+				else
+				{
+					// setup error string
+					$error = JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DOES_NOT_RETURN_ANY_DATA', $url);
+					// set the error in the application
+					JFactory::getApplication()->enqueueMessage($error, 'Error');
+					// set the error also in the class encase it is and Ajax call
+					self::$githubRepoDataErrors[] = $error;
+					// we are done here
+					return false;
+				}
+			}
+			else
+			{
+				// setup error string
+				$error = JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DOES_NOT_EXIST', $url);
+				// set the error in the application
+				JFactory::getApplication()->enqueueMessage($error, 'Error');
+				// set the error also in the class encase it is and Ajax call
+				self::$githubRepoDataErrors[] = $error;
+				// we are done here
+				return false;
+			}
+		}
+		// check if we could find packages
+		if (isset($repoData) && self::checkJson($repoData))
+		{
+			if ('object' === $return_type)
+			{
+				return json_decode($repoData);
+			}
+			elseif ('array' === $return_type)
+			{
+				return json_decode($repoData, true);
+			}
+			return $repoData;
+		}
+		return false;
+	}
+
+	/**
+	 * get the github error messages
+	 *
+	 * @return  array of errors on success
+	 * 
+	 */
+	protected static function githubErrorHandeler($message, &$github, $type)
 	{
 		if (self::checkObject($github) && isset($github->message) && self::checkString($github->message))
 		{
@@ -2481,13 +2577,17 @@ abstract class ComponentbuilderHelper
 			// add the documentation URL
 			if (isset($github->documentation_url) && self::checkString($github->documentation_url))
 			{
-				$errorMessage = $errorMessage.'<br />'.$github->documentation_url;
+				$errorMessage = $errorMessage . '<br />' . $github->documentation_url;
 			}
 			// check the message
 			if (strpos($errorMessage, 'Authenticated') !== false)
 			{
+				if ('nomemory' === $type)
+				{
+					$type = 'data';
+				}
 				// add little more help if it is an access token issue
-				$errorMessage = JText::sprintf('COM_COMPONENTBUILDER_SBR_YOU_CAN_ADD_AN_BACCESS_TOKENB_TO_GETBIBLE_GLOBAL_OPTIONS_TO_MAKE_AUTHENTICATED_REQUESTS_AN_ACCESS_TOKEN_WITH_ONLY_PUBLIC_ACCESS_WILL_DO', $errorMessage);
+				$errorMessage = JText::sprintf('COM_COMPONENTBUILDER_SBR_YOU_CAN_ADD_A_BGITHUB_ACCESS_TOKENB_TO_COMPONENTBUILDER_GLOBAL_OPTIONS_TO_MAKE_AUTHENTICATED_REQUESTS_TO_GITHUB_AN_ACCESS_TOKEN_WITH_ONLY_PUBLIC_ACCESS_WILL_DO_TO_RETRIEVE_S', $errorMessage, $type);
 			}
 			// set error notice
 			$message['error'] = $errorMessage;
@@ -2495,6 +2595,36 @@ abstract class ComponentbuilderHelper
 			return $message;
 		}
 		return false;
+	}
+
+	/**
+	 * set the github token
+	 *
+	 * @return  array of errors on success
+	 * 
+	 */
+	protected static function setGithubToken($url)
+	{
+		// first check if token already set
+		if (strpos($url, 'access_token=') !== false)
+		{
+			// make sure the token is loaded
+			if (!self::checkString(self::$gitHubAccessToken))
+			{
+				// get the global settings
+				if (!self::checkObject(self::$params))
+				{
+					self::$params = JComponentHelper::getParams('com_componentbuilder');
+				}
+				self::$gitHubAccessToken = self::$params->get('github_access_token', null);
+			}
+			// make sure the token is loaded at this point
+			if (self::checkString(self::$gitHubAccessToken))
+			{
+				$url .= '&access_token=' . self::$gitHubAccessToken;
+			}
+		}
+		return $url;
 	}
 
 

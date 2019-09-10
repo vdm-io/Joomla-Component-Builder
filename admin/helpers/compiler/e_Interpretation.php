@@ -9135,11 +9135,13 @@ class Interpretation extends Fields
 	 */
 	public function setGetItemsModelMethod($viewName_single, $viewName_list, $config = array('functionName' => 'getExportData', 'docDesc' => 'Method to get list export data.', 'type' => 'export'))
 	{
+		// start the query string
 		$query = '';
-		if ($this->eximportView[$viewName_list] || 'export' !== $config['type'])
+		// check if this is the export method
+		$isExport = ('export' === $config['type']);
+		// check if this view has export feature, and or if this is not an export method
+		if ((isset($this->eximportView[$viewName_list]) && $this->eximportView[$viewName_list]) || !$isExport)
 		{
-			$isExport = ('export' === $config['type']);
-
 			$query = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
 			$query .= PHP_EOL . $this->_t(1) . " * " . $config['docDesc'];
 			$query .= PHP_EOL . $this->_t(1) . " *";
@@ -9170,6 +9172,25 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(3) . "\$query->where('a.id IN (' . implode(',',\$pks) . ')');";
 			// add custom filtering php
 			$query .= $this->getCustomScriptBuilder('php_getlistquery', $viewName_single, PHP_EOL . PHP_EOL . $this->_t(1));
+			// first check if we export of text only is avalable
+			if ($this->exportTextOnly)
+			{
+				// add switch
+				$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Get global switch to activate text only export";
+				$query .= PHP_EOL . $this->_t(3) . "\$export_text_only = JComponentHelper::getParams('com_" . $this->componentCodeName . "')->get('export_text_only', 0);";
+				// first check if we have custom queries
+				$custom_query = $this->setCustomQuery($viewName_list, $viewName_single, $this->_t(2), true);
+			}
+			// if values were returned add the area
+			if (isset($custom_query) && ComponentbuilderHelper::checkString($custom_query))
+			{
+				$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Add these queries only if text only is required";
+				$query .= PHP_EOL . $this->_t(3) . "if (\$export_text_only)";
+				$query .= PHP_EOL . $this->_t(3) . "{";
+				// add the custom fields query
+				$query .= $custom_query;
+				$query .= PHP_EOL . $this->_t(3) . "}";
+			}
 			// add access levels if the view has access set
 			if (isset($this->accessBuilder[$viewName_single]) && ComponentbuilderHelper::checkString($this->accessBuilder[$viewName_single]))
 			{
@@ -9188,15 +9209,33 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(3) . "if (\$db->getNumRows())";
 			$query .= PHP_EOL . $this->_t(3) . "{";
 			$query .= PHP_EOL . $this->_t(4) . "\$items = \$db->loadObjectList();";
-			$query .= $this->setGetItemsMethodStringFix($viewName_single, $viewName_list, $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh], $this->_t(2), $isExport);
-			// add translations
-			if (!$isExport)
+			// set the string fixing code
+			$query .= $this->setGetItemsMethodStringFix($viewName_single, $viewName_list, $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh], $this->_t(2), $isExport, true);
+			// first check if we export of text only is avalable
+			if ($this->exportTextOnly)
 			{
-				$query .= $this->setSelectionTranslationFix($viewName_list, $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh], $this->_t(2));
+				$query_translations = $this->setSelectionTranslationFix($viewName_list, $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh], $this->_t(3));
+			}
+			// add translations
+			if (isset($query_translations) && ComponentbuilderHelper::checkString($query_translations))
+			{
+				$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Add these translation only if text only is required";
+				$query .= PHP_EOL . $this->_t(3) . "if (\$export_text_only)";
+				$query .= PHP_EOL . $this->_t(3) . "{";
+				$query .= $query_translations;
+				$query .= PHP_EOL . $this->_t(3) . "}";
 			}
 			// add custom php to getItems method after all
 			$query .= $this->getCustomScriptBuilder('php_getitems_after_all', $viewName_single, PHP_EOL . PHP_EOL . $this->_t(2));
-			$query .= PHP_EOL . $this->_t(4) . "return \$items;";
+			// in privacy export we must return array of arrays
+			if ('privacy' === $config['type'])
+			{
+				$query .= PHP_EOL . $this->_t(4) . "return json_decode(json_encode(\$items), true);";
+			}
+			else
+			{
+				$query .= PHP_EOL . $this->_t(4) . "return \$items;";
+			}
 			$query .= PHP_EOL . $this->_t(3) . "}";
 			$query .= PHP_EOL . $this->_t(2) . "}";
 			$query .= PHP_EOL . $this->_t(2) . "return false;";
@@ -9521,7 +9560,7 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setCustomQuery($viewName_list, $viewName_single)
+	public function setCustomQuery($viewName_list, $viewName_single, $tab = '', $just_text = false)
 	{
 		if (isset($this->customBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->customBuilder[$viewName_list]))
 		{
@@ -9529,11 +9568,20 @@ class Interpretation extends Fields
 			foreach ($this->customBuilder[$viewName_list] as $filter)
 			{
 				// only load this if table is set
-				if (isset($this->customBuilderList[$viewName_list]) && ComponentbuilderHelper::checkArray($this->customBuilderList[$viewName_list]) && in_array($filter['code'], $this->customBuilderList[$viewName_list]) && isset($filter['custom']['table']) && ComponentbuilderHelper::checkString($filter['custom']['table']) && $filter['method'] == 0)
+				if ((isset($this->customBuilderList[$viewName_list]) && ComponentbuilderHelper::checkArray($this->customBuilderList[$viewName_list]) && in_array($filter['code'], $this->customBuilderList[$viewName_list]) && isset($filter['custom']['table']) && ComponentbuilderHelper::checkString($filter['custom']['table']) && $filter['method'] == 0)
+					|| ($just_text && isset($filter['custom']['table']) && ComponentbuilderHelper::checkString($filter['custom']['table']) && $filter['method'] == 0))
 				{
-					$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " From the " . ComponentbuilderHelper::safeString(ComponentbuilderHelper::safeString($filter['custom']['table'], 'w')) . " table.";
-					$query .= PHP_EOL . $this->_t(2) . "\$query->select(\$db->quoteName('" . $filter['custom']['db'] . "." . $filter['custom']['text'] . "','" . $filter['code'] . "_" . $filter['custom']['text'] . "'));";
-					$query .= PHP_EOL . $this->_t(2) . "\$query->join('LEFT', \$db->quoteName('" . $filter['custom']['table'] . "', '" . $filter['custom']['db'] . "') . ' ON (' . \$db->quoteName('a." . $filter['code'] . "') . ' = ' . \$db->quoteName('" . $filter['custom']['db'] . "." . $filter['custom']['id'] . "') . ')');";
+					$query .= PHP_EOL . PHP_EOL . $this->_t(2) . $tab . "//" . $this->setLine(__LINE__) . " From the " . ComponentbuilderHelper::safeString(ComponentbuilderHelper::safeString($filter['custom']['table'], 'w')) . " table.";
+					// we want to at times just have the words and not the ids as well
+					if ($just_text)
+					{
+						$query .= PHP_EOL . $this->_t(2) . $tab . "\$query->select(\$db->quoteName('" . $filter['custom']['db'] . "." . $filter['custom']['text'] . "','" . $filter['code'] . "'));";
+					}
+					else
+					{
+						$query .= PHP_EOL . $this->_t(2) . $tab . "\$query->select(\$db->quoteName('" . $filter['custom']['db'] . "." . $filter['custom']['text'] . "','" . $filter['code'] . "_" . $filter['custom']['text'] . "'));";
+					}
+					$query .= PHP_EOL . $this->_t(2) . $tab . "\$query->join('LEFT', \$db->quoteName('" . $filter['custom']['table'] . "', '" . $filter['custom']['db'] . "') . ' ON (' . \$db->quoteName('a." . $filter['code'] . "') . ' = ' . \$db->quoteName('" . $filter['custom']['db'] . "." . $filter['custom']['id'] . "') . ')');";
 				}
 				// build the field type file
 				$this->setCustomFieldTypeFile($filter, $viewName_list, $viewName_single);
@@ -11804,7 +11852,7 @@ class Interpretation extends Fields
 		$allow[] = $this->_t(3) . "{";
 		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " We have to unset then (TODO)";
 		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Hiddend field can not handel array value";
-		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Even if we conver to json we get an error";
+		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Even if we convert to json we get an error";
 		$allow[] = $this->_t(4) . "\$form->removeField('" . $fieldName . "');";
 		$allow[] = $this->_t(3) . "}";
 		$allow[] = $this->_t(2) . "}";
@@ -12458,7 +12506,7 @@ class Interpretation extends Fields
 
 	public function setPopulateState(&$view)
 	{
-		// rest buket
+		// reset buket
 		$state = '';
 		// keep track of all fields already added
 		$donelist = array();
@@ -12665,11 +12713,12 @@ class Interpretation extends Fields
 		return $checkin;
 	}
 
-	public function setGetItemsMethodStringFix($viewName_single, $viewName_list, $Component, $tab = '', $export = false)
+	public function setGetItemsMethodStringFix($viewName_single, $viewName_list, $Component, $tab = '', $export = false, $all = false)
 	{
 		// add the fix if this view has the need for it
 		$fix = '';
 		$forEachStart = '';
+		$fix_access = '';
 		// encryption switches
 		foreach ($this->cryptionTypes as $cryptionType)
 		{
@@ -12686,21 +12735,22 @@ class Interpretation extends Fields
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.access']) && isset($this->permissionBuilder[$core['core.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.access']]) && in_array($viewName_single, $this->permissionBuilder[$core['core.access']]))
 		{
-			$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Remove items the user can't access.";
-			$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "\$access = (\$user->authorise('" . $core['core.access'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$item->id) && \$user->authorise('" . $core['core.access'] . "', 'com_" . $component . "'));";
-			$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "if (!\$access)";
-			$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "{";
-			$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(4) . "unset(\$items[\$nr]);";
-			$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(4) . "continue;";
-			$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "}" . PHP_EOL;
+			$fix_access = PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Remove items the user can't access.";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "\$access = (\$user->authorise('" . $core['core.access'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$item->id) && \$user->authorise('" . $core['core.access'] . "', 'com_" . $component . "'));";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "if (!\$access)";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "{";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(4) . "unset(\$items[\$nr]);";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(4) . "continue;";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "}" . PHP_EOL;
 		}
-		if (!$export)
+		// get the correct array
+		if ($export || $all)
 		{
-			$methodName = 'getItemsMethodListStringFixBuilder';
+			$methodName = 'getItemsMethodEximportStringFixBuilder';
 		}
 		else
 		{
-			$methodName = 'getItemsMethodEximportStringFixBuilder';
+			$methodName = 'getItemsMethodListStringFixBuilder';
 		}
 		// load the relations before modeling
 		if (isset($this->fieldRelations[$viewName_list]) && ComponentbuilderHelper::checkArray($this->fieldRelations[$viewName_list]))
@@ -12922,10 +12972,10 @@ class Interpretation extends Fields
 			}
 		}
 		// close the foreach if needed
-		if (ComponentbuilderHelper::checkString($fix) || $export)
+		if (ComponentbuilderHelper::checkString($fix) || ComponentbuilderHelper::checkString($fix_access) || $export || $all)
 		{
 			// start the loop
-			$forEachStart = PHP_EOL . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " set values to display correctly.";
+			$forEachStart = PHP_EOL . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Set values to display correctly.";
 			$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "if (" . $Component . "Helper::checkArray(\$items))";
 			$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "{";
 			// do not add to export since it is already done
@@ -12937,19 +12987,43 @@ class Interpretation extends Fields
 				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "\$user = JFactory::getUser();";
 				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "}";
 			}
+			// the permissional acttion switch
+			$hasPermissional = false;
 			// add the permissional removal of values the user has not right to view or access
-			if (isset($this->permissionFields[$viewName_single]) && ComponentbuilderHelper::checkArray($this->permissionFields[$viewName_single]))
+			if ($this->strictFieldExportPermissions && isset($this->permissionFields[$viewName_single]) && ComponentbuilderHelper::checkArray($this->permissionFields[$viewName_single]))
 			{
-				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . " -- get global permissional control activation. (default is inactive) ---";
-				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . "    to use this feature add a global option radio button to your";
-				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . "    component with a value of 1 as on/activate and 0 as inactive/off";
-				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . "    make sure it has the name: strict_permission_per_field";
-				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "\$strict_permission_per_field = JComponentHelper::getParams('com_" . $component . "')->get('strict_permission_per_field', 0);" . PHP_EOL;
+				foreach ($this->permissionFields[$viewName_single] as $fieldName => $permission_options)
+				{
+					if (!$hasPermissional)
+					{
+						foreach($permission_options as $permission_option => $fieldType)
+						{
+							if (!$hasPermissional)
+							{
+								switch ($permission_option)
+								{
+									case 'access':
+									case 'view':
+										$hasPermissional = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+				// add the notes and get the global switch
+				if ($hasPermissional)
+				{
+					$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get global permissional control activation. (default is inactive)";
+					$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "\$strict_permission_per_field = JComponentHelper::getParams('com_" . $component . "')->get('strict_permission_per_field', 0);" . PHP_EOL;
+				}
 			}
 			$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "foreach (\$items as \$nr => &\$item)";
 			$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "{";
+			// add the access options
+			$forEachStart .= $fix_access;
 			// add the permissional removal of values the user has not right to view or access
-			if (isset($this->permissionFields[$viewName_single]) && ComponentbuilderHelper::checkArray($this->permissionFields[$viewName_single]))
+			if ($hasPermissional)
 			{
 				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "//" . $this->setLine(__LINE__) . " use permissional control if globaly set.";
 				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "if (\$strict_permission_per_field)";

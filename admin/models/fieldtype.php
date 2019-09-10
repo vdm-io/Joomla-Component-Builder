@@ -264,7 +264,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 		{
 			$items = $db->loadObjectList();
 
-			// set values to display correctly.
+			// Set values to display correctly.
 			if (ComponentbuilderHelper::checkArray($items))
 			{
 				// Get the user object if not set.

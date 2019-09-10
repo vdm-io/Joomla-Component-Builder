@@ -90,7 +90,7 @@ class ComponentbuilderModelPlaceholders extends JModelList
 		// load parent items
 		$items = parent::getItems();
 
-		// set values to display correctly.
+		// Set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
 			// Get the user object if not set.
@@ -235,7 +235,7 @@ class ComponentbuilderModelPlaceholders extends JModelList
 			{
 				$items = $db->loadObjectList();
 
-				// set values to display correctly.
+				// Set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))
 				{
 					foreach ($items as $nr => &$item)

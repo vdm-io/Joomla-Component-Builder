@@ -310,7 +310,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 				$form[] = $sleutle;
 			}
 		}
-		elseif ('vdm_package' === $type && in_array('vdm', $this->directories) && $vdmListObjects = ComponentbuilderHelper::getGithubRepoFileList('vdmGithubPackages', ComponentbuilderHelper::$vdmGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
+		elseif ('vdm_package' === $type && in_array('vdm', $this->directories) && $vdmListObjects = ComponentbuilderHelper::getGithubRepoFileList('vdmGithubPackages', ComponentbuilderHelper::$vdmGithubPackagesUrl))
 		{
 			if (ComponentbuilderHelper::checkArray($vdmListObjects))
 			{
@@ -354,7 +354,7 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 				}
 			}
 		}
-		elseif ('jcb_package' === $type && in_array('jcb', $this->directories)  && $jcbListObjects = ComponentbuilderHelper::getGithubRepoFileList('communityGithubPackages', ComponentbuilderHelper::$jcbGithubPackagesUrl.ComponentbuilderHelper::$accessToken))
+		elseif ('jcb_package' === $type && in_array('jcb', $this->directories)  && $jcbListObjects = ComponentbuilderHelper::getGithubRepoFileList('communityGithubPackages', ComponentbuilderHelper::$jcbGithubPackagesUrl))
 		{
 			if (ComponentbuilderHelper::checkArray($jcbListObjects))
 			{

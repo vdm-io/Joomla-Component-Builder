@@ -61,6 +61,20 @@ class Get
 	public $params;
 
 	/**
+	 * Add strict field export permissions
+	 * 
+	 * @var     boolean
+	 */
+	public $strictFieldExportPermissions = false;
+
+	/**
+	 * Add text only export options
+	 * 
+	 * @var     boolean
+	 */
+	public $exportTextOnly = false;
+
+	/**
 	 * The global placeholders
 	 * 
 	 * @var     array
@@ -1665,7 +1679,12 @@ class Get
 		if (ComponentbuilderHelper::checkArray($component->addjoomla_plugins))
 		{
 			$joomla_plugins = array_map(function($array) use(&$component) {
-				return $this->setJoomlaPlugin($array['plugin'], $component);
+				// only load the plugins whose target association calles for it
+				if (!isset($array['target']) || $array['target'] != 2)
+				{
+					return $this->setJoomlaPlugin($array['plugin'], $component);
+				}
+				return null;
 			}, array_values($component->addjoomla_plugins));
 		}
 		unset($component->addjoomla_plugins);

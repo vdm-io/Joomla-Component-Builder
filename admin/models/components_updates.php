@@ -84,7 +84,7 @@ class ComponentbuilderModelComponents_updates extends JModelList
 		// load parent items
 		$items = parent::getItems();
 
-		// set values to display correctly.
+		// Set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
 			// Get the user object if not set.

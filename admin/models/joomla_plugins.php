@@ -45,28 +45,23 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 	public function getBoilerplate()
 	{
 		// get boilerplate repo root details
-		if (($result = ComponentbuilderHelper::getFileContents(ComponentbuilderHelper::$bolerplateAPI)) !== false && ComponentbuilderHelper::checkJson($result))
+		if (($repo_tree = ComponentbuilderHelper::getGithubRepoFileList('boilerplate', ComponentbuilderHelper::$bolerplateAPI)) !== false)
 		{
-			$result = json_decode($result);
-			// check if we have a three
-			if (isset($result->tree) && ComponentbuilderHelper::checkArray($result->tree))
-			{
-				$found = array_values(array_filter(
-					$result->tree,
-					function($tree) {
-						if (isset($tree->path) && $tree->path === 'plugins')
-						{
-							return true;
-						}
-						return false;
+			$found = array_values(array_filter(
+				$repo_tree,
+				function($tree) {
+					if (isset($tree->path) && $tree->path === 'plugins')
+					{
+						return true;
 					}
-				));
-				// make sure we have the correct boilerplate
-				if (ComponentbuilderHelper::checkArray($found) && count($found) == 1 && method_exists(__CLASS__, 'getPluginsBoilerplate'))
-				{
-					// get the plugins boilerplate
-					return $this->getPluginsBoilerplate($found[0]->url);
+					return false;
 				}
+			));
+			// make sure we have the correct boilerplate
+			if (ComponentbuilderHelper::checkArray($found) && count($found) == 1 && method_exists(__CLASS__, 'getPluginsBoilerplate'))
+			{
+				// get the plugins boilerplate
+				return $this->getPluginsBoilerplate($found[0]->url);
 			}
 		}
 		return false;
@@ -81,85 +76,80 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 	protected function getPluginsBoilerplate($url)
 	{
 		// get boilerplate root for plugins
-		if (($result = ComponentbuilderHelper::getFileContents($url)) !== false && ComponentbuilderHelper::checkJson($result))
+		if (($plugin_tree = ComponentbuilderHelper::getGithubRepoFileList('boilerplate_plugins', $url)) !== false)
 		{
-			$result = json_decode($result);
-			// check if we have a tree
-			if (isset($result->tree) && ComponentbuilderHelper::checkArray($result->tree))
-			{
-				// get the app object
-				$app = JFactory::getApplication();
-				// set the table names
-				$tables = array();
-				$tables['e'] = 'class_extends';
-				$tables['g'] = 'joomla_plugin_group';
-				$tables['m'] = 'class_method';
-				$tables['p'] = 'class_property';
-				// load the needed models
-				$models = array();
-				$models['e'] = ComponentbuilderHelper::getModel($tables['e']);
-				$models['g'] = ComponentbuilderHelper::getModel($tables['g']);
-				$models['p'] = ComponentbuilderHelper::getModel($tables['p']);
-				$models['m'] = ComponentbuilderHelper::getModel($tables['m']);
-				// get the needed data of each plugin group
-				$groups = array_map(
-					function($tree) use(&$app, &$models, &$tables){
-						if (($fooClass = ComponentbuilderHelper::getFileContents(ComponentbuilderHelper::$bolerplatePath . '/plugins/' . $tree->path . '/foo.php')) !== false && ComponentbuilderHelper::checkString($fooClass))
+			// get the app object
+			$app = JFactory::getApplication();
+			// set the table names
+			$tables = array();
+			$tables['e'] = 'class_extends';
+			$tables['g'] = 'joomla_plugin_group';
+			$tables['m'] = 'class_method';
+			$tables['p'] = 'class_property';
+			// load the needed models
+			$models = array();
+			$models['e'] = ComponentbuilderHelper::getModel($tables['e']);
+			$models['g'] = ComponentbuilderHelper::getModel($tables['g']);
+			$models['p'] = ComponentbuilderHelper::getModel($tables['p']);
+			$models['m'] = ComponentbuilderHelper::getModel($tables['m']);
+			// get the needed data of each plugin group
+			$groups = array_map(
+				function($tree) use(&$app, &$models, &$tables){
+					if (($fooClass = ComponentbuilderHelper::getFileContents(ComponentbuilderHelper::$bolerplatePath . '/plugins/' . $tree->path . '/foo.php')) !== false && ComponentbuilderHelper::checkString($fooClass))
+					{
+						// extract the boilerplate class extends and check if already set
+						if (($classExtends = ComponentbuilderHelper::extractBoilerplateClassExtends($fooClass, 'plugins')) !== false &&
+							($classExtendsID = ComponentbuilderHelper::getVar('class_extends', $classExtends, 'name', 'id')) === false)
 						{
-							// extract the boilerplate class extends and check if already set
-							if (($classExtends = ComponentbuilderHelper::extractBoilerplateClassExtends($fooClass, 'plugins')) !== false &&
-								($classExtendsID = ComponentbuilderHelper::getVar('class_extends', $classExtends, 'name', 'id')) === false)
+							// load the extends class name
+							$class = array('id' => 0, 'published' => 1, 'version' => 1, 'name' => $classExtends);
+							// extract the boilerplate class header
+							$class['head'] = ComponentbuilderHelper::extractBoilerplateClassHeader($fooClass, $classExtends, 'plugins');
+							// extract the boilerplate class comment
+							$class['comment'] = ComponentbuilderHelper::extractBoilerplateClassComment($fooClass, $classExtends, 'plugins');
+							// set the extension type
+							$class['extension_type'] = 'plugins';
+							// store the class
+							$this->storePluginBoilerplate($tables['e'], $models['e'], $class, $app);
+							// work around
+							$classExtendsID = ComponentbuilderHelper::getVar('class_extends', $classExtends, 'name', 'id');
+						}
+						// set plugin group if not already set
+						if (($pluginGroupID = ComponentbuilderHelper::getVar('joomla_plugin_group', $tree->path, 'name', 'id')) === false)
+						{
+							// load the plugin group name
+							$pluginGroup = array('id' => 0, 'published' => 1, 'version' => 1, 'name' => $tree->path, 'class_extends' => $classExtendsID);
+							// store the group
+							$this->storePluginBoilerplate($tables['g'], $models['g'], $pluginGroup, $app);
+							// work around
+							$pluginGroupID = ComponentbuilderHelper::getVar('joomla_plugin_group', $tree->path, 'name', 'id');
+						}
+						// extract the boilerplate class property and methods
+						if (($classProperiesMethods = ComponentbuilderHelper::extractBoilerplateClassPropertiesMethods($fooClass, $classExtends, 'plugins', $pluginGroupID)) !== false)
+						{
+							// create the properties found
+							if (isset($classProperiesMethods['property']) && ComponentbuilderHelper::checkArray($classProperiesMethods['property']))
 							{
-								// load the extends class name
-								$class = array('id' => 0, 'published' => 1, 'version' => 1, 'name' => $classExtends);
-								// extract the boilerplate class header
-								$class['head'] = ComponentbuilderHelper::extractBoilerplateClassHeader($fooClass, $classExtends, 'plugins');
-								// extract the boilerplate class comment
-								$class['comment'] = ComponentbuilderHelper::extractBoilerplateClassComment($fooClass, $classExtends, 'plugins');
-								// set the extension type
-								$class['extension_type'] = 'plugins';
-								// store the class
-								$this->storePluginBoilerplate($tables['e'], $models['e'], $class, $app);
-								// work around
-								$classExtendsID = ComponentbuilderHelper::getVar('class_extends', $classExtends, 'name', 'id');
-							}
-							// set plugin group if not already set
-							if (($pluginGroupID = ComponentbuilderHelper::getVar('joomla_plugin_group', $tree->path, 'name', 'id')) === false)
-							{
-								// load the plugin group name
-								$pluginGroup = array('id' => 0, 'published' => 1, 'version' => 1, 'name' => $tree->path, 'class_extends' => $classExtendsID);
-								// store the group
-								$this->storePluginBoilerplate($tables['g'], $models['g'], $pluginGroup, $app);
-								// work around
-								$pluginGroupID = ComponentbuilderHelper::getVar('joomla_plugin_group', $tree->path, 'name', 'id');
-							}
-							// extract the boilerplate class property and methods
-							if (($classProperiesMethods = ComponentbuilderHelper::extractBoilerplateClassPropertiesMethods($fooClass, $classExtends, 'plugins', $pluginGroupID)) !== false)
-							{
-								// create the properties found
-								if (isset($classProperiesMethods['property']) && ComponentbuilderHelper::checkArray($classProperiesMethods['property']))
+								foreach ($classProperiesMethods['property'] as $_property)
 								{
-									foreach ($classProperiesMethods['property'] as $_property)
-									{
-										// force update by default
-										$this->storePluginBoilerplate($tables['p'], $models['p'], $_property, $app);
-									}
+									// force update by default
+									$this->storePluginBoilerplate($tables['p'], $models['p'], $_property, $app);
 								}
-								// create the method found (TODO just create for now but we could later add a force update)
-								if (isset($classProperiesMethods['method']) && ComponentbuilderHelper::checkArray($classProperiesMethods['method']))
+							}
+							// create the method found (TODO just create for now but we could later add a force update)
+							if (isset($classProperiesMethods['method']) && ComponentbuilderHelper::checkArray($classProperiesMethods['method']))
+							{
+								foreach ($classProperiesMethods['method'] as $_method)
 								{
-									foreach ($classProperiesMethods['method'] as $_method)
-									{
-										// force update by default
-										$this->storePluginBoilerplate($tables['m'], $models['m'], $_method, $app);
-									}
+									// force update by default
+									$this->storePluginBoilerplate($tables['m'], $models['m'], $_method, $app);
 								}
 							}
 						}
-					},
-					$result->tree
-				);
-			}
+					}
+				},
+				$plugin_tree
+			);
 		}
 	}
 
@@ -214,6 +204,7 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 		}
 		return true;
 	}
+
 	
 	/**
 	 * Method to auto-populate the model state.
@@ -273,7 +264,7 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 		// load parent items
 		$items = parent::getItems();
 
-		// set values to display correctly.
+		// Set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
 			// Get the user object if not set.

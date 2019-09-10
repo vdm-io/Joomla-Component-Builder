@@ -5630,7 +5630,7 @@ class com_componentbuilderInstallerScript
 			$admin_view_action_log_config->type_title = 'ADMIN_VIEW';
 			$admin_view_action_log_config->type_alias = 'com_componentbuilder.admin_view';
 			$admin_view_action_log_config->id_holder = 'id';
-			$admin_view_action_log_config->title_holder = '';
+			$admin_view_action_log_config->title_holder = 'system_name';
 			$admin_view_action_log_config->table_name = '#__componentbuilder_admin_view';
 			$admin_view_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
 
@@ -7721,7 +7721,7 @@ class com_componentbuilderInstallerScript
 			$admin_view_action_log_config->type_title = 'ADMIN_VIEW';
 			$admin_view_action_log_config->type_alias = 'com_componentbuilder.admin_view';
 			$admin_view_action_log_config->id_holder = 'id';
-			$admin_view_action_log_config->title_holder = '';
+			$admin_view_action_log_config->title_holder = 'system_name';
 			$admin_view_action_log_config->table_name = '#__componentbuilder_admin_view';
 			$admin_view_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
 
