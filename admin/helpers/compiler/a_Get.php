@@ -428,6 +428,13 @@ class Get
 	public $lang = 'admin';
 
 	/**
+	 * The lang keys for extentions
+	 * 
+	 * @var     array
+	 */
+	public $langKeys = array();
+
+	/**
 	 * The Build target Switch
 	 * 
 	 * @var     string
@@ -6187,6 +6194,94 @@ class Get
 	}
 
 	/**
+	 * get the Joomla plugins IDs
+	 * 
+	 * @return  array of IDs on success
+	 * 
+	 */
+	protected function getPluginIDs()
+	{
+		if (($addjoomla_plugins = ComponentbuilderHelper::getVar('component_plugins', $this->componentID, 'joomla_component', 'addjoomla_plugins')) !== false)
+		{
+			$addjoomla_plugins = (ComponentbuilderHelper::checkJson($addjoomla_plugins)) ? json_decode($addjoomla_plugins, true) : null;
+			if (ComponentbuilderHelper::checkArray($addjoomla_plugins))
+			{
+				$joomla_plugins = array_filter(
+					array_values($addjoomla_plugins),
+					function($array){
+					// only load the plugins whose target association calles for it
+					if (!isset($array['target']) || $array['target'] != 2)
+					{
+						return true;
+					}
+					return false;
+				});
+				// if we have values we return IDs
+				if (ComponentbuilderHelper::checkArray($joomla_plugins))
+				{
+					return array_map(function($array){
+						return (int) $array['plugin'];
+					}, $joomla_plugins);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * get the Joomla plugin path
+	 * 
+	 * @return  string of plugin path on success
+	 * 
+	 */
+	protected function getPluginPath($id)
+	{
+		if (is_numeric($id) && $id > 0)
+		{
+			// Create a new query object.
+			$query = $this->db->getQuery(true);
+
+			$query->select('a.*');
+			$query->select(
+				$this->db->quoteName(
+					array(
+						'a.name',
+						'g.name'
+					), array(
+						'name',
+						'group'
+					)
+				)
+			);
+			// from these tables
+			$query->from('#__componentbuilder_joomla_plugin AS a');
+			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_joomla_plugin_group', 'g') . ' ON (' . $this->db->quoteName('a.joomla_plugin_group') . ' = ' . $this->db->quoteName('g.id') . ')');
+			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
+			$query->where($this->db->quoteName('a.published') . ' >= 1');
+			$this->db->setQuery($query);
+			$this->db->execute();
+			if ($this->db->getNumRows())
+			{
+				// get the plugin data
+				$plugin = $this->db->loadObject();
+				// update the name if it has dynamic values
+				$plugin->name = $this->setPlaceholders($this->setDynamicValues($plugin->name), $this->globalPlaceholders);
+				// update the name if it has dynamic values
+				$plugin->code_name = ComponentbuilderHelper::safeClassFunctionName($plugin->name);
+				// set plugin folder name
+				$plugin->group = strtolower($plugin->group);
+				// set plugin file name
+				$plugin->file_name = strtolower($plugin->code_name);
+				// set the lang key
+				$this->langKeys['PLG_' . strtoupper($plugin->group . '_' . $plugin->file_name)] = $plugin->id . '_P|uG!n';
+				// return the path
+				return $plugin->group . '/' . $plugin->file_name;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * set the Joomla plugins
 	 * 
 	 * @return  true
@@ -6825,7 +6920,7 @@ class Get
 	protected function searchFileContent(&$counter, &$file, &$target, &$searchArray, &$placeholders, &$today)
 	{
 		// we add a new search for the GUI CODE Blocks
-		$this->guiCodeSearch($file, $placeholders, $today);
+		$this->guiCodeSearch($file, $placeholders, $today, $target);
 		// reset each time per file
 		$loadEndFingerPrint = false;
 		$endFingerPrint = array();
@@ -6898,7 +6993,7 @@ class Get
 							// end the bucket info for this code block
 							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote((int) $lineNumber);   // 'toline'
 							// first reverse engineer this code block
-							$c0de = $this->reversePlaceholders(implode('', $codeBucket[$pointer[$targetKey]]), $placeholders);
+							$c0de = $this->reversePlaceholders(implode('', $codeBucket[$pointer[$targetKey]]), $placeholders, $target);
 							$this->newCustomCode[$pointer[$targetKey]][] = $this->db->quote(base64_encode($c0de));  // 'code'
 							if ($_type == 2)
 							{
@@ -6912,7 +7007,7 @@ class Get
 							// end the bucket info for this code block
 							$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $this->db->quoteName('to_line') . ' = ' . $this->db->quote($lineNumber);
 							// first reverse engineer this code block
-							$c0de = $this->reversePlaceholders(implode('', $codeBucket[$pointer[$targetKey]]), $placeholders, $this->existingCustomCode[$pointer[$targetKey]]['id']);
+							$c0de = $this->reversePlaceholders(implode('', $codeBucket[$pointer[$targetKey]]), $placeholders, $target, $this->existingCustomCode[$pointer[$targetKey]]['id']);
 							$this->existingCustomCode[$pointer[$targetKey]]['fields'][] = $this->db->quoteName('code') . ' = ' . $this->db->quote(base64_encode($c0de));
 							if ($_type == 2)
 							{
@@ -7014,7 +7109,7 @@ class Get
 						$hashtarget = $hasleng . '__' . md5(implode('', $hasharray));
 						// for good practice
 						ComponentbuilderHelper::fixPath($path);
-						// all new records we can do a buldk insert
+						// all new records we can do a bulk insert
 						if ($i === 1 || !$id)
 						{
 							// start the bucket for this code
@@ -7194,11 +7289,12 @@ class Get
 	 * @param   string  $file         The file path to search
 	 * @param   array   $placeholders The values to replace in the code being stored
 	 * @param   string  $today        The date for today
+	 * @param   string  $target       The target path type
 	 *
 	 * @return  void
 	 * 
 	 */
-	protected function guiCodeSearch(&$file, &$placeholders, &$today)
+	protected function guiCodeSearch(&$file, &$placeholders, &$today, &$target)
 	{
 		// get file content
 		$file_conent = ComponentbuilderHelper::getFileContents($file);
@@ -7214,17 +7310,17 @@ class Get
 			{
 				$first_line = strtok($code, PHP_EOL);
 				// get the GUI target details
-				$target = explode('.', trim($first_line, '.'));
+				$query = explode('.', trim($first_line, '.'));
 				// cleanup the newlines around the code
 				$code = trim(str_replace($first_line, '', $code), PHP_EOL) . PHP_EOL;
 				// reverse placeholder as much as we can
-				$code = $this->reversePlaceholders($code, $placeholders, $target[2], $target[1], $target[0]);
+				$code = $this->reversePlaceholders($code, $placeholders, $target, $query[2], $query[1], $query[0]);
 				// update the GUI/Tables/Database
 				$object = new stdClass();
 				$object->id = (int) $target[2];
 				$object->{$target[1]} = base64_encode($code); // (TODO) this may not always work... 
 				// update the value in GUI
-				$this->db->updateObject('#__componentbuilder_' . (string) $target[0], $object, 'id');
+				$this->db->updateObject('#__componentbuilder_' . (string) $query[0], $object, 'id');
 			}
 		}
 	}
@@ -7326,6 +7422,7 @@ class Get
 	 * 
 	 * @param   string   $string       The string to revers
 	 * @param   array    $placeholders The values to search for
+	 * @param   string   $target       The target path type
 	 * @param   int      $id           The custom code id
 	 * @param   string   $field        The field name
 	 * @param   string   $table        The table name
@@ -7333,26 +7430,27 @@ class Get
 	 * @return  string
 	 * 
 	 */
-	protected function reversePlaceholders($string, &$placeholders, $id = null, $field = 'code', $table = 'custom_code')
+	protected function reversePlaceholders($string, &$placeholders, &$target, $id = null, $field = 'code', $table = 'custom_code')
 	{
 		// get local code if set
 		if ($id > 0 && $code = base64_decode(ComponentbuilderHelper::getVar($table, $id, 'id', $field)))
 		{
-			$string = $this->setReverseLangPlaceholders($string, $code);
+			$string = $this->setReverseLangPlaceholders($string, $code, $target);
 		}
 		return $this->setPlaceholders($string, $placeholders, 2);
 	}
 
 	/**
-	 * Set the langs strings for the reveres prossess
+	 * Set the langs strings for the reveres process
 	 * 
 	 * @param   string   $updateString   The string to update
 	 * @param   string   $string         The string to use lang update
+	 * @param   string   $target         The target path type
 	 *
 	 * @return  string
 	 * 
 	 */
-	protected function setReverseLangPlaceholders($updateString, $string)
+	protected function setReverseLangPlaceholders($updateString, $string, &$target)
 	{
 		// get targets to search for
 		$langStringTargets = array_filter(
@@ -7371,7 +7469,27 @@ class Get
 			$langHolders = array();
 			// set the lang for both since we don't know what area is being targeted
 			$_tmp = $this->lang;
-			$this->lang = 'both';
+			// set the lang based on target
+			if (strpos($target, 'plugin') !== false)
+			{
+				// backup lang prefix
+				$_tmp_lang_prefix = $this->langPrefix;
+				// set the new lang prefix
+				$this->langPrefix = strtoupper(str_replace('plugin', 'plg', $target));
+				// now set the lang
+				if (isset($this->langKeys[$this->langPrefix]))
+				{
+					$this->lang = $this->langKeys[$this->langPrefix];
+				}
+				else
+				{
+					$this->lang = 'plugin';
+				}
+			}
+			else
+			{
+				$this->lang = 'both';
+			}
 			// set language data
 			foreach ($langStringTargets as $langStringTarget)
 			{
@@ -7407,6 +7525,11 @@ class Get
 			}
 			// reset the lang
 			$this->lang = $_tmp;
+			// also rest the lang prefix if set
+			if (isset($_tmp_lang_prefix))
+			{
+				$this->langPrefix = $_tmp_lang_prefix;
+			}
 		}
 		return $updateString;
 	}
@@ -7574,8 +7697,19 @@ class Get
 		$localPaths['site'] = JPATH_ROOT . '/components/com_' . $this->componentCodeName;
 		// TODO later to include the JS and CSS
 		$localPaths['media'] = JPATH_ROOT . '/media/com_' . $this->componentCodeName;
-		// TODO plugin paths (just those linked to this component)
-		// $localPaths['plugin'] = JPATH_ROOT . '/plugins';
+		// Painfull but we need to folder paths for the linked plugins
+		if (($plugin_ids = $this->getPluginIDs()) !== false)
+		{
+			foreach ($plugin_ids as $plugin_id)
+			{
+				// get the plugin group and folder name
+				if (($path = $this->getPluginPath($plugin_id)) !== false)
+				{
+					// set the path
+					$localPaths['plugin_' . str_replace('/', '_', $path)] = JPATH_ROOT . '/plugins/' . $path;
+				}
+			}
+		}
 		// check if the local install is found
 		foreach ($localPaths as $key => $localPath)
 		{
