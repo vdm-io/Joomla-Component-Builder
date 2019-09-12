@@ -2459,8 +2459,9 @@ abstract class ComponentbuilderHelper
 				if (($repoData = self::getFileContents($_url)) !== false && self::checkJson($repoData))
 				{
 					$github_returned = json_decode($repoData);
-					if (self::checkString($target) && self::checkObject($github_returned) &&
-						isset($github_returned->{$target}) && self::checkArray($github_returned->{$target}) )
+					if (self::checkString($target) &&
+						( (self::checkObject($github_returned) && isset($github_returned->{$target}) && self::checkArray($github_returned->{$target})) ||
+						(self::checkArray($github_returned) && isset($github_returned[$target]) && self::checkArray($github_returned[$target])) ))
 					{
 						if ('nomemory' !== $type)
 						{
@@ -2468,7 +2469,7 @@ abstract class ComponentbuilderHelper
 							self::set($type, $repoData);
 						}
 					}
-					elseif (!self::checkString($target) && self::checkObject($github_returned) && !isset($github_returned->message))
+					elseif (!self::checkString($target) && (self::checkArray($github_returned) || (self::checkObject($github_returned) && !isset($github_returned->message))))
 					{
 						if ('nomemory' !== $type)
 						{

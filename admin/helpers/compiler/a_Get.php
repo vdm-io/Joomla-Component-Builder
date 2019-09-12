@@ -7317,8 +7317,8 @@ class Get
 				$code = $this->reversePlaceholders($code, $placeholders, $target, $query[2], $query[1], $query[0]);
 				// update the GUI/Tables/Database
 				$object = new stdClass();
-				$object->id = (int) $target[2];
-				$object->{$target[1]} = base64_encode($code); // (TODO) this may not always work... 
+				$object->id = (int) $query[2];
+				$object->{$query[1]} = base64_encode($code); // (TODO) this may not always work... 
 				// update the value in GUI
 				$this->db->updateObject('#__componentbuilder_' . (string) $query[0], $object, 'id');
 			}

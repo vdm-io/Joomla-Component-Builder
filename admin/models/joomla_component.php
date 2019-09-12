@@ -861,7 +861,7 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				{
 					// load the model
 					$_Model = ComponentbuilderHelper::getModel($_updateTable);
-					// change publish state
+					// delete items
 					$_Model->delete($_pks);
 				}
 			}

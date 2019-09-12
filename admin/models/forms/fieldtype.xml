@@ -181,10 +181,8 @@
 			maxlength="50"
 			description="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_DESCRIPTION"
 			class="text_area"
-			readonly="false"
-			disabled="false"
 			required="true"
-			filter="STRING"
+			filter="INT"
 			message="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_HINT"
 		/>
@@ -196,6 +194,7 @@
 			description="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_DESCRIPTION"
 			class="btn-group"
 			multiple="false"
+			required="true"
 			default="">
 			<!-- Option Set. -->
 			<option value="">
