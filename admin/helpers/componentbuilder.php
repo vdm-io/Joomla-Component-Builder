@@ -697,6 +697,8 @@ abstract class ComponentbuilderHelper
 				$string = trim($string);
 				$string = preg_replace('/'.$spacer.'+/', ' ', $string);
 				$string = preg_replace('/\s+/', ' ', $string);
+				// Transliterate string
+				$string = self::transliterate($string);
 				// remove all and keep only characters and numbers
 				$string = preg_replace("/[^A-Za-z0-9 ]/", '', $string);
 				// replace white space with underscore (SAFEST OPTION)
@@ -751,6 +753,8 @@ abstract class ComponentbuilderHelper
 				{
 					$string = self::replaceNumbers($string);
 				}
+				// Transliterate string
+				$string = self::transliterate($string);
 				// remove all and keep only characters and numbers and point (TODO just one point)
 				$string = trim(preg_replace("/[^A-Za-z0-9\.]/", '', $string));
 				// best is to return lower (for all string equality in compiler)
