@@ -805,8 +805,8 @@ class Get
 			$this->minify = (isset($config['minify']) && $config['minify'] != 2) ? $config['minify'] : $this->params->get('minify', 0);
 			// set the global language
 			$this->langTag = $this->params->get('language', $this->langTag);
-			// also set the helper calss langTag (for safe string)
-			
+			// also set the helper class langTag (for safeStrings)
+			ComponentbuilderHelper::$langTag = $this->langTag;
 			// setup the main language array
 			$this->languages[$this->langTag] = array();
 			// check if we have Tidy enabled
