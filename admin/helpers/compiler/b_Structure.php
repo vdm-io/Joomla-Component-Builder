@@ -537,7 +537,19 @@ class Structure extends Get
 							$xml .= PHP_EOL . '>';
 							foreach ($fields as $field_name => $fieldsets)
 							{
-								$xml .= PHP_EOL . $this->_t(1) . '<fields name="' . $field_name . '">';
+								// check if we have an double fields naming set
+								$field_name_inner = '';
+								$field_name_outer = $field_name;
+								if (strpos($field_name, '.') !== false)
+								{
+									$field_names = explode('.', $field_name);
+									if (count((array) $field_names) == 2)
+									{
+										$field_name_outer = $field_names[0];
+										$field_name_inner = $field_names[1];
+									}
+								}
+								$xml .= PHP_EOL . $this->_t(1) . '<fields name="' . $field_name_outer . '">';
 								foreach ($fieldsets as $fieldset => $field)
 								{
 									// default to the field set name
@@ -559,8 +571,18 @@ class Structure extends Get
 									{
 										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="' . $fieldset . '" label="' . $label . '">';
 									}
+									// check if we have an inner field set
+									if (ComponentbuilderHelper::checkString($field_name_inner))
+									{
+										$xml .= PHP_EOL . $this->_t(1) . '<fields name="' . $field_name_inner . '">';
+									}
 									// add the placeholder of the fields
 									$xml .= $this->hhh . 'FIELDSET_' . $file.$field_name.$fieldset . $this->hhh;
+									// check if we have an inner field set
+									if (ComponentbuilderHelper::checkString($field_name_inner))
+									{
+										$xml .= PHP_EOL . $this->_t(1) . '</fields>';
+									}
 									$xml .= PHP_EOL . $this->_t(1) . '</fieldset>';
 								}
 								$xml .= PHP_EOL . $this->_t(1) . '</fields>';

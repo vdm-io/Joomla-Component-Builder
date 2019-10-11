@@ -1845,7 +1845,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		// #__componentbuilder_dynamic_get (k)
 		'dynamic_get' => array(
 			'search' => array('id', 'name', 'php_before_getitem', 'php_after_getitem', 'php_before_getitems', 'php_after_getitems',
-				'php_getlistquery'),
+				'php_getlistquery', 'php_calculation'),
 			'views' => 'dynamic_gets',
 			'not_base64' => array(),
 			'name' => 'name'

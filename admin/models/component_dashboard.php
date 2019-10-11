@@ -128,7 +128,7 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 				$id = $item->id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('components_dashboard__'.$id))
+			if ($vdm = ComponentbuilderHelper::get('component_dashboard__'.$id))
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -136,8 +136,8 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 			{
 				// set the vast development method key
 				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'components_dashboard__'.$id);
-				ComponentbuilderHelper::set('components_dashboard__'.$id, $this->vastDevMod);
+				ComponentbuilderHelper::set($this->vastDevMod, 'component_dashboard__'.$id);
+				ComponentbuilderHelper::set('component_dashboard__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = JFactory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
@@ -199,8 +199,23 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
+		// // check if xpath was set in options
+		$xpath = false;
+		if (isset($options['xpath']))
+		{
+			$xpath = $options['xpath'];
+			unset($options['xpath']);
+		}
+		// // check if clear form was set in options
+		$clear = false;
+		if (isset($options['clear']))
+		{
+			$clear = $options['clear'];
+			unset($options['clear']);
+		}
+
 		// Get the form.
-		$form = $this->loadForm('com_componentbuilder.component_dashboard', 'component_dashboard', $options);
+		$form = $this->loadForm('com_componentbuilder.component_dashboard', 'component_dashboard', $options, $clear, $xpath);
 
 		if (empty($form))
 		{

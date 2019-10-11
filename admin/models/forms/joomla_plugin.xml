@@ -449,7 +449,7 @@
 					default="params"
 					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FIELDS_NAME_DESCRIPTION"
 					class="text_area"
-					filter="WORD"
+					filter="CMD"
 					hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FIELDS_NAME_HINT"
 					autocomplete="on"
 				/>

@@ -100,11 +100,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	`metadesc` TEXT NOT NULL,
 	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_system_name` (`system_name`),
 	KEY `idx_name_code` (`name_code`),
 	KEY `idx_debug_linenr` (`debug_linenr`),
@@ -138,7 +133,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	KEY `idx_add_sales_server` (`add_sales_server`),
 	KEY `idx_translation_tool` (`translation_tool`),
 	KEY `idx_creatuserhelper` (`creatuserhelper`),
-	KEY `idx_adduikit` (`adduikit`)
+	KEY `idx_adduikit` (`adduikit`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin` (
@@ -195,11 +195,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_system_name` (`system_name`),
 	KEY `idx_class_extends` (`class_extends`),
 	KEY `idx_joomla_plugin_group` (`joomla_plugin_group`),
@@ -216,7 +211,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin` (
 	KEY `idx_add_php_preflight_update` (`add_php_preflight_update`),
 	KEY `idx_update_server_target` (`update_server_target`),
 	KEY `idx_add_php_preflight_uninstall` (`add_php_preflight_uninstall`),
-	KEY `idx_name` (`name`)
+	KEY `idx_name` (`name`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
@@ -325,11 +325,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_name_single` (`name_single`),
 	KEY `idx_add_php_before_cancel` (`add_php_before_cancel`),
 	KEY `idx_add_php_allowadd` (`add_php_allowadd`),
@@ -367,7 +362,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	KEY `idx_source` (`source`),
 	KEY `idx_add_php_getitem` (`add_php_getitem`),
 	KEY `idx_add_php_getitems` (`add_php_getitems`),
-	KEY `idx_add_php_getitems_after_all` (`add_php_getitems_after_all`)
+	KEY `idx_add_php_getitems_after_all` (`add_php_getitems_after_all`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
@@ -422,11 +422,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_main_get` (`main_get`),
 	KEY `idx_add_css_document` (`add_css_document`),
@@ -441,7 +436,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_admin_view` (
 	KEY `idx_add_php_view` (`add_php_view`),
 	KEY `idx_add_custom_button` (`add_custom_button`),
 	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
-	KEY `idx_add_php_jview` (`add_php_jview`)
+	KEY `idx_add_php_jview` (`add_php_jview`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
@@ -496,11 +496,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_main_get` (`main_get`),
 	KEY `idx_add_css_document` (`add_css_document`),
@@ -516,7 +511,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_site_view` (
 	KEY `idx_add_php_view` (`add_php_view`),
 	KEY `idx_button_position` (`button_position`),
 	KEY `idx_add_php_jview_display` (`add_php_jview_display`),
-	KEY `idx_add_php_jview` (`add_php_jview`)
+	KEY `idx_add_php_jview` (`add_php_jview`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_template` (
@@ -544,15 +544,15 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_template` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_dynamic_get` (`dynamic_get`),
+	KEY `idx_add_php_view` (`add_php_view`),
+	KEY `idx_alias` (`alias`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_dynamic_get` (`dynamic_get`),
-	KEY `idx_add_php_view` (`add_php_view`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_layout` (
@@ -580,15 +580,15 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_layout` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_dynamic_get` (`dynamic_get`),
+	KEY `idx_add_php_view` (`add_php_view`),
+	KEY `idx_alias` (`alias`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_dynamic_get` (`dynamic_get`),
-	KEY `idx_add_php_view` (`add_php_view`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
@@ -641,11 +641,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_main_source` (`main_source`),
 	KEY `idx_gettype` (`gettype`),
@@ -657,7 +652,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	KEY `idx_add_php_getlistquery` (`add_php_getlistquery`),
 	KEY `idx_select_all` (`select_all`),
 	KEY `idx_getcustom` (`getcustom`),
-	KEY `idx_pagination` (`pagination`)
+	KEY `idx_pagination` (`pagination`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
@@ -689,17 +689,17 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_component` (`component`),
 	KEY `idx_target` (`target`),
 	KEY `idx_type` (`type`),
 	KEY `idx_function_name` (`function_name`),
 	KEY `idx_to_line` (`to_line`),
-	KEY `idx_from_line` (`from_line`)
+	KEY `idx_from_line` (`from_line`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_property` (
@@ -724,14 +724,14 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_property` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_visibility` (`visibility`),
+	KEY `idx_joomla_plugin_group` (`joomla_plugin_group`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_visibility` (`visibility`),
-	KEY `idx_joomla_plugin_group` (`joomla_plugin_group`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_method` (
@@ -757,14 +757,14 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_method` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_visibility` (`visibility`),
+	KEY `idx_joomla_plugin_group` (`joomla_plugin_group`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_visibility` (`visibility`),
-	KEY `idx_joomla_plugin_group` (`joomla_plugin_group`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_placeholder` (
@@ -785,12 +785,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_placeholder` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_target` (`target`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_target` (`target`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_library` (
@@ -817,13 +817,13 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_how` (`how`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_how` (`how`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet` (
@@ -854,14 +854,14 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_type` (`type`),
+	KEY `idx_library` (`library`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_type` (`type`),
-	KEY `idx_library` (`library`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_validation_rule` (
@@ -884,12 +884,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_validation_rule` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_field` (
@@ -928,11 +928,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_field` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_fieldtype` (`fieldtype`),
 	KEY `idx_datatype` (`datatype`),
@@ -946,7 +941,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_field` (
 	KEY `idx_datadefault_other` (`datadefault_other`),
 	KEY `idx_datadefault` (`datadefault`),
 	KEY `idx_datalenght_other` (`datalenght_other`),
-	KEY `idx_add_javascript_view_footer` (`add_javascript_view_footer`)
+	KEY `idx_add_javascript_view_footer` (`add_javascript_view_footer`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_fieldtype` (
@@ -979,11 +979,6 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_fieldtype` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_null_switch` (`null_switch`),
 	KEY `idx_indexes` (`indexes`),
@@ -993,7 +988,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_fieldtype` (
 	KEY `idx_datalenght` (`datalenght`),
 	KEY `idx_has_defaults` (`has_defaults`),
 	KEY `idx_datatype` (`datatype`),
-	KEY `idx_catid` (`catid`)
+	KEY `idx_catid` (`catid`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_language_translation` (
@@ -1040,12 +1040,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_language` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_server` (
@@ -1077,13 +1077,13 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_server` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_protocol` (`protocol`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_protocol` (`protocol`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_help_document` (
@@ -1113,16 +1113,16 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_help_document` (
 	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_title` (`title`),
 	KEY `idx_type` (`type`),
 	KEY `idx_location` (`location`),
 	KEY `idx_article` (`article`),
 	KEY `idx_target` (`target`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_alias` (`alias`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields` (
@@ -1143,12 +1143,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_admin_view` (`admin_view`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_admin_view` (`admin_view`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_conditions` (
@@ -1169,12 +1169,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_conditions` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_admin_view` (`admin_view`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_admin_view` (`admin_view`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_relations` (
@@ -1195,12 +1195,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_fields_relations` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_admin_view` (`admin_view`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_admin_view` (`admin_view`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_custom_tabs` (
@@ -1221,12 +1221,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_custom_tabs` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_admin_view` (`admin_view`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_admin_view` (`admin_view`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_admin_views` (
@@ -1247,12 +1247,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_admin_views` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_component` (`joomla_component`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_component` (`joomla_component`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_site_views` (
@@ -1273,12 +1273,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_site_views` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_component` (`joomla_component`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_component` (`joomla_component`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_views` (
@@ -1299,12 +1299,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_views` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_component` (`joomla_component`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_component` (`joomla_component`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_updates` (
@@ -1325,12 +1325,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_updates` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_component` (`joomla_component`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_component` (`joomla_component`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_mysql_tweaks` (
@@ -1351,12 +1351,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_mysql_tweaks` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_component` (`joomla_component`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_component` (`joomla_component`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_menus` (
@@ -1377,12 +1377,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_custom_admin_menus` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_component` (`joomla_component`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_component` (`joomla_component`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_config` (
@@ -1403,12 +1403,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_config` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_component` (`joomla_component`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_component` (`joomla_component`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_dashboard` (
@@ -1430,12 +1430,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_dashboard` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_component` (`joomla_component`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_component` (`joomla_component`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_files_folders` (
@@ -1459,12 +1459,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_files_folders` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_component` (`joomla_component`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_component` (`joomla_component`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_placeholders` (
@@ -1485,12 +1485,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_placeholders` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_component` (`joomla_component`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_component` (`joomla_component`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_plugins` (
@@ -1511,12 +1511,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_component_plugins` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_component` (`joomla_component`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_component` (`joomla_component`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet_type` (
@@ -1537,12 +1537,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_snippet_type` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_config` (
@@ -1563,12 +1563,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_config` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_library` (`library`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_library` (`library`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_files_folders_urls` (
@@ -1593,12 +1593,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_library_files_folders_urls` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_library` (`library`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_library` (`library`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_extends` (
@@ -1621,12 +1621,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_extends` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_group` (
@@ -1647,13 +1647,13 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_group` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_class_extends` (`class_extends`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_class_extends` (`class_extends`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_updates` (
@@ -1674,12 +1674,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_updates` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_plugin` (`joomla_plugin`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_plugin` (`joomla_plugin`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_files_folders_urls` (
@@ -1704,12 +1704,12 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_files_folders_urls
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_joomla_plugin` (`joomla_plugin`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_joomla_plugin` (`joomla_plugin`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 --
@@ -2044,7 +2044,7 @@ INSERT INTO `#__componentbuilder_language` (`id`, `langtag`, `name`, `params`, `
 (55, 'pt-PT', 'Portuguese', '', 1, '2018-04-19 13:43:44', '2018-09-14 10:39:11', 2, '', 1),
 (56, 'pt-BR', 'Portuguese Brazil', '', 1, '2018-04-19 13:43:44', '2018-09-14 10:39:11', 2, '', 1),
 (57, 'ro-RO', 'Romanian', '', 1, '2018-04-19 13:43:44', '2018-09-14 10:39:11', 2, '', 1),
-(58, 'ru-RU', 'Russian', '', 1, '2018-04-19 13:43:44', '2018-09-14 10:39:11', 2, '', 1),
+(58, 'ru-RU', 'Russian', '', 1, '2018-04-19 13:43:44', '2019-10-11 11:55:13', 3, '', 1),
 (59, 'sr-RS', 'Serbian Cyrillic', '', 1, '2018-04-19 13:43:44', '2018-09-14 10:39:11', 2, '', 1),
 (60, 'sr-YU', 'Serbian Latin', '', 1, '2018-04-19 13:43:44', '2018-09-14 10:39:11', 2, '', 1),
 (61, 'si-LK', 'Sinhala', '', 1, '2018-04-19 13:43:44', '2018-09-14 10:39:11', 2, '', 1),
@@ -2210,7 +2210,12 @@ INSERT INTO `#__componentbuilder_snippet_type` (`id`, `name`, `description`, `pa
 (42, 'Utility: Spacing', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, '', 42),
 (43, 'Utility: Text', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, '', 43);
 
+--
+-- Dumping data for table `#__componentbuilder_library_config`
+--
 
+INSERT INTO `#__componentbuilder_library_config` (`id`, `addconfig`, `library`, `params`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
+(1, '{\"addconfig0\":{\"field\":\"2635\",\"custom_value\":\"\",\"tabname\":\"Icon Settings\"},\"addconfig1\":{\"field\":\"2636\",\"custom_value\":\"\",\"tabname\":\"Icon Settings\"},\"addconfig2\":{\"field\":\"2639\",\"custom_value\":\"\",\"tabname\":\"Icon Settings\"},\"addconfig3\":{\"field\":\"2637\",\"custom_value\":\"\",\"tabname\":\"Icon Settings\"},\"addconfig4\":{\"field\":\"2638\",\"custom_value\":\"\",\"tabname\":\"Icon Settings\"},\"addconfig7\":{\"field\":\"2640\",\"custom_value\":\"\",\"tabname\":\"Icon Settings\"},\"addconfig6\":{\"field\":\"2641\",\"custom_value\":\"\",\"tabname\":\"Icon Settings\"},\"addconfig5\":{\"field\":\"2642\",\"custom_value\":\"\",\"tabname\":\"Icon Settings\"}}', 7, '', 1, '2019-10-03 09:55:37', '2019-10-03 16:41:01', 2, '', 1);
 
 --
 -- Dumping data for table `#__componentbuilder_library_files_folders_urls`
@@ -2218,7 +2223,8 @@ INSERT INTO `#__componentbuilder_snippet_type` (`id`, `name`, `description`, `pa
 
 INSERT INTO `#__componentbuilder_library_files_folders_urls` (`id`, `addfiles`, `addfolders`, `addurls`, `library`, `params`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
 (2, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/js\\/bootstrap.min.js\",\"type\":\"2\"},\"addurls1\":{\"url\":\"https:\\/\\/maxcdn.bootstrapcdn.com\\/bootstrap\\/4.0.0-alpha.6\\/css\\/bootstrap.min.css\",\"type\":\"2\"}}', 2, '', 1, '2017-11-25 16:17:36', '2018-05-02 23:29:05', 11, '', 2),
-(3, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-rc.16\\/js\\/uikit.min.js\",\"type\":\"2\"},\"addurls2\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-rc.16\\/js\\/uikit-icons.min.js\",\"type\":\"2\"},\"addurls4\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-rc.16\\/css\\/uikit.min.css\",\"type\":\"2\"}}', 3, '', 1, '2017-11-25 21:47:40', '2018-09-19 14:22:09', 10, '', 3);
+(3, '', '', '{\"addurls0\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-rc.16\\/js\\/uikit.min.js\",\"type\":\"2\"},\"addurls2\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-rc.16\\/js\\/uikit-icons.min.js\",\"type\":\"2\"},\"addurls4\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/uikit\\/3.0.0-rc.16\\/css\\/uikit.min.css\",\"type\":\"2\"}}', 3, '', 1, '2017-11-25 21:47:40', '2018-09-19 14:22:09', 10, '', 3),
+(4, '{}', '{\"addfolders0\":{\"folder\":\"file_icon_vectors\",\"path\":\"\\/media\\/vector\",\"rename\":\"1\"}}', '{}', 7, '', 1, '2019-10-03 09:24:30', '2019-10-03 09:25:39', 2, '', 4);
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_external_code` (
 	`target` VARCHAR(255) NOT NULL DEFAULT '',

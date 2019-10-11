@@ -633,29 +633,35 @@ class Fields extends Structure
 		if (isset($this->metadataBuilder[$view_name_single]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view_name_single]))
 		{
 			// metakey
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla) -->";
-			$fieldSet[] = $this->_t(2) . "<field";
-			$fieldSet[] = $this->_t(3) . 'name="metakey"';
-			$fieldSet[] = $this->_t(3) . 'type="textarea"';
-			$fieldSet[] = $this->_t(3) . 'label="JFIELD_META_KEYWORDS_LABEL"';
-			$fieldSet[] = $this->_t(3) . 'description="JFIELD_META_KEYWORDS_DESC"';
-			$fieldSet[] = $this->_t(3) . 'rows="3"';
-			$fieldSet[] = $this->_t(3) . 'cols="30"';
-			$fieldSet[] = $this->_t(2) . "/>";
-			// count the static field created
-			$this->fieldCount++;
+			if (!isset($this->fieldsNames[$view_name_single]['metakey']))
+			{
+				$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla) -->";
+				$fieldSet[] = $this->_t(2) . "<field";
+				$fieldSet[] = $this->_t(3) . 'name="metakey"';
+				$fieldSet[] = $this->_t(3) . 'type="textarea"';
+				$fieldSet[] = $this->_t(3) . 'label="JFIELD_META_KEYWORDS_LABEL"';
+				$fieldSet[] = $this->_t(3) . 'description="JFIELD_META_KEYWORDS_DESC"';
+				$fieldSet[] = $this->_t(3) . 'rows="3"';
+				$fieldSet[] = $this->_t(3) . 'cols="30"';
+				$fieldSet[] = $this->_t(2) . "/>";
+				// count the static field created
+				$this->fieldCount++;
+			}
 			// metadesc
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla) -->";
-			$fieldSet[] = $this->_t(2) . "<field";
-			$fieldSet[] = $this->_t(3) . 'name="metadesc"';
-			$fieldSet[] = $this->_t(3) . 'type="textarea"';
-			$fieldSet[] = $this->_t(3) . 'label="JFIELD_META_DESCRIPTION_LABEL"';
-			$fieldSet[] = $this->_t(3) . 'description="JFIELD_META_DESCRIPTION_DESC"';
-			$fieldSet[] = $this->_t(3) . 'rows="3"';
-			$fieldSet[] = $this->_t(3) . 'cols="30"';
-			$fieldSet[] = $this->_t(2) . "/>";
-			// count the static field created
-			$this->fieldCount++;
+			if (!isset($this->fieldsNames[$view_name_single]['metadesc']))
+			{
+				$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla) -->";
+				$fieldSet[] = $this->_t(2) . "<field";
+				$fieldSet[] = $this->_t(3) . 'name="metadesc"';
+				$fieldSet[] = $this->_t(3) . 'type="textarea"';
+				$fieldSet[] = $this->_t(3) . 'label="JFIELD_META_DESCRIPTION_LABEL"';
+				$fieldSet[] = $this->_t(3) . 'description="JFIELD_META_DESCRIPTION_DESC"';
+				$fieldSet[] = $this->_t(3) . 'rows="3"';
+				$fieldSet[] = $this->_t(3) . 'cols="30"';
+				$fieldSet[] = $this->_t(2) . "/>";
+				// count the static field created
+				$this->fieldCount++;
+			}
 		}
 		// load the dynamic fields now
 		if (ComponentbuilderHelper::checkString($dynamicFields))
@@ -667,43 +673,57 @@ class Fields extends Structure
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$view_name_single]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view_name_single]))
 		{
-			$fieldSet[] = PHP_EOL . $this->_t(1) . "<!--" . $this->setLine(__LINE__) . " Metadata Fields. -->";
-			$fieldSet[] = $this->_t(1) . "<fields" . ' name="metadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
-			$fieldSet[] = $this->_t(2) . '<fieldset name="vdmmetadata"';
-			$fieldSet[] = $this->_t(3) . 'label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
-			// robots
-			$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(__LINE__) . " Robots Field. Type: List (joomla) -->";
-			$fieldSet[] = $this->_t(3) . '<field name="robots"';
-			$fieldSet[] = $this->_t(4) . 'type="list"';
-			$fieldSet[] = $this->_t(4) . 'label="JFIELD_METADATA_ROBOTS_LABEL"';
-			$fieldSet[] = $this->_t(4) . 'description="JFIELD_METADATA_ROBOTS_DESC" >';
-			$fieldSet[] = $this->_t(4) . '<option value="">JGLOBAL_USE_GLOBAL</option>';
-			$fieldSet[] = $this->_t(4) . '<option value="index, follow">JGLOBAL_INDEX_FOLLOW</option>';
-			$fieldSet[] = $this->_t(4) . '<option value="noindex, follow">JGLOBAL_NOINDEX_FOLLOW</option>';
-			$fieldSet[] = $this->_t(4) . '<option value="index, nofollow">JGLOBAL_INDEX_NOFOLLOW</option>';
-			$fieldSet[] = $this->_t(4) . '<option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>';
-			$fieldSet[] = $this->_t(3) . '</field>';
-			// count the static field created
-			$this->fieldCount++;
-			// author
-			$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(__LINE__) . " Author Field. Type: Text (joomla) -->";
-			$fieldSet[] = $this->_t(3) . '<field name="author"';
-			$fieldSet[] = $this->_t(4) . 'type="text"';
-			$fieldSet[] = $this->_t(4) . 'label="JAUTHOR" description="JFIELD_METADATA_AUTHOR_DESC"';
-			$fieldSet[] = $this->_t(4) . 'size="20"';
-			$fieldSet[] = $this->_t(3) . "/>";
-			// count the static field created
-			$this->fieldCount++;
-			// rights
-			$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla) -->";
-			$fieldSet[] = $this->_t(3) . '<field name="rights" type="textarea" label="JFIELD_META_RIGHTS_LABEL"';
-			$fieldSet[] = $this->_t(4) . 'description="JFIELD_META_RIGHTS_DESC" required="false" filter="string"';
-			$fieldSet[] = $this->_t(4) . 'cols="30" rows="2"';
-			$fieldSet[] = $this->_t(3) . "/>";
-			// count the static field created
-			$this->fieldCount++;
-			$fieldSet[] = $this->_t(2) . "</fieldset>";
-			$fieldSet[] = $this->_t(1) . "</fields>";
+			if (!isset($this->fieldsNames[$view_name_single]['robots'])
+				|| !isset($this->fieldsNames[$view_name_single]['rights'])
+				|| !isset($this->fieldsNames[$view_name_single]['author']))
+			{
+				$fieldSet[] = PHP_EOL . $this->_t(1) . "<!--" . $this->setLine(__LINE__) . " Metadata Fields. -->";
+				$fieldSet[] = $this->_t(1) . "<fields" . ' name="metadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
+				$fieldSet[] = $this->_t(2) . '<fieldset name="vdmmetadata"';
+				$fieldSet[] = $this->_t(3) . 'label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
+				// robots
+				if (!isset($this->fieldsNames[$view_name_single]['robots']))
+				{
+					$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(__LINE__) . " Robots Field. Type: List (joomla) -->";
+					$fieldSet[] = $this->_t(3) . '<field name="robots"';
+					$fieldSet[] = $this->_t(4) . 'type="list"';
+					$fieldSet[] = $this->_t(4) . 'label="JFIELD_METADATA_ROBOTS_LABEL"';
+					$fieldSet[] = $this->_t(4) . 'description="JFIELD_METADATA_ROBOTS_DESC" >';
+					$fieldSet[] = $this->_t(4) . '<option value="">JGLOBAL_USE_GLOBAL</option>';
+					$fieldSet[] = $this->_t(4) . '<option value="index, follow">JGLOBAL_INDEX_FOLLOW</option>';
+					$fieldSet[] = $this->_t(4) . '<option value="noindex, follow">JGLOBAL_NOINDEX_FOLLOW</option>';
+					$fieldSet[] = $this->_t(4) . '<option value="index, nofollow">JGLOBAL_INDEX_NOFOLLOW</option>';
+					$fieldSet[] = $this->_t(4) . '<option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>';
+					$fieldSet[] = $this->_t(3) . '</field>';
+					// count the static field created
+					$this->fieldCount++;
+				}
+				// author
+				if (!isset($this->fieldsNames[$view_name_single]['author']))
+				{
+					$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(__LINE__) . " Author Field. Type: Text (joomla) -->";
+					$fieldSet[] = $this->_t(3) . '<field name="author"';
+					$fieldSet[] = $this->_t(4) . 'type="text"';
+					$fieldSet[] = $this->_t(4) . 'label="JAUTHOR" description="JFIELD_METADATA_AUTHOR_DESC"';
+					$fieldSet[] = $this->_t(4) . 'size="20"';
+					$fieldSet[] = $this->_t(3) . "/>";
+					// count the static field created
+					$this->fieldCount++;
+				}
+				// rights
+				if (!isset($this->fieldsNames[$view_name_single]['rights']))
+				{
+					$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla) -->";
+					$fieldSet[] = $this->_t(3) . '<field name="rights" type="textarea" label="JFIELD_META_RIGHTS_LABEL"';
+					$fieldSet[] = $this->_t(4) . 'description="JFIELD_META_RIGHTS_DESC" required="false" filter="string"';
+					$fieldSet[] = $this->_t(4) . 'cols="30" rows="2"';
+					$fieldSet[] = $this->_t(3) . "/>";
+					// count the static field created
+					$this->fieldCount++;
+				}
+				$fieldSet[] = $this->_t(2) . "</fieldset>";
+				$fieldSet[] = $this->_t(1) . "</fields>";
+			}
 		}
 		// retunr the set
 		return implode(PHP_EOL, $fieldSet);
@@ -923,28 +943,34 @@ class Fields extends Structure
 		if (isset($this->metadataBuilder[$view_name_single]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view_name_single]))
 		{
 			// metakey
-			$attributes = array(
-				'name' => 'metakey',
-				'type' => 'textarea',
-				'label' => 'JFIELD_META_KEYWORDS_LABEL',
-				'description' => 'JFIELD_META_KEYWORDS_DESC',
-				'rows' => 3,
-				'cols' => 30
-			);
-			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla)");
-			$fieldXML = $fieldSetXML->addChild('field');
-			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
-			// count the static field created
-			$this->fieldCount++;
+			if (!isset($this->fieldsNames[$view_name_single]['metakey']))
+			{
+				$attributes = array(
+					'name' => 'metakey',
+					'type' => 'textarea',
+					'label' => 'JFIELD_META_KEYWORDS_LABEL',
+					'description' => 'JFIELD_META_KEYWORDS_DESC',
+					'rows' => 3,
+					'cols' => 30
+				);
+				ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metakey Field. Type: Textarea (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
+			}
 			// metadesc
-			$attributes['name'] = 'metadesc';
-			$attributes['label'] = 'JFIELD_META_DESCRIPTION_LABEL';
-			$attributes['description'] = 'JFIELD_META_DESCRIPTION_DESC';
-			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla)");
-			$fieldXML = $fieldSetXML->addChild('field');
-			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
-			// count the static field created
-			$this->fieldCount++;
+			if (!isset($this->fieldsNames[$view_name_single]['metadesc']))
+			{
+				$attributes['name'] = 'metadesc';
+				$attributes['label'] = 'JFIELD_META_DESCRIPTION_LABEL';
+				$attributes['description'] = 'JFIELD_META_DESCRIPTION_DESC';
+				ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metadesc Field. Type: Textarea (joomla)");
+				$fieldXML = $fieldSetXML->addChild('field');
+				ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
+				// count the static field created
+				$this->fieldCount++;
+			}
 		}
 		// load the dynamic fields now
 		if (count((array) $dynamicFieldsXML))
@@ -958,67 +984,81 @@ class Fields extends Structure
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$view_name_single]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view_name_single]))
 		{
-			ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metadata Fields");
-			$fieldsXML = $fieldSetXML->addChild('fields');
-			$fieldsXML->addAttribute('name', 'metadata');
-			$fieldsXML->addAttribute('label', 'JGLOBAL_FIELDSET_METADATA_OPTIONS');
-			$fieldsFieldSetXML = $fieldsXML->addChild('fieldset');
-			$fieldsFieldSetXML->addAttribute('name', 'vdmmetadata');
-			$fieldsFieldSetXML->addAttribute('label', 'JGLOBAL_FIELDSET_METADATA_OPTIONS');
-			// robots
-			ComponentbuilderHelper::xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Robots Field. Type: List (joomla)");
-			$robots = $fieldsFieldSetXML->addChild('field');
-			$attributes = array(
-				'name' => 'robots',
-				'type' => 'list',
-				'label' => 'JFIELD_METADATA_ROBOTS_LABEL',
-				'description' => 'JFIELD_METADATA_ROBOTS_DESC'
-			);
-			ComponentbuilderHelper::xmlAddAttributes($robots, $attributes);
-			// count the static field created
-			$this->fieldCount++;
-			$options = array(
-				'JGLOBAL_USE_GLOBAL' => '',
-				'JGLOBAL_INDEX_FOLLOW' => 'index, follow',
-				'JGLOBAL_NOINDEX_FOLLOW' => 'noindex, follow',
-				'JGLOBAL_INDEX_NOFOLLOW' => 'index, nofollow',
-				'JGLOBAL_NOINDEX_NOFOLLOW' => 'noindex, nofollow',
-			);
-			foreach ($options as $text => $value)
+			if (!isset($this->fieldsNames[$view_name_single]['robots'])
+				|| !isset($this->fieldsNames[$view_name_single]['author'])
+				|| !isset($this->fieldsNames[$view_name_single]['rights']))
 			{
-				$option = $robots->addChild('option');
-				$option->addAttribute('value', $value);
-				$option[] = $text;
+				ComponentbuilderHelper::xmlComment($fieldSetXML, $this->setLine(__LINE__) . " Metadata Fields");
+				$fieldsXML = $fieldSetXML->addChild('fields');
+				$fieldsXML->addAttribute('name', 'metadata');
+				$fieldsXML->addAttribute('label', 'JGLOBAL_FIELDSET_METADATA_OPTIONS');
+				$fieldsFieldSetXML = $fieldsXML->addChild('fieldset');
+				$fieldsFieldSetXML->addAttribute('name', 'vdmmetadata');
+				$fieldsFieldSetXML->addAttribute('label', 'JGLOBAL_FIELDSET_METADATA_OPTIONS');
+				// robots
+				if (!isset($this->fieldsNames[$view_name_single]['robots']))
+				{
+					ComponentbuilderHelper::xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Robots Field. Type: List (joomla)");
+					$robots = $fieldsFieldSetXML->addChild('field');
+					$attributes = array(
+						'name' => 'robots',
+						'type' => 'list',
+						'label' => 'JFIELD_METADATA_ROBOTS_LABEL',
+						'description' => 'JFIELD_METADATA_ROBOTS_DESC'
+					);
+					ComponentbuilderHelper::xmlAddAttributes($robots, $attributes);
+					// count the static field created
+					$this->fieldCount++;
+					$options = array(
+						'JGLOBAL_USE_GLOBAL' => '',
+						'JGLOBAL_INDEX_FOLLOW' => 'index, follow',
+						'JGLOBAL_NOINDEX_FOLLOW' => 'noindex, follow',
+						'JGLOBAL_INDEX_NOFOLLOW' => 'index, nofollow',
+						'JGLOBAL_NOINDEX_NOFOLLOW' => 'noindex, nofollow',
+					);
+					foreach ($options as $text => $value)
+					{
+						$option = $robots->addChild('option');
+						$option->addAttribute('value', $value);
+						$option[] = $text;
+					}
+				}
+				// author
+				if (!isset($this->fieldsNames[$view_name_single]['author']))
+				{
+					ComponentbuilderHelper::xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Author Field. Type: Text (joomla)");
+					$author = $fieldsFieldSetXML->addChild('field');
+					$attributes = array(
+						'name' => 'author',
+						'type' => 'text',
+						'label' => 'JAUTHOR',
+						'description' => 'JFIELD_METADATA_AUTHOR_DESC',
+						'size' => 20
+					);
+					ComponentbuilderHelper::xmlAddAttributes($author, $attributes);
+					// count the static field created
+					$this->fieldCount++;
+				}
+				// rights
+				if (!isset($this->fieldsNames[$view_name_single]['rights']))
+				{
+					ComponentbuilderHelper::xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla)");
+					$rights = $fieldsFieldSetXML->addChild('field');
+					$attributes = array(
+						'name' => 'rights',
+						'type' => 'textarea',
+						'label' => 'JFIELD_META_RIGHTS_LABEL',
+						'description' => 'JFIELD_META_RIGHTS_DESC',
+						'required' => 'false',
+						'filter' => 'string',
+						'cols' => 30,
+						'rows' => 2
+					);
+					ComponentbuilderHelper::xmlAddAttributes($rights, $attributes);
+					// count the static field created
+					$this->fieldCount++;
+				}
 			}
-			// author
-			ComponentbuilderHelper::xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Author Field. Type: Text (joomla)");
-			$author = $fieldsFieldSetXML->addChild('field');
-			$attributes = array(
-				'name' => 'author',
-				'type' => 'text',
-				'label' => 'JAUTHOR',
-				'description' => 'JFIELD_METADATA_AUTHOR_DESC',
-				'size' => 20
-			);
-			ComponentbuilderHelper::xmlAddAttributes($author, $attributes);
-			// count the static field created
-			$this->fieldCount++;
-			// rights
-			ComponentbuilderHelper::xmlComment($fieldsFieldSetXML, $this->setLine(__LINE__) . " Rights Field. Type: Textarea (joomla)");
-			$rights = $fieldsFieldSetXML->addChild('field');
-			$attributes = array(
-				'name' => 'rights',
-				'type' => 'textarea',
-				'label' => 'JFIELD_META_RIGHTS_LABEL',
-				'description' => 'JFIELD_META_RIGHTS_DESC',
-				'required' => 'false',
-				'filter' => 'string',
-				'cols' => 30,
-				'rows' => 2
-			);
-			ComponentbuilderHelper::xmlAddAttributes($rights, $attributes);
-			// count the static field created
-			$this->fieldCount++;
 		}
 		// return the set
 		return $this->xmlPrettyPrint($XML, 'fieldset');

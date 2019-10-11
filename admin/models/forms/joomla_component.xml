@@ -1487,12 +1487,6 @@
 				<option value="index, nofollow">JGLOBAL_INDEX_NOFOLLOW</option>
 				<option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>
 			</field>
-			<!-- Author Field. Type: Text (joomla) -->
-			<field name="author"
-				type="text"
-				label="JAUTHOR" description="JFIELD_METADATA_AUTHOR_DESC"
-				size="20"
-			/>
 			<!-- Rights Field. Type: Textarea (joomla) -->
 			<field name="rights" type="textarea" label="JFIELD_META_RIGHTS_LABEL"
 				description="JFIELD_META_RIGHTS_DESC" required="false" filter="string"

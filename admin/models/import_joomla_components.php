@@ -1045,7 +1045,6 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_WAS_SUCCESSFULLY_UNLOCKED', $file),  'success');
 				}
 			}
-			
 		}
 	}
 

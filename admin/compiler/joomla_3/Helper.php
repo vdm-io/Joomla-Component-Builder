@@ -17,6 +17,8 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Language\Language;
+use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -24,6 +26,7 @@ use Joomla\Utilities\ArrayHelper;
  */
 abstract class ###Component###Helper
 {###ADMIN_GLOBAL_EVENT_HELPER######CUSTOM_HELPER_SCRIPT######BOTH_CUSTOM_HELPER_SCRIPT###
+
 	/**
 	* Load the Component xml manifest.
 	**/

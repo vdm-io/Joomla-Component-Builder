@@ -177,7 +177,7 @@ class Interpretation extends Fields
 	 *
 	 * @var    array
 	 */
-	protected $permissionFields = array();
+	public $permissionFields = array();
 
 	/**
 	 * Custom Admin View List Link
@@ -4313,6 +4313,7 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "if ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3) . "\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->componentCodeName . "/uikit-v3/js/uikit'.\$size.'.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+			$setter .= PHP_EOL . $tabV . $this->_t(3) . "\$this->document->addScript(JURI::root(true) .'/media/com_" . $this->componentCodeName . "/uikit-v3/js/uikit-icons'.\$size.'.js', (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
 			if (2 == $this->uikit)
 			{
@@ -6066,6 +6067,19 @@ class Interpretation extends Fields
 			$fixUniqe[] = $this->_t(4) . "}";
 			$fixUniqe[] = $this->_t(3) . "}";
 			$fixUniqe[] = $this->_t(2) . "}";
+		
+//			$fixUniqe[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Update alias if still empty at this point";
+//			$fixUniqe[] = $this->_t(2) . "if (\$data['" . $alias . "'] == null || empty(\$data['" . $alias . "']))";
+//			$fixUniqe[] = $this->_t(2) . "{";
+//			$fixUniqe[] = $this->_t(3) . "if (JFactory::getConfig()->get('unicodeslugs') == 1)";
+//			$fixUniqe[] = $this->_t(3) . "{";
+//			$fixUniqe[] = $this->_t(4) . "\$data['" . $alias . "'] = JFilterOutput::stringURLUnicodeSlug(" . implode(' . " " . ', $titleData) . ");";
+//			$fixUniqe[] = $this->_t(3) . "}";
+//			$fixUniqe[] = $this->_t(3) . "else";
+//			$fixUniqe[] = $this->_t(3) . "{";
+//			$fixUniqe[] = $this->_t(4) . "\$data['" . $alias . "'] = JFilterOutput::stringURLSafe(" . implode(' . " " . ', $titleData) . ");";
+//			$fixUniqe[] = $this->_t(3) . "}";
+//			$fixUniqe[] = $this->_t(2) . "}";
 		}
 		// handel other uniqe fields
 		$fixUniqe[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Alter the uniqe field for save as copy";
@@ -6385,7 +6399,7 @@ class Interpretation extends Fields
 					$db_ .= PHP_EOL . $this->_t(1) . "`hits` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if view has access
-				if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
+				if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]) && !isset($this->fieldsNames[$view]['access']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1) . "`access` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
@@ -6397,49 +6411,66 @@ class Interpretation extends Fields
 				// check if metadata is added to this view
 				if (isset($this->metadataBuilder[$view]) && ComponentbuilderHelper::checkString($this->metadataBuilder[$view]))
 				{
-					$db_ .= PHP_EOL . $this->_t(1) . "`metakey` TEXT NOT NULL,";
-					$db_ .= PHP_EOL . $this->_t(1) . "`metadesc` TEXT NOT NULL,";
-					$db_ .= PHP_EOL . $this->_t(1) . "`metadata` TEXT NOT NULL,";
+					// check if default field was over written
+					if (!isset($this->fieldsNames[$view]['metakey']))
+					{
+						$db_ .= PHP_EOL . $this->_t(1) . "`metakey` TEXT NOT NULL,";
+					}
+					// check if default field was over written
+					if (!isset($this->fieldsNames[$view]['metadesc']))
+					{
+						$db_ .= PHP_EOL . $this->_t(1) . "`metadesc` TEXT NOT NULL,";
+					}
+					// check if default field was over written
+					if (!isset($this->fieldsNames[$view]['metadata']))
+					{
+						$db_ .= PHP_EOL . $this->_t(1) . "`metadata` TEXT NOT NULL,";
+					}
 				}
+				// TODO (we may want this to be dynamicly set)
 				$db_ .= PHP_EOL . $this->_t(1) . "PRIMARY KEY  (`id`)";
+				// check if a key was set for any of the default fields then we should not set it again
+				$check_keys_set = array();
 				if (isset($this->dbUniqueKeys[$view]) && ComponentbuilderHelper::checkArray($this->dbUniqueKeys[$view]))
 				{
 					foreach ($this->dbUniqueKeys[$view] as $nr => $key)
 					{
 						$db_ .= "," . PHP_EOL . $this->_t(1) . "UNIQUE KEY `idx_" . $key . "` (`" . $key . "`)";
+						$check_keys_set[$key] = $key;
 					}
-				}
-				// check if view has access
-				if (isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
-				{
-					$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_access` (`access`)";
-				}
-				// check if default field was over written
-				if (!isset($this->fieldsNames[$view]['checked_out']))
-				{
-					$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_checkout` (`checked_out`)";
-				}
-				// check if default field was over written
-				if (!isset($this->fieldsNames[$view]['created_by']))
-				{
-					$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_createdby` (`created_by`)";
-				}
-				// check if default field was over written
-				if (!isset($this->fieldsNames[$view]['modified_by']))
-				{
-					$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_modifiedby` (`modified_by`)";
-				}
-				// check if default field was over written
-				if (!isset($this->fieldsNames[$view]['published']))
-				{
-					$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_state` (`published`)";
 				}
 				if (isset($this->dbKeys[$view]) && ComponentbuilderHelper::checkArray($this->dbKeys[$view]))
 				{
 					foreach ($this->dbKeys[$view] as $nr => $key)
 					{
 						$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_" . $key . "` (`" . $key . "`)";
+						$check_keys_set[$key] = $key;
 					}
+				}
+				// check if view has access
+				if (!isset($check_keys_set['access']) && isset($this->accessBuilder[$view]) && ComponentbuilderHelper::checkString($this->accessBuilder[$view]))
+				{
+					$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_access` (`access`)";
+				}
+				// check if default field was over written
+				if (!isset($check_keys_set['checked_out']))
+				{
+					$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_checkout` (`checked_out`)";
+				}
+				// check if default field was over written
+				if (!isset($check_keys_set['created_by']))
+				{
+					$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_createdby` (`created_by`)";
+				}
+				// check if default field was over written
+				if (!isset($check_keys_set['modified_by']))
+				{
+					$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_modifiedby` (`modified_by`)";
+				}
+				// check if default field was over written
+				if (!isset($check_keys_set['published']))
+				{
+					$db_ .= "," . PHP_EOL . $this->_t(1) . "KEY `idx_state` (`published`)";
 				}
 				// easy bucket
 				$easy = array();
@@ -11561,17 +11592,31 @@ class Interpretation extends Fields
 		// set component name
 		$component = $this->componentCodeName;
 		// allways load these
-		$allow = array();
-		$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the form.";
-		$allow[] = $this->_t(2) . "\$form = \$this->loadForm('com_" . $component . "." . $viewName_single . "', '" . $viewName_single . "', \$options);";
-		$allow[] = PHP_EOL . $this->_t(2) . "if (empty(\$form))";
-		$allow[] = $this->_t(2) . "{";
-		$allow[] = $this->_t(3) . "return false;";
-		$allow[] = $this->_t(2) . "}";
+		$getForm = array();
+		$getForm[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " // check if xpath was set in options";
+		$getForm[] = $this->_t(2) . "\$xpath = false;";
+		$getForm[] = $this->_t(2) . "if (isset(\$options['xpath']))";
+		$getForm[] = $this->_t(2) . "{";
+		$getForm[] = $this->_t(3) . "\$xpath = \$options['xpath'];";
+		$getForm[] = $this->_t(3) . "unset(\$options['xpath']);";
+		$getForm[] = $this->_t(2) . "}";
+		$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " // check if clear form was set in options";
+		$getForm[] = $this->_t(2) . "\$clear = false;";
+		$getForm[] = $this->_t(2) . "if (isset(\$options['clear']))";
+		$getForm[] = $this->_t(2) . "{";
+		$getForm[] = $this->_t(3) . "\$clear = \$options['clear'];";
+		$getForm[] = $this->_t(3) . "unset(\$options['clear']);";
+		$getForm[] = $this->_t(2) . "}";
+		$getForm[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the form.";
+		$getForm[] = $this->_t(2) . "\$form = \$this->loadForm('com_" . $component . "." . $viewName_single . "', '" . $viewName_single . "', \$options, \$clear, \$xpath);";
+		$getForm[] = PHP_EOL . $this->_t(2) . "if (empty(\$form))";
+		$getForm[] = $this->_t(2) . "{";
+		$getForm[] = $this->_t(3) . "return false;";
+		$getForm[] = $this->_t(2) . "}";
 		// load license locker
 		if ($this->componentData->add_license && $this->componentData->license_type == 3 && isset($this->fileContentDynamic[$viewName_single][$this->hhh . 'BOOLMETHOD' . $this->hhh]))
 		{
-			$allow[] = $this->checkStatmentLicenseLocked($this->fileContentDynamic[$viewName_single][$this->hhh . 'BOOLMETHOD' . $this->hhh]);
+			$getForm[] = $this->checkStatmentLicenseLocked($this->fileContentDynamic[$viewName_single][$this->hhh . 'BOOLMETHOD' . $this->hhh]);
 		}
 		// setup correct core target
 		$coreLoad = false;
@@ -11594,152 +11639,152 @@ class Interpretation extends Fields
 				$otherView = $viewName_single;
 			}
 			// setup the category script
-			$allow[] = PHP_EOL . $this->_t(2) . "\$jinput = JFactory::getApplication()->input;";
-			$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
-			$allow[] = $this->_t(2) . "if (\$jinput->get('a_id'))";
-			$allow[] = $this->_t(2) . "{";
-			$allow[] = $this->_t(3) . "\$id = \$jinput->get('a_id', 0, 'INT');";
-			$allow[] = $this->_t(2) . "}";
-			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " The back end uses id so we use that the rest of the time and set it to 0 by default.";
-			$allow[] = $this->_t(2) . "else";
-			$allow[] = $this->_t(2) . "{";
-			$allow[] = $this->_t(3) . "\$id = \$jinput->get('id', 0, 'INT');";
-			$allow[] = $this->_t(2) . "}";
-			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Determine correct permissions to check.";
-			$allow[] = $this->_t(2) . "if (\$this->getState('" . $viewName_single . ".id'))";
-			$allow[] = $this->_t(2) . "{";
-			$allow[] = $this->_t(3) . "\$id = \$this->getState('" . $viewName_single . ".id');";
-			$allow[] = PHP_EOL . $this->_t(3) . "\$catid = 0;";
-			$allow[] = $this->_t(3) . "if (isset(\$this->getItem(\$id)->catid))";
-			$allow[] = $this->_t(3) . "{";
-			$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " set category id";
-			$allow[] = $this->_t(4) . "\$catid = \$this->getItem(\$id)->catid;";
-			$allow[] = PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " Existing record. Can only edit in selected categories.";
-			$allow[] = $this->_t(4) . "\$form->setFieldAttribute('catid', 'action', 'core.edit');";
-			$allow[] = PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " Existing record. Can only edit own items in selected categories.";
-			$allow[] = $this->_t(4) . "\$form->setFieldAttribute('catid', 'action', 'core.edit.own');";
-			$allow[] = $this->_t(3) . "}";
-			$allow[] = $this->_t(2) . "}";
-			$allow[] = $this->_t(2) . "else";
-			$allow[] = $this->_t(2) . "{";
-			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " New record. Can only create in selected categories.";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('catid', 'action', 'core.create');";
-			$allow[] = $this->_t(2) . "}";
-			$allow[] = PHP_EOL . $this->_t(2) . "\$user = JFactory::getUser();";
-			$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Check for existing item.";
-			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit State access controls.";
+			$getForm[] = PHP_EOL . $this->_t(2) . "\$jinput = JFactory::getApplication()->input;";
+			$getForm[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
+			$getForm[] = $this->_t(2) . "if (\$jinput->get('a_id'))";
+			$getForm[] = $this->_t(2) . "{";
+			$getForm[] = $this->_t(3) . "\$id = \$jinput->get('a_id', 0, 'INT');";
+			$getForm[] = $this->_t(2) . "}";
+			$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " The back end uses id so we use that the rest of the time and set it to 0 by default.";
+			$getForm[] = $this->_t(2) . "else";
+			$getForm[] = $this->_t(2) . "{";
+			$getForm[] = $this->_t(3) . "\$id = \$jinput->get('id', 0, 'INT');";
+			$getForm[] = $this->_t(2) . "}";
+			$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Determine correct permissions to check.";
+			$getForm[] = $this->_t(2) . "if (\$this->getState('" . $viewName_single . ".id'))";
+			$getForm[] = $this->_t(2) . "{";
+			$getForm[] = $this->_t(3) . "\$id = \$this->getState('" . $viewName_single . ".id');";
+			$getForm[] = PHP_EOL . $this->_t(3) . "\$catid = 0;";
+			$getForm[] = $this->_t(3) . "if (isset(\$this->getItem(\$id)->catid))";
+			$getForm[] = $this->_t(3) . "{";
+			$getForm[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " set category id";
+			$getForm[] = $this->_t(4) . "\$catid = \$this->getItem(\$id)->catid;";
+			$getForm[] = PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " Existing record. Can only edit in selected categories.";
+			$getForm[] = $this->_t(4) . "\$form->setFieldAttribute('catid', 'action', 'core.edit');";
+			$getForm[] = PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " Existing record. Can only edit own items in selected categories.";
+			$getForm[] = $this->_t(4) . "\$form->setFieldAttribute('catid', 'action', 'core.edit.own');";
+			$getForm[] = $this->_t(3) . "}";
+			$getForm[] = $this->_t(2) . "}";
+			$getForm[] = $this->_t(2) . "else";
+			$getForm[] = $this->_t(2) . "{";
+			$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " New record. Can only create in selected categories.";
+			$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('catid', 'action', 'core.create');";
+			$getForm[] = $this->_t(2) . "}";
+			$getForm[] = PHP_EOL . $this->_t(2) . "\$user = JFactory::getUser();";
+			$getForm[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Check for existing item.";
+			$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit State access controls.";
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder[$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit.state']]) && in_array($viewName_single, $this->permissionBuilder[$core['core.edit.state']]))
 			{
-				$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $core['core.edit.state'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
-				$allow[] = $this->_t(3) . "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_" . $component . "." . $viewName_list . ".category.' . (int) \$catid))";
-				$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $core['core.edit.state'] . "', 'com_" . $component . "')))";
+				$getForm[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $core['core.edit.state'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+				$getForm[] = $this->_t(3) . "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_" . $component . "." . $viewName_list . ".category.' . (int) \$catid))";
+				$getForm[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $core['core.edit.state'] . "', 'com_" . $component . "')))";
 			}
 			else
 			{
-				$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('core.edit.state', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
-				$allow[] = $this->_t(3) . "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_" . $component . "." . $viewName_list . ".category.' . (int) \$catid))";
-				$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('core.edit.state', 'com_" . $component . "')))";
+				$getForm[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('core.edit.state', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+				$getForm[] = $this->_t(3) . "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_" . $component . "." . $viewName_list . ".category.' . (int) \$catid))";
+				$getForm[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('core.edit.state', 'com_" . $component . "')))";
 			}
-			$allow[] = $this->_t(2) . "{";
-			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('ordering', 'disabled', 'true');";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('published', 'disabled', 'true');";
-			$allow[] = PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('ordering', 'filter', 'unset');";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('published', 'filter', 'unset');";
-			$allow[] = $this->_t(2) . "}";
+			$getForm[] = $this->_t(2) . "{";
+			$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
+			$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('ordering', 'disabled', 'true');";
+			$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('published', 'disabled', 'true');";
+			$getForm[] = PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+			$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('ordering', 'filter', 'unset');";
+			$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('published', 'filter', 'unset');";
+			$getForm[] = $this->_t(2) . "}";
 		}
 		else
 		{
-			$allow[] = PHP_EOL . $this->_t(2) . "\$jinput = JFactory::getApplication()->input;";
-			$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
-			$allow[] = $this->_t(2) . "if (\$jinput->get('a_id'))";
-			$allow[] = $this->_t(2) . "{";
-			$allow[] = $this->_t(3) . "\$id = \$jinput->get('a_id', 0, 'INT');";
-			$allow[] = $this->_t(2) . "}";
-			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " The back end uses id so we use that the rest of the time and set it to 0 by default.";
-			$allow[] = $this->_t(2) . "else";
-			$allow[] = $this->_t(2) . "{";
-			$allow[] = $this->_t(3) . "\$id = \$jinput->get('id', 0, 'INT');";
-			$allow[] = $this->_t(2) . "}";
-			$allow[] = PHP_EOL . $this->_t(2) . "\$user = JFactory::getUser();";
-			$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Check for existing item.";
-			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit State access controls.";
+			$getForm[] = PHP_EOL . $this->_t(2) . "\$jinput = JFactory::getApplication()->input;";
+			$getForm[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
+			$getForm[] = $this->_t(2) . "if (\$jinput->get('a_id'))";
+			$getForm[] = $this->_t(2) . "{";
+			$getForm[] = $this->_t(3) . "\$id = \$jinput->get('a_id', 0, 'INT');";
+			$getForm[] = $this->_t(2) . "}";
+			$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " The back end uses id so we use that the rest of the time and set it to 0 by default.";
+			$getForm[] = $this->_t(2) . "else";
+			$getForm[] = $this->_t(2) . "{";
+			$getForm[] = $this->_t(3) . "\$id = \$jinput->get('id', 0, 'INT');";
+			$getForm[] = $this->_t(2) . "}";
+			$getForm[] = PHP_EOL . $this->_t(2) . "\$user = JFactory::getUser();";
+			$getForm[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Check for existing item.";
+			$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit State access controls.";
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.state']) && isset($this->permissionBuilder[$core['core.edit.state']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit.state']]) && in_array($viewName_single, $this->permissionBuilder[$core['core.edit.state']]))
 			{
-				$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $core['core.edit.state'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
-				$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $core['core.edit.state'] . "', 'com_" . $component . "')))";
+				$getForm[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $core['core.edit.state'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+				$getForm[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $core['core.edit.state'] . "', 'com_" . $component . "')))";
 			}
 			else
 			{
-				$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('core.edit.state', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
-				$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('core.edit.state', 'com_" . $component . "')))";
+				$getForm[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('core.edit.state', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+				$getForm[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('core.edit.state', 'com_" . $component . "')))";
 			}
-			$allow[] = $this->_t(2) . "{";
-			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('ordering', 'disabled', 'true');";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('published', 'disabled', 'true');";
-			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('ordering', 'filter', 'unset');";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('published', 'filter', 'unset');";
-			$allow[] = $this->_t(2) . "}";
+			$getForm[] = $this->_t(2) . "{";
+			$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
+			$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('ordering', 'disabled', 'true');";
+			$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('published', 'disabled', 'true');";
+			$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+			$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('ordering', 'filter', 'unset');";
+			$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('published', 'filter', 'unset');";
+			$getForm[] = $this->_t(2) . "}";
 		}
-		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " If this is a new item insure the greated by is set.";
-		$allow[] = $this->_t(2) . "if (0 == \$id)";
-		$allow[] = $this->_t(2) . "{";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set the created_by to this user";
-		$allow[] = $this->_t(3) . "\$form->setValue('created_by', null, \$user->id);";
-		$allow[] = $this->_t(2) . "}";
-		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit Creaded By access controls.";
+		$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " If this is a new item insure the greated by is set.";
+		$getForm[] = $this->_t(2) . "if (0 == \$id)";
+		$getForm[] = $this->_t(2) . "{";
+		$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set the created_by to this user";
+		$getForm[] = $this->_t(3) . "\$form->setValue('created_by', null, \$user->id);";
+		$getForm[] = $this->_t(2) . "}";
+		$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit Creaded By access controls.";
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.edit.created_by']) && isset($this->permissionBuilder[$core['core.edit.created_by']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit.created_by']]) && in_array($viewName_single, $this->permissionBuilder[$core['core.edit.created_by']]))
 		{
-			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $core['core.edit.created_by'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
-			$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $core['core.edit.created_by'] . "', 'com_" . $component . "')))";
+			$getForm[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $core['core.edit.created_by'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+			$getForm[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $core['core.edit.created_by'] . "', 'com_" . $component . "')))";
 		}
 		else
 		{
-			$allow[] = $this->_t(2) . "if (!\$user->authorise('core.edit.created_by', 'com_" . $component . "'))";
+			$getForm[] = $this->_t(2) . "if (!\$user->authorise('core.edit.created_by', 'com_" . $component . "'))";
 		}
-		$allow[] = $this->_t(2) . "{";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
-		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('created_by', 'disabled', 'true');";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
-		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('created_by', 'readonly', 'true');";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
-		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('created_by', 'filter', 'unset');";
-		$allow[] = $this->_t(2) . "}";
-		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit Creaded Date access controls.";
+		$getForm[] = $this->_t(2) . "{";
+		$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
+		$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('created_by', 'disabled', 'true');";
+		$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
+		$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('created_by', 'readonly', 'true');";
+		$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+		$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('created_by', 'filter', 'unset');";
+		$getForm[] = $this->_t(2) . "}";
+		$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit Creaded Date access controls.";
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.edit.created']) && isset($this->permissionBuilder[$core['core.edit.created']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit.created']]) && in_array($viewName_single, $this->permissionBuilder[$core['core.edit.created']]))
 		{
-			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $core['core.edit.created'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
-			$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $core['core.edit.created'] . "', 'com_" . $component . "')))";
+			$getForm[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $core['core.edit.created'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+			$getForm[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $core['core.edit.created'] . "', 'com_" . $component . "')))";
 		}
 		else
 		{
-			$allow[] = $this->_t(2) . "if (!\$user->authorise('core.edit.created', 'com_" . $component . "'))";
+			$getForm[] = $this->_t(2) . "if (!\$user->authorise('core.edit.created', 'com_" . $component . "'))";
 		}
-		$allow[] = $this->_t(2) . "{";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
-		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('created', 'disabled', 'true');";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
-		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('created', 'filter', 'unset');";
-		$allow[] = $this->_t(2) . "}";
+		$getForm[] = $this->_t(2) . "{";
+		$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
+		$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('created', 'disabled', 'true');";
+		$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+		$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('created', 'filter', 'unset');";
+		$getForm[] = $this->_t(2) . "}";
 		// check if the item has access permissions.
 		if ($coreLoad && isset($core['core.edit.access']) && isset($this->permissionBuilder[$core['core.edit.access']]) && ComponentbuilderHelper::checkArray($this->permissionBuilder[$core['core.edit.access']]) && in_array($viewName_single, $this->permissionBuilder[$core['core.edit.access']]))
 		{
-			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit Access 'access' controls.";
-			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $core['core.edit.access'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
-			$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $core['core.edit.access'] . "', 'com_" . $component . "')))";
-			$allow[] = $this->_t(2) . "{";
-			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('access', 'disabled', 'true');";
-			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('access', 'filter', 'unset');";
-			$allow[] = $this->_t(2) . "}";
+			$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit Access 'access' controls.";
+			$getForm[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $core['core.edit.access'] . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+			$getForm[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $core['core.edit.access'] . "', 'com_" . $component . "')))";
+			$getForm[] = $this->_t(2) . "{";
+			$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
+			$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('access', 'disabled', 'true');";
+			$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+			$getForm[] = $this->_t(3) . "\$form->setFieldAttribute('access', 'filter', 'unset');";
+			$getForm[] = $this->_t(2) . "}";
 		}
 		// handel the fields permissions
 		if (isset($this->permissionFields[$viewName_single]) && ComponentbuilderHelper::checkArray($this->permissionFields[$viewName_single]))
@@ -11751,13 +11796,13 @@ class Interpretation extends Fields
 					switch ($permission_option)
 					{
 						case 'edit':
-							$this->setPermissionEditFields($allow, $viewName_single, $fieldName, $fieldType, $component);
+							$this->setPermissionEditFields($getForm, $viewName_single, $fieldName, $fieldType, $component);
 						break;
 						case 'access':
-							$this->setPermissionAccessFields($allow, $viewName_single, $fieldName, $fieldType, $component);
+							$this->setPermissionAccessFields($getForm, $viewName_single, $fieldName, $fieldType, $component);
 						break;
 						case 'view':
-							$this->setPermissionViewFields($allow, $viewName_single, $fieldName, $fieldType, $component);
+							$this->setPermissionViewFields($getForm, $viewName_single, $fieldName, $fieldType, $component);
 						break;
 						case 'edit.own':
 						case 'access.own':
@@ -11768,55 +11813,59 @@ class Interpretation extends Fields
 			}
 		}
 		// add the redirect trick to set the field of origin
-		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Only load these values if no id is found";
-		$allow[] = $this->_t(2) . "if (0 == \$id)";
-		$allow[] = $this->_t(2) . "{";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set redirected view name";
-		$allow[] = $this->_t(3) . "\$redirectedView = \$jinput->get('ref', null, 'STRING');";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set field name (or fall back to view name)";
-		$allow[] = $this->_t(3) . "\$redirectedField = \$jinput->get('field', \$redirectedView, 'STRING');";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set redirected view id";
-		$allow[] = $this->_t(3) . "\$redirectedId = \$jinput->get('refid', 0, 'INT');";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set field id (or fall back to redirected view id)";
-		$allow[] = $this->_t(3) . "\$redirectedValue = \$jinput->get('field_id', \$redirectedId, 'INT');";
-		$allow[] = $this->_t(3) . "if (0 != \$redirectedValue && \$redirectedField)";
-		$allow[] = $this->_t(3) . "{";
-		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Now set the local-redirected field default value";
-		$allow[] = $this->_t(4) . "\$form->setValue(\$redirectedField, null, \$redirectedValue);";
-		$allow[] = $this->_t(3) . "}";
+		$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Only load these values if no id is found";
+		$getForm[] = $this->_t(2) . "if (0 == \$id)";
+		$getForm[] = $this->_t(2) . "{";
+		$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set redirected view name";
+		$getForm[] = $this->_t(3) . "\$redirectedView = \$jinput->get('ref', null, 'STRING');";
+		$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set field name (or fall back to view name)";
+		$getForm[] = $this->_t(3) . "\$redirectedField = \$jinput->get('field', \$redirectedView, 'STRING');";
+		$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set redirected view id";
+		$getForm[] = $this->_t(3) . "\$redirectedId = \$jinput->get('refid', 0, 'INT');";
+		$getForm[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Set field id (or fall back to redirected view id)";
+		$getForm[] = $this->_t(3) . "\$redirectedValue = \$jinput->get('field_id', \$redirectedId, 'INT');";
+		$getForm[] = $this->_t(3) . "if (0 != \$redirectedValue && \$redirectedField)";
+		$getForm[] = $this->_t(3) . "{";
+		$getForm[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Now set the local-redirected field default value";
+		$getForm[] = $this->_t(4) . "\$form->setValue(\$redirectedField, null, \$redirectedValue);";
+		$getForm[] = $this->_t(3) . "}";
 		// load custom script if found
-		$allow[] = $this->_t(2) . "}" . $this->getCustomScriptBuilder('php_getform', $viewName_single, PHP_EOL);
+		$getForm[] = $this->_t(2) . "}" . $this->getCustomScriptBuilder('php_getform', $viewName_single, PHP_EOL);
 		// setup the default script
-		$allow[] = $this->_t(2) . "return \$form;";
+		$getForm[] = $this->_t(2) . "return \$form;";
 
-		return implode(PHP_EOL, $allow);
+		return implode(PHP_EOL, $getForm);
 	}
 	
 	protected function setPermissionEditFields(&$allow, $viewName_single, $fieldName, $fieldType, $component)
 	{
-		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit " . ComponentbuilderHelper::safeString($fieldName, 'W') . " access controls.";
-		$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $viewName_single . ".edit." . $fieldName . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
-		$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $viewName_single . ".edit." . $fieldName . "', 'com_" . $component . "')))";
-		$allow[] = $this->_t(2) . "{";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
-		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'disabled', 'true');";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
-		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'readonly', 'true');";
-		if ('radio' === $fieldType || 'repeatable' === $fieldType)
+		// only for fields that can be edited
+		if (!ComponentbuilderHelper::fieldCheck($fieldType, 'spacer'))
 		{
-			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable radio button for display.";
-			$allow[] = $this->_t(3) . "\$class = \$form->getFieldAttribute('" . $fieldName . "', 'class', '');";
-			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'class', \$class.' disabled no-click');";
+			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on Edit " . ComponentbuilderHelper::safeString($fieldName, 'W') . " access controls.";
+			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $viewName_single . ".edit." . $fieldName . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+			$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $viewName_single . ".edit." . $fieldName . "', 'com_" . $component . "')))";
+			$allow[] = $this->_t(2) . "{";
+			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
+			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'disabled', 'true');";
+			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable fields for display.";
+			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'readonly', 'true');";
+			if ('radio' === $fieldType || 'repeatable' === $fieldType)
+			{
+				$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Disable radio button for display.";
+				$allow[] = $this->_t(3) . "\$class = \$form->getFieldAttribute('" . $fieldName . "', 'class', '');";
+				$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'class', \$class.' disabled no-click');";
+			}
+			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " If there is no value continue.";
+			$allow[] = $this->_t(3) . "if (!\$form->getValue('" . $fieldName . "'))";
+			$allow[] = $this->_t(3) . "{";
+			$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+			$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'filter', 'unset');";
+			$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+			$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'required', 'false');";
+			$allow[] = $this->_t(3) . "}";
+			$allow[] = $this->_t(2) . "}";
 		}
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " If there is no value continue.";
-		$allow[] = $this->_t(3) . "if (!\$form->getValue('" . $fieldName . "'))";
-		$allow[] = $this->_t(3) . "{";
-		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
-		$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'filter', 'unset');";
-		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
-		$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'required', 'false');";
-		$allow[] = $this->_t(3) . "}";
-		$allow[] = $this->_t(2) . "}";
 	}
 	
 	protected function setPermissionAccessFields(&$allow, $viewName_single, $fieldName, $fieldType, $component)
@@ -11832,30 +11881,43 @@ class Interpretation extends Fields
 	
 	protected function setPermissionViewFields(&$allow, $viewName_single, $fieldName, $fieldType, $component)
 	{
-		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on View " . ComponentbuilderHelper::safeString($fieldName, 'W') . " access controls.";
-		$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $viewName_single . ".view." . $fieldName . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
-		$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $viewName_single . ".view." . $fieldName . "', 'com_" . $component . "')))";
-		$allow[] = $this->_t(2) . "{";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Make the field hidded.";
-		$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'type', 'hidden');";
-		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " If there is no value continue.";
-		$allow[] = $this->_t(3) . "if (!(\$val = \$form->getValue('" . $fieldName . "')))";
-		$allow[] = $this->_t(3) . "{";
-		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
-		$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'filter', 'unset');";
-		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
-		$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'required', 'false');";
-		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Make sure";
-		$allow[] = $this->_t(4) . "\$form->setValue('" . $fieldName . "', null, '');";
-		$allow[] = $this->_t(3) . "}";
-		$allow[] = $this->_t(3) . "elseif (" . ucfirst($component) . "Helper::checkArray(\$val))";
-		$allow[] = $this->_t(3) . "{";
-		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " We have to unset then (TODO)";
-		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Hiddend field can not handel array value";
-		$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Even if we convert to json we get an error";
-		$allow[] = $this->_t(4) . "\$form->removeField('" . $fieldName . "');";
-		$allow[] = $this->_t(3) . "}";
-		$allow[] = $this->_t(2) . "}";
+		if (ComponentbuilderHelper::fieldCheck($fieldType, 'spacer'))
+		{
+			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on View " . ComponentbuilderHelper::safeString($fieldName, 'W') . " access controls.";
+			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $viewName_single . ".view." . $fieldName . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+			$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $viewName_single . ".view." . $fieldName . "', 'com_" . $component . "')))";
+			$allow[] = $this->_t(2) . "{";
+			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Remove the field";
+			$allow[] = $this->_t(3) . "\$form->removeField('" . $fieldName . "');";
+			$allow[] = $this->_t(2) . "}";
+		}
+		else
+		{
+			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Modify the form based on View " . ComponentbuilderHelper::safeString($fieldName, 'W') . " access controls.";
+			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('" . $viewName_single . ".view." . $fieldName . "', 'com_" . $component . "." . $viewName_single . ".' . (int) \$id))";
+			$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('" . $viewName_single . ".view." . $fieldName . "', 'com_" . $component . "')))";
+			$allow[] = $this->_t(2) . "{";
+			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " Make the field hidded.";
+			$allow[] = $this->_t(3) . "\$form->setFieldAttribute('" . $fieldName . "', 'type', 'hidden');";
+			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__) . " If there is no value continue.";
+			$allow[] = $this->_t(3) . "if (!(\$val = \$form->getValue('" . $fieldName . "')))";
+			$allow[] = $this->_t(3) . "{";
+			$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+			$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'filter', 'unset');";
+			$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Disable fields while saving.";
+			$allow[] = $this->_t(4) . "\$form->setFieldAttribute('" . $fieldName . "', 'required', 'false');";
+			$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Make sure";
+			$allow[] = $this->_t(4) . "\$form->setValue('" . $fieldName . "', null, '');";
+			$allow[] = $this->_t(3) . "}";
+			$allow[] = $this->_t(3) . "elseif (" . ucfirst($component) . "Helper::checkArray(\$val))";
+			$allow[] = $this->_t(3) . "{";
+			$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " We have to unset then (TODO)";
+			$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Hiddend field can not handel array value";
+			$allow[] = $this->_t(4) . "//" . $this->setLine(__LINE__) . " Even if we convert to json we get an error";
+			$allow[] = $this->_t(4) . "\$form->removeField('" . $fieldName . "');";
+			$allow[] = $this->_t(3) . "}";
+			$allow[] = $this->_t(2) . "}";
+		}
 	}
 
 	public function setJmodelAdminAllowEdit($viewName_single, $viewName_list)
@@ -13796,9 +13858,9 @@ class Interpretation extends Fields
 			{
 				if (!isset($this->customAdminAdded[$menu['settings']->code]))
 				{
-					if ($custom = $this->setCustomAdminSubMenu($view, $codeName, $lang, $nr, $menu, 'customView'))
+					if (($_custom = $this->setCustomAdminSubMenu($view, $codeName, $lang, $nr, $menu, 'customView')) !== false)
 					{
-						break;
+						$custom .= $_custom;
 					}
 				}
 			}
@@ -13807,10 +13869,9 @@ class Interpretation extends Fields
 		{
 			foreach ($this->componentData->custommenus as $nr => $menu)
 			{
-				if ($custom2 = $this->setCustomAdminSubMenu($view, $codeName, $lang, $nr, $menu, 'customMenu'))
+				if (($_custom = $this->setCustomAdminSubMenu($view, $codeName, $lang, $nr, $menu, 'customMenu')) !== false)
 				{
-					$custom = $custom . $custom2;
-					break;
+					$custom .= $_custom;
 				}
 			}
 		}
@@ -13833,7 +13894,6 @@ class Interpretation extends Fields
 			$nameList = $menu['settings']->code;
 			$nameUpper = $menu['settings']->CODE;
 		}
-
 		if (isset($menu['submenu']) && $menu['submenu'] == 1 && $view['adminview'] == $menu['before'])
 		{
 			// setup access defaults

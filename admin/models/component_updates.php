@@ -161,8 +161,23 @@ class ComponentbuilderModelComponent_updates extends JModelAdmin
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
+		// // check if xpath was set in options
+		$xpath = false;
+		if (isset($options['xpath']))
+		{
+			$xpath = $options['xpath'];
+			unset($options['xpath']);
+		}
+		// // check if clear form was set in options
+		$clear = false;
+		if (isset($options['clear']))
+		{
+			$clear = $options['clear'];
+			unset($options['clear']);
+		}
+
 		// Get the form.
-		$form = $this->loadForm('com_componentbuilder.component_updates', 'component_updates', $options);
+		$form = $this->loadForm('com_componentbuilder.component_updates', 'component_updates', $options, $clear, $xpath);
 
 		if (empty($form))
 		{
