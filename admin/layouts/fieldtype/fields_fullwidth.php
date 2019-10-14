@@ -74,7 +74,7 @@ $can = ComponentbuilderHelper::getActions('field');
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL'); ?>
 		</th>
 		<th data-breakpoints="all" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELD_CATEGORY'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'); ?>
 		</th>
 		<th width="10" data-breakpoints="xs sm md">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_STATUS'); ?>

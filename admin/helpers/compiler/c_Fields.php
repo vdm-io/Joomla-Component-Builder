@@ -2800,7 +2800,7 @@ class Fields extends Structure
 			}
 			else
 			{
-				$tempName = $view_name_single . ' category';
+				$tempName = $view_name_list . ' categories';
 			}
 			// set lang
 			$listLangName = $langView . '_' . ComponentbuilderHelper::safeFieldName($tempName, true);

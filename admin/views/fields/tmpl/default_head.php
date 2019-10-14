@@ -48,7 +48,7 @@ defined('_JEXEC') or die('Restricted access');
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELD_STORE_LABEL', 'store', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap" >
-			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELD_FIELD_CATEGORY', 'catid', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES', 'catid', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

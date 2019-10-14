@@ -3787,22 +3787,40 @@ abstract class ComponentbuilderHelper
 	/**
 	* 	 Composer Switch
 	**/
-	protected static $composer = false; 
+	protected static $composer = array(); 
 
 	/**
 	* 	Load the Composer Vendors
 	**/
-	public static function composerAutoload()
+	public static function composerAutoload($target = 'vdm_io')
 	{
-		// insure we load the composer vendors only once
-		if (!self::$composer)
+		// insure we load the composer vendor only once
+		if (!isset(self::$composer[$target]))
 		{
-			// load the autoloader
-			require_once JPATH_SITE.'/libraries/vdm_io/vendor/autoload.php';
-			// do not load again
-			self::$composer = true;
+			// get the function name
+			$functionName = self::safeString('compose' . $target);
+			// check if method exist
+			if (method_exists(__CLASS__, $functionName))
+			{
+				return self::{$functionName}();
+			}
+			return false;
 		}
+		return self::$composer[$target];
 	}
+
+
+	/**
+	* 	Load the Composer Vendor vdm_io
+	**/
+	protected static function composevdm_io()
+	{
+		// load the autoloader for vdm_io
+		require_once JPATH_SITE . '/libraries/vdm_io/vendor/autoload.php';
+		// do not load again
+		self::$composer['vdm_io'] = true;
+	}
+
 
 	/**
 	 * bc math wrapper (very basic not for accounting)

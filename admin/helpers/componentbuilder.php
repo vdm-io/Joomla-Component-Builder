@@ -3787,22 +3787,40 @@ abstract class ComponentbuilderHelper
 	/**
 	* 	 Composer Switch
 	**/
-	protected static $composer = false; 
+	protected static $composer = array(); 
 
 	/**
 	* 	Load the Composer Vendors
 	**/
-	public static function composerAutoload()
+	public static function composerAutoload($target = 'vdm_io')
 	{
-		// insure we load the composer vendors only once
-		if (!self::$composer)
+		// insure we load the composer vendor only once
+		if (!isset(self::$composer[$target]))
 		{
-			// load the autoloader
-			require_once JPATH_SITE.'/libraries/vdm_io/vendor/autoload.php';
-			// do not load again
-			self::$composer = true;
+			// get the function name
+			$functionName = self::safeString('compose' . $target);
+			// check if method exist
+			if (method_exists(__CLASS__, $functionName))
+			{
+				return self::{$functionName}();
+			}
+			return false;
 		}
+		return self::$composer[$target];
 	}
+
+
+	/**
+	* 	Load the Composer Vendor vdm_io
+	**/
+	protected static function composevdm_io()
+	{
+		// load the autoloader for vdm_io
+		require_once JPATH_SITE . '/libraries/vdm_io/vendor/autoload.php';
+		// do not load again
+		self::$composer['vdm_io'] = true;
+	}
+
 
 	/**
 	 * bc math wrapper (very basic not for accounting)
@@ -5614,12 +5632,12 @@ abstract class ComponentbuilderHelper
 		if ($user->authorise('field.access', 'com_componentbuilder') && $user->authorise('field.submenu', 'com_componentbuilder'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_FIELDS'), 'index.php?option=com_componentbuilder&view=fields', $submenu === 'fields');
-			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_FIELD_FIELD_CATEGORY'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fields', $submenu === 'categories.fields');
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fields', $submenu === 'categories.fields');
 		}
 		if ($user->authorise('fieldtype.access', 'com_componentbuilder') && $user->authorise('fieldtype.submenu', 'com_componentbuilder'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_FIELDTYPES'), 'index.php?option=com_componentbuilder&view=fieldtypes', $submenu === 'fieldtypes');
-			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPE_CATEGORY'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fieldtypes', $submenu === 'categories.fieldtypes');
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPES_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fieldtypes', $submenu === 'categories.fieldtypes');
 		}
 		if ($user->authorise('language_translation.access', 'com_componentbuilder') && $user->authorise('language_translation.submenu', 'com_componentbuilder'))
 		{

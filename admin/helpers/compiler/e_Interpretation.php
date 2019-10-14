@@ -13394,7 +13394,7 @@ class Interpretation extends Fields
 					{
 						$otherViews = $name_list;
 						// build lang
-						$langName = 'Category &nbsp;For<br />' . ComponentbuilderHelper::safeString($otherViews, 'W');
+						$langName = 'Categories&nbsp;For<br />' . ComponentbuilderHelper::safeString($otherViews, 'W');
 					}
 					if (!in_array($otherViews, $catArray))
 					{
