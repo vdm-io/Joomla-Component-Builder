@@ -157,6 +157,7 @@ class JFormFieldLibrary extends JFormFieldList
 				$options[] = JHtml::_('select.option', $item->id, $item->library_name);
 			}
 		}
+
 		return $options;
 	}
 }

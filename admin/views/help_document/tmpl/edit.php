@@ -116,93 +116,93 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 <script type="text/javascript">
 
-// #jform_location listeners for location_vvvvwdc function
+// #jform_location listeners for location_vvvvwdn function
 jQuery('#jform_location').on('keyup',function()
 {
-	var location_vvvvwdc = jQuery("#jform_location input[type='radio']:checked").val();
-	vvvvwdc(location_vvvvwdc);
+	var location_vvvvwdn = jQuery("#jform_location input[type='radio']:checked").val();
+	vvvvwdn(location_vvvvwdn);
 
 });
 jQuery('#adminForm').on('change', '#jform_location',function (e)
 {
 	e.preventDefault();
-	var location_vvvvwdc = jQuery("#jform_location input[type='radio']:checked").val();
-	vvvvwdc(location_vvvvwdc);
+	var location_vvvvwdn = jQuery("#jform_location input[type='radio']:checked").val();
+	vvvvwdn(location_vvvvwdn);
 
 });
 
-// #jform_location listeners for location_vvvvwdd function
+// #jform_location listeners for location_vvvvwdo function
 jQuery('#jform_location').on('keyup',function()
 {
-	var location_vvvvwdd = jQuery("#jform_location input[type='radio']:checked").val();
-	vvvvwdd(location_vvvvwdd);
+	var location_vvvvwdo = jQuery("#jform_location input[type='radio']:checked").val();
+	vvvvwdo(location_vvvvwdo);
 
 });
 jQuery('#adminForm').on('change', '#jform_location',function (e)
 {
 	e.preventDefault();
-	var location_vvvvwdd = jQuery("#jform_location input[type='radio']:checked").val();
-	vvvvwdd(location_vvvvwdd);
+	var location_vvvvwdo = jQuery("#jform_location input[type='radio']:checked").val();
+	vvvvwdo(location_vvvvwdo);
 
 });
 
-// #jform_type listeners for type_vvvvwde function
+// #jform_type listeners for type_vvvvwdp function
 jQuery('#jform_type').on('keyup',function()
 {
-	var type_vvvvwde = jQuery("#jform_type").val();
-	vvvvwde(type_vvvvwde);
+	var type_vvvvwdp = jQuery("#jform_type").val();
+	vvvvwdp(type_vvvvwdp);
 
 });
 jQuery('#adminForm').on('change', '#jform_type',function (e)
 {
 	e.preventDefault();
-	var type_vvvvwde = jQuery("#jform_type").val();
-	vvvvwde(type_vvvvwde);
+	var type_vvvvwdp = jQuery("#jform_type").val();
+	vvvvwdp(type_vvvvwdp);
 
 });
 
-// #jform_type listeners for type_vvvvwdf function
+// #jform_type listeners for type_vvvvwdq function
 jQuery('#jform_type').on('keyup',function()
 {
-	var type_vvvvwdf = jQuery("#jform_type").val();
-	vvvvwdf(type_vvvvwdf);
+	var type_vvvvwdq = jQuery("#jform_type").val();
+	vvvvwdq(type_vvvvwdq);
 
 });
 jQuery('#adminForm').on('change', '#jform_type',function (e)
 {
 	e.preventDefault();
-	var type_vvvvwdf = jQuery("#jform_type").val();
-	vvvvwdf(type_vvvvwdf);
+	var type_vvvvwdq = jQuery("#jform_type").val();
+	vvvvwdq(type_vvvvwdq);
 
 });
 
-// #jform_type listeners for type_vvvvwdg function
+// #jform_type listeners for type_vvvvwdr function
 jQuery('#jform_type').on('keyup',function()
 {
-	var type_vvvvwdg = jQuery("#jform_type").val();
-	vvvvwdg(type_vvvvwdg);
+	var type_vvvvwdr = jQuery("#jform_type").val();
+	vvvvwdr(type_vvvvwdr);
 
 });
 jQuery('#adminForm').on('change', '#jform_type',function (e)
 {
 	e.preventDefault();
-	var type_vvvvwdg = jQuery("#jform_type").val();
-	vvvvwdg(type_vvvvwdg);
+	var type_vvvvwdr = jQuery("#jform_type").val();
+	vvvvwdr(type_vvvvwdr);
 
 });
 
-// #jform_target listeners for target_vvvvwdh function
+// #jform_target listeners for target_vvvvwds function
 jQuery('#jform_target').on('keyup',function()
 {
-	var target_vvvvwdh = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwdh(target_vvvvwdh);
+	var target_vvvvwds = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwds(target_vvvvwds);
 
 });
 jQuery('#adminForm').on('change', '#jform_target',function (e)
 {
 	e.preventDefault();
-	var target_vvvvwdh = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwdh(target_vvvvwdh);
+	var target_vvvvwds = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwds(target_vvvvwds);
 
 });
 

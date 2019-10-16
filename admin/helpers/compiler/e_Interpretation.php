@@ -635,12 +635,12 @@ class Interpretation extends Fields
 		// WHMCS_ENCRYPT_FILE
 		$this->fileContentStatic[$this->hhh . 'WHMCS_ENCRYPT_FILE' . $this->hhh] = '';
 		// check if encryption is ative
-		if ((isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder)) ||
-			(isset($this->mediumEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->mediumEncryptionBuilder)) ||
-			(isset($this->whmcsEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->whmcsEncryptionBuilder)) ||
+		if ((isset($this->basicFieldModeling) && ComponentbuilderHelper::checkArray($this->basicFieldModeling)) ||
+			(isset($this->mediumFieldModeling) && ComponentbuilderHelper::checkArray($this->mediumFieldModeling)) ||
+			(isset($this->whmcsFieldModeling) && ComponentbuilderHelper::checkArray($this->whmcsFieldModeling)) ||
 			$this->componentData->add_license)
 		{
-			if (isset($this->whmcsEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->whmcsEncryptionBuilder) || $this->componentData->add_license)
+			if (isset($this->whmcsFieldModeling) && ComponentbuilderHelper::checkArray($this->whmcsFieldModeling) || $this->componentData->add_license)
 			{
 				// set whmcs encrypt file into place
 				$target = array('admin' => 'whmcs');
@@ -669,7 +669,7 @@ class Interpretation extends Fields
 			$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the global params";
 			$function[] = $this->_t(2) . "\$params = JComponentHelper::getParams('com_" . $component . "', true);";
 			// add the basic option
-			if (isset($this->basicEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->basicEncryptionBuilder))
+			if (isset($this->basicFieldModeling) && ComponentbuilderHelper::checkArray($this->basicFieldModeling))
 			{
 				$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Basic Encryption Type";
 				$function[] = $this->_t(2) . "if ('basic' === \$type)";
@@ -682,7 +682,7 @@ class Interpretation extends Fields
 				$function[] = $this->_t(2) . "}";
 			}
 			// add the medium option
-			if (isset($this->mediumEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->mediumEncryptionBuilder))
+			if (isset($this->mediumFieldModeling) && ComponentbuilderHelper::checkArray($this->mediumFieldModeling))
 			{
 				$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Medium Encryption Type";
 				$function[] = $this->_t(2) . "if ('medium' === \$type)";
@@ -705,7 +705,7 @@ class Interpretation extends Fields
 				$function[] = $this->_t(2) . "}";
 			}
 			// add the whmcs option
-			if (isset($this->whmcsEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->whmcsEncryptionBuilder) || $this->componentData->add_license)
+			if (isset($this->whmcsFieldModeling) && ComponentbuilderHelper::checkArray($this->whmcsFieldModeling) || $this->componentData->add_license)
 			{
 				$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " WHMCS Encryption Type";
 				$function[] = $this->_t(2) . "if ('whmcs' === \$type || 'advanced' === \$type)";
@@ -724,7 +724,7 @@ class Interpretation extends Fields
 			$function[] = PHP_EOL . $this->_t(2) . "return \$default;";
 			$function[] = $this->_t(1) . "}";
 			// set the getMediumCryptKey class/method
-			if (isset($this->mediumEncryptionBuilder) && ComponentbuilderHelper::checkArray($this->mediumEncryptionBuilder))
+			if (isset($this->mediumFieldModeling) && ComponentbuilderHelper::checkArray($this->mediumFieldModeling))
 			{
 				$function[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
 				$function[] = $this->_t(1) . " *	The Medium Encryption Key";
@@ -1821,6 +1821,8 @@ class Interpretation extends Fields
 				// now loop the array
 				foreach ($array['decode'] as $decode)
 				{
+					$if = '';
+					$decoder = '';
 					if ('json' === $decode)
 					{
 						$if = PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "if (" . $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . "Helper::checkJson(" . $string . "->" . $field . "))" . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "{";
@@ -1839,17 +1841,33 @@ class Interpretation extends Fields
 						{
 							if ($cryptionType . '_encryption' === $decode)
 							{
-								$if = PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "if (!empty(" . $string . "->" . $field . ") && \$" . $cryptionType . "key && !is_numeric(" . $string . "->" . $field . ") && " . $string . "->" . $field . " === base64_encode(base64_decode(" . $string . "->" . $field . ", true)))" . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "{";
-								// set decryption
-								$decoder = $string . "->" . $field . " = rtrim(\$" . $cryptionType . "->decryptString(" . $string . "->" . $field . "), " . '"\0"' . ");";
+								if ('expert' !== $cryptionType)
+								{
+									$if = PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "if (!empty(" . $string . "->" . $field . ") && \$" . $cryptionType . "key && !is_numeric(" . $string . "->" . $field . ") && " . $string . "->" . $field . " === base64_encode(base64_decode(" . $string . "->" . $field . ", true)))" . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "{";
+									// set decryption
+									$decoder = $string . "->" . $field . " = rtrim(\$" . $cryptionType . "->decryptString(" . $string . "->" . $field . "), " . '"\0"' . ");";
+								}
+								elseif (isset($this->{$cryptionType . 'FieldModeling'}[$code][$field]))
+								{
+									$_placeholder_for_field = array('[[[field]]]' => $string . "->" . $field);
+									$fieldDecode .= $this->setPlaceholders(PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . implode(PHP_EOL . $this->_t(1) . $tab . $this->_t(1), $this->{$cryptionType . 'FieldModeling'}[$code][$field]['get']), $_placeholder_for_field);
+								}
+								// activate site decryption
 								$this->siteDecrypt[$cryptionType][$code] = true;
 							}
 						}
 					}
-
-					// build decoder string
-					$fieldDecode .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Check if we can decode " . $field .$if . PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Decode " . $field;
-					$fieldDecode .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . $decoder . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "}";
+					// check if we have found the details
+					if (ComponentbuilderHelper::checkString($if))
+					{
+						// build decoder string
+						$fieldDecode .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Check if we can decode " . $field .$if . PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Decode " . $field;
+					}
+					if (ComponentbuilderHelper::checkString($decoder))
+					{
+						// build decoder string
+						$fieldDecode .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2) . $decoder . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "}";
+					}
 				}
 			}
 		}
@@ -2495,10 +2513,21 @@ class Interpretation extends Fields
 			{
 				if (isset($this->siteDecrypt[$cryptionType][$code]) && $this->siteDecrypt[$cryptionType][$code])
 				{
-					$script .= PHP_EOL . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
-					$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
-					$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
-					$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
+					if ('expert' !== $cryptionType)
+					{
+						$script .= PHP_EOL . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
+						$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
+						$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
+						$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
+					}
+					elseif (isset($this->{$cryptionType . 'FieldModelInitiator'}[$code]) 
+						&& isset($this->{$cryptionType . 'FieldModelInitiator'}[$code]['get']))
+					{
+						foreach ($this->{$cryptionType . 'FieldModelInitiator'}[$code]['get'] as $block)
+						{
+							$script .= PHP_EOL . $this->_t(1) . implode(PHP_EOL . $this->_t(1), $block);
+						}
+					}
 				}
 			}
 			$getItem = $script . $getItem;
@@ -2993,10 +3022,21 @@ class Interpretation extends Fields
 						{
 							if (isset($this->siteDecrypt[$cryptionType][$code]) && $this->siteDecrypt[$cryptionType][$code])
 							{
-								$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
-								$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
-								$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
-								$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);" . PHP_EOL;
+								if ('expert' !== $cryptionType)
+								{
+									$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
+									$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
+									$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
+									$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);" . PHP_EOL;
+								}
+								elseif (isset($this->{$cryptionType . 'FieldModelInitiator'}[$code]) 
+									&& isset($this->{$cryptionType . 'FieldModelInitiator'}[$code]['get']))
+								{
+									foreach ($this->{$cryptionType . 'FieldModelInitiator'}[$code]['get'] as $block)
+									{
+										$script .= PHP_EOL . $this->_t(2) . implode(PHP_EOL . $this->_t(2), $block);
+									}
+								}
 							}
 						}
 						$methods = str_replace($this->hhh . 'CRYPT' . $this->hhh, $script, $methods);
@@ -3250,10 +3290,21 @@ class Interpretation extends Fields
 		{
 			if ($this->siteDecrypt[$cryptionType][$code])
 			{
-				$script .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
-				$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
-				$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
-				$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
+				if ('expert' !== $cryptionType)
+				{
+					$script .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
+					$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
+					$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
+				}
+				elseif (isset($this->{$cryptionType . 'FieldModelInitiator'}[$code]) 
+					&& isset($this->{$cryptionType . 'FieldModelInitiator'}[$code]['get']))
+				{
+					foreach ($this->{$cryptionType . 'FieldModelInitiator'}[$code]['get'] as $block)
+					{
+						$script .= PHP_EOL . $this->_t(2) . implode(PHP_EOL . $this->_t(2), $block);
+					}
+				}
 			}
 		}
 		return $script . $getItem;
@@ -4574,19 +4625,38 @@ class Interpretation extends Fields
 		// decryption
 		foreach ($this->cryptionTypes as $cryptionType)
 		{
-			if (isset($this->{$cryptionType . 'EncryptionBuilder'}[$view]) && ComponentbuilderHelper::checkArray($this->{$cryptionType . 'EncryptionBuilder'}[$view]))
+			if (isset($this->{$cryptionType . 'FieldModeling'}[$view]) && ComponentbuilderHelper::checkArray($this->{$cryptionType . 'FieldModeling'}[$view]))
 			{
-				$script .= PHP_EOL . PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
-				$script .= PHP_EOL . $this->_t(3) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
-				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
-				$script .= PHP_EOL . $this->_t(3) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
-				foreach ($this->{$cryptionType . 'EncryptionBuilder'}[$view] as $baseString)
+				if ('expert' !== $cryptionType)
 				{
-					$script .= PHP_EOL . PHP_EOL . $this->_t(3) . "if (!empty(\$item->" . $baseString . ") && \$" . $cryptionType . "key && !is_numeric(\$item->" . $baseString . ") && \$item->" . $baseString . " === base64_encode(base64_decode(\$item->" . $baseString . ", true)))";
-					$script .= PHP_EOL . $this->_t(3) . "{";
-					$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " " . $cryptionType . " decrypt data " . $baseString . ".";
-					$script .= PHP_EOL . $this->_t(4) . "\$item->" . $baseString . " = rtrim(\$" . $cryptionType . "->decryptString(\$item->" . $baseString . "), " . '"\0"' . ");";
-					$script .= PHP_EOL . $this->_t(3) . "}";
+					$script .= PHP_EOL . PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption.";
+					$script .= PHP_EOL . $this->_t(3) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
+					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
+					$script .= PHP_EOL . $this->_t(3) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
+					foreach ($this->{$cryptionType . 'FieldModeling'}[$view] as $baseString)
+					{
+						$script .= PHP_EOL . PHP_EOL . $this->_t(3) . "if (!empty(\$item->" . $baseString . ") && \$" . $cryptionType . "key && !is_numeric(\$item->" . $baseString . ") && \$item->" . $baseString . " === base64_encode(base64_decode(\$item->" . $baseString . ", true)))";
+						$script .= PHP_EOL . $this->_t(3) . "{";
+						$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__) . " " . $cryptionType . " decrypt data " . $baseString . ".";
+						$script .= PHP_EOL . $this->_t(4) . "\$item->" . $baseString . " = rtrim(\$" . $cryptionType . "->decryptString(\$item->" . $baseString . "), " . '"\0"' . ");";
+						$script .= PHP_EOL . $this->_t(3) . "}";
+					}
+				}
+				else
+				{
+					if (isset($this->{$cryptionType . 'FieldModelInitiator'}[$view]['get']))
+					{
+						foreach ($this->{$cryptionType . 'FieldModelInitiator'}[$view]['get'] as $block)
+						{
+							$script .= PHP_EOL . $this->_t(3) . implode(PHP_EOL . $this->_t(3), $block);
+						}
+					}
+					// set the expert script
+					foreach ($this->{$cryptionType . 'FieldModeling'}[$view] as $baseString => $opener_)
+					{
+						$_placeholder_for_field = array('[[[field]]]' => '$item->' . $baseString);
+						$script .= $this->setPlaceholders(PHP_EOL . $this->_t(3) . implode(PHP_EOL . $this->_t(3), $opener_['get']), $_placeholder_for_field);
+					}
 				}
 			}
 		}
@@ -4718,19 +4788,39 @@ class Interpretation extends Fields
 		// turn string into encrypted string
 		foreach ($this->cryptionTypes as $cryptionType)
 		{
-			if (isset($this->{$cryptionType . 'EncryptionBuilder'}[$view]) && ComponentbuilderHelper::checkArray($this->{$cryptionType . 'EncryptionBuilder'}[$view]))
+			if (isset($this->{$cryptionType . 'FieldModeling'}[$view]) && ComponentbuilderHelper::checkArray($this->{$cryptionType . 'FieldModeling'}[$view]))
 			{
-				$script .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption key.";
-				$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
-				$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the encryption object";
-				$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
-				foreach ($this->{$cryptionType . 'EncryptionBuilder'}[$view] as $baseString)
+				if ('expert' !== $cryptionType)
 				{
-					$script .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Encrypt data " . $baseString . ".";
-					$script .= PHP_EOL . $this->_t(2) . "if (isset(\$data['" . $baseString . "']) && \$" . $cryptionType . "key)";
-					$script .= PHP_EOL . $this->_t(2) . "{";
-					$script .= PHP_EOL . $this->_t(3) . "\$data['" . $baseString . "'] = \$" . $cryptionType . "->encryptString(\$data['" . $baseString . "']);";
-					$script .= PHP_EOL . $this->_t(2) . "}";
+					$script .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption key.";
+					$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the encryption object";
+					$script .= PHP_EOL . $this->_t(2) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
+					foreach ($this->{$cryptionType . 'FieldModeling'}[$view] as $baseString)
+					{
+						$script .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Encrypt data " . $baseString . ".";
+						$script .= PHP_EOL . $this->_t(2) . "if (isset(\$data['" . $baseString . "']) && \$" . $cryptionType . "key)";
+						$script .= PHP_EOL . $this->_t(2) . "{";
+						$script .= PHP_EOL . $this->_t(3) . "\$data['" . $baseString . "'] = \$" . $cryptionType . "->encryptString(\$data['" . $baseString . "']);";
+						$script .= PHP_EOL . $this->_t(2) . "}";
+					}
+				}
+				else
+				{
+					if (isset($this->{$cryptionType . 'FieldModelInitiator'}[$view]) && 
+						isset($this->{$cryptionType . 'FieldModelInitiator'}[$view]['save']))
+					{
+						foreach ($this->{$cryptionType . 'FieldModelInitiator'}[$view]['save'] as $block)
+						{
+							$script .= PHP_EOL . $this->_t(2) . implode(PHP_EOL . $this->_t(2), $block);
+						}
+					}
+					// set the expert script
+					foreach ($this->{$cryptionType . 'FieldModeling'}[$view] as $baseString => $locker_)
+					{
+						$_placeholder_for_field = array('[[[field]]]' => "\$data['" . $baseString . "']");
+						$script .= $this->setPlaceholders(PHP_EOL . $this->_t(2) . implode(PHP_EOL . $this->_t(2), $locker_['save']), $_placeholder_for_field);
+					}
 				}
 			}
 		}
@@ -12863,6 +12953,12 @@ class Interpretation extends Fields
 						$mediumCrypt = true;
 						$suffix_decode = '';
 						break;
+					case 6:
+						// EXPERT_ENCRYPTION
+						$decode = '///////////////////////////////////////////';
+						$expertCrypt = true;
+						$suffix_decode = '';
+						break;
 					default:
 						// JSON_ARRAY_ENCODE
 						$decode = 'json_decode';
@@ -13142,10 +13238,21 @@ class Interpretation extends Fields
 		{
 			if (${$cryptionType . 'Crypt'})
 			{
-				$script .= PHP_EOL . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption key.";
-				$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
-				$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
-				$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
+				if ('expert' !== $cryptionType)
+				{
+					$script .= PHP_EOL . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Get the " . $cryptionType . " encryption key.";
+					$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$" . $cryptionType . "key = " . $Component . "Helper::getCryptKey('" . $cryptionType . "');";
+					$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Get the encryption object.";
+					$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "\$" . $cryptionType . " = new FOFEncryptAes(\$" . $cryptionType . "key);";
+				}
+				elseif (isset($this->{$cryptionType . 'FieldModelInitiator'}[$viewName_single]) 
+					&& isset($this->{$cryptionType . 'FieldModelInitiator'}[$viewName_single]['get']))
+				{
+					foreach ($this->{$cryptionType . 'FieldModelInitiator'}[$viewName_single]['get'] as $block)
+					{
+						$script .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . implode(PHP_EOL . $this->_t(1) . $tab . $this->_t(1), $block);
+					}
+				}
 			}
 		}
 		// add the encryption script

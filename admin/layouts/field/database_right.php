@@ -29,7 +29,12 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'indexes',
 	'null_switch',
 	'store',
-	'note_whmcs_encryption'
+	'note_whmcs_encryption',
+	'note_expert_field_save_mode',
+	'initiator_on_save_model',
+	'initiator_on_get_model',
+	'on_save_model_field',
+	'on_get_model_field'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

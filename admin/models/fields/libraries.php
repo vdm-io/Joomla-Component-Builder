@@ -144,6 +144,7 @@ class JFormFieldLibraries extends JFormFieldList
 		$query->select($db->quoteName(array('a.id','a.name'),array('id','libraries_name')));
 		$query->from($db->quoteName('#__componentbuilder_library', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
+		$query->where($db->quoteName('a.target') . ' = 1');
 		$query->order('a.name ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
@@ -155,6 +156,7 @@ class JFormFieldLibraries extends JFormFieldList
 				$options[] = JHtml::_('select.option', $item->id, $item->libraries_name);
 			}
 		}
+
 		return $options;
 	}
 }

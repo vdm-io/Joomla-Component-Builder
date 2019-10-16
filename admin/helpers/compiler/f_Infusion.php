@@ -224,7 +224,6 @@ class Infusion extends Interpretation
 					$this->fileContentStatic[$globalPlaceholder] = $gloabalValue;
 				}
 			}
-
 			// reset view array
 			$viewarray = array();
 			$site_edit_view_array = array();
@@ -313,7 +312,6 @@ class Infusion extends Interpretation
 					{
 						$this->fileContentDynamic[$viewName_single][$this->hhh . 'DOCUMENT_CUSTOM_PHP' . $this->hhh] = '';
 					}
-
 					// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
 					$this->fileContentDynamic[$viewName_single][$this->hhh . 'LINKEDVIEWTABLESCRIPTS' . $this->hhh] = '';
 
@@ -606,7 +604,6 @@ class Infusion extends Interpretation
 				}
 				// HELPER_EXEL
 				$this->fileContentStatic[$this->hhh . 'HELPER_EXEL' . $this->hhh] = $this->setExelHelperMethods();
-
 				// Trigger Event: jcb_ce_onAfterBuildAdminViewContent
 				$this->triggerEvent('jcb_ce_onAfterBuildAdminViewContent', array(&$this->componentContext, &$view, &$viewName_single, &$viewName_list, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));
 			}

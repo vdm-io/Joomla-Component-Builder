@@ -1829,7 +1829,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		),
 		// #__componentbuilder_field (i)
 		'field' => array(
-			'search' => array('id', 'name', 'xml', 'javascript_view_footer', 'javascript_views_footer'),
+			'search' => array('id', 'name', 'xml', 'javascript_view_footer', 'javascript_views_footer', 'on_save_model_field', 'on_get_model_field', 'initiator_on_save_model', 'initiator_on_get_model'),
 			'views' => 'fields',
 			'not_base64' => array('xml' => 'json'),
 			'base64_search' => array('xml' => array('start' => 'type_php', '_start' => '="', 'end' => '"')),

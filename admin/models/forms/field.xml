@@ -219,6 +219,8 @@
 				COM_COMPONENTBUILDER_FIELD_MEDIUM_ENCRYPTION_LOCALFILEKEY</option>
 			<option value="4">
 				COM_COMPONENTBUILDER_FIELD_WHMCSKEY_ENCRYPTION</option>
+			<option value="6">
+				COM_COMPONENTBUILDER_FIELD_EXPERT_MODE_CUSTOM</option>
 		</field>
 		<!-- Catid Field. Type: Category. (joomla) -->
 		<field
@@ -230,68 +232,51 @@
 			description="COM_COMPONENTBUILDER_FIELD_CATID_DESCRIPTION"
 			class="inputbox"
 		/>
-		<!-- Css_views Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="css_views"
-			label="COM_COMPONENTBUILDER_FIELD_CSS_VIEWS_LABEL"
-			description="COM_COMPONENTBUILDER_FIELD_CSS_VIEWS_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="css"
-			editor="codemirror|none"
-			filter="raw"
-			validate="code"
-		/>
-		<!-- Add_css_views Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_css_views"
-			label="COM_COMPONENTBUILDER_FIELD_ADD_CSS_VIEWS_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_FIELD_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_FIELD_NO</option>
-		</field>
-		<!-- Css_view Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="css_view"
-			label="COM_COMPONENTBUILDER_FIELD_CSS_VIEW_LABEL"
-			description="COM_COMPONENTBUILDER_FIELD_CSS_VIEW_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="css"
-			editor="codemirror|none"
-			filter="raw"
-			validate="code"
-		/>
-		<!-- Add_css_view Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_css_view"
-			label="COM_COMPONENTBUILDER_FIELD_ADD_CSS_VIEW_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_FIELD_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_FIELD_NO</option>
-		</field>
 		<!-- Note_database_settings_needed Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_database_settings_needed" label="COM_COMPONENTBUILDER_FIELD_NOTE_DATABASE_SETTINGS_NEEDED_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_DATABASE_SETTINGS_NEEDED_DESCRIPTION" heading="h4" class="alert alert-info note_database_settings_needed" />
+		<!-- Note_no_database_settings_needed Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_no_database_settings_needed" label="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_DESCRIPTION" heading="h4" class="alert alert-info note_no_database_settings_needed" />
+		<!-- On_get_model_field Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="on_get_model_field"
+			label="COM_COMPONENTBUILDER_FIELD_ON_GET_MODEL_FIELD_LABEL"
+			rows="5"
+			cols="10"
+			description="COM_COMPONENTBUILDER_FIELD_ON_GET_MODEL_FIELD_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_FIELD_ON_GET_MODEL_FIELD_HINT"
+			required="true"
+		/>
+		<!-- On_save_model_field Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="on_save_model_field"
+			label="COM_COMPONENTBUILDER_FIELD_ON_SAVE_MODEL_FIELD_LABEL"
+			rows="3"
+			cols="10"
+			description="COM_COMPONENTBUILDER_FIELD_ON_SAVE_MODEL_FIELD_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_FIELD_ON_SAVE_MODEL_FIELD_HINT"
+			required="true"
+		/>
+		<!-- Initiator_on_get_model Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="initiator_on_get_model"
+			label="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_GET_MODEL_LABEL"
+			rows="5"
+			cols="10"
+			description="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_GET_MODEL_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_GET_MODEL_HINT"
+			required="false"
+		/>
+		<!-- Note_filter_information Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_filter_information" description="COM_COMPONENTBUILDER_FIELD_NOTE_FILTER_INFORMATION_DESCRIPTION" class="note_filter_information" />
 		<!-- Datalenght Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -342,10 +327,34 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_FIELD_NO</option>
 		</field>
-		<!-- Note_filter_information Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_filter_information" description="COM_COMPONENTBUILDER_FIELD_NOTE_FILTER_INFORMATION_DESCRIPTION" class="note_filter_information" />
-		<!-- Helpnote Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="helpnote" label="COM_COMPONENTBUILDER_FIELD_HELPNOTE_LABEL" class="helpNote helpnote" />
+		<!-- Add_javascript_view_footer Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_javascript_view_footer"
+			label="COM_COMPONENTBUILDER_FIELD_ADD_JAVASCRIPT_VIEW_FOOTER_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_FIELD_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_FIELD_NO</option>
+		</field>
+		<!-- Add_css_views Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_css_views"
+			label="COM_COMPONENTBUILDER_FIELD_ADD_CSS_VIEWS_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_FIELD_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_FIELD_NO</option>
+		</field>
 		<!-- Datadefault_other Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -399,11 +408,11 @@
 			message="COM_COMPONENTBUILDER_FIELD_DATALENGHT_OTHER_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELD_DATALENGHT_OTHER_HINT"
 		/>
-		<!-- Add_javascript_view_footer Field. Type: Radio. (joomla) -->
+		<!-- Add_css_view Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_javascript_view_footer"
-			label="COM_COMPONENTBUILDER_FIELD_ADD_JAVASCRIPT_VIEW_FOOTER_LABEL"
+			name="add_css_view"
+			label="COM_COMPONENTBUILDER_FIELD_ADD_CSS_VIEW_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -413,6 +422,46 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_FIELD_NO</option>
 		</field>
+		<!-- Helpnote Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="helpnote" label="COM_COMPONENTBUILDER_FIELD_HELPNOTE_LABEL" class="helpNote helpnote" />
+		<!-- Css_view Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="css_view"
+			label="COM_COMPONENTBUILDER_FIELD_CSS_VIEW_LABEL"
+			description="COM_COMPONENTBUILDER_FIELD_CSS_VIEW_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="css"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
+		/>
+		<!-- Not_required Field. Type: Hidden. (joomla) -->
+		<field
+			type="hidden"
+			name="not_required"
+			default="[]"
+		/>
+		<!-- Css_views Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="css_views"
+			label="COM_COMPONENTBUILDER_FIELD_CSS_VIEWS_LABEL"
+			description="COM_COMPONENTBUILDER_FIELD_CSS_VIEWS_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="css"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
+		/>
 		<!-- Note_whmcs_encryption Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_whmcs_encryption" label="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_DESCRIPTION" heading="h4" class="alert alert-success note_whmcs_encryption" />
 		<!-- Javascript_view_footer Field. Type: Editor. (joomla) -->
@@ -431,8 +480,8 @@
 			filter="raw"
 			validate="code"
 		/>
-		<!-- Note_no_database_settings_needed Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_no_database_settings_needed" label="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_DESCRIPTION" heading="h4" class="alert alert-info note_no_database_settings_needed" />
+		<!-- Note_expert_field_save_mode Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_expert_field_save_mode" label="COM_COMPONENTBUILDER_FIELD_NOTE_EXPERT_FIELD_SAVE_MODE_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_EXPERT_FIELD_SAVE_MODE_DESCRIPTION" heading="h4" class="alert alert-success note_expert_encryption note_expert_field_save_mode" />
 		<!-- Javascript_views_footer Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -449,11 +498,18 @@
 			filter="raw"
 			validate="code"
 		/>
-		<!-- Not_required Field. Type: Hidden. (joomla) -->
+		<!-- Initiator_on_save_model Field. Type: Textarea. (joomla) -->
 		<field
-			type="hidden"
-			name="not_required"
-			default="[]"
+			type="textarea"
+			name="initiator_on_save_model"
+			label="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_SAVE_MODEL_LABEL"
+			rows="5"
+			cols="10"
+			description="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_SAVE_MODEL_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_SAVE_MODEL_HINT"
+			required="false"
 		/>
 		<!-- Xml Field. Type: Hidden. (joomla) -->
 		<field

@@ -28,8 +28,9 @@ class ComponentbuilderModelLibraries extends JModelList
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
 				'a.name','name',
-				'a.description','description',
+				'a.target','target',
 				'a.type','type',
+				'a.description','description',
 				'a.how','how'
 			);
 		}
@@ -54,11 +55,14 @@ class ComponentbuilderModelLibraries extends JModelList
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
 		$this->setState('filter.name', $name);
 
-		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
-		$this->setState('filter.description', $description);
+		$target = $this->getUserStateFromRequest($this->context . '.filter.target', 'filter_target');
+		$this->setState('filter.target', $target);
 
 		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
 		$this->setState('filter.type', $type);
+
+		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
+		$this->setState('filter.description', $description);
 
 		$how = $this->getUserStateFromRequest($this->context . '.filter.how', 'filter_how');
 		$this->setState('filter.how', $how);
@@ -128,6 +132,8 @@ class ComponentbuilderModelLibraries extends JModelList
 		{
 			foreach ($items as $nr => &$item)
 			{
+				// convert target
+				$item->target = $this->selectionTranslation($item->target, 'target');
 				// convert type
 				$item->type = $this->selectionTranslation($item->type, 'type');
 			}
@@ -145,6 +151,19 @@ class ComponentbuilderModelLibraries extends JModelList
 	 */
 	public function selectionTranslation($value,$name)
 	{
+		// Array of target language strings
+		if ($name === 'target')
+		{
+			$targetArray = array(
+				1 => 'COM_COMPONENTBUILDER_LIBRARY_MEDIA',
+				2 => 'COM_COMPONENTBUILDER_LIBRARY_LIBRARIES'
+			);
+			// Now check if value is found in this array
+			if (isset($targetArray[$value]) && ComponentbuilderHelper::checkString($targetArray[$value]))
+			{
+				return $targetArray[$value];
+			}
+		}
 		// Array of type language strings
 		if ($name === 'type')
 		{
@@ -238,6 +257,11 @@ class ComponentbuilderModelLibraries extends JModelList
 			}
 		}
 
+		// Filter by Target.
+		if ($target = $this->getState('filter.target'))
+		{
+			$query->where('a.target = ' . $db->quote($db->escape($target)));
+		}
 		// Filter by how.
 		if ($how = $this->getState('filter.how'))
 		{
@@ -276,8 +300,9 @@ class ComponentbuilderModelLibraries extends JModelList
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.name');
-		$id .= ':' . $this->getState('filter.description');
+		$id .= ':' . $this->getState('filter.target');
 		$id .= ':' . $this->getState('filter.type');
+		$id .= ':' . $this->getState('filter.description');
 		$id .= ':' . $this->getState('filter.how');
 
 		return parent::getStoreId($id);

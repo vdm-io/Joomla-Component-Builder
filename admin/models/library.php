@@ -42,6 +42,7 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 			),
 			'above' => array(
 				'name',
+				'target',
 				'how',
 				'type'
 			),

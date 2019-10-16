@@ -51,7 +51,12 @@ class ComponentbuilderModelField extends JModelAdmin
 				'indexes',
 				'null_switch',
 				'store',
-				'note_whmcs_encryption'
+				'note_whmcs_encryption',
+				'note_expert_field_save_mode',
+				'initiator_on_save_model',
+				'initiator_on_get_model',
+				'on_save_model_field',
+				'on_get_model_field'
 			),
 			'fullwidth' => array(
 				'note_no_database_settings_needed',
@@ -154,16 +159,34 @@ class ComponentbuilderModelField extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->css_views))
+			if (!empty($item->on_get_model_field))
 			{
-				// base64 Decode css_views.
-				$item->css_views = base64_decode($item->css_views);
+				// base64 Decode on_get_model_field.
+				$item->on_get_model_field = base64_decode($item->on_get_model_field);
+			}
+
+			if (!empty($item->on_save_model_field))
+			{
+				// base64 Decode on_save_model_field.
+				$item->on_save_model_field = base64_decode($item->on_save_model_field);
+			}
+
+			if (!empty($item->initiator_on_get_model))
+			{
+				// base64 Decode initiator_on_get_model.
+				$item->initiator_on_get_model = base64_decode($item->initiator_on_get_model);
 			}
 
 			if (!empty($item->css_view))
 			{
 				// base64 Decode css_view.
 				$item->css_view = base64_decode($item->css_view);
+			}
+
+			if (!empty($item->css_views))
+			{
+				// base64 Decode css_views.
+				$item->css_views = base64_decode($item->css_views);
 			}
 
 			if (!empty($item->javascript_view_footer))
@@ -176,6 +199,12 @@ class ComponentbuilderModelField extends JModelAdmin
 			{
 				// base64 Decode javascript_views_footer.
 				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
+			}
+
+			if (!empty($item->initiator_on_save_model))
+			{
+				// base64 Decode initiator_on_save_model.
+				$item->initiator_on_save_model = base64_decode($item->initiator_on_save_model);
 			}
 
 			if (!empty($item->xml))
@@ -1067,16 +1096,34 @@ class ComponentbuilderModelField extends JModelAdmin
 			$data['xml'] = (string) json_encode($data['xml']);
 		}
 
-		// Set the css_views string to base64 string.
-		if (isset($data['css_views']))
+		// Set the on_get_model_field string to base64 string.
+		if (isset($data['on_get_model_field']))
 		{
-			$data['css_views'] = base64_encode($data['css_views']);
+			$data['on_get_model_field'] = base64_encode($data['on_get_model_field']);
+		}
+
+		// Set the on_save_model_field string to base64 string.
+		if (isset($data['on_save_model_field']))
+		{
+			$data['on_save_model_field'] = base64_encode($data['on_save_model_field']);
+		}
+
+		// Set the initiator_on_get_model string to base64 string.
+		if (isset($data['initiator_on_get_model']))
+		{
+			$data['initiator_on_get_model'] = base64_encode($data['initiator_on_get_model']);
 		}
 
 		// Set the css_view string to base64 string.
 		if (isset($data['css_view']))
 		{
 			$data['css_view'] = base64_encode($data['css_view']);
+		}
+
+		// Set the css_views string to base64 string.
+		if (isset($data['css_views']))
+		{
+			$data['css_views'] = base64_encode($data['css_views']);
 		}
 
 		// Set the javascript_view_footer string to base64 string.
@@ -1089,6 +1136,12 @@ class ComponentbuilderModelField extends JModelAdmin
 		if (isset($data['javascript_views_footer']))
 		{
 			$data['javascript_views_footer'] = base64_encode($data['javascript_views_footer']);
+		}
+
+		// Set the initiator_on_save_model string to base64 string.
+		if (isset($data['initiator_on_save_model']))
+		{
+			$data['initiator_on_save_model'] = base64_encode($data['initiator_on_save_model']);
 		}
         
 		// Set the Params Items to data

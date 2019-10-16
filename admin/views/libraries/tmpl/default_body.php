@@ -104,13 +104,16 @@ $edit = "index.php?option=com_componentbuilder&view=libraries&task=library.edit"
 			</div>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->description); ?>
+			<?php echo JText::_($item->target); ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->how); ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo JText::_($item->type); ?>
+		</td>
+		<td class="hidden-phone">
+			<?php echo $this->escape($item->description); ?>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('library.edit.state')) : ?>

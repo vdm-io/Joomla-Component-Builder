@@ -638,7 +638,7 @@ class Get
 	 * 
 	 * @var    array
 	 */
-	public $cryptionTypes = array('basic', 'medium', 'whmcs');
+	public $cryptionTypes = array('basic', 'medium', 'whmcs', 'expert');
 
 	/**
 	 * The WHMCS Encryption Switch
@@ -2586,7 +2586,7 @@ class Get
 			{
 				if (!isset($this->libManager[$this->target][$view->code][$library]))
 				{
-					if ($this->getLibrary((int) $library))
+					if ($this->getMediaLibrary((int) $library))
 					{
 						$this->libManager[$this->target][$view->code][(int) $library] = true;
 					}
@@ -2595,7 +2595,7 @@ class Get
 		}
 		elseif (is_numeric($view->libraries) && !isset($this->libManager[$this->target][$view->code][(int) $view->libraries]))
 		{
-			if ($this->getLibrary((int) $view->libraries))
+			if ($this->getMediaLibrary((int) $view->libraries))
 			{
 				$this->libManager[$this->target][$view->code][(int) $view->libraries] = true;
 			}
@@ -2921,6 +2921,28 @@ class Get
 				elseif (5 == $field->store && (!isset($this->mediumEncryption) || !$this->mediumEncryption))
 				{
 					$this->mediumEncryption = true;
+				}
+				// check if we have better encryption
+				elseif (6 == $field->store
+					&& ComponentbuilderHelper::checkString($field->on_get_model_field)
+					&& ComponentbuilderHelper::checkString($field->on_save_model_field))
+				{
+					// add only if string lenght found
+					if (ComponentbuilderHelper::checkString($field->initiator_on_save_model))
+					{
+						$field->initiator_save_key = md5($field->initiator_on_save_model);
+						$field->initiator_save = explode(PHP_EOL, $this->setPlaceholders($this->setDynamicValues(base64_decode($field->initiator_on_save_model)), $this->placeholders));
+					}
+					if (ComponentbuilderHelper::checkString($field->initiator_on_save_model))
+					{
+						$field->initiator_get_key = md5($field->initiator_on_get_model);
+						$field->initiator_get = explode(PHP_EOL, $this->setPlaceholders($this->setDynamicValues(base64_decode($field->initiator_on_get_model)), $this->placeholders));
+					}
+					// set the field modeling
+					$field->model_field['save'] = explode(PHP_EOL, $this->setPlaceholders($this->setDynamicValues(base64_decode($field->on_save_model_field)), $this->placeholders));
+					$field->model_field['get'] = explode(PHP_EOL, $this->setPlaceholders($this->setDynamicValues(base64_decode($field->on_get_model_field)), $this->placeholders));
+					// remove the original values
+					unset($field->on_save_model_field, $field->on_get_model_field, $field->initiator_on_save_model, $field->initiator_on_get_model);
 				}
 
 				// get the last used version
@@ -4400,7 +4422,7 @@ class Get
 					{
 						if (!isset($this->libManager[$this->target][$view][$library]))
 						{
-							if ($this->getLibrary((int) $library))
+							if ($this->getMediaLibrary((int) $library))
 							{
 								$this->libManager[$this->target][$view][(int) $library] = true;
 							}
@@ -4409,7 +4431,7 @@ class Get
 				}
 				elseif (is_numeric($row->libraries) && !isset($this->libManager[$this->target][$view][(int) $row->libraries]))
 				{
-					if ($this->getLibrary((int) $row->libraries))
+					if ($this->getMediaLibrary((int) $row->libraries))
 					{
 						$this->libManager[$this->target][$view][(int) $row->libraries] = true;
 					}
@@ -4488,14 +4510,14 @@ class Get
 	}
 
 	/**
-	 * Get Library Data and store globaly
+	 * Get Media Library Data and store globally
 	 * 
 	 * @param   string   $id the library id
 	 *
 	 * @return  bool    true on success
 	 * 
 	 */
-	protected function getLibrary($id)
+	protected function getMediaLibrary($id)
 	{
 
 		// check if the lib has already been set
@@ -4579,6 +4601,7 @@ class Get
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_library_config', 'b') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('b.library') . ')');
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_library_files_folders_urls', 'c') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('c.library') . ')');
 			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
+			$query->where($this->db->quoteName('a.target') . ' = 1');
 
 			// Reset the query using our newly populated query object.
 			$this->db->setQuery($query);

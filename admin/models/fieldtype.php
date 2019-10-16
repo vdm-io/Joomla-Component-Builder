@@ -203,7 +203,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getVxyfields()
+	public function getVyifields()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -291,13 +291,13 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVxyfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVyifields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVxyfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVyifields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVxyfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVyifields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVxyfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVyifields($item->store, 'store');
 				}
 			}
 
@@ -311,7 +311,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 *
 	 * @return translatable string
 	 */
-	public function selectionTranslationVxyfields($value,$name)
+	public function selectionTranslationVyifields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')
@@ -379,7 +379,8 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				2 => 'COM_COMPONENTBUILDER_FIELD_BASESIXTY_FOUR',
 				3 => 'COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALDBKEY',
 				5 => 'COM_COMPONENTBUILDER_FIELD_MEDIUM_ENCRYPTION_LOCALFILEKEY',
-				4 => 'COM_COMPONENTBUILDER_FIELD_WHMCSKEY_ENCRYPTION'
+				4 => 'COM_COMPONENTBUILDER_FIELD_WHMCSKEY_ENCRYPTION',
+				6 => 'COM_COMPONENTBUILDER_FIELD_EXPERT_MODE_CUSTOM'
 			);
 			// Now check if value is found in this array
 			if (isset($storeArray[$value]) && ComponentbuilderHelper::checkString($storeArray[$value]))

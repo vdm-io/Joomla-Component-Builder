@@ -20,252 +20,266 @@ class Fields extends Structure
 
 	/**
 	 * Metadate Switch
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $metadataBuilder = array();
 
 	/**
 	 * View access Switch
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $accessBuilder = array();
 
 	/**
 	 * edit view tabs counter
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $tabCounter = array();
 
 	/**
 	 * layout builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $layoutBuilder = array();
 
 	/**
 	 * used to fix the zero order
-	 * 
+	 *
 	 * @var    array
 	 */
 	private $zeroOrderFix = array();
 
 	/**
 	 * Site field data
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $siteFieldData = array();
 
 	/**
 	 * list of fields that are not being escaped
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $doNotEscape = array();
 
 	/**
 	 * list of classes used in the list view for the fields
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $listFieldClass = array();
 
 	/**
 	 * tags builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $tagsBuilder = array();
 
 	/**
 	 * query builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $queryBuilder = array();
 
 	/**
 	 * unique keys for database field
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $dbUniqueKeys = array();
 
 	/**
 	 * keys for database field
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $dbKeys = array();
 
 	/**
 	 * history builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $historyBuilder = array();
 
 	/**
 	 * alias builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $aliasBuilder = array();
 
 	/**
 	 * title builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $titleBuilder = array();
 
 	/**
 	 * list builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $listBuilder = array();
 
 	/**
 	 * custom Builder List
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $customBuilderList = array();
 
 	/**
 	 * Hidden Fields Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $hiddenFieldsBuilder = array();
 
 	/**
 	 * INT Field Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $intFieldsBuilder = array();
 
 	/**
 	 * Dynamic Fields Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $dynamicfieldsBuilder = array();
 
 	/**
 	 * Main text Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $maintextBuilder = array();
 
 	/**
 	 * Custom Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $customBuilder = array();
 
 	/**
 	 * Custom Field Links Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $customFieldLinksBuilder = array();
 
 	/**
 	 * Set Script for User Switch
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $setScriptUserSwitch = array();
 
 	/**
 	 * Set Script for Media Switch
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $setScriptMediaSwitch = array();
 
 	/**
 	 * Category builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $categoryBuilder = array();
 
 	/**
 	 * Category Code builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $catCodeBuilder = array();
 
 	/**
 	 * Check Box builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $checkboxBuilder = array();
 
 	/**
 	 * Json String Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $jsonStringBuilder = array();
 
 	/**
 	 * Json String Builder for return values to array
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $jsonItemBuilderArray = array();
 
 	/**
 	 * Json Item Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $jsonItemBuilder = array();
 
 	/**
 	 * Base 64 Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $base64Builder = array();
 
 	/**
-	 * Basic Encryption Builder
-	 * 
+	 * Basic Encryption Field Modeling
+	 *
 	 * @var    array
 	 */
-	public $basicEncryptionBuilder = array();
+	public $basicFieldModeling = array();
 
 	/**
-	 * WHMCS Encryption Builder
-	 * 
+	 * WHMCS Encryption Field Modeling
+	 *
 	 * @var    array
 	 */
-	public $whmcsEncryptionBuilder = array();
+	public $whmcsFieldModeling = array();
 
 	/**
-	 * Medium Encryption Builder
-	 * 
+	 * Medium Encryption Field Modeling
+	 *
 	 * @var    array
 	 */
-	public $mediumEncryptionBuilder = array();
+	public $mediumFieldModeling = array();
+
+	/**
+	 * Expert Field Modeling
+	 *
+	 * @var    array
+	 */
+	public $expertFieldModeling = array();
+
+	/**
+	 * Expert Mode Initiator
+	 *
+	 * @var    array
+	 */
+	public $expertFieldModelInitiator = array();
 
 	/**
 	 * Get Items Method List String Fix Builder
-	 * 
+	 *
 	 * @var    array
 	 */
 	public $getItemsMethodListStringFixBuilder = array();
@@ -2320,7 +2334,7 @@ class Fields extends Structure
 	 */
 	public function buildSiteFieldData($view, $field, $set, $type)
 	{
-		$decode = array('json', 'base64', 'basic_encryption', 'whmcs_encryption', 'medium_encryption');
+		$decode = array('json', 'base64', 'basic_encryption', 'whmcs_encryption', 'medium_encryption', 'expert_mode');
 		$textareas = array('textarea', 'editor');
 		if (isset($this->siteFields[$view][$field]) && ComponentbuilderHelper::checkArray($this->siteFields[$view][$field]))
 		{
@@ -2988,21 +3002,40 @@ class Fields extends Structure
 					break;
 				case 3:
 					// BASIC_ENCRYPTION_LOCALKEY
-					$this->basicEncryptionBuilder[$view_name_single][] = $name;
+					$this->basicFieldModeling[$view_name_single][] = $name;
 					// Site settings of each field if needed
 					$this->buildSiteFieldData($view_name_single, $name, 'basic_encryption', $typeName);
 					break;
 				case 4:
 					// WHMCS_ENCRYPTION_VDMKEY
-					$this->whmcsEncryptionBuilder[$view_name_single][] = $name;
+					$this->whmcsFieldModeling[$view_name_single][] = $name;
 					// Site settings of each field if needed
 					$this->buildSiteFieldData($view_name_single, $name, 'whmcs_encryption', $typeName);
 					break;
 				case 5:
 					// MEDIUM_ENCRYPTION_LOCALFILE
-					$this->mediumEncryptionBuilder[$view_name_single][] = $name;
+					$this->mediumFieldModeling[$view_name_single][] = $name;
 					// Site settings of each field if needed
 					$this->buildSiteFieldData($view_name_single, $name, 'medium_encryption', $typeName);
+					break;
+				case 6:
+					// EXPERT_MODE
+					if(isset($field['settings']->model_field))
+					{
+						if (isset($field['settings']->initiator_save_key))
+						{
+							$this->expertFieldModelInitiator[$view_name_single]['save'][$field['settings']->initiator_save_key]
+								= $field['settings']->initiator_save;
+						}
+						if (isset($field['settings']->initiator_get_key))
+						{
+							$this->expertFieldModelInitiator[$view_name_single]['get'][$field['settings']->initiator_get_key]
+								= $field['settings']->initiator_get;
+						}
+						$this->expertFieldModeling[$view_name_single][$name] = $field['settings']->model_field;
+						// Site settings of each field if needed
+						$this->buildSiteFieldData($view_name_single, $name, 'expert_mode', $typeName);
+					}
 					break;
 				default:
 					// JSON_ARRAY_ENCODE

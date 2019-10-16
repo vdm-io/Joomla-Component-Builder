@@ -375,6 +375,8 @@
 				COM_COMPONENTBUILDER_FIELDTYPE_MEDIUM_ENCRYPTION_LOCALFILEKEY</option>
 			<option value="4">
 				COM_COMPONENTBUILDER_FIELDTYPE_WHMCSKEY_ENCRYPTION</option>
+			<option value="6">
+				COM_COMPONENTBUILDER_FIELDTYPE_EXPERT_MODE_CUSTOM</option>
 		</field>
 		<!-- Datatype Field. Type: List. (joomla) -->
 		<field
