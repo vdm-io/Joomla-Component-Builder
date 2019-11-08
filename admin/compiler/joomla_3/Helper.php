@@ -209,7 +209,15 @@ abstract class ###Component###Helper
 			{
 				$query->from($db->quoteName('#_'.$main.'_'.$table));
 			}
-			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
+			// add strings to array search
+			if ('IN_STRINGS' === $operator || 'NOT IN_STRINGS' === $operator)
+			{
+				$query->where($db->quoteName($whereString) . ' ' . str_replace('_STRINGS', '', $operator) . ' ("' . implode('","',$where) . '")');
+			}
+			else
+			{
+				$query->where($db->quoteName($whereString) . ' ' . $operator . ' (' . implode(',',$where) . ')');
+			}
 			$db->setQuery($query);
 			$db->execute();
 			if ($db->getNumRows())

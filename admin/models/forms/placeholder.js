@@ -110,7 +110,7 @@ function placedin(placeholder, ide) {
 function placedin_server(placeholder, ide, target){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.placedin&format=json";
 	if(token.length > 0){
-		var request = 'token='+token+'&placeholder='+placeholder+'&id='+ide+'&target='+target+'&raw=true&return_here='+return_here;
+		var request = token+'=1&placeholder='+placeholder+'&id='+ide+'&target='+target+'&raw=true&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',

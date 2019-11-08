@@ -7001,7 +7001,7 @@ class Get
 						(trim($lineContent) === $endHTML || strpos($lineContent, $endHTML) !== false)))
 					{
 						// trim the placeholder and if there is still data then load it
-						if ($_line = $this->addLineChecker($endReplace, 2, $lineContent))
+						if (isset($endReplace) && ($_line = $this->addLineChecker($endReplace, 2, $lineContent)) !== false)
 						{
 							$codeBucket[$pointer[$targetKey]][] = $_line;
 						}
@@ -7360,9 +7360,9 @@ class Get
 	/**
 	 * Check if this line should be added
 	 * 
-	 * @param   strin    $replaceKey   The key to remove from line
-	 * @param   int      $type         The line type
-	 * @param   string   $lineContent  The line to check
+	 * @param   string    $replaceKey   The key to remove from line
+	 * @param   int       $type         The line type
+	 * @param   string    $lineContent  The line to check
 	 *
 	 * @return  bool true    on success
 	 * 

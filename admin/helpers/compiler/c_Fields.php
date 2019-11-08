@@ -1829,7 +1829,7 @@ class Fields extends Structure
 								// add to lang array
 								$this->setLangContent($this->lang, $langValue, $option);
 								// now add to option set
-								$grouped_['option'][$option] = array('value' => $valueKeyArray[0], 'text' => $langValue);
+								$grouped_['option'][$option] = array('value' => $option, 'text' => $langValue);
 								$optionArray[$option] = $langValue;
 								// set order
 								$order_['option' . $option] = $option;
@@ -2357,7 +2357,7 @@ class Fields extends Structure
 					}
 					else
 					{
-						$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']] = array('decode' => array($set), 'type' => $type);
+						$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']] = array('decode' => array($set), 'type' => $type, 'admin_view' => $view);
 					}
 				}
 				// set the uikit checker
@@ -3052,8 +3052,8 @@ class Fields extends Structure
 				$this->buildSiteFieldData($view_name_single, $name, 'json', $typeName);
 			}
 
-			// load the json list display fix
-			if (($listSwitch || $listJoin) && $typeName != 'repeatable' && $typeName != 'subform')
+			// load the model list display fix
+			if (($listSwitch || $listJoin) && (($typeName != 'repeatable' && $typeName != 'subform') || $field['settings']->store == 6))
 			{
 				if (ComponentbuilderHelper::checkArray($options))
 				{

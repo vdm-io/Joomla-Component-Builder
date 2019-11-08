@@ -345,7 +345,7 @@ function usedin(functioName, ide) {
 function usedin_server(functioName, ide, target){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.usedin&format=json";
 	if(token.length > 0){
-		var request = 'token='+token+'&functioName='+functioName+'&id='+ide+'&target='+target+'&raw=true&return_here='+return_here;
+		var request = token+'=1&functioName='+functioName+'&id='+ide+'&target='+target+'&raw=true&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',

@@ -1,8 +1,7 @@
 # Joomla Component Builder ([JCB](http://joomlacomponentbuilder.com))
 [![GitHub release](https://img.shields.io/github/release/vdm-io/Joomla-Component-Builder.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
 [![Total Downloads](https://img.shields.io/github/downloads/vdm-io/Joomla-Component-Builder/total.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
-[![Backers on Open Collective](https://opencollective.com/Joomla-Component-Builder/backers/badge.svg)](#backers)
-[![Sponsors on Open Collective](https://opencollective.com/Joomla-Component-Builder/sponsors/badge.svg)](#sponsors)
+[![JCB Pro Members](https://opencollective.com/joomla-component-builder/tiers/jcb-pro/badge.svg?label=JCB Pro&color=brightgreen)](#sponsors)
 
 This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -110,8 +109,6 @@ Where can you get support and help?
 + [Report a Security Issue](http://joomlacomponentbuilder.com/report-security-issues)
 + [Community Complaint](http://joomlacomponentbuilder.com/community-complaint)
 + [Open Issue On Github](https://github.com/vdm-io/Joomla-Component-Builder/issues) ^^
-+ [Telegram Group](https://t.me/jcb_group)
-+ [JCB IRC Channel](https://vdm.bz/jcb-irc)
 
 Since [JCB](http://joomlacomponentbuilder.com) has [become a community](https://github.com/vdm-io/Joomla-Component-Builder/blob/staging/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/) is **no longer solely responsible** for support.
 
@@ -146,14 +143,14 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 16th October, 2019
++ *Last Build*: 8th November, 2019
 + *Version*: 2.10.4
 + *Copyright*: Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **255312**
-+ *Field count*: **1353**
-+ *File count*: **1620**
-+ *Folder count*: **261**
++ *Line count*: **255756**
++ *Field count*: **1350**
++ *File count*: **1614**
++ *Folder count*: **256**
 
 > This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](http://joomlacomponentbuilder.com).
 > Developed by [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)

@@ -834,13 +834,13 @@ abstract class ComponentbuilderHelper
 	*/
 	public static function getContributorDetails($filename, $type = 'snippet')
 	{
-		// start loading he contributor details
+		// start loading the contributor details
 		$contributor = array();
 		// get the path & content
 		switch ($type)
 		{
 			case 'snippet':
-				$path = $snippetPath.$filename;
+				$path = self::$snippetPath.$filename;
 				// get the file if available
 				$content = self::getFileContents($path);
 				if (self::checkJson($content))
@@ -2043,17 +2043,17 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	* 	the Butler
+	* the Butler
 	**/
 	public static $session = array();
 
 	/**
-	* 	the Butler Assistant 
+	* the Butler Assistant 
 	**/
 	protected static $localSession = array();
 
 	/**
-	* 	start a session if not already set, and load with data
+	* start a session if not already set, and load with data
 	**/
 	public static function loadSession()
 	{
@@ -2066,7 +2066,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	give Session more to keep
+	* give Session more to keep
 	**/
 	public static function set($key, $value)
 	{
@@ -2081,7 +2081,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	get info from Session
+	* get info from Session
 	**/
 	public static function get($key, $default = null)
 	{
@@ -4304,12 +4304,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	 Composer Switch
+	* Composer Switch
 	**/
 	protected static $composer = array(); 
 
 	/**
-	* 	Load the Composer Vendors
+	* Load the Composer Vendors
 	**/
 	public static function composerAutoload($target)
 	{
@@ -4330,7 +4330,7 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	* 	Load the Composer Vendor phpseclib
+	* Load the Composer Vendor phpseclib
 	**/
 	protected static function composephpseclib()
 	{
@@ -4338,6 +4338,8 @@ abstract class ComponentbuilderHelper
 		require_once JPATH_SITE . '/libraries/phpseclib/vendor/autoload.php';
 		// do not load again
 		self::$composer['phpseclib'] = true;
+
+		return  true;
 	}
 
 
@@ -6228,7 +6230,15 @@ abstract class ComponentbuilderHelper
 			{
 				$query->from($db->quoteName('#_'.$main.'_'.$table));
 			}
-			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
+			// add strings to array search
+			if ('IN_STRINGS' === $operator || 'NOT IN_STRINGS' === $operator)
+			{
+				$query->where($db->quoteName($whereString) . ' ' . str_replace('_STRINGS', '', $operator) . ' ("' . implode('","',$where) . '")');
+			}
+			else
+			{
+				$query->where($db->quoteName($whereString) . ' ' . $operator . ' (' . implode(',',$where) . ')');
+			}
 			$db->setQuery($query);
 			$db->execute();
 			if ($db->getNumRows())

@@ -855,33 +855,42 @@ function getFieldOptions(fieldtype, db){
 				jQuery('#jform_datatype').val(result.database.datatype);
 				jQuery('#jform_datatype').trigger("liszt:updated");
 				jQuery('#jform_datatype').trigger("change");
+				// be sure to remove from no required
+				updateFieldRequired('datatype', 0);
 				// update datalenght
 				jQuery('#jform_datalenght').val(result.database.datalenght);
 				jQuery('#jform_datalenght').trigger("liszt:updated");
 				jQuery('#jform_datalenght').trigger("change");
+				// be sure to remove from no required
+				updateFieldRequired('datalenght', 0);
 				// load the datalenght_other if needed
-				if ('Other' == result.database.datalenght){
+				if ('Other' === result.database.datalenght){
 					jQuery('#jform_datalenght_other').val(result.database.datalenght_other);
+					// be sure to remove from no required
+					updateFieldRequired('datalenght_other', 0);
 				}
 				// update datadefault
 				jQuery('#jform_datadefault').val(result.database.datadefault);
 				jQuery('#jform_datadefault').trigger("liszt:updated");
 				jQuery('#jform_datadefault').trigger("change");
 				// load the datadefault_other if needed
-				if ('Other' == result.database.datadefault){
+				if ('Other' === result.database.datadefault){
 					jQuery('#jform_datadefault_other').val(result.database.datadefault_other);
+					// be sure to remove from no required
+					updateFieldRequired('datadefault_other', 0);
 				}
 				// update indexes
 				jQuery('#jform_indexes').val(result.database.indexes);
 				jQuery('#jform_indexes').trigger("liszt:updated");
 				jQuery('#jform_indexes').trigger("change");
+				// be sure to remove from no required
+				updateFieldRequired('indexes', 0);
 				// update store
 				jQuery('#jform_store').val(result.database.store);
 				jQuery('#jform_store').trigger("liszt:updated");
 				jQuery('#jform_store').trigger("change");
-				// update null_switch (hmmm)
-				// jQuery('#jform_null_switch').val(result.database.null_switch);
-				// jQuery('#jform_null_switch').trigger("change");
+				// be sure to remove from no required
+				updateFieldRequired('store', 0);
 			}
 		}
 	})

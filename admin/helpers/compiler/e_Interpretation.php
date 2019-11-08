@@ -1835,11 +1835,11 @@ class Interpretation extends Fields
 						// base64_decode
 						$decoder = $string . "->" . $field . " = base64_decode(" . $string . "->" . $field . ");";
 					}
-					elseif (strpos($decode, '_encryption') !== false)
+					elseif (strpos($decode, '_encryption') !== false || 'expert_mode' === $decode)
 					{
 						foreach ($this->cryptionTypes as $cryptionType)
 						{
-							if ($cryptionType . '_encryption' === $decode)
+							if ($cryptionType . '_encryption' === $decode || $cryptionType . '_mode' === $decode)
 							{
 								if ('expert' !== $cryptionType)
 								{
@@ -1847,10 +1847,10 @@ class Interpretation extends Fields
 									// set decryption
 									$decoder = $string . "->" . $field . " = rtrim(\$" . $cryptionType . "->decryptString(" . $string . "->" . $field . "), " . '"\0"' . ");";
 								}
-								elseif (isset($this->{$cryptionType . 'FieldModeling'}[$code][$field]))
+								elseif (isset($this->{$cryptionType . 'FieldModeling'}[$array['admin_view']][$field]))
 								{
 									$_placeholder_for_field = array('[[[field]]]' => $string . "->" . $field);
-									$fieldDecode .= $this->setPlaceholders(PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . implode(PHP_EOL . $this->_t(1) . $tab . $this->_t(1), $this->{$cryptionType . 'FieldModeling'}[$code][$field]['get']), $_placeholder_for_field);
+									$fieldDecode .= $this->setPlaceholders(PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . implode(PHP_EOL . $this->_t(1) . $tab . $this->_t(1), $this->{$cryptionType . 'FieldModeling'}[$array['admin_view']][$field]['get']), $_placeholder_for_field);
 								}
 								// activate site decryption
 								$this->siteDecrypt[$cryptionType][$code] = true;
@@ -12955,9 +12955,7 @@ class Interpretation extends Fields
 						break;
 					case 6:
 						// EXPERT_ENCRYPTION
-						$decode = '///////////////////////////////////////////';
 						$expertCrypt = true;
-						$suffix_decode = '';
 						break;
 					default:
 						// JSON_ARRAY_ENCODE
@@ -12968,7 +12966,7 @@ class Interpretation extends Fields
 						break;
 				}
 
-				if ($item['type'] === 'usergroup' && !$export)
+				if ($item['type'] === 'usergroup' && !$export && $item['method'] != 6)
 				{
 					$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "//" . $this->setLine(__LINE__) . " decode " . $item['name'];
 					$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "\$" . $item['name'] . "Array = " . $decode . "(\$item->" . $item['name'] . $suffix_decode . ");";
@@ -12991,7 +12989,7 @@ class Interpretation extends Fields
 					$fix .= PHP_EOL.$this->_t(1).$tab.$this->_t(4) . "\$item->".$item['name']." = implode('|',\$".$item['name']."Array);";
 					$fix .= PHP_EOL.$this->_t(1).$tab.$this->_t(3) . "}";
 				} */
-				elseif ($item['translation'] && !$export)
+				elseif ($item['translation'] && !$export && $item['method'] != 6)
 				{
 					$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "//" . $this->setLine(__LINE__) . " decode " . $item['name'];
 					$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "\$" . $item['name'] . "Array = " . $decode . "(\$item->" . $item['name'] . $suffix_decode . ");";
@@ -13007,40 +13005,49 @@ class Interpretation extends Fields
 				}
 				else
 				{
-					if ($item['method'] == 2 || $item['method'] == 3 || $item['method'] == 4 || $item['method'] == 5)
+					if ($item['method'] == 2 || $item['method'] == 3 || $item['method'] == 4 || $item['method'] == 5 || $item['method'] == 6)
 					{
-						$taber = '';
-						if ($item['method'] == 3)
+						// expert mode (dev must do it all)
+						if ($item['method'] == 6)
 						{
-							$taber = $this->_t(1);
-							$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "if (\$basickey && !is_numeric(\$item->" . $item['name'] . ") && \$item->" . $item['name'] . " === base64_encode(base64_decode(\$item->" . $item['name'] . ", true)))";
-							$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "{";
-						}
-						elseif ($item['method'] == 5)
-						{
-							$taber = $this->_t(1);
-							$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "if (\$mediumkey && !is_numeric(\$item->" . $item['name'] . ") && \$item->" . $item['name'] . " === base64_encode(base64_decode(\$item->" . $item['name'] . ", true)))";
-							$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "{";
-						}
-						elseif ($item['method'] == 4)
-						{
-							$taber = $this->_t(1);
-							$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "if (\$whmcskey && !is_numeric(\$item->" . $item['name'] . ") && \$item->" . $item['name'] . " === base64_encode(base64_decode(\$item->" . $item['name'] . ", true)))";
-							$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "{";
-						}
-						if ($item['method'] == 3 || $item['method'] == 4 || $item['method'] == 5)
-						{
-							$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(4) . "//" . $this->setLine(__LINE__) . " decrypt " . $item['name'];
+							$_placeholder_for_field = array('[[[field]]]' => "\$item->" . $item['name']);
+							$fix .= $this->setPlaceholders(PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . implode(PHP_EOL . $this->_t(1) . $tab . $this->_t(3), $this->expertFieldModeling[$viewName_single][$item['name']]['get']), $_placeholder_for_field);
 						}
 						else
 						{
-							$fix .= PHP_EOL . $this->_t(1) . $tab . $taber . $this->_t(3) . "//" . $this->setLine(__LINE__) . " decode " . $item['name'];
-						}
-						$fix .= PHP_EOL . $this->_t(1) . $tab . $taber . $this->_t(3) . "\$item->" . $item['name'] . " = " . $decode . "(\$item->" . $item['name'] . ");";
+							$taber = '';
+							if ($item['method'] == 3)
+							{
+								$taber = $this->_t(1);
+								$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "if (\$basickey && !is_numeric(\$item->" . $item['name'] . ") && \$item->" . $item['name'] . " === base64_encode(base64_decode(\$item->" . $item['name'] . ", true)))";
+								$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "{";
+							}
+							elseif ($item['method'] == 5)
+							{
+								$taber = $this->_t(1);
+								$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "if (\$mediumkey && !is_numeric(\$item->" . $item['name'] . ") && \$item->" . $item['name'] . " === base64_encode(base64_decode(\$item->" . $item['name'] . ", true)))";
+								$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "{";
+							}
+							elseif ($item['method'] == 4)
+							{
+								$taber = $this->_t(1);
+								$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "if (\$whmcskey && !is_numeric(\$item->" . $item['name'] . ") && \$item->" . $item['name'] . " === base64_encode(base64_decode(\$item->" . $item['name'] . ", true)))";
+								$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "{";
+							}
+							if ($item['method'] == 3 || $item['method'] == 4 || $item['method'] == 5)
+							{
+								$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(4) . "//" . $this->setLine(__LINE__) . " decrypt " . $item['name'];
+							}
+							else
+							{
+								$fix .= PHP_EOL . $this->_t(1) . $tab . $taber . $this->_t(3) . "//" . $this->setLine(__LINE__) . " decode " . $item['name'];
+							}
+							$fix .= PHP_EOL . $this->_t(1) . $tab . $taber . $this->_t(3) . "\$item->" . $item['name'] . " = " . $decode . "(\$item->" . $item['name'] . ");";
 
-						if ($item['method'] == 3 || $item['method'] == 4 || $item['method'] == 5)
-						{
-							$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "}";
+							if ($item['method'] == 3 || $item['method'] == 4 || $item['method'] == 5)
+							{
+								$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "}";
+							}
 						}
 					}
 					else

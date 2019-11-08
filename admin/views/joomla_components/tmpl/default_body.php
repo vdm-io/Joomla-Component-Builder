@@ -73,6 +73,11 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 				- <?php echo $this->escape($item->component_version); ?>
 			</div>
 			<?php
+				// always make sure the $this->return_here is set
+				if (!isset($this->return_here))
+				{
+					$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
+				}
 				// setup the buttons
 				if (!isset($_buttons) || !ComponentbuilderHelper::checkArray($_buttons))
 				{

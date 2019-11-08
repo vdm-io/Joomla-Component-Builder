@@ -215,14 +215,51 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		return JTable::getInstance($type, $prefix, $config);
 	}
 
+
 	/**
-	 * get VDM session key
+	 * get VDM internal session key
 	 *
 	 * @return  string  the session key
 	 *
 	 */
 	public function getVDM()
 	{
+		if (!isset($this->vastDevMod))
+		{
+			$_id = 0; // new item probably (since it was not set in the getItem method)
+
+			if (empty($_id))
+			{
+				$id = 0;
+			}
+			else
+			{
+				$id = $_id;
+			}
+			// set the id and view name to session
+			if ($vdm = ComponentbuilderHelper::get('admin_view__'.$id))
+			{
+				$this->vastDevMod = $vdm;
+			}
+			else
+			{
+				// set the vast development method key
+				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				ComponentbuilderHelper::set($this->vastDevMod, 'admin_view__'.$id);
+				ComponentbuilderHelper::set('admin_view__'.$id, $this->vastDevMod);
+				// set a return value if found
+				$jinput = JFactory::getApplication()->input;
+				$return = $jinput->get('return', null, 'base64');
+				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				// set a GUID value if found
+				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+					&& method_exists('ComponentbuilderHelper', 'validGUID')
+					&& ComponentbuilderHelper::validGUID($item->guid))
+				{
+					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+				}
+			}
+		}
 		return $this->vastDevMod;
 	}
 
@@ -540,6 +577,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->ajax_input = $ajax_input->toArray();
 			}
 
+
 			if (empty($item->id))
 			{
 				$id = 0;
@@ -563,8 +601,14 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$jinput = JFactory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				// set a GUID value if found
+				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+					&& method_exists('ComponentbuilderHelper', 'validGUID')
+					&& ComponentbuilderHelper::validGUID($item->guid))
+				{
+					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+				}
 			}
-
 			// update the fields
 			$objectUpdate = new stdClass();
 			$objectUpdate->id = (int) $item->id;

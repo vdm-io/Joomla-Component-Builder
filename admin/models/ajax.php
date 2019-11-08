@@ -279,48 +279,6 @@ class ComponentbuilderModelAjax extends JModelList
 
 
 	// Used in admin_view
-
-	protected $viewid = array();
-
-	protected function getViewID($call = 'table')
-	{
-		if (!isset($this->viewid[$call]))
-		{
-			// get the vdm key
-			$jinput = JFactory::getApplication()->input;
-			$vdm = $jinput->get('vdm', null, 'WORD');
-			if ($vdm) 
-			{
-				// set view and id
-				if ($view = ComponentbuilderHelper::get($vdm))
-				{
-					$current = (array) explode('__', $view);
-					if (ComponentbuilderHelper::checkString($current[0]) && isset($current[1]) && is_numeric($current[1]))
-					{
-						// get the view name & id
-						$this->viewid[$call] = array(
-							'a_id' => (int) $current[1],
-							'a_view' => $current[0]
-						);
-					}
-				}
-				// set return if found
-				if ($return = ComponentbuilderHelper::get($vdm . '__return'))
-				{
-					if (ComponentbuilderHelper::checkString($return))
-					{
-						$this->viewid[$call]['a_return'] = $return;
-					}
-				}
-			}
-		}
-		if (isset($this->viewid[$call]))
-		{
-			return $this->viewid[$call];
-		}
-		return false;
-	}
-
 	protected $rowNumbers = array(
 		'admin_fields_conditions' => 80,
 		'admin_fields' => 50
@@ -346,140 +304,6 @@ class ComponentbuilderModelAjax extends JModelList
 		'component_files_folders' => 'components_files_folders',
 		'custom_code' => 'custom_codes',
 		'language' => true);
-
-	public function getButton($type, $size)
-	{
-		if (isset($this->buttonArray[$type]))
-		{
-			$user = JFactory::getUser();
-			// only add if user allowed to create
-			if ($user->authorise($type.'.create', 'com_componentbuilder'))
-			{
-				// get the view name & id
-				$values = $this->getViewID();
-				// check if new item
-				$ref = '';
-				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
-				{
-					// check if we have a return value
-					$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
-					if (isset($values['a_return']))
-					{
-						$return_url .= '&return=' . (string) $values['a_return'];
-					}
-					// only load referral if not new item.
-					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'] . '&amp;return=' . urlencode(base64_encode($return_url));
-				}
-				// build url (A tag)
-				$startAtag = 'onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view=' . $type . '&amp;layout=edit' . $ref . '\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($type, 'W')).'">';
-				// build the smallest button
-				if (3 == $size)
-				{
-					$button = '<a class="btn btn-small btn-success" style="margin: 0 0 5px 0;" ' . $startAtag.'<span class="icon-new icon-white"></span></a>';
-				}
-				// build the smaller button
-				elseif (2 == $size)
-				{
-					$button = '<a class="btn btn-success vdm-button-new" ' . $startAtag . '<span class="icon-new icon-white"></span> ' . JText::_('COM_COMPONENTBUILDER_CREATE') . '</a>';
-				}
-				else
-				// build the big button
-				{
-					$button = '<div class="control-group">
-								<div class="control-label">
-									<label>' . ucwords($type) . '</label>
-								</div>
-								<div class="controls"><a class="btn btn-success vdm-button-new" ' . $startAtag . '
-									<span class="icon-new icon-white"></span> 
-										' . JText::_('COM_COMPONENTBUILDER_NEW') . '
-									</a>
-								</div>
-							</div>';
-				}
-				// return the button attached to input field
-				return $button;
-			}
-			return '';
-		}
-		return false;
-	}
-
-	public function getButtonID($type, $size)
-	{
-		if (isset($this->buttonArray[$type]))
-		{
-			$user = JFactory::getUser();
-			// only add if user allowed to create
-			if ($user->authorise($type.'.create', 'com_componentbuilder'))
-			{
-				// get the view name & id
-				$values = $this->getViewID();
-				// set the button ID
-				$css_class = 'control-group-'.ComponentbuilderHelper::safeString($type. '-' . $size, 'L', '-');
-				// check if new item
-				$ref = '';
-				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
-				{
-					// set the return value
-					$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
-					if (isset($values['a_return']))
-					{
-						$return_url .= '&return=' . (string) $values['a_return'];
-					}
-					// only load referral if not new item.
-					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'] . '&amp;return=' . urlencode(base64_encode($return_url));
-					// get item id
-					if (($id = ComponentbuilderHelper::getVar($type, $values['a_id'], $values['a_view'], 'id')) !== false && $id > 0)
-					{
-						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_EDIT_S_FOR_THIS_S', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w'));
-						$buttonTextSmall = JText::_('COM_COMPONENTBUILDER_EDIT');
-						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$this->buttonArray[$type].'&amp;task='.$type.'.edit&amp;id='.$id;
-						$icon = 'icon-apply';
-					}
-					else
-					{
-						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_CREATE_S_FOR_THIS_S', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w'));
-						$buttonTextSmall = JText::_('COM_COMPONENTBUILDER_CREATE');
-						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit';
-						$icon = 'icon-new';
-					}
-					// build the button
-					$button = array();
-					if (1 == $size)
-					{
-						$button[] = '<div class="control-group '.$css_class.'">';
-						$button[] = '<div class="control-label">';
-						$button[] = '<label>' . ComponentbuilderHelper::safeString($type, 'Ww') . '</label>';
-						$button[] = '</div>';
-						$button[] = '<div class="controls">';
-					}
-					$button[] = '<a class="btn btn-success vdm-button-new" onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" title="'.$buttonText.'">';
-					if (1 == $size)
-					{
-						$button[] = '<span class="'.$icon.' icon-white"></span>';
-						$button[] = $buttonText;
-						$button[] = '</a>';
-						$button[] = '</div>';
-						$button[] = '</div>';
-					}
-					elseif (2 == $size)
-					{
-						$button[] = '<span class="'.$icon.' icon-white"></span>';
-						$button[] = $buttonTextSmall;
-						$button[] = '</a>';
-					}
-					// return the button attached to input field
-					return implode("\n", $button);
-				}
-				// only return notice if big button
-				if (1 == $size)
-				{
-					return '<div class="control-group '.$css_class.'"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED_FOR_THE_FIRST_TIME', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w')) . '</div></div>';
-				}
-			}
-		}
-		return '';
-	}
 
 	public function checkAliasField($type)
 	{
@@ -626,97 +450,19 @@ class ComponentbuilderModelAjax extends JModelList
 			return $language[$key];
 		}
 		// check a shared value is available
-		$keys = explode('|=VDM=|', $key);
-		if (isset($language[$keys[1]]))
+		if (strpos($key, '|=VDM=|') !== false)
 		{
-			return $language[$keys[1]];
+			$keys = explode('|=VDM=|', $key);
+			if (isset($language[$keys[1]]))
+			{
+				return $language[$keys[1]];
+			}
 		}
 		return ComponentbuilderHelper::safeString($keys[1], 'Ww');
 	}
 
-
-	protected function getSubformTable($idName, $data)
-	{
-		// make sure we convert the json to array
-		if (ComponentbuilderHelper::checkJson($data))
-		{
-			$data = json_decode($data, true);
-		}
-		// make sure we have an array
-		if (ComponentbuilderHelper::checkArray($data) && ComponentbuilderHelper::checkString($idName))
-		{ 
-			// Build heading
-			$head = array();
-			foreach ($data as $headers)
-			{
-				foreach ($headers as $header => $value)
-				{
-					if (!isset($head[$header]))
-					{
-						$head[$header] = $this->getLanguage($idName . '|=VDM=|' . $header);
-					}
-				}
-			}
-			// build the rows
-			$rows = array();
-			if (ComponentbuilderHelper::checkArray($data) && ComponentbuilderHelper::checkArray($head))
-			{
-				foreach ($data as $nr => $values)
-				{
-					foreach ($head as $key => $_header)
-					{
-						// set the value for the row
-						if (isset($values[$key]))
-						{
-							$this->setSubformRows($nr, $this->setSubformValue($key, $values[$key]), $rows, $_header);
-						}
-						else
-						{
-							$this->setSubformRows($nr, $this->setSubformValue($key, ''), $rows, $_header);
-						}
-					}
-				}
-			}
-			// build table
-			if (ComponentbuilderHelper::checkArray($rows) && ComponentbuilderHelper::checkArray($head))
-			{
-				// set the number of rows
-				$this->rowNumber = count($rows);
-				// return the table
-				return ComponentbuilderHelper::setSubformTable($head, $rows, $idName);
-			}
-		}
-		return false;
-	}
-
-	protected function setSubformValue($header, $value)
-	{
-		if (array_key_exists($header, $this->functionArray) && method_exists($this, $this->functionArray[$header]))
-		{
-			$value = $this->{$this->functionArray[$header]}($header, $value);
-		}
-		// if no value are set
-		if (!ComponentbuilderHelper::checkString($value))
-		{
-			$value = '-';
-		}
-		return $value;
-	}
-
-	protected function setSubformRows($nr, $value, &$rows, $_header)
-	{
-		// build rows
-		if (!isset($rows[$nr]))
-		{
-			$rows[$nr] = '<td data-column=" '.$_header.' ">'.$value.'</td>';
-		}
-		else
-		{
-			$rows[$nr] .= '<td data-column=" '.$_header.' ">'.$value.'</td>';
-		}
-	}
-
 	protected $ref;
+
 	protected $fieldsArray = array(
 				'library_config' => 'addconfig',
 				'library_files_folders_urls' => array('addurls', 'addfiles', 'addfolders', 'addfoldersfullpath', 'addfilesfullpath'),
@@ -726,93 +472,11 @@ class ComponentbuilderModelAjax extends JModelList
 				'component_admin_views' =>  'addadmin_views',
 				'component_site_views' =>  'addsite_views',
 				'component_custom_admin_views' =>  'addcustom_admin_views');
+
 	protected $allowedViewsArray = array(
 				'admin_view',
 				'joomla_component',
 				'library');
-
-	public function getAjaxDisplay($type)
-	{
-		if (isset($this->fieldsArray[$type]))
-		{
-			// set type name
-			$typeName = ComponentbuilderHelper::safeString($type, 'w');
-			// get the view name & id
-			$values = $this->getViewID();
-			// check if we are in the correct view.
-			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && in_array($values['a_view'], $this->allowedViewsArray))
-			{
-				// set a return value
-				$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
-				if (isset($values['a_return']))
-				{
-					$return_url .= '&return=' . (string) $values['a_return'];
-				}
-				// set the ref
-				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'] . '&return=' . urlencode(base64_encode($return_url));
-				// load the results
-				$result = array();
-				// return field table
-				if (ComponentbuilderHelper::checkArray($this->fieldsArray[$type]))
-				{
-					foreach ($this->fieldsArray[$type] as $fieldName)
-					{
-						if ($table = $this->getFieldTable($type, $values['a_id'], $values['a_view'], $fieldName, $typeName))
-						{
-							$result[] = $table;
-						}
-					}
-				}
-				elseif (ComponentbuilderHelper::checkString($this->fieldsArray[$type]))
-				{
-					if ($table = $this->getFieldTable($type, $values['a_id'], $values['a_view'], $this->fieldsArray[$type], $typeName))
-					{
-						$result[] = $table;
-					}
-				}
-				// check if we have results
-				if (ComponentbuilderHelper::checkArray($result) && count($result) == 1)
-				{
-					// return the display
-					return implode('', $result);
-				}
-				elseif (ComponentbuilderHelper::checkArray($result))
-				{
-					// return the display
-					return '<div>' . implode('</div><div>', $result) . '</div>';
-				}
-			}
-			return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_SOON_AS_THIS_IS_DONE_IT_WILL_BE_DISPLAYED_HERE', $typeName) . '</div></div>';
-		}
-		return '<div class="control-group"><div class="alert alert-error"><h4>' . JText::_('COM_COMPONENTBUILDER_TYPE_ERROR') . '</h4><p>' . JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_IF_THIS_CONTINUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR_OF_A_TYPE_ERROR_IN_THE_FIELDS_DISPLAY_REQUEST') . '</p></div></div>';
-	}
-
-	protected function getFieldTable($type, $id, $idName, $fieldName, $typeName)
-	{
-		// get the field data
-		if ($fieldsData = ComponentbuilderHelper::getVar($type, (int) $id, $idName, $fieldName))
-		{
-			// check repeatable conversion
-			$this->checkRepeatableConversion($fieldsData, $fieldName, $id, $idName);
-			// get the table
-			$table = $this->getSubformTable($type, $fieldsData);
-			// get row number
-			$number = (isset($this->rowNumbers[$type]) && $this->rowNumbers[$type]) ? $this->rowNumbers[$type] : false;
-			// set notice of bad practice
-			$notice = '';
-			if ($number && isset($this->rowNumber) && $this->rowNumber > $number)
-			{
-				$notice = '<div class="alert alert-warning">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_S_S_IS_CONSIDERED_BAD_PRACTICE_YOUR_S_PAGE_LOAD_IN_JCB_WILL_SLOWDOWN_YOU_SHOULD_CONSIDER_DECOUPLING_SOME_OF_THESE_S', $this->rowNumber, $typeName, $number, $typeName, $typeName, $typeName) . '</div>';
-			}
-			elseif ($number && isset($this->rowNumber))
-			{
-				$notice = '<div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_S_S_IS_CONSIDERED_BAD_PRACTICE', $this->rowNumber, $typeName, $number, $typeName) . '</div>';
-			}
-			// return table
-			return $notice.$table;
-		}
-		return false;
-	}
 
 	protected $conversionCheck = array(
 				'addfields' => 'field',
@@ -824,6 +488,28 @@ class ComponentbuilderModelAjax extends JModelList
 				'addsite_views' => 'siteview',
 				'sql_tweak' => 'adminview',
 				'version_update' => 'version');
+
+	protected $itemNames = array(
+			'field' => array(),
+			'admin_view' => array(),
+			'site_view' => array(),
+			'custom_admin_view' => array()			
+		);
+
+	protected $itemKeys = array(
+			// admin view
+			'field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
+			'target_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
+			'match_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
+			'listfield' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
+			'joinfields' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
+			// joomla component view
+			'siteview' => array('table' => 'site_view', 'tables' => 'site_views', 'id' => 'id', 'name' => 'name', 'text' => 'Site View'),
+			'customadminview' => array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Custom Admin View'),
+			'adminviews' => array('table' => 'admin_view', 'tables' => 'admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Admin View'),
+			'adminview' => array('table' => 'admin_view', 'tables' => 'admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Admin View'),
+			'before' => array('table' => 'admin_view', 'tables' => 'admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Admin View')	
+		);
 
 	protected function checkRepeatableConversion(&$fieldsData, $fieldsArrayType, $id, $linked_id_name)
 	{
@@ -848,97 +534,6 @@ class ComponentbuilderModelAjax extends JModelList
 				JFactory::getDbo()->updateObject('#__componentbuilder_'.$type, $objectUpdate, 'admin_view');
 			}
 		}
-	}
-
-	protected $itemNames = array(
-			'field' => array(),
-			'admin_view' => array(),
-			'site_view' => array(),
-			'custom_admin_view' => array()			
-		);
-
-	protected $itemKeys = array(
-			// admin view
-			'field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
-			'target_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
-			'match_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
-			'listfield' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
-			'joinfields' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
-			// joomla component view
-			'siteview' => array('table' => 'site_view', 'tables' => 'site_views', 'id' => 'id', 'name' => 'name', 'text' => 'Site View'),
-			'customadminview' => array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Custom Admin View'),
-			'adminviews' => array('table' => 'admin_view', 'tables' => 'admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Admin View'),
-			'adminview' => array('table' => 'admin_view', 'tables' => 'admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Admin View'),
-			'before' => array('table' => 'admin_view', 'tables' => 'admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Admin View')	
-		);
-
-	protected function setItemNames($header, $value)
-	{
-		if (isset($this->itemKeys[$header]) && isset($this->itemKeys[$header]['table']) && isset($this->itemNames[$this->itemKeys[$header]['table']]))
-		{
-			// reset bucket
-			$bucket = array();
-			if (ComponentbuilderHelper::checkArray($value))
-			{
-				foreach ($value as $item)
-				{
-					$edit = true;
-					if (!isset($this->itemNames[$this->itemKeys[$header]['table']][$item]))
-					{
-						if (!$this->itemNames[$this->itemKeys[$header]['table']][$item] =  ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], (int) $item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['name']))
-						{
-							$this->itemNames[$this->itemKeys[$header]['table']][$item] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
-							$edit = false;
-						}
-						// check if we should load a type
-						if ($edit && isset($this->itemKeys[$header]['type']) && ComponentbuilderHelper::checkArray($this->itemKeys[$header]['type']) && isset($this->itemKeys[$header]['type']['table']))
-						{
-							// get the linked value 
-							if ($_key = ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], (int) $item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['type']['key']))
-							{
-								$this->itemNames[$this->itemKeys[$header]['table']][$item] .=  ' [' . ComponentbuilderHelper::getVar($this->itemKeys[$header]['type']['table'], (int) $_key,  $this->itemKeys[$header]['type']['field'], $this->itemKeys[$header]['type']['get']) .']';
-							}
-						}
-					}
-					// set edit link
-					$link = ($edit) ? ComponentbuilderHelper::getEditButton($item, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
-					// load item
-					$bucket[] = $this->itemNames[$this->itemKeys[$header]['table']][$item] . $link;
-				}
-			}
-			elseif (is_numeric($value))
-			{
-				$edit = true;
-				if (!isset($this->itemNames[$this->itemKeys[$header]['table']][$value]))
-				{
-					if (!$this->itemNames[$this->itemKeys[$header]['table']][$value] =  ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], (int) $value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['name']))
-					{
-						$this->itemNames[$this->itemKeys[$header]['table']][$value] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
-						$edit = false;
-					}
-					// check if we should load a type
-					if ($edit && isset($this->itemKeys[$header]['type']) && ComponentbuilderHelper::checkArray($this->itemKeys[$header]['type']) && isset($this->itemKeys[$header]['type']['table']))
-					{
-						// get the linked value 
-						if ($_key = ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], (int) $value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['type']['key']))
-						{
-							$this->itemNames[$this->itemKeys[$header]['table']][$value] .=  ' [' . ComponentbuilderHelper::getVar($this->itemKeys[$header]['type']['table'], (int) $_key,  $this->itemKeys[$header]['type']['field'], $this->itemKeys[$header]['type']['get']) .']';
-						}
-					}
-				}
-				// set edit link
-				$link = ($edit) ? ComponentbuilderHelper::getEditButton($value, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
-				// load item
-				$bucket[] = $this->itemNames[$this->itemKeys[$header]['table']][$value] . $link;
-			}
-			// return found items
-			if (ComponentbuilderHelper::checkArray($bucket))
-			{
-				return implode('<br />', $bucket);
-			}
-			return JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
-		}
-		return JText::_('COM_COMPONENTBUILDER_NO_ITEM_FOUND');
 	}
 
 	protected function setPermissions($header, $values)
@@ -1221,7 +816,7 @@ class ComponentbuilderModelAjax extends JModelList
 	}
 
 	public function getFieldSelectOptions($id)
-	{		 
+	{
 		// Create a new query object.
 		$query = $this->_db->getQuery(true);
 		$query->select($this->_db->quoteName(array('a.xml', 'b.name')));
@@ -1229,21 +824,21 @@ class ComponentbuilderModelAjax extends JModelList
 		$query->join('LEFT', $this->_db->quoteName('#__componentbuilder_fieldtype', 'b') . ' ON (' . $this->_db->quoteName('a.fieldtype') . ' = ' . $this->_db->quoteName('b.id') . ')');
 		$query->where($this->_db->quoteName('a.published') . ' = 1');
 		$query->where($this->_db->quoteName('a.id') . ' = '. (int) $id);
-		 
+
 		// Reset the query using our newly populated query object.
 		$this->_db->setQuery($query);
 		$this->_db->execute();
 		if ($this->_db->getNumRows())
 		{
-			$result		= $this->_db->loadObject();
-			$result->name	= strtolower($result->name);
+			$result = $this->_db->loadObject();
+			$result->name = strtolower($result->name);
 			if (ComponentbuilderHelper::fieldCheck($result->name,'list'))
 			{
 				// load the values form params
 				$xml = json_decode($result->xml);
-				
+
 				$xmlOptions = ComponentbuilderHelper::getBetween($xml,'option="','"');
-				
+
 				$optionSet = '';
 				if (strpos($xmlOptions,',') !== false)
 				{
@@ -1297,18 +892,17 @@ class ComponentbuilderModelAjax extends JModelList
 			{
 				return 'dynamic_list';
 			}
-			
 		}
 		return false;
 	}
-    
+
 	public function getTableColumns($tableName)
 	{
         	// get the columns
 		$columns = $this->_db->getTableColumns("#__".$tableName);
 		if (ComponentbuilderHelper::checkArray($columns))
 		{
-        	// build the return string
+        	   	// build the return string
 			$tableColumns = array();
 			foreach ($columns as $column => $type)
 			{
@@ -1558,6 +1152,472 @@ class ComponentbuilderModelAjax extends JModelList
 		}
 		return false;
 	}
+
+	protected $viewid = array();
+
+	protected function getViewID($call = 'table')
+	{
+		if (!isset($this->viewid[$call]))
+		{
+			// get the vdm key
+			$jinput = JFactory::getApplication()->input;
+			$vdm = $jinput->get('vdm', null, 'WORD');
+			if ($vdm)
+			{
+				// set view and id
+				if ($view = ComponentbuilderHelper::get($vdm))
+				{
+					$current = (array) explode('__', $view);
+					if (ComponentbuilderHelper::checkString($current[0]) && isset($current[1]) && is_numeric($current[1]))
+					{
+						// get the view name & id
+						$this->viewid[$call] = array(
+							'a_id' => (int) $current[1],
+							'a_view' => $current[0]
+						);
+					}
+				}
+				// set GUID if found
+				if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false && method_exists('ComponentbuilderHelper', 'validGUID'))
+				{
+					if (ComponentbuilderHelper::validGUID($guid))
+					{
+						$this->viewid[$call]['a_guid'] = $guid;
+					}
+				}
+				// set return if found
+				if (($return = ComponentbuilderHelper::get($vdm . '__return')) !== false)
+				{
+					if (ComponentbuilderHelper::checkString($return))
+					{
+						$this->viewid[$call]['a_return'] = $return;
+					}
+				}
+			}
+		}
+		if (isset($this->viewid[$call]))
+		{
+			return $this->viewid[$call];
+		}
+		return false;
+	}
+
+
+	public function getButton($type, $size)
+	{
+		if (isset($this->buttonArray[$type]))
+		{
+			$user = JFactory::getUser();
+			// only add if user allowed to create
+			if ($user->authorise($type.'.create', 'com_componentbuilder'))
+			{
+				// get the view name & id
+				$values = $this->getViewID();
+				// check if new item
+				$ref = '';
+				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
+				{
+					// check if we have a return value
+					$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
+					if (isset($values['a_return']))
+					{
+						$return_url .= '&return=' . (string) $values['a_return'];
+					}
+					// only load referral if not new item.
+					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'] . '&amp;return=' . urlencode(base64_encode($return_url));
+				}
+				// build url (A tag)
+				$startAtag = 'onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view=' . $type . '&amp;layout=edit' . $ref . '\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($type, 'W')).'">';
+				// build the smallest button
+				if (3 == $size)
+				{
+					$button = '<a class="btn btn-small btn-success" style="margin: 0 0 5px 0;" ' . $startAtag.'<span class="icon-new icon-white"></span></a>';
+				}
+				// build the smaller button
+				elseif (2 == $size)
+				{
+					$button = '<a class="btn btn-success vdm-button-new" ' . $startAtag . '<span class="icon-new icon-white"></span> ' . JText::_('COM_COMPONENTBUILDER_CREATE') . '</a>';
+				}
+				else
+				// build the big button
+				{
+					$button = '<div class="control-group">
+								<div class="control-label">
+									<label>' . ucwords($type) . '</label>
+								</div>
+								<div class="controls"><a class="btn btn-success vdm-button-new" ' . $startAtag . '
+									<span class="icon-new icon-white"></span> 
+										' . JText::_('COM_COMPONENTBUILDER_NEW') . '
+									</a>
+								</div>
+							</div>';
+				}
+				// return the button attached to input field
+				return $button;
+			}
+			return '';
+		}
+		return false;
+	}
+
+	public function getButtonID($type, $size)
+	{
+		if (isset($this->buttonArray[$type]))
+		{
+			$user = JFactory::getUser();
+			// only add if user allowed to create
+			if ($user->authorise($type.'.create', 'com_componentbuilder'))
+			{
+				// get the view name & id
+				$values = $this->getViewID();
+				// set the button ID
+				$css_class = 'control-group-'.ComponentbuilderHelper::safeString($type. '-' . $size, 'L', '-');
+				// check if new item
+				$ref = '';
+				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
+				{
+					// set the return value
+					$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
+					if (isset($values['a_return']))
+					{
+						$return_url .= '&return=' . (string) $values['a_return'];
+					}
+					// only load referral if not new item.
+					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'] . '&amp;return=' . urlencode(base64_encode($return_url));
+					// set the key get value
+					$key_get_value = $values['a_id'];
+					// check if we have a GUID
+					if (isset($values['a_guid']))
+					{
+						$ref .= '&guid=' . (string) $values['a_guid'];
+						$key_get_value = $values['a_guid'];
+					}
+					// get item id
+					if (($id = ComponentbuilderHelper::getVar($type, $key_get_value, $values['a_view'], 'id')) !== false && $id > 0)
+					{
+						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_EDIT_S_FOR_THIS_S', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w'));
+						$buttonTextSmall = JText::_('COM_COMPONENTBUILDER_EDIT');
+						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$this->buttonArray[$type].'&amp;task='.$type.'.edit&amp;id='.$id;
+						$icon = 'icon-apply';
+					}
+					else
+					{
+						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_CREATE_S_FOR_THIS_S', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w'));
+						$buttonTextSmall = JText::_('COM_COMPONENTBUILDER_CREATE');
+						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit';
+						$icon = 'icon-new';
+					}
+					// build the button
+					$button = array();
+					if (1 == $size)
+					{
+						$button[] = '<div class="control-group '.$css_class.'">';
+						$button[] = '<div class="control-label">';
+						$button[] = '<label>' . ComponentbuilderHelper::safeString($type, 'Ww') . '</label>';
+						$button[] = '</div>';
+						$button[] = '<div class="controls">';
+					}
+					$button[] = '<a class="btn btn-success vdm-button-new" onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" title="'.$buttonText.'">';
+					if (1 == $size)
+					{
+						$button[] = '<span class="'.$icon.' icon-white"></span>';
+						$button[] = $buttonText;
+						$button[] = '</a>';
+						$button[] = '</div>';
+						$button[] = '</div>';
+					}
+					elseif (2 == $size)
+					{
+						$button[] = '<span class="'.$icon.' icon-white"></span>';
+						$button[] = $buttonTextSmall;
+						$button[] = '</a>';
+					}
+					// return the button attached to input field
+					return implode("\n", $button);
+				}
+				// only return notice if big button
+				if (1 == $size)
+				{
+					return '<div class="control-group '.$css_class.'"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED_FOR_THE_FIRST_TIME', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w')) . '</div></div>';
+				}
+			}
+		}
+		return '';
+	}
+
+	protected function getSubformTable($idName, $data)
+	{
+		// make sure we convert the json to array
+		if (ComponentbuilderHelper::checkJson($data))
+		{
+			$data = json_decode($data, true);
+		}
+		// make sure we have an array
+		if (ComponentbuilderHelper::checkArray($data) && ComponentbuilderHelper::checkString($idName))
+		{ 
+			// Build heading
+			$head = array();
+			foreach ($data as $headers)
+			{
+				foreach ($headers as $header => $value)
+				{
+					if (!isset($head[$header]))
+					{
+						$head[$header] = $this->getLanguage($idName . '|=VDM=|' . $header);
+					}
+				}
+			}
+			// build the rows
+			$rows = array();
+			if (ComponentbuilderHelper::checkArray($data) && ComponentbuilderHelper::checkArray($head))
+			{
+				foreach ($data as $nr => $values)
+				{
+					foreach ($head as $key => $_header)
+					{
+						// set the value for the row
+						if (isset($values[$key]))
+						{
+							$this->setSubformRows($nr, $this->setSubformValue($key, $values[$key]), $rows, $_header);
+						}
+						else
+						{
+							$this->setSubformRows($nr, $this->setSubformValue($key, ''), $rows, $_header);
+						}
+					}
+				}
+			}
+			// build table
+			if (ComponentbuilderHelper::checkArray($rows) && ComponentbuilderHelper::checkArray($head))
+			{
+				// set the number of rows
+				$this->rowNumber = count($rows);
+				// return the table
+				return ComponentbuilderHelper::setSubformTable($head, $rows, $idName);
+			}
+		}
+		return false;
+	}
+
+	protected function setSubformValue($header, $value)
+	{
+		if (array_key_exists($header, $this->functionArray) && method_exists($this, $this->functionArray[$header]))
+		{
+			$value = $this->{$this->functionArray[$header]}($header, $value);
+		}
+		// if no value are set
+		if (!ComponentbuilderHelper::checkString($value))
+		{
+			$value = '-';
+		}
+		return $value;
+	}
+
+	protected function setSubformRows($nr, $value, &$rows, $_header)
+	{
+		// build rows
+		if (!isset($rows[$nr]))
+		{
+			$rows[$nr] = '<td data-column=" '.$_header.' ">'.$value.'</td>';
+		}
+		else
+		{
+			$rows[$nr] .= '<td data-column=" '.$_header.' ">'.$value.'</td>';
+		}
+	}
+
+	public function getAjaxDisplay($type)
+	{
+		if (isset($this->fieldsArray[$type]))
+		{
+			// set type name
+			$typeName = ComponentbuilderHelper::safeString($type, 'w');
+			// get the view name & id
+			$values = $this->getViewID();
+			// check if we are in the correct view.
+			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && in_array($values['a_view'], $this->allowedViewsArray))
+			{
+				// set a return value
+				$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
+				// set a global return value
+				if (isset($values['a_return']))
+				{
+					$return_url .= '&return=' . (string) $values['a_return'];
+				}
+				// set the ref
+				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'] . '&return=' . urlencode(base64_encode($return_url));
+				// set the key get value
+				$key_get_value = $values['a_id'];
+				// check if we have a GUID
+				if (isset($values['a_guid']))
+				{
+					$this->ref .= '&guid=' . (string) $values['a_guid'];
+					$key_get_value = $values['a_guid'];
+				}
+				// load the results
+				$result = array();
+				// return field table
+				if (ComponentbuilderHelper::checkArray($this->fieldsArray[$type]))
+				{
+					foreach ($this->fieldsArray[$type] as $fieldName)
+					{
+						if ($table = $this->getFieldTable($type, $key_get_value, $values['a_view'], $fieldName, $typeName))
+						{
+							$result[] = $table;
+						}
+					}
+				}
+				elseif (ComponentbuilderHelper::checkString($this->fieldsArray[$type]))
+				{
+					if ($table = $this->getFieldTable($type, $key_get_value, $values['a_view'], $this->fieldsArray[$type], $typeName))
+					{
+						$result[] = $table;
+					}
+				}
+				// check if we have results
+				if (ComponentbuilderHelper::checkArray($result) && count($result) == 1)
+				{
+					// return the display
+					return implode('', $result);
+				}
+				elseif (ComponentbuilderHelper::checkArray($result))
+				{
+					// return the display
+					return '<div>' . implode('</div><div>', $result) . '</div>';
+				}
+			}
+			return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_SOON_AS_THIS_IS_DONE_IT_WILL_BE_DISPLAYED_HERE', $typeName) . '</div></div>';
+		}
+		return '<div class="control-group"><div class="alert alert-error"><h4>' . JText::_('COM_COMPONENTBUILDER_TYPE_ERROR') . '</h4><p>' . JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_IF_THIS_CONTINUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR_OF_A_TYPE_ERROR_IN_THE_FIELDS_DISPLAY_REQUEST') . '</p></div></div>';
+	}
+
+
+	protected function setItemNames($header, $value)
+	{
+		if (isset($this->itemKeys[$header]) && isset($this->itemKeys[$header]['table']) && isset($this->itemNames[$this->itemKeys[$header]['table']]))
+		{
+			// check if we have GUID setup
+			$validGUID = function ($guid) {
+				if (method_exists('ComponentbuilderHelper', 'validGUID') && ComponentbuilderHelper::validGUID($guid))
+				{
+					return true;
+				}
+				return false;
+			};
+			// reset bucket
+			$bucket = array();
+			if (ComponentbuilderHelper::checkArray($value))
+			{
+				foreach ($value as $item)
+				{
+					$edit = true;
+					if (!isset($this->itemNames[$this->itemKeys[$header]['table']][$item]))
+					{
+						if (($this->itemNames[$this->itemKeys[$header]['table']][$item] =  ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], $item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['name'])) === false)
+						{
+							$this->itemNames[$this->itemKeys[$header]['table']][$item] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
+							$edit = false;
+						}
+						// check if we should load a type
+						if ($edit && isset($this->itemKeys[$header]['type']) && ComponentbuilderHelper::checkArray($this->itemKeys[$header]['type']) && isset($this->itemKeys[$header]['type']['table']))
+						{
+							// get the linked value 
+							if (($_key = ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], $item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['type']['key'])) !== false)
+							{
+								$this->itemNames[$this->itemKeys[$header]['table']][$item] .=  ' [' . ComponentbuilderHelper::getVar($this->itemKeys[$header]['type']['table'], $_key,  $this->itemKeys[$header]['type']['field'], $this->itemKeys[$header]['type']['get']) .']';
+							}
+						}
+					}
+					// check if we are working with GUID
+					if ($validGUID($item) && method_exists('ComponentbuilderHelper', 'getEditButtonGUID'))
+					{
+						// set edit link
+						$link = ($edit) ? ComponentbuilderHelper::getEditButtonGUID($item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
+					}
+					else
+					{
+						// set edit link
+						$link = ($edit) ? ComponentbuilderHelper::getEditButton($item, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
+					}
+					// load item
+					$bucket[] = $this->itemNames[$this->itemKeys[$header]['table']][$item] . $link;
+				}
+			}
+			elseif (is_numeric($value) || $validGUID($value))
+			{
+				$edit = true;
+				if (!isset($this->itemNames[$this->itemKeys[$header]['table']][$value]))
+				{
+					if (($this->itemNames[$this->itemKeys[$header]['table']][$value] =  ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], $value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['name'])) === false)
+					{
+						$this->itemNames[$this->itemKeys[$header]['table']][$value] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
+						$edit = false;
+					}
+					// check if we should load a type
+					if ($edit && isset($this->itemKeys[$header]['type']) && ComponentbuilderHelper::checkArray($this->itemKeys[$header]['type']) && isset($this->itemKeys[$header]['type']['table']))
+					{
+						// get the linked value 
+						if (($_key = ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], $value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['type']['key'])) !== false)
+						{
+							$this->itemNames[$this->itemKeys[$header]['table']][$value] .=  ' [' . ComponentbuilderHelper::getVar($this->itemKeys[$header]['type']['table'], $_key,  $this->itemKeys[$header]['type']['field'], $this->itemKeys[$header]['type']['get']) .']';
+						}
+					}
+				}
+				// check if we are working with GUID
+				if ($validGUID($value) && method_exists('ComponentbuilderHelper', 'getEditButtonGUID'))
+				{
+					// set edit link
+					$link = ($edit) ? ComponentbuilderHelper::getEditButtonGUID($value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
+				}
+				else
+				{
+					// set edit link
+					$link = ($edit) ? ComponentbuilderHelper::getEditButton($value, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
+				}
+				// load item
+				$bucket[] = $this->itemNames[$this->itemKeys[$header]['table']][$value] . $link;
+			}
+			// return found items
+			if (ComponentbuilderHelper::checkArray($bucket))
+			{
+				return implode('<br />', $bucket);
+			}
+			return JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
+		}
+		return JText::_('COM_COMPONENTBUILDER_NO_ITEM_FOUND');
+	}
+
+
+	protected function getFieldTable($type, $id, $idName, $fieldName, $typeName)
+	{
+		// get the field data
+		if (($fieldsData = ComponentbuilderHelper::getVar($type, $id, $idName, $fieldName)) !== false)
+		{
+			// check repeatable conversion
+			if (method_exists(__CLASS__, 'checkRepeatableConversion'))
+			{
+				$this->checkRepeatableConversion($fieldsData, $fieldName, $id, $idName);
+			}
+			// get the table
+			$table = $this->getSubformTable($type, $fieldsData);
+			// get row number
+			$number = (isset($this->rowNumbers) && isset($this->rowNumbers[$type]) && $this->rowNumbers[$type]) ? $this->rowNumbers[$type] : false;
+			// set notice of bad practice
+			$notice = '';
+			if ($number && isset($this->rowNumber) && $this->rowNumber > $number)
+			{
+				$notice = '<div class="alert alert-warning">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_S_S_IS_CONSIDERED_BAD_PRACTICE_YOUR_S_PAGE_LOAD_IN_JCB_WILL_SLOWDOWN_YOU_SHOULD_CONSIDER_DECOUPLING_SOME_OF_THESE_S', $this->rowNumber, $typeName, $number, $typeName, $typeName, $typeName) . '</div>';
+			}
+			elseif ($number && isset($this->rowNumber))
+			{
+				$notice = '<div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_S_S_IS_CONSIDERED_BAD_PRACTICE', $this->rowNumber, $typeName, $number, $typeName) . '</div>';
+			}
+			// return table
+			return $notice . $table;
+		}
+		return false;
+	}
+
 
 	// Used in template
 	public function getTemplateDetails($id)

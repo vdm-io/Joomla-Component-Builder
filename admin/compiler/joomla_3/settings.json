@@ -212,6 +212,12 @@
 				"path": "c0mp0n3nt/site/helpers",
 				"rename": false,
 				"type": "file"
+			},
+			"import.gif": {
+				"naam": "import.gif",
+				"path": "c0mp0n3nt/admin/assets/images",
+				"rename": false,
+				"type": "file"
 			}
 		},
 		"dynamic": {
@@ -459,11 +465,6 @@
 					"path": "c0mp0n3nt/admin/views/import/tmpl",
 					"rename": "new",
 					"newName": "default.php",
-					"type": "import"
-				},
-				"import.gif": {
-					"path": "c0mp0n3nt/admin/assets/images",
-					"rename": false,
 					"type": "import"
 				},
 				"JControllerLegacy_import_custom.php": {
