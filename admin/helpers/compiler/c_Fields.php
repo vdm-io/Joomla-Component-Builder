@@ -434,7 +434,7 @@ class Fields extends Structure
 			$this->setLangContent($this->lang, $langView . '_MODIFIED_BY_LABEL', "Modified By");
 			$this->setLangContent($this->lang, $langView . '_MODIFIED_BY_DESC', "The last user that modified this " . $view['settings']->name_single . ".");
 			$this->setLangContent($this->lang, $langView . '_ORDERING_LABEL', "Ordering");
-			$this->setLangContent($this->lang, $langView . '_VERSION_LABEL', "Revision");
+			$this->setLangContent($this->lang, $langView . '_VERSION_LABEL', "Version");
 			$this->setLangContent($this->lang, $langView . '_VERSION_DESC', "A count of the number of times this " . $view['settings']->name_single . " has been revised.");
 			$this->setLangContent($this->lang, $langView . '_SAVE_WARNING', "Alias already existed so a number was added at the end. You can re-edit the " . $view['settings']->name_single . " to customise the alias.");
 			// check what type of field builder to use
