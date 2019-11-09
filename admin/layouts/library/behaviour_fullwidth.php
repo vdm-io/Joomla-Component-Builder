@@ -29,6 +29,7 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'note_no_behaviour_one',
 	'note_yes_behaviour_one',
 	'note_build_in_behaviour_one',
+	'note_yes_behaviour_library',
 	'addconditions',
 	'php_setdocument'
 );

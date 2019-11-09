@@ -11,7 +11,7 @@ The Component Builder for [Joomla](https://extensions.joomla.org/extension/compo
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will safe you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.10.4) with **ALL** its features and **ALL** concepts totally open-source and free! 
+You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (2.10.5) with **ALL** its features and **ALL** concepts totally open-source and free! 
 
 > Watch Quick Build of a Hello World component in [JCB on Youtube](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -144,11 +144,11 @@ TODO
 + *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
 + *Last Build*: 9th November, 2019
-+ *Version*: 2.10.4
++ *Version*: 2.10.5
 + *Copyright*: Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **255944**
-+ *Field count*: **1350**
++ *Line count*: **255982**
++ *Field count*: **1351**
 + *File count*: **1614**
 + *Folder count*: **256**
 

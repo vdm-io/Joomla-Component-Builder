@@ -63,6 +63,9 @@ jQuery(document).ready(function()
 
 	var target_vvvvwcb = jQuery("#jform_target input[type='radio']:checked").val();
 	vvvvwcb(target_vvvvwcb);
+
+	var target_vvvvwcc = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwcc(target_vvvvwcc);
 });
 
 // the vvvvwbl function
@@ -794,6 +797,20 @@ function vvvvwcb(target_vvvvwcb)
 			jQuery('#jform_type').removeClass('required');
 			jform_vvvvwcbvxm_required = true;
 		}
+	}
+}
+
+// the vvvvwcc function
+function vvvvwcc(target_vvvvwcc)
+{
+	// set the function logic
+	if (target_vvvvwcc == 2)
+	{
+		jQuery('.note_yes_behaviour_library').closest('.control-group').show();
+	}
+	else
+	{
+		jQuery('.note_yes_behaviour_library').closest('.control-group').hide();
 	}
 }
 

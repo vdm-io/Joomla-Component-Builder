@@ -535,6 +535,21 @@ jQuery('#adminForm').on('change', '#jform_target',function (e)
 
 });
 
+// #jform_target listeners for target_vvvvwcc function
+jQuery('#jform_target').on('keyup',function()
+{
+	var target_vvvvwcc = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwcc(target_vvvvwcc);
+
+});
+jQuery('#adminForm').on('change', '#jform_target',function (e)
+{
+	e.preventDefault();
+	var target_vvvvwcc = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwcc(target_vvvvwcc);
+
+});
+
 
 
 <?php $numberAddconditions = range(0, count( (array) $this->item->addconditions) + 3, 1);?>

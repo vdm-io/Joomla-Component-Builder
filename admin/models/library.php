@@ -37,6 +37,7 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 				'note_no_behaviour_one',
 				'note_yes_behaviour_one',
 				'note_build_in_behaviour_one',
+				'note_yes_behaviour_library',
 				'addconditions',
 				'php_setdocument'
 			),
@@ -189,20 +190,20 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 				$item->php_setdocument = base64_decode($item->php_setdocument);
 			}
 
-			if (!empty($item->libraries))
-			{
-				// Convert the libraries field to an array.
-				$libraries = new Registry;
-				$libraries->loadString($item->libraries);
-				$item->libraries = $libraries->toArray();
-			}
-
 			if (!empty($item->addconditions))
 			{
 				// Convert the addconditions field to an array.
 				$addconditions = new Registry;
 				$addconditions->loadString($item->addconditions);
 				$item->addconditions = $addconditions->toArray();
+			}
+
+			if (!empty($item->libraries))
+			{
+				// Convert the libraries field to an array.
+				$libraries = new Registry;
+				$libraries->loadString($item->libraries);
+				$item->libraries = $libraries->toArray();
 			}
 
 
@@ -1036,19 +1037,6 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		}
 
-		// Set the libraries items to data.
-		if (isset($data['libraries']) && is_array($data['libraries']))
-		{
-			$libraries = new JRegistry;
-			$libraries->loadArray($data['libraries']);
-			$data['libraries'] = (string) $libraries;
-		}
-		elseif (!isset($data['libraries']))
-		{
-			// Set the empty libraries to data
-			$data['libraries'] = '';
-		}
-
 		// Set the addconditions items to data.
 		if (isset($data['addconditions']) && is_array($data['addconditions']))
 		{
@@ -1060,6 +1048,19 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 		{
 			// Set the empty addconditions to data
 			$data['addconditions'] = '';
+		}
+
+		// Set the libraries items to data.
+		if (isset($data['libraries']) && is_array($data['libraries']))
+		{
+			$libraries = new JRegistry;
+			$libraries->loadArray($data['libraries']);
+			$data['libraries'] = (string) $libraries;
+		}
+		elseif (!isset($data['libraries']))
+		{
+			// Set the empty libraries to data
+			$data['libraries'] = '';
 		}
 
 		// Set the php_setdocument string to base64 string.

@@ -159,10 +159,6 @@
 			message="COM_COMPONENTBUILDER_LIBRARY_DESCRIPTION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_LIBRARY_DESCRIPTION_HINT"
 		/>
-		<!-- Note_build_in_behaviour_two Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_build_in_behaviour_two" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_BUILD_IN_BEHAVIOUR_TWO_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_BUILD_IN_BEHAVIOUR_TWO_DESCRIPTION" heading="h4" class="alert alert-success note_build_in_behaviour_two" />
-		<!-- Note_yes_behaviour_two Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_yes_behaviour_two" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_TWO_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_TWO_DESCRIPTION" heading="h4" class="alert alert-success note_yes_behaviour_two" />
 		<!-- Note_no_behaviour_two Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_no_behaviour_two" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_NO_BEHAVIOUR_TWO_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_NO_BEHAVIOUR_TWO_DESCRIPTION" heading="h4" class="alert alert-error note_no_behaviour_two" />
 		<!-- Note_display_library_files_folders_urls Field. Type: Note. A None Database Field. (joomla) -->
@@ -177,18 +173,8 @@
 			name="not_required"
 			default="[]"
 		/>
-		<!-- Libraries Field. Type: Librariesx. (custom) -->
-		<field
-			type="librariesx"
-			name="libraries"
-			label="COM_COMPONENTBUILDER_LIBRARY_LIBRARIES_LABEL"
-			description="COM_COMPONENTBUILDER_LIBRARY_LIBRARIES_DESCRIPTION"
-			class="list_class"
-			multiple="true"
-			default="0"
-			required="false"
-			button="true"
-		/>
+		<!-- Note_yes_behaviour_one Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_yes_behaviour_one" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_ONE_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_ONE_DESCRIPTION" heading="h4" class="alert alert-success note_yes_behaviour_one" />
 		<!-- Note_display_library_config Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_display_library_config" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_DISPLAY_LIBRARY_CONFIG_DESCRIPTION" class="note_display_library_config" />
 		<!-- Php_setdocument Field. Type: Textarea. (joomla) -->
@@ -322,10 +308,26 @@
 				/>
 			</form>
 		</field>
+		<!-- Note_yes_behaviour_library Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_yes_behaviour_library" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_LIBRARY_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_LIBRARY_DESCRIPTION" heading="h4" class="alert alert-success note_yes_behaviour_library" />
 		<!-- Note_build_in_behaviour_one Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_build_in_behaviour_one" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_BUILD_IN_BEHAVIOUR_ONE_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_BUILD_IN_BEHAVIOUR_ONE_DESCRIPTION" heading="h4" class="alert alert-success note_build_in_behaviour_one" />
-		<!-- Note_yes_behaviour_one Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_yes_behaviour_one" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_ONE_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_ONE_DESCRIPTION" heading="h4" class="alert alert-success note_yes_behaviour_one" />
+		<!-- Note_yes_behaviour_two Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_yes_behaviour_two" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_TWO_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_TWO_DESCRIPTION" heading="h4" class="alert alert-success note_yes_behaviour_two" />
+		<!-- Libraries Field. Type: Librariesx. (custom) -->
+		<field
+			type="librariesx"
+			name="libraries"
+			label="COM_COMPONENTBUILDER_LIBRARY_LIBRARIES_LABEL"
+			description="COM_COMPONENTBUILDER_LIBRARY_LIBRARIES_DESCRIPTION"
+			class="list_class"
+			multiple="true"
+			default="0"
+			required="false"
+			button="true"
+		/>
+		<!-- Note_build_in_behaviour_two Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_build_in_behaviour_two" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_BUILD_IN_BEHAVIOUR_TWO_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_BUILD_IN_BEHAVIOUR_TWO_DESCRIPTION" heading="h4" class="alert alert-success note_build_in_behaviour_two" />
 		<!-- Note_no_behaviour_one Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_no_behaviour_one" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_NO_BEHAVIOUR_ONE_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_NO_BEHAVIOUR_ONE_DESCRIPTION" heading="h4" class="alert alert-error note_no_behaviour_one" />
 		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
