@@ -1,7 +1,7 @@
 # Joomla Component Builder ([JCB](http://joomlacomponentbuilder.com))
 [![GitHub release](https://img.shields.io/github/release/vdm-io/Joomla-Component-Builder.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
 [![Total Downloads](https://img.shields.io/github/downloads/vdm-io/Joomla-Component-Builder/total.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
-[![JCB Pro Members](https://opencollective.com/joomla-component-builder/tiers/jcb-pro/badge.svg?label=JCB Pro&color=brightgreen)](#sponsors)
+[![JCB Pro Members](https://opencollective.com/joomla-component-builder/tiers/jcb-pro/badge.svg?label=JCB+Pro&color=brightgreen)](#sponsors)
 
 This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -143,11 +143,11 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 8th November, 2019
++ *Last Build*: 9th November, 2019
 + *Version*: 2.10.4
 + *Copyright*: Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **255756**
++ *Line count*: **255944**
 + *Field count*: **1350**
 + *File count*: **1614**
 + *Folder count*: **256**

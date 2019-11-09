@@ -116,7 +116,6 @@
 					description="COM_COMPONENTBUILDER_LIBRARY_CONFIG_FIELD_DESCRIPTION"
 					class="list_class fieldFull"
 					multiple="false"
-					default=""
 					required="true"
 					button="false"
 				/>

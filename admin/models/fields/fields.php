@@ -36,24 +36,26 @@ class JFormFieldFields extends JFormFieldList
 	protected function getOptions()
 	{
 		$db = JFactory::getDBO();
-$query = $db->getQuery(true);
-$query->select($db->quoteName(array('a.id','a.name','b.name'),array('id','field_name','type')));
-$query->from($db->quoteName('#__componentbuilder_field', 'a'));
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.id', 'a.name', 'a.xml', 'b.name'), array('id', 'field_name', 'xml', 'type')));
+		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
 		$query->join('LEFT', '#__componentbuilder_fieldtype AS b ON b.id = a.fieldtype');
-$query->where($db->quoteName('a.published') . ' >= 1');
-$query->order('a.name ASC');
-$db->setQuery((string)$query);
-$items = $db->loadObjectList();
-$options = array();
-if ($items)
-{
-	$options[] = JHtml::_('select.option', '', 'Select an option');
-	foreach($items as $item)
-	{
-		$options[] = JHtml::_('select.option', $item->id, $item->field_name . ' [' . $item->type . ']');
-	}
-}
+		$query->where($db->quoteName('a.published') . ' >= 1');
+		$query->order('a.name ASC');
+		$db->setQuery((string) $query);
+		$items = $db->loadObjectList();
+		$options = array();
+		if ($items)
+		{
+			$options[] = JHtml::_('select.option', '', 'Select an option');
+			foreach($items as $item)
+			{
+				// get the field name (TODO this could slow down the system so we will need to improve on this)
+				$field_name = ComponentbuilderHelper::safeFieldName(ComponentbuilderHelper::getBetween(json_decode($item->xml),'name="','"'));
+				$options[] = JHtml::_('select.option', $item->id, $item->field_name . ' [ ' . $field_name . ' - ' . $item->type . ' ]');
+			}
+		}
 
-return $options;
+		return $options;
 	}
 }

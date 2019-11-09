@@ -517,7 +517,6 @@
 							description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FIELD_DESCRIPTION"
 							class="list_class fieldFull"
 							multiple="false"
-							default=""
 							required="true"
 							button="false"
 						/>

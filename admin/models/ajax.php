@@ -498,11 +498,11 @@ class ComponentbuilderModelAjax extends JModelList
 
 	protected $itemKeys = array(
 			// admin view
-			'field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
-			'target_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
-			'match_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
-			'listfield' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
-			'joinfields' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'type' => array('table' => 'fieldtype', 'field' => 'id', 'key' => 'fieldtype', 'get' => 'name')),
+			'field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'get' => 'getFieldNameAndType'),
+			'target_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'get' => 'getFieldNameAndType'),
+			'match_field' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'get' => 'getFieldNameAndType'),
+			'listfield' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'get' => 'getFieldNameAndType'),
+			'joinfields' => array('table' => 'field', 'tables' => 'fields', 'id' => 'id', 'name' => 'name', 'text' => 'Field', 'get' => 'getFieldNameAndType'),
 			// joomla component view
 			'siteview' => array('table' => 'site_view', 'tables' => 'site_views', 'id' => 'id', 'name' => 'name', 'text' => 'Site View'),
 			'customadminview' => array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'id' => 'id', 'name' => 'system_name', 'text' => 'Custom Admin View'),
@@ -534,6 +534,16 @@ class ComponentbuilderModelAjax extends JModelList
 				JFactory::getDbo()->updateObject('#__componentbuilder_'.$type, $objectUpdate, 'admin_view');
 			}
 		}
+	}
+
+	protected function getFieldNameAndType($id)
+	{
+		// check if we can get the field name and type
+		if (($array = ComponentbuilderHelper::getFieldNameAndType($id, true)) !== false)
+		{
+			return ' [' . $array['name'] . ' - ' . $array['type'] . ']';
+		}
+		return '';
 	}
 
 	protected function setPermissions($header, $values)
@@ -1504,6 +1514,9 @@ class ComponentbuilderModelAjax extends JModelList
 				}
 				return false;
 			};
+			// check if functions exists
+			$guidEdit = method_exists('ComponentbuilderHelper', 'getEditButtonGUID');
+			$getEdit =  method_exists('ComponentbuilderHelper', 'getEditButton');
 			// reset bucket
 			$bucket = array();
 			if (ComponentbuilderHelper::checkArray($value))
@@ -1518,26 +1531,23 @@ class ComponentbuilderModelAjax extends JModelList
 							$this->itemNames[$this->itemKeys[$header]['table']][$item] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
 							$edit = false;
 						}
-						// check if we should load a type
-						if ($edit && isset($this->itemKeys[$header]['type']) && ComponentbuilderHelper::checkArray($this->itemKeys[$header]['type']) && isset($this->itemKeys[$header]['type']['table']))
+						// check if we should load some get
+						if ($edit && isset($this->itemKeys[$header]['get']) && ComponentbuilderHelper::checkString($this->itemKeys[$header]['get']) && method_exists(__CLASS__, $this->itemKeys[$header]['get']))
 						{
-							// get the linked value 
-							if (($_key = ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], $item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['type']['key'])) !== false)
-							{
-								$this->itemNames[$this->itemKeys[$header]['table']][$item] .=  ' [' . ComponentbuilderHelper::getVar($this->itemKeys[$header]['type']['table'], $_key,  $this->itemKeys[$header]['type']['field'], $this->itemKeys[$header]['type']['get']) .']';
-							}
+							// gets
+							$this->itemNames[$this->itemKeys[$header]['table']][$item] .=  $this->{$this->itemKeys[$header]['get']}($item);
 						}
 					}
 					// check if we are working with GUID
-					if ($validGUID($item) && method_exists('ComponentbuilderHelper', 'getEditButtonGUID'))
+					if ($validGUID($item))
 					{
 						// set edit link
-						$link = ($edit) ? ComponentbuilderHelper::getEditButtonGUID($item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
+						$link = ($edit && $guidEdit) ? ComponentbuilderHelper::getEditButtonGUID($item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
 					}
 					else
 					{
 						// set edit link
-						$link = ($edit) ? ComponentbuilderHelper::getEditButton($item, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
+						$link = ($edit && $getEdit) ? ComponentbuilderHelper::getEditButton($item, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
 					}
 					// load item
 					$bucket[] = $this->itemNames[$this->itemKeys[$header]['table']][$item] . $link;
@@ -1553,26 +1563,23 @@ class ComponentbuilderModelAjax extends JModelList
 						$this->itemNames[$this->itemKeys[$header]['table']][$value] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
 						$edit = false;
 					}
-					// check if we should load a type
-					if ($edit && isset($this->itemKeys[$header]['type']) && ComponentbuilderHelper::checkArray($this->itemKeys[$header]['type']) && isset($this->itemKeys[$header]['type']['table']))
+					// check if we should load some get
+					if ($edit && isset($this->itemKeys[$header]['get']) && ComponentbuilderHelper::checkString($this->itemKeys[$header]['get']) && method_exists(__CLASS__, $this->itemKeys[$header]['get']))
 					{
-						// get the linked value 
-						if (($_key = ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], $value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['type']['key'])) !== false)
-						{
-							$this->itemNames[$this->itemKeys[$header]['table']][$value] .=  ' [' . ComponentbuilderHelper::getVar($this->itemKeys[$header]['type']['table'], $_key,  $this->itemKeys[$header]['type']['field'], $this->itemKeys[$header]['type']['get']) .']';
-						}
+						// gets
+						$this->itemNames[$this->itemKeys[$header]['table']][$value] .=  $this->{$this->itemKeys[$header]['get']}($value);
 					}
 				}
 				// check if we are working with GUID
-				if ($validGUID($value) && method_exists('ComponentbuilderHelper', 'getEditButtonGUID'))
+				if ($validGUID($value))
 				{
 					// set edit link
-					$link = ($edit) ? ComponentbuilderHelper::getEditButtonGUID($value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
+					$link = ($edit && $guidEdit) ? ComponentbuilderHelper::getEditButtonGUID($value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
 				}
 				else
 				{
 					// set edit link
-					$link = ($edit) ? ComponentbuilderHelper::getEditButton($value, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
+					$link = ($edit && $getEdit) ? ComponentbuilderHelper::getEditButton($value, $this->itemKeys[$header]['table'], $this->itemKeys[$header]['tables'], $this->ref) : '';
 				}
 				// load item
 				$bucket[] = $this->itemNames[$this->itemKeys[$header]['table']][$value] . $link;

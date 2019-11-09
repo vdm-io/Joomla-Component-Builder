@@ -1813,7 +1813,7 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
-	protected static function getFieldNameAndType($id)
+	public static function getFieldNameAndType($id, $spacers = false)
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -1840,17 +1840,17 @@ abstract class ComponentbuilderHelper
 			$field->type_name = self::safeTypeName($field->type_name);
 			$load = true;
 			// if category then name must be catid (only one per view)
-			if ($field->type_name == 'category')
+			if ($field->type_name === 'category')
 			{
 				$name = 'catid';
 			}
 			// if tag is set then enable all tag options for this view (only one per view)
-			elseif ($field->type_name == 'tag')
+			elseif ($field->type_name === 'tag')
 			{
 				$name = 'tags';
 			}
 			// don't add spacers or notes
-			elseif ($field->type_name == 'spacer' || $field->type_name == 'note')
+			elseif (!$spacers && ($field->type_name == 'spacer' || $field->type_name == 'note'))
 			{
 				// make sure the name is unique
 				return false;
