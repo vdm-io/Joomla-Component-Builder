@@ -6234,7 +6234,7 @@ class Get
 				$joomla_plugins = array_filter(
 					array_values($addjoomla_plugins),
 					function($array){
-					// only load the plugins whose target association calles for it
+					// only load the plugins whose target association call for it
 					if (!isset($array['target']) || $array['target'] != 2)
 					{
 						return true;

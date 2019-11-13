@@ -749,6 +749,21 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					// actions to take if table is component_plugins
 					if ('component_plugins' === $table)
 					{
+						// we remove those plugins not part of the export
+						if (isset($item->addjoomla_plugins) && ComponentbuilderHelper::checkJson($item->addjoomla_plugins))
+						{
+							$item->addjoomla_plugins = array_filter(
+								json_decode($item->addjoomla_plugins, true),
+								function ($plugin) {
+									// target 2 is only export and target 0 is both (1 is only compile)
+									if (isset($plugin['target']) && ($plugin['target'] == 2 || $plugin['target'] == 0))
+									{
+										return true;
+									}
+									return false;
+								}
+							);
+						}
 						// add custom admin views
 						$this->setData('joomla_plugin', $this->getValues($item->addjoomla_plugins, 'subform', 'plugin'), 'id');
 					}
