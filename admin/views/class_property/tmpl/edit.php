@@ -107,18 +107,18 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 <script type="text/javascript">
 
-// #jform_extension_type listeners for extension_type_vvvvwbj function
+// #jform_extension_type listeners for extension_type_vvvvwcf function
 jQuery('#jform_extension_type').on('keyup',function()
 {
-	var extension_type_vvvvwbj = jQuery("#jform_extension_type").val();
-	vvvvwbj(extension_type_vvvvwbj);
+	var extension_type_vvvvwcf = jQuery("#jform_extension_type").val();
+	vvvvwcf(extension_type_vvvvwcf);
 
 });
 jQuery('#adminForm').on('change', '#jform_extension_type',function (e)
 {
 	e.preventDefault();
-	var extension_type_vvvvwbj = jQuery("#jform_extension_type").val();
-	vvvvwbj(extension_type_vvvvwbj);
+	var extension_type_vvvvwcf = jQuery("#jform_extension_type").val();
+	vvvvwcf(extension_type_vvvvwcf);
 
 });
 

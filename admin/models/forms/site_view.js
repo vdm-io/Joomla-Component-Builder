@@ -11,45 +11,45 @@
 // Initial Script
 jQuery(document).ready(function()
 {
-	var add_php_view_vvvvvzr = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvzr(add_php_view_vvvvvzr);
+	var add_php_view_vvvvwan = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvwan(add_php_view_vvvvwan);
 
-	var add_php_jview_display_vvvvvzs = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
-	vvvvvzs(add_php_jview_display_vvvvvzs);
+	var add_php_jview_display_vvvvwao = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
+	vvvvwao(add_php_jview_display_vvvvwao);
 
-	var add_php_jview_vvvvvzt = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
-	vvvvvzt(add_php_jview_vvvvvzt);
+	var add_php_jview_vvvvwap = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
+	vvvvwap(add_php_jview_vvvvwap);
 
-	var add_php_document_vvvvvzu = jQuery("#jform_add_php_document input[type='radio']:checked").val();
-	vvvvvzu(add_php_document_vvvvvzu);
+	var add_php_document_vvvvwaq = jQuery("#jform_add_php_document input[type='radio']:checked").val();
+	vvvvwaq(add_php_document_vvvvwaq);
 
-	var add_css_document_vvvvvzv = jQuery("#jform_add_css_document input[type='radio']:checked").val();
-	vvvvvzv(add_css_document_vvvvvzv);
+	var add_css_document_vvvvwar = jQuery("#jform_add_css_document input[type='radio']:checked").val();
+	vvvvwar(add_css_document_vvvvwar);
 
-	var add_javascript_file_vvvvvzw = jQuery("#jform_add_javascript_file input[type='radio']:checked").val();
-	vvvvvzw(add_javascript_file_vvvvvzw);
+	var add_javascript_file_vvvvwas = jQuery("#jform_add_javascript_file input[type='radio']:checked").val();
+	vvvvwas(add_javascript_file_vvvvwas);
 
-	var add_js_document_vvvvvzx = jQuery("#jform_add_js_document input[type='radio']:checked").val();
-	vvvvvzx(add_js_document_vvvvvzx);
+	var add_js_document_vvvvwat = jQuery("#jform_add_js_document input[type='radio']:checked").val();
+	vvvvwat(add_js_document_vvvvwat);
 
-	var add_css_vvvvvzy = jQuery("#jform_add_css input[type='radio']:checked").val();
-	vvvvvzy(add_css_vvvvvzy);
+	var add_css_vvvvwau = jQuery("#jform_add_css input[type='radio']:checked").val();
+	vvvvwau(add_css_vvvvwau);
 
-	var add_php_ajax_vvvvvzz = jQuery("#jform_add_php_ajax input[type='radio']:checked").val();
-	vvvvvzz(add_php_ajax_vvvvvzz);
+	var add_php_ajax_vvvvwav = jQuery("#jform_add_php_ajax input[type='radio']:checked").val();
+	vvvvwav(add_php_ajax_vvvvwav);
 
-	var add_custom_button_vvvvwaa = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
-	vvvvwaa(add_custom_button_vvvvwaa);
+	var add_custom_button_vvvvwaw = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	vvvvwaw(add_custom_button_vvvvwaw);
 
-	var button_position_vvvvwab = jQuery("#jform_button_position").val();
-	vvvvwab(button_position_vvvvwab);
+	var button_position_vvvvwax = jQuery("#jform_button_position").val();
+	vvvvwax(button_position_vvvvwax);
 });
 
-// the vvvvvzr function
-function vvvvvzr(add_php_view_vvvvvzr)
+// the vvvvwan function
+function vvvvwan(add_php_view_vvvvwan)
 {
 	// set the function logic
-	if (add_php_view_vvvvvzr == 1)
+	if (add_php_view_vvvvwan == 1)
 	{
 		jQuery('#jform_php_view-lbl').closest('.control-group').show();
 	}
@@ -59,11 +59,11 @@ function vvvvvzr(add_php_view_vvvvvzr)
 	}
 }
 
-// the vvvvvzs function
-function vvvvvzs(add_php_jview_display_vvvvvzs)
+// the vvvvwao function
+function vvvvwao(add_php_jview_display_vvvvwao)
 {
 	// set the function logic
-	if (add_php_jview_display_vvvvvzs == 1)
+	if (add_php_jview_display_vvvvwao == 1)
 	{
 		jQuery('#jform_php_jview_display-lbl').closest('.control-group').show();
 	}
@@ -73,11 +73,11 @@ function vvvvvzs(add_php_jview_display_vvvvvzs)
 	}
 }
 
-// the vvvvvzt function
-function vvvvvzt(add_php_jview_vvvvvzt)
+// the vvvvwap function
+function vvvvwap(add_php_jview_vvvvwap)
 {
 	// set the function logic
-	if (add_php_jview_vvvvvzt == 1)
+	if (add_php_jview_vvvvwap == 1)
 	{
 		jQuery('#jform_php_jview-lbl').closest('.control-group').show();
 	}
@@ -87,11 +87,11 @@ function vvvvvzt(add_php_jview_vvvvvzt)
 	}
 }
 
-// the vvvvvzu function
-function vvvvvzu(add_php_document_vvvvvzu)
+// the vvvvwaq function
+function vvvvwaq(add_php_document_vvvvwaq)
 {
 	// set the function logic
-	if (add_php_document_vvvvvzu == 1)
+	if (add_php_document_vvvvwaq == 1)
 	{
 		jQuery('#jform_php_document-lbl').closest('.control-group').show();
 	}
@@ -101,11 +101,11 @@ function vvvvvzu(add_php_document_vvvvvzu)
 	}
 }
 
-// the vvvvvzv function
-function vvvvvzv(add_css_document_vvvvvzv)
+// the vvvvwar function
+function vvvvwar(add_css_document_vvvvwar)
 {
 	// set the function logic
-	if (add_css_document_vvvvvzv == 1)
+	if (add_css_document_vvvvwar == 1)
 	{
 		jQuery('#jform_css_document-lbl').closest('.control-group').show();
 	}
@@ -115,11 +115,11 @@ function vvvvvzv(add_css_document_vvvvvzv)
 	}
 }
 
-// the vvvvvzw function
-function vvvvvzw(add_javascript_file_vvvvvzw)
+// the vvvvwas function
+function vvvvwas(add_javascript_file_vvvvwas)
 {
 	// set the function logic
-	if (add_javascript_file_vvvvvzw == 1)
+	if (add_javascript_file_vvvvwas == 1)
 	{
 		jQuery('#jform_javascript_file-lbl').closest('.control-group').show();
 	}
@@ -129,11 +129,11 @@ function vvvvvzw(add_javascript_file_vvvvvzw)
 	}
 }
 
-// the vvvvvzx function
-function vvvvvzx(add_js_document_vvvvvzx)
+// the vvvvwat function
+function vvvvwat(add_js_document_vvvvwat)
 {
 	// set the function logic
-	if (add_js_document_vvvvvzx == 1)
+	if (add_js_document_vvvvwat == 1)
 	{
 		jQuery('#jform_js_document-lbl').closest('.control-group').show();
 	}
@@ -143,11 +143,11 @@ function vvvvvzx(add_js_document_vvvvvzx)
 	}
 }
 
-// the vvvvvzy function
-function vvvvvzy(add_css_vvvvvzy)
+// the vvvvwau function
+function vvvvwau(add_css_vvvvwau)
 {
 	// set the function logic
-	if (add_css_vvvvvzy == 1)
+	if (add_css_vvvvwau == 1)
 	{
 		jQuery('#jform_css-lbl').closest('.control-group').show();
 	}
@@ -157,11 +157,11 @@ function vvvvvzy(add_css_vvvvvzy)
 	}
 }
 
-// the vvvvvzz function
-function vvvvvzz(add_php_ajax_vvvvvzz)
+// the vvvvwav function
+function vvvvwav(add_php_ajax_vvvvwav)
 {
 	// set the function logic
-	if (add_php_ajax_vvvvvzz == 1)
+	if (add_php_ajax_vvvvwav == 1)
 	{
 		jQuery('#jform_ajax_input-lbl').closest('.control-group').show();
 		jQuery('#jform_php_ajaxmethod-lbl').closest('.control-group').show();
@@ -173,11 +173,11 @@ function vvvvvzz(add_php_ajax_vvvvvzz)
 	}
 }
 
-// the vvvvwaa function
-function vvvvwaa(add_custom_button_vvvvwaa)
+// the vvvvwaw function
+function vvvvwaw(add_custom_button_vvvvwaw)
 {
 	// set the function logic
-	if (add_custom_button_vvvvwaa == 1)
+	if (add_custom_button_vvvvwaw == 1)
 	{
 		jQuery('#jform_custom_button-lbl').closest('.control-group').show();
 		jQuery('#jform_php_controller-lbl').closest('.control-group').show();
@@ -191,20 +191,20 @@ function vvvvwaa(add_custom_button_vvvvwaa)
 	}
 }
 
-// the vvvvwab function
-function vvvvwab(button_position_vvvvwab)
+// the vvvvwax function
+function vvvvwax(button_position_vvvvwax)
 {
-	if (isSet(button_position_vvvvwab) && button_position_vvvvwab.constructor !== Array)
+	if (isSet(button_position_vvvvwax) && button_position_vvvvwax.constructor !== Array)
 	{
-		var temp_vvvvwab = button_position_vvvvwab;
-		var button_position_vvvvwab = [];
-		button_position_vvvvwab.push(temp_vvvvwab);
+		var temp_vvvvwax = button_position_vvvvwax;
+		var button_position_vvvvwax = [];
+		button_position_vvvvwax.push(temp_vvvvwax);
 	}
-	else if (!isSet(button_position_vvvvwab))
+	else if (!isSet(button_position_vvvvwax))
 	{
-		var button_position_vvvvwab = [];
+		var button_position_vvvvwax = [];
 	}
-	var button_position = button_position_vvvvwab.some(button_position_vvvvwab_SomeFunc);
+	var button_position = button_position_vvvvwax.some(button_position_vvvvwax_SomeFunc);
 
 
 	// set this function logic
@@ -218,11 +218,11 @@ function vvvvwab(button_position_vvvvwab)
 	}
 }
 
-// the vvvvwab Some function
-function button_position_vvvvwab_SomeFunc(button_position_vvvvwab)
+// the vvvvwax Some function
+function button_position_vvvvwax_SomeFunc(button_position_vvvvwax)
 {
 	// set the function logic
-	if (button_position_vvvvwab == 5)
+	if (button_position_vvvvwax == 5)
 	{
 		return true;
 	}

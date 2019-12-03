@@ -84,6 +84,9 @@ JHtml::_('behavior.tooltip');
 					<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'Vast Development Method', 'notice_board_one'); ?>
 						<?php echo $this->loadTemplate('notice_board_vast_development_method');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'JCB Pro Membership', 'notice_board_two'); ?>
+						<?php echo $this->loadTemplate('notice_board_jcb_pro_membership');?>
+					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
 			</div>
 			<div class="span2">

@@ -404,7 +404,7 @@ class Structure extends Get
 	 * 
 	 * @param   int   $nr  The line number
 	 * 
-	 * @return  void
+	 * @return  string
 	 * 
 	 */
 	private function setLine($nr)
@@ -531,10 +531,34 @@ class Structure extends Get
 							// biuld basic XML
 							$xml = '<?xml version="1.0" encoding="utf-8"?>';
 							$xml .= PHP_EOL . '<!--' . $this->setLine(__LINE__) . ' default paths of ' . $file . ' form points to ' . $this->componentCodeName . ' -->';
-							$xml .= PHP_EOL . '<form';
-							$xml .= PHP_EOL . $this->_t(1) . 'addrulepath="/administrator/components/com_' . $this->componentCodeName . '/models/rules"';
-							$xml .= PHP_EOL . $this->_t(1) . 'addfieldpath="/administrator/components/com_' . $this->componentCodeName . '/models/fields"';
-							$xml .= PHP_EOL . '>';
+							// search if we must add the component path
+							$add_component_path = false;
+							foreach ($fields as $field_name => $fieldsets)
+							{
+								if (!$add_component_path)
+								{
+									foreach ($fieldsets as $fieldset => $field)
+									{
+										if (!$add_component_path && isset($plugin->fieldsets_paths[$file . $field_name . $fieldset]) && $plugin->fieldsets_paths[$file . $field_name . $fieldset] == 1)
+										{
+											$add_component_path = true;
+										}
+									}
+								}
+							}
+							// only add if part of the component field types path is required
+							if ($add_component_path)
+							{
+								$xml .= PHP_EOL . '<form';
+								$xml .= PHP_EOL . $this->_t(1) . 'addrulepath="/administrator/components/com_' . $this->componentCodeName . '/models/rules"';
+								$xml .= PHP_EOL . $this->_t(1) . 'addfieldpath="/administrator/components/com_' . $this->componentCodeName . '/models/fields"';
+								$xml .= PHP_EOL . '>';
+							}
+							else
+							{
+								$xml .= PHP_EOL . '<form>';
+							}
+							// add the fields
 							foreach ($fields as $field_name => $fieldsets)
 							{
 								// check if we have an double fields naming set

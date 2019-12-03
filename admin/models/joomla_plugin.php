@@ -1146,6 +1146,11 @@ class ComponentbuilderModelJoomla_plugin extends JModelAdmin
 			// make sure the name is safe to be used as a function name
 			$data['name'] = ComponentbuilderHelper::safeClassFunctionName($data['name']);
 		}
+		// if system name is empty create from name
+		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
+		{
+			$data['system_name'] = $data['name'];
+		}
 
 		// Set the method_selection items to data.
 		if (isset($data['method_selection']) && is_array($data['method_selection']))

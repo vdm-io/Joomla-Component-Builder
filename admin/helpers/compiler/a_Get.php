@@ -1602,7 +1602,7 @@ class Get
 		// README
 		if ($component->addreadme)
 		{
-			$component->readme = base64_decode($component->readme);
+			$component->readme = $this->setDynamicValues(base64_decode($component->readme));
 		}
 		else
 		{
@@ -6530,7 +6530,7 @@ class Get
 							if (!isset($form['plugin']) || $form['plugin'] != 1)
 							{
 								// now build the form key
-								$unique = $form['file'] .  $form['fields_name'] . $form['fieldset'];
+								$unique = $form['file'] . $form['fields_name'] . $form['fieldset'];
 							}
 							else
 							{
@@ -6603,7 +6603,7 @@ class Get
 							}
 							else
 							{
-								// load the cofig form
+								// load the config form
 								if (!isset($plugin->config_fields[$form['fields_name']]))
 								{
 									$plugin->config_fields[$form['fields_name']] = array();
@@ -7228,7 +7228,7 @@ class Get
 	 * @param   string   $string  The code string
 	 * @param   array    $config  The placeholder config values
 	 *
-	 * @return  void
+	 * @return  string
 	 * 
 	 */
 	public function setGuiCodePlaceholder($string, $config)
@@ -7343,16 +7343,26 @@ class Get
 				$first_line = strtok($code, PHP_EOL);
 				// get the GUI target details
 				$query = explode('.', trim($first_line, '.'));
-				// cleanup the newlines around the code
-				$code = trim(str_replace($first_line, '', $code), PHP_EOL) . PHP_EOL;
-				// reverse placeholder as much as we can
-				$code = $this->reversePlaceholders($code, $placeholders, $target, $query[2], $query[1], $query[0]);
-				// update the GUI/Tables/Database
-				$object = new stdClass();
-				$object->id = (int) $query[2];
-				$object->{$query[1]} = base64_encode($code); // (TODO) this may not always work... 
-				// update the value in GUI
-				$this->db->updateObject('#__componentbuilder_' . (string) $query[0], $object, 'id');
+				// only continue if we have 3 values in the query
+				if (is_array($query) && count($query) == 3)
+				{
+					// cleanup the newlines around the code
+					$code = trim(str_replace($first_line, '', $code), PHP_EOL) . PHP_EOL;
+					// set the ID
+					$id = (int) $query[2];
+					// make the field name save
+					$field = ComponentbuilderHelper::safeFieldName($query[1]);
+					// make the table name save
+					$table = ComponentbuilderHelper::safeString($query[0]);
+					// reverse placeholder as much as we can
+					$code = $this->reversePlaceholders($code, $placeholders, $target, $id, $field, $table);
+					// update the GUI/Tables/Database
+					$object           = new stdClass();
+					$object->id       = $id;
+					$object->{$field} = base64_encode($code); // (TODO) this may not always work...
+					// update the value in GUI
+					$this->db->updateObject('#__componentbuilder_' . (string) $table, $object, 'id');
+				}
 			}
 		}
 	}

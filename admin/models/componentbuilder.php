@@ -25,7 +25,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$icons  = array();
 		// view groups array
 		$viewGroups = array(
-			'main' => array('png.compiler', 'png.joomla_components', 'png.joomla_plugins', 'png.admin_view.add', 'png.admin_views', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layout.add', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.servers', 'png.help_documents')
+			'main' => array('png.compiler', 'png.joomla_components', 'png.joomla_modules', 'png.joomla_plugins', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.servers', 'png.help_documents')
 		);
 		// view access array
 		$viewAccess = array(
@@ -38,6 +38,11 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'joomla_component.access' => 'joomla_component.access',
 			'joomla_components.submenu' => 'joomla_component.submenu',
 			'joomla_components.dashboard_list' => 'joomla_component.dashboard_list',
+			'joomla_module.create' => 'joomla_module.create',
+			'joomla_modules.access' => 'joomla_module.access',
+			'joomla_module.access' => 'joomla_module.access',
+			'joomla_modules.submenu' => 'joomla_module.submenu',
+			'joomla_modules.dashboard_list' => 'joomla_module.dashboard_list',
 			'joomla_plugin.create' => 'joomla_plugin.create',
 			'joomla_plugins.access' => 'joomla_plugin.access',
 			'joomla_plugin.access' => 'joomla_plugin.access',
@@ -68,7 +73,6 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'layout.access' => 'layout.access',
 			'layouts.submenu' => 'layout.submenu',
 			'layouts.dashboard_list' => 'layout.dashboard_list',
-			'layout.dashboard_add' => 'layout.dashboard_add',
 			'dynamic_get.create' => 'dynamic_get.create',
 			'dynamic_gets.access' => 'dynamic_get.access',
 			'dynamic_get.access' => 'dynamic_get.access',
@@ -192,6 +196,12 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			'class_extends.create' => 'class_extends.create',
 			'class_extendings.access' => 'class_extends.access',
 			'class_extends.access' => 'class_extends.access',
+			'joomla_module_updates.create' => 'joomla_module_updates.create',
+			'joomla_modules_updates.access' => 'joomla_module_updates.access',
+			'joomla_module_updates.access' => 'joomla_module_updates.access',
+			'joomla_module_files_folders_urls.create' => 'joomla_module_files_folders_urls.create',
+			'joomla_modules_files_folders_urls.access' => 'joomla_module_files_folders_urls.access',
+			'joomla_module_files_folders_urls.access' => 'joomla_module_files_folders_urls.access',
 			'joomla_plugin_groups.access' => 'joomla_plugin_group.access',
 			'joomla_plugin_group.access' => 'joomla_plugin_group.access',
 			'joomla_plugin_updates.create' => 'joomla_plugin_updates.create',
@@ -497,7 +507,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$document->addScript(JURI::root() . "media/com_componentbuilder/js/marked.js");
 		$document->addScriptDeclaration('
 		var token = "'.JSession::getFormToken().'";
-		var noticeboard = "https://www.vdm.io/componentbuilder-noticeboard-md";
+		var noticeboard = "https://vdm.bz/componentbuilder-noticeboard-md";
 		jQuery(document).ready(function () {
 			jQuery.get(noticeboard)
 			.success(function(board) { 
@@ -532,9 +542,9 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		// to check is READ/NEW
 		function getIS(type,notice){
 			if(type == 1){
-				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isNew&format=json";
+				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isNew&format=json&raw=true";
 			} else if (type == 2) {
-				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isRead&format=json";
+				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isRead&format=json&raw=true";
 			}	
 			if(token.length > 0 && notice.length){
 				var request = "token="+token+"&notice="+notice;
@@ -542,9 +552,9 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 			return jQuery.ajax({
 				type: "POST",
 				url: getUrl,
-				dataType: "jsonp",
+				dataType: "json",
 				data: request,
-				jsonp: "callback"
+				jsonp: false
 			});
 		}
 		
@@ -562,6 +572,29 @@ jQuery(document).ready( function($) {
 });');
 
 		return '<div id="noticeboard-md">'.JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
+	}
+
+	public function getProboard()
+	{
+		// get the document to load the scripts
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration('
+		var proboard = "https://vdm.bz/componentbuilder-pro-noticeboard-md";
+		jQuery(document).ready(function () {
+			jQuery.get(proboard)
+			.success(function(board) {
+				if (board.length > 5) {
+					jQuery("#proboard-md").html(marked(board));
+				} else {
+					jQuery("#proboard-md").html("'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATTER').'");
+				}
+			})
+			.error(function(jqXHR, textStatus, errorThrown) { 
+				jQuery("#proboard-md").html("'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATTER').'");
+			});
+		});');
+
+		return '<div id="proboard-md">'.JText::_('COM_COMPONENTBUILDER_THE_PRO_BOARD_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
 
 	public function getReadme()

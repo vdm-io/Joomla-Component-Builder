@@ -139,6 +139,92 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Joomla_module alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$joomla_module_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($joomla_module_found)
+		{
+			// Since there are load the needed  joomla_module type ids
+			$joomla_module_ids = $db->loadColumn();
+			// Remove Joomla_module from the content type table
+			$joomla_module_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($joomla_module_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_module items
+			$joomla_module_done = $db->execute();
+			if ($joomla_module_done)
+			{
+				// If succesfully remove Joomla_module add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Joomla_module items from the contentitem tag map table
+			$joomla_module_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($joomla_module_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_module items
+			$joomla_module_done = $db->execute();
+			if ($joomla_module_done)
+			{
+				// If succesfully remove Joomla_module add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Joomla_module items from the ucm content table
+			$joomla_module_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.joomla_module') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($joomla_module_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_module items
+			$joomla_module_done = $db->execute();
+			if ($joomla_module_done)
+			{
+				// If succesfully remove Joomla_module add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Joomla_module items are cleared from DB
+			foreach ($joomla_module_ids as $joomla_module_id)
+			{
+				// Remove Joomla_module items from the ucm base table
+				$joomla_module_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $joomla_module_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($joomla_module_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Joomla_module items
+				$db->execute();
+
+				// Remove Joomla_module items from the ucm history table
+				$joomla_module_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $joomla_module_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($joomla_module_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Joomla_module items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Joomla_plugin alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin') );
 		$db->setQuery($query);
@@ -3665,6 +3751,178 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Joomla_module_updates alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module_updates') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$joomla_module_updates_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($joomla_module_updates_found)
+		{
+			// Since there are load the needed  joomla_module_updates type ids
+			$joomla_module_updates_ids = $db->loadColumn();
+			// Remove Joomla_module_updates from the content type table
+			$joomla_module_updates_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module_updates') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($joomla_module_updates_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_module_updates items
+			$joomla_module_updates_done = $db->execute();
+			if ($joomla_module_updates_done)
+			{
+				// If succesfully remove Joomla_module_updates add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Joomla_module_updates items from the contentitem tag map table
+			$joomla_module_updates_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module_updates') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($joomla_module_updates_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_module_updates items
+			$joomla_module_updates_done = $db->execute();
+			if ($joomla_module_updates_done)
+			{
+				// If succesfully remove Joomla_module_updates add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Joomla_module_updates items from the ucm content table
+			$joomla_module_updates_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.joomla_module_updates') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($joomla_module_updates_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_module_updates items
+			$joomla_module_updates_done = $db->execute();
+			if ($joomla_module_updates_done)
+			{
+				// If succesfully remove Joomla_module_updates add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Joomla_module_updates items are cleared from DB
+			foreach ($joomla_module_updates_ids as $joomla_module_updates_id)
+			{
+				// Remove Joomla_module_updates items from the ucm base table
+				$joomla_module_updates_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $joomla_module_updates_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($joomla_module_updates_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Joomla_module_updates items
+				$db->execute();
+
+				// Remove Joomla_module_updates items from the ucm history table
+				$joomla_module_updates_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $joomla_module_updates_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($joomla_module_updates_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Joomla_module_updates items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
+		// Where Joomla_module_files_folders_urls alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module_files_folders_urls') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$joomla_module_files_folders_urls_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($joomla_module_files_folders_urls_found)
+		{
+			// Since there are load the needed  joomla_module_files_folders_urls type ids
+			$joomla_module_files_folders_urls_ids = $db->loadColumn();
+			// Remove Joomla_module_files_folders_urls from the content type table
+			$joomla_module_files_folders_urls_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module_files_folders_urls') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($joomla_module_files_folders_urls_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_module_files_folders_urls items
+			$joomla_module_files_folders_urls_done = $db->execute();
+			if ($joomla_module_files_folders_urls_done)
+			{
+				// If succesfully remove Joomla_module_files_folders_urls add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Joomla_module_files_folders_urls items from the contentitem tag map table
+			$joomla_module_files_folders_urls_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module_files_folders_urls') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($joomla_module_files_folders_urls_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_module_files_folders_urls items
+			$joomla_module_files_folders_urls_done = $db->execute();
+			if ($joomla_module_files_folders_urls_done)
+			{
+				// If succesfully remove Joomla_module_files_folders_urls add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Joomla_module_files_folders_urls items from the ucm content table
+			$joomla_module_files_folders_urls_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.joomla_module_files_folders_urls') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($joomla_module_files_folders_urls_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_module_files_folders_urls items
+			$joomla_module_files_folders_urls_done = $db->execute();
+			if ($joomla_module_files_folders_urls_done)
+			{
+				// If succesfully remove Joomla_module_files_folders_urls add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Joomla_module_files_folders_urls items are cleared from DB
+			foreach ($joomla_module_files_folders_urls_ids as $joomla_module_files_folders_urls_id)
+			{
+				// Remove Joomla_module_files_folders_urls items from the ucm base table
+				$joomla_module_files_folders_urls_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $joomla_module_files_folders_urls_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($joomla_module_files_folders_urls_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Joomla_module_files_folders_urls items
+				$db->execute();
+
+				// Remove Joomla_module_files_folders_urls items from the ucm history table
+				$joomla_module_files_folders_urls_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $joomla_module_files_folders_urls_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($joomla_module_files_folders_urls_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Joomla_module_files_folders_urls items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Joomla_plugin_group alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_group') );
 		$db->setQuery($query);
@@ -3938,6 +4196,16 @@ class com_componentbuilderInstallerScript
 		}
 
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder from the action_logs_extensions table
 		$componentbuilder_action_logs_extensions = array( $db->quoteName('extension') . ' = ' . $db->quote('com_componentbuilder') );
 		// Create a new query object.
@@ -3953,6 +4221,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder extension was removed from the <b>#__action_logs_extensions</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Joomla_component from the action_log_config table
 		$joomla_component_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_component') );
 		// Create a new query object.
@@ -3968,6 +4246,41 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_component type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Componentbuilder Joomla_module from the action_log_config table
+		$joomla_module_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($joomla_module_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.joomla_module
+		$joomla_module_action_log_config_done = $db->execute();
+		if ($joomla_module_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Joomla_module add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_module type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Joomla_plugin from the action_log_config table
 		$joomla_plugin_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin') );
 		// Create a new query object.
@@ -3983,6 +4296,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_plugin type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Admin_view from the action_log_config table
 		$admin_view_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_view') );
 		// Create a new query object.
@@ -3998,6 +4321,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_view type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Custom_admin_view from the action_log_config table
 		$custom_admin_view_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.custom_admin_view') );
 		// Create a new query object.
@@ -4013,6 +4346,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.custom_admin_view type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Site_view from the action_log_config table
 		$site_view_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.site_view') );
 		// Create a new query object.
@@ -4028,6 +4371,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.site_view type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Template from the action_log_config table
 		$template_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.template') );
 		// Create a new query object.
@@ -4043,6 +4396,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.template type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Layout from the action_log_config table
 		$layout_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.layout') );
 		// Create a new query object.
@@ -4058,6 +4421,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.layout type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Dynamic_get from the action_log_config table
 		$dynamic_get_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.dynamic_get') );
 		// Create a new query object.
@@ -4073,6 +4446,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.dynamic_get type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Custom_code from the action_log_config table
 		$custom_code_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.custom_code') );
 		// Create a new query object.
@@ -4088,6 +4471,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.custom_code type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Class_property from the action_log_config table
 		$class_property_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.class_property') );
 		// Create a new query object.
@@ -4103,6 +4496,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.class_property type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Class_method from the action_log_config table
 		$class_method_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.class_method') );
 		// Create a new query object.
@@ -4118,6 +4521,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.class_method type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Placeholder from the action_log_config table
 		$placeholder_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.placeholder') );
 		// Create a new query object.
@@ -4133,6 +4546,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.placeholder type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Library from the action_log_config table
 		$library_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library') );
 		// Create a new query object.
@@ -4148,6 +4571,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.library type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Snippet from the action_log_config table
 		$snippet_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.snippet') );
 		// Create a new query object.
@@ -4163,6 +4596,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.snippet type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Validation_rule from the action_log_config table
 		$validation_rule_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.validation_rule') );
 		// Create a new query object.
@@ -4178,6 +4621,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.validation_rule type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Field from the action_log_config table
 		$field_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.field') );
 		// Create a new query object.
@@ -4193,6 +4646,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.field type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Fieldtype from the action_log_config table
 		$fieldtype_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fieldtype') );
 		// Create a new query object.
@@ -4208,6 +4671,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.fieldtype type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Language_translation from the action_log_config table
 		$language_translation_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language_translation') );
 		// Create a new query object.
@@ -4223,6 +4696,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.language_translation type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Language from the action_log_config table
 		$language_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language') );
 		// Create a new query object.
@@ -4238,6 +4721,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.language type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Server from the action_log_config table
 		$server_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.server') );
 		// Create a new query object.
@@ -4253,6 +4746,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.server type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Help_document from the action_log_config table
 		$help_document_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.help_document') );
 		// Create a new query object.
@@ -4268,6 +4771,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.help_document type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Admin_fields from the action_log_config table
 		$admin_fields_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields') );
 		// Create a new query object.
@@ -4283,6 +4796,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_fields type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Admin_fields_conditions from the action_log_config table
 		$admin_fields_conditions_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields_conditions') );
 		// Create a new query object.
@@ -4298,6 +4821,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_fields_conditions type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Admin_fields_relations from the action_log_config table
 		$admin_fields_relations_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields_relations') );
 		// Create a new query object.
@@ -4313,6 +4846,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_fields_relations type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Admin_custom_tabs from the action_log_config table
 		$admin_custom_tabs_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_custom_tabs') );
 		// Create a new query object.
@@ -4328,6 +4871,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_custom_tabs type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Component_admin_views from the action_log_config table
 		$component_admin_views_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_admin_views') );
 		// Create a new query object.
@@ -4343,6 +4896,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.component_admin_views type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Component_site_views from the action_log_config table
 		$component_site_views_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_site_views') );
 		// Create a new query object.
@@ -4358,6 +4921,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.component_site_views type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Component_custom_admin_views from the action_log_config table
 		$component_custom_admin_views_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_custom_admin_views') );
 		// Create a new query object.
@@ -4373,6 +4946,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.component_custom_admin_views type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Component_updates from the action_log_config table
 		$component_updates_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_updates') );
 		// Create a new query object.
@@ -4388,6 +4971,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.component_updates type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Component_mysql_tweaks from the action_log_config table
 		$component_mysql_tweaks_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_mysql_tweaks') );
 		// Create a new query object.
@@ -4403,6 +4996,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.component_mysql_tweaks type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Component_custom_admin_menus from the action_log_config table
 		$component_custom_admin_menus_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_custom_admin_menus') );
 		// Create a new query object.
@@ -4418,6 +5021,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.component_custom_admin_menus type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Component_config from the action_log_config table
 		$component_config_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_config') );
 		// Create a new query object.
@@ -4433,6 +5046,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.component_config type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Component_dashboard from the action_log_config table
 		$component_dashboard_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_dashboard') );
 		// Create a new query object.
@@ -4448,6 +5071,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.component_dashboard type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Component_files_folders from the action_log_config table
 		$component_files_folders_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_files_folders') );
 		// Create a new query object.
@@ -4463,6 +5096,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.component_files_folders type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Component_placeholders from the action_log_config table
 		$component_placeholders_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_placeholders') );
 		// Create a new query object.
@@ -4478,6 +5121,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.component_placeholders type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Component_plugins from the action_log_config table
 		$component_plugins_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_plugins') );
 		// Create a new query object.
@@ -4493,6 +5146,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.component_plugins type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Snippet_type from the action_log_config table
 		$snippet_type_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.snippet_type') );
 		// Create a new query object.
@@ -4508,6 +5171,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.snippet_type type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Library_config from the action_log_config table
 		$library_config_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library_config') );
 		// Create a new query object.
@@ -4523,6 +5196,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.library_config type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Library_files_folders_urls from the action_log_config table
 		$library_files_folders_urls_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library_files_folders_urls') );
 		// Create a new query object.
@@ -4538,6 +5221,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.library_files_folders_urls type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Class_extends from the action_log_config table
 		$class_extends_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.class_extends') );
 		// Create a new query object.
@@ -4553,6 +5246,66 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.class_extends type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Componentbuilder Joomla_module_updates from the action_log_config table
+		$joomla_module_updates_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module_updates') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($joomla_module_updates_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.joomla_module_updates
+		$joomla_module_updates_action_log_config_done = $db->execute();
+		if ($joomla_module_updates_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Joomla_module_updates add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_module_updates type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Componentbuilder Joomla_module_files_folders_urls from the action_log_config table
+		$joomla_module_files_folders_urls_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module_files_folders_urls') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($joomla_module_files_folders_urls_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.joomla_module_files_folders_urls
+		$joomla_module_files_folders_urls_action_log_config_done = $db->execute();
+		if ($joomla_module_files_folders_urls_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Joomla_module_files_folders_urls add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_module_files_folders_urls type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Joomla_plugin_group from the action_log_config table
 		$joomla_plugin_group_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_group') );
 		// Create a new query object.
@@ -4568,6 +5321,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_plugin_group type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Joomla_plugin_updates from the action_log_config table
 		$joomla_plugin_updates_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_updates') );
 		// Create a new query object.
@@ -4583,6 +5346,16 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_plugin_updates type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Joomla_plugin_files_folders_urls from the action_log_config table
 		$joomla_plugin_files_folders_urls_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_files_folders_urls') );
 		// Create a new query object.
@@ -4641,6 +5414,7 @@ class com_componentbuilderInstallerScript
 		// do any updates needed
 		if ($type === 'update')
 		{
+
 			// load the helper class
 			JLoader::register('ComponentbuilderHelper', JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/componentbuilder.php');
 			// check the version of JCB
@@ -5006,6 +5780,7 @@ class com_componentbuilderInstallerScript
 					}
 				}
 			}
+
 		}
 		// do any install needed
 		if ($type === 'install')
@@ -5046,6 +5821,18 @@ class com_componentbuilderInstallerScript
 
 			// Set the object into the content types table.
 			$joomla_component_Inserted = $db->insertObject('#__content_types', $joomla_component);
+
+			// Create the joomla_module content type object.
+			$joomla_module = new stdClass();
+			$joomla_module->type_title = 'Componentbuilder Joomla_module';
+			$joomla_module->type_alias = 'com_componentbuilder.joomla_module';
+			$joomla_module->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module","key": "id","type": "Joomla_module","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$joomla_module->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_postflight_update","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","description":"description","php_postflight_update":"php_postflight_update","php_postflight_install":"php_postflight_install","php_preflight_uninstall":"php_preflight_uninstall","update_server_url":"update_server_url","sql_uninstall":"sql_uninstall","default":"default","snippet":"snippet","libraries":"libraries","php_method_uninstall":"php_method_uninstall","sql":"sql","readme":"readme","not_required":"not_required","module_version":"module_version","add_sales_server":"add_sales_server","add_abstract_class_helper":"add_abstract_class_helper","add_php_preflight_uninstall":"add_php_preflight_uninstall","add_custom_abstract_class_helper_header":"add_custom_abstract_class_helper_header","add_php_postflight_install":"add_php_postflight_install","custom_get":"custom_get","add_php_postflight_update":"add_php_postflight_update","abstract_class_helper_header":"abstract_class_helper_header","add_php_method_uninstall":"add_php_method_uninstall","abstract_class_helper_code":"abstract_class_helper_code","add_sql":"add_sql","add_sql_uninstall":"add_sql_uninstall","add_php_script_construct":"add_php_script_construct","addreadme":"addreadme","php_script_construct":"php_script_construct","add_update_server":"add_update_server","add_php_preflight_install":"add_php_preflight_install","update_server_target":"update_server_target","php_preflight_install":"php_preflight_install","add_php_preflight_update":"add_php_preflight_update","update_server":"update_server","php_preflight_update":"php_preflight_update","sales_server":"sales_server","name":"name"}}';
+			$joomla_module->router = 'ComponentbuilderHelperRoute::getJoomla_moduleRoute';
+			$joomla_module->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","snippet","add_sales_server","add_abstract_class_helper","add_php_preflight_uninstall","add_custom_abstract_class_helper_header","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_sql","add_sql_uninstall","add_php_script_construct","addreadme","add_update_server","add_php_preflight_install","update_server_target","add_php_preflight_update","update_server","sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$joomla_module_Inserted = $db->insertObject('#__content_types', $joomla_module);
 
 			// Create the joomla_plugin content type object.
 			$joomla_plugin = new stdClass();
@@ -5539,6 +6326,30 @@ class com_componentbuilderInstallerScript
 			// Set the object into the content types table.
 			$class_extends_Inserted = $db->insertObject('#__content_types', $class_extends);
 
+			// Create the joomla_module_updates content type object.
+			$joomla_module_updates = new stdClass();
+			$joomla_module_updates->type_title = 'Componentbuilder Joomla_module_updates';
+			$joomla_module_updates->type_alias = 'com_componentbuilder.joomla_module_updates';
+			$joomla_module_updates->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module_updates","key": "id","type": "Joomla_module_updates","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$joomla_module_updates->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_module","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_module":"joomla_module"}}';
+			$joomla_module_updates->router = 'ComponentbuilderHelperRoute::getJoomla_module_updatesRoute';
+			$joomla_module_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Set the object into the content types table.
+			$joomla_module_updates_Inserted = $db->insertObject('#__content_types', $joomla_module_updates);
+
+			// Create the joomla_module_files_folders_urls content type object.
+			$joomla_module_files_folders_urls = new stdClass();
+			$joomla_module_files_folders_urls->type_title = 'Componentbuilder Joomla_module_files_folders_urls';
+			$joomla_module_files_folders_urls->type_alias = 'com_componentbuilder.joomla_module_files_folders_urls';
+			$joomla_module_files_folders_urls->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module_files_folders_urls","key": "id","type": "Joomla_module_files_folders_urls","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$joomla_module_files_folders_urls->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_module","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_module":"joomla_module"}}';
+			$joomla_module_files_folders_urls->router = 'ComponentbuilderHelperRoute::getJoomla_module_files_folders_urlsRoute';
+			$joomla_module_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Set the object into the content types table.
+			$joomla_module_files_folders_urls_Inserted = $db->insertObject('#__content_types', $joomla_module_files_folders_urls);
+
 			// Create the joomla_plugin_group content type object.
 			$joomla_plugin_group = new stdClass();
 			$joomla_plugin_group->type_title = 'Componentbuilder Joomla_plugin_group';
@@ -5594,6 +6405,11 @@ class com_componentbuilderInstallerScript
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>';
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the componentbuilder action logs extensions object.
 			$componentbuilder_action_logs_extensions = new stdClass();
 			$componentbuilder_action_logs_extensions->extension = 'com_componentbuilder';
@@ -5601,6 +6417,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action logs extensions table.
 			$componentbuilder_action_logs_extensions_Inserted = $db->insertObject('#__action_logs_extensions', $componentbuilder_action_logs_extensions);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the joomla_component action log config object.
 			$joomla_component_action_log_config = new stdClass();
 			$joomla_component_action_log_config->type_title = 'JOOMLA_COMPONENT';
@@ -5613,6 +6434,28 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$joomla_component_Inserted = $db->insertObject('#__action_log_config', $joomla_component_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the joomla_module action log config object.
+			$joomla_module_action_log_config = new stdClass();
+			$joomla_module_action_log_config->type_title = 'JOOMLA_MODULE';
+			$joomla_module_action_log_config->type_alias = 'com_componentbuilder.joomla_module';
+			$joomla_module_action_log_config->id_holder = 'id';
+			$joomla_module_action_log_config->title_holder = 'system_name';
+			$joomla_module_action_log_config->table_name = '#__componentbuilder_joomla_module';
+			$joomla_module_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$joomla_module_Inserted = $db->insertObject('#__action_log_config', $joomla_module_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the joomla_plugin action log config object.
 			$joomla_plugin_action_log_config = new stdClass();
 			$joomla_plugin_action_log_config->type_title = 'JOOMLA_PLUGIN';
@@ -5625,6 +6468,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$joomla_plugin_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the admin_view action log config object.
 			$admin_view_action_log_config = new stdClass();
 			$admin_view_action_log_config->type_title = 'ADMIN_VIEW';
@@ -5637,6 +6485,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$admin_view_Inserted = $db->insertObject('#__action_log_config', $admin_view_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the custom_admin_view action log config object.
 			$custom_admin_view_action_log_config = new stdClass();
 			$custom_admin_view_action_log_config->type_title = 'CUSTOM_ADMIN_VIEW';
@@ -5649,6 +6502,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$custom_admin_view_Inserted = $db->insertObject('#__action_log_config', $custom_admin_view_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the site_view action log config object.
 			$site_view_action_log_config = new stdClass();
 			$site_view_action_log_config->type_title = 'SITE_VIEW';
@@ -5661,6 +6519,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$site_view_Inserted = $db->insertObject('#__action_log_config', $site_view_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the template action log config object.
 			$template_action_log_config = new stdClass();
 			$template_action_log_config->type_title = 'TEMPLATE';
@@ -5673,6 +6536,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$template_Inserted = $db->insertObject('#__action_log_config', $template_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the layout action log config object.
 			$layout_action_log_config = new stdClass();
 			$layout_action_log_config->type_title = 'LAYOUT';
@@ -5685,6 +6553,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$layout_Inserted = $db->insertObject('#__action_log_config', $layout_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the dynamic_get action log config object.
 			$dynamic_get_action_log_config = new stdClass();
 			$dynamic_get_action_log_config->type_title = 'DYNAMIC_GET';
@@ -5697,6 +6570,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$dynamic_get_Inserted = $db->insertObject('#__action_log_config', $dynamic_get_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the custom_code action log config object.
 			$custom_code_action_log_config = new stdClass();
 			$custom_code_action_log_config->type_title = 'CUSTOM_CODE';
@@ -5709,6 +6587,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$custom_code_Inserted = $db->insertObject('#__action_log_config', $custom_code_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the class_property action log config object.
 			$class_property_action_log_config = new stdClass();
 			$class_property_action_log_config->type_title = 'CLASS_PROPERTY';
@@ -5721,6 +6604,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$class_property_Inserted = $db->insertObject('#__action_log_config', $class_property_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the class_method action log config object.
 			$class_method_action_log_config = new stdClass();
 			$class_method_action_log_config->type_title = 'CLASS_METHOD';
@@ -5733,6 +6621,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$class_method_Inserted = $db->insertObject('#__action_log_config', $class_method_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the placeholder action log config object.
 			$placeholder_action_log_config = new stdClass();
 			$placeholder_action_log_config->type_title = 'PLACEHOLDER';
@@ -5745,6 +6638,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$placeholder_Inserted = $db->insertObject('#__action_log_config', $placeholder_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the library action log config object.
 			$library_action_log_config = new stdClass();
 			$library_action_log_config->type_title = 'LIBRARY';
@@ -5757,6 +6655,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$library_Inserted = $db->insertObject('#__action_log_config', $library_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the snippet action log config object.
 			$snippet_action_log_config = new stdClass();
 			$snippet_action_log_config->type_title = 'SNIPPET';
@@ -5769,6 +6672,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$snippet_Inserted = $db->insertObject('#__action_log_config', $snippet_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the validation_rule action log config object.
 			$validation_rule_action_log_config = new stdClass();
 			$validation_rule_action_log_config->type_title = 'VALIDATION_RULE';
@@ -5781,6 +6689,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$validation_rule_Inserted = $db->insertObject('#__action_log_config', $validation_rule_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the field action log config object.
 			$field_action_log_config = new stdClass();
 			$field_action_log_config->type_title = 'FIELD';
@@ -5793,6 +6706,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$field_Inserted = $db->insertObject('#__action_log_config', $field_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the fieldtype action log config object.
 			$fieldtype_action_log_config = new stdClass();
 			$fieldtype_action_log_config->type_title = 'FIELDTYPE';
@@ -5805,6 +6723,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$fieldtype_Inserted = $db->insertObject('#__action_log_config', $fieldtype_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the language_translation action log config object.
 			$language_translation_action_log_config = new stdClass();
 			$language_translation_action_log_config->type_title = 'LANGUAGE_TRANSLATION';
@@ -5817,6 +6740,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$language_translation_Inserted = $db->insertObject('#__action_log_config', $language_translation_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the language action log config object.
 			$language_action_log_config = new stdClass();
 			$language_action_log_config->type_title = 'LANGUAGE';
@@ -5829,6 +6757,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$language_Inserted = $db->insertObject('#__action_log_config', $language_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the server action log config object.
 			$server_action_log_config = new stdClass();
 			$server_action_log_config->type_title = 'SERVER';
@@ -5841,6 +6774,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$server_Inserted = $db->insertObject('#__action_log_config', $server_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the help_document action log config object.
 			$help_document_action_log_config = new stdClass();
 			$help_document_action_log_config->type_title = 'HELP_DOCUMENT';
@@ -5853,6 +6791,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$help_document_Inserted = $db->insertObject('#__action_log_config', $help_document_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the admin_fields action log config object.
 			$admin_fields_action_log_config = new stdClass();
 			$admin_fields_action_log_config->type_title = 'ADMIN_FIELDS';
@@ -5865,6 +6808,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$admin_fields_Inserted = $db->insertObject('#__action_log_config', $admin_fields_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the admin_fields_conditions action log config object.
 			$admin_fields_conditions_action_log_config = new stdClass();
 			$admin_fields_conditions_action_log_config->type_title = 'ADMIN_FIELDS_CONDITIONS';
@@ -5877,6 +6825,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$admin_fields_conditions_Inserted = $db->insertObject('#__action_log_config', $admin_fields_conditions_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the admin_fields_relations action log config object.
 			$admin_fields_relations_action_log_config = new stdClass();
 			$admin_fields_relations_action_log_config->type_title = 'ADMIN_FIELDS_RELATIONS';
@@ -5889,6 +6842,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$admin_fields_relations_Inserted = $db->insertObject('#__action_log_config', $admin_fields_relations_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the admin_custom_tabs action log config object.
 			$admin_custom_tabs_action_log_config = new stdClass();
 			$admin_custom_tabs_action_log_config->type_title = 'ADMIN_CUSTOM_TABS';
@@ -5901,6 +6859,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$admin_custom_tabs_Inserted = $db->insertObject('#__action_log_config', $admin_custom_tabs_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_admin_views action log config object.
 			$component_admin_views_action_log_config = new stdClass();
 			$component_admin_views_action_log_config->type_title = 'COMPONENT_ADMIN_VIEWS';
@@ -5913,6 +6876,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$component_admin_views_Inserted = $db->insertObject('#__action_log_config', $component_admin_views_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_site_views action log config object.
 			$component_site_views_action_log_config = new stdClass();
 			$component_site_views_action_log_config->type_title = 'COMPONENT_SITE_VIEWS';
@@ -5925,6 +6893,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$component_site_views_Inserted = $db->insertObject('#__action_log_config', $component_site_views_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_custom_admin_views action log config object.
 			$component_custom_admin_views_action_log_config = new stdClass();
 			$component_custom_admin_views_action_log_config->type_title = 'COMPONENT_CUSTOM_ADMIN_VIEWS';
@@ -5937,6 +6910,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$component_custom_admin_views_Inserted = $db->insertObject('#__action_log_config', $component_custom_admin_views_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_updates action log config object.
 			$component_updates_action_log_config = new stdClass();
 			$component_updates_action_log_config->type_title = 'COMPONENT_UPDATES';
@@ -5949,6 +6927,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$component_updates_Inserted = $db->insertObject('#__action_log_config', $component_updates_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_mysql_tweaks action log config object.
 			$component_mysql_tweaks_action_log_config = new stdClass();
 			$component_mysql_tweaks_action_log_config->type_title = 'COMPONENT_MYSQL_TWEAKS';
@@ -5961,6 +6944,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$component_mysql_tweaks_Inserted = $db->insertObject('#__action_log_config', $component_mysql_tweaks_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_custom_admin_menus action log config object.
 			$component_custom_admin_menus_action_log_config = new stdClass();
 			$component_custom_admin_menus_action_log_config->type_title = 'COMPONENT_CUSTOM_ADMIN_MENUS';
@@ -5973,6 +6961,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$component_custom_admin_menus_Inserted = $db->insertObject('#__action_log_config', $component_custom_admin_menus_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_config action log config object.
 			$component_config_action_log_config = new stdClass();
 			$component_config_action_log_config->type_title = 'COMPONENT_CONFIG';
@@ -5985,6 +6978,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$component_config_Inserted = $db->insertObject('#__action_log_config', $component_config_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_dashboard action log config object.
 			$component_dashboard_action_log_config = new stdClass();
 			$component_dashboard_action_log_config->type_title = 'COMPONENT_DASHBOARD';
@@ -5997,6 +6995,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$component_dashboard_Inserted = $db->insertObject('#__action_log_config', $component_dashboard_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_files_folders action log config object.
 			$component_files_folders_action_log_config = new stdClass();
 			$component_files_folders_action_log_config->type_title = 'COMPONENT_FILES_FOLDERS';
@@ -6009,6 +7012,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$component_files_folders_Inserted = $db->insertObject('#__action_log_config', $component_files_folders_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_placeholders action log config object.
 			$component_placeholders_action_log_config = new stdClass();
 			$component_placeholders_action_log_config->type_title = 'COMPONENT_PLACEHOLDERS';
@@ -6021,6 +7029,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$component_placeholders_Inserted = $db->insertObject('#__action_log_config', $component_placeholders_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_plugins action log config object.
 			$component_plugins_action_log_config = new stdClass();
 			$component_plugins_action_log_config->type_title = 'COMPONENT_PLUGINS';
@@ -6033,6 +7046,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$component_plugins_Inserted = $db->insertObject('#__action_log_config', $component_plugins_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the snippet_type action log config object.
 			$snippet_type_action_log_config = new stdClass();
 			$snippet_type_action_log_config->type_title = 'SNIPPET_TYPE';
@@ -6045,6 +7063,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$snippet_type_Inserted = $db->insertObject('#__action_log_config', $snippet_type_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the library_config action log config object.
 			$library_config_action_log_config = new stdClass();
 			$library_config_action_log_config->type_title = 'LIBRARY_CONFIG';
@@ -6057,6 +7080,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$library_config_Inserted = $db->insertObject('#__action_log_config', $library_config_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the library_files_folders_urls action log config object.
 			$library_files_folders_urls_action_log_config = new stdClass();
 			$library_files_folders_urls_action_log_config->type_title = 'LIBRARY_FILES_FOLDERS_URLS';
@@ -6069,6 +7097,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$library_files_folders_urls_Inserted = $db->insertObject('#__action_log_config', $library_files_folders_urls_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the class_extends action log config object.
 			$class_extends_action_log_config = new stdClass();
 			$class_extends_action_log_config->type_title = 'CLASS_EXTENDS';
@@ -6081,6 +7114,45 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$class_extends_Inserted = $db->insertObject('#__action_log_config', $class_extends_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the joomla_module_updates action log config object.
+			$joomla_module_updates_action_log_config = new stdClass();
+			$joomla_module_updates_action_log_config->type_title = 'JOOMLA_MODULE_UPDATES';
+			$joomla_module_updates_action_log_config->type_alias = 'com_componentbuilder.joomla_module_updates';
+			$joomla_module_updates_action_log_config->id_holder = 'id';
+			$joomla_module_updates_action_log_config->title_holder = 'joomla_module';
+			$joomla_module_updates_action_log_config->table_name = '#__componentbuilder_joomla_module_updates';
+			$joomla_module_updates_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$joomla_module_updates_Inserted = $db->insertObject('#__action_log_config', $joomla_module_updates_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the joomla_module_files_folders_urls action log config object.
+			$joomla_module_files_folders_urls_action_log_config = new stdClass();
+			$joomla_module_files_folders_urls_action_log_config->type_title = 'JOOMLA_MODULE_FILES_FOLDERS_URLS';
+			$joomla_module_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.joomla_module_files_folders_urls';
+			$joomla_module_files_folders_urls_action_log_config->id_holder = 'id';
+			$joomla_module_files_folders_urls_action_log_config->title_holder = 'joomla_module';
+			$joomla_module_files_folders_urls_action_log_config->table_name = '#__componentbuilder_joomla_module_files_folders_urls';
+			$joomla_module_files_folders_urls_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$joomla_module_files_folders_urls_Inserted = $db->insertObject('#__action_log_config', $joomla_module_files_folders_urls_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the joomla_plugin_group action log config object.
 			$joomla_plugin_group_action_log_config = new stdClass();
 			$joomla_plugin_group_action_log_config->type_title = 'JOOMLA_PLUGIN_GROUP';
@@ -6093,6 +7165,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$joomla_plugin_group_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_group_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the joomla_plugin_updates action log config object.
 			$joomla_plugin_updates_action_log_config = new stdClass();
 			$joomla_plugin_updates_action_log_config->type_title = 'JOOMLA_PLUGIN_UPDATES';
@@ -6105,6 +7182,11 @@ class com_componentbuilderInstallerScript
 			// Set the object into the action log config table.
 			$joomla_plugin_updates_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_updates_action_log_config);
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the joomla_plugin_files_folders_urls action log config object.
 			$joomla_plugin_files_folders_urls_action_log_config = new stdClass();
 			$joomla_plugin_files_folders_urls_action_log_config->type_title = 'JOOMLA_PLUGIN_FILES_FOLDERS_URLS';
@@ -6151,6 +7233,35 @@ class com_componentbuilderInstallerScript
 			else
 			{
 				$joomla_component_Inserted = $db->insertObject('#__content_types', $joomla_component);
+			}
+
+			// Create the joomla_module content type object.
+			$joomla_module = new stdClass();
+			$joomla_module->type_title = 'Componentbuilder Joomla_module';
+			$joomla_module->type_alias = 'com_componentbuilder.joomla_module';
+			$joomla_module->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module","key": "id","type": "Joomla_module","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$joomla_module->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_postflight_update","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","description":"description","php_postflight_update":"php_postflight_update","php_postflight_install":"php_postflight_install","php_preflight_uninstall":"php_preflight_uninstall","update_server_url":"update_server_url","sql_uninstall":"sql_uninstall","default":"default","snippet":"snippet","libraries":"libraries","php_method_uninstall":"php_method_uninstall","sql":"sql","readme":"readme","not_required":"not_required","module_version":"module_version","add_sales_server":"add_sales_server","add_abstract_class_helper":"add_abstract_class_helper","add_php_preflight_uninstall":"add_php_preflight_uninstall","add_custom_abstract_class_helper_header":"add_custom_abstract_class_helper_header","add_php_postflight_install":"add_php_postflight_install","custom_get":"custom_get","add_php_postflight_update":"add_php_postflight_update","abstract_class_helper_header":"abstract_class_helper_header","add_php_method_uninstall":"add_php_method_uninstall","abstract_class_helper_code":"abstract_class_helper_code","add_sql":"add_sql","add_sql_uninstall":"add_sql_uninstall","add_php_script_construct":"add_php_script_construct","addreadme":"addreadme","php_script_construct":"php_script_construct","add_update_server":"add_update_server","add_php_preflight_install":"add_php_preflight_install","update_server_target":"update_server_target","php_preflight_install":"php_preflight_install","add_php_preflight_update":"add_php_preflight_update","update_server":"update_server","php_preflight_update":"php_preflight_update","sales_server":"sales_server","name":"name"}}';
+			$joomla_module->router = 'ComponentbuilderHelperRoute::getJoomla_moduleRoute';
+			$joomla_module->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","snippet","add_sales_server","add_abstract_class_helper","add_php_preflight_uninstall","add_custom_abstract_class_helper_header","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_sql","add_sql_uninstall","add_php_script_construct","addreadme","add_update_server","add_php_preflight_install","update_server_target","add_php_preflight_update","update_server","sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if joomla_module type is already in content_type DB.
+			$joomla_module_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_module->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_module->type_id = $db->loadResult();
+				$joomla_module_Updated = $db->updateObject('#__content_types', $joomla_module, 'type_id');
+			}
+			else
+			{
+				$joomla_module_Inserted = $db->insertObject('#__content_types', $joomla_module);
 			}
 
 			// Create the joomla_plugin content type object.
@@ -7342,6 +8453,64 @@ class com_componentbuilderInstallerScript
 				$class_extends_Inserted = $db->insertObject('#__content_types', $class_extends);
 			}
 
+			// Create the joomla_module_updates content type object.
+			$joomla_module_updates = new stdClass();
+			$joomla_module_updates->type_title = 'Componentbuilder Joomla_module_updates';
+			$joomla_module_updates->type_alias = 'com_componentbuilder.joomla_module_updates';
+			$joomla_module_updates->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module_updates","key": "id","type": "Joomla_module_updates","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$joomla_module_updates->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_module","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_module":"joomla_module"}}';
+			$joomla_module_updates->router = 'ComponentbuilderHelperRoute::getJoomla_module_updatesRoute';
+			$joomla_module_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Check if joomla_module_updates type is already in content_type DB.
+			$joomla_module_updates_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_module_updates->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_module_updates->type_id = $db->loadResult();
+				$joomla_module_updates_Updated = $db->updateObject('#__content_types', $joomla_module_updates, 'type_id');
+			}
+			else
+			{
+				$joomla_module_updates_Inserted = $db->insertObject('#__content_types', $joomla_module_updates);
+			}
+
+			// Create the joomla_module_files_folders_urls content type object.
+			$joomla_module_files_folders_urls = new stdClass();
+			$joomla_module_files_folders_urls->type_title = 'Componentbuilder Joomla_module_files_folders_urls';
+			$joomla_module_files_folders_urls->type_alias = 'com_componentbuilder.joomla_module_files_folders_urls';
+			$joomla_module_files_folders_urls->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module_files_folders_urls","key": "id","type": "Joomla_module_files_folders_urls","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$joomla_module_files_folders_urls->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_module","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_module":"joomla_module"}}';
+			$joomla_module_files_folders_urls->router = 'ComponentbuilderHelperRoute::getJoomla_module_files_folders_urlsRoute';
+			$joomla_module_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Check if joomla_module_files_folders_urls type is already in content_type DB.
+			$joomla_module_files_folders_urls_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_module_files_folders_urls->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_module_files_folders_urls->type_id = $db->loadResult();
+				$joomla_module_files_folders_urls_Updated = $db->updateObject('#__content_types', $joomla_module_files_folders_urls, 'type_id');
+			}
+			else
+			{
+				$joomla_module_files_folders_urls_Inserted = $db->insertObject('#__content_types', $joomla_module_files_folders_urls);
+			}
+
 			// Create the joomla_plugin_group content type object.
 			$joomla_plugin_group = new stdClass();
 			$joomla_plugin_group->type_title = 'Componentbuilder Joomla_plugin_group';
@@ -7428,6 +8597,7 @@ class com_componentbuilderInstallerScript
 			{
 				$joomla_plugin_files_folders_urls_Inserted = $db->insertObject('#__content_types', $joomla_plugin_files_folders_urls);
 			}
+
 
 
 
@@ -7642,11 +8812,17 @@ class com_componentbuilderInstallerScript
 				// set a notice that this was done
 				$app->enqueueMessage('<p><b>Best Practice!</b><br />We have removed the internal JCB composer-vendor folder <b>/libraries/vdm_io/</b> and placed the targeted library (phpseclib) in its own folder <b>/libraries/phpseclib/</b>.</p>', 'Notice');
 			}
+
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.10.5 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.10.6 Was Successful! Let us know if anything is not working as expected.</h3>';
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the componentbuilder action logs extensions object.
 			$componentbuilder_action_logs_extensions = new stdClass();
 			$componentbuilder_action_logs_extensions->extension = 'com_componentbuilder';
@@ -7665,6 +8841,11 @@ class com_componentbuilderInstallerScript
 				$componentbuilder_action_logs_extensions_Inserted = $db->insertObject('#__action_logs_extensions', $componentbuilder_action_logs_extensions);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the joomla_component action log config object.
 			$joomla_component_action_log_config = new stdClass();
 			$joomla_component_action_log_config->id = null;
@@ -7694,6 +8875,45 @@ class com_componentbuilderInstallerScript
 				$joomla_component_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_component_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the joomla_module action log config object.
+			$joomla_module_action_log_config = new stdClass();
+			$joomla_module_action_log_config->id = null;
+			$joomla_module_action_log_config->type_title = 'JOOMLA_MODULE';
+			$joomla_module_action_log_config->type_alias = 'com_componentbuilder.joomla_module';
+			$joomla_module_action_log_config->id_holder = 'id';
+			$joomla_module_action_log_config->title_holder = 'system_name';
+			$joomla_module_action_log_config->table_name = '#__componentbuilder_joomla_module';
+			$joomla_module_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if joomla_module action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_module_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_module_action_log_config->id = $db->loadResult();
+				$joomla_module_action_log_config_Updated = $db->updateObject('#__action_log_config', $joomla_module_action_log_config, 'id');
+			}
+			else
+			{
+				$joomla_module_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_module_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the joomla_plugin action log config object.
 			$joomla_plugin_action_log_config = new stdClass();
 			$joomla_plugin_action_log_config->id = null;
@@ -7723,6 +8943,11 @@ class com_componentbuilderInstallerScript
 				$joomla_plugin_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the admin_view action log config object.
 			$admin_view_action_log_config = new stdClass();
 			$admin_view_action_log_config->id = null;
@@ -7752,6 +8977,11 @@ class com_componentbuilderInstallerScript
 				$admin_view_action_log_config_Inserted = $db->insertObject('#__action_log_config', $admin_view_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the custom_admin_view action log config object.
 			$custom_admin_view_action_log_config = new stdClass();
 			$custom_admin_view_action_log_config->id = null;
@@ -7781,6 +9011,11 @@ class com_componentbuilderInstallerScript
 				$custom_admin_view_action_log_config_Inserted = $db->insertObject('#__action_log_config', $custom_admin_view_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the site_view action log config object.
 			$site_view_action_log_config = new stdClass();
 			$site_view_action_log_config->id = null;
@@ -7810,6 +9045,11 @@ class com_componentbuilderInstallerScript
 				$site_view_action_log_config_Inserted = $db->insertObject('#__action_log_config', $site_view_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the template action log config object.
 			$template_action_log_config = new stdClass();
 			$template_action_log_config->id = null;
@@ -7839,6 +9079,11 @@ class com_componentbuilderInstallerScript
 				$template_action_log_config_Inserted = $db->insertObject('#__action_log_config', $template_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the layout action log config object.
 			$layout_action_log_config = new stdClass();
 			$layout_action_log_config->id = null;
@@ -7868,6 +9113,11 @@ class com_componentbuilderInstallerScript
 				$layout_action_log_config_Inserted = $db->insertObject('#__action_log_config', $layout_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the dynamic_get action log config object.
 			$dynamic_get_action_log_config = new stdClass();
 			$dynamic_get_action_log_config->id = null;
@@ -7897,6 +9147,11 @@ class com_componentbuilderInstallerScript
 				$dynamic_get_action_log_config_Inserted = $db->insertObject('#__action_log_config', $dynamic_get_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the custom_code action log config object.
 			$custom_code_action_log_config = new stdClass();
 			$custom_code_action_log_config->id = null;
@@ -7926,6 +9181,11 @@ class com_componentbuilderInstallerScript
 				$custom_code_action_log_config_Inserted = $db->insertObject('#__action_log_config', $custom_code_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the class_property action log config object.
 			$class_property_action_log_config = new stdClass();
 			$class_property_action_log_config->id = null;
@@ -7955,6 +9215,11 @@ class com_componentbuilderInstallerScript
 				$class_property_action_log_config_Inserted = $db->insertObject('#__action_log_config', $class_property_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the class_method action log config object.
 			$class_method_action_log_config = new stdClass();
 			$class_method_action_log_config->id = null;
@@ -7984,6 +9249,11 @@ class com_componentbuilderInstallerScript
 				$class_method_action_log_config_Inserted = $db->insertObject('#__action_log_config', $class_method_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the placeholder action log config object.
 			$placeholder_action_log_config = new stdClass();
 			$placeholder_action_log_config->id = null;
@@ -8013,6 +9283,11 @@ class com_componentbuilderInstallerScript
 				$placeholder_action_log_config_Inserted = $db->insertObject('#__action_log_config', $placeholder_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the library action log config object.
 			$library_action_log_config = new stdClass();
 			$library_action_log_config->id = null;
@@ -8042,6 +9317,11 @@ class com_componentbuilderInstallerScript
 				$library_action_log_config_Inserted = $db->insertObject('#__action_log_config', $library_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the snippet action log config object.
 			$snippet_action_log_config = new stdClass();
 			$snippet_action_log_config->id = null;
@@ -8071,6 +9351,11 @@ class com_componentbuilderInstallerScript
 				$snippet_action_log_config_Inserted = $db->insertObject('#__action_log_config', $snippet_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the validation_rule action log config object.
 			$validation_rule_action_log_config = new stdClass();
 			$validation_rule_action_log_config->id = null;
@@ -8100,6 +9385,11 @@ class com_componentbuilderInstallerScript
 				$validation_rule_action_log_config_Inserted = $db->insertObject('#__action_log_config', $validation_rule_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the field action log config object.
 			$field_action_log_config = new stdClass();
 			$field_action_log_config->id = null;
@@ -8129,6 +9419,11 @@ class com_componentbuilderInstallerScript
 				$field_action_log_config_Inserted = $db->insertObject('#__action_log_config', $field_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the fieldtype action log config object.
 			$fieldtype_action_log_config = new stdClass();
 			$fieldtype_action_log_config->id = null;
@@ -8158,6 +9453,11 @@ class com_componentbuilderInstallerScript
 				$fieldtype_action_log_config_Inserted = $db->insertObject('#__action_log_config', $fieldtype_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the language_translation action log config object.
 			$language_translation_action_log_config = new stdClass();
 			$language_translation_action_log_config->id = null;
@@ -8187,6 +9487,11 @@ class com_componentbuilderInstallerScript
 				$language_translation_action_log_config_Inserted = $db->insertObject('#__action_log_config', $language_translation_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the language action log config object.
 			$language_action_log_config = new stdClass();
 			$language_action_log_config->id = null;
@@ -8216,6 +9521,11 @@ class com_componentbuilderInstallerScript
 				$language_action_log_config_Inserted = $db->insertObject('#__action_log_config', $language_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the server action log config object.
 			$server_action_log_config = new stdClass();
 			$server_action_log_config->id = null;
@@ -8245,6 +9555,11 @@ class com_componentbuilderInstallerScript
 				$server_action_log_config_Inserted = $db->insertObject('#__action_log_config', $server_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the help_document action log config object.
 			$help_document_action_log_config = new stdClass();
 			$help_document_action_log_config->id = null;
@@ -8274,6 +9589,11 @@ class com_componentbuilderInstallerScript
 				$help_document_action_log_config_Inserted = $db->insertObject('#__action_log_config', $help_document_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the admin_fields action log config object.
 			$admin_fields_action_log_config = new stdClass();
 			$admin_fields_action_log_config->id = null;
@@ -8303,6 +9623,11 @@ class com_componentbuilderInstallerScript
 				$admin_fields_action_log_config_Inserted = $db->insertObject('#__action_log_config', $admin_fields_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the admin_fields_conditions action log config object.
 			$admin_fields_conditions_action_log_config = new stdClass();
 			$admin_fields_conditions_action_log_config->id = null;
@@ -8332,6 +9657,11 @@ class com_componentbuilderInstallerScript
 				$admin_fields_conditions_action_log_config_Inserted = $db->insertObject('#__action_log_config', $admin_fields_conditions_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the admin_fields_relations action log config object.
 			$admin_fields_relations_action_log_config = new stdClass();
 			$admin_fields_relations_action_log_config->id = null;
@@ -8361,6 +9691,11 @@ class com_componentbuilderInstallerScript
 				$admin_fields_relations_action_log_config_Inserted = $db->insertObject('#__action_log_config', $admin_fields_relations_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the admin_custom_tabs action log config object.
 			$admin_custom_tabs_action_log_config = new stdClass();
 			$admin_custom_tabs_action_log_config->id = null;
@@ -8390,6 +9725,11 @@ class com_componentbuilderInstallerScript
 				$admin_custom_tabs_action_log_config_Inserted = $db->insertObject('#__action_log_config', $admin_custom_tabs_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_admin_views action log config object.
 			$component_admin_views_action_log_config = new stdClass();
 			$component_admin_views_action_log_config->id = null;
@@ -8419,6 +9759,11 @@ class com_componentbuilderInstallerScript
 				$component_admin_views_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_admin_views_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_site_views action log config object.
 			$component_site_views_action_log_config = new stdClass();
 			$component_site_views_action_log_config->id = null;
@@ -8448,6 +9793,11 @@ class com_componentbuilderInstallerScript
 				$component_site_views_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_site_views_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_custom_admin_views action log config object.
 			$component_custom_admin_views_action_log_config = new stdClass();
 			$component_custom_admin_views_action_log_config->id = null;
@@ -8477,6 +9827,11 @@ class com_componentbuilderInstallerScript
 				$component_custom_admin_views_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_custom_admin_views_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_updates action log config object.
 			$component_updates_action_log_config = new stdClass();
 			$component_updates_action_log_config->id = null;
@@ -8506,6 +9861,11 @@ class com_componentbuilderInstallerScript
 				$component_updates_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_updates_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_mysql_tweaks action log config object.
 			$component_mysql_tweaks_action_log_config = new stdClass();
 			$component_mysql_tweaks_action_log_config->id = null;
@@ -8535,6 +9895,11 @@ class com_componentbuilderInstallerScript
 				$component_mysql_tweaks_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_mysql_tweaks_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_custom_admin_menus action log config object.
 			$component_custom_admin_menus_action_log_config = new stdClass();
 			$component_custom_admin_menus_action_log_config->id = null;
@@ -8564,6 +9929,11 @@ class com_componentbuilderInstallerScript
 				$component_custom_admin_menus_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_custom_admin_menus_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_config action log config object.
 			$component_config_action_log_config = new stdClass();
 			$component_config_action_log_config->id = null;
@@ -8593,6 +9963,11 @@ class com_componentbuilderInstallerScript
 				$component_config_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_config_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_dashboard action log config object.
 			$component_dashboard_action_log_config = new stdClass();
 			$component_dashboard_action_log_config->id = null;
@@ -8622,6 +9997,11 @@ class com_componentbuilderInstallerScript
 				$component_dashboard_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_dashboard_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_files_folders action log config object.
 			$component_files_folders_action_log_config = new stdClass();
 			$component_files_folders_action_log_config->id = null;
@@ -8651,6 +10031,11 @@ class com_componentbuilderInstallerScript
 				$component_files_folders_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_files_folders_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_placeholders action log config object.
 			$component_placeholders_action_log_config = new stdClass();
 			$component_placeholders_action_log_config->id = null;
@@ -8680,6 +10065,11 @@ class com_componentbuilderInstallerScript
 				$component_placeholders_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_placeholders_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the component_plugins action log config object.
 			$component_plugins_action_log_config = new stdClass();
 			$component_plugins_action_log_config->id = null;
@@ -8709,6 +10099,11 @@ class com_componentbuilderInstallerScript
 				$component_plugins_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_plugins_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the snippet_type action log config object.
 			$snippet_type_action_log_config = new stdClass();
 			$snippet_type_action_log_config->id = null;
@@ -8738,6 +10133,11 @@ class com_componentbuilderInstallerScript
 				$snippet_type_action_log_config_Inserted = $db->insertObject('#__action_log_config', $snippet_type_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the library_config action log config object.
 			$library_config_action_log_config = new stdClass();
 			$library_config_action_log_config->id = null;
@@ -8767,6 +10167,11 @@ class com_componentbuilderInstallerScript
 				$library_config_action_log_config_Inserted = $db->insertObject('#__action_log_config', $library_config_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the library_files_folders_urls action log config object.
 			$library_files_folders_urls_action_log_config = new stdClass();
 			$library_files_folders_urls_action_log_config->id = null;
@@ -8796,6 +10201,11 @@ class com_componentbuilderInstallerScript
 				$library_files_folders_urls_action_log_config_Inserted = $db->insertObject('#__action_log_config', $library_files_folders_urls_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the class_extends action log config object.
 			$class_extends_action_log_config = new stdClass();
 			$class_extends_action_log_config->id = null;
@@ -8825,6 +10235,79 @@ class com_componentbuilderInstallerScript
 				$class_extends_action_log_config_Inserted = $db->insertObject('#__action_log_config', $class_extends_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the joomla_module_updates action log config object.
+			$joomla_module_updates_action_log_config = new stdClass();
+			$joomla_module_updates_action_log_config->id = null;
+			$joomla_module_updates_action_log_config->type_title = 'JOOMLA_MODULE_UPDATES';
+			$joomla_module_updates_action_log_config->type_alias = 'com_componentbuilder.joomla_module_updates';
+			$joomla_module_updates_action_log_config->id_holder = 'id';
+			$joomla_module_updates_action_log_config->title_holder = 'joomla_module';
+			$joomla_module_updates_action_log_config->table_name = '#__componentbuilder_joomla_module_updates';
+			$joomla_module_updates_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if joomla_module_updates action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_module_updates_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_module_updates_action_log_config->id = $db->loadResult();
+				$joomla_module_updates_action_log_config_Updated = $db->updateObject('#__action_log_config', $joomla_module_updates_action_log_config, 'id');
+			}
+			else
+			{
+				$joomla_module_updates_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_module_updates_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the joomla_module_files_folders_urls action log config object.
+			$joomla_module_files_folders_urls_action_log_config = new stdClass();
+			$joomla_module_files_folders_urls_action_log_config->id = null;
+			$joomla_module_files_folders_urls_action_log_config->type_title = 'JOOMLA_MODULE_FILES_FOLDERS_URLS';
+			$joomla_module_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.joomla_module_files_folders_urls';
+			$joomla_module_files_folders_urls_action_log_config->id_holder = 'id';
+			$joomla_module_files_folders_urls_action_log_config->title_holder = 'joomla_module';
+			$joomla_module_files_folders_urls_action_log_config->table_name = '#__componentbuilder_joomla_module_files_folders_urls';
+			$joomla_module_files_folders_urls_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if joomla_module_files_folders_urls action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_module_files_folders_urls_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_module_files_folders_urls_action_log_config->id = $db->loadResult();
+				$joomla_module_files_folders_urls_action_log_config_Updated = $db->updateObject('#__action_log_config', $joomla_module_files_folders_urls_action_log_config, 'id');
+			}
+			else
+			{
+				$joomla_module_files_folders_urls_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_module_files_folders_urls_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the joomla_plugin_group action log config object.
 			$joomla_plugin_group_action_log_config = new stdClass();
 			$joomla_plugin_group_action_log_config->id = null;
@@ -8854,6 +10337,11 @@ class com_componentbuilderInstallerScript
 				$joomla_plugin_group_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_group_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the joomla_plugin_updates action log config object.
 			$joomla_plugin_updates_action_log_config = new stdClass();
 			$joomla_plugin_updates_action_log_config->id = null;
@@ -8883,6 +10371,11 @@ class com_componentbuilderInstallerScript
 				$joomla_plugin_updates_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_updates_action_log_config);
 			}
 
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
 			// Create the joomla_plugin_files_folders_urls action log config object.
 			$joomla_plugin_files_folders_urls_action_log_config = new stdClass();
 			$joomla_plugin_files_folders_urls_action_log_config->id = null;

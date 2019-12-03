@@ -19,6 +19,20 @@ class Interpretation extends Fields
 {
 
 	/**
+	 * The global config Field Sets
+	 *
+	 * @var     array
+	 */
+	public $configFieldSets = array();
+
+	/**
+	 * The global config Field Sets Custom Fields
+	 *
+	 * @var     array
+	 */
+	public $configFieldSetsCustomField = array();
+
+	/**
 	 * The contributors
 	 *
 	 * @var    string
@@ -16647,6 +16661,8 @@ function vdm_dkim() {
 		$dbkey = 'yy';
 		// build the xml
 		$xml = '';
+		// search if we must add the component path
+		$add_component_path = false;
 		// build the config fields
 		$config_fields = array();
 		if (isset($plugin->config_fields) && ComponentbuilderHelper::checkArray($plugin->config_fields))
@@ -16660,9 +16676,14 @@ function vdm_dkim() {
 					// make sure the xml is set and a string
 					if (isset($xmlFields) && ComponentbuilderHelper::checkString($xmlFields))
 					{
-						$config_fields[$field_name.$fieldset] = $xmlFields;
+						$config_fields[$field_name . $fieldset] = $xmlFields;
 					}
 					$dbkey++;
+					// check if the fieldset path requiers component paths
+					if (!$add_component_path && isset($plugin->fieldsets_paths[$field_name . $fieldset]) && $plugin->fieldsets_paths[$field_name . $fieldset] == 1)
+					{
+						$add_component_path = true;
+					}
 				}
 			}
 		}
@@ -16767,12 +16788,20 @@ function vdm_dkim() {
 		if (ComponentbuilderHelper::checkArray($config_fields))
 		{
 			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Config parameter -->';
-			// add path to plugin rules and custom fields
-			$xml .= PHP_EOL . $this->_t(1) . '<config';
-			$xml .= PHP_EOL . $this->_t(2) . 'addrulepath="/administrator/components/com_' . $this->componentCodeName . '/models/rules"';
-			$xml .= PHP_EOL . $this->_t(2) . 'addfieldpath="/administrator/components/com_' . $this->componentCodeName . '/models/fields"';
-			$xml .= PHP_EOL . $this->_t(1) . '>';
-			
+			// only add if part of the component field types path is required
+			if ($add_component_path)
+			{
+				// add path to plugin rules and custom fields
+				$xml .= PHP_EOL . $this->_t(1) . '<config';
+				$xml .= PHP_EOL . $this->_t(2) . 'addrulepath="/administrator/components/com_' . $this->componentCodeName . '/models/rules"';
+				$xml .= PHP_EOL . $this->_t(2) . 'addfieldpath="/administrator/components/com_' . $this->componentCodeName . '/models/fields"';
+				$xml .= PHP_EOL . $this->_t(1) . '>';
+			}
+			else
+			{
+				$xml .= PHP_EOL . $this->_t(1) . '<config>';
+			}
+			// add the fields
 			foreach ($plugin->config_fields as $field_name => $fieldsets)
 			{
 				$xml .= PHP_EOL . $this->_t(1) . '<fields name="' . $field_name . '">';
@@ -16785,7 +16814,7 @@ function vdm_dkim() {
 						$label = $plugin->fieldsets_label[$field_name.$fieldset];
 					}
 					// add path to plugin rules and custom fields
-					if (isset($plugin->fieldsets_paths[$field_name.$fieldset]) && $plugin->fieldsets_paths[$field_name.$fieldset] == 2)
+					if (isset($plugin->fieldsets_paths[$field_name . $fieldset]) && $plugin->fieldsets_paths[$field_name . $fieldset] == 2)
 					{
 						$xml .= PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' default paths of ' . $fieldset . ' fieldset points to the plugin -->';
 						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="' . $fieldset . '" label="' . $label . '"';

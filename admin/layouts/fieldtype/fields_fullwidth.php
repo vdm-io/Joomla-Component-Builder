@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items = $displayData->vyifields;
+$items = $displayData->vymfields;
 $user = JFactory::getUser();
 $id = $displayData->item->id;
 // set the edit URL

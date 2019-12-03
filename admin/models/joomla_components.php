@@ -1780,7 +1780,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			'search' => array('id', 'system_name', 'php_preflight_install', 'php_postflight_install',
 				'php_preflight_update', 'php_postflight_update', 'php_method_uninstall',
 				'php_helper_admin', 'php_admin_event', 'php_helper_both', 'php_helper_site',
-				'php_site_event', 'javascript'),
+				'php_site_event', 'javascript', 'readme', 'sql', 'sql_uninstall'),
 			'views' => 'joomla_components',
 			'not_base64' => array(),
 			'name' => 'system_name'

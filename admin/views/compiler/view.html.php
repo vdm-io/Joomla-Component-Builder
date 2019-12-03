@@ -250,7 +250,8 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 					}
 				});
 			}
-			var noticeboard = \"https://www.vdm.io/componentbuilder-noticeboard-md\";
+			var noticeboard = \"https://vdm.bz/componentbuilder-noticeboard-md\";
+			var proboard = \"https://vdm.bz/componentbuilder-pro-noticeboard-md\";
 			jQuery(document).ready(function () {
 				jQuery.get(noticeboard)
 				.success(function(board) { 
@@ -268,6 +269,17 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 				})
 				.error(function(jqXHR, textStatus, errorThrown) { 
 					jQuery(\"#noticeboard-md\").html(all_is_good);
+				});
+				jQuery.get(proboard)
+				.success(function(board) { 
+					if (board.length > 5) {
+						jQuery(\"#proboard-md\").html(marked(board));
+					} else {
+						jQuery(\"#proboard-md\").html(all_is_good);
+					}
+				})
+				.error(function(jqXHR, textStatus, errorThrown) { 
+					jQuery(\"#proboard-md\").html(all_is_good);
 				});
 			});
 			// to check is READ/NEW

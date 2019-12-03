@@ -91,6 +91,7 @@ class ComponentbuilderController extends JControllerLegacy
 			// the view relationships
 			$views = array(
 				'joomla_component' => 'joomla_components',
+				'joomla_module' => 'joomla_modules',
 				'joomla_plugin' => 'joomla_plugins',
 				'admin_view' => 'admin_views',
 				'custom_admin_view' => 'custom_admin_views',
@@ -130,6 +131,8 @@ class ComponentbuilderController extends JControllerLegacy
 				'library_config' => 'libraries_config',
 				'library_files_folders_urls' => 'libraries_files_folders_urls',
 				'class_extends' => 'class_extendings',
+				'joomla_module_updates' => 'joomla_modules_updates',
+				'joomla_module_files_folders_urls' => 'joomla_modules_files_folders_urls',
 				'joomla_plugin_group' => 'joomla_plugin_groups',
 				'joomla_plugin_updates' => 'joomla_plugins_updates',
 				'joomla_plugin_files_folders_urls' => 'joomla_plugins_files_folders_urls'

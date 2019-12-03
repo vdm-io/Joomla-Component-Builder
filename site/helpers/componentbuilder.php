@@ -37,6 +37,7 @@ abstract class ComponentbuilderHelper
 		self::loadSession();
 	}
 
+
 	/**
 	* Locked Libraries (we can not have these change)
 	**/
@@ -4420,6 +4421,7 @@ abstract class ComponentbuilderHelper
 		// fall back on array sum
 		return array_sum($array);
 	}
+
 
 	/**
 	* the locker

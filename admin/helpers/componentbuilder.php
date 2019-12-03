@@ -37,6 +37,7 @@ abstract class ComponentbuilderHelper
 		self::loadSession();
 	}
 
+
 	/**
 	* Locked Libraries (we can not have these change)
 	**/
@@ -4421,6 +4422,7 @@ abstract class ComponentbuilderHelper
 		return array_sum($array);
 	}
 
+
 	/**
 	* the locker
 	*
@@ -5641,6 +5643,10 @@ abstract class ComponentbuilderHelper
 		if ($user->authorise('joomla_component.access', 'com_componentbuilder') && $user->authorise('joomla_component.submenu', 'com_componentbuilder'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_COMPONENTS'), 'index.php?option=com_componentbuilder&view=joomla_components', $submenu === 'joomla_components');
+		}
+		if ($user->authorise('joomla_module.access', 'com_componentbuilder') && $user->authorise('joomla_module.submenu', 'com_componentbuilder'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_MODULES'), 'index.php?option=com_componentbuilder&view=joomla_modules', $submenu === 'joomla_modules');
 		}
 		if ($user->authorise('joomla_plugin.access', 'com_componentbuilder') && $user->authorise('joomla_plugin.submenu', 'com_componentbuilder'))
 		{
