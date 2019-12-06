@@ -26,7 +26,7 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
-	'custom_get'
+	'note_mod_file_options'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

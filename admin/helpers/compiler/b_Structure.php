@@ -371,6 +371,8 @@ class Structure extends Get
 			$this->removeFolder($this->componentPath);
 			// load the libraries files/folders and url's
 			$this->setLibraries();
+			// load the module files/folders and url's
+			$this->buildModules();
 			// load the plugin files/folders and url's
 			$this->buildPlugins();
 			// set the Joomla Version Data
@@ -414,6 +416,384 @@ class Structure extends Get
 			return ' [Structure ' . $nr . ']';
 		}
 		return '';
+	}
+
+	/**
+	 * Build the Modules files, folders, url's and config
+	 *
+	 * @return  void
+	 *
+	 */
+	private function buildModules()
+	{
+		if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+		{
+			// Trigger Event: jcb_ce_onBeforeSetModules
+			$this->triggerEvent('jcb_ce_onBeforeBuildModules', array(&$this->componentContext, &$this->joomlaModules));
+			foreach ($this->joomlaModules as $module)
+			{
+				if (ComponentbuilderHelper::checkObject($module) && isset($module->folder_name)
+					&& ComponentbuilderHelper::checkString($module->folder_name))
+				{
+					// module path
+					$module->folder_path = $this->compilerPath . '/' . $module->folder_name;
+					// set the module paths
+					$this->dynamicPaths[$module->key] = $module->folder_path;
+					// make sure there is no old build
+					$this->removeFolder($module->folder_path);
+					// creat the main component folder
+					if (!JFolder::exists($module->folder_path))
+					{
+						JFolder::create($module->folder_path);
+						// count the folder created
+						$this->folderCount++;
+						$this->indexHTML($module->folder_name, $this->compilerPath);
+					}
+					// set main mod file
+					$fileDetails = array('path' => $module->folder_path . '/' . $module->file_name . '.php',
+										 'name' => $module->file_name . '.php', 'zip' => $module->file_name . '.php');
+					$this->writeFile($fileDetails['path'],
+						'<?php' . PHP_EOL . '// main modfile' .
+						PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
+						PHP_EOL . '// No direct access to this file' . PHP_EOL .
+						"defined('_JEXEC') or die('Restricted access');" . PHP_EOL .
+						$this->hhh . 'MODCODE' . $this->hhh);
+					$this->newFiles[$module->key][] = $fileDetails;
+					// count the file created
+					$this->fileCount++;
+					// set custom_get
+					if ($module->custom_get)
+					{
+						$fileDetails = array('path' => $module->folder_path . '/data.php',
+											 'name' => 'data.php', 'zip' => 'data.php');
+						$this->writeFile($fileDetails['path'],
+							'<?php' . PHP_EOL . '// get data file' .
+							PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
+							PHP_EOL . '// No direct access to this file' . PHP_EOL .
+							"defined('_JEXEC') or die('Restricted access');" . PHP_EOL . PHP_EOL .
+							'/**' . PHP_EOL .
+							' * Module ' . $module->official_name . ' Data' . PHP_EOL .
+							' */' . PHP_EOL .
+							"class " . $module->class_data_name . ' extends \JObject' . PHP_EOL .
+							"{" . $this->hhh . 'DYNAMICGETS' . $this->hhh . "}" . PHP_EOL);
+						$this->newFiles[$module->key][] = $fileDetails;
+						// count the file created
+						$this->fileCount++;
+					}
+					// set helper file
+					if ($module->add_class_helper >= 1)
+					{
+						$fileDetails = array('path' => $module->folder_path . '/helper.php',
+											 'name' => 'helper.php', 'zip' => 'helper.php');
+						$this->writeFile($fileDetails['path'],
+							'<?php' . PHP_EOL . '// helper file' .
+							PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
+							PHP_EOL . '// No direct access to this file' . PHP_EOL .
+							"defined('_JEXEC') or die('Restricted access');" . PHP_EOL .
+							$this->hhh . 'HELPERCODE' . $this->hhh);
+						$this->newFiles[$module->key][] = $fileDetails;
+						// count the file created
+						$this->fileCount++;
+					}
+					// set main xml file
+					$fileDetails = array('path' => $module->folder_path . '/' . $module->file_name . '.xml',
+										 'name' => $module->file_name . '.xml', 'zip' => $module->file_name . '.xml');
+					$this->writeFile($fileDetails['path'], $this->getModuleXMLTemplate($module));
+					$this->newFiles[$module->key][] = $fileDetails;
+					// count the file created
+					$this->fileCount++;
+					// set tmpl folder
+					if (!JFolder::exists($module->folder_path . '/tmpl'))
+					{
+						JFolder::create($module->folder_path . '/tmpl');
+						// count the folder created
+						$this->folderCount++;
+						$this->indexHTML($module->folder_name . '/tmpl', $this->compilerPath);
+					}
+					// set default file
+					$fileDetails = array('path' => $module->folder_path . '/tmpl/default.php',
+										 'name' => 'default.php', 'zip' => 'tmpl/default.php');
+					$this->writeFile($fileDetails['path'],
+						'<?php' . PHP_EOL . '// default tmpl' .
+						PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
+						PHP_EOL . '// No direct access to this file' . PHP_EOL .
+						"defined('_JEXEC') or die('Restricted access');" . PHP_EOL .
+						$this->hhh . 'MODDEFAULT' . $this->hhh);
+					$this->newFiles[$module->key][] = $fileDetails;
+					// count the file created
+					$this->fileCount++;
+					// set install script if needed
+					if ($module->add_install_script)
+					{
+						$fileDetails = array('path' => $module->folder_path . '/script.php',
+											 'name' => 'script.php', 'zip' => 'script.php');
+						$this->writeFile($fileDetails['path'],
+							'<?php' . PHP_EOL . '// Script template' .
+							PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
+							PHP_EOL . '// No direct access to this file' . PHP_EOL .
+							"defined('_JEXEC') or die('Restricted access');" . PHP_EOL .
+							$this->hhh . 'INSTALLCLASS' . $this->hhh);
+						$this->newFiles[$module->key][] = $fileDetails;
+						// count the file created
+						$this->fileCount++;
+					}
+					// set readme if found
+					if ($module->addreadme)
+					{
+						$fileDetails = array('path' => $module->folder_path . '/README.md',
+											 'name' => 'README.md', 'zip' => 'README.md');
+						$this->writeFile($fileDetails['path'], $module->readme);
+						$this->newFiles[$module->key][] = $fileDetails;
+						// count the file created
+						$this->fileCount++;
+					}
+					// set fields & rules folders if needed
+					if (isset($module->fields_rules_paths) && $module->fields_rules_paths == 2)
+					{
+						// create fields folder
+						if (!JFolder::exists($module->folder_path . '/fields'))
+						{
+							JFolder::create($module->folder_path . '/fields');
+							// count the folder created
+							$this->folderCount++;
+							$this->indexHTML($module->folder_name . '/fields', $this->compilerPath);
+						}
+						// create rules folder
+						if (!JFolder::exists($module->folder_path . '/rules'))
+						{
+							JFolder::create($module->folder_path . '/rules');
+							// count the folder created
+							$this->folderCount++;
+							$this->indexHTML($module->folder_name . '/rules', $this->compilerPath);
+						}
+					}
+					// set forms folder if needed
+					if (isset($module->form_files) && ComponentbuilderHelper::checkArray($module->form_files))
+					{
+						// create forms folder
+						if (!JFolder::exists($module->folder_path . '/forms'))
+						{
+							JFolder::create($module->folder_path . '/forms');
+							// count the folder created
+							$this->folderCount++;
+							$this->indexHTML($module->folder_name . '/forms', $this->compilerPath);
+						}
+						// set the template files
+						foreach($module->form_files as $file => $fields)
+						{
+							// set file details
+							$fileDetails = array('path' => $module->folder_path . '/forms/' . $file . '.xml',
+												 'name' => $file . '.xml', 'zip' => 'forms/' . $file . '.xml');
+							// biuld basic XML
+							$xml = '<?xml version="1.0" encoding="utf-8"?>';
+							$xml .= PHP_EOL . '<!--' . $this->setLine(__LINE__) . ' default paths of ' . $file . ' form points to ' . $this->componentCodeName . ' -->';
+							// search if we must add the component path
+							$add_component_path = false;
+							foreach ($fields as $field_name => $fieldsets)
+							{
+								if (!$add_component_path)
+								{
+									foreach ($fieldsets as $fieldset => $field)
+									{
+										if (!$add_component_path && isset($module->fieldsets_paths[$file . $field_name . $fieldset]) && $module->fieldsets_paths[$file . $field_name . $fieldset] == 1)
+										{
+											$add_component_path = true;
+										}
+									}
+								}
+							}
+							// only add if part of the component field types path is required
+							if ($add_component_path)
+							{
+								$xml .= PHP_EOL . '<form';
+								$xml .= PHP_EOL . $this->_t(1) . 'addrulepath="/administrator/components/com_' . $this->componentCodeName . '/models/rules"';
+								$xml .= PHP_EOL . $this->_t(1) . 'addfieldpath="/administrator/components/com_' . $this->componentCodeName . '/models/fields"';
+								$xml .= PHP_EOL . '>';
+							}
+							else
+							{
+								$xml .= PHP_EOL . '<form>';
+							}
+							// add the fields
+							foreach ($fields as $field_name => $fieldsets)
+							{
+								// check if we have an double fields naming set
+								$field_name_inner = '';
+								$field_name_outer = $field_name;
+								if (strpos($field_name, '.') !== false)
+								{
+									$field_names = explode('.', $field_name);
+									if (count((array) $field_names) == 2)
+									{
+										$field_name_outer = $field_names[0];
+										$field_name_inner = $field_names[1];
+									}
+								}
+								$xml .= PHP_EOL . $this->_t(1) . '<fields name="' . $field_name_outer . '">';
+								foreach ($fieldsets as $fieldset => $field)
+								{
+									// default to the field set name
+									$label = $fieldset;
+									if (isset($module->fieldsets_label[$file.$field_name.$fieldset]))
+									{
+										$label = $module->fieldsets_label[$file.$field_name.$fieldset];
+									}
+									// add path to module rules and custom fields
+									if (isset($module->fieldsets_paths[$file.$field_name.$fieldset]) && $module->fieldsets_paths[$file.$field_name.$fieldset] == 2)
+									{
+										$xml .= PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' default paths of ' . $fieldset . ' fieldset points to the module -->';
+										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="' . $fieldset . '" label="' . $label . '"';
+										$xml .= PHP_EOL . $this->_t(2) . 'addrulepath="/modules/' . strtolower($module->code_name) . '/rules"';
+										$xml .= PHP_EOL . $this->_t(2) . 'addfieldpath="/modules/' . strtolower($module->code_name) . '/fields"';
+										$xml .= PHP_EOL . $this->_t(1) . '>';
+									}
+									else
+									{
+										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="' . $fieldset . '" label="' . $label . '">';
+									}
+									// check if we have an inner field set
+									if (ComponentbuilderHelper::checkString($field_name_inner))
+									{
+										$xml .= PHP_EOL . $this->_t(1) . '<fields name="' . $field_name_inner . '">';
+									}
+									// add the placeholder of the fields
+									$xml .= $this->hhh . 'FIELDSET_' . $file.$field_name.$fieldset . $this->hhh;
+									// check if we have an inner field set
+									if (ComponentbuilderHelper::checkString($field_name_inner))
+									{
+										$xml .= PHP_EOL . $this->_t(1) . '</fields>';
+									}
+									$xml .= PHP_EOL . $this->_t(1) . '</fieldset>';
+								}
+								$xml .= PHP_EOL . $this->_t(1) . '</fields>';
+							}
+							$xml .= PHP_EOL . '</form>';
+							// add xml to file
+							$this->writeFile($fileDetails['path'], $xml);
+							$this->newFiles[$module->key][] = $fileDetails;
+							// count the file created
+							$this->fileCount++;
+						}
+					}
+					// set SQL stuff if needed
+					if ($module->add_sql || $module->add_sql_uninstall)
+					{
+						// create SQL folder
+						if (!JFolder::exists($module->folder_path . '/sql'))
+						{
+							JFolder::create($module->folder_path . '/sql');
+							// count the folder created
+							$this->folderCount++;
+							$this->indexHTML($module->folder_name . '/sql', $this->compilerPath);
+						}
+						// create mysql folder
+						if (!JFolder::exists($module->folder_path . '/sql/mysql'))
+						{
+							JFolder::create($module->folder_path . '/sql/mysql');
+							// count the folder created
+							$this->folderCount++;
+							$this->indexHTML($module->folder_name . '/sql/mysql', $this->compilerPath);
+						}
+						// now set the install file
+						if ($module->add_sql)
+						{
+							$this->writeFile($module->folder_path . '/sql/mysql/install.sql', $module->sql);
+							// count the file created
+							$this->fileCount++;
+						}
+						// now set the uninstall file
+						if ($module->add_sql_uninstall)
+						{
+							$this->writeFile($module->folder_path . '/sql/mysql/uninstall.sql', $module->sql_uninstall);
+							// count the file created
+							$this->fileCount++;
+						}
+					}
+					// creat the language folder
+					if (!JFolder::exists($module->folder_path . '/language'))
+					{
+						JFolder::create($module->folder_path . '/language');
+						// count the folder created
+						$this->folderCount++;
+						// also the lang tag
+						if (!JFolder::exists($module->folder_path . '/language/' . $this->langTag))
+						{
+							JFolder::create($module->folder_path . '/language/' . $this->langTag);
+							// count the folder created
+							$this->folderCount++;
+						}
+					}
+					// check if this lib has files
+					if (isset($module->files) && ComponentbuilderHelper::checkArray($module->files))
+					{
+						// add to component files
+						foreach ($module->files as $file)
+						{
+							// set the path finder
+							$file['target_type'] = $module->target_type;
+							$file['target_id'] = $module->id;
+							$this->componentData->files[] = $file;
+						}
+					}
+					// check if this lib has folders
+					if (isset($module->folders) && ComponentbuilderHelper::checkArray($module->folders))
+					{
+						// add to component folders
+						foreach ($module->folders as $folder)
+						{
+							// set the path finder
+							$folder['target_type'] = $module->target_type;
+							$folder['target_id'] = $module->id;
+							$this->componentData->folders[] = $folder;
+						}
+					}
+					// check if this module has urls
+					if (isset($module->urls) && ComponentbuilderHelper::checkArray($module->urls))
+					{
+						// add to component urls
+						foreach ($module->urls as $n => &$url)
+						{
+							// should we add the local folder
+							if (isset($url['type']) && $url['type'] > 1 && isset($url['url'])
+								&& ComponentbuilderHelper::checkString($url['url']))
+							{
+								// set file name
+								$fileName = basename($url['url']);
+								// get the file contents
+								$data = ComponentbuilderHelper::getFileContents($url['url']);
+								// build sub path
+								if (strpos($fileName, '.js') !== false)
+								{
+									$path = '/js';
+								}
+								elseif (strpos($fileName, '.css') !== false)
+								{
+									$path = '/css';
+								}
+								else
+								{
+									$path = '';
+								}
+								// create sub media path if not set
+								if (!JFolder::exists($module->folder_path .$path))
+								{
+									JFolder::create($module->folder_path . $path);
+									// count the folder created
+									$this->folderCount++;
+									$this->indexHTML($module->folder_name . $path, $this->compilerPath);
+								}
+								// set the path to module file
+								$url['path'] = $module->folder_path . $path . '/' . $fileName; // we need this for later
+								// write data to path
+								$this->writeFile($url['path'], $data);
+								// count the file created
+								$this->fileCount++;
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**

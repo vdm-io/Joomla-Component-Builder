@@ -35,6 +35,7 @@ DROP TABLE IF EXISTS `#__componentbuilder_component_dashboard`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_files_folders`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_placeholders`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_plugins`;
+DROP TABLE IF EXISTS `#__componentbuilder_component_modules`;
 DROP TABLE IF EXISTS `#__componentbuilder_snippet_type`;
 DROP TABLE IF EXISTS `#__componentbuilder_library_config`;
 DROP TABLE IF EXISTS `#__componentbuilder_library_files_folders_urls`;

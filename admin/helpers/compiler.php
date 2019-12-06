@@ -157,6 +157,8 @@ class Compiler extends Infusion
 				// done with error
 				return false;
 			}
+			// if there are modules zip them
+			$this->zipModules();
 			// if there are plugins zip them
 			$this->zipPlugins();
 			// do lang mismatch check
@@ -268,6 +270,62 @@ class Compiler extends Infusion
 			}
 			// free up some memory
 			unset($this->newFiles['dynamic']);
+			// do modules if found
+			if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+			{
+				foreach ($this->joomlaModules as $module)
+				{
+					if (ComponentbuilderHelper::checkObject($module) && isset($this->newFiles[$module->key]) && ComponentbuilderHelper::checkArray($this->newFiles[$module->key]))
+					{
+						// move field or rule if needed
+						if (isset($module->fields_rules_paths) && $module->fields_rules_paths == 2)
+						{
+							// check the config fields
+							if (isset($module->config_fields) && ComponentbuilderHelper::checkArray($module->config_fields))
+							{
+								foreach ($module->config_fields as $field_name => $fieldsets)
+								{
+									foreach ($fieldsets as $fieldset => $fields)
+									{
+										foreach ($fields as $field)
+										{
+											$this->moveFieldsRules($field, $module->folder_path);
+										}
+									}
+								}
+							}
+							// check the fieldsets
+							if (isset($module->form_files) && ComponentbuilderHelper::checkArray($module->form_files))
+							{
+								foreach($module->form_files as $file => $files)
+								{
+									foreach ($files as $field_name => $fieldsets)
+									{
+										foreach ($fieldsets as $fieldset => $fields)
+										{
+											foreach ($fields as $field)
+											{
+												$this->moveFieldsRules($field, $module->folder_path);
+											}
+										}
+									}
+								}
+							}
+						}
+						// update the module files
+						foreach ($this->newFiles[$module->key] as $module_file)
+						{
+							if (JFile::exists($module_file['path']))
+							{
+								$this->setFileContent($module_file['name'], $module_file['path'], $bom, $module->key);
+							}
+						}
+						// free up some memory
+						unset($this->newFiles[$module->key]);
+						unset($this->fileContentDynamic[$module->key]);
+					}
+				}
+			}
 			// do plugins if found
 			if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
 			{
@@ -310,7 +368,7 @@ class Compiler extends Infusion
 								}
 							}
 						}
-						// now move the files
+						// update the plugin files
 						foreach ($this->newFiles[$plugin->key] as $plugin_file)
 						{
 							if (JFile::exists($plugin_file['path']))
@@ -572,6 +630,27 @@ class Compiler extends Infusion
 			// Trigger Event: jcb_ce_onAfterUpdateRepo
 			$this->triggerEvent('jcb_ce_onAfterUpdateRepo', array(&$this->componentContext, &$this->componentPath, &$repoFullPath, &$this->componentData));
 
+			// move the modules to local folder repos
+			if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+			{
+				foreach ($this->joomlaModules as $module)
+				{
+					if (ComponentbuilderHelper::checkObject($module) && isset($module->file_name))
+					{
+						$module_context = 'module.' . $module->file_name . '.' . $module->id;
+						// set the repo path
+						$repoFullPath = $this->repoPath . '/' . $module->folder_name . '__joomla_' . $this->joomlaVersion;
+						// Trigger Event: jcb_ce_onBeforeUpdateRepo
+						$this->triggerEvent('jcb_ce_onBeforeUpdateRepo', array(&$module_context, &$module->folder_path, &$repoFullPath, &$module));
+						// remove old data
+						$this->removeFolder($repoFullPath, $this->componentData->toignore);
+						// set the new data
+						JFolder::copy($module->folder_path, $repoFullPath, '', true);
+						// Trigger Event: jcb_ce_onAfterUpdateRepo
+						$this->triggerEvent('jcb_ce_onAfterUpdateRepo', array(&$module_context, &$module->folder_path, &$repoFullPath, &$module));
+					}
+				}
+			}
 			// move the plugins to local folder repos
 			if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
 			{
@@ -637,6 +716,60 @@ class Compiler extends Infusion
 			}
 		}
 		return false;
+	}
+
+	private function zipModules()
+	{
+		if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+		{
+			foreach ($this->joomlaModules as $module)
+			{
+				if (ComponentbuilderHelper::checkObject($module) && isset($module->zip_name)
+					&& ComponentbuilderHelper::checkString($module->zip_name)
+					&& isset($module->folder_path)
+					&& ComponentbuilderHelper::checkString($module->folder_path))
+				{
+					// set module context
+					$module_context = $module->file_name . '.' . $module->id;
+					// Component Folder Name
+					$this->filepath['modules-folder'][$module->id] = $module->zip_name;
+					// the name of the zip file to create
+					$this->filepath['modules'][$module->id] = $this->tempPath . '/' . $module->zip_name . '.zip';
+					// Trigger Event: jcb_ce_onBeforeZipModule
+					$this->triggerEvent('jcb_ce_onBeforeZipModule', array(&$module_context, &$module->folder_path, &$this->filepath['modules'][$module->id], &$this->tempPath, &$module->zip_name, &$module));
+					//create the zip file
+					if (ComponentbuilderHelper::zip($module->folder_path, $this->filepath['modules'][$module->id]))
+					{
+						// now move to backup if zip was made and backup is required
+						if ($this->backupPath)
+						{
+							$__module_context = 'module.' . $module_context;
+							// Trigger Event: jcb_ce_onBeforeBackupZip
+							$this->triggerEvent('jcb_ce_onBeforeBackupZip', array(&$__module_context, &$this->filepath['modules'][$module->id], &$this->tempPath, &$this->backupPath, &$module));
+							// copy the zip to backup path
+							JFile::copy($this->filepath['modules'][$module->id], $this->backupPath . '/' . $module->zip_name . '.zip');
+						}
+
+						// move to sales server host
+						if ($module->add_sales_server == 1)
+						{
+							// make sure we have the correct file
+							if (isset($module->sales_server))
+							{
+								// Trigger Event: jcb_ce_onBeforeMoveToServer
+								$this->triggerEvent('jcb_ce_onBeforeMoveToServer', array(&$__module_context, &$this->filepath['modules'][$module->id], &$this->tempPath, &$module->zip_name, &$module));
+								// move to server
+								ComponentbuilderHelper::moveToServer($this->filepath['modules'][$module->id], $module->zip_name . '.zip', (int) $module->sales_server, $module->sales_server_protocol);
+							}
+						}
+						// Trigger Event: jcb_ce_onAfterZipModule
+						$this->triggerEvent('jcb_ce_onAfterZipModule', array(&$module_context, &$this->filepath['modules'][$module->id], &$this->tempPath, &$module->zip_name, &$module));
+						// remove the module folder since we are done
+						$this->removeFolder($module->folder_path);
+					}
+				}
+			}
+		}
 	}
 
 	private function zipPlugins()

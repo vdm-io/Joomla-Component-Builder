@@ -130,6 +130,13 @@ class Get
 	public $joomlaPlugins = array();
 
 	/**
+	 * The Modules data
+	 *
+	 * @var      array
+	 */
+	public $joomlaModules = array();
+
+	/**
 	 * 	The custom script placeholders - we use the (xxx) to avoid detection it should be (***)
 	 * 	##################################--->  PHP/JS  <---####################################
 	 * 
@@ -1036,6 +1043,7 @@ class Get
 			'j.addfoldersfullpath' => 'addfoldersfullpath',
 			'c.addsite_views' => 'addsite_views',
 			'l.addjoomla_plugins' => 'addjoomla_plugins',
+			'k.addjoomla_modules' => 'addjoomla_modules',
 			'i.dashboard_tab' => 'dashboard_tab',
 			'i.php_dashboard_methods' => 'php_dashboard_methods',
 			'i.id' => 'component_dashboard_id',
@@ -1062,7 +1070,8 @@ class Get
 			'h' => 'component_config',
 			'i' => 'component_dashboard',
 			'j' => 'component_files_folders',
-			'l' => 'component_plugins'
+			'l' => 'component_plugins',
+			'k' => 'component_modules'
 		);
 		// load the joins
 		foreach($joiners as $as => $join)
@@ -1683,12 +1692,26 @@ class Get
 			// the default is to ignore the repo folder
 			$component->toignore = array('.git');
 		}
+		// get all modules
+		$component->addjoomla_modules = (isset($component->addjoomla_modules) && ComponentbuilderHelper::checkJson($component->addjoomla_modules)) ? json_decode($component->addjoomla_modules, true) : null;
+		if (ComponentbuilderHelper::checkArray($component->addjoomla_modules))
+		{
+			$joomla_modules = array_map(function($array) use(&$component) {
+				// only load the modules whose target association calls for it
+				if (!isset($array['target']) || $array['target'] != 2)
+				{
+					return $this->setJoomlaModule($array['module'], $component);
+				}
+				return null;
+			}, array_values($component->addjoomla_modules));
+		}
+		unset($component->addjoomla_modules);
 		// get all plugins
 		$component->addjoomla_plugins = (isset($component->addjoomla_plugins) && ComponentbuilderHelper::checkJson($component->addjoomla_plugins)) ? json_decode($component->addjoomla_plugins, true) : null;
 		if (ComponentbuilderHelper::checkArray($component->addjoomla_plugins))
 		{
 			$joomla_plugins = array_map(function($array) use(&$component) {
-				// only load the plugins whose target association calles for it
+				// only load the plugins whose target association calls for it
 				if (!isset($array['target']) || $array['target'] != 2)
 				{
 					return $this->setJoomlaPlugin($array['plugin'], $component);
@@ -4523,7 +4546,7 @@ class Get
 		// check if the lib has already been set
 		if (!isset($this->libraries[$id]))
 		{
-			// make sure we should continue and that the lib is not already bein loaded
+			// make sure we should continue and that the lib is not already being loaded
 			switch ($id)
 			{
 				case 1: // No Library
@@ -6219,6 +6242,576 @@ class Get
 	}
 
 	/**
+	 * get the Joomla Modules IDs
+	 *
+	 * @return  array of IDs on success
+	 *
+	 */
+	protected function getModuleIDs()
+	{
+		if (($addjoomla_modules = ComponentbuilderHelper::getVar('component_modules', $this->componentID, 'joomla_component', 'addjoomla_modules')) !== false)
+		{
+			$addjoomla_modules = (ComponentbuilderHelper::checkJson($addjoomla_modules)) ? json_decode($addjoomla_modules, true) : null;
+			if (ComponentbuilderHelper::checkArray($addjoomla_modules))
+			{
+				$joomla_modules = array_filter(
+					array_values($addjoomla_modules),
+					function($array){
+						// only load the modules whose target association call for it
+						if (!isset($array['target']) || $array['target'] != 2)
+						{
+							return true;
+						}
+						return false;
+					});
+				// if we have values we return IDs
+				if (ComponentbuilderHelper::checkArray($joomla_modules))
+				{
+					return array_map(function($array){
+						return (int) $array['module'];
+					}, $joomla_modules);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * set the Joomla modules
+	 *
+	 * @return  true
+	 *
+	 */
+	public function setJoomlaModule($id, &$component)
+	{
+		if (isset($this->joomlaModules[$id]))
+		{
+			return true;
+		}
+		else
+		{
+			// Create a new query object.
+			$query = $this->db->getQuery(true);
+
+			$query->select('a.*');
+			$query->select(
+				$this->db->quoteName(
+					array(
+						'f.addfiles',
+						'f.addfolders',
+						'f.addfilesfullpath',
+						'f.addfoldersfullpath',
+						'f.addurls',
+						'u.version_update',
+						'u.id'
+					), array(
+						'addfiles',
+						'addfolders',
+						'addfilesfullpath',
+						'addfoldersfullpath',
+						'addurls',
+						'version_update',
+						'version_update_id'
+					)
+				)
+			);
+			// from these tables
+			$query->from('#__componentbuilder_joomla_module AS a');
+			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_joomla_module_updates', 'u') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('u.joomla_module') . ')');
+			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_joomla_module_files_folders_urls', 'f') . ' ON (' . $this->db->quoteName('a.id') . ' = ' . $this->db->quoteName('f.joomla_module') . ')');
+			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
+			$query->where($this->db->quoteName('a.published') . ' >= 1');
+			$this->db->setQuery($query);
+			$this->db->execute();
+			if ($this->db->getNumRows())
+			{
+				// get the module data
+				$module = $this->db->loadObject();
+				// tweak system to set stuff to the module domain
+				$_backup_target = $this->target;
+				$_backup_lang = $this->lang;
+				$_backup_langPrefix = $this->langPrefix;
+				// set some keys
+				$module->target_type = 'M0dU|3';
+				$module->key = $module->id . '_' . $module->target_type;
+				// update to point to module
+				$this->target = $module->key;
+				$this->lang = $module->key;
+				// set version if not set
+				if (empty($module->module_version))
+				{
+					$module->module_version = '1.0.0';
+				}
+				// set GUI mapper
+				$guiMapper = array( 'table' => 'joomla_module', 'id' => (int) $id, 'type' => 'php');
+				// update the name if it has dynamic values
+				$module->name = $this->setPlaceholders($this->setDynamicValues($module->name), $this->placeholders);
+				// update the name if it has dynamic values
+				$module->code_name = ComponentbuilderHelper::safeClassFunctionName($module->name);
+				// set official name
+				$module->official_name = ucwords($module->name);
+				// set langPrefix
+				$this->langPrefix = 'MOD_' . strtoupper($module->code_name);
+				// set lang prefix
+				$module->lang_prefix = $this->langPrefix;
+				// set module class name
+				$module->class_helper_name = 'Mod' . ucfirst($module->code_name) . 'Helper';
+				$module->class_data_name = 'Mod' . ucfirst($module->code_name) . 'Data';
+					// set module install class name
+				$module->installer_class_name = 'mod_' . ucfirst($module->code_name) . 'InstallerScript';
+				// set module folder name
+				$module->folder_name = 'mod_' . strtolower($module->code_name);
+				// set the zip name
+				$module->zip_name = $module->folder_name . '_v' . str_replace('.', '_', $module->module_version). '__J' . $this->joomlaVersion;
+				// set module file name
+				$module->file_name = $module->folder_name;
+				// set official_name lang strings
+				$this->setLangContent($module->key, $this->langPrefix, $module->official_name);
+				// set some placeholder for this module
+				$this->placeholders[$this->bbb . 'Module_name' . $this->ddd] = $module->official_name;
+				$this->placeholders[$this->bbb . 'Module' . $this->ddd] = ucfirst($module->code_name);
+				$this->placeholders[$this->bbb . 'module' . $this->ddd] = strtolower($module->code_name);
+				$this->placeholders[$this->bbb . 'module.version' . $this->ddd] = $module->module_version;
+				$this->placeholders[$this->bbb . 'module_version' . $this->ddd] = str_replace('.', '_', $module->module_version);
+				// set description (TODO) add description field to module
+				if (!isset($module->description) || !ComponentbuilderHelper::checkString($module->description))
+				{
+					$module->description = '';
+				}
+				else
+				{
+					$module->description = $this->setPlaceholders($this->setDynamicValues($module->description), $this->placeholders);
+					$this->setLangContent($module->key, $module->lang_prefix . '_DESCRIPTION', $module->description);
+					$module->description = '<p>' . $module->description . '</p>';
+				}
+				$module->xml_description = "<h1>" . $module->official_name . " (v." . $module->module_version . ")</h1> <div style='clear: both;'></div>" . $module->description . "<p>Created by <a href='" . trim($component->website) . "' target='_blank'>" . trim(JFilterOutput::cleanText($component->author)) . "</a><br /><small>Development started " . JFactory::getDate($module->created)->format("jS F, Y") . "</small></p>";
+				// set xml description
+				$this->setLangContent($module->key, $module->lang_prefix . '_XML_DESCRIPTION', $module->xml_description);
+				// update the readme if set
+				if ($module->addreadme == 1 && !empty($module->readme))
+				{
+					$module->readme = $this->setPlaceholders($this->setDynamicValues(base64_decode($module->readme)), $this->placeholders);
+				}
+				else
+				{
+					$module->addreadme = 0;
+					unset($module->readme);
+				}
+				// get the custom_get
+				$module->custom_get = (isset($module->custom_get) && ComponentbuilderHelper::checkJson($module->custom_get)) ? json_decode($module->custom_get, true) : null;
+				if (ComponentbuilderHelper::checkArray($module->custom_get))
+				{
+					$module->custom_get = $this->setGetData($module->custom_get, $module->key, $module->key);
+				}
+				else
+				{
+					$module->custom_get = false;
+				}
+				// set helper class details
+				if ($module->add_class_helper >= 1 && ComponentbuilderHelper::checkString($module->class_helper_code))
+				{
+					if ($module->add_class_helper_header == 1 && ComponentbuilderHelper::checkString($module->class_helper_header))
+					{
+						// set GUI mapper field
+						$guiMapper['field'] = 'class_helper_header';
+						// base64 Decode code
+						$module->class_helper_header = PHP_EOL . $this->setGuiCodePlaceholder(
+							$this->setPlaceholders($this->setDynamicValues(base64_decode($module->class_helper_header)), $this->placeholders),
+							$guiMapper
+						) . PHP_EOL;
+					}
+					else
+					{
+						$module->add_class_helper_header = 0;
+						$module->class_helper_header = '';
+					}
+					// set GUI mapper field
+					$guiMapper['field'] = 'class_helper_code';
+					// base64 Decode code
+					$module->class_helper_code = $this->setGuiCodePlaceholder(
+						$this->setPlaceholders($this->setDynamicValues(base64_decode($module->class_helper_code)), $this->placeholders),
+						$guiMapper
+					);
+					// set class type
+					if ($module->add_class_helper == 2)
+					{
+						$module->class_helper_type = 'abstract class ';
+					}
+					else
+					{
+						$module->class_helper_type = 'class ';
+					}
+				}
+				else
+				{
+					$module->add_class_helper = 0;
+					$module->class_helper_code = '';
+					$module->class_helper_header = '';
+				}
+				// base64 Decode mod_code
+				if (isset($module->mod_code) && ComponentbuilderHelper::checkString($module->mod_code))
+				{
+					// set GUI mapper field
+					$guiMapper['field'] = 'mod_code';
+					$module->mod_code = $this->setGuiCodePlaceholder(
+						$this->setPlaceholders($this->setDynamicValues(base64_decode($module->mod_code)), $this->placeholders),
+						$guiMapper
+					);
+				}
+				else
+				{
+					$module->mod_code = "// get the module class sfx";
+					$module->mod_code .= PHP_EOL . "\$moduleclass_sfx = htmlspecialchars(\$params->get('moduleclass_sfx'), ENT_COMPAT, 'UTF-8');";
+					$module->mod_code .= PHP_EOL . "// load the default Tmpl";
+					$module->mod_code .= PHP_EOL . "require JModuleHelper::getLayoutPath('mod_" . strtolower($module->code_name) . "', \$params->get('layout', 'default'));";
+				}
+				// base64 Decode default header
+				if (isset($module->default_header) && ComponentbuilderHelper::checkString($module->default_header))
+				{
+					// set GUI mapper field
+					$guiMapper['field'] = 'default_header';
+					$module->default_header = $this->setGuiCodePlaceholder(
+						$this->setPlaceholders($this->setDynamicValues(base64_decode($module->default_header)), $this->placeholders),
+						$guiMapper
+					);
+				}
+				else
+				{
+					$module->default_header = '';
+				}
+				// base64 Decode default
+				if (isset($module->default) && ComponentbuilderHelper::checkString($module->default))
+				{
+					// set GUI mapper field
+					$guiMapper['field'] = 'default';
+					$module->default = $this->setGuiCodePlaceholder(
+						$this->setPlaceholders($this->setDynamicValues(base64_decode($module->default)), $this->placeholders),
+						$guiMapper
+					);
+				}
+				else
+				{
+					$module->default = '<h1>No Tmpl set</h1>';
+				}
+				// start the config array
+				$module->config_fields = array();
+				// create the form arrays
+				$module->form_files = array();
+				$module->fieldsets_label = array();
+				$module->fieldsets_paths = array();
+				// set global fields rule to default component path
+				$module->fields_rules_paths = 1;
+				// set the fields data
+				$module->fields = (isset($module->fields) && ComponentbuilderHelper::checkJson($module->fields)) ? json_decode($module->fields, true) : null;
+				if (ComponentbuilderHelper::checkArray($module->fields))
+				{
+					// ket global key
+					$key = $module->key;
+					$dynamic_fields = array('fieldset' => 'basic', 'fields_name' => 'params', 'file' => 'config');
+					foreach ($module->fields as $n => &$form)
+					{
+						if (isset($form['fields']) && ComponentbuilderHelper::checkArray($form['fields']))
+						{
+							// make sure the dynamic_field is set to dynamic_value by default
+							foreach ($dynamic_fields as $dynamic_field => $dynamic_value)
+							{
+								if (!isset($form[$dynamic_field]) || !ComponentbuilderHelper::checkString($form[$dynamic_field]))
+								{
+									$form[$dynamic_field] = $dynamic_value;
+								}
+								else
+								{
+									if ('fields_name' === $dynamic_field && strpos($form[$dynamic_field], '.') !== false)
+									{
+										$form[$dynamic_field] = $form[$dynamic_field];
+									}
+									else
+									{
+										$form[$dynamic_field] = ComponentbuilderHelper::safeString($form[$dynamic_field]);
+									}
+								}
+							}
+							// check if field is external form file
+							if (!isset($form['module']) || $form['module'] != 1)
+							{
+								// now build the form key
+								$unique = $form['file'] . $form['fields_name'] . $form['fieldset'];
+							}
+							else
+							{
+								// now build the form key
+								$unique = $form['fields_name'] . $form['fieldset'];
+							}
+							// set global fields rule path switchs
+							if ($module->fields_rules_paths == 1 && isset($form['fields_rules_paths']) && $form['fields_rules_paths'] == 2)
+							{
+								$module->fields_rules_paths = 2;
+							}
+							// set where to path is pointing
+							$module->fieldsets_paths[$unique] = $form['fields_rules_paths'];
+							// add the label if set to lang
+							if (isset($form['label']) && ComponentbuilderHelper::checkString($form['label']))
+							{
+								$module->fieldsets_label[$unique] = $this->setLang($form['label']);
+							}
+							// build the fields
+							$form['fields'] = array_map(function($field) use ($key, $unique){
+								// make sure the alias and title is 0
+								$field['alias'] = 0;
+								$field['title'] = 0;
+								// set the field details
+								$this->setFieldDetails($field, $key, $key, $unique);
+								// update the default if set
+								if (ComponentbuilderHelper::checkString($field['custom_value']) && isset($field['settings']))
+								{
+									if (($old_default = ComponentbuilderHelper::getBetween($field['settings']->xml, 'default="', '"', false)) !== false)
+									{
+										// replace old default
+										$field['settings']->xml = str_replace('default="' . $old_default . '"', 'default="' . $field['custom_value'] . '"', $field['settings']->xml);
+									}
+									else
+									{
+										// add the default (hmmm not ideal but okay it should work)
+										$field['settings']->xml = 'default="' . $field['custom_value'] . '" ' . $field['settings']->xml;
+									}
+								}
+								unset($field['custom_value']);
+								// return field
+								return $field;
+							}, array_values($form['fields']));
+							// check if field is external form file
+							if (!isset($form['module']) || $form['module'] != 1)
+							{
+								// load the form file
+								if (!isset($module->form_files[$form['file']]))
+								{
+									$module->form_files[$form['file']] = array();
+								}
+								if (!isset($module->form_files[$form['file']][$form['fields_name']]))
+								{
+									$module->form_files[$form['file']][$form['fields_name']] = array();
+								}
+								if (!isset($module->form_files[$form['file']][$form['fields_name']][$form['fieldset']]))
+								{
+									$module->form_files[$form['file']][$form['fields_name']][$form['fieldset']] = array();
+								}
+								// do some house cleaning (for fields)
+								foreach ($form['fields'] as $field)
+								{
+									// so first we lock the field name in
+									$this->getFieldName($field, $module->key, $unique);
+									// add the fields to the global form file builder
+									$module->form_files[$form['file']][$form['fields_name']][$form['fieldset']][] = $field;
+								}
+								// remove form
+								unset($module->fields[$n]);
+							}
+							else
+							{
+								// load the config form
+								if (!isset($module->config_fields[$form['fields_name']]))
+								{
+									$module->config_fields[$form['fields_name']] = array();
+								}
+								if (!isset($module->config_fields[$form['fields_name']][$form['fieldset']]))
+								{
+									$module->config_fields[$form['fields_name']][$form['fieldset']] = array();
+								}
+								// do some house cleaning (for fields)
+								foreach ($form['fields'] as $field)
+								{
+									// so first we lock the field name in
+									$this->getFieldName($field, $module->key, $unique);
+									// add the fields to the config builder
+									$module->config_fields[$form['fields_name']][$form['fieldset']][] = $field;
+								}
+								// remove form
+								unset($module->fields[$n]);
+							}
+						}
+						else
+						{
+							unset($module->fields[$n]);
+						}
+					}
+				}
+				unset($module->fields);
+				// set the add targets
+				$addArray = array('files' => 'files', 'folders' => 'folders', 'urls' => 'urls', 'filesfullpath' => 'files', 'foldersfullpath' => 'folders');
+				foreach ($addArray as $addTarget => $targetHere)
+				{
+					// set the add target data
+					$module->{'add' . $addTarget} = (isset($module->{'add' . $addTarget}) && ComponentbuilderHelper::checkJson($module->{'add' . $addTarget})) ? json_decode($module->{'add' . $addTarget}, true) : null;
+					if (ComponentbuilderHelper::checkArray($module->{'add' . $addTarget}))
+					{
+						if (isset($module->{$targetHere}) && ComponentbuilderHelper::checkArray($module->{$targetHere}))
+						{
+							foreach ($module->{'add' . $addTarget} as $taget)
+							{
+								$module->{$targetHere}[] = $taget;
+							}
+						}
+						else
+						{
+							$module->{$targetHere} = array_values($module->{'add' . $addTarget});
+						}
+					}
+					unset($module->{'add' . $addTarget});
+				}
+				// load the library
+				if (!isset($this->libManager[$this->target]))
+				{
+					$this->libManager[$this->target] = array();
+				}
+				if (!isset($this->libManager[$this->target][$module->code_name]))
+				{
+					$this->libManager[$this->target][$module->code_name] = array();
+				}
+				// make sure json become array
+				if (ComponentbuilderHelper::checkJson($module->libraries))
+				{
+					$module->libraries = json_decode($module->libraries, true);
+				}
+				// if we have an array add it
+				if (ComponentbuilderHelper::checkArray($module->libraries))
+				{
+					foreach ($module->libraries as $library)
+					{
+						if (!isset($this->libManager[$this->target][$module->code_name][$library]))
+						{
+							if ($this->getMediaLibrary((int) $library))
+							{
+								$this->libManager[$this->target][$module->code_name][(int) $library] = true;
+							}
+						}
+					}
+				}
+				elseif (is_numeric($module->libraries) && !isset($this->libManager[$this->target][$module->code_name][(int) $module->libraries]))
+				{
+					if ($this->getMediaLibrary((int) $module->libraries))
+					{
+						$this->libManager[$this->target][$module->code_name][(int) $module->libraries] = true;
+					}
+				}
+				// add PHP in module install
+				$module->add_install_script = false;
+				$addScriptMethods = array('php_preflight', 'php_postflight', 'php_method');
+				$addScriptTypes = array('install', 'update', 'uninstall');
+				foreach ($addScriptMethods as $scriptMethod)
+				{
+					foreach ($addScriptTypes as $scriptType)
+					{
+						if (isset($module->{'add_' . $scriptMethod . '_' . $scriptType}) && $module->{'add_' . $scriptMethod . '_' . $scriptType} == 1 && ComponentbuilderHelper::checkString($module->{$scriptMethod . '_' . $scriptType}))
+						{
+							// set GUI mapper field
+							$guiMapper['field'] = $scriptMethod . '_' . $scriptType;
+							$module->{$scriptMethod . '_' . $scriptType} = $this->setGuiCodePlaceholder(
+								$this->setPlaceholders($this->setDynamicValues(base64_decode($module->{$scriptMethod . '_' . $scriptType})), $this->placeholders),
+								$guiMapper
+							);
+							$module->add_install_script = true;
+						}
+						else
+						{
+							unset($module->{$scriptMethod . '_' . $scriptType});
+							$module->{'add_' . $scriptMethod . '_' . $scriptType} = 0;
+						}
+					}
+				}
+				// add_sql
+				if ($module->add_sql == 1 && ComponentbuilderHelper::checkString($module->sql))
+				{
+					$module->sql = $this->setPlaceholders($this->setDynamicValues(base64_decode($module->sql)), $this->placeholders);
+				}
+				else
+				{
+					unset($module->sql);
+					$module->add_sql = 0;
+				}
+				// add_sql_uninstall
+				if ($module->add_sql_uninstall == 1 && ComponentbuilderHelper::checkString($module->sql_uninstall))
+				{
+					$module->sql_uninstall = $this->setPlaceholders($this->setDynamicValues(base64_decode($module->sql_uninstall)), $this->placeholders);
+				}
+				else
+				{
+					unset($module->sql_uninstall);
+					$module->add_sql_uninstall = 0;
+				}
+				// update the URL of the update_server if set
+				if ($module->add_update_server == 1 && ComponentbuilderHelper::checkString($module->update_server_url))
+				{
+					$module->update_server_url = $this->setPlaceholders($this->setDynamicValues($module->update_server_url), $this->placeholders);
+				}
+				// add the update/sales server FTP details if that is the expected protocol
+				$serverArray = array('update_server', 'sales_server');
+				foreach ($serverArray as $server)
+				{
+					if ($module->{'add_' . $server} == 1 && is_numeric($module->{$server}) && $module->{$server} > 0)
+					{
+						// get the server protocol
+						$module->{$server . '_protocol'} = ComponentbuilderHelper::getVar('server', (int) $module->{$server}, 'id', 'protocol');
+					}
+					else
+					{
+						$module->{$server} = 0;
+						// only change this for sales server (update server can be added loacaly to the zip file)
+						if ('sales_server' === $server)
+						{
+							$module->{'add_' . $server} = 0;
+						}
+						$module->{$server . '_protocol'} = 0;
+					}
+				}
+				// set the update server stuff (TODO)
+				// update_server_xml_path
+				// update_server_xml_file_name
+
+				// rest globals
+				$this->target = $_backup_target;
+				$this->lang = $_backup_lang;
+				$this->langPrefix = $_backup_langPrefix;
+
+				unset($this->placeholders[$this->bbb . 'Module_name' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'Module' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'module' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'module.version' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'module_version' . $this->ddd]);
+
+				$this->joomlaModules[$id] = $module;
+
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * get the module xml template
+	 *
+	 * @return  string
+	 *
+	 */
+	public function getModuleXMLTemplate(&$module)
+	{
+		$xml = '<?xml version="1.0" encoding="utf-8"?>';
+		$xml .= PHP_EOL . '<extension type="module" version="3.8" client="site" method="upgrade">';
+		$xml .= PHP_EOL . $this->_t(1) . '<name>' . $module->lang_prefix . '</name>';
+		$xml .= PHP_EOL . $this->_t(1) . '<creationDate>' . $this->hhh . 'BUILDDATE' . $this->hhh . '</creationDate>';
+		$xml .= PHP_EOL . $this->_t(1) . '<author>' . $this->hhh . 'AUTHOR' . $this->hhh . '</author>';
+		$xml .= PHP_EOL . $this->_t(1) . '<authorEmail>' . $this->hhh . 'AUTHOREMAIL' . $this->hhh . '</authorEmail>';
+		$xml .= PHP_EOL . $this->_t(1) . '<authorUrl>' . $this->hhh . 'AUTHORWEBSITE' . $this->hhh . '</authorUrl>';
+		$xml .= PHP_EOL . $this->_t(1) . '<copyright>' . $this->hhh . 'COPYRIGHT' . $this->hhh . '</copyright>';
+		$xml .= PHP_EOL . $this->_t(1) . '<license>' . $this->hhh . 'LICENSE' . $this->hhh . '</license>';
+		$xml .= PHP_EOL . $this->_t(1) . '<version>' . $module->module_version . '</version>';
+		$xml .= PHP_EOL . $this->_t(1) . '<description>' . $module->lang_prefix . '_XML_DESCRIPTION</description>';
+		$xml .= $this->hhh . 'MAINXML' . $this->hhh;
+		$xml .= PHP_EOL . '</extension>';
+
+		return $xml;
+	}
+
+	/**
 	 * get the Joomla plugins IDs
 	 * 
 	 * @return  array of IDs on success
@@ -7512,7 +8105,23 @@ class Get
 			// set the lang for both since we don't know what area is being targeted
 			$_tmp = $this->lang;
 			// set the lang based on target
-			if (strpos($target, 'plugin') !== false)
+			if (strpos($target, 'module') !== false)
+			{
+				// backup lang prefix
+				$_tmp_lang_prefix = $this->langPrefix;
+				// set the new lang prefix
+				$this->langPrefix = strtoupper(str_replace('module', 'mod', $target));
+				// now set the lang
+				if (isset($this->langKeys[$this->langPrefix]))
+				{
+					$this->lang = $this->langKeys[$this->langPrefix];
+				}
+				else
+				{
+					$this->lang = 'module';
+				}
+			}
+			elseif (strpos($target, 'plugin') !== false)
 			{
 				// backup lang prefix
 				$_tmp_lang_prefix = $this->langPrefix;
@@ -7739,6 +8348,19 @@ class Get
 		$localPaths['site'] = JPATH_ROOT . '/components/com_' . $this->componentCodeName;
 		// TODO later to include the JS and CSS
 		$localPaths['media'] = JPATH_ROOT . '/media/com_' . $this->componentCodeName;
+		// Painfull but we need to folder paths for the linked modules
+		if (($module_ids = $this->getModuleIDs()) !== false)
+		{
+			foreach ($module_ids as $module_id)
+			{
+				// get the module group and folder name
+//				if (($path = $this->getModulePath($module_id)) !== false)
+//				{
+//					// set the path
+//					$localPaths['module_' . str_replace('/', '_', $path)] = JPATH_ROOT . '/modules/' . $path;
+//				}
+			}
+		}
 		// Painfull but we need to folder paths for the linked plugins
 		if (($plugin_ids = $this->getPluginIDs()) !== false)
 		{

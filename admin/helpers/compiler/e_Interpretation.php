@@ -2586,16 +2586,25 @@ class Interpretation extends Fields
 	{
 		$methods = '';
 		// then set the needed custom methods
-		if (ComponentbuilderHelper::checkArray($main_view['settings']->custom_get))
+		if (ComponentbuilderHelper::checkArray($main_view) && isset($main_view['settings']) && ComponentbuilderHelper::checkObject($main_view['settings']) && isset($main_view['settings']->custom_get))
+		{
+			$_dynamic_get = $main_view['settings']->custom_get;
+		}
+		elseif (ComponentbuilderHelper::checkObject($main_view) && isset($main_view->custom_get))
+		{
+			$_dynamic_get = $main_view->custom_get;
+		}
+		// check if we have an array
+		if (isset($_dynamic_get) && ComponentbuilderHelper::checkArray($_dynamic_get))
 		{
 			// start dynamic build
-			foreach ($main_view['settings']->custom_get as $view)
+			foreach ($_dynamic_get as $view)
 			{
 				// fix alias to use in code
 				$view->code = ComponentbuilderHelper::safeString($code);
 				$view->Code = ComponentbuilderHelper::safeString($view->code, 'F');
 				$view->CODE = ComponentbuilderHelper::safeString($view->code, 'U');
-				$main = '';
+				$main       = '';
 				if ($view->gettype == 3)
 				{
 					// SITE_GET_ITEM <<<DYNAMIC>>>
@@ -2664,7 +2673,10 @@ class Interpretation extends Fields
 			}
 		}
 		// load uikit get method
-		$methods .= $this->setUikitGetMethod();
+		if (ComponentbuilderHelper::checkArray($main_view) && isset($main_view['settings']))
+		{
+			$methods .= $this->setUikitGetMethod();
+		}
 
 		return $methods;
 	}
@@ -4001,26 +4013,40 @@ class Interpretation extends Fields
 
 	public function setLibrariesLoader($view)
 	{
+		// check call sig
+		if (isset($view['settings']) && isset($view['settings']->code))
+		{
+			$code = $view['settings']->code;
+			$view_active = true;
+		}
+		elseif (isset($view->code_name))
+		{
+			$code = $view->code_name;
+			$view_active = false;
+		}
 		// reset bucket
 		$setter = '';
 		// allways load these in
-		$setter .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " always make sure jquery is loaded.";
-		$setter .= PHP_EOL . $this->_t(2) . "JHtml::_('jquery.framework');";
-		$setter .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Load the header checker class.";
-		if ($this->target === 'site')
+		if ($view_active)
 		{
-			$setter .= PHP_EOL . $this->_t(2) . "require_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );";
+			$setter .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " always make sure jquery is loaded.";
+			$setter .= PHP_EOL . $this->_t(2) . "JHtml::_('jquery.framework');";
+			$setter .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Load the header checker class.";
+			if ($this->target === 'site')
+			{
+				$setter .= PHP_EOL . $this->_t(2) . "require_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );";
+			}
+			else
+			{
+				$setter .= PHP_EOL . $this->_t(2) . "require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );";
+			}
+			$setter .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Initialize the header checker.";
+			$setter .= PHP_EOL . $this->_t(2) . "\$HeaderCheck = new " . $this->componentCodeName . "HeaderCheck;";
 		}
-		else
-		{
-			$setter .= PHP_EOL . $this->_t(2) . "require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );";
-		}
-		$setter .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Initialize the header checker.";
-		$setter .= PHP_EOL . $this->_t(2) . "\$HeaderCheck = new " . $this->componentCodeName . "HeaderCheck;";
 		// check if this view should get libraries
-		if (isset($this->libManager[$this->target][$view['settings']->code]) && ComponentbuilderHelper::checkArray($this->libManager[$this->target][$view['settings']->code]))
+		if (isset($this->libManager[$this->target][$code]) && ComponentbuilderHelper::checkArray($this->libManager[$this->target][$code]))
 		{
-			foreach ($this->libManager[$this->target][$view['settings']->code] as $id => $true)
+			foreach ($this->libManager[$this->target][$code] as $id => $true)
 			{
 				if (isset($this->libraries[$id]) && ComponentbuilderHelper::checkObject($this->libraries[$id]) && isset($this->libraries[$id]->document) && ComponentbuilderHelper::checkString($this->libraries[$id]->document))
 				{
@@ -4032,6 +4058,11 @@ class Interpretation extends Fields
 					$setter .= $this->setLibraryDocument($id);
 				}
 			}
+		}
+		// convert back to $document if module call (oops :)
+		if (!$view_active)
+		{
+			return str_replace('$this->document->', '$document->', $setter);
 		}
 		return $setter;
 	}
@@ -16641,6 +16672,220 @@ function vdm_dkim() {
 		return $matches[1];
 	}
 
+	public function getModCode(&$module)
+	{
+		return PHP_EOL . $module->mod_code . PHP_EOL;
+	}
+
+	public function getModDefault(&$module)
+	{
+		return PHP_EOL . $module->default_header . PHP_EOL . '?>' . PHP_EOL . $module->default . PHP_EOL;
+	}
+
+	public function getModHelperCode(&$module)
+	{
+		return
+			$module->class_helper_header . PHP_EOL .
+			$module->class_helper_type . $module->class_helper_name . PHP_EOL . '{' . PHP_EOL .
+			$module->class_helper_code . PHP_EOL .
+			"}" . PHP_EOL;
+	}
+
+	public function getModuleMainXML(&$module)
+	{
+		// set the custom table key
+		$dbkey = 'yyy';
+		// build the xml
+		$xml = '';
+		// search if we must add the component path
+		$add_component_path = false;
+		// build the config fields
+		$config_fields = array();
+		if (isset($module->config_fields) && ComponentbuilderHelper::checkArray($module->config_fields))
+		{
+			foreach ($module->config_fields as $field_name => $fieldsets)
+			{
+				foreach ($fieldsets as $fieldset => $fields)
+				{
+					// get the field set
+					$xmlFields = $this->getExtensionFieldsetXML($module, $fields, $dbkey);
+					// make sure the xml is set and a string
+					if (isset($xmlFields) && ComponentbuilderHelper::checkString($xmlFields))
+					{
+						$config_fields[$field_name . $fieldset] = $xmlFields;
+					}
+					$dbkey++;
+					// check if the fieldset path requiers component paths
+					if (!$add_component_path && isset($module->fieldsets_paths[$field_name . $fieldset]) && $module->fieldsets_paths[$field_name . $fieldset] == 1)
+					{
+						$add_component_path = true;
+					}
+				}
+			}
+		}
+		// switch to add the xml
+		$addLang = false;
+		// now build the language files
+		if (isset($this->langContent[$module->key]))
+		{
+			$lang = array_map(function ($langstring, $placeholder)
+			{
+				return $placeholder . '="' . $langstring . '"';
+			}, $this->langContent[$module->key], array_keys($this->langContent[$module->key]));
+			// add to language file
+			$this->writeFile($module->folder_path . '/language/' . $this->langTag . '/' . $this->langTag . '.' . $module->file_name . '.ini', implode(PHP_EOL, $lang));
+			$this->writeFile($module->folder_path . '/language/' . $this->langTag . '/' . $this->langTag . '.' . $module->file_name . '.sys.ini', implode(PHP_EOL, $lang));
+			// set the line counter
+			$this->lineCount = $this->lineCount + count((array) $lang);
+			unset($lang);
+			// trigger the xml
+			$addLang = true;
+		}
+		// get all files and folders in module folder
+		$files = JFolder::files($module->folder_path);
+		$folders = JFolder::folders($module->folder_path);
+		// the files/folders to ignore
+		$ignore = array('sql', 'language', 'script.php', $module->file_name . '.xml', $module->file_name . '.php');
+		// should the scriptfile be added
+		if ($module->add_install_script)
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Scripts to run on installation -->';
+			$xml .= PHP_EOL . $this->_t(1) . '<scriptfile>script.php</scriptfile>';
+		}
+		// should the sql install be added
+		if ($module->add_sql)
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Runs on install; New in Joomla 1.5 -->';
+			$xml .= PHP_EOL . $this->_t(1) . '<install>';
+			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(3) . '<file driver="mysql" charset="utf8">sql/mysql/install.sql</file>';
+			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(1) . '</install>';
+		}
+		// should the sql uninstall be added
+		if ($module->add_sql_uninstall)
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Runs on uninstall; New in Joomla 1.5 -->';
+			$xml .= PHP_EOL . $this->_t(1) . '<uninstall>';
+			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(3) . '<file driver="mysql" charset="utf8">sql/mysql/uninstall.sql</file>';
+			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(1) . '</uninstall>';
+		}
+		// should the language xml be added
+		if ($addLang)
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Language files -->';
+			$xml .= PHP_EOL . $this->_t(1) . '<languages folder="language">';
+			$xml .= PHP_EOL . $this->_t(2) . '<language tag="en-GB">' . $this->langTag . '/' . $this->langTag . '.' . $module->file_name . '.ini</language>';
+			$xml .= PHP_EOL . $this->_t(2) . '<language tag="en-GB">' . $this->langTag . '/' . $this->langTag . '.' . $module->file_name . '.sys.ini</language>';
+			$xml .= PHP_EOL . $this->_t(1) . '</languages>';
+		}
+		// add the module files
+		$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Model files -->';
+		$xml .= PHP_EOL . $this->_t(1) . '<files>';
+		$xml .= PHP_EOL . $this->_t(2) . '<filename module="' . $module->file_name . '">'  . $module->file_name . '.php</filename>';
+		// add other files found
+		if (ComponentbuilderHelper::checkArray($files))
+		{
+			foreach ($files as $file)
+			{
+				// only add what is not ignored
+				if (!in_array($file, $ignore))
+				{
+					$xml .= PHP_EOL . $this->_t(2) . '<filename>'  . $file . '</filename>';
+				}
+			}
+		}
+		// add language folder
+		if ($addLang)
+		{
+			$xml .= PHP_EOL . $this->_t(2) . '<folder>language</folder>';
+		}
+		// add sql folder
+		if ($module->add_sql || $module->add_sql_uninstall)
+		{
+			$xml .= PHP_EOL . $this->_t(2) . '<folder>sql</folder>';
+		}
+		// add other files found
+		if (ComponentbuilderHelper::checkArray($folders))
+		{
+			foreach ($folders as $folder)
+			{
+				// only add what is not ignored
+				if (!in_array($folder, $ignore))
+				{
+					$xml .= PHP_EOL . $this->_t(2) . '<folder>'  . $folder . '</folder>';
+				}
+			}
+		}
+		$xml .= PHP_EOL . $this->_t(1) . '</files>';
+		// now add the Config Params if needed
+		if (ComponentbuilderHelper::checkArray($config_fields))
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Config parameter -->';
+			// only add if part of the component field types path is required
+			if ($add_component_path)
+			{
+				// add path to module rules and custom fields
+				$xml .= PHP_EOL . $this->_t(1) . '<config';
+				$xml .= PHP_EOL . $this->_t(2) . 'addrulepath="/administrator/components/com_' . $this->componentCodeName . '/modules/rules"';
+				$xml .= PHP_EOL . $this->_t(2) . 'addfieldpath="/administrator/components/com_' . $this->componentCodeName . '/modules/fields"';
+				$xml .= PHP_EOL . $this->_t(1) . '>';
+			}
+			else
+			{
+				$xml .= PHP_EOL . $this->_t(1) . '<config>';
+			}
+			// add the fields
+			foreach ($module->config_fields as $field_name => $fieldsets)
+			{
+				$xml .= PHP_EOL . $this->_t(1) . '<fields name="' . $field_name . '">';
+				foreach ($fieldsets as $fieldset => $fields)
+				{
+					// default to the field set name
+					$label = $fieldset;
+					if (isset($module->fieldsets_label[$field_name.$fieldset]))
+					{
+						$label = $module->fieldsets_label[$field_name.$fieldset];
+					}
+					// add path to module rules and custom fields
+					if (isset($module->fieldsets_paths[$field_name . $fieldset]) && $module->fieldsets_paths[$field_name . $fieldset] == 2)
+					{
+						$xml .= PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' default paths of ' . $fieldset . ' fieldset points to the module -->';
+						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="' . $fieldset . '" label="' . $label . '"';
+						$xml .= PHP_EOL . $this->_t(2) . 'addrulepath="/modules/' . $module->file_name . '/rules"';
+						$xml .= PHP_EOL . $this->_t(2) . 'addfieldpath="/modules/' . $module->file_name . '/fields"';
+						$xml .= PHP_EOL . $this->_t(1) . '>';
+					}
+					else
+					{
+						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="' . $fieldset . '" label="' . $label . '">';
+					}
+					// load the fields
+					if (isset($config_fields[$field_name.$fieldset]))
+					{
+						$xml .= $config_fields[$field_name.$fieldset];
+						unset($config_fields[$field_name.$fieldset]);
+					}
+					$xml .= PHP_EOL . $this->_t(1) . '</fieldset>';
+				}
+				$xml .= PHP_EOL . $this->_t(1) . '</fields>';
+			}
+			$xml .= PHP_EOL . $this->_t(1) . '</config>';
+		}
+		// set update server if found
+		if ($module->add_update_server)
+		{
+			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Update servers -->';
+			$xml .= PHP_EOL . $this->_t(1) . '<updateservers>';
+			$xml .= PHP_EOL . $this->_t(2) . '<server type="extension" priority="1" name="' . $module->official_name . '">' . $module->update_server_url . '</server>';
+			$xml .= PHP_EOL . $this->_t(1) . '</updateservers>';
+		}
+
+		return $xml;
+	}
+
 	public function getPluginMainClass(&$plugin)
 	{
 		return
@@ -16672,7 +16917,7 @@ function vdm_dkim() {
 				foreach ($fieldsets as $fieldset => $fields)
 				{
 					// get the field set
-					$xmlFields = $this->getPluginFieldsetXML($plugin, $fields, $dbkey);
+					$xmlFields = $this->getExtensionFieldsetXML($plugin, $fields, $dbkey);
 					// make sure the xml is set and a string
 					if (isset($xmlFields) && ComponentbuilderHelper::checkString($xmlFields))
 					{
@@ -16850,7 +17095,7 @@ function vdm_dkim() {
 		return $xml;
 	}
 
-	public function getPluginFieldsetXML(&$plugin, &$fields, $dbkey = 'zz')
+	public function getExtensionFieldsetXML(&$extension, &$fields, $dbkey = 'zz')
 	{
 		// set some defaults
 		$view = '';
@@ -16866,12 +17111,12 @@ function vdm_dkim() {
 				if ($this->fieldBuilderType == 1)
 				{
 					// string manipulation
-					$xmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
+					$xmlField = $this->setDynamicField($field, $view, $viewType, $extension->lang_prefix, $extension->key, $extension->key, $this->globalPlaceholders, $dbkey, false);
 				}
 				else
 				{
 					// simpleXMLElement class
-					$newxmlField = $this->setDynamicField($field, $view, $viewType, $plugin->lang_prefix, $plugin->key, $plugin->key, $this->globalPlaceholders, $dbkey, false);
+					$newxmlField = $this->setDynamicField($field, $view, $viewType, $extension->lang_prefix, $extension->key, $extension->key, $this->globalPlaceholders, $dbkey, false);
 					if (isset($newxmlField->fieldXML))
 					{
 						$xmlField = dom_import_simplexml($newxmlField->fieldXML);
@@ -16888,24 +17133,24 @@ function vdm_dkim() {
 		return $fieldset;
 	}
 
-	public function getPluginInstallClass(&$plugin)
+	public function getExtensionInstallClass(&$extension)
 	{
 		// yes we are adding it
 		$script = PHP_EOL . '/**';
-		$script .= PHP_EOL . ' * ' . $plugin->official_name . ' script file.';
+		$script .= PHP_EOL . ' * ' . $extension->official_name . ' script file.';
 		$script .= PHP_EOL . ' *';
-		$script .= PHP_EOL . ' * @package ' . $plugin->class_name;
+		$script .= PHP_EOL . ' * @package ' . $extension->class_name;
 		$script .= PHP_EOL . ' */';
-		$script .= PHP_EOL . 'class ' . $plugin->installer_class_name;
+		$script .= PHP_EOL . 'class ' . $extension->installer_class_name;
 		$script .= PHP_EOL . '{';
 		// set constructor
-		if (isset($plugin->add_php_script_construct)
-			&& $plugin->add_php_script_construct == 1
-			&& ComponentbuilderHelper::checkString($plugin->php_script_construct))
+		if (isset($extension->add_php_script_construct)
+			&& $extension->add_php_script_construct == 1
+			&& ComponentbuilderHelper::checkString($extension->php_script_construct))
 		{
-			$script .= $this->setInstallMethodScript('construct', $plugin->php_script_construct);
+			$script .= $this->setInstallMethodScript('construct', $extension->php_script_construct);
 		}
-		// add PHP in plugin install
+		// add PHP in extension install
 		$addScriptMethods = array('php_preflight', 'php_postflight', 'php_method');
 		$addScriptTypes = array('install', 'update', 'uninstall', 'discover_install');
 		// set some buckets for sorting
@@ -16921,18 +17166,18 @@ function vdm_dkim() {
 		{
 			foreach ($addScriptTypes as $scriptType)
 			{
-				if (isset($plugin->{'add_' . $scriptMethod . '_' . $scriptType})
-					&& $plugin->{'add_' . $scriptMethod . '_' . $scriptType} == 1
-					&& ComponentbuilderHelper::checkString($plugin->{$scriptMethod . '_' . $scriptType}))
+				if (isset($extension->{'add_' . $scriptMethod . '_' . $scriptType})
+					&& $extension->{'add_' . $scriptMethod . '_' . $scriptType} == 1
+					&& ComponentbuilderHelper::checkString($extension->{$scriptMethod . '_' . $scriptType}))
 				{
 					// add to the main methods
 					if ('php_method' === $scriptMethod)
 					{
-						${'function_' . $scriptType}[] = $plugin->{$scriptMethod . '_' . $scriptType};
+						${'function_' . $scriptType}[] = $extension->{$scriptMethod . '_' . $scriptType};
 					}
 					else
 					{
-						${'function_' . $scriptMethod}[$scriptType][] = $plugin->{$scriptMethod . '_' . $scriptType};
+						${'function_' . $scriptMethod}[$scriptType][] = $extension->{$scriptMethod . '_' . $scriptType};
 						${'has_' . $scriptMethod} = true;
 					}
 				}

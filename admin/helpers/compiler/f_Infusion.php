@@ -1029,17 +1029,65 @@ class Infusion extends Interpretation
 				$this->fileContentStatic[$this->hhh . 'README' . $this->hhh] = $this->componentData->readme;
 			}
 
-			// infuze plugin data if set
+			// tweak system to set stuff to the module domain
+			$_backup_target = $this->target;
+			$_backup_lang = $this->lang;
+			$_backup_langPrefix = $this->langPrefix;
+			// infuse module data if set
+			if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+			{
+				foreach ($this->joomlaModules as $module)
+				{
+					if (ComponentbuilderHelper::checkObject($module))
+					{
+						$this->target     = $module->key;
+						$this->lang       = $module->key;
+						$this->langPrefix = $module->lang_prefix;
+						// MODCODE
+						$this->fileContentDynamic[$module->key][$this->hhh . 'MODCODE' . $this->hhh] = $this->getModCode($module);
+						// DYNAMICGET
+						$this->fileContentDynamic[$module->key][$this->hhh . 'DYNAMICGETS' . $this->hhh] = $this->setCustomViewCustomMethods($module, $module->key);
+						// HELPERCODE
+						if ($module->add_class_helper >= 1)
+						{
+							$this->fileContentDynamic[$module->key][$this->hhh . 'HELPERCODE' . $this->hhh] = $this->getModHelperCode($module);
+						}
+						// MODDEFAULT
+						$this->fileContentDynamic[$module->key][$this->hhh . 'MODDEFAULT' . $this->hhh] = $this->getModDefault($module);
+						// only add install script if needed
+						if ($module->add_install_script)
+						{
+							// INSTALLCLASS
+							$this->fileContentDynamic[$module->key][$this->hhh . 'INSTALLCLASS' . $this->hhh] = $this->getExtensionInstallClass($module);
+						}
+						// FIELDSET
+						if (isset($module->form_files) && ComponentbuilderHelper::checkArray($module->form_files))
+						{
+							foreach($module->form_files as $file => $files)
+							{
+								foreach ($files as $field_name => $fieldsets)
+								{
+									foreach ($fieldsets as $fieldset => $fields)
+									{
+										// FIELDSET_ . $file.$field_name.$fieldset
+										$this->fileContentDynamic[$module->key][$this->hhh . 'FIELDSET_' . $file.$field_name.$fieldset . $this->hhh] =
+											$this->getExtensionFieldsetXML($module, $fields);
+									}
+								}
+							}
+						}
+						// MAINXML
+						$this->fileContentDynamic[$module->key][$this->hhh . 'MAINXML' . $this->hhh] = $this->getModuleMainXML($module);
+					}
+				}
+			}
+			// infuse plugin data if set
 			if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
 			{
 				foreach ($this->joomlaPlugins as $plugin)
 				{
 					if (ComponentbuilderHelper::checkObject($plugin))
 					{
-						// tweak system to set stuff to the plugin domain
-						$_backup_target = $this->target;
-						$_backup_lang = $this->lang;
-						$_backup_langPrefix = $this->langPrefix;
 						$this->target = $plugin->key;
 						$this->lang = $plugin->key;
 						$this->langPrefix = $plugin->lang_prefix;
@@ -1049,7 +1097,7 @@ class Infusion extends Interpretation
 						if ($plugin->add_install_script)
 						{
 							// INSTALLCLASS
-							$this->fileContentDynamic[$plugin->key][$this->hhh . 'INSTALLCLASS' . $this->hhh] = $this->getPluginInstallClass($plugin);
+							$this->fileContentDynamic[$plugin->key][$this->hhh . 'INSTALLCLASS' . $this->hhh] = $this->getExtensionInstallClass($plugin);
 						}
 						// FIELDSET
 						if (isset($plugin->form_files) && ComponentbuilderHelper::checkArray($plugin->form_files))
@@ -1061,21 +1109,21 @@ class Infusion extends Interpretation
 									foreach ($fieldsets as $fieldset => $fields)
 									{
 										// FIELDSET_ . $file.$field_name.$fieldset
-										$this->fileContentDynamic[$plugin->key][$this->hhh . 'FIELDSET_' . $file.$field_name.$fieldset . $this->hhh] = 
-											$this->getPluginFieldsetXML($plugin, $fields);
+										$this->fileContentDynamic[$plugin->key][$this->hhh . 'FIELDSET_' . $file.$field_name.$fieldset . $this->hhh] =
+											$this->getExtensionFieldsetXML($plugin, $fields);
 									}
 								}
 							}
 						}
 						// MAINXML
 						$this->fileContentDynamic[$plugin->key][$this->hhh . 'MAINXML' . $this->hhh] = $this->getPluginMainXML($plugin);
-						// rest globals
-						$this->target = $_backup_target;
-						$this->lang = $_backup_lang;
-						$this->langPrefix = $_backup_langPrefix;
 					}
 				}
 			}
+			// rest globals
+			$this->target = $_backup_target;
+			$this->lang = $_backup_lang;
+			$this->langPrefix = $_backup_langPrefix;
 
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent
 			$this->triggerEvent('jcb_ce_onAfterBuildFilesContent', array(&$this->componentContext, &$this->componentData, &$this->fileContentStatic, &$this->fileContentDynamic, &$this->placeholders, &$this->hhh));

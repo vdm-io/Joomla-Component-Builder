@@ -926,9 +926,11 @@ class ComponentbuilderModelAjax extends JModelList
 	protected $linkedKeys = array(
 			'field' => array(
 				array('table' => 'component_config', 'tables' => 'components_config', 'fields' => array('addconfig' => 'field', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'linked_name' => 'system_name'),
+				array('table' => 'library_config', 'tables' => 'libraries_config', 'fields' => array('addconfig' => 'field', 'library' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_LIBRARY', 'linked_name' => 'name'),
 				array('table' => 'admin_fields', 'tables' => 'admins_fields', 'fields' => array('addfields' => 'field', 'admin_view' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_ADMIN_VIEW', 'linked_name' => 'system_name'),
 				array('table' => 'field', 'tables' => 'fields', 'fields' => array('xml' => 'fields', 'name' => 'NAME', 'fieldtype' => 'TYPE'), 'linked' => 'COM_COMPONENTBUILDER_FIELD', 'type_name' => 'name'),
-				array('table' => 'joomla_plugin', 'tables' => 'joomla_plugins', 'fields' => array('fields' => 'field', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_PLUGIN')
+				array('table' => 'joomla_module', 'tables' => 'joomla_modules', 'fields' => array('fields' => 'fields.fields.field', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_MODULE'),
+				array('table' => 'joomla_plugin', 'tables' => 'joomla_plugins', 'fields' => array('fields' => 'fields.fields.field', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_PLUGIN')
 			),
 			'admin_view' => array(
 				array('table' => 'component_admin_views', 'tables' => 'components_admin_views', 'fields' => array('addadmin_views' => 'adminview', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'linked_name' => 'system_name')
@@ -948,6 +950,9 @@ class ComponentbuilderModelAjax extends JModelList
 			'dynamic_get' => array(
 				array('table' => 'site_view', 'tables' => 'site_views', 'fields' => array('custom_get' => 'ARRAY', 'main_get' => 'INT', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_SITE_VIEW'),
 				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('custom_get' => 'ARRAY', 'main_get' => 'INT', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW')
+			),
+			'joomla_module' => array(
+				array('table' => 'component_modules', 'tables' => 'components_modules', 'fields' => array('addjoomla_modules' => 'module', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'linked_name' => 'system_name')
 			),
 			'joomla_plugin' => array(
 				array('table' => 'component_plugins', 'tables' => 'components_plugins', 'fields' => array('addjoomla_plugins' => 'plugin', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'linked_name' => 'system_name')
@@ -1082,11 +1087,43 @@ class ComponentbuilderModelAjax extends JModelList
 									}
 									else
 									{
-										foreach ($item->{$key} as $row)
+										// check if this is a sub sub form target
+										if (strpos($target, '.') !== false)
 										{
-											if (isset($row[$target]) && $row[$target] == $id)
+											$_target = (array) explode('.', $target);
+											// check that we have an array and get the size
+											if (($_size = ComponentbuilderHelper::checkArray($_target)) !== false)
 											{
-												$found = true;
+												foreach ($item->{$key} as $row)
+												{
+													if ($_size == 2)
+													{
+														if (isset($row[$_target[0]]) && isset($row[$_target[0]][$_target[1]]) &&  $row[$_target[0]][$_target[1]] == $id)
+														{
+															$found = true;
+														}
+													}
+													elseif ($_size == 3 && isset($row[$_target[0]]) && ComponentbuilderHelper::checkArray($row[$_target[0]]))
+													{
+														foreach ($row[$_target[0]] as $_row)
+														{
+															if (!$found && isset($_row[$_target[2]]) && $_row[$_target[2]] == $id)
+															{
+																$found = true;
+															}
+														}
+													}
+												}
+											}
+										}
+										else
+										{
+											foreach ($item->{$key} as $row)
+											{
+												if (!$found && isset($row[$target]) && $row[$target] == $id)
+												{
+													$found = true;
+												}
 											}
 										}
 									}
@@ -2488,29 +2525,37 @@ class ComponentbuilderModelAjax extends JModelList
 			'not_base64' => array(),
 			'name' => 'name'
 		),
-		// #__componentbuilder_joomla_plugin (q)
-		'joomla_plugin' => array(
-			'search' => array('id', 'system_name', 'name', 'main_class_code', 'head', 'description', 'php_script_construct', 'php_preflight_install', 'php_preflight_update',
-				'php_preflight_uninstall', 'php_postflight_install', 'php_postflight_update', 'php_method_uninstall'),
-			'views' => 'joomla_plugins',
-			'not_base64' => array('description' => 'string'),
+		// #__componentbuilder_joomla_module (q)
+		'joomla_module' => array(
+			'search' => array('id', 'system_name', 'name', 'default', 'description', 'mod_code', 'class_helper_header', 'class_helper_code', 'php_script_construct', 'php_preflight_install', 'php_preflight_update',
+				'php_preflight_uninstall', 'php_postflight_install', 'php_postflight_update', 'php_method_uninstall',  'sql', 'sql_uninstall', 'readme'),
+			'views' => 'joomla_modules',
+			'not_base64' => array('description' => 'string', 'readme' => 'string'),
 			'name' => 'system_name'
 		),
-		// #__componentbuilder_class_extends (r)
+		// #__componentbuilder_joomla_plugin (r)
+		'joomla_plugin' => array(
+			'search' => array('id', 'system_name', 'name', 'main_class_code', 'head', 'description', 'php_script_construct', 'php_preflight_install', 'php_preflight_update',
+				'php_preflight_uninstall', 'php_postflight_install', 'php_postflight_update', 'php_method_uninstall', 'sql', 'sql_uninstall', 'readme'),
+			'views' => 'joomla_plugins',
+			'not_base64' => array('description' => 'string', 'readme' => 'string'),
+			'name' => 'system_name'
+		),
+		// #__componentbuilder_class_extends (s)
 		'class_extends' => array(
 			'search' => array('id', 'name', 'head', 'comment'),
 			'views' => 'class_extendings',
 			'not_base64' => array(),
 			'name' => 'name'
 		),
-		// #__componentbuilder_class_property (s)
+		// #__componentbuilder_class_property (t)
 		'class_property' => array(
 			'search' => array('id', 'name', 'default', 'comment'),
 			'views' => 'class_properties',
 			'not_base64' => array(),
 			'name' => 'name'
 		),
-		// #__componentbuilder_class_method (t)
+		// #__componentbuilder_class_method (u)
 		'class_method' => array(
 			'search' => array('id', 'name', 'code', 'comment'),
 			'views' => 'class_methods',

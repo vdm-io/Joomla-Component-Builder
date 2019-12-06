@@ -54,13 +54,13 @@ Joomla.submitbutton = function(task, key)
 		if (isValid){
 			jQuery('#form').hide();
 			// get correct form based on task
-			if (task == 'compiler.compiler' || task == 'compiler.installCompiledPlugin') {
+			if (task == 'compiler.compiler' || task == 'compiler.installCompiledModule' || task == 'compiler.installCompiledPlugin') {
 				var form = document.getElementById('compilerForm');
 			} else {
 				var form = document.getElementById('adminForm');
 			}
 			// set the plugin id
-			if (task == 'compiler.installCompiledPlugin') {
+			if (task == 'compiler.installCompiledModule' || task == 'compiler.installCompiledPlugin') {
 				form.install_item_id.value = key;
 			}
 			// set the task value

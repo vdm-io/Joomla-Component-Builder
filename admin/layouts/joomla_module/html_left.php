@@ -29,7 +29,7 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'name',
 	'description',
 	'libraries',
-	'note_model',
+	'note_libraries_options',
 	'note_add_language_string'
 );
 

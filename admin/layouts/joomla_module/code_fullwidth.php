@@ -26,8 +26,7 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
-	'abstract_class_helper_header',
-	'abstract_class_helper_code'
+	'mod_code'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

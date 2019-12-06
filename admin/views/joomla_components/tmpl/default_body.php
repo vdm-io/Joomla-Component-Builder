@@ -138,6 +138,11 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_DASHBOARD'),
 							'icon' => 'dashboard'),
 						array(
+							'view' => 'component_modules',
+							'views' => 'components_modules',
+							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_MODULES'),
+							'icon' => 'cube'),
+						array(
 							'view' => 'component_plugins',
 							'views' => 'components_plugins',
 							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_PLUGINS'),

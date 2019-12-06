@@ -95,14 +95,30 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 				}
 				$message .= '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledComponent\')">';
 				$message .= 'Install ' . $model->compiler->filepath['component-folder'] . ' on this <span class="icon-joomla icon-white"></span>Joomla website. (component)</button></p>';
+				// switch to set multi install button
+				$add_multi_install = true;
+				// check if we have modules
+				if (ComponentbuilderHelper::checkArray($model->compiler->filepath['modules']))
+				{
+					foreach ($model->compiler->filepath['modules-folder'] as $module_id => $module_folder)
+					{
+						$message .= '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledModule\', ' . (int) $module_id . ')">';
+						$message .= 'Install ' . $module_folder . ' on this <span class="icon-joomla icon-white"></span>Joomla website. (module)</button></p>';
+					}
+				}
 				// check if we have plugins
 				if (ComponentbuilderHelper::checkArray($model->compiler->filepath['plugins']))
 				{
+					$add_multi_install = true;
 					foreach ($model->compiler->filepath['plugins-folder'] as $plugin_id => $plugin_folder)
 					{
 						$message .= '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledPlugin\', ' . (int) $plugin_id . ')">';
 						$message .= 'Install ' . $plugin_folder . ' on this <span class="icon-joomla icon-white"></span>Joomla website. (plugin)</button></p>';
 					}
+				}
+				// set multi install button
+				if ($add_multi_install)
+				{
 					$message .= '<h4>You can install all compiled extensions!</h4>';
 					$message .= '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledExtensions\')">';
 					$message .= 'Install all above extensions on this <span class="icon-joomla icon-white"></span>Joomla website.</button></p>';
@@ -122,31 +138,63 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 				$message .= '<p><b>'.$model->compiler->actualTotalHours.' Hours</b> or <b>'.$model->compiler->actualTotalDays.' Eight Hour Days</b> <em>(a total of the realistic time frame for this project)</em><br />';
 				$message .= '<small>(if creating a folder and file took <b>5 seconds</b> and writing one line of code took <b>10 seconds</b>, with the normal everyday realities at the office, that includes the component planning, mapping & debugging.)</small></p>';
 				$message .= '<p>Project duration: <b>'.$model->compiler->projectWeekTime. ' weeks</b> or <b>'.$model->compiler->projectMonthTime.' months</b></p>';
-				// check if we have plugins
-				if (ComponentbuilderHelper::checkArray($model->compiler->filepath['plugins']))
+				// check if we have modules or plugins
+				if (ComponentbuilderHelper::checkArray($model->compiler->filepath['plugins']) || ComponentbuilderHelper::checkArray($model->compiler->filepath['modules']))
 				{
-					$plugin_url = array();
 					$message .= '<h2>Path to Zip Files</h2>';
 					$message .= '<p><b>Component Path:</b> <code>' . $model->compiler->filepath['component'] . '</code><br />';
 					$message .= '<b>Component URL:</b> <code>' . $url . '</code><br /><br />';
-					// load the plugins path/url
-					foreach ($model->compiler->filepath['plugins'] as $plugin_id => $plugin_path)
+					// load plugins if found
+					if (ComponentbuilderHelper::checkArray($model->compiler->filepath['plugins']))
 					{
-						// set plugin path
-						$message .= '<b>Plugin Path:</b> <code>' . $plugin_path . '</code><br />';
-						if (($pos = strpos($plugin_path, "/tmp/")) !== FALSE)
+						$plugin_urls = array();
+						// load the plugins path/url
+						foreach ($model->compiler->filepath['plugins'] as $plugin_id => $plugin_path)
 						{
-							$plugin_urls[$plugin_id] = JURI::root() . substr($plugin_path, $pos + 1);
-							$message .= '<b>Plugin URL:</b> <code>' . $plugin_urls[$plugin_id] . '</code><br />';
+							// set plugin path
+							$message .= '<b>Plugin Path:</b> <code>' . $plugin_path . '</code><br />';
+							if (($pos = strpos($plugin_path, "/tmp/")) !== FALSE)
+							{
+								$plugin_urls[$plugin_id] = JURI::root() . substr($plugin_path, $pos + 1);
+								$message .= '<b>Plugin URL:</b> <code>' . $plugin_urls[$plugin_id] . '</code><br />';
+							}
+						}
+					}
+					// load modules if found
+					if (ComponentbuilderHelper::checkArray($model->compiler->filepath['modules']))
+					{
+						$module_urls = array();
+						// load the modules path/url
+						foreach ($model->compiler->filepath['modules'] as $module_id => $module_path)
+						{
+							// set module path
+							$message .= '<b>Module Path:</b> <code>' . $module_path . '</code><br />';
+							if (($pos = strpos($module_path, "/tmp/")) !== FALSE)
+							{
+								$module_urls[$module_id] = JURI::root() . substr($module_path, $pos + 1);
+								$message .= '<b>Module URL:</b> <code>' . $module_urls[$module_id] . '</code><br />';
+							}
 						}
 					}
 					$message .= '<br /><small>Hey! you can also download these zip files right now!</small><br />';
 					$message .= '<a class="btn btn-success" href="' . $url . '" ><span class="icon-download icon-white"></span>Download Component</a>&nbsp;&nbsp;';
-					// load the plugin download URL's
-					foreach ($plugin_urls as $plugin_id => $plugin_url)
+					// load the module download URL's
+					if (isset($module_urls) && ComponentbuilderHelper::checkArray($module_urls))
 					{
-						$message .= ' <a class="btn btn-success" href="' . $plugin_url . '" >';
-						$message .= '<span class="icon-download icon-white"></span>Download ' . $model->compiler->filepath['plugins-folder'][$plugin_id] . '</a>&nbsp;&nbsp;';
+						foreach ($module_urls as $module_id => $module_url)
+						{
+							$message .= ' <a class="btn btn-success" href="' . $module_url . '" >';
+							$message .= '<span class="icon-download icon-white"></span>Download ' . $model->compiler->filepath['modules-folder'][$module_id] . '</a>&nbsp;&nbsp;';
+						}
+					}
+					// load the plugin download URL's
+					if (isset($plugin_urls) && ComponentbuilderHelper::checkArray($plugin_urls))
+					{
+						foreach ($plugin_urls as $plugin_id => $plugin_url)
+						{
+							$message .= ' <a class="btn btn-success" href="' . $plugin_url . '" >';
+							$message .= '<span class="icon-download icon-white"></span>Download ' . $model->compiler->filepath['plugins-folder'][$plugin_id] . '</a>&nbsp;&nbsp;';
+						}
 					}
 					$message .= '</p>';
 					$message .= '<p><small><b>Remember!</b> These zip files are in your tmp folder and therefore publicly accessible until you click [Clear tmp]!</small></p>';
@@ -164,6 +212,11 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 				// set redirect
 				$this->setRedirect($redirect_url, $message, 'message');
 				$app->setUserState('com_componentbuilder.component_folder_name', $model->compiler->filepath['component-folder']);
+				// check if we have modules
+				if (ComponentbuilderHelper::checkArray($model->compiler->filepath['modules']))
+				{
+					$app->setUserState('com_componentbuilder.modules_folder_name', $model->compiler->filepath['modules-folder']);
+				}
 				// check if we have plugins
 				if (ComponentbuilderHelper::checkArray($model->compiler->filepath['plugins']))
 				{
@@ -177,6 +230,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 				$app->setUserState('com_componentbuilder.message', '');
 				$app->setUserState('com_componentbuilder.extension_message', '');
 				$app->setUserState('com_componentbuilder.component_folder_name', '');
+				$app->setUserState('com_componentbuilder.modules_folder_name', '');
 				$app->setUserState('com_componentbuilder.plugins_folder_name', '');
 				// set redirect
 				$this->setRedirect($redirect_url, $message);
@@ -205,8 +259,14 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_EXTENTIONS');
 			$_message = array('success' => array(), 'error' => array());
 			$app = JFactory::getApplication();
-			$fileNames = $app->getUserState('com_componentbuilder.plugins_folder_name', array());
+			// start file name array
+			$fileNames = array();
 			$fileNames[] = $app->getUserState('com_componentbuilder.component_folder_name', null);
+			// check if we have modules
+			$fileNames = ComponentbuilderHelper::mergeArrays(array($fileNames, $app->getUserState('com_componentbuilder.modules_folder_name', array()) ));
+			// check if we have plugins
+			$fileNames = ComponentbuilderHelper::mergeArrays(array($fileNames, $app->getUserState('com_componentbuilder.plugins_folder_name', array()) ));
+			// loop and install all extensions found
 			foreach ($fileNames as $fileName)
 			{
 				if ($this->installExtension($fileName))
@@ -257,6 +317,41 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 				$message = JText::sprintf('COM_COMPONENTBUILDER_ONLY_SZIP_FILE_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileName);
 				$this->setRedirect($redirect_url, $message, 'message');
 				return true;
+			}
+		}
+		$this->setRedirect($redirect_url, $message, 'error');
+		return false;
+	}
+
+	/**
+	 * Install Compiled Module
+	 *
+	 * @return  true on success
+	 */
+	public function installCompiledModule()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		// check if user has the right
+		$user = JFactory::getUser();
+		// set page redirect
+		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
+		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THE_MODULE');
+		if($user->authorise('core.admin'))
+		{
+			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_MODULE');
+			$app = JFactory::getApplication();
+			$fileNames = $app->getUserState('com_componentbuilder.modules_folder_name');
+			if (ComponentbuilderHelper::checkArray($fileNames))
+			{
+				$jinput = JFactory::getApplication()->input;
+				$moduleId = $jinput->post->get('install_item_id', 0, 'INT');
+				if ($moduleId > 0 && isset($fileNames[$moduleId]) && $this->installExtension($fileNames[$moduleId]))
+				{
+					$message = JText::sprintf('COM_COMPONENTBUILDER_ONLY_SZIP_FILE_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileNames[$moduleId]);
+					$this->setRedirect($redirect_url, $message, 'message');
+					return true;
+				}
 			}
 		}
 		$this->setRedirect($redirect_url, $message, 'error');

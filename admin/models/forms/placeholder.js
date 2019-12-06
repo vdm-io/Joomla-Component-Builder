@@ -78,8 +78,8 @@ function placedin(placeholder, ide) {
 	jQuery('#note-placedin-not').hide();
 	jQuery('#note-placedin-found').hide();
 	jQuery('#loading-placedin').show();
-	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t']; // if you update this, also update (below 19) & [customcode-codeUsedInHtmlNote]!
-	var targetNumber = 19;
+	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u']; // if you update this, also update (below 20) & [customcode-codeUsedInHtmlNote]!
+	var targetNumber = 20;
 	var run = 0;
 	var placedinChecker = setInterval(function(){ 
 		var target = targets[run];

@@ -81,6 +81,22 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php echo JHtml::_('bootstrap.addTab', 'joomla_moduleTab', 'helper', JText::_('COM_COMPONENTBUILDER_JOOMLA_MODULE_HELPER', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span6">
+				<?php echo JLayoutHelper::render('joomla_module.helper_left', $this); ?>
+			</div>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('joomla_module.helper_right', $this); ?>
+			</div>
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('joomla_module.helper_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
 	<?php echo JHtml::_('bootstrap.addTab', 'joomla_moduleTab', 'forms_fields', JText::_('COM_COMPONENTBUILDER_JOOMLA_MODULE_FORMS_FIELDS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
@@ -175,52 +191,52 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 <script type="text/javascript">
 
-// #jform_add_custom_abstract_class_helper_header listeners for add_custom_abstract_class_helper_header_vvvvvxb function
-jQuery('#jform_add_custom_abstract_class_helper_header').on('keyup',function()
+// #jform_add_class_helper listeners for add_class_helper_vvvvvxb function
+jQuery('#jform_add_class_helper').on('keyup',function()
 {
-	var add_custom_abstract_class_helper_header_vvvvvxb = jQuery("#jform_add_custom_abstract_class_helper_header input[type='radio']:checked").val();
-	var add_abstract_class_helper_vvvvvxb = jQuery("#jform_add_abstract_class_helper input[type='radio']:checked").val();
-	vvvvvxb(add_custom_abstract_class_helper_header_vvvvvxb,add_abstract_class_helper_vvvvvxb);
+	var add_class_helper_vvvvvxb = jQuery("#jform_add_class_helper").val();
+	vvvvvxb(add_class_helper_vvvvvxb);
 
 });
-jQuery('#adminForm').on('change', '#jform_add_custom_abstract_class_helper_header',function (e)
+jQuery('#adminForm').on('change', '#jform_add_class_helper',function (e)
 {
 	e.preventDefault();
-	var add_custom_abstract_class_helper_header_vvvvvxb = jQuery("#jform_add_custom_abstract_class_helper_header input[type='radio']:checked").val();
-	var add_abstract_class_helper_vvvvvxb = jQuery("#jform_add_abstract_class_helper input[type='radio']:checked").val();
-	vvvvvxb(add_custom_abstract_class_helper_header_vvvvvxb,add_abstract_class_helper_vvvvvxb);
+	var add_class_helper_vvvvvxb = jQuery("#jform_add_class_helper").val();
+	vvvvvxb(add_class_helper_vvvvvxb);
 
 });
 
-// #jform_add_abstract_class_helper listeners for add_abstract_class_helper_vvvvvxb function
-jQuery('#jform_add_abstract_class_helper').on('keyup',function()
+// #jform_add_class_helper_header listeners for add_class_helper_header_vvvvvxc function
+jQuery('#jform_add_class_helper_header').on('keyup',function()
 {
-	var add_custom_abstract_class_helper_header_vvvvvxb = jQuery("#jform_add_custom_abstract_class_helper_header input[type='radio']:checked").val();
-	var add_abstract_class_helper_vvvvvxb = jQuery("#jform_add_abstract_class_helper input[type='radio']:checked").val();
-	vvvvvxb(add_custom_abstract_class_helper_header_vvvvvxb,add_abstract_class_helper_vvvvvxb);
+	var add_class_helper_header_vvvvvxc = jQuery("#jform_add_class_helper_header input[type='radio']:checked").val();
+	var add_class_helper_vvvvvxc = jQuery("#jform_add_class_helper").val();
+	vvvvvxc(add_class_helper_header_vvvvvxc,add_class_helper_vvvvvxc);
 
 });
-jQuery('#adminForm').on('change', '#jform_add_abstract_class_helper',function (e)
-{
-	e.preventDefault();
-	var add_custom_abstract_class_helper_header_vvvvvxb = jQuery("#jform_add_custom_abstract_class_helper_header input[type='radio']:checked").val();
-	var add_abstract_class_helper_vvvvvxb = jQuery("#jform_add_abstract_class_helper input[type='radio']:checked").val();
-	vvvvvxb(add_custom_abstract_class_helper_header_vvvvvxb,add_abstract_class_helper_vvvvvxb);
-
-});
-
-// #jform_add_abstract_class_helper listeners for add_abstract_class_helper_vvvvvxd function
-jQuery('#jform_add_abstract_class_helper').on('keyup',function()
-{
-	var add_abstract_class_helper_vvvvvxd = jQuery("#jform_add_abstract_class_helper input[type='radio']:checked").val();
-	vvvvvxd(add_abstract_class_helper_vvvvvxd);
-
-});
-jQuery('#adminForm').on('change', '#jform_add_abstract_class_helper',function (e)
+jQuery('#adminForm').on('change', '#jform_add_class_helper_header',function (e)
 {
 	e.preventDefault();
-	var add_abstract_class_helper_vvvvvxd = jQuery("#jform_add_abstract_class_helper input[type='radio']:checked").val();
-	vvvvvxd(add_abstract_class_helper_vvvvvxd);
+	var add_class_helper_header_vvvvvxc = jQuery("#jform_add_class_helper_header input[type='radio']:checked").val();
+	var add_class_helper_vvvvvxc = jQuery("#jform_add_class_helper").val();
+	vvvvvxc(add_class_helper_header_vvvvvxc,add_class_helper_vvvvvxc);
+
+});
+
+// #jform_add_class_helper listeners for add_class_helper_vvvvvxc function
+jQuery('#jform_add_class_helper').on('keyup',function()
+{
+	var add_class_helper_header_vvvvvxc = jQuery("#jform_add_class_helper_header input[type='radio']:checked").val();
+	var add_class_helper_vvvvvxc = jQuery("#jform_add_class_helper").val();
+	vvvvvxc(add_class_helper_header_vvvvvxc,add_class_helper_vvvvvxc);
+
+});
+jQuery('#adminForm').on('change', '#jform_add_class_helper',function (e)
+{
+	e.preventDefault();
+	var add_class_helper_header_vvvvvxc = jQuery("#jform_add_class_helper_header input[type='radio']:checked").val();
+	var add_class_helper_vvvvvxc = jQuery("#jform_add_class_helper").val();
+	vvvvvxc(add_class_helper_header_vvvvvxc,add_class_helper_vvvvvxc);
 
 });
 
