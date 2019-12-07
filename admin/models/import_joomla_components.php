@@ -700,11 +700,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		$tables = array(
 			'validation_rule', 'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
 			'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code', 'placeholder', 'class_extends',
+			'joomla_module', 'joomla_module_files_folders_urls', 'joomla_module_updates',
 			'joomla_plugin_group', 'class_property', 'class_method', 'joomla_plugin', 'joomla_plugin_files_folders_urls', 'joomla_plugin_updates',
 			'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'admin_custom_tabs', 'component_admin_views',
 			'component_site_views', 'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
 			'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders',
-			'component_placeholders', 'component_plugins'
+			'component_placeholders', 'component_modules', 'component_plugins'
 		);
 		// get prefix
 		$prefix = $this->_db->getPrefix();
@@ -2065,6 +2066,21 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
 				}
 			break;
+			case 'component_modules':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
+				// subform fields to target
+				$updaterT = array(
+					// subformfield => array( field => type_value )
+					'addjoomla_modules' => array('module' => 'joomla_module')
+				);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'component_modules', $updaterT);
+			break;
 			case 'component_plugins':
 				// diverged id already updated
 				if (!$diverged)
@@ -2095,6 +2111,31 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+			break;
+			case 'joomla_module':
+				// update the custom_get
+				$item = $this->setNewID($item, 'custom_get', 'dynamic_get', $type);
+				// if we can't merge add postfix to name
+				if ($this->postfix)
+				{
+					$item->system_name = $item->system_name.$this->postfix;
+				}
+				// subform fields to target
+				$updaterT = array(
+					// subformfield => array( field => type_value )
+					'fields' => array('field' => 'field')
+				);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'joomla_module', $updaterT);
+			break;
+			case 'joomla_module_files_folders_urls':
+			case 'joomla_module_updates':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_module ID where needed
+					$item = $this->setNewID($item, 'joomla_module', 'joomla_module', $type);
+				}
 			break;
 			case 'joomla_plugin_group':
 				// diverged id already updated
@@ -2925,6 +2966,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				case 'component_dashboard':
 				case 'component_placeholders':
 				case 'component_files_folders':
+				case 'component_modules':
 				case 'component_plugins':
 						// get by joomla_component (since there should only be one of each component)
 						$getter = array('joomla_component');
@@ -2955,6 +2997,46 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				case 'language':
 					// get by language tag since there should just be one
 					$getter = 'langtag';
+					break;
+				case 'joomla_module':
+					// get
+					if ($retry == 3)
+					{
+						// get by names, exteneded and group only
+						$getter = array('name', 'system_name');
+					}
+					elseif ($retry == 2)
+					{
+						// get by description
+						$getter = array('name', 'system_name', 'description'); 
+						$retryAgain = 3;
+					}
+					else
+					{
+						// get by id
+						$getter = array('id', 'name', 'system_name');
+						$retryAgain = 2;
+					}
+					break;
+				case 'joomla_module_files_folders_urls':
+				case 'joomla_module_updates':
+					// get by admin_view (since there should only be one of each name)
+					$getter = array('joomla_module');
+					$this->specialValue = array();
+					// Yet if diverged it makes sense that the ID is updated.
+					if ($diverged)
+					{
+						$this->specialValue['joomla_module'] = (int) $item->joomla_module;
+					}
+					elseif (isset($this->newID['joomla_module'][(int) $item->joomla_module]))
+					{
+						$this->specialValue['joomla_module'] = $this->newID['joomla_module'][(int) $item->joomla_module];
+					}
+					// (TODO) I have seen this happen, seems dangerous! 
+					else
+					{
+						return false;
+					}
 					break;
 				case 'joomla_plugin':
 					// get
