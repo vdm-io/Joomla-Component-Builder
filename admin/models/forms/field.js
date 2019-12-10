@@ -806,22 +806,8 @@ jQuery(document).ready(function()
 // the options row id key
 var rowIdKey = 'properties';
 
-function getFieldOptions_server(fieldtype){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.fieldOptions&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && fieldtype > 0){
-		var request = token+'=1&id='+fieldtype;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-
 function getFieldOptions(fieldtype, db){
-	getFieldOptions_server(fieldtype).done(function(result) {
+	getCodeFrom_server(fieldtype, 'type', 'type', 'fieldOptions').done(function(result) {
 		if(result.subform){
 			// load the list of properties
 			propertiesArray = result.nameListOptions;
@@ -1011,7 +997,7 @@ function propertyIsSet(prop, id, targetForm) {
 
 function getFieldPropertyDesc_server(fieldtype, property){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getFieldPropertyDesc&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && (fieldtype > 0 || fieldtype.length > 0)&& property.length > 0){
+	if(token.length > 0 && (fieldtype > 0 || fieldtype.length > 0) && property.length > 0){
 		var request = token+'=1&fieldtype='+fieldtype+'&property='+property;
 	}
 	return jQuery.ajax({
@@ -1023,23 +1009,8 @@ function getFieldPropertyDesc_server(fieldtype, property){
 	});
 }
 
-
-function getValidationRulesTable_server(){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getValidationRulesTable&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0){
-		var request = token+'=1&id=1';
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-
 function getValidationRulesTable(){
-	getValidationRulesTable_server().done(function(result) {
+	getCodeFrom_server(1,'type','type', 'getValidationRulesTable').done(function(result) {
 		if(result){
 			jQuery('#display_validation_rules').html(result);
 		}
@@ -1093,10 +1064,10 @@ function dbChecker(type){
 	}
 }
 
-function getLinked_server(type){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && type > 0){
-		var request = token+'=1&type='+type;
+function getCodeFrom_server(id, type, type_name, callingName){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod);
+	if(token.length > 0 && id > 0 && type.length > 0) {
+		var request = token + '=1&' + type_name + '=' + type + '&id=' + id;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -1107,8 +1078,9 @@ function getLinked_server(type){
 	});
 }
 
+
 function getLinked(){
-	getLinked_server(1).done(function(result) {
+	getCodeFrom_server(1, 'type', 'type', 'getLinked').done(function(result) {
 		if(result){
 			jQuery('#display_linked_to').html(result);
 		}

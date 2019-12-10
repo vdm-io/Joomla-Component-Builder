@@ -1451,13 +1451,10 @@ function getViewTableColumns(id, asKey, key, rowType, main, table_, nr_){
 			return true;
 		}
 	}
-	getViewTableColumns_server(id,asKey,rowType).done(function(result) {
-		if (result)
-		{
+	getViewTableColumns_server(id, asKey, rowType).done(function(result) {
+		if (result) {
 			loadSelectionData(result, 'view', key, main, table_, nr_);
-		}
-		else
-		{
+		} else {
 			loadSelectionData(false, 'view', key, main, table_, nr_);
 		}
 	})
@@ -1466,8 +1463,7 @@ function getViewTableColumns(id, asKey, key, rowType, main, table_, nr_){
 function getDbTableColumns_server(name,asKey,rowType)
 {
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.dbTableColumns&format=json&raw=true");
-	if (token.length > 0 && name.length > 0 && asKey.length > 0)
-	{
+	if (token.length > 0 && name.length > 0 && asKey.length > 0) {
 		var request = token+'=1&as='+asKey+'&type='+rowType+'&name='+name;
 	}
 	return jQuery.ajax({
@@ -1490,12 +1486,9 @@ function getDbTableColumns(name, asKey, key, rowType, main, table_, nr_){
 		}
 	}
 	getDbTableColumns_server(name,asKey,rowType).done(function(result) {
-		if (result)
-		{
+		if (result) {
 			loadSelectionData(result, 'db', key, main, table_, nr_);
-		}
-		else
-		{
+		} else {
 			loadSelectionData(false, 'db', key, main, table_, nr_);
 		}
 	})
@@ -1562,10 +1555,25 @@ function updateSubItems(fieldName, fieldNr, table_, nr_) {
 	}
 }
 
-function getDynamicScripts_server(typpe){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getDynamicScripts&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && typpe.length > 0){
-		var request = token+'=1&type='+typpe;
+function getDynamicScripts(id){
+	if (1 == id) {
+		// get the current values
+		var current_router_parse = jQuery('textarea#jform_php_router_parse').val();
+		// set the router parse method script
+		if(current_router_parse.length == 0){
+			getCodeFrom_server(1, 'routerparse', 'type', 'getDynamicScripts').done(function(result) {
+				if(result){
+					jQuery('textarea#jform_php_router_parse').val(result);
+				}
+			});
+		}
+	}
+}
+
+function getCodeFrom_server(id, type, type_name, callingName){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod);
+	if(token.length > 0 && id > 0 && type.length > 0) {
+		var request = token + '=1&' + type_name + '=' + type + '&id=' + id;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -1576,20 +1584,6 @@ function getDynamicScripts_server(typpe){
 	});
 }
 
-function getDynamicScripts(id){
-	if (1 == id) {
-		// get the current values
-		var current_router_parse = jQuery('textarea#jform_php_router_parse').val();
-		// set the router parse method script
-		if(current_router_parse.length == 0){
-			getDynamicScripts_server('routerparse').done(function(result) {
-				if(result){
-					jQuery('textarea#jform_php_router_parse').val(result);
-				}
-			});
-		}
-	}
-}
 
 function getEditCustomCodeButtons_server(id){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
@@ -1630,22 +1624,8 @@ function isObject(obj) {
 	return false;
 }
 
-function getLinked_server(type){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && type > 0){
-		var request = token+'=1&type='+type;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-
 function getLinked(){
-	getLinked_server(1).done(function(result) {
+	getCodeFrom_server(1, 'type', 'type', 'getLinked').done(function(result) {
 		if(result){
 			jQuery('#display_linked_to').html(result);
 		}

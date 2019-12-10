@@ -532,18 +532,50 @@ function isSet(val)
 }
 
 
-jQuery(document).ready(function()
-{
+jQuery(document).ready(function() {
 	// get the linked details
 	getLinked();
 	// check and load all the customcode edit buttons
 	setTimeout(getEditCustomCodeButtons, 300);
 });
 
-function getLinked_server(type){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && type > 0){
-		var request = token+'=1&type='+type;
+function setModuleCode() {
+	var selected_get =  jQuery("#jform_add_class_helper  option:selected").val();
+	var custom_gets =  jQuery("#jform_custom_get").val();
+	var libraries =  jQuery("#jform_libraries").val();
+	var values = {'class': selected_get, 'get': custom_gets, 'lib': libraries};
+	var editor_id = 'jform_mod_code';
+	getCodeFrom_server(1, JSON.stringify(values), 'data', 'getModuleCode').done(function(result) {
+		if(result.tmpl){
+			 addCodeToEditor(result.tmpl.code, editor_id, result.tmpl.merge, result.tmpl.merge_target);
+		}
+		if(result.css){
+			 addCodeToEditor(result.css.code, editor_id, result.css.merge, result.css.merge_target);
+		}
+		if(result.class){
+			 addCodeToEditor(result.class.code, editor_id, result.class.merge, result.class.merge_target);
+		}
+		if(result.get){
+			 addCodeToEditor(result.get.code, editor_id, result.get.merge, result.get.merge_target);
+		}
+		if(result.lib){
+			 addCodeToEditor(result.lib.code, editor_id, result.lib.merge, result.lib.merge_target);
+		}
+	});
+}
+
+function getLinked(){
+	getCodeFrom_server(1, 'type', 'type', 'getLinked').done(function(result) {
+		if(result){
+			jQuery('#display_linked_to').html(result);
+		}
+	});
+}
+
+function getCodeFrom_server(id, type, type_name, callingName){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod);
+	if(token.length > 0 && id > 0 && type.length > 0) {
+		var request = token + '=1&' + type_name + '=' + type + '&id=' + id;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -554,13 +586,86 @@ function getLinked_server(type){
 	});
 }
 
-function getLinked(){
-	getLinked_server(1).done(function(result) {
-		if(result){
-			jQuery('#display_linked_to').html(result);
+
+function addCodeToEditor(code_string, editor_id, merge, merge_target){
+	if (Joomla.editors.instances.hasOwnProperty(editor_id)) {
+		var old_code_string = Joomla.editors.instances[editor_id].getValue();
+		if (merge && old_code_string.length > 0) {
+			// make sure not to load the same string twice
+			if (old_code_string.indexOf(code_string) == -1)  {
+				if ('prepend' === merge_target) {
+					var _string = code_string + "\n\n" + old_code_string;
+				} else if (merge_target && 'append' !== merge_target) {
+					var old_code_array = old_code_string.split(merge_target);
+					if (old_code_array.length > 1) {
+						var _string = old_code_array.shift() + "\n\n" + code_string + "\n\n" + merge_target + old_code_array.join(merge_target);
+					} else {
+						var _string = code_string + "\n\n" + merge_target + old_code_array.join('');
+					}
+				} else {
+					var _string = old_code_string + "\n\n" + code_string;
+				}
+				Joomla.editors.instances[editor_id].setValue(_string.trim());
+				return true;
+			}
+		} else {
+			Joomla.editors.instances[editor_id].setValue(code_string.trim());
+			return true;
 		}
-	});
+	} else {
+		var old_code_string = jQuery('textarea#'+editor_id).val();
+		if (merge && old_code_string.length > 0) {
+			// make sure not to load the same string twice
+			if (old_code_string.indexOf(code_string) == -1) {
+				if ('prepend' === merge_target) {
+					var _string = code_string + "\n\n" + old_code_string;
+				} else if (merge_target && 'append' !== merge_target) {
+					var old_code_array = old_code_string.split(merge_target);
+					if (old_code_array.length > 1) {
+						var _string = old_code_array.shift() + "\n\n" + code_string + "\n\n" + merge_target + old_code_array.join(merge_target);
+					} else {
+						var _string = code_string + "\n\n" + merge_target + old_code_array.join('');
+					}
+				} else {
+					var _string = old_code_string + "\n\n" + code_string;
+				}
+				jQuery('textarea#'+editor_id).val(_string.trim());
+				return true;
+			}
+		} else {
+			jQuery('textarea#'+editor_id).val(code_string.trim());
+			return true;
+		}
+	}
+	return false;
 }
+
+
+function removeCodeFromEditor(code_string, editor_id){
+	if (Joomla.editors.instances.hasOwnProperty(editor_id)) {
+		var old_code_string = Joomla.editors.instances[editor_id].getValue();
+		if (old_code_string.length > 0) {
+			// make sure string is found
+			if (old_code_string.indexOf(code_string) !== -1) {
+				// remove the code
+				Joomla.editors.instances[editor_id].setValue(old_code_string.replace(code_string+"\n\n",'').replace("\n\n"+code_string,'').replace(code_string,''));
+				return true;
+			}
+		}
+	} else {
+		var old_code_string = jQuery('textarea#'+editor_id).val();
+		if (old_code_string.length > 0) {
+			// make sure string is found
+			if (old_code_string.indexOf(code_string) !== -1) {
+				// remove the code
+				jQuery('textarea#'+editor_id).val(old_code_string.replace(code_string+"\n\n",'').replace("\n\n"+code_string,'').replace(code_string,''));
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 
 function getEditCustomCodeButtons_server(id){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
@@ -601,22 +706,8 @@ function isObject(obj) {
 	return false;
 }
 
-function getSnippetDetails_server(snippetId){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.snippetDetails&format=json");
-	if(token.length > 0 && snippetId > 0){
-		var request = token+'=1&id='+snippetId;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
-}
-
 function getSnippetDetails(id){
-	getSnippetDetails_server(id).done(function(result) {
+	getCodeFrom_server(id, '_type', '_type', 'snippetDetails').done(function(result) {
 		if(result.snippet){
 			var description = '';
 			if (result.description.length > 0) {
@@ -667,28 +758,15 @@ jQuery(document).ready(function($)
 	getSnippets();
 });
 
-function getSnippets_server(libraries){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getSnippets&raw=true&format=json";
-	if(token.length > 0 && libraries.length > 0){
-		var request = token+'=1&libraries='+JSON.stringify(libraries);
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
 function getSnippets(){
 	jQuery("#loading").show();
 	// clear the selection
 	jQuery('#jform_snippet').find('option').remove().end();
 	jQuery('#jform_snippet').trigger('liszt:updated');
-	// get country value if set
+	// get libraries value if set
 	var libraries = jQuery("#jform_libraries").val();
 	if (libraries) {
-		getSnippets_server(libraries).done(function(result) {
+		getCodeFrom_server(1, JSON.stringify(libraries), 'libraries', 'getSnippets').done(function(result) {
 			setSnippets(result);
 			jQuery("#loading").hide();
 			if (typeof snippetButton !== 'undefined') {

@@ -249,6 +249,66 @@ class ComponentbuilderModelAjax extends JModelList
 		return function_exists('curl_version');
 	}
 
+	// Used in joomla_module
+	public function getModuleCode($data)
+	{
+		// reset the return array
+		$code = array();
+		if (ComponentbuilderHelper::checkJson($data))
+		{
+			// convert the data to object
+			$data = json_decode($data);
+			// set class
+			if (isset($data->class) && is_numeric($data->class) && ((int) $data->class == 2 || (int) $data->class == 1))
+			{
+				$code['class'] = array();
+				// add the code
+				$code['class']['code'] = '// Include the helper functions only once';
+				$code['class']['code'] .= PHP_EOL . "JLoader::register('Mod[[[Module]]]Helper', __DIR__ . '/helper.php');";
+				// set placement
+				$code['class']['merge'] = 1;
+				$code['class']['merge_target'] = 'prepend';
+			}
+			// get data
+			if (isset($data->get) && ComponentbuilderHelper::checkArray($data->get))
+			{
+				$code['get'] = array();
+				// add the code
+				$code['get']['code'] = '// Include the data functions only once';
+				$code['get']['code'] .= PHP_EOL . "JLoader::register('Mod[[[Module]]]Data', __DIR__ . '/data.php');";
+				// set placement
+				$code['get']['merge'] = 1;
+				$code['get']['merge_target'] = 'prepend';
+			}
+			// get libraries
+			if (isset($data->lib) && ComponentbuilderHelper::checkArray($data->lib))
+			{
+				$code['lib'] = array();
+				// add the code
+				$code['lib']['code'] = '[[[MOD_LIBRARIES]]]';
+				// set placement
+				$code['lib']['merge'] = 1;
+				$code['lib']['merge_target'] = '// get the module class sfx (local)';
+			}
+		}
+		// set the defaults
+		$code['css'] = array();
+		$code['tmpl'] = array();
+		// add the code
+		$code['css']['code'] = '// get the module class sfx (local)';
+		$code['css']['code'] .= PHP_EOL . "\$moduleclass_sfx = htmlspecialchars(\$params->get('moduleclass_sfx'), ENT_COMPAT, 'UTF-8');";
+		$code['tmpl']['code'] = '// load the default Tmpl';
+		$code['tmpl']['code'] .= PHP_EOL . "require JModuleHelper::getLayoutPath('mod_[[[module]]]', \$params->get('layout', 'default'));";
+		// set placement
+		$code['css']['merge'] = 1;
+		$code['css']['merge_target'] = '// load the default Tmpl';
+		$code['tmpl']['merge'] = 1;
+		$code['tmpl']['merge_target'] = 'append';
+
+		return $code;
+	}
+
+
 	// Used in joomla_plugin
 	public function getClassCode($id, $type)
 	{

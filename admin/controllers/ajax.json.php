@@ -31,6 +31,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getCronPath', 'ajax');
 		$this->registerTask('getJCBpackageInfo', 'ajax');
 		$this->registerTask('getCrowdinDetails', 'ajax');
+		$this->registerTask('getModuleCode', 'ajax');
 		$this->registerTask('getClassCode', 'ajax');
 		$this->registerTask('getClassCodeIds', 'ajax');
 		$this->registerTask('getClassHeaderCode', 'ajax');
@@ -274,6 +275,44 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($identifierValue && $user->id != 0 && $keyValue)
 						{
 							$result = $this->getModel('ajax')->getCrowdinDetails($identifierValue, $keyValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getModuleCode':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$dataValue = $jinput->get('data', NULL, 'STRING');
+						if($dataValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getModuleCode($dataValue);
 						}
 						else
 						{
@@ -655,7 +694,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					try
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
-						$typeValue = $jinput->get('type', NULL, 'INT');
+						$typeValue = $jinput->get('type', NULL, 'ALNUM');
 						if($typeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getLinked($typeValue);
@@ -693,7 +732,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					try
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
-						$typeValue = $jinput->get('type', NULL, 'INT');
+						$typeValue = $jinput->get('type', NULL, 'ALNUM');
 						if($typeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->checkAliasField($typeValue);

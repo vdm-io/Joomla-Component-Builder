@@ -45,6 +45,21 @@ jQuery(document).ready(function($)
 	getEditCustomCodeButtons();
 });
 
+function getCodeFrom_server(id, type, type_name, callingName){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod);
+	if(token.length > 0 && id > 0 && type.length > 0) {
+		var request = token + '=1&' + type_name + '=' + type + '&id=' + id;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
+
 function getEditCustomCodeButtons_server(id){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && id > 0){
@@ -84,22 +99,8 @@ function isObject(obj) {
 	return false;
 }
 
-function getSnippetDetails_server(snippetId){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.snippetDetails&format=json");
-	if(token.length > 0 && snippetId > 0){
-		var request = token+'=1&id='+snippetId;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
-}
-
 function getSnippetDetails(id){
-	getSnippetDetails_server(id).done(function(result) {
+	getCodeFrom_server(id, '_type', '_type', 'snippetDetails').done(function(result) {
 		if(result.snippet){
 			var description = '';
 			if (result.description.length > 0) {
@@ -203,28 +204,15 @@ jQuery(document).ready(function($)
 	getSnippets();
 });
 
-function getSnippets_server(libraries){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getSnippets&raw=true&format=json";
-	if(token.length > 0 && libraries.length > 0){
-		var request = token+'=1&libraries='+JSON.stringify(libraries);
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
 function getSnippets(){
 	jQuery("#loading").show();
 	// clear the selection
 	jQuery('#jform_snippet').find('option').remove().end();
 	jQuery('#jform_snippet').trigger('liszt:updated');
-	// get country value if set
+	// get libraries value if set
 	var libraries = jQuery("#jform_libraries").val();
 	if (libraries) {
-		getSnippets_server(libraries).done(function(result) {
+		getCodeFrom_server(1, JSON.stringify(libraries), 'libraries', 'getSnippets').done(function(result) {
 			setSnippets(result);
 			jQuery("#loading").hide();
 			if (typeof snippetButton !== 'undefined') {

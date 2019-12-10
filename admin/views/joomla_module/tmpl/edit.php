@@ -579,9 +579,22 @@ jQuery(function() {
         jQuery(this).selText().addClass("selected");
     });
 });
+jQuery('#adminForm').on('change', '#jform_custom_get',function (e) {
+	e.preventDefault();
+	// load the dynamic get include with the needed initiation
+	setModuleCode();
+});
+jQuery('#adminForm').on('change', '#jform_add_class_helper',function (e) {
+	e.preventDefault();
+	// load the dynamic helper include with the needed initiation
+	setModuleCode();
+});
 jQuery('#adminForm').on('change', '#jform_libraries',function (e) {
 	e.preventDefault();
+	// get the snippets of the selected libraries
 	getSnippets();
+	// load the dynamic media placeholders if needed
+	setModuleCode();
 });
 
 jQuery.fn.selText = function() {

@@ -819,7 +819,7 @@ jQuery(document).ready(function()
 });
 
 function checkAliasField() {
-	checkAliasField_server(1).done(function(result) {
+	getCodeFrom_server(1, 'type', 'type', 'checkAliasField').done(function(result) {
 		if(result){
 			// remove the notice
 			jQuery('.note_create_edit_notice_p').remove();
@@ -848,7 +848,7 @@ function checkAliasField_server(type){
 }
 
 function getAjaxDisplay(type){
-	getAjaxDisplay_server(type).done(function(result) {
+	getCodeFrom_server(1, type, 'type', 'getAjaxDisplay').done(function(result) {
 		if(result){
 			jQuery('#display_'+type).html(result);
 		}
@@ -857,36 +857,8 @@ function getAjaxDisplay(type){
 	});
 }
 
-function getAjaxDisplay_server(type){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getAjaxDisplay&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && type.length > 0){
-		var request = token+'=1&type=' + type;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-
 function addData(result,where){
 	jQuery(result).insertAfter(jQuery(where).closest('.control-group'));
-}
-
-function getTableColumns_server(tableName){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.tableColumns&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && tableName.length > 0){
-		var request = token+'=1&table='+tableName;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
 }
 
 function getTableColumns(fieldKey, table_, nr_){
@@ -894,30 +866,14 @@ function getTableColumns(fieldKey, table_, nr_){
 	if(jQuery("#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_table").length) {
 		// get options
 		var tableName = jQuery("#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_table option:selected").val();
-		getTableColumns_server(tableName).done(function(result) {
+		getCodeFrom_server(1, tableName, 'table', 'tableColumns').done(function(result) {
 			if(result){
 				jQuery("textarea#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_sourcemap").val(result);
-			}
-			else
-			{
+			} else {
 				jQuery("textarea#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_sourcemap").val('');
 			}
 		});
 	}
-}
-
-function getDynamicScripts_server(typpe){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getDynamicScripts&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && typpe.length > 0){
-		var request = token+'=1&type='+typpe;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
 }
 
 function getDynamicScripts(id){
@@ -932,7 +888,7 @@ function getDynamicScripts(id){
 		var current_ext = jQuery('textarea#jform_php_import_ext').val();
 		// set the display method script
 		if(current_import_display.length == 0){
-			getDynamicScripts_server('display').done(function(result) {
+			getCodeFrom_server(1, 'display', 'type', 'getDynamicScripts').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_display').val(result);
 				}
@@ -940,7 +896,7 @@ function getDynamicScripts(id){
 		}
 		// set the import method script
 		if(current_import.length == 0){
-			getDynamicScripts_server('import').done(function(result) {
+			getCodeFrom_server(1, 'import', 'type', 'getDynamicScripts').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import').val(result);
 				}
@@ -948,7 +904,7 @@ function getDynamicScripts(id){
 		}
 		// set the headers method script
 		if(current_headers.length == 0){
-			getDynamicScripts_server('headers').done(function(result) {
+			getCodeFrom_server(1, 'headers', 'type', 'getDynamicScripts').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_headers').val(result);
 				}
@@ -956,7 +912,7 @@ function getDynamicScripts(id){
 		}
 		// set the setData method script
 		if(current_setdata.length == 0){
-			getDynamicScripts_server('setdata').done(function(result) {
+			getCodeFrom_server(1, 'setdata', 'type', 'getDynamicScripts').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_setdata').val(result);
 				}
@@ -964,7 +920,7 @@ function getDynamicScripts(id){
 		}
 		// set the save method script
 		if(current_save.length == 0){
-			getDynamicScripts_server('save').done(function(result) {
+			getCodeFrom_server(1, 'save', 'type', 'getDynamicScripts').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_save').val(result);
 				}
@@ -972,7 +928,7 @@ function getDynamicScripts(id){
 		}
 		// set the view script
 		if(current_view.length == 0){
-			getDynamicScripts_server('view').done(function(result) {
+			getCodeFrom_server(1, 'view', 'type', 'getDynamicScripts').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_html_import_view').val(result);
 				}
@@ -980,7 +936,7 @@ function getDynamicScripts(id){
 		}
 		// set the import ext script
 		if(current_ext.length == 0){
-			getDynamicScripts_server('ext').done(function(result) {
+			getCodeFrom_server(1, 'ext', 'type', 'getDynamicScripts').done(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_ext').val(result);
 				}
@@ -988,6 +944,21 @@ function getDynamicScripts(id){
 		}
 	}
 }
+
+function getCodeFrom_server(id, type, type_name, callingName){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod);
+	if(token.length > 0 && id > 0 && type.length > 0) {
+		var request = token + '=1&' + type_name + '=' + type + '&id=' + id;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
 
 function getEditCustomCodeButtons_server(id){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
@@ -1080,22 +1051,8 @@ function addButton(type, where, size){
 	})
 }
 
-function getLinked_server(type){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLinked&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && type > 0){
-		var request = token+'=1&type='+type;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-
 function getLinked(){
-	getLinked_server(1).done(function(result) {
+	getCodeFrom_server(1, 'type', 'type', 'getLinked').done(function(result) {
 		if(result){
 			jQuery('#display_linked_to').html(result);
 		}
