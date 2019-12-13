@@ -266,6 +266,12 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			$fileNames = ComponentbuilderHelper::mergeArrays(array($fileNames, $app->getUserState('com_componentbuilder.modules_folder_name', array()) ));
 			// check if we have plugins
 			$fileNames = ComponentbuilderHelper::mergeArrays(array($fileNames, $app->getUserState('com_componentbuilder.plugins_folder_name', array()) ));
+
+			// wipe out the user c-m-p since we are done with them all
+			$app->setUserState('com_componentbuilder.component_folder_name', '');
+			$app->setUserState('com_componentbuilder.modules_folder_name', '');
+			$app->setUserState('com_componentbuilder.plugins_folder_name', '');
+
 			// loop and install all extensions found
 			foreach ($fileNames as $fileName)
 			{
@@ -311,7 +317,14 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		if($user->authorise('core.admin'))
 		{
 			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_COMPONENT');
-			$fileName = JFactory::getApplication()->getUserState('com_componentbuilder.component_folder_name');
+			$app = JFactory::getApplication();
+			$fileName = $app->getUserState('com_componentbuilder.component_folder_name');
+
+			// wipe out the user c-m-p since we are done with them all
+			$app->setUserState('com_componentbuilder.component_folder_name', '');
+			$app->setUserState('com_componentbuilder.modules_folder_name', '');
+			$app->setUserState('com_componentbuilder.plugins_folder_name', '');
+
 			if ($this->installExtension($fileName))
 			{
 				$message = JText::sprintf('COM_COMPONENTBUILDER_ONLY_SZIP_FILE_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileName);
@@ -342,6 +355,12 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_MODULE');
 			$app = JFactory::getApplication();
 			$fileNames = $app->getUserState('com_componentbuilder.modules_folder_name');
+
+			// wipe out the user c-m-p since we are done with them all
+			$app->setUserState('com_componentbuilder.component_folder_name', '');
+			$app->setUserState('com_componentbuilder.modules_folder_name', '');
+			$app->setUserState('com_componentbuilder.plugins_folder_name', '');
+
 			if (ComponentbuilderHelper::checkArray($fileNames))
 			{
 				$jinput = JFactory::getApplication()->input;
@@ -377,6 +396,12 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_PLUGIN');
 			$app = JFactory::getApplication();
 			$fileNames = $app->getUserState('com_componentbuilder.plugins_folder_name');
+
+			// wipe out the user c-m-p since we are done with them all
+			$app->setUserState('com_componentbuilder.component_folder_name', '');
+			$app->setUserState('com_componentbuilder.modules_folder_name', '');
+			$app->setUserState('com_componentbuilder.plugins_folder_name', '');
+
 			if (ComponentbuilderHelper::checkArray($fileNames))
 			{
 				$jinput = JFactory::getApplication()->input;

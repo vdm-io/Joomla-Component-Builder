@@ -16674,7 +16674,20 @@ function vdm_dkim() {
 
 	public function getModCode(&$module)
 	{
-		return PHP_EOL . $module->mod_code . PHP_EOL;
+		// get component helper string
+		$Helper = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper';
+		$component = $this->fileContentStatic[$this->hhh . 'component' . $this->hhh];
+		$_helper = '';
+		// get libraries code
+		$libraries = array($this->bbb . 'MOD_LIBRARIES' . $this->ddd  => $this->getModLibCode($module));
+		$code = $this->setPlaceholders($module->mod_code, $libraries);
+		// check if component helper class should be added
+		if (strpos($code, $Helper . '::') !== false && strpos($code, "/components/com_" . $component . "/helpers/" . $component . ".php") === false)
+		{
+			$_helper = '//' . $this->setLine(__LINE__) . ' Include the component helper functions only once';
+			$_helper .= PHP_EOL . "JLoader::register('". $Helper . "', JPATH_ADMINISTRATOR . '/components/com_" . $component . "/helpers/" . $component . ".php');";
+		}
+		return $_helper . PHP_EOL . $code . PHP_EOL;
 	}
 
 	public function getModDefault(&$module)
@@ -16689,6 +16702,41 @@ function vdm_dkim() {
 			$module->class_helper_type . $module->class_helper_name . PHP_EOL . '{' . PHP_EOL .
 			$module->class_helper_code . PHP_EOL .
 			"}" . PHP_EOL;
+	}
+
+	public function getModLibCode(&$module)
+	{
+		$setter = '';
+		if (isset($this->libManager[$module->key][$module->code_name]) && ComponentbuilderHelper::checkArray($this->libManager[$module->key][$module->code_name]))
+		{
+			$setter .= '//' . $this->setLine(__LINE__) . 'get the document object';
+			$setter .= PHP_EOL . '$document = JFactory::getDocument();';
+			foreach ($this->libManager[$module->key][$module->code_name] as $id => $true)
+			{
+				if (isset($this->libraries[$id]) && ComponentbuilderHelper::checkObject($this->libraries[$id]) && isset($this->libraries[$id]->document) && ComponentbuilderHelper::checkString($this->libraries[$id]->document))
+				{
+					$setter .= PHP_EOL . $this->libraries[$id]->document;
+				}
+				elseif (isset($this->libraries[$id]) && ComponentbuilderHelper::checkObject($this->libraries[$id]) && isset($this->libraries[$id]->how))
+				{
+					$setter .= $this->setLibraryDocument($id);
+				}
+			}
+		}
+		// check if we have string
+		if (ComponentbuilderHelper::checkString($setter))
+		{
+			return $this->setPlaceholders(
+				str_replace('$this->document->', '$document->',
+					implode(PHP_EOL,
+						array_map(trim,
+							(array) explode(PHP_EOL, $setter)
+						)
+					)
+				),
+				$this->placeholders);
+		}
+		return '';
 	}
 
 	public function getModuleMainXML(&$module)
