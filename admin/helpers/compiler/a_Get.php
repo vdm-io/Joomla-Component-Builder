@@ -3603,6 +3603,26 @@ class Get
 							$result->join_view_table = json_decode($result->join_view_table, true);
 							if (ComponentbuilderHelper::checkArray($result->join_view_table))
 							{
+								// start the part of a table bucket
+								$_part_of_a = array();
+								// build relationship
+								$_relationship = array_map(function($op) use(&$_part_of_a){
+									$bucket = array();
+									// array(on_field_as, on_field)
+									$bucket['on_field'] = array_map('trim', explode('.', $op['on_field']));
+									// array(join_field_as, join_field)
+									$bucket['join_field'] = array_map('trim', explode('.', $op['join_field']));
+									// triget filed that has table a relationship
+									if ($bucket['on_field'][0] === 'a' ||
+										isset($_part_of_a[$bucket['on_field'][0]]) ||
+										isset($_part_of_a[$bucket['join_field'][0]]))
+									{
+										$_part_of_a[$op['as']] = $op['as'];
+									}
+									return $bucket;
+								}, $result->join_view_table);
+
+								// loop joints
 								foreach ($result->join_view_table as $nr => &$option)
 								{
 									if (ComponentbuilderHelper::checkString($option['selection']))
@@ -3612,11 +3632,10 @@ class Get
 										// convert the operator
 										$option['operator'] = $operatorArray[$option['operator']];
 										// get the on field values
-										$on_field = array(); // array(on_field_as, on_field)
-										$on_field = array_map('trim', explode('.', $option['on_field']));
+										$on_field = $_relationship[$nr]['on_field'];
 										// get the join field values
-										$join_field = array(); // array(join_field_as, join_field) 
-										$join_field = array_map('trim', explode('.', $option['join_field']));
+										$join_field = $_relationship[$nr]['join_field'];
+										// set selection
 										$option['selection'] = $this->setDataSelection($result->key, $view_code, $option['selection'], $option['view_table'], $option['as'], $option['row_type'], 'view');
 										$option['key'] = $result->key;
 										$option['context'] = $context;
@@ -3624,7 +3643,7 @@ class Get
 										if ($option['row_type'] == 1)
 										{
 											$result->main_get[] = $option;
-											if ($on_field[0] === 'a')
+											if ($on_field[0] === 'a' || isset($_part_of_a[$join_field[0]]) || isset($_part_of_a[$on_field[0]]))
 											{
 												$this->siteMainGet[$this->target][$view_code][$option['as']] = $option['as'];
 											}
@@ -3650,6 +3669,26 @@ class Get
 							$result->join_db_table = json_decode($result->join_db_table, true);
 							if (ComponentbuilderHelper::checkArray($result->join_db_table))
 							{
+								// start the part of a table bucket
+								$_part_of_a = array();
+								// build relationship
+								$_relationship = array_map(function($op) use(&$_part_of_a){
+									$bucket = array();
+									// array(on_field_as, on_field)
+									$bucket['on_field'] = array_map('trim', explode('.', $op['on_field']));
+									// array(join_field_as, join_field)
+									$bucket['join_field'] = array_map('trim', explode('.', $op['join_field']));
+									// triget filed that has table a relationship
+									if ($bucket['on_field'][0] === 'a' ||
+										isset($_part_of_a[$bucket['on_field'][0]]) ||
+										isset($_part_of_a[$bucket['join_field'][0]]))
+									{
+										$_part_of_a[$op['as']] = $op['as'];
+									}
+									return $bucket;
+								}, $result->join_db_table);
+
+								// loop joints
 								foreach ($result->join_db_table as $nr => &$option1)
 								{
 									if (ComponentbuilderHelper::checkString($option1['selection']))
@@ -3659,11 +3698,10 @@ class Get
 										// convert the operator
 										$option1['operator'] = $operatorArray[$option1['operator']];
 										// get the on field values
-										$on_field = array(); // array(on_field_as, on_field)
-										$on_field = array_map('trim', explode('.', $option1['on_field']));
+										$on_field = $_relationship[$nr]['on_field'];
 										// get the join field values
-										$join_field = array(); // array(join_field_as, join_field) 
-										$join_field = array_map('trim', explode('.', $option1['join_field']));
+										$join_field = $_relationship[$nr]['join_field'];
+										// set selection
 										$option1['selection'] = $this->setDataSelection($result->key, $view_code, $option1['selection'], $option1['db_table'], $option1['as'], $option1['row_type'], 'db');
 										$option1['key'] = $result->key;
 										$option1['context'] = $context;
@@ -3671,7 +3709,7 @@ class Get
 										if ($option1['row_type'] == 1)
 										{
 											$result->main_get[] = $option1;
-											if ($on_field[0] === 'a')
+											if ($on_field[0] === 'a' || isset($_part_of_a[$join_field[0]]) || isset($_part_of_a[$on_field[0]]))
 											{
 												$this->siteMainGet[$this->target][$view_code][$option1['as']] = $option1['as'];
 											}
@@ -5001,7 +5039,7 @@ class Get
 				if (ComponentbuilderHelper::checkArray($gets) && ComponentbuilderHelper::checkArray($keys))
 				{
 					// single joined selection needs the prefix to the values to avoid conflict in the names
-					// so we most still add then AS
+					// so we must still add then AS
 					if ($string == '*' && 1 != $row_type)
 					{
 						$querySelect = "\$query->select('" . $as . ".*');";
