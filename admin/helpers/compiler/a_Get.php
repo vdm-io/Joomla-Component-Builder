@@ -6387,7 +6387,7 @@ class Get
 				// update the name if it has dynamic values
 				$module->code_name = ComponentbuilderHelper::safeClassFunctionName($module->name);
 				// set official name
-				$module->official_name = ucwords($module->name);
+				$module->official_name = ComponentbuilderHelper::safeString($module->name, 'W');
 				// set langPrefix
 				$this->langPrefix = 'MOD_' . strtoupper($module->code_name);
 				// set lang prefix
@@ -7975,7 +7975,7 @@ class Get
 				// get the GUI target details
 				$query = explode('.', trim($first_line, '.'));
 				// only continue if we have 3 values in the query
-				if (is_array($query) && count($query) == 3)
+				if (is_array($query) && count($query) >= 3)
 				{
 					// cleanup the newlines around the code
 					$code = trim(str_replace($first_line, '', $code), PHP_EOL) . PHP_EOL;
