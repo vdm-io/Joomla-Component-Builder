@@ -293,12 +293,13 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 	 */
 	public $assistantForm = array(
 		'left' => array(
-			'guid',
 			'name',
 			'short_description',
+			'guid',
 			'copyright'
 		),
 		'right' => array( 
+			'name_code',
 			'license',
 			'bom',
 			'image'

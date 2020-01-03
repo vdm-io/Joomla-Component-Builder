@@ -5707,6 +5707,11 @@ abstract class ComponentbuilderHelper
 		$user = JFactory::getUser();
 		// load the submenus to sidebar
 		JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_DASHBOARD'), 'index.php?option=com_componentbuilder&view=componentbuilder', $submenu === 'componentbuilder');
+		// Access control (assistant.submenu).
+		if ($user->authorise('assistant.submenu', 'com_componentbuilder'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_ASSISTANT'), 'index.php?option=com_componentbuilder&view=assistant', $submenu === 'assistant');
+		}
 		// Access control (compiler.submenu).
 		if ($user->authorise('compiler.submenu', 'com_componentbuilder'))
 		{

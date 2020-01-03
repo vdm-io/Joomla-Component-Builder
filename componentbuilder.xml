@@ -73,6 +73,7 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 		<menu>COM_COMPONENTBUILDER_MENU</menu>
 		<submenu>
 			<!-- Instead of link you can specify individual link attributes -->
+			<menu option="com_componentbuilder" view="assistant">COM_COMPONENTBUILDER_MENU_ASSISTANT</menu>
 			<menu option="com_componentbuilder" view="compiler">COM_COMPONENTBUILDER_MENU_COMPILER</menu>
 			<menu option="com_componentbuilder" view="joomla_components">COM_COMPONENTBUILDER_MENU_JOOMLA_COMPONENTS</menu>
 			<menu option="com_componentbuilder" view="joomla_modules">COM_COMPONENTBUILDER_MENU_JOOMLA_MODULES</menu>
