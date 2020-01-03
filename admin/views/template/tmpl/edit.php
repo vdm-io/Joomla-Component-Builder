@@ -220,7 +220,7 @@ var create_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_CREATE_A_SNIPP
 ?>
 function JRouter(link) {
 <?php
-	if ($app->isSite())
+	if ($app->isClient('site'))
 	{
 		echo 'var url = "'.JURI::root().'";';
 	}

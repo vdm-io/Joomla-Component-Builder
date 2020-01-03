@@ -107,13 +107,12 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				'crowdin_account_api_key'
 			)
 		),
-		'readme' => array(
-			'left' => array(
-				'addreadme',
-				'readme'
-			),
-			'right' => array(
-				'note_readme'
+		'mysql' => array(
+			'fullwidth' => array(
+				'add_sql',
+				'sql',
+				'add_sql_uninstall',
+				'sql_uninstall'
 			)
 		),
 		'dash_install' => array(
@@ -138,12 +137,20 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				'php_method_uninstall'
 			)
 		),
-		'mysql' => array(
+		'readme' => array(
+			'left' => array(
+				'addreadme',
+				'readme'
+			),
+			'right' => array(
+				'note_readme'
+			)
+		),
+		'dynamic_build_beta' => array(
 			'fullwidth' => array(
-				'add_sql',
-				'sql',
-				'add_sql_uninstall',
-				'sql_uninstall'
+				'note_buildcomp_dynamic_mysql',
+				'buildcomp',
+				'buildcompsql'
 			)
 		),
 		'settings' => array(
@@ -176,13 +183,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				'addcontributors',
 				'emptycontributors',
 				'number'
-			)
-		),
-		'dynamic_build_beta' => array(
-			'fullwidth' => array(
-				'note_buildcomp_dynamic_mysql',
-				'buildcomp',
-				'buildcompsql'
 			)
 		),
 		'admin_views' => array(
@@ -286,6 +286,25 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		return $this->vastDevMod;
 	}
 
+	/**
+	 * The assistant form fields
+	 *
+	 * @var      array
+	 */
+	public $assistantForm = array(
+		'left' => array(
+			'guid',
+			'name',
+			'short_description',
+			'copyright'
+		),
+		'right' => array( 
+			'license',
+			'bom',
+			'image'
+		)
+	);
+
     
 	/**
 	 * Method to get a single record.
@@ -316,52 +335,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_helper_site))
+			if (!empty($item->buildcompsql))
 			{
-				// base64 Decode php_helper_site.
-				$item->php_helper_site = base64_decode($item->php_helper_site);
-			}
-
-			if (!empty($item->readme))
-			{
-				// base64 Decode readme.
-				$item->readme = base64_decode($item->readme);
-			}
-
-			if (!empty($item->php_postflight_update))
-			{
-				// base64 Decode php_postflight_update.
-				$item->php_postflight_update = base64_decode($item->php_postflight_update);
-			}
-
-			if (!empty($item->javascript))
-			{
-				// base64 Decode javascript.
-				$item->javascript = base64_decode($item->javascript);
-			}
-
-			if (!empty($item->css_site))
-			{
-				// base64 Decode css_site.
-				$item->css_site = base64_decode($item->css_site);
-			}
-
-			if (!empty($item->php_preflight_update))
-			{
-				// base64 Decode php_preflight_update.
-				$item->php_preflight_update = base64_decode($item->php_preflight_update);
-			}
-
-			if (!empty($item->sql))
-			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
-			}
-
-			if (!empty($item->php_helper_admin))
-			{
-				// base64 Decode php_helper_admin.
-				$item->php_helper_admin = base64_decode($item->php_helper_admin);
+				// base64 Decode buildcompsql.
+				$item->buildcompsql = base64_decode($item->buildcompsql);
 			}
 
 			if (!empty($item->php_helper_both))
@@ -370,10 +347,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_helper_both = base64_decode($item->php_helper_both);
 			}
 
+			if (!empty($item->php_helper_admin))
+			{
+				// base64 Decode php_helper_admin.
+				$item->php_helper_admin = base64_decode($item->php_helper_admin);
+			}
+
 			if (!empty($item->php_admin_event))
 			{
 				// base64 Decode php_admin_event.
 				$item->php_admin_event = base64_decode($item->php_admin_event);
+			}
+
+			if (!empty($item->php_helper_site))
+			{
+				// base64 Decode php_helper_site.
+				$item->php_helper_site = base64_decode($item->php_helper_site);
 			}
 
 			if (!empty($item->php_site_event))
@@ -382,10 +371,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_site_event = base64_decode($item->php_site_event);
 			}
 
+			if (!empty($item->javascript))
+			{
+				// base64 Decode javascript.
+				$item->javascript = base64_decode($item->javascript);
+			}
+
 			if (!empty($item->css_admin))
 			{
 				// base64 Decode css_admin.
 				$item->css_admin = base64_decode($item->css_admin);
+			}
+
+			if (!empty($item->css_site))
+			{
+				// base64 Decode css_site.
+				$item->css_site = base64_decode($item->css_site);
 			}
 
 			if (!empty($item->php_preflight_install))
@@ -394,10 +395,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_preflight_install = base64_decode($item->php_preflight_install);
 			}
 
+			if (!empty($item->php_preflight_update))
+			{
+				// base64 Decode php_preflight_update.
+				$item->php_preflight_update = base64_decode($item->php_preflight_update);
+			}
+
 			if (!empty($item->php_postflight_install))
 			{
 				// base64 Decode php_postflight_install.
 				$item->php_postflight_install = base64_decode($item->php_postflight_install);
+			}
+
+			if (!empty($item->php_postflight_update))
+			{
+				// base64 Decode php_postflight_update.
+				$item->php_postflight_update = base64_decode($item->php_postflight_update);
 			}
 
 			if (!empty($item->php_method_uninstall))
@@ -406,16 +419,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 			}
 
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
+			}
+
 			if (!empty($item->sql_uninstall))
 			{
 				// base64 Decode sql_uninstall.
 				$item->sql_uninstall = base64_decode($item->sql_uninstall);
 			}
 
-			if (!empty($item->buildcompsql))
+			if (!empty($item->readme))
 			{
-				// base64 Decode buildcompsql.
-				$item->buildcompsql = base64_decode($item->buildcompsql);
+				// base64 Decode readme.
+				$item->readme = base64_decode($item->readme);
 			}
 
 			// Get the basic encryption.
@@ -423,10 +442,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			// Get the encryption object.
 			$basic = new FOFEncryptAes($basickey);
 
-			if (!empty($item->crowdin_account_api_key) && $basickey && !is_numeric($item->crowdin_account_api_key) && $item->crowdin_account_api_key === base64_encode(base64_decode($item->crowdin_account_api_key, true)))
+			if (!empty($item->crowdin_username) && $basickey && !is_numeric($item->crowdin_username) && $item->crowdin_username === base64_encode(base64_decode($item->crowdin_username, true)))
 			{
-				// basic decrypt data crowdin_account_api_key.
-				$item->crowdin_account_api_key = rtrim($basic->decryptString($item->crowdin_account_api_key), "\0");
+				// basic decrypt data crowdin_username.
+				$item->crowdin_username = rtrim($basic->decryptString($item->crowdin_username), "\0");
 			}
 
 			if (!empty($item->whmcs_key) && $basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
@@ -435,22 +454,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->whmcs_key = rtrim($basic->decryptString($item->whmcs_key), "\0");
 			}
 
-			if (!empty($item->crowdin_project_api_key) && $basickey && !is_numeric($item->crowdin_project_api_key) && $item->crowdin_project_api_key === base64_encode(base64_decode($item->crowdin_project_api_key, true)))
-			{
-				// basic decrypt data crowdin_project_api_key.
-				$item->crowdin_project_api_key = rtrim($basic->decryptString($item->crowdin_project_api_key), "\0");
-			}
-
 			if (!empty($item->export_key) && $basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
 			{
 				// basic decrypt data export_key.
 				$item->export_key = rtrim($basic->decryptString($item->export_key), "\0");
 			}
 
-			if (!empty($item->crowdin_username) && $basickey && !is_numeric($item->crowdin_username) && $item->crowdin_username === base64_encode(base64_decode($item->crowdin_username, true)))
+			if (!empty($item->crowdin_project_api_key) && $basickey && !is_numeric($item->crowdin_project_api_key) && $item->crowdin_project_api_key === base64_encode(base64_decode($item->crowdin_project_api_key, true)))
 			{
-				// basic decrypt data crowdin_username.
-				$item->crowdin_username = rtrim($basic->decryptString($item->crowdin_username), "\0");
+				// basic decrypt data crowdin_project_api_key.
+				$item->crowdin_project_api_key = rtrim($basic->decryptString($item->crowdin_project_api_key), "\0");
+			}
+
+			if (!empty($item->crowdin_account_api_key) && $basickey && !is_numeric($item->crowdin_account_api_key) && $item->crowdin_account_api_key === base64_encode(base64_decode($item->crowdin_account_api_key, true)))
+			{
+				// basic decrypt data crowdin_account_api_key.
+				$item->crowdin_account_api_key = rtrim($basic->decryptString($item->crowdin_account_api_key), "\0");
 			}
 
 			if (!empty($item->addcontributors))
@@ -550,14 +569,14 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
-		// // check if xpath was set in options
+		// check if xpath was set in options
 		$xpath = false;
 		if (isset($options['xpath']))
 		{
 			$xpath = $options['xpath'];
 			unset($options['xpath']);
 		}
-		// // check if clear form was set in options
+		// check if clear form was set in options
 		$clear = false;
 		if (isset($options['clear']))
 		{
@@ -643,6 +662,17 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
+		// Only load these values if no id is found
+		if (0 == $id)
+		{
+			// set company defaults
+			$form->setValue('companyname', null, JComponentHelper::getParams('com_componentbuilder')->get('export_company', ''));
+			$form->setValue('author', null, JComponentHelper::getParams('com_componentbuilder')->get('export_owner', ''));
+			$form->setValue('email', null, JComponentHelper::getParams('com_componentbuilder')->get('export_email', ''));
+			$form->setValue('website', null, JComponentHelper::getParams('com_componentbuilder')->get('export_website', ''));
+			$form->setValue('copyright', null, JComponentHelper::getParams('com_componentbuilder')->get('export_copyright', 'Copyright (C) 2015. All Rights Reserved'));
+			$form->setValue('license', null, JComponentHelper::getParams('com_componentbuilder')->get('export_license', 'GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html'));
+		}
 
 		// update all editors to use this components global editor
 		$global_editor = JComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
@@ -660,17 +690,13 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			}
 		}
 
-		// Only load these values if no id is found
+
+		// Only load the GUID if new item
 		if (0 == $id)
 		{
-			// set company defaults
-			$form->setValue('companyname', null, JComponentHelper::getParams('com_componentbuilder')->get('export_company', ''));
-			$form->setValue('author', null, JComponentHelper::getParams('com_componentbuilder')->get('export_owner', ''));
-			$form->setValue('email', null, JComponentHelper::getParams('com_componentbuilder')->get('export_email', ''));
-			$form->setValue('website', null, JComponentHelper::getParams('com_componentbuilder')->get('export_website', ''));
-			$form->setValue('copyright', null, JComponentHelper::getParams('com_componentbuilder')->get('export_copyright', 'Copyright (C) 2015. All Rights Reserved'));
-			$form->setValue('license', null, JComponentHelper::getParams('com_componentbuilder')->get('export_license', 'GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html'));
+			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
 		}
+
 		return $form;
 	}
 
@@ -1355,6 +1381,13 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['system_name'] = $data['name'];
 		}
 
+		// Set the GUID if empty or not valid
+		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid']))
+		{
+			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+		}
+
+
 		// Set the addcontributors items to data.
 		if (isset($data['addcontributors']) && is_array($data['addcontributors']))
 		{
@@ -1368,52 +1401,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['addcontributors'] = '';
 		}
 
-		// Set the php_helper_site string to base64 string.
-		if (isset($data['php_helper_site']))
+		// Set the buildcompsql string to base64 string.
+		if (isset($data['buildcompsql']))
 		{
-			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
-		}
-
-		// Set the readme string to base64 string.
-		if (isset($data['readme']))
-		{
-			$data['readme'] = base64_encode($data['readme']);
-		}
-
-		// Set the php_postflight_update string to base64 string.
-		if (isset($data['php_postflight_update']))
-		{
-			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
-		}
-
-		// Set the javascript string to base64 string.
-		if (isset($data['javascript']))
-		{
-			$data['javascript'] = base64_encode($data['javascript']);
-		}
-
-		// Set the css_site string to base64 string.
-		if (isset($data['css_site']))
-		{
-			$data['css_site'] = base64_encode($data['css_site']);
-		}
-
-		// Set the php_preflight_update string to base64 string.
-		if (isset($data['php_preflight_update']))
-		{
-			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
-		}
-
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
-		{
-			$data['sql'] = base64_encode($data['sql']);
-		}
-
-		// Set the php_helper_admin string to base64 string.
-		if (isset($data['php_helper_admin']))
-		{
-			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
+			$data['buildcompsql'] = base64_encode($data['buildcompsql']);
 		}
 
 		// Set the php_helper_both string to base64 string.
@@ -1422,10 +1413,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
 		}
 
+		// Set the php_helper_admin string to base64 string.
+		if (isset($data['php_helper_admin']))
+		{
+			$data['php_helper_admin'] = base64_encode($data['php_helper_admin']);
+		}
+
 		// Set the php_admin_event string to base64 string.
 		if (isset($data['php_admin_event']))
 		{
 			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
+		}
+
+		// Set the php_helper_site string to base64 string.
+		if (isset($data['php_helper_site']))
+		{
+			$data['php_helper_site'] = base64_encode($data['php_helper_site']);
 		}
 
 		// Set the php_site_event string to base64 string.
@@ -1434,10 +1437,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_site_event'] = base64_encode($data['php_site_event']);
 		}
 
+		// Set the javascript string to base64 string.
+		if (isset($data['javascript']))
+		{
+			$data['javascript'] = base64_encode($data['javascript']);
+		}
+
 		// Set the css_admin string to base64 string.
 		if (isset($data['css_admin']))
 		{
 			$data['css_admin'] = base64_encode($data['css_admin']);
+		}
+
+		// Set the css_site string to base64 string.
+		if (isset($data['css_site']))
+		{
+			$data['css_site'] = base64_encode($data['css_site']);
 		}
 
 		// Set the php_preflight_install string to base64 string.
@@ -1446,10 +1461,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
 		}
 
+		// Set the php_preflight_update string to base64 string.
+		if (isset($data['php_preflight_update']))
+		{
+			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
+		}
+
 		// Set the php_postflight_install string to base64 string.
 		if (isset($data['php_postflight_install']))
 		{
 			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
+		}
+
+		// Set the php_postflight_update string to base64 string.
+		if (isset($data['php_postflight_update']))
+		{
+			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
 		}
 
 		// Set the php_method_uninstall string to base64 string.
@@ -1458,16 +1485,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
 		}
 
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
+		}
+
 		// Set the sql_uninstall string to base64 string.
 		if (isset($data['sql_uninstall']))
 		{
 			$data['sql_uninstall'] = base64_encode($data['sql_uninstall']);
 		}
 
-		// Set the buildcompsql string to base64 string.
-		if (isset($data['buildcompsql']))
+		// Set the readme string to base64 string.
+		if (isset($data['readme']))
 		{
-			$data['buildcompsql'] = base64_encode($data['buildcompsql']);
+			$data['readme'] = base64_encode($data['readme']);
 		}
 
 		// Get the basic encryption key.
@@ -1475,10 +1508,10 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		// Get the encryption object
 		$basic = new FOFEncryptAes($basickey);
 
-		// Encrypt data crowdin_account_api_key.
-		if (isset($data['crowdin_account_api_key']) && $basickey)
+		// Encrypt data crowdin_username.
+		if (isset($data['crowdin_username']) && $basickey)
 		{
-			$data['crowdin_account_api_key'] = $basic->encryptString($data['crowdin_account_api_key']);
+			$data['crowdin_username'] = $basic->encryptString($data['crowdin_username']);
 		}
 
 		// Encrypt data whmcs_key.
@@ -1487,22 +1520,22 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['whmcs_key'] = $basic->encryptString($data['whmcs_key']);
 		}
 
-		// Encrypt data crowdin_project_api_key.
-		if (isset($data['crowdin_project_api_key']) && $basickey)
-		{
-			$data['crowdin_project_api_key'] = $basic->encryptString($data['crowdin_project_api_key']);
-		}
-
 		// Encrypt data export_key.
 		if (isset($data['export_key']) && $basickey)
 		{
 			$data['export_key'] = $basic->encryptString($data['export_key']);
 		}
 
-		// Encrypt data crowdin_username.
-		if (isset($data['crowdin_username']) && $basickey)
+		// Encrypt data crowdin_project_api_key.
+		if (isset($data['crowdin_project_api_key']) && $basickey)
 		{
-			$data['crowdin_username'] = $basic->encryptString($data['crowdin_username']);
+			$data['crowdin_project_api_key'] = $basic->encryptString($data['crowdin_project_api_key']);
+		}
+
+		// Encrypt data crowdin_account_api_key.
+		if (isset($data['crowdin_account_api_key']) && $basickey)
+		{
+			$data['crowdin_account_api_key'] = $basic->encryptString($data['crowdin_account_api_key']);
 		}
 
 		// we check if component should be build from sql file

@@ -161,14 +161,14 @@ class ComponentbuilderModelComponent_custom_admin_menus extends JModelAdmin
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
-		// // check if xpath was set in options
+		// check if xpath was set in options
 		$xpath = false;
 		if (isset($options['xpath']))
 		{
 			$xpath = $options['xpath'];
 			unset($options['xpath']);
 		}
-		// // check if clear form was set in options
+		// check if clear form was set in options
 		$clear = false;
 		if (isset($options['clear']))
 		{

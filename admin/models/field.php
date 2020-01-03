@@ -220,16 +220,16 @@ class ComponentbuilderModelField extends JModelAdmin
 				$item->css_view = base64_decode($item->css_view);
 			}
 
-			if (!empty($item->css_views))
-			{
-				// base64 Decode css_views.
-				$item->css_views = base64_decode($item->css_views);
-			}
-
 			if (!empty($item->javascript_view_footer))
 			{
 				// base64 Decode javascript_view_footer.
 				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
+			}
+
+			if (!empty($item->css_views))
+			{
+				// base64 Decode css_views.
+				$item->css_views = base64_decode($item->css_views);
 			}
 
 			if (!empty($item->javascript_views_footer))
@@ -308,14 +308,14 @@ class ComponentbuilderModelField extends JModelAdmin
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
-		// // check if xpath was set in options
+		// check if xpath was set in options
 		$xpath = false;
 		if (isset($options['xpath']))
 		{
 			$xpath = $options['xpath'];
 			unset($options['xpath']);
 		}
-		// // check if clear form was set in options
+		// check if clear form was set in options
 		$clear = false;
 		if (isset($options['clear']))
 		{
@@ -414,6 +414,13 @@ class ComponentbuilderModelField extends JModelAdmin
 				// set the field editor value (with none as fallback)
 				$form->setFieldAttribute($name, 'editor', $global_editor . '|none');
 			}
+		}
+
+
+		// Only load the GUID if new item
+		if (0 == $id)
+		{
+			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
 		}
 
 		return $form;
@@ -1134,6 +1141,13 @@ class ComponentbuilderModelField extends JModelAdmin
 			}
 		}
 
+		// Set the GUID if empty or not valid
+		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid']))
+		{
+			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+		}
+
+
 		// Set the xml string to JSON string.
 		if (isset($data['xml']))
 		{
@@ -1164,16 +1178,16 @@ class ComponentbuilderModelField extends JModelAdmin
 			$data['css_view'] = base64_encode($data['css_view']);
 		}
 
-		// Set the css_views string to base64 string.
-		if (isset($data['css_views']))
-		{
-			$data['css_views'] = base64_encode($data['css_views']);
-		}
-
 		// Set the javascript_view_footer string to base64 string.
 		if (isset($data['javascript_view_footer']))
 		{
 			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
+		}
+
+		// Set the css_views string to base64 string.
+		if (isset($data['css_views']))
+		{
+			$data['css_views'] = base64_encode($data['css_views']);
 		}
 
 		// Set the javascript_views_footer string to base64 string.

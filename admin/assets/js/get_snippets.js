@@ -9,6 +9,7 @@
  */
 
 /* JS Document */
+
 // start the moment the document is ready
 jQuery(document).ready(function () {
 	// just get the available libraries
@@ -97,9 +98,9 @@ function buildLibraries(paths) {
 		var temp = {};
 		jQuery.each(paths.tree, function(key,value) {
 			if (value.path.match(".json$")) {
-				var libName = value.path.split(/ -(.+)/)[0];
-				libName = libName.trim()
-				temp[libName] = libName;
+				var libraryName = value.path.split(/ -(.+)/)[0];
+				libraryName = libraryName.trim()
+				temp[libraryName] = libraryName;
 			}
 		});
 		// load only this library paths
@@ -110,7 +111,7 @@ function buildLibraries(paths) {
 
 // set the libraries
 function setLibraries(names) {
-	// now load the lib buttons
+	// now load the library buttons
 	jQuery.each(names, function(value) {
 		setLibrary(value);
 	});
@@ -131,7 +132,7 @@ function setLibrary(name) {
 	html += '<h3 class="uk-panel-title">' + name + '</h3>';
 	html += '<hr />';
 	// set the data buttons
-	html += setLibButtons(name);
+	html += setLibraryButtons(name);
 	// close the box panel
 	html += '</div>';
 	html += '</div>';
@@ -139,7 +140,7 @@ function setLibrary(name) {
 	jQuery('#libraries-grid').append(html);
 }
 
-function setLibButtons(name) {
+function setLibraryButtons(name) {
 	return  '<button class="uk-button uk-button-small uk-button-success uk-width-1-1 getreaction" data-name="'+name+'" data-type="getSnippets" title="'+Joomla.JText._('COM_COMPONENTBUILDER_VIEW_DESCRIPTION_OF_COMMUNITY_VERSION')+'"><i class="uk-icon-thumb-tack"></i><span class="uk-hidden-small"> '+Joomla.JText._('COM_COMPONENTBUILDER_OPEN_LIBRARY_SNIPPETS')+'</span></button>';
 }
 
@@ -513,6 +514,18 @@ function showSnippetModal(snippet, type) {
 	});
 	// show modal
 	modal.show();
+}
+
+// get key ID
+function getKeyID(key) {
+	// get useful ID
+	var keyID = key.replace('-', '');
+	keyID = keyID.replace('.json', '');
+	keyID = keyID.replace(/\s+/ig, '-');
+	keyID = keyID.replace(/\(/g, '');
+	keyID = keyID.replace(/\)/g, '');
+	// return the id build
+	return keyID;
 }
 
 // get key ID

@@ -190,20 +190,20 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 				$item->php_setdocument = base64_decode($item->php_setdocument);
 			}
 
-			if (!empty($item->addconditions))
-			{
-				// Convert the addconditions field to an array.
-				$addconditions = new Registry;
-				$addconditions->loadString($item->addconditions);
-				$item->addconditions = $addconditions->toArray();
-			}
-
 			if (!empty($item->libraries))
 			{
 				// Convert the libraries field to an array.
 				$libraries = new Registry;
 				$libraries->loadString($item->libraries);
 				$item->libraries = $libraries->toArray();
+			}
+
+			if (!empty($item->addconditions))
+			{
+				// Convert the addconditions field to an array.
+				$addconditions = new Registry;
+				$addconditions->loadString($item->addconditions);
+				$item->addconditions = $addconditions->toArray();
 			}
 
 
@@ -264,14 +264,14 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
-		// // check if xpath was set in options
+		// check if xpath was set in options
 		$xpath = false;
 		if (isset($options['xpath']))
 		{
 			$xpath = $options['xpath'];
 			unset($options['xpath']);
 		}
-		// // check if clear form was set in options
+		// check if clear form was set in options
 		$clear = false;
 		if (isset($options['clear']))
 		{
@@ -355,6 +355,13 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
+
+		// Only load the GUID if new item
+		if (0 == $id)
+		{
+			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
+		}
+
 		return $form;
 	}
 
@@ -1037,18 +1044,13 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		}
 
-		// Set the addconditions items to data.
-		if (isset($data['addconditions']) && is_array($data['addconditions']))
+
+		// Set the GUID if empty or not valid
+		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid']))
 		{
-			$addconditions = new JRegistry;
-			$addconditions->loadArray($data['addconditions']);
-			$data['addconditions'] = (string) $addconditions;
+			$data['guid'] = (string) ComponentbuilderHelper::GUID();
 		}
-		elseif (!isset($data['addconditions']))
-		{
-			// Set the empty addconditions to data
-			$data['addconditions'] = '';
-		}
+
 
 		// Set the libraries items to data.
 		if (isset($data['libraries']) && is_array($data['libraries']))
@@ -1061,6 +1063,19 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 		{
 			// Set the empty libraries to data
 			$data['libraries'] = '';
+		}
+
+		// Set the addconditions items to data.
+		if (isset($data['addconditions']) && is_array($data['addconditions']))
+		{
+			$addconditions = new JRegistry;
+			$addconditions->loadArray($data['addconditions']);
+			$data['addconditions'] = (string) $addconditions;
+		}
+		elseif (!isset($data['addconditions']))
+		{
+			// Set the empty addconditions to data
+			$data['addconditions'] = '';
 		}
 
 		// Set the php_setdocument string to base64 string.

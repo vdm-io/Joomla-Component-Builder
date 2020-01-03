@@ -250,6 +250,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 					}
 				});
 			}
+			
 			var noticeboard = \"https://vdm.bz/componentbuilder-noticeboard-md\";
 			var proboard = \"https://vdm.bz/componentbuilder-pro-noticeboard-md\";
 			jQuery(document).ready(function () {
@@ -300,6 +301,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 					jsonp: false
 				});
 			}
+			
 		");
 	}
 

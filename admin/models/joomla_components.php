@@ -1906,7 +1906,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		// #__componentbuilder_custom_admin_view (g)
 		'custom_admin_view' => array(
 			'search' => array('id', 'system_name', 'default', 'php_view', 'php_jview', 'php_jview_display', 'php_document',
-				'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
+				'javascript_file', 'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
 			'views' => 'custom_admin_views',
 			'not_base64' => array(),
 			'name' => 'system_name'
@@ -1914,7 +1914,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		// #__componentbuilder_site_view (h)
 		'site_view' => array(
 			'search' => array('id', 'system_name', 'default', 'php_view', 'php_jview', 'php_jview_display', 'php_document',
-				'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
+				'javascript_file', 'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
 			'views' => 'site_views',
 			'not_base64' => array(),
 			'name' => 'system_name'
@@ -2303,58 +2303,6 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							continue;
 						}
 
-						// decode php_helper_site
-						$item->php_helper_site = base64_decode($item->php_helper_site);
-						if ($basickey && !is_numeric($item->crowdin_account_api_key) && $item->crowdin_account_api_key === base64_encode(base64_decode($item->crowdin_account_api_key, true)))
-						{
-							// decrypt crowdin_account_api_key
-							$item->crowdin_account_api_key = $basic->decryptString($item->crowdin_account_api_key);
-						}
-						// decode readme
-						$item->readme = base64_decode($item->readme);
-						// decode php_postflight_update
-						$item->php_postflight_update = base64_decode($item->php_postflight_update);
-						// decode javascript
-						$item->javascript = base64_decode($item->javascript);
-						// decode css_site
-						$item->css_site = base64_decode($item->css_site);
-						// decode php_preflight_update
-						$item->php_preflight_update = base64_decode($item->php_preflight_update);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
-						// decode php_helper_admin
-						$item->php_helper_admin = base64_decode($item->php_helper_admin);
-						// decode php_helper_both
-						$item->php_helper_both = base64_decode($item->php_helper_both);
-						// decode php_admin_event
-						$item->php_admin_event = base64_decode($item->php_admin_event);
-						// decode php_site_event
-						$item->php_site_event = base64_decode($item->php_site_event);
-						// decode css_admin
-						$item->css_admin = base64_decode($item->css_admin);
-						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
-						{
-							// decrypt whmcs_key
-							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
-						}
-						// decode php_preflight_install
-						$item->php_preflight_install = base64_decode($item->php_preflight_install);
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-						// decode sql_uninstall
-						$item->sql_uninstall = base64_decode($item->sql_uninstall);
-						if ($basickey && !is_numeric($item->crowdin_project_api_key) && $item->crowdin_project_api_key === base64_encode(base64_decode($item->crowdin_project_api_key, true)))
-						{
-							// decrypt crowdin_project_api_key
-							$item->crowdin_project_api_key = $basic->decryptString($item->crowdin_project_api_key);
-						}
-						if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
-						{
-							// decrypt export_key
-							$item->export_key = $basic->decryptString($item->export_key);
-						}
 						if ($basickey && !is_numeric($item->crowdin_username) && $item->crowdin_username === base64_encode(base64_decode($item->crowdin_username, true)))
 						{
 							// decrypt crowdin_username
@@ -2362,6 +2310,58 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						}
 						// decode buildcompsql
 						$item->buildcompsql = base64_decode($item->buildcompsql);
+						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
+						{
+							// decrypt whmcs_key
+							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
+						}
+						// decode php_helper_both
+						$item->php_helper_both = base64_decode($item->php_helper_both);
+						// decode php_helper_admin
+						$item->php_helper_admin = base64_decode($item->php_helper_admin);
+						// decode php_admin_event
+						$item->php_admin_event = base64_decode($item->php_admin_event);
+						// decode php_helper_site
+						$item->php_helper_site = base64_decode($item->php_helper_site);
+						// decode php_site_event
+						$item->php_site_event = base64_decode($item->php_site_event);
+						// decode javascript
+						$item->javascript = base64_decode($item->javascript);
+						// decode css_admin
+						$item->css_admin = base64_decode($item->css_admin);
+						// decode css_site
+						$item->css_site = base64_decode($item->css_site);
+						// decode php_preflight_install
+						$item->php_preflight_install = base64_decode($item->php_preflight_install);
+						// decode php_preflight_update
+						$item->php_preflight_update = base64_decode($item->php_preflight_update);
+						if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
+						{
+							// decrypt export_key
+							$item->export_key = $basic->decryptString($item->export_key);
+						}
+						// decode php_postflight_install
+						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode php_postflight_update
+						$item->php_postflight_update = base64_decode($item->php_postflight_update);
+						// decode php_method_uninstall
+						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
+						// decode sql_uninstall
+						$item->sql_uninstall = base64_decode($item->sql_uninstall);
+						// decode readme
+						$item->readme = base64_decode($item->readme);
+						if ($basickey && !is_numeric($item->crowdin_project_api_key) && $item->crowdin_project_api_key === base64_encode(base64_decode($item->crowdin_project_api_key, true)))
+						{
+							// decrypt crowdin_project_api_key
+							$item->crowdin_project_api_key = $basic->decryptString($item->crowdin_project_api_key);
+						}
+						if ($basickey && !is_numeric($item->crowdin_account_api_key) && $item->crowdin_account_api_key === base64_encode(base64_decode($item->crowdin_account_api_key, true)))
+						{
+							// decrypt crowdin_account_api_key
+							$item->crowdin_account_api_key = $basic->decryptString($item->crowdin_account_api_key);
+						}
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

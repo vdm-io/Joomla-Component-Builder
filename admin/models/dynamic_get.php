@@ -51,16 +51,6 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				'not_required'
 			)
 		),
-		'abacus' => array(
-			'left' => array(
-				'addcalculation'
-			),
-			'fullwidth' => array(
-				'note_calculation_item',
-				'note_calculation_items',
-				'php_calculation'
-			)
-		),
 		'custom_script' => array(
 			'fullwidth' => array(
 				'add_php_before_getitem',
@@ -75,6 +65,16 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				'php_after_getitems',
 				'add_php_router_parse',
 				'php_router_parse'
+			)
+		),
+		'abacus' => array(
+			'left' => array(
+				'addcalculation'
+			),
+			'fullwidth' => array(
+				'note_calculation_item',
+				'note_calculation_items',
+				'php_calculation'
 			)
 		),
 		'joint' => array(
@@ -205,28 +205,10 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_custom_get))
+			if (!empty($item->php_router_parse))
 			{
-				// base64 Decode php_custom_get.
-				$item->php_custom_get = base64_decode($item->php_custom_get);
-			}
-
-			if (!empty($item->php_before_getitem))
-			{
-				// base64 Decode php_before_getitem.
-				$item->php_before_getitem = base64_decode($item->php_before_getitem);
-			}
-
-			if (!empty($item->php_after_getitem))
-			{
-				// base64 Decode php_after_getitem.
-				$item->php_after_getitem = base64_decode($item->php_after_getitem);
-			}
-
-			if (!empty($item->php_getlistquery))
-			{
-				// base64 Decode php_getlistquery.
-				$item->php_getlistquery = base64_decode($item->php_getlistquery);
+				// base64 Decode php_router_parse.
+				$item->php_router_parse = base64_decode($item->php_router_parse);
 			}
 
 			if (!empty($item->php_before_getitems))
@@ -241,10 +223,22 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$item->php_after_getitems = base64_decode($item->php_after_getitems);
 			}
 
-			if (!empty($item->php_router_parse))
+			if (!empty($item->php_after_getitem))
 			{
-				// base64 Decode php_router_parse.
-				$item->php_router_parse = base64_decode($item->php_router_parse);
+				// base64 Decode php_after_getitem.
+				$item->php_after_getitem = base64_decode($item->php_after_getitem);
+			}
+
+			if (!empty($item->php_getlistquery))
+			{
+				// base64 Decode php_getlistquery.
+				$item->php_getlistquery = base64_decode($item->php_getlistquery);
+			}
+
+			if (!empty($item->php_custom_get))
+			{
+				// base64 Decode php_custom_get.
+				$item->php_custom_get = base64_decode($item->php_custom_get);
 			}
 
 			if (!empty($item->php_calculation))
@@ -253,12 +247,10 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$item->php_calculation = base64_decode($item->php_calculation);
 			}
 
-			if (!empty($item->join_view_table))
+			if (!empty($item->php_before_getitem))
 			{
-				// Convert the join_view_table field to an array.
-				$join_view_table = new Registry;
-				$join_view_table->loadString($item->join_view_table);
-				$item->join_view_table = $join_view_table->toArray();
+				// base64 Decode php_before_getitem.
+				$item->php_before_getitem = base64_decode($item->php_before_getitem);
 			}
 
 			if (!empty($item->join_db_table))
@@ -307,6 +299,14 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				$global = new Registry;
 				$global->loadString($item->global);
 				$item->global = $global->toArray();
+			}
+
+			if (!empty($item->join_view_table))
+			{
+				// Convert the join_view_table field to an array.
+				$join_view_table = new Registry;
+				$join_view_table->loadString($item->join_view_table);
+				$item->join_view_table = $join_view_table->toArray();
 			}
 
 			if (!empty($item->plugin_events))
@@ -409,14 +409,14 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
-		// // check if xpath was set in options
+		// check if xpath was set in options
 		$xpath = false;
 		if (isset($options['xpath']))
 		{
 			$xpath = $options['xpath'];
 			unset($options['xpath']);
 		}
-		// // check if clear form was set in options
+		// check if clear form was set in options
 		$clear = false;
 		if (isset($options['clear']))
 		{
@@ -515,6 +515,13 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 				// set the field editor value (with none as fallback)
 				$form->setFieldAttribute($name, 'editor', $global_editor . '|none');
 			}
+		}
+
+
+		// Only load the GUID if new item
+		if (0 == $id)
+		{
+			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
 		}
 
 		return $form;
@@ -1137,18 +1144,13 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		}
 
-		// Set the join_view_table items to data.
-		if (isset($data['join_view_table']) && is_array($data['join_view_table']))
+
+		// Set the GUID if empty or not valid
+		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid']))
 		{
-			$join_view_table = new JRegistry;
-			$join_view_table->loadArray($data['join_view_table']);
-			$data['join_view_table'] = (string) $join_view_table;
+			$data['guid'] = (string) ComponentbuilderHelper::GUID();
 		}
-		elseif (!isset($data['join_view_table']))
-		{
-			// Set the empty join_view_table to data
-			$data['join_view_table'] = '';
-		}
+
 
 		// Set the join_db_table items to data.
 		if (isset($data['join_db_table']) && is_array($data['join_db_table']))
@@ -1228,34 +1230,29 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$data['global'] = '';
 		}
 
+		// Set the join_view_table items to data.
+		if (isset($data['join_view_table']) && is_array($data['join_view_table']))
+		{
+			$join_view_table = new JRegistry;
+			$join_view_table->loadArray($data['join_view_table']);
+			$data['join_view_table'] = (string) $join_view_table;
+		}
+		elseif (!isset($data['join_view_table']))
+		{
+			// Set the empty join_view_table to data
+			$data['join_view_table'] = '';
+		}
+
 		// Set the plugin_events string to JSON string.
 		if (isset($data['plugin_events']))
 		{
 			$data['plugin_events'] = (string) json_encode($data['plugin_events']);
 		}
 
-		// Set the php_custom_get string to base64 string.
-		if (isset($data['php_custom_get']))
+		// Set the php_router_parse string to base64 string.
+		if (isset($data['php_router_parse']))
 		{
-			$data['php_custom_get'] = base64_encode($data['php_custom_get']);
-		}
-
-		// Set the php_before_getitem string to base64 string.
-		if (isset($data['php_before_getitem']))
-		{
-			$data['php_before_getitem'] = base64_encode($data['php_before_getitem']);
-		}
-
-		// Set the php_after_getitem string to base64 string.
-		if (isset($data['php_after_getitem']))
-		{
-			$data['php_after_getitem'] = base64_encode($data['php_after_getitem']);
-		}
-
-		// Set the php_getlistquery string to base64 string.
-		if (isset($data['php_getlistquery']))
-		{
-			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
+			$data['php_router_parse'] = base64_encode($data['php_router_parse']);
 		}
 
 		// Set the php_before_getitems string to base64 string.
@@ -1270,16 +1267,34 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$data['php_after_getitems'] = base64_encode($data['php_after_getitems']);
 		}
 
-		// Set the php_router_parse string to base64 string.
-		if (isset($data['php_router_parse']))
+		// Set the php_after_getitem string to base64 string.
+		if (isset($data['php_after_getitem']))
 		{
-			$data['php_router_parse'] = base64_encode($data['php_router_parse']);
+			$data['php_after_getitem'] = base64_encode($data['php_after_getitem']);
+		}
+
+		// Set the php_getlistquery string to base64 string.
+		if (isset($data['php_getlistquery']))
+		{
+			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
+		}
+
+		// Set the php_custom_get string to base64 string.
+		if (isset($data['php_custom_get']))
+		{
+			$data['php_custom_get'] = base64_encode($data['php_custom_get']);
 		}
 
 		// Set the php_calculation string to base64 string.
 		if (isset($data['php_calculation']))
 		{
 			$data['php_calculation'] = base64_encode($data['php_calculation']);
+		}
+
+		// Set the php_before_getitem string to base64 string.
+		if (isset($data['php_before_getitem']))
+		{
+			$data['php_before_getitem'] = base64_encode($data['php_before_getitem']);
 		}
         
 		// Set the Params Items to data

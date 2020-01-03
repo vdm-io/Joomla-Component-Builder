@@ -141,7 +141,7 @@ jQuery(document).ready( function($) {
 ?>
 function JRouter(link) {
 <?php
-	if ($app->isSite())
+	if ($app->isClient('site'))
 	{
 		echo 'var url = "'.JURI::root().'";';
 	}

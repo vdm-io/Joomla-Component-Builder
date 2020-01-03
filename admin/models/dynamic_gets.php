@@ -313,22 +313,22 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 							continue;
 						}
 
-						// decode php_custom_get
-						$item->php_custom_get = base64_decode($item->php_custom_get);
-						// decode php_before_getitem
-						$item->php_before_getitem = base64_decode($item->php_before_getitem);
-						// decode php_after_getitem
-						$item->php_after_getitem = base64_decode($item->php_after_getitem);
-						// decode php_getlistquery
-						$item->php_getlistquery = base64_decode($item->php_getlistquery);
+						// decode php_router_parse
+						$item->php_router_parse = base64_decode($item->php_router_parse);
 						// decode php_before_getitems
 						$item->php_before_getitems = base64_decode($item->php_before_getitems);
 						// decode php_after_getitems
 						$item->php_after_getitems = base64_decode($item->php_after_getitems);
-						// decode php_router_parse
-						$item->php_router_parse = base64_decode($item->php_router_parse);
+						// decode php_after_getitem
+						$item->php_after_getitem = base64_decode($item->php_after_getitem);
+						// decode php_getlistquery
+						$item->php_getlistquery = base64_decode($item->php_getlistquery);
+						// decode php_custom_get
+						$item->php_custom_get = base64_decode($item->php_custom_get);
 						// decode php_calculation
 						$item->php_calculation = base64_decode($item->php_calculation);
+						// decode php_before_getitem
+						$item->php_before_getitem = base64_decode($item->php_before_getitem);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

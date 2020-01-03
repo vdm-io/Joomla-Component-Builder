@@ -101,6 +101,33 @@
 			message="COM_COMPONENTBUILDER_FIELDTYPE_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
 		/>
+		<!-- Store Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="store"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_STORE_LABEL"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_STORE_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			filter="INT"
+			required="true"
+			default="0">
+			<!-- Option Set. -->
+			<option value="0">
+				COM_COMPONENTBUILDER_FIELDTYPE_DEFAULT</option>
+			<option value="1">
+				COM_COMPONENTBUILDER_FIELDTYPE_JSON</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_FIELDTYPE_BASESIXTY_FOUR</option>
+			<option value="3">
+				COM_COMPONENTBUILDER_FIELDTYPE_BASIC_ENCRYPTION_LOCALDBKEY</option>
+			<option value="5">
+				COM_COMPONENTBUILDER_FIELDTYPE_MEDIUM_ENCRYPTION_LOCALFILEKEY</option>
+			<option value="4">
+				COM_COMPONENTBUILDER_FIELDTYPE_WHMCSKEY_ENCRYPTION</option>
+			<option value="6">
+				COM_COMPONENTBUILDER_FIELDTYPE_EXPERT_MODE_CUSTOM</option>
+		</field>
 		<!-- Null_switch Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -186,42 +213,6 @@
 			message="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_HINT"
 		/>
-		<!-- Datalenght Field. Type: List. (joomla) -->
-		<field
-			type="list"
-			name="datalenght"
-			label="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_LABEL"
-			description="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_DESCRIPTION"
-			class="btn-group"
-			multiple="false"
-			required="true"
-			default="">
-			<!-- Option Set. -->
-			<option value="">
-				COM_COMPONENTBUILDER_FIELDTYPE_NONE_SET</option>
-			<option value="1">
-				COM_COMPONENTBUILDER_FIELDTYPE_ONE</option>
-			<option value="7">
-				COM_COMPONENTBUILDER_FIELDTYPE_SEVEN</option>
-			<option value="10">
-				COM_COMPONENTBUILDER_FIELDTYPE_TEN</option>
-			<option value="11">
-				COM_COMPONENTBUILDER_FIELDTYPE_ELEVEN</option>
-			<option value="50">
-				COM_COMPONENTBUILDER_FIELDTYPE_FIFTY</option>
-			<option value="64">
-				COM_COMPONENTBUILDER_FIELDTYPE_SIXTY_FOUR</option>
-			<option value="100">
-				COM_COMPONENTBUILDER_FIELDTYPE_ONE_HUNDRED</option>
-			<option value="255">
-				COM_COMPONENTBUILDER_FIELDTYPE_TWO_HUNDRED_AND_FIFTY_FIVE</option>
-			<option value="1024">
-				COM_COMPONENTBUILDER_FIELDTYPE_ONE_THOUSAND_AND_TWENTY_FOUR</option>
-			<option value="2048">
-				COM_COMPONENTBUILDER_FIELDTYPE_TWO_THOUSAND_AND_FORTY_EIGHT</option>
-			<option value="Other">
-				COM_COMPONENTBUILDER_FIELDTYPE_OTHER</option>
-		</field>
 		<!-- Short_description Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -236,6 +227,56 @@
 			message="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_HINT"
 		/>
+		<!-- Datatype Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="datatype"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_DATATYPE_LABEL"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_DATATYPE_DESCRIPTION"
+			class="btn-group"
+			multiple="false"
+			required="true"
+			default="">
+			<!-- Option Set. -->
+			<option value="">
+				COM_COMPONENTBUILDER_FIELDTYPE_SELECT_AN_OPTION</option>
+			<option value="CHAR">
+				COM_COMPONENTBUILDER_FIELDTYPE_CHAR</option>
+			<option value="VARCHAR">
+				COM_COMPONENTBUILDER_FIELDTYPE_VARCHAR</option>
+			<option value="TEXT">
+				COM_COMPONENTBUILDER_FIELDTYPE_TEXT</option>
+			<option value="MEDIUMTEXT">
+				COM_COMPONENTBUILDER_FIELDTYPE_MEDIUMTEXT</option>
+			<option value="LONGTEXT">
+				COM_COMPONENTBUILDER_FIELDTYPE_LONGTEXT</option>
+			<option value="BLOB">
+				COM_COMPONENTBUILDER_FIELDTYPE_BLOB</option>
+			<option value="TINYBLOB">
+				COM_COMPONENTBUILDER_FIELDTYPE_TINYBLOB</option>
+			<option value="MEDIUMBLOB">
+				COM_COMPONENTBUILDER_FIELDTYPE_MEDIUMBLOB</option>
+			<option value="LONGBLOB">
+				COM_COMPONENTBUILDER_FIELDTYPE_LONGBLOB</option>
+			<option value="DATETIME">
+				COM_COMPONENTBUILDER_FIELDTYPE_DATETIME</option>
+			<option value="DATE">
+				COM_COMPONENTBUILDER_FIELDTYPE_DATE</option>
+			<option value="TIME">
+				COM_COMPONENTBUILDER_FIELDTYPE_TIME</option>
+			<option value="INT">
+				COM_COMPONENTBUILDER_FIELDTYPE_INT</option>
+			<option value="TINYINT">
+				COM_COMPONENTBUILDER_FIELDTYPE_TINYINT</option>
+			<option value="BIGINT">
+				COM_COMPONENTBUILDER_FIELDTYPE_BIGINT</option>
+			<option value="FLOAT">
+				COM_COMPONENTBUILDER_FIELDTYPE_FLOAT</option>
+			<option value="DECIMAL">
+				COM_COMPONENTBUILDER_FIELDTYPE_DECIMAL</option>
+			<option value="DOUBLE">
+				COM_COMPONENTBUILDER_FIELDTYPE_DOUBLE</option>
+		</field>
 		<!-- Has_defaults Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -351,85 +392,58 @@
 			filter="HTML"
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_HINT"
 		/>
-		<!-- Store Field. Type: List. (joomla) -->
+		<!-- Note_whmcs_encryption Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_whmcs_encryption" label="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_WHMCS_ENCRYPTION_LABEL" description="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_WHMCS_ENCRYPTION_DESCRIPTION" heading="h4" class="alert alert-success note_whmcs_encryption" />
+		<!-- Datalenght Field. Type: List. (joomla) -->
 		<field
 			type="list"
-			name="store"
-			label="COM_COMPONENTBUILDER_FIELDTYPE_STORE_LABEL"
-			description="COM_COMPONENTBUILDER_FIELDTYPE_STORE_DESCRIPTION"
-			class="list_class"
-			multiple="false"
-			filter="INT"
-			required="true"
-			default="0">
-			<!-- Option Set. -->
-			<option value="0">
-				COM_COMPONENTBUILDER_FIELDTYPE_DEFAULT</option>
-			<option value="1">
-				COM_COMPONENTBUILDER_FIELDTYPE_JSON</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_FIELDTYPE_BASESIXTY_FOUR</option>
-			<option value="3">
-				COM_COMPONENTBUILDER_FIELDTYPE_BASIC_ENCRYPTION_LOCALDBKEY</option>
-			<option value="5">
-				COM_COMPONENTBUILDER_FIELDTYPE_MEDIUM_ENCRYPTION_LOCALFILEKEY</option>
-			<option value="4">
-				COM_COMPONENTBUILDER_FIELDTYPE_WHMCSKEY_ENCRYPTION</option>
-			<option value="6">
-				COM_COMPONENTBUILDER_FIELDTYPE_EXPERT_MODE_CUSTOM</option>
-		</field>
-		<!-- Datatype Field. Type: List. (joomla) -->
-		<field
-			type="list"
-			name="datatype"
-			label="COM_COMPONENTBUILDER_FIELDTYPE_DATATYPE_LABEL"
-			description="COM_COMPONENTBUILDER_FIELDTYPE_DATATYPE_DESCRIPTION"
+			name="datalenght"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_LABEL"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_DESCRIPTION"
 			class="btn-group"
 			multiple="false"
 			required="true"
 			default="">
 			<!-- Option Set. -->
 			<option value="">
-				COM_COMPONENTBUILDER_FIELDTYPE_SELECT_AN_OPTION</option>
-			<option value="CHAR">
-				COM_COMPONENTBUILDER_FIELDTYPE_CHAR</option>
-			<option value="VARCHAR">
-				COM_COMPONENTBUILDER_FIELDTYPE_VARCHAR</option>
-			<option value="TEXT">
-				COM_COMPONENTBUILDER_FIELDTYPE_TEXT</option>
-			<option value="MEDIUMTEXT">
-				COM_COMPONENTBUILDER_FIELDTYPE_MEDIUMTEXT</option>
-			<option value="LONGTEXT">
-				COM_COMPONENTBUILDER_FIELDTYPE_LONGTEXT</option>
-			<option value="BLOB">
-				COM_COMPONENTBUILDER_FIELDTYPE_BLOB</option>
-			<option value="TINYBLOB">
-				COM_COMPONENTBUILDER_FIELDTYPE_TINYBLOB</option>
-			<option value="MEDIUMBLOB">
-				COM_COMPONENTBUILDER_FIELDTYPE_MEDIUMBLOB</option>
-			<option value="LONGBLOB">
-				COM_COMPONENTBUILDER_FIELDTYPE_LONGBLOB</option>
-			<option value="DATETIME">
-				COM_COMPONENTBUILDER_FIELDTYPE_DATETIME</option>
-			<option value="DATE">
-				COM_COMPONENTBUILDER_FIELDTYPE_DATE</option>
-			<option value="TIME">
-				COM_COMPONENTBUILDER_FIELDTYPE_TIME</option>
-			<option value="INT">
-				COM_COMPONENTBUILDER_FIELDTYPE_INT</option>
-			<option value="TINYINT">
-				COM_COMPONENTBUILDER_FIELDTYPE_TINYINT</option>
-			<option value="BIGINT">
-				COM_COMPONENTBUILDER_FIELDTYPE_BIGINT</option>
-			<option value="FLOAT">
-				COM_COMPONENTBUILDER_FIELDTYPE_FLOAT</option>
-			<option value="DECIMAL">
-				COM_COMPONENTBUILDER_FIELDTYPE_DECIMAL</option>
-			<option value="DOUBLE">
-				COM_COMPONENTBUILDER_FIELDTYPE_DOUBLE</option>
+				COM_COMPONENTBUILDER_FIELDTYPE_NONE_SET</option>
+			<option value="1">
+				COM_COMPONENTBUILDER_FIELDTYPE_ONE</option>
+			<option value="7">
+				COM_COMPONENTBUILDER_FIELDTYPE_SEVEN</option>
+			<option value="10">
+				COM_COMPONENTBUILDER_FIELDTYPE_TEN</option>
+			<option value="11">
+				COM_COMPONENTBUILDER_FIELDTYPE_ELEVEN</option>
+			<option value="50">
+				COM_COMPONENTBUILDER_FIELDTYPE_FIFTY</option>
+			<option value="64">
+				COM_COMPONENTBUILDER_FIELDTYPE_SIXTY_FOUR</option>
+			<option value="100">
+				COM_COMPONENTBUILDER_FIELDTYPE_ONE_HUNDRED</option>
+			<option value="255">
+				COM_COMPONENTBUILDER_FIELDTYPE_TWO_HUNDRED_AND_FIFTY_FIVE</option>
+			<option value="1024">
+				COM_COMPONENTBUILDER_FIELDTYPE_ONE_THOUSAND_AND_TWENTY_FOUR</option>
+			<option value="2048">
+				COM_COMPONENTBUILDER_FIELDTYPE_TWO_THOUSAND_AND_FORTY_EIGHT</option>
+			<option value="Other">
+				COM_COMPONENTBUILDER_FIELDTYPE_OTHER</option>
 		</field>
-		<!-- Note_whmcs_encryption Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_whmcs_encryption" label="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_WHMCS_ENCRYPTION_LABEL" description="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_WHMCS_ENCRYPTION_DESCRIPTION" heading="h4" class="alert alert-success note_whmcs_encryption" />
+		<!-- Guid Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="guid"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_GUID_LABEL"
+			size="40"
+			maxlength="40"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_GUID_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="CMD"
+			validate="guid"
+			hint="COM_COMPONENTBUILDER_FIELDTYPE_GUID_HINT"
+		/>
 		<!-- Catid Field. Type: Category. (joomla) -->
 		<field
 			type="category"

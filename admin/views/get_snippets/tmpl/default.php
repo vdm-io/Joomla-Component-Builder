@@ -35,6 +35,7 @@ JHtml::_('behavior.keepalive');
         <input type="hidden" name="task" value="" />
         <?php echo JHtml::_('form.token'); ?>
 </form>
+
 <div id="snippets-github" class="bulk-updater-toggler">
 	<br /><br /><br />
 	<center><h1> <?php echo JText::_('COM_COMPONENTBUILDER_GETTING_AVAILABLE_LIBRARIES'); ?> <br /><?php echo JText::_('COM_COMPONENTBUILDER_LOADING'); ?>.<span class="loading-dots">.</span></h1></center>
@@ -233,7 +234,7 @@ jQuery(document).ready( function($) {
 ?>
 function JRouter(link) {
 <?php
-	if ($app->isSite())
+	if ($app->isClient('site'))
 	{
 		echo 'var url = "'.JURI::root().'";';
 	}

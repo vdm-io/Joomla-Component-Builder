@@ -128,6 +128,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				$local_snippets[$path] = $item;
 			}
 		}
+		
 		// Add the JavaScript for JStore
 		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jquery.json.min.js');
 		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jstorage.min.js');
@@ -161,6 +162,8 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			// set to use no storage
 			$expire = 30000; // only 30 seconds
 		}
+		// Set the Time To Live To JavaScript
+		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
 		// set snippet path
 		$this->document->addScriptDeclaration("var snippetPath = '". ComponentbuilderHelper::$snippetPath ."';");
 		$this->document->addScriptDeclaration("var snippetsPath = '". ComponentbuilderHelper::$snippetsPath ."';");
@@ -230,8 +233,6 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				}
 			}
 		");
-		// Set the Time To Live To JavaScript
-		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
 		// load the local snippets
 		if (ComponentbuilderHelper::checkArray($this->items))
 		{

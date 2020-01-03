@@ -130,7 +130,7 @@ jQuery('#adminForm').on('change', '#jform_extension_type',function (e)
 ?>
 function JRouter(link) {
 <?php
-	if ($app->isSite())
+	if ($app->isClient('site'))
 	{
 		echo 'var url = "'.JURI::root().'";';
 	}

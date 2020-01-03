@@ -239,7 +239,7 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.system_name LIKE '.$search.' OR a.name LIKE '.$search.' OR a.description LIKE '.$search.' OR a.main_get LIKE '.$search.' OR g.name LIKE '.$search.' OR a.context LIKE '.$search.' OR a.codename LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.name LIKE '.$search.' OR a.description LIKE '.$search.' OR a.main_get LIKE '.$search.' OR g.name LIKE '.$search.' OR a.codename LIKE '.$search.' OR a.context LIKE '.$search.')');
 			}
 		}
 
@@ -330,26 +330,26 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 							continue;
 						}
 
-						// decode php_jview_display
-						$item->php_jview_display = base64_decode($item->php_jview_display);
-						// decode php_view
-						$item->php_view = base64_decode($item->php_view);
-						// decode default
-						$item->default = base64_decode($item->default);
-						// decode php_jview
-						$item->php_jview = base64_decode($item->php_jview);
+						// decode css_document
+						$item->css_document = base64_decode($item->css_document);
+						// decode css
+						$item->css = base64_decode($item->css);
 						// decode js_document
 						$item->js_document = base64_decode($item->js_document);
 						// decode javascript_file
 						$item->javascript_file = base64_decode($item->javascript_file);
-						// decode css_document
-						$item->css_document = base64_decode($item->css_document);
-						// decode php_document
-						$item->php_document = base64_decode($item->php_document);
-						// decode css
-						$item->css = base64_decode($item->css);
+						// decode default
+						$item->default = base64_decode($item->default);
 						// decode php_ajaxmethod
 						$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
+						// decode php_document
+						$item->php_document = base64_decode($item->php_document);
+						// decode php_view
+						$item->php_view = base64_decode($item->php_view);
+						// decode php_jview_display
+						$item->php_jview_display = base64_decode($item->php_jview_display);
+						// decode php_jview
+						$item->php_jview = base64_decode($item->php_jview);
 						// decode php_controller
 						$item->php_controller = base64_decode($item->php_controller);
 						// decode php_model

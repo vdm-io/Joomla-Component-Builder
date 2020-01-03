@@ -138,6 +138,20 @@
 			<option value="modules">
 				COM_COMPONENTBUILDER_CLASS_METHOD_MODULES</option>
 		</field>
+		<!-- Guid Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="guid"
+			label="COM_COMPONENTBUILDER_CLASS_METHOD_GUID_LABEL"
+			size="40"
+			maxlength="40"
+			description="COM_COMPONENTBUILDER_CLASS_METHOD_GUID_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="CMD"
+			validate="guid"
+			hint="COM_COMPONENTBUILDER_CLASS_METHOD_GUID_HINT"
+		/>
 		<!-- Code Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"

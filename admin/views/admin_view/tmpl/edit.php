@@ -762,7 +762,7 @@ jQuery('#jform_add_custom_import').on('change',function() {
 ?>
 function JRouter(link) {
 <?php
-	if ($app->isSite())
+	if ($app->isClient('site'))
 	{
 		echo 'var url = "'.JURI::root().'";';
 	}

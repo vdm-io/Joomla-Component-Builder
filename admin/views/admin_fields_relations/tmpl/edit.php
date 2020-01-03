@@ -115,7 +115,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 ?>
 function JRouter(link) {
 <?php
-	if ($app->isSite())
+	if ($app->isClient('site'))
 	{
 		echo 'var url = "'.JURI::root().'";';
 	}

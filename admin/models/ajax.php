@@ -2514,7 +2514,7 @@ class ComponentbuilderModelAjax extends JModelList
 		// #__componentbuilder_custom_admin_view (g)
 		'custom_admin_view' => array(
 			'search' => array('id', 'system_name', 'default', 'php_view', 'php_jview', 'php_jview_display', 'php_document',
-				'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
+				'javascript_file', 'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
 			'views' => 'custom_admin_views',
 			'not_base64' => array(),
 			'name' => 'system_name'
@@ -2522,7 +2522,7 @@ class ComponentbuilderModelAjax extends JModelList
 		// #__componentbuilder_site_view (h)
 		'site_view' => array(
 			'search' => array('id', 'system_name', 'default', 'php_view', 'php_jview', 'php_jview_display', 'php_document',
-				'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
+				'javascript_file', 'js_document', 'css_document', 'css', 'php_ajaxmethod', 'php_model', 'php_controller'),
 			'views' => 'site_views',
 			'not_base64' => array(),
 			'name' => 'system_name'

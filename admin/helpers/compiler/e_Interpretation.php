@@ -11728,14 +11728,14 @@ class Interpretation extends Fields
 		$component = $this->componentCodeName;
 		// allways load these
 		$getForm = array();
-		$getForm[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " // check if xpath was set in options";
+		$getForm[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " check if xpath was set in options";
 		$getForm[] = $this->_t(2) . "\$xpath = false;";
 		$getForm[] = $this->_t(2) . "if (isset(\$options['xpath']))";
 		$getForm[] = $this->_t(2) . "{";
 		$getForm[] = $this->_t(3) . "\$xpath = \$options['xpath'];";
 		$getForm[] = $this->_t(3) . "unset(\$options['xpath']);";
 		$getForm[] = $this->_t(2) . "}";
-		$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " // check if clear form was set in options";
+		$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " check if clear form was set in options";
 		$getForm[] = $this->_t(2) . "\$clear = false;";
 		$getForm[] = $this->_t(2) . "if (isset(\$options['clear']))";
 		$getForm[] = $this->_t(2) . "{";
