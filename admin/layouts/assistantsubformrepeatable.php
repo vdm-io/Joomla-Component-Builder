@@ -29,24 +29,18 @@ defined('JPATH_BASE') or die('Restricted access');
  */
 extract($displayData);
 
-// Add script
-if ($multiple)
-{
-	JHtml::_('jquery.ui', array('core', 'sortable'));
-	JHtml::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));
-}
-
 // the subform field layout
 $subform_fields = array(
 	'left' => array('name'),
 	'right' => array('list_name'),
-	'bottom' => array('builder')
+	'bottom' => array('builder'),
+	'modal' => array('fields' => array('fields'), 'listview' => array('columns'), 'display' => array('display'))
 );
 
 ?>
 <div class="row-fluid">
 	<div class="subform-repeatable-wrapper subform-layout">
-		<div class="subform-repeatable"
+		<div class="subform-repeatable-vdm"
 			data-bt-add="a.group-add-<?php echo $unique_subform_id; ?>"
 			data-bt-remove="a.group-remove-<?php echo $unique_subform_id; ?>"
 			data-bt-move="a.group-move-<?php echo $unique_subform_id; ?>"
@@ -69,6 +63,7 @@ $subform_fields = array(
 				'fields' => $subform_fields,
 				'basegroup' => $fieldname,
 				'group' => $fieldname . $k,
+				'vdm' => $fieldname . $k,
 				'buttons' => $buttons,
 				'unique_subform_id' => $unique_subform_id,
 				));
@@ -86,6 +81,7 @@ $subform_fields = array(
 								'fields' => $subform_fields,
 								'basegroup' => $fieldname,
 								'group' => $fieldname . 'X',
+								'vdm' => $fieldname . 'VDM-XX',
 								'buttons' => $buttons,
 								'unique_subform_id' => $unique_subform_id
 							))

@@ -56,7 +56,7 @@ extract($displayData);
 		<div class="uk-width-medium-1-1">
 			<div class="uk-panel">
 			<?php foreach($fields['top'] as $field): ?>
-				<?php echo $form->renderField($field); ?>
+				<?php echo str_replace('[[[VDM]]]', $vdm, $form->renderField($field)); ?>
 			<?php endforeach; ?>
 			</div>
 		</div>
@@ -70,7 +70,7 @@ extract($displayData);
 		<div class="uk-width-medium-1-2">
 			<div class="uk-panel uk-panel-box">
 			<?php foreach($_fields as $field): ?>
-				<?php echo $form->renderField($field); ?>
+				<?php echo str_replace('[[[VDM]]]', $vdm, $form->renderField($field)); ?>
 			<?php endforeach; ?>
 			</div>
 		</div>
@@ -84,10 +84,29 @@ extract($displayData);
 		<div class="uk-width-medium-1-1">
 			<div class="uk-panel">
 			<?php foreach($fields['bottom'] as $field): ?>
-				<?php echo $form->renderField($field); ?>
+				<?php echo str_replace('[[[VDM]]]', $vdm, $form->renderField($field)); ?>
 			<?php endforeach; ?>
 			</div>
 		</div>
 	</div>
+	<?php endif; ?>
+
+	<?php if (isset($fields['modal'])): ?>
+	<?php foreach($fields['modal'] as $modal => $_fields): ?>
+		<div id="modal-<?php echo $modal; ?>-<?php echo $vdm ?>" class="uk-modal">
+			<div class="uk-modal-dialog uk-modal-dialog-large">
+				<div class="uk-panel">
+					<?php foreach($_fields as $field): ?>
+						<?php echo str_replace('[[[VDM]]]', $vdm, $form->renderField($field)); ?>
+					<?php endforeach; ?>
+				</div>
+				<div class="uk-modal-footer">
+					<div class="uk-clearfix">
+						<button class="uk-float-right uk-button uk-button-success uk-modal-close"><?php echo JText::_('COM_COMPONENTBUILDER_UPDATE'); ?></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	<?php endforeach; ?>
 	<?php endif; ?>
 </div>

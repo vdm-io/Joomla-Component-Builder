@@ -39,6 +39,8 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 		}
 		// get the forms
 		$this->forms = $this->setForms();
+		//
+		JHtml::_('jquery.ui', array('core', 'sortable'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
