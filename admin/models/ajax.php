@@ -3389,9 +3389,14 @@ class ComponentbuilderModelAjax extends JModelList
 			// set url
 			$url = ComponentbuilderHelper::$snippetPath.rawurlencode($base_path);
 			// get the snippets
-			if (($snippet = ComponentbuilderHelper::getGithubRepoData('lib_snippet_' . $base_path, $url)) !== false)
+			if (($snippet = ComponentbuilderHelper::getGithubRepoData('lib_snippet_' . $base_path, $url, null, 'array')) !== false)
 			{
 				return $this->saveSnippet($snippet, $status, $user);
+			}
+			// see if we have any errors from github
+			if (ComponentbuilderHelper::checkArray(ComponentbuilderHelper::$githubRepoDataErrors))
+			{
+				return array('message' => JText::sprintf('COM_COMPONENTBUILDER_ERROR_BR_S', implode('<br />', ComponentbuilderHelper::$githubRepoDataErrors)), 'status' => 'danger');
 			}
 			return array('message' => JText::_('COM_COMPONENTBUILDER_ERROR_THE_PATH_HAS_A_MISMATCH_AND_COULD_THEREFORE_NOT_RETRIEVE_THE_SNIPPET_FROM_GITHUB'), 'status' => 'danger');
 		}
