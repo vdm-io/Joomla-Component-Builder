@@ -236,25 +236,185 @@ function buildSubform()
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///	LISTVIEW START
+	///	LISTVIEW SUBFORM END
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// start building the listview area XML
-		$listviewXML = new SimpleXMLElement('<field/>');
+		// start building the subform field XML
+		$sub_subformXML = new SimpleXMLElement('<field/>');
 		// subform attributes
-		$listviewAttribute = array(
-			'type' => 'note',
+		$sub_subformAttribute = array(
+			'type' => 'subform',
 			'name' => 'columns',
-			'label' => 'COM_COMPONENTBUILDER_ROW_SELECTION',
-			'description' => '
-				<b>More details soon, to help you select the fields for the list display of rows.</b>',
-			'heading' => 'h5'
+			'label' => 'COM_COMPONENTBUILDER_LIST_VIEW_COLUMNS',
+			'layout' => 'joomla.form.field.subform.repeatable-table',
+			'multiple' => 'true',
+			'icon' => 'list',
+			'max' =>  2,
+			'min' =>  1
 		);
 		// load the subform attributes
-		ComponentbuilderHelper::xmlAddAttributes($listviewXML, $listviewAttribute);
+		ComponentbuilderHelper::xmlAddAttributes($sub_subformXML, $sub_subformAttribute);
+		// now add the subform child form
+		$sub_childform = $sub_subformXML->addChild('form');
+		// child form attributes
+		$sub_childformAttribute = array(
+			'hidden' => 'true',
+			'name' => 'list_properties',
+			'repeat' => 'true');
+		// load the child form attributes
+		ComponentbuilderHelper::xmlAddAttributes($sub_childform, $sub_childformAttribute);
+
+		// view building the name field XML
+		$targetXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$targetAttribute = array(
+			'type' => 'list',
+			'name' => 'target',
+			'label' => 'COM_COMPONENTBUILDER_TARGET',
+			'description' => 'COM_COMPONENTBUILDER_AREA',
+			'required' => true,
+			'class' => 'list_class',
+			'default' => '1'
+		);
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($targetXML, $targetAttribute);
+		// add the options
+		ComponentbuilderHelper::xmlAddOptions($targetXML, array(1 => 'COM_COMPONENTBUILDER_ADMIN', 2 => 'COM_COMPONENTBUILDER_SITE'));
 		// now add the fields to the child form
-		ComponentbuilderHelper::xmlAppend($childForm, $listviewXML);
+		ComponentbuilderHelper::xmlAppend($sub_childform, $targetXML);
+
+		// view building the name field XML
+		$nameXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$nameAttribute = array(
+			'type' => 'viewfields',
+			'name' => 'column_0',
+			'label' => 'COM_COMPONENTBUILDER_TITLE_COLUMN',
+			'multiple' => false,
+			'required' => true,
+			'class' => 'list_class'
+		);
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
+		// now add the fields to the child form
+		ComponentbuilderHelper::xmlAppend($sub_childform, $nameXML);
+
+		// view building the name field XML
+		$nameXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$nameAttribute = array(
+			'type' => 'viewfields',
+			'name' => 'column_1',
+			'label' => 'COM_COMPONENTBUILDER_COLUMN',
+			'multiple' => false,
+			'required' => false,
+			'class' => 'list_class'
+		);
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
+		// now add the fields to the child form
+		ComponentbuilderHelper::xmlAppend($sub_childform, $nameXML);
+
+		// view building the name field XML
+		$nameXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$nameAttribute = array(
+			'type' => 'viewfields',
+			'name' => 'column_2',
+			'label' => 'COM_COMPONENTBUILDER_COLUMN',
+			'multiple' => false,
+			'required' => false,
+			'class' => 'list_class'
+		);
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
+		// now add the fields to the child form
+		ComponentbuilderHelper::xmlAppend($sub_childform, $nameXML);
+
+		// view building the name field XML
+		$nameXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$nameAttribute = array(
+			'type' => 'viewfields',
+			'name' => 'column_3',
+			'label' => 'COM_COMPONENTBUILDER_COLUMN',
+			'multiple' => false,
+			'required' => false,
+			'class' => 'list_class'
+		);
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
+		// now add the fields to the child form
+		ComponentbuilderHelper::xmlAppend($sub_childform, $nameXML);
+
+		// view building the name field XML
+		$nameXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$nameAttribute = array(
+			'type' => 'viewfields',
+			'name' => 'column_4',
+			'label' => 'COM_COMPONENTBUILDER_COLUMN',
+			'multiple' => false,
+			'required' => false,
+			'class' => 'list_class'
+		);
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
+		// now add the fields to the child form
+		ComponentbuilderHelper::xmlAppend($sub_childform, $nameXML);
+
+		// view building the name field XML
+		$nameXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$nameAttribute = array(
+			'type' => 'viewfields',
+			'name' => 'column_5',
+			'label' => 'COM_COMPONENTBUILDER_COLUMN',
+			'multiple' => false,
+			'required' => false,
+			'class' => 'list_class'
+		);
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
+		// now add the fields to the child form
+		ComponentbuilderHelper::xmlAppend($sub_childform, $nameXML);
+
+		// view building the name field XML
+		$nameXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$nameAttribute = array(
+			'type' => 'viewfields',
+			'name' => 'column_6',
+			'label' => 'COM_COMPONENTBUILDER_COLUMN',
+			'multiple' => false,
+			'required' => false,
+			'class' => 'list_class'
+		);
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
+		// now add the fields to the child form
+		ComponentbuilderHelper::xmlAppend($sub_childform, $nameXML);
+
+		// view building the name field XML
+		$nameXML = new SimpleXMLElement('<field/>');
+		// subform attributes
+		$nameAttribute = array(
+			'type' => 'viewfields',
+			'name' => 'column_7',
+			'label' => 'COM_COMPONENTBUILDER_COLUMN',
+			'multiple' => false,
+			'required' => false,
+			'class' => 'list_class'
+		);
+		// load the subform attributes
+		ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
+		// now add the fields to the child form
+		ComponentbuilderHelper::xmlAppend($sub_childform, $nameXML);
+
+
+		// no add to main sub from
+		ComponentbuilderHelper::xmlAppend($childForm, $sub_subformXML);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///	LISTVIEW END
+	///	LISTVIEW SUBFORM END
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
