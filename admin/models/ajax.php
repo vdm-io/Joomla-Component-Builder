@@ -1284,14 +1284,14 @@ class ComponentbuilderModelAjax extends JModelList
 						);
 					}
 				}
-				// set GUID if found
-				if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false && method_exists('ComponentbuilderHelper', 'validGUID'))
-				{
-					if (ComponentbuilderHelper::validGUID($guid))
-					{
-						$this->viewid[$call]['a_guid'] = $guid;
-					}
-				}
+				// set GUID if found (TODO we will later move over to GUID)
+				// if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false && method_exists('ComponentbuilderHelper', 'validGUID'))
+				//{
+				//	if (ComponentbuilderHelper::validGUID($guid))
+				//	{
+				//		$this->viewid[$call]['a_guid'] = $guid;
+				//	}
+				//}
 				// set return if found
 				if (($return = ComponentbuilderHelper::get($vdm . '__return')) !== false)
 				{
