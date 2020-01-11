@@ -2173,12 +2173,12 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	 * get field options
+	 * get field type properties
 	 *
 	 * @return  array   on success
 	 * 
 	 */
-	public static function getFieldOptions($value, $type, $settings = array(), $xml = null, $db_defaults = false)
+	public static function getFieldTypeProperties($value, $type, $settings = array(), $xml = null, $db_defaults = false)
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -2335,6 +2335,100 @@ abstract class ComponentbuilderHelper
 			return self::getBetween($xml, $get . '="', '"', $confirmation);
 		}
 		return $confirmation;
+	}
+
+
+	/**
+	 * get field types properties
+	 *
+	 * @return  array   on success
+	 * 
+	 */
+	public static function getFieldTypesProperties($targets = array(), $filter = array(), $exclude = array(), $type = 'id', $operator = 'IN')
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('id','properties')));
+		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
+		$query->where($db->quoteName('published') . ' = 1');
+		// make sure we have ids (or get all)
+		if ('IN_STRINGS' === $operator || 'NOT IN_STRINGS' === $operator)
+		{
+			$query->where($db->quoteName($type) . ' ' . str_replace('_STRINGS', '', $operator) . ' ("' . implode('","',$targets) . '")');
+		}
+		else
+		{
+			$query->where($db->quoteName($type) . ' ' . $operator . ' (' . implode(',',$targets) . ')');
+		}
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$_types = array();
+			$_properties = array();
+			$types = $db->loadObjectList('id');
+			foreach ($types as $id => $type)
+			{
+				$properties = json_decode($type->properties);
+				foreach ($properties as $property)
+				{
+					if (!isset($_types[$id]))
+					{
+						$_types[$id] = array();
+					}
+					// add if no objection is found
+					$add = true;
+					// check if we have exclude
+					if (self::checkArray($exclude) && in_array($property->name, $exclude))
+					{
+						continue;
+					}
+					// check if we have filter
+					if (self::checkArray($filter))
+					{
+						foreach($filter as $key => $val)
+						{
+							if (!isset($property->$key) || $property->$key != $val)
+							{
+								$add = false;
+							}
+						}
+					}
+					// now add the property
+					if ($add)
+					{
+						$_types[$id][$property->name] = array('name' => ucfirst($property->name), 'example' => $property->example, 'description' => $property->description);
+						// set mandatory
+						if (isset($property->mandatory) && $property->mandatory == 1)
+						{
+							$_types[$id][$property->name]['mandatory'] = true;
+						}
+						else
+						{
+							$_types[$id][$property->name]['mandatory'] = false;
+						}
+						// set translatable
+						if (isset($property->translatable) && $property->translatable == 1)
+						{
+							$_types[$id][$property->name]['translatable'] = true;
+						}
+						else
+						{
+							$_types[$id][$property->name]['translatable'] = false;
+						}
+						$_properties[$property->name] = $_types[$id][$property->name]['name'];
+					}
+				}
+			}
+
+			// return found types & properties
+			return array('types' => $_types, 'properties' => $_properties);
+		}
+		return false;
 	}
 
 
@@ -3563,15 +3657,71 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
+	 * get the field types id -> name of a group or groups
+	 *
+	 * @return  array  ids of the spacer field types
+	 */
+	public static function getFieldTypesByGroup($groups = array())
+	{
+		// make sure we have a group
+		if (($ids = self::getFieldTypesIdsByGroup($groups)) !== false)
+		{
+			// get the database object to use quote
+			$db = JFactory::getDbo();
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id', 'name')));
+			$query->from($db->quoteName('#__componentbuilder_fieldtype'));
+			$query->where($db->quoteName('published') . ' = 1');
+			$query->where($db->quoteName('id') . ' IN (' . implode(',',$ids) . ')');
+			// Reset the query using our newly populated query object.
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				return $db->loadAssocList('id', 'name');
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * get the field types IDs of a group or groups
+	 *
+	 * @return  array  ids of the spacer field types
+	 */
+	public static function getFieldTypesIdsByGroup($groups = array())
+	{
+		// make sure we have a group
+		if (self::checkArray($groups))
+		{
+			$merge_groups = array();
+			foreach ($groups as $group)
+			{
+				if (isset(self::$fieldGroups[$group]))
+				{
+					$merge_groups[] = self::$fieldGroups[$group];
+				}
+			}
+			// make sure we have these types of groups
+			if (self::checkArray($merge_groups))
+			{
+				// get the database object to use quote
+				$db = JFactory::getDbo();
+				return self::getVars('fieldtype', (array) array_map(function($name) use($db) { return $db->quote(ucfirst($name)); }, self::mergeArrays($merge_groups)), 'name', 'id');
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * get the spacer IDs
 	 *
 	 * @return  array  ids of the spacer field types
 	 */
 	public static function getSpacerIds()
 	{
-		// get the database object to use quote
-		$db = JFactory::getDbo();
-		return self::getVars('fieldtype', (array) array_map(function($name) use($db) { return $db->quote(ucfirst($name)); }, self::$fieldGroups['spacer']), 'name', 'id');
+		return self::getFieldTypesIdsByGroup($groups = array('spacer'));
 	}
 
 

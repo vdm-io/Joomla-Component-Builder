@@ -33,7 +33,7 @@ extract($displayData);
 $subform_fields = array(
 	'left' => array('name'),
 	'right' => array('list_name'),
-	'bottom' => array('builder'),
+	'bottom' => array('short_description', 'builder'),
 	'modal' => array('fields' => array('fields'), 'listview' => array('columns'), 'display' => array('display'))
 );
 

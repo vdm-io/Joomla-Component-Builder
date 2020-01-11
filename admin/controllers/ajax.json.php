@@ -56,7 +56,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getExistingValidationRuleCode', 'ajax');
 		$this->registerTask('getValidationRulesTable', 'ajax');
 		$this->registerTask('checkRuleName', 'ajax');
-		$this->registerTask('fieldOptions', 'ajax');
+		$this->registerTask('fieldTypeProperties', 'ajax');
 		$this->registerTask('getFieldPropertyDesc', 'ajax');
 		$this->registerTask('getCodeGlueOptions', 'ajax');
 		$this->registerTask('snippetDetails', 'ajax');
@@ -1272,14 +1272,14 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						}
 					}
 				break;
-				case 'fieldOptions':
+				case 'fieldTypeProperties':
 					try
 					{
 						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue)
 						{
-							$result = $this->getModel('ajax')->getFieldOptions($idValue);
+							$result = $this->getModel('ajax')->getFieldTypeProperties($idValue);
 						}
 						else
 						{

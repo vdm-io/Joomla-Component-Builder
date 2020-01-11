@@ -419,7 +419,7 @@ jQuery('#adminForm').on('change', '#jform_fieldtype',function (e) {
 	e.preventDefault();
 	// get type value
 	var fieldId = jQuery("#jform_fieldtype option:selected").val();
-	getFieldOptions(fieldId, true);
+	getFieldTypeProperties(fieldId, true);
 	// get the field type text
 	var fieldText = jQuery("#jform_fieldtype option:selected").text().toLowerCase();
 	// now check if database input is needed

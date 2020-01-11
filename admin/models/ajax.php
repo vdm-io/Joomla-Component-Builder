@@ -2933,12 +2933,12 @@ class ComponentbuilderModelAjax extends JModelList
 			'display' => 'COM_COMPONENTBUILDER_DISPLAY_SWITCH_FOR_DYNAMIC_PLACEMENT_IN_RELATION_TO_THE_USE_OF_THE_FIELD_IN_MENU_AND_GLOBAL_CONFIGURATION_OPTIONS_SO_THE_CONFIG_OPTION_WILL_ONLY_ADD_THE_FIELD_TO_THE_GLOBAL_CONFIGURATION_AREA_MENU_WILL_ADD_THE_FIELD_ONLY_TO_THE_MENU_AREA',
 			'validate' => 'COM_COMPONENTBUILDER_TO_ADD_VALIDATION_TO_A_FIELD_IF_VALIDATION_IS_NOT_PART_OF_FIELD_TYPE_PROPERTIES_LOADED_ABOVE_SO_IF_YOU_HAVE_VALIDATION_SET_AS_A_FIELD_PROPERTY_THIS_EXTRA_PROPERTY_WILL_NOT_BE_NEEDED');
 
-	public function getFieldOptions($fieldtype)
+	public function getFieldTypeProperties($fieldtype)
 	{
 		// get the xml
 		$xml = $this->getFieldXML($fieldtype);
 		// now get the field options
-		if ($field = ComponentbuilderHelper::getFieldOptions($fieldtype, 'id', null, $xml, true))
+		if ($field = ComponentbuilderHelper::getFieldTypeProperties($fieldtype, 'id', null, $xml, true))
 		{
 			// get subform field properties object
 			$properties = $this->buildFieldOptionsSubform($field['subform'], $field['nameListOptions']);

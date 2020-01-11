@@ -788,7 +788,7 @@ jQuery(document).ready(function()
 {
 	// get type value
 	var fieldtype = jQuery("#jform_fieldtype option:selected").val();
-	getFieldOptions(fieldtype, false);
+	getFieldTypeProperties(fieldtype, false);
 	// get the linked details
 	getLinked();
 	// get the validation rules
@@ -806,8 +806,8 @@ jQuery(document).ready(function()
 // the options row id key
 var rowIdKey = 'properties';
 
-function getFieldOptions(fieldtype, db){
-	getCodeFrom_server(fieldtype, 'type', 'type', 'fieldOptions').done(function(result) {
+function getFieldTypeProperties(fieldtype, db){
+	getCodeFrom_server(fieldtype, 'type', 'type', 'fieldTypeProperties').done(function(result) {
 		if(result.subform){
 			// load the list of properties
 			propertiesArray = result.nameListOptions;
