@@ -206,7 +206,7 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 				'label' => 'COM_COMPONENTBUILDER_FIELD_NAME',
 				'size' => '40',
 				'maxlength' => '150',
-				'class' => 'text_area',
+				'class' => 'text_area field_name',
 				'hint' => 'COM_COMPONENTBUILDER_FIELD_NAME',
 				'filter' => 'STRING'
 			);
@@ -394,12 +394,12 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 				'description' => 'COM_COMPONENTBUILDER_AREA',
 				'required' => true,
 				'class' => 'list_class',
-				'default' => '1'
+				'default' => '3'
 			);
 			// load the subform attributes
 			ComponentbuilderHelper::xmlAddAttributes($targetXML, $targetAttribute);
 			// add the options
-			ComponentbuilderHelper::xmlAddOptions($targetXML, array(1 => 'COM_COMPONENTBUILDER_ADMIN', 2 => 'COM_COMPONENTBUILDER_SITE'));
+			ComponentbuilderHelper::xmlAddOptions($targetXML, array(3 => 'COM_COMPONENTBUILDER_BOTH', 1 => 'COM_COMPONENTBUILDER_ADMIN', 2 => 'COM_COMPONENTBUILDER_SITE'));
 			// now add the fields to the child form
 			ComponentbuilderHelper::xmlAppend($sub_childform, $targetXML);
 
@@ -412,7 +412,7 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 				'label' => 'COM_COMPONENTBUILDER_FIRSTTITLE_COLUMN',
 				'multiple' => false,
 				'required' => true,
-				'class' => 'list_class'
+				'class' => 'list_class list_view_field_option'
 			);
 			// load the subform attributes
 			ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
@@ -430,7 +430,7 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 				'label' => 'COM_COMPONENTBUILDER_SECOND_COLUMN',
 				'multiple' => false,
 				'required' => false,
-				'class' => 'list_class'
+				'class' => 'list_class list_view_field_option'
 			);
 			// load the subform attributes
 			ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
@@ -448,7 +448,7 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 				'label' => 'COM_COMPONENTBUILDER_THIRD_COLUMN',
 				'multiple' => false,
 				'required' => false,
-				'class' => 'list_class'
+				'class' => 'list_class list_view_field_option'
 			);
 			// load the subform attributes
 			ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
@@ -466,7 +466,7 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 				'label' => 'COM_COMPONENTBUILDER_FORTH_COLUMN',
 				'multiple' => false,
 				'required' => false,
-				'class' => 'list_class'
+				'class' => 'list_class list_view_field_option'
 			);
 			// load the subform attributes
 			ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
@@ -484,7 +484,7 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 				'label' => 'COM_COMPONENTBUILDER_FIFTH_COLUMN',
 				'multiple' => false,
 				'required' => false,
-				'class' => 'list_class'
+				'class' => 'list_class list_view_field_option'
 			);
 			// load the subform attributes
 			ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
@@ -502,7 +502,7 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 				'label' => 'COM_COMPONENTBUILDER_SITH_COLUMN',
 				'multiple' => false,
 				'required' => false,
-				'class' => 'list_class'
+				'class' => 'list_class list_view_field_option'
 			);
 			// load the subform attributes
 			ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
@@ -520,7 +520,7 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 				'label' => 'COM_COMPONENTBUILDER_SEVENT_COLUMN',
 				'multiple' => false,
 				'required' => false,
-				'class' => 'list_class'
+				'class' => 'list_class list_view_field_option'
 			);
 			// load the subform attributes
 			ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
@@ -538,7 +538,7 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 				'label' => 'COM_COMPONENTBUILDER_EIGHT_COLUMN',
 				'multiple' => false,
 				'required' => false,
-				'class' => 'list_class'
+				'class' => 'list_class list_view_field_option'
 			);
 			// load the subform attributes
 			ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
@@ -743,6 +743,7 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 		JText::script('COM_COMPONENTBUILDER_PROPERTY_VALUE_IS_MANDATORY');
 		JText::script('COM_COMPONENTBUILDER_PROPERTY_VALUE_IS_TRANSLATABLE');
 		JText::script('COM_COMPONENTBUILDER_NOT_AVAILABLE');
+		JText::script('COM_COMPONENTBUILDER_INACTIVE_COLUMN');
 		// Set the local plans array
 		$this->document->addScriptDeclaration("var local_plans = '';");
 		// add the document default css file

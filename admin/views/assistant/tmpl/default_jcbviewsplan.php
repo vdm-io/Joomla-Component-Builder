@@ -21,12 +21,53 @@ defined('_JEXEC') or die('Restricted access');
 </div>
 <script type="text/javascript">
 var active_view = 'view0';
+var created_fields = {};
+jQuery(document).on('subform-row-add', function(event, row){
+	setFieldNames();
+	setListViewFieldOptions();
+});
 function setJCBuilder(area, view, target){
 	// set the active view 
 	active_view = view;
-	console.log(active_view);
-	console.log(jQuery(area).attr('id'));
-	console.log(target);
+	// build fields
+	if (target == 2){
+		setFieldNames();
+		setListViewFieldOptions();
+	}
+}
+function setListViewFieldOptions(){
+	// build fields
+	if (created_fields.hasOwnProperty(active_view)){
+		jQuery('#modal-listview-' + active_view).find('.list_view_field_option').each(function( i, field ) {
+			// get field ID
+			var field_id = jQuery(field).attr('id');
+			// get the value selected
+			var selected_value =  jQuery("#" + field_id + " option:selected").val();
+			// clear the options out
+			jQuery("#" + field_id).find('option').remove().end();
+			// add inactive value
+			jQuery('#' + field_id).append('<option value="0">' + Joomla.JText._('COM_COMPONENTBUILDER_INACTIVE_COLUMN') + '</option>');
+			// add fields available
+			jQuery.each( created_fields[active_view], function( id, name ) {
+				jQuery('#'+ field_id).append('<option value="' + name + '">' + name + '</option>');
+			});
+			jQuery('#' + field_id).val(selected_value);
+			jQuery('#' + field_id).trigger('liszt:updated');
+		});
+	}
+}
+function setFieldNames(){
+	// always reset
+	created_fields[active_view] = {};
+	// build fields
+	jQuery('#modal-fields-' + active_view).find('.field_name').each(function( i, field ) {
+		// get field name  ID
+		var field_name_id = jQuery(field).attr('id');
+		// get the value selected
+		var field_name_value =  jQuery("#" + field_name_id).val();
+		// add/update field
+		created_fields[active_view][field_name_id] = field_name_value;
+	});
 }
 function setFieldTypeOptions(obj){
 	// get type id
