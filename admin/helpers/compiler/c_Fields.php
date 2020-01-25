@@ -348,13 +348,6 @@ class Fields extends Structure
 	public $movedPublishingFields = array();
 
 	/**
-	 * Extention Custom Fields
-	 * 
-	 * @var    array
-	 */
-	public $extentionCustomfields = array();
-
-	/**
 	 * Set the line number in comments
 	 * 
 	 * @param   int   $nr  The line number
@@ -1720,8 +1713,8 @@ class Fields extends Structure
 			}
 			$field .= PHP_EOL . $this->_t(2) . $taber . "/>";
 			// incase the field is in the config and has not been set
-			if ('config' === $view_name_single && 'configs' === $view_name_list||
-				strpos($view_name_single, 'P|uG!n') !== false)
+			if ('config' === $view_name_single && 'configs' === $view_name_list ||
+				(strpos($view_name_single, 'P|uG!n') !== false || strpos($view_name_single, 'M0dU|3') !== false))
 			{
 				// set lang (just incase)
 				$listLangName = $langView . '_' . ComponentbuilderHelper::safeString($name, 'U');
@@ -2208,7 +2201,7 @@ class Fields extends Structure
 			}
 			// incase the field is in the config and has not been set (or is part of a plugin or module)
 			if (('config' === $view_name_single && 'configs' === $view_name_list) ||
-				strpos($view_name_single, 'P|uG!n') !== false)
+				(strpos($view_name_single, 'P|uG!n') !== false || strpos($view_name_single, 'M0dU|3') !== false))
 			{
 				// set lang (just incase)
 				$listLangName = $langView . '_' . ComponentbuilderHelper::safeString($name, 'U');
@@ -3324,7 +3317,7 @@ class Fields extends Structure
 			}
 		}
 		// if this field gets used in plugin or module we should track it so if needed we can copy it over
-		if (strpos($view_name_single, 'P|uG!n') !== false &&
+		if ((strpos($view_name_single, 'P|uG!n') !== false || strpos($view_name_single, 'M0dU|3') !== false) &&
 			isset($data['custom']) && isset($data['custom']['type']))
 		{
 			$this->extentionCustomfields[$data['type']] = $data['custom']['type'];

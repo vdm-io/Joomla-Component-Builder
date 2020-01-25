@@ -229,6 +229,13 @@ class Structure extends Get
 	public $fileContentStatic = array();
 
 	/**
+	 * Extention Custom Fields
+	 *
+	 * @var    array
+	 */
+	public $extentionCustomfields = array();
+
+	/**
 	 * The standard folders
 	 * 
 	 * @var      array
