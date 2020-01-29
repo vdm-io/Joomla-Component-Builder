@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_module` (
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -300,7 +300,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin` (
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_admin_view` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -749,7 +749,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_dynamic_get` (
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_custom_code` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -825,7 +825,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_property` (
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_method` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -860,7 +860,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_method` (
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_placeholder` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1761,7 +1761,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_class_extends` (
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_module_updates` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1844,7 +1844,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_group` (
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
 	KEY `idx_state` (`published`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_plugin_updates` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
