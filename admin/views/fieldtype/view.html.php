@@ -57,7 +57,7 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
 		}
 
 		// Get Linked view data
-		$this->vymfields = $this->get('Vymfields');
+		$this->vyffields = $this->get('Vyffields');
 
 		// Set the toolbar
 		$this->addToolBar();

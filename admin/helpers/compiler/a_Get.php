@@ -2115,7 +2115,7 @@ class Get
 								{
 									// load the field details
 									$required = ComponentbuilderHelper::getBetween($fieldValues['settings']->xml, 'required="', '"');
-									$required = ($required == true) ? 'yes' : 'no';
+									$required = ($required === 'true' || $required === '1') ? 'yes' : 'no';
 									$filter = ComponentbuilderHelper::getBetween($fieldValues['settings']->xml, 'filter="', '"');
 									$filter = ComponentbuilderHelper::checkString($filter) ? $filter : 'none';
 									// set the field name

@@ -34,10 +34,7 @@ JHtml::_('behavior.keepalive');
 	}
 </script>
 <?php $urlId = (isset($this->item->id)) ? '&id='. (int) $this->item->id : ''; ?>
-<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=assistant'.$urlId); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
-        <input type="hidden" name="task" value="" />
-        <?php echo JHtml::_('form.token'); ?>
-</form>
+
 <script type="text/javascript">
 // Add spindle-wheel for importations:
 jQuery(document).ready(function($) {

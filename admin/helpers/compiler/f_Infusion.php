@@ -698,6 +698,10 @@ class Infusion extends Interpretation
 					// setup the templates
 					$this->setCustomViewTemplateBody($view);
 
+					// set the site form if needed
+					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'CUSTOM_ADMIN_TOP_FORM' . $this->hhh] = $this->setCustomViewForm($view['settings']->code, $view['settings']->main_get->gettype, 1);
+					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'CUSTOM_ADMIN_BOTTOM_FORM' . $this->hhh] = $this->setCustomViewForm($view['settings']->code, $view['settings']->main_get->gettype, 2);
+
 					// Trigger Event: jcb_ce_onAfterBuildCustomAdminViewContent
 					$this->triggerEvent('jcb_ce_onAfterBuildCustomAdminViewContent', array(&$this->componentContext, &$view, &$view['settings']->code, &$this->fileContentStatic, &$this->fileContentDynamic[$view['settings']->code], &$this->placeholders, &$this->hhh));
 				}
@@ -940,8 +944,8 @@ class Infusion extends Interpretation
 					$this->setCustomViewTemplateBody($view);
 		
 					// set the site form if needed
-					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_TOP_FORM' . $this->hhh] = $this->setCustomViewForm($view['settings']->code, 1);
-					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_BOTTOM_FORM' . $this->hhh] = $this->setCustomViewForm($view['settings']->code, 2);
+					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_TOP_FORM' . $this->hhh] = $this->setCustomViewForm($view['settings']->code, $view['settings']->main_get->gettype, 1);
+					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_BOTTOM_FORM' . $this->hhh] = $this->setCustomViewForm($view['settings']->code, $view['settings']->main_get->gettype, 2);
 
 					// Trigger Event: jcb_ce_onAfterBuildSiteViewContent
 					$this->triggerEvent('jcb_ce_onAfterBuildSiteViewContent', array(&$this->componentContext, &$view, &$view['settings']->code, &$this->fileContentStatic, &$this->fileContentDynamic[$view['settings']->code], &$this->placeholders, &$this->hhh));

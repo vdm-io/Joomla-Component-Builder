@@ -222,12 +222,6 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
 		// add the document default css file
 		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/compiler.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
-		// Set the Custom CSS script to view
-		$this->document->addStyleDeclaration("
-			.j-sidebar-container {
-			margin: -37px 0 0 -1px !important;
-			}
-		");
 		// Set the Custom JS script to view
 		$this->document->addScriptDeclaration("
 			function getComponentDetails_server(id){

@@ -31,9 +31,10 @@ JHtml::_('behavior.keepalive');
 		}
 	}
 </script>
-<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=get_snippets'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
-        <input type="hidden" name="task" value="" />
-        <?php echo JHtml::_('form.token'); ?>
+
+<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+	<input type="hidden" name="task" value="" />
+	<?php echo JHtml::_('form.token'); ?>
 </form>
 
 <div id="snippets-github" class="bulk-updater-toggler">

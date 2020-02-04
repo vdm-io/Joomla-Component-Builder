@@ -9,10 +9,9 @@
  */
 
 // Some Global Values
-jform_vvvvvxcvwd_required = false;
-jform_vvvvvxrvwe_required = false;
-jform_vvvvvxsvwf_required = false;
-jform_vvvvvxtvwg_required = false;
+jform_vvvvvxrvwd_required = false;
+jform_vvvvvxsvwe_required = false;
+jform_vvvvvxtvwf_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -152,28 +151,10 @@ function vvvvvxc(add_class_helper_header_vvvvvxc,add_class_helper_vvvvvxc)
 	if (add_class_helper_header && add_class_helper)
 	{
 		jQuery('#jform_class_helper_header-lbl').closest('.control-group').show();
-		// add required attribute to class_helper_header field
-		if (jform_vvvvvxcvwd_required)
-		{
-			updateFieldRequired('class_helper_header',0);
-			jQuery('#jform_class_helper_header').prop('required','required');
-			jQuery('#jform_class_helper_header').attr('aria-required',true);
-			jQuery('#jform_class_helper_header').addClass('required');
-			jform_vvvvvxcvwd_required = false;
-		}
 	}
 	else
 	{
 		jQuery('#jform_class_helper_header-lbl').closest('.control-group').hide();
-		// remove required attribute from class_helper_header field
-		if (!jform_vvvvvxcvwd_required)
-		{
-			updateFieldRequired('class_helper_header',1);
-			jQuery('#jform_class_helper_header').removeAttr('required');
-			jQuery('#jform_class_helper_header').removeAttr('aria-required');
-			jQuery('#jform_class_helper_header').removeClass('required');
-			jform_vvvvvxcvwd_required = true;
-		}
 	}
 }
 
@@ -365,26 +346,26 @@ function vvvvvxr(add_update_server_vvvvvxr)
 	{
 		jQuery('#jform_update_server_target').closest('.control-group').show();
 		// add required attribute to update_server_target field
-		if (jform_vvvvvxrvwe_required)
+		if (jform_vvvvvxrvwd_required)
 		{
 			updateFieldRequired('update_server_target',0);
 			jQuery('#jform_update_server_target').prop('required','required');
 			jQuery('#jform_update_server_target').attr('aria-required',true);
 			jQuery('#jform_update_server_target').addClass('required');
-			jform_vvvvvxrvwe_required = false;
+			jform_vvvvvxrvwd_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_update_server_target').closest('.control-group').hide();
 		// remove required attribute from update_server_target field
-		if (!jform_vvvvvxrvwe_required)
+		if (!jform_vvvvvxrvwd_required)
 		{
 			updateFieldRequired('update_server_target',1);
 			jQuery('#jform_update_server_target').removeAttr('required');
 			jQuery('#jform_update_server_target').removeAttr('aria-required');
 			jQuery('#jform_update_server_target').removeClass('required');
-			jform_vvvvvxrvwe_required = true;
+			jform_vvvvvxrvwd_required = true;
 		}
 	}
 }
@@ -397,26 +378,26 @@ function vvvvvxs(add_sql_vvvvvxs)
 	{
 		jQuery('#jform_sql').closest('.control-group').show();
 		// add required attribute to sql field
-		if (jform_vvvvvxsvwf_required)
+		if (jform_vvvvvxsvwe_required)
 		{
 			updateFieldRequired('sql',0);
 			jQuery('#jform_sql').prop('required','required');
 			jQuery('#jform_sql').attr('aria-required',true);
 			jQuery('#jform_sql').addClass('required');
-			jform_vvvvvxsvwf_required = false;
+			jform_vvvvvxsvwe_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_sql').closest('.control-group').hide();
 		// remove required attribute from sql field
-		if (!jform_vvvvvxsvwf_required)
+		if (!jform_vvvvvxsvwe_required)
 		{
 			updateFieldRequired('sql',1);
 			jQuery('#jform_sql').removeAttr('required');
 			jQuery('#jform_sql').removeAttr('aria-required');
 			jQuery('#jform_sql').removeClass('required');
-			jform_vvvvvxsvwf_required = true;
+			jform_vvvvvxsvwe_required = true;
 		}
 	}
 }
@@ -429,26 +410,26 @@ function vvvvvxt(add_sql_uninstall_vvvvvxt)
 	{
 		jQuery('#jform_sql_uninstall').closest('.control-group').show();
 		// add required attribute to sql_uninstall field
-		if (jform_vvvvvxtvwg_required)
+		if (jform_vvvvvxtvwf_required)
 		{
 			updateFieldRequired('sql_uninstall',0);
 			jQuery('#jform_sql_uninstall').prop('required','required');
 			jQuery('#jform_sql_uninstall').attr('aria-required',true);
 			jQuery('#jform_sql_uninstall').addClass('required');
-			jform_vvvvvxtvwg_required = false;
+			jform_vvvvvxtvwf_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_sql_uninstall').closest('.control-group').hide();
 		// remove required attribute from sql_uninstall field
-		if (!jform_vvvvvxtvwg_required)
+		if (!jform_vvvvvxtvwf_required)
 		{
 			updateFieldRequired('sql_uninstall',1);
 			jQuery('#jform_sql_uninstall').removeAttr('required');
 			jQuery('#jform_sql_uninstall').removeAttr('aria-required');
 			jQuery('#jform_sql_uninstall').removeClass('required');
-			jform_vvvvvxtvwg_required = true;
+			jform_vvvvvxtvwf_required = true;
 		}
 	}
 }

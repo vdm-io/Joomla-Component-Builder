@@ -25,10 +25,7 @@ JHtml::_('behavior.keepalive');
 ?>
 <?php if ($this->canDo->get('###sview###.access')): ?>###CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT###
 <?php $urlId = (isset($this->item->id)) ? '&id='. (int) $this->item->id : ''; ?>
-<form action="<?php echo JRoute::_('index.php?option=com_###component###&view=###sview###'.$urlId); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
-        <input type="hidden" name="task" value="" />
-        <?php echo JHtml::_('form.token'); ?>
-</form>###CUSTOM_ADMIN_BODY###
+###CUSTOM_ADMIN_TOP_FORM######CUSTOM_ADMIN_BODY######CUSTOM_ADMIN_BOTTOM_FORM###
 <?php else: ?>
         <h1><?php echo JText::_('COM_###COMPONENT###_NO_ACCESS_GRANTED'); ?></h1>
 <?php endif; ?>

@@ -23,22 +23,8 @@ JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
 ?>
 <?php if ($this->canDo->get('compiler.access')): ?>
-<script type="text/javascript">
-	Joomla.submitbutton = function(task) {
-		if (task === 'compiler.back') {
-			parent.history.back();
-			return false;
-		} else {
-			var form = document.getElementById('adminForm');
-			form.task.value = task;
-			form.submit();
-		}
-	}
-</script>
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=compiler'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
-        <input type="hidden" name="task" value="" />
-        <?php echo JHtml::_('form.token'); ?>
-</form>
+
 <script type="text/javascript">
 Joomla.submitbutton = function(task, key)
 {
@@ -54,11 +40,7 @@ Joomla.submitbutton = function(task, key)
 		if (isValid){
 			jQuery('#form').hide();
 			// get correct form based on task
-			if (task == 'compiler.compiler' || task == 'compiler.installCompiledModule' || task == 'compiler.installCompiledPlugin') {
-				var form = document.getElementById('compilerForm');
-			} else {
-				var form = document.getElementById('adminForm');
-			}
+			var form = document.getElementById('adminForm');
 			// set the plugin id
 			if (task == 'compiler.installCompiledModule' || task == 'compiler.installCompiledPlugin') {
 				form.install_item_id.value = key;
@@ -112,7 +94,7 @@ jQuery('<div id="loading"></div>')
 	<div id="form">
 		<div class="span4">
 			<h3><?php echo JText::_('COM_COMPONENTBUILDER_READY_TO_COMPILE_A_COMPONENT'); ?></h3>
-			<form action="index.php?option=com_componentbuilder&view=compiler" method="post" name="compilerForm" id="compilerForm" class="form-validate" enctype="multipart/form-data">
+			<div id="compilerForm">
 				<div>
 				<span class="notice" style="display:none; color:red;"><?php echo JText::_('COM_COMPONENTBUILDER_YOU_MUST_SELECT_A_COMPONENT'); ?></span><br />
 				<?php if ($this->form): ?>
@@ -131,9 +113,7 @@ jQuery('<div id="loading"></div>')
 				</button>
 				<input type="hidden" name="install_item_id" value="0"> 
 				<input type="hidden" name="version" value="3" />
-				<input type="hidden" name="task" value="compiler.compiler" />
-				<?php echo JHtml::_('form.token'); ?>
-			</form>
+			</div>
 		</div>
 		<div class="span7">
 			<div id="component-details"><?php echo $selectNotice; ?></div>
@@ -198,6 +178,9 @@ function JRouter(link) {
 	return url+link;
 }
 </script>
+<input type="hidden" name="task" value="" />
+<?php echo JHtml::_('form.token'); ?>
+</form>
 <?php else: ?>
         <h1><?php echo JText::_('COM_COMPONENTBUILDER_NO_ACCESS_GRANTED'); ?></h1>
 <?php endif; ?>

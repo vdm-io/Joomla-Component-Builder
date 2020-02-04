@@ -159,11 +159,11 @@ class Interpretation extends Fields
 	public $customAdminAdded = array();
 
 	/**
-	 * Switch to add form to site views
+	 * Switch to add form to views
 	 *
 	 * @var    array
 	 */
-	public $addSiteForm = array();
+	public $addCustomForm = array();
 
 	/**
 	 * The extensions params
@@ -3365,17 +3365,6 @@ class Interpretation extends Fields
 				{
 					$method .= PHP_EOL . $this->_t(2) . "\$this->pagination = \$this->get('Pagination');";
 				}
-				// add id to list view
-				if (isset($this->customAdminViewListId[$view['settings']->code]))
-				{
-					// HIDDEN_INPUT_VALUES
-					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'HIDDEN_INPUT_VALUES' . $this->hhh] = PHP_EOL . $this->_t(1) . '<input type="hidden" name="id" value="<?php echo $this->app->input->getInt(\'id\', 0); ?>" />';
-				}
-				else
-				{
-					// also set the input value HIDDEN_INPUT_VALUES
-					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'HIDDEN_INPUT_VALUES' . $this->hhh] = '';
-				}
 			}
 			// add the custom get methods
 			if (isset($view['settings']->custom_get) && ComponentbuilderHelper::checkArray($view['settings']->custom_get))
@@ -3766,14 +3755,14 @@ class Interpretation extends Fields
 			// return buttons if they were build
 			if (ComponentbuilderHelper::checkArray($buttons))
 			{
-				// only for site views
-				if ('site' === $this->target)
+				// set the custom get form method  JAVASCRIPT_FOR_BUTTONS
+				$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET . '_JAVASCRIPT_FOR_BUTTONS' . $this->hhh] = $this->setJavaScriptForButtons();
+				// insure the form is added (only if not form exist)
+				if (isset($view['settings']->default) && strpos($view['settings']->default, '<form') === false)
 				{
-					// set the custom get form method  SITE_JAVASCRIPT_FOR_BUTTONS
-					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'SITE_JAVASCRIPT_FOR_BUTTONS' . $this->hhh] = $this->setJavaScriptForButtons();
-					// insure the form is added
-					$this->addSiteForm[$view['settings']->code] = true;
+					$this->addCustomForm[$this->target][$view['settings']->code] = true;
 				}
+
 				return PHP_EOL . implode(PHP_EOL, $buttons);
 			}
 		}
@@ -4458,32 +4447,59 @@ class Interpretation extends Fields
 				$body[] = $this->_t(2) . '<?php echo $this->pagination->getPagesLinks(); ?>';
 				$body[] = $this->_t(1) . '</div>';
 				$body[] = '<?php endif; ?>';
-				// insure the form is added
-				$this->addSiteForm[$view['settings']->code] = true;
+				// insure the form is added (only if no form exist)
+				if (strpos($view['settings']->default, '<form') === false)
+				{
+					$this->addCustomForm[$this->target][$view['settings']->code] = true;
+				}
 				// return the body
 				return implode(PHP_EOL, $body);
 			}
 			else
 			{
+				// insure the form is added (only if no form exist)
+				if ('admin' === $this->target && strpos($view['settings']->default, '<form') === false)
+				{
+					$this->addCustomForm[$this->target][$view['settings']->code] = true;
+				}
 				return PHP_EOL . $this->setPlaceholders($view['settings']->default, $this->placeholders);
 			}
 		}
 		return '';
 	}
-	
-	public function setCustomViewForm(&$view, $type)
+
+	public function setCustomViewForm(&$view, &$gettype, $type)
 	{
-		if (isset($this->addSiteForm[$view]) && $this->addSiteForm[$view])
+		if (isset($this->addCustomForm[$this->target]) && isset($this->addCustomForm[$this->target][$view]) && $this->addCustomForm[$this->target][$view])
 		{
 			switch($type)
 			{
 				case 1:
 					// top
-					return '<form action="<?php echo JRoute::_(\'index.php?option=com_' . $this->componentCodeName . '\'); ?>" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
+					if ('site' === $this->target)
+					{
+						return '<form action="<?php echo JRoute::_(\'index.php?option=com_' . $this->componentCodeName . '\'); ?>" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
+					}
+					else
+					{
+						if ($gettype == 2)
+						{
+							return '<form action="<?php echo JRoute::_(\'index.php?option=com_' . $this->componentCodeName . '&view=' . $view . '\'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">' . PHP_EOL;
+						}
+						else
+						{
+							return '<form action="<?php echo JRoute::_(\'index.php?option=com_' . $this->componentCodeName . '&view=' . $view . '\' . $urlId); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">' . PHP_EOL;
+						}
+					}
 					break;
 				case 2:
 					// bottom
-					return PHP_EOL . '<input type="hidden" name="task" value="" />' . PHP_EOL . "<?php echo JHtml::_('form.token'); ?>" . PHP_EOL . '</form>';
+					$input = '';
+					if ('admin' === $this->target && isset($this->customAdminViewListId[$view]))
+					{
+						$input = PHP_EOL . $this->_t(1) . '<input type="hidden" name="id" value="<?php echo $this->app->input->getInt(\'id\', 0); ?>" />';
+					}
+					return $input . PHP_EOL . '<input type="hidden" name="task" value="" />' . PHP_EOL . "<?php echo JHtml::_('form.token'); ?>" . PHP_EOL . '</form>';
 					break;
 			}
 		}
@@ -4495,7 +4511,7 @@ class Interpretation extends Fields
 		if (ComponentbuilderHelper::checkString($view['settings']->default))
 		{
 			// add the script only if there is none set
-			if (strpos($view['settings']->default, 'Joomla.submitbutton = function(task)') === false)
+			if (strpos($view['settings']->default, 'Joomla.submitbutton = function(') === false)
 			{
 				$script = array();
 				$script[] = PHP_EOL . "<script type=\"text/javascript\">";
