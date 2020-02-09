@@ -2734,12 +2734,25 @@ class Fields extends Structure
 		elseif (isset($field['settings']->datatype))
 		{
 			// insure default not none if number type
-			$intKeys = array('INT', 'TINYINT', 'BIGINT', 'FLOAT', 'DECIMAL', 'DOUBLE');
-			if (in_array($field['settings']->datatype, $intKeys))
+			$numberKeys = array('INT', 'TINYINT', 'BIGINT', 'FLOAT', 'DECIMAL', 'DOUBLE');
+			// don't use these as index or uniqe keys
+			$textKeys = array('TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'BLOB', 'TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB');
+			// build the query values
+			$this->queryBuilder[$view_name_single][$name]['type'] = $field['settings']->datatype;
+			// check if this is a number
+			if (in_array($field['settings']->datatype, $numberKeys))
 			{
 				if ($field['settings']->datadefault === 'Other')
 				{
-					if (!is_numeric($field['settings']->datadefault_other) || $field['settings']->datadefault_other !== '0000-00-00 00:00:00')
+					// setup the checking
+					$number_check = $field['settings']->datadefault_other;
+					// Decimals in SQL needs some help
+					if ('DECIMAL' === $field['settings']->datatype && !is_numeric($number_check))
+					{
+						$number_check = str_replace(',', '.', $field['settings']->datadefault_other);
+					}
+					// check if we have a valid number value
+					if (!is_numeric($number_check))
 					{
 						$field['settings']->datadefault_other = '0';
 					}
@@ -2749,10 +2762,7 @@ class Fields extends Structure
 					$field['settings']->datadefault = '0';
 				}
 			}
-			// don't use these as index or uniqe keys
-			$textKeys = array('TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'BLOB', 'TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB');
-			// build the query values
-			$this->queryBuilder[$view_name_single][$name]['type'] = $field['settings']->datatype;
+			// check if this is not text
 			if (!in_array($field['settings']->datatype, $textKeys))
 			{
 				$this->queryBuilder[$view_name_single][$name]['lenght'] = $field['settings']->datalenght;
@@ -2760,6 +2770,7 @@ class Fields extends Structure
 				$this->queryBuilder[$view_name_single][$name]['default'] = $field['settings']->datadefault;
 				$this->queryBuilder[$view_name_single][$name]['other'] = $field['settings']->datadefault_other;
 			}
+			// fall back unto EMPTY for text
 			else
 			{
 				$this->queryBuilder[$view_name_single][$name]['default'] = 'EMPTY';

@@ -1637,10 +1637,10 @@ class Interpretation extends Fields
 			{
 				// to insure that there be no double entries of a call
 				$checker = md5(serialize($the_get) . $code);
-				if (!isset($this->customViewQueryChecker[$this->target]) || !in_array($checker, $this->customViewQueryChecker[$this->target]))
+				if (!isset($this->customViewQueryChecker[$this->target]) || !isset($checker, $this->customViewQueryChecker[$this->target][$checker]))
 				{
 					// load this unuiqe key
-					$this->customViewQueryChecker[$this->target][] = $checker;
+					$this->customViewQueryChecker[$this->target][$checker] = true;
 					if (isset($the_get['selection']['type']) && ComponentbuilderHelper::checkString($the_get['selection']['type']))
 					{
 						$getItem = PHP_EOL . PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//" . $this->setLine(__LINE__) . " Get from " . $the_get['selection']['table'] . " as " . $the_get['as'];
@@ -1673,7 +1673,9 @@ class Interpretation extends Fields
 					// set the method defaults
 					if (($default = $this->setCustomViewMethodDefaults($the_get, $code)) !== false)
 					{
-						if (isset($this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]) && ComponentbuilderHelper::checkString($this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]) && !in_array($check, $mainAsArray))
+						if (isset($this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']])
+							&& ComponentbuilderHelper::checkString($this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']])
+							&& !in_array($check, $mainAsArray))
 						{
 							// load to other query
 							if (!isset($this->otherQuery[$this->target][$default['code']][$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]][$default['valueName']]))
@@ -4458,7 +4460,7 @@ class Interpretation extends Fields
 			else
 			{
 				// insure the form is added (only if no form exist)
-				if ('admin' === $this->target && strpos($view['settings']->default, '<form') === false)
+				if ('site' !== $this->target && strpos($view['settings']->default, '<form') === false)
 				{
 					$this->addCustomForm[$this->target][$view['settings']->code] = true;
 				}

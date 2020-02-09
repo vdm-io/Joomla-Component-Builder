@@ -34,6 +34,7 @@ JHtml::_('behavior.keepalive');
 	}
 </script>
 <?php $urlId = (isset($this->item->id)) ? '&id='. (int) $this->item->id : ''; ?>
+<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=assistant' . $urlId); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
 <script type="text/javascript">
 // Add spindle-wheel for importations:
@@ -124,6 +125,9 @@ function JRouter(link) {
 	return url+link;
 }
 </script>
+<input type="hidden" name="task" value="" />
+<?php echo JHtml::_('form.token'); ?>
+</form>
 <?php else: ?>
         <h1><?php echo JText::_('COM_COMPONENTBUILDER_NO_ACCESS_GRANTED'); ?></h1>
 <?php endif; ?>

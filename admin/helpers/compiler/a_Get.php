@@ -3613,15 +3613,14 @@ class Get
 									// array(join_field_as, join_field)
 									$bucket['join_field'] = array_map('trim', explode('.', $op['join_field']));
 									// triget filed that has table a relationship
-									if ($bucket['on_field'][0] === 'a' ||
+									if ($op['row_type'] == 1 && ($bucket['on_field'][0] === 'a' ||
 										isset($_part_of_a[$bucket['on_field'][0]]) ||
-										isset($_part_of_a[$bucket['join_field'][0]]))
+										isset($_part_of_a[$bucket['join_field'][0]])))
 									{
 										$_part_of_a[$op['as']] = $op['as'];
 									}
 									return $bucket;
 								}, $result->join_view_table);
-
 								// loop joints
 								foreach ($result->join_view_table as $nr => &$option)
 								{
@@ -3679,9 +3678,9 @@ class Get
 									// array(join_field_as, join_field)
 									$bucket['join_field'] = array_map('trim', explode('.', $op['join_field']));
 									// triget filed that has table a relationship
-									if ($bucket['on_field'][0] === 'a' ||
+									if ($op['row_type'] == 1 && ($bucket['on_field'][0] === 'a' ||
 										isset($_part_of_a[$bucket['on_field'][0]]) ||
-										isset($_part_of_a[$bucket['join_field'][0]]))
+										isset($_part_of_a[$bucket['join_field'][0]])))
 									{
 										$_part_of_a[$op['as']] = $op['as'];
 									}
