@@ -695,6 +695,7 @@ class Infusion extends Interpretation
 					// CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT <<<DYNAMIC>>>
 					$this->fileContentDynamic[$view['settings']->code][$this->hhh . 'CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT' . $this->hhh] = $this->setCustomViewSubmitButtonScript($view);
 
+
 					// setup the templates
 					$this->setCustomViewTemplateBody($view);
 

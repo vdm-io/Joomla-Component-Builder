@@ -562,9 +562,8 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 			$displayAttribute = array(
 				'type' => 'note',
 				'name' => 'display',
-				'label' => 'COM_COMPONENTBUILDER_ITEM_DISPLAY',
-				'description' => '
-					<b>More details soon, to help build the site/front display of a single item.</b>',
+				'label' => 'COM_COMPONENTBUILDER_SINGLE_ITEM_DISPLAY_EDITOR_OF_THE_SITE_VIEW',
+				'description' => '<div id="gjs-[[[VDM]]]"></div>',
 				'heading' => 'h5'
 			);
 			// load the subform attributes
@@ -594,6 +593,12 @@ class ComponentbuilderViewAssistant extends JViewLegacy
 		require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );
 		// Initialize the header checker.
 		$HeaderCheck = new componentbuilderHeaderCheck;
+
+		// always load these files.
+		$this->document->addStyleSheet(JURI::root(true) . "/media/com_componentbuilder/grapejs/css/grapes.min.css", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/css");
+		$this->document->addStyleSheet(JURI::root(true) . "/media/com_componentbuilder/grapejs/css/grapesjs-preset-webpage.min.css", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/css");
+		$this->document->addScript(JURI::root(true) . "/media/com_componentbuilder/grapejs/js/grapes.min.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
+		$this->document->addScript(JURI::root(true) . "/media/com_componentbuilder/grapejs/js/grapesjs-preset-webpage.min.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
 
 		// Add View JavaScript File
 		$this->document->addScript(JURI::root(true) . "/administrator/components/com_componentbuilder/assets/js/assistant.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");

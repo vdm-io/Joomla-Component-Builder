@@ -3140,7 +3140,10 @@ class Fields extends Structure
 	public function setCustomFieldTypeFile($data, $view_name_list, $view_name_single)
 	{
 		// make sure it is not already been build or if it is prime
-		if (isset($data['custom']) && isset($data['custom']['extends']) && ((isset($data['custom']['prime_php']) && $data['custom']['prime_php'] == 1) || !isset($this->fileContentDynamic['customfield_' . $data['type']]) || !ComponentbuilderHelper::checkArray($this->fileContentDynamic['customfield_' . $data['type']])))
+		if (isset($data['custom']) && isset($data['custom']['extends'])
+			&& ((isset($data['custom']['prime_php']) && $data['custom']['prime_php'] == 1)
+				|| !isset($this->fileContentDynamic['customfield_' . $data['type']])
+				|| !ComponentbuilderHelper::checkArray($this->fileContentDynamic['customfield_' . $data['type']])))
 		{
 			// set J prefix
 			$jprefix = 'J';

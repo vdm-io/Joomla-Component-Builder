@@ -1811,7 +1811,7 @@ class Structure extends Get
 			// check files exist
 			if (JFile::exists($this->componentPath . '/admin/models/fields/' . $field['type_name'] . '.php'))
 			{
-				// move the custom field
+				// copy the custom field
 				JFile::copy($this->componentPath . '/admin/models/fields/' . $field['type_name'] . '.php', $path . '/fields/' . $field['type_name'] . '.php');
 			}
 			// do this just once
@@ -1823,7 +1823,7 @@ class Structure extends Get
 			// check files exist
 			if (JFile::exists($this->componentPath . '/admin/models/rules/' . $this->validationLinkedFields[$field['field']] . '.php'))
 			{
-				// move the custom field
+				// copy the custom field
 				JFile::copy($this->componentPath . '/admin/models/rules/' . $this->validationLinkedFields[$field['field']] . '.php', $path . '/rules/' . $this->validationLinkedFields[$field['field']] . '.php');
 			}
 			// do this just once

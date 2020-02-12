@@ -21,6 +21,8 @@ defined('_JEXEC') or die('Restricted access');
 </div>
 <script type="text/javascript">
 var active_view = 'view0';
+var active_editors = {};
+var last_editors = {};
 var created_fields = {};
 jQuery(document).on('subform-row-add', function(event, row){
 	setFieldNames();
@@ -33,7 +35,25 @@ function setJCBuilder(area, view, target){
 	if (target == 2){
 		setFieldNames();
 		setListViewFieldOptions();
+	} else if (target == 3 && !active_editors.hasOwnProperty(view)) {
+		// update the editor (let grape js know)
+		initializeGrapesjs();
 	}
+}
+function initializeGrapesjs(){
+	active_editors[active_view] = grapesjs.init({
+		// Indicate where to init the editor. You can also pass an HTMLElement
+		container: '#gjs-'+active_view,
+		// Get the content for the canvas directly from the element
+		fromElement: true,
+		// Size of the editor
+		height: '500px',
+		width: 'auto',
+		// Default configurations
+		storageManager: { autoload: 1 },
+		// basic block manager
+		plugins: ['gjs-preset-webpage'],
+	});
 }
 function setListViewFieldOptions(){
 	// build fields
