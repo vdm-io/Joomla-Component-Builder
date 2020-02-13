@@ -236,6 +236,13 @@ class Structure extends Get
 	public $extentionCustomfields = array();
 
 	/**
+	 * Extention Tracking Files Moved
+	 *
+	 * @var    array
+	 */
+	public $extentionTrackingFilesMoved = array();
+
+	/**
 	 * The standard folders
 	 * 
 	 * @var      array
@@ -1808,26 +1815,34 @@ class Structure extends Get
 		// check if this is a custom field that should be moved
 		if (isset($this->extentionCustomfields[$field['type_name']]))
 		{
-			// check files exist
-			if (JFile::exists($this->componentPath . '/admin/models/fields/' . $field['type_name'] . '.php'))
+			// lets check if we already moved this
+			if (!isset($this->extentionTrackingFilesMoved[$path . 'type' . $field['type_name']]))
 			{
-				// copy the custom field
-				JFile::copy($this->componentPath . '/admin/models/fields/' . $field['type_name'] . '.php', $path . '/fields/' . $field['type_name'] . '.php');
+				// check files exist
+				if (JFile::exists($this->componentPath . '/admin/models/fields/' . $field['type_name'] . '.php'))
+				{
+					// copy the custom field
+					JFile::copy($this->componentPath . '/admin/models/fields/' . $field['type_name'] . '.php', $path . '/fields/' . $field['type_name'] . '.php');
+				}
+				// stop from doing this again.
+				$this->extentionTrackingFilesMoved[$path . 'type' . $field['type_name']] = true;
 			}
-			// do this just once
-			unset($this->extentionCustomfields[$field['type_name']]);
 		}
 		// check if this has validation that should be moved
 		if (isset($this->validationLinkedFields[$field['field']]))
 		{
-			// check files exist
-			if (JFile::exists($this->componentPath . '/admin/models/rules/' . $this->validationLinkedFields[$field['field']] . '.php'))
+			// lets check if we already moved this
+			if (!isset($this->extentionTrackingFilesMoved[$path . 'rule' . $this->validationLinkedFields[$field['field']]]))
 			{
-				// copy the custom field
-				JFile::copy($this->componentPath . '/admin/models/rules/' . $this->validationLinkedFields[$field['field']] . '.php', $path . '/rules/' . $this->validationLinkedFields[$field['field']] . '.php');
+				// check files exist
+				if (JFile::exists($this->componentPath . '/admin/models/rules/' . $this->validationLinkedFields[$field['field']] . '.php'))
+				{
+					// copy the custom field
+					JFile::copy($this->componentPath . '/admin/models/rules/' . $this->validationLinkedFields[$field['field']] . '.php', $path . '/rules/' . $this->validationLinkedFields[$field['field']] . '.php');
+				}
+				// stop from doing this again.
+				$this->extentionTrackingFilesMoved[$path . 'rule' . $this->validationLinkedFields[$field['field']]] = true;
 			}
-			// do this just once
-			unset($this->validationLinkedFields[$field['field']]);
 		}
 	}
 
