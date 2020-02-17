@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2019 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -5857,11 +5857,6 @@ abstract class ComponentbuilderHelper
 		$user = JFactory::getUser();
 		// load the submenus to sidebar
 		JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_DASHBOARD'), 'index.php?option=com_componentbuilder&view=componentbuilder', $submenu === 'componentbuilder');
-		// Access control (assistant.submenu).
-		if ($user->authorise('assistant.submenu', 'com_componentbuilder'))
-		{
-			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_ASSISTANT'), 'index.php?option=com_componentbuilder&view=assistant', $submenu === 'assistant');
-		}
 		// Access control (compiler.submenu).
 		if ($user->authorise('compiler.submenu', 'com_componentbuilder'))
 		{
