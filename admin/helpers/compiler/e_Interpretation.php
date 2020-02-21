@@ -10202,7 +10202,7 @@ class Interpretation extends Fields
 		if (isset($list_fileScript) && ComponentbuilderHelper::checkString($list_fileScript))
 		{
 			// load the script
-			$this->viewScriptBuilder[$viewName]['list_fileScript'] = $list_fileScript;
+			$this->viewScriptBuilder[$viewName_list]['list_fileScript'] = $list_fileScript;
 		}
 		// make sure there is script to add
 		if (isset($fileScript) && ComponentbuilderHelper::checkString($fileScript))
