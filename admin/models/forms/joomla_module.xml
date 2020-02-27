@@ -303,7 +303,7 @@
 		<field
 			type="hidden"
 			name="not_required"
-			default="[]"
+			default="一_一"
 		/>
 		<!-- Note_update_server_note_zip Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_update_server_note_zip" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_UPDATE_SERVER_NOTE_ZIP_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_UPDATE_SERVER_NOTE_ZIP_DESCRIPTION" heading="h4" class="alert alert-info note_update_server_note_zip" />

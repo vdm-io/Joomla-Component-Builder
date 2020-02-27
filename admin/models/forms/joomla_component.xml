@@ -768,7 +768,7 @@
 		<field
 			type="hidden"
 			name="not_required"
-			default="[]"
+			default="一_一"
 		/>
 		<!-- Crowdin_project_identifier Field. Type: Text. (joomla) -->
 		<field

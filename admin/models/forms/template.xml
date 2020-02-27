@@ -164,7 +164,7 @@
 		<field
 			type="hidden"
 			name="not_required"
-			default="[]"
+			default="一_一"
 		/>
 		<!-- Template Field. Type: Editor. (joomla) -->
 		<field

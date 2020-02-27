@@ -173,7 +173,7 @@
 		<field
 			type="hidden"
 			name="not_required"
-			default="[]"
+			default="一_一"
 		/>
 		<!-- Note_yes_behaviour_one Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_yes_behaviour_one" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_ONE_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_YES_BEHAVIOUR_ONE_DESCRIPTION" heading="h4" class="alert alert-success note_yes_behaviour_one" />

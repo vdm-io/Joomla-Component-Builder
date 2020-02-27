@@ -379,7 +379,7 @@
 		<field
 			type="hidden"
 			name="not_required"
-			default="[]"
+			default="一_一"
 		/>
 		<!-- Sql Field. Type: Textarea. (joomla) -->
 		<field

@@ -10091,29 +10091,41 @@ class Interpretation extends Fields
 				// add the needed validation to file
 				if (isset($this->validationFixBuilder[$viewName]) && ComponentbuilderHelper::checkArray($this->validationFixBuilder[$viewName]))
 				{
-					$validation .= PHP_EOL . "// update required fields";
-					$validation .= PHP_EOL . "function updateFieldRequired(name,status)";
-					$validation .= PHP_EOL . "{";
-					$validation .= PHP_EOL . $this->_t(1) . "var not_required = jQuery('#jform_not_required').val();";
-					$validation .= PHP_EOL . PHP_EOL . $this->_t(1) . "if(status == 1)";
-					$validation .= PHP_EOL . $this->_t(1) . "{";
-					$validation .= PHP_EOL . $this->_t(2) . "if (isSet(not_required) && not_required != 0)";
+					$validation .= PHP_EOL . "// update fields required";
+					$validation .= PHP_EOL . "function updateFieldRequired(name, status) {";
+					$validation .= PHP_EOL . $this->_t(1) . "// check if not_required exist";
+					$validation .= PHP_EOL . $this->_t(1) . "if (jQuery('#jform_not_required').length > 0) {";
+					$validation .= PHP_EOL . $this->_t(2) . "var not_required = jQuery('#jform_not_required').val().split(\",\");";
+					$validation .= PHP_EOL . PHP_EOL . $this->_t(2) . "if(status == 1)";
 					$validation .= PHP_EOL . $this->_t(2) . "{";
-					$validation .= PHP_EOL . $this->_t(3) . "not_required = not_required+','+name;";
+					$validation .= PHP_EOL . $this->_t(3) . "not_required.push(name);";
 					$validation .= PHP_EOL . $this->_t(2) . "}";
 					$validation .= PHP_EOL . $this->_t(2) . "else";
 					$validation .= PHP_EOL . $this->_t(2) . "{";
-					$validation .= PHP_EOL . $this->_t(3) . "not_required = ','+name;";
+					$validation .= PHP_EOL . $this->_t(3) . "not_required = removeFieldFromNotRequired(not_required, name);";
 					$validation .= PHP_EOL . $this->_t(2) . "}";
+					$validation .= PHP_EOL . PHP_EOL . $this->_t(2) . "jQuery('#jform_not_required').val(fixNotRequiredArray(not_required).toString());";
 					$validation .= PHP_EOL . $this->_t(1) . "}";
-					$validation .= PHP_EOL . $this->_t(1) . "else";
-					$validation .= PHP_EOL . $this->_t(1) . "{";
-					$validation .= PHP_EOL . $this->_t(2) . "if (isSet(not_required) && not_required != 0)";
-					$validation .= PHP_EOL . $this->_t(2) . "{";
-					$validation .= PHP_EOL . $this->_t(3) . "not_required = not_required.replace(','+name,'');";
-					$validation .= PHP_EOL . $this->_t(2) . "}";
-					$validation .= PHP_EOL . $this->_t(1) . "}";
-					$validation .= PHP_EOL . PHP_EOL . $this->_t(1) . "jQuery('#jform_not_required').val(not_required);";
+					$validation .= PHP_EOL . "}" . PHP_EOL;
+					$validation .= PHP_EOL . "// remove field from not_required";
+					$validation .= PHP_EOL . "function removeFieldFromNotRequired(array, what) {";
+					$validation .= PHP_EOL . $this->_t(1) . "return array.filter(function(element){";
+					$validation .= PHP_EOL . $this->_t(2) . "return element !== what;";
+					$validation .= PHP_EOL . $this->_t(1) . "});";
+					$validation .= PHP_EOL . "}" . PHP_EOL;
+					$validation .= PHP_EOL . "// fix not required array";
+					$validation .= PHP_EOL . "function fixNotRequiredArray(array) {";
+					$validation .= PHP_EOL . $this->_t(1) . "var seen = {};";
+					$validation .= PHP_EOL . $this->_t(1) . "return removeEmptyFromNotRequiredArray(array).filter(function(item) {";
+					$validation .= PHP_EOL . $this->_t(2) . "return seen.hasOwnProperty(item) ? false : (seen[item] = true);";
+					$validation .= PHP_EOL . $this->_t(1) . "});";
+					$validation .= PHP_EOL . "}" . PHP_EOL;
+					$validation .= PHP_EOL . "// remove empty from not_required array";
+					$validation .= PHP_EOL . "function removeEmptyFromNotRequiredArray(array) {";
+					$validation .= PHP_EOL . $this->_t(1) . "return array.filter(function (el) {";
+					$validation .= PHP_EOL . $this->_t(2) . "// remove ( 一_一) as well - lol";
+					$validation .= PHP_EOL . $this->_t(2) . "return (el.length > 0 && '一_一' !== el);";
+					$validation .= PHP_EOL . $this->_t(1) . "});";
 					$validation .= PHP_EOL . "}" . PHP_EOL;
 				}
 				// set the isSet function

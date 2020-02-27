@@ -378,7 +378,7 @@
 		<field
 			type="hidden"
 			name="not_required"
-			default="[]"
+			default="一_一"
 		/>
 		<!-- Php_postflight_install Field. Type: Editor. (joomla) -->
 		<field

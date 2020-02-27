@@ -2987,7 +2987,9 @@ class Fields extends Structure
 			$this->checkboxBuilder[$view_name_single][] = $name;
 		}
 		// setup checkboxes and other json items for this view
-		if ($dbSwitch && (($typeName === 'subform' || $typeName === 'checkboxes' || $multiple || $field['settings']->store != 0) && $typeName != 'tag'))
+        // if we have advance field modeling and the field is not being set in the DB
+        // this could mean that field is modeled manually (so we add it)
+        if (($dbSwitch || $field['settings']->store == 6) && (($typeName === 'subform' || $typeName === 'checkboxes' || $multiple || $field['settings']->store != 0) && $typeName != 'tag'))
 		{
 			$subformJsonSwitch = true;
 			switch ($field['settings']->store)
@@ -3069,8 +3071,8 @@ class Fields extends Structure
 				}
 			}
 
-			// subform house keeping
-			if ('subform' === $typeName)
+			// subform house keeping (only if not advance modeling)
+			if ('subform' === $typeName && $field['settings']->store != 6)
 			{
 				// the values must revert to array
 				$this->jsonItemBuilderArray[$view_name_single][] = $name;

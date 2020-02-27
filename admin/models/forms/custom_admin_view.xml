@@ -310,7 +310,7 @@
 		<field
 			type="hidden"
 			name="not_required"
-			default="[]"
+			default="一_一"
 		/>
 		<!-- Add_js_document Field. Type: Radio. (joomla) -->
 		<field
