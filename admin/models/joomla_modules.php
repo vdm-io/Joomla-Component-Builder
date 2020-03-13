@@ -28,7 +28,8 @@ class ComponentbuilderModelJoomla_modules extends JModelList
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
 				'a.system_name','system_name',
-				'a.description','description'
+				'a.description','description',
+				'a.target','target'
 			);
 		}
 
@@ -54,6 +55,9 @@ class ComponentbuilderModelJoomla_modules extends JModelList
 
 		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
 		$this->setState('filter.description', $description);
+
+		$target = $this->getUserStateFromRequest($this->context . '.filter.target', 'filter_target');
+		$this->setState('filter.target', $target);
         
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
@@ -110,9 +114,43 @@ class ComponentbuilderModelJoomla_modules extends JModelList
 
 			}
 		}
+
+		// set selection value to a translatable value
+		if (ComponentbuilderHelper::checkArray($items))
+		{
+			foreach ($items as $nr => &$item)
+			{
+				// convert target
+				$item->target = $this->selectionTranslation($item->target, 'target');
+			}
+		}
+
         
 		// return items
 		return $items;
+	}
+
+	/**
+	 * Method to convert selection values to translatable string.
+	 *
+	 * @return translatable string
+	 */
+	public function selectionTranslation($value,$name)
+	{
+		// Array of target language strings
+		if ($name === 'target')
+		{
+			$targetArray = array(
+				1 => 'COM_COMPONENTBUILDER_JOOMLA_MODULE_SITE',
+				2 => 'COM_COMPONENTBUILDER_JOOMLA_MODULE_ADMIN'
+			);
+			// Now check if value is found in this array
+			if (isset($targetArray[$value]) && ComponentbuilderHelper::checkString($targetArray[$value]))
+			{
+				return $targetArray[$value];
+			}
+		}
+		return $value;
 	}
 	
 	/**
@@ -174,6 +212,11 @@ class ComponentbuilderModelJoomla_modules extends JModelList
 			}
 		}
 
+		// Filter by Target.
+		if ($target = $this->getState('filter.target'))
+		{
+			$query->where('a.target = ' . $db->quote($db->escape($target)));
+		}
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
@@ -203,6 +246,7 @@ class ComponentbuilderModelJoomla_modules extends JModelList
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.description');
+		$id .= ':' . $this->getState('filter.target');
 
 		return parent::getStoreId($id);
 	}

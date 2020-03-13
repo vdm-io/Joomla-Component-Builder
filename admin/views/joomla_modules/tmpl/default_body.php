@@ -102,6 +102,9 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_modules&task=joomla_m
 			</div>
 		</td>
 		<td class="hidden-phone">
+			<?php echo JText::_($item->target); ?>
+		</td>
+		<td class="hidden-phone">
 			<?php echo $this->escape($item->description); ?>
 		</td>
 		<td class="center">

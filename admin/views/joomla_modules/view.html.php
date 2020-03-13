@@ -185,6 +185,36 @@ class ComponentbuilderViewJoomla_modules extends JViewLegacy
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
 		}
+
+		// Set Target Selection
+		$this->targetOptions = $this->getTheTargetSelections();
+		// We do some sanitation for Target filter
+		if (ComponentbuilderHelper::checkArray($this->targetOptions) &&
+			isset($this->targetOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->targetOptions[0]->value))
+		{
+			unset($this->targetOptions[0]);
+		}
+		// Only load Target filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->targetOptions))
+		{
+			// Target Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_JOOMLA_MODULE_TARGET_LABEL').' -',
+				'filter_target',
+				JHtml::_('select.options', $this->targetOptions, 'value', 'text', $this->state->get('filter.target'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Target Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_JOOMLA_MODULE_TARGET_LABEL').' -',
+					'batch[target]',
+					JHtml::_('select.options', $this->targetOptions, 'value', 'text')
+				);
+			}
+		}
 	}
 
 	/**
@@ -234,5 +264,41 @@ class ComponentbuilderViewJoomla_modules extends JViewLegacy
 			'a.description' => JText::_('COM_COMPONENTBUILDER_JOOMLA_MODULE_DESCRIPTION_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
+	}
+
+	protected function getTheTargetSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('target'));
+		$query->from($db->quoteName('#__componentbuilder_joomla_module'));
+		$query->order($db->quoteName('target') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$_filter = array();
+			foreach ($results as $target)
+			{
+				// Translate the target selection
+				$text = $model->selectionTranslation($target,'target');
+				// Now add the target and its text to the options array
+				$_filter[] = JHtml::_('select.option', $target, JText::_($text));
+			}
+			return $_filter;
+		}
+		return false;
 	}
 }

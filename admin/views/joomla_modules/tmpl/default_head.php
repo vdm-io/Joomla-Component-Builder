@@ -33,6 +33,9 @@ defined('_JEXEC') or die('Restricted access');
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_JOOMLA_MODULE_SYSTEM_NAME_LABEL', 'system_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
+			<?php echo JText::_('COM_COMPONENTBUILDER_JOOMLA_MODULE_TARGET_LABEL'); ?>
+	</th>
+	<th class="nowrap hidden-phone" >
 			<?php echo JHtml::_('grid.sort', 'COM_COMPONENTBUILDER_JOOMLA_MODULE_DESCRIPTION_LABEL', 'description', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>

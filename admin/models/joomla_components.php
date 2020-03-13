@@ -131,16 +131,14 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			// set custom folder path
 			$this->customPath = $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
+			// set the backup paths
+			$comConfig = JFactory::getConfig();
+			$this->backupPath = $comConfig->get('tmp_path');
 			// check what type of export or backup this is
 			if ('backup' === $this->activeType || 'manualBackup' === $this->activeType)
 			{
-				// set the paths
-				if (!$this->backupPath = $this->params->get('cronjob_backup_folder_path', null))
-				{
-					// set the paths
-					$comConfig = JFactory::getConfig();
-					$this->backupPath = $comConfig->get('tmp_path');
-				}
+				// set the zip path
+				$this->zipPath = $this->params->get('cronjob_backup_folder_path', $this->backupPath);
 				// check what backup type we are working with here
 				$this->backupType = $this->params->get('cronjob_backup_type', 1); // 1 = local folder; 2 = remote server (default is local)
 				// if remote server get the ID
@@ -162,9 +160,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			}
 			else
 			{
-				// set the paths
-				$comConfig = JFactory::getConfig();
-				$this->backupPath = $comConfig->get('tmp_path');
+				// set the zip path
+				$this->zipPath = $this->backupPath;
 				// set the package name
 				if (count($items) == 1)
 				{
@@ -177,7 +174,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			}
 			// set the package path
 			$this->packagePath = rtrim($this->backupPath, '/') . '/' . $this->packageName;
-			$this->zipPath = $this->packagePath .'.zip';
+			$this->zipPath =  rtrim($this->zipPath, '/') . '/' . $this->packageName .'.zip';
 			if (JFolder::exists($this->packagePath))
 			{
 				// remove if old folder is found
@@ -187,7 +184,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			JFolder::create($this->packagePath);
 			// Get the basic encryption.
 			$basickey = ComponentbuilderHelper::getCryptKey('basic');
-			// Get the encription object.
+			// Get the encryption object.
 			if ($basickey)
 			{
 				$basic = new FOFEncryptAes($basickey, 128);

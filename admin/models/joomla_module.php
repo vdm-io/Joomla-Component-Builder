@@ -45,7 +45,8 @@ class ComponentbuilderModelJoomla_module extends JModelAdmin
 			),
 			'above' => array(
 				'system_name',
-				'module_version'
+				'module_version',
+				'target'
 			)
 		),
 		'script_file' => array(
@@ -66,19 +67,6 @@ class ComponentbuilderModelJoomla_module extends JModelAdmin
 				'php_method_uninstall'
 			)
 		),
-		'dynamic_integration' => array(
-			'left' => array(
-				'add_update_server',
-				'update_server_url',
-				'update_server_target',
-				'note_update_server_note_ftp',
-				'note_update_server_note_zip',
-				'note_update_server_note_other',
-				'update_server',
-				'add_sales_server',
-				'sales_server'
-			)
-		),
 		'readme' => array(
 			'left' => array(
 				'addreadme',
@@ -91,6 +79,19 @@ class ComponentbuilderModelJoomla_module extends JModelAdmin
 				'sql',
 				'add_sql_uninstall',
 				'sql_uninstall'
+			)
+		),
+		'dynamic_integration' => array(
+			'left' => array(
+				'add_update_server',
+				'update_server_url',
+				'update_server_target',
+				'note_update_server_note_ftp',
+				'note_update_server_note_zip',
+				'note_update_server_note_other',
+				'update_server',
+				'add_sales_server',
+				'sales_server'
 			)
 		),
 		'code' => array(

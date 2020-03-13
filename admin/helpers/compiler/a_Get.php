@@ -6279,6 +6279,64 @@ class Get
 	}
 
 	/**
+	 * get the Joomla module path
+	 *
+	 * @return  array of module path and target site area on success
+	 *
+	 */
+	protected function getModulePath($id)
+	{
+		if (is_numeric($id) && $id > 0)
+		{
+			// Create a new query object.
+			$query = $this->db->getQuery(true);
+
+			$query->select('a.*');
+			$query->select(
+				$this->db->quoteName(
+					array(
+						'a.name',
+						'a.target'
+					), array(
+						'name',
+						'target'
+					)
+				)
+			);
+			// from these tables
+			$query->from('#__componentbuilder_joomla_module AS a');
+			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
+			$this->db->setQuery($query);
+			$this->db->execute();
+			if ($this->db->getNumRows())
+			{
+				// get the module data
+				$module = $this->db->loadObject();
+				// update the name if it has dynamic values
+				$module->name = $this->setPlaceholders($this->setDynamicValues($module->name), $this->globalPlaceholders);
+				// set safe class function name
+				$module->code_name = ComponentbuilderHelper::safeClassFunctionName($module->name);
+				// set module folder name
+				$module->folder_name = 'mod_' . strtolower($module->code_name);
+				// set the lang key
+				$this->langKeys[strtoupper($module->folder_name)] = $module->id . '_M0dU|3';
+				// return the path
+				if ($module->target == 2)
+				{
+					// administrator client area
+					return JPATH_ADMINISTRATOR . '/modules/' . $module->folder_name;
+				}
+				else
+				{
+					// default is the site client area
+					return JPATH_ROOT . '/modules/' . $module->folder_name;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * get the Joomla Modules IDs
 	 *
 	 * @return  array of IDs on success
@@ -6379,11 +6437,22 @@ class Get
 				{
 					$module->module_version = '1.0.0';
 				}
+				// set target client
+				if ($module->target == 2)
+				{
+					$module->target_client = 'admin';
+				}
+				else
+				{
+					// default is site area
+					$module->target_client = 'site';
+				}
+				unset($module->target);
 				// set GUI mapper
 				$guiMapper = array( 'table' => 'joomla_module', 'id' => (int) $id, 'type' => 'php');
 				// update the name if it has dynamic values
 				$module->name = $this->setPlaceholders($this->setDynamicValues($module->name), $this->placeholders);
-				// update the name if it has dynamic values
+				// set safe class function name
 				$module->code_name = ComponentbuilderHelper::safeClassFunctionName($module->name);
 				// set official name
 				$module->official_name = ComponentbuilderHelper::safeString($module->name, 'W');
@@ -6832,7 +6901,7 @@ class Get
 	public function getModuleXMLTemplate(&$module)
 	{
 		$xml = '<?xml version="1.0" encoding="utf-8"?>';
-		$xml .= PHP_EOL . '<extension type="module" version="3.8" client="site" method="upgrade">';
+		$xml .= PHP_EOL . '<extension type="module" version="3.8" client="' . $module->target_client . '" method="upgrade">';
 		$xml .= PHP_EOL . $this->_t(1) . '<name>' . $module->lang_prefix . '</name>';
 		$xml .= PHP_EOL . $this->_t(1) . '<creationDate>' . $this->hhh . 'BUILDDATE' . $this->hhh . '</creationDate>';
 		$xml .= PHP_EOL . $this->_t(1) . '<author>' . $this->hhh . 'AUTHOR' . $this->hhh . '</author>';
@@ -6912,7 +6981,6 @@ class Get
 			$query->from('#__componentbuilder_joomla_plugin AS a');
 			$query->join('LEFT', $this->db->quoteName('#__componentbuilder_joomla_plugin_group', 'g') . ' ON (' . $this->db->quoteName('a.joomla_plugin_group') . ' = ' . $this->db->quoteName('g.id') . ')');
 			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
-			$query->where($this->db->quoteName('a.published') . ' >= 1');
 			$this->db->setQuery($query);
 			$this->db->execute();
 			if ($this->db->getNumRows())
@@ -8390,12 +8458,12 @@ class Get
 		{
 			foreach ($module_ids as $module_id)
 			{
-				// get the module group and folder name
-//				if (($path = $this->getModulePath($module_id)) !== false)
-//				{
-//					// set the path
-//					$localPaths['module_' . str_replace('/', '_', $path)] = JPATH_ROOT . '/modules/' . $path;
-//				}
+				// get the module folder path
+				if (($path = $this->getModulePath($module_id)) !== false)
+				{
+					// set the path
+					$localPaths['module_' . str_replace('/', '_', $path)] = $path;
+				}
 			}
 		}
 		// Painfull but we need to folder paths for the linked plugins

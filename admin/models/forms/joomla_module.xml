@@ -99,6 +99,22 @@
 			message="COM_COMPONENTBUILDER_JOOMLA_MODULE_SYSTEM_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_MODULE_SYSTEM_NAME_HINT"
 		/>
+		<!-- Target Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="target"
+			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_TARGET_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_TARGET_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1"
+			required="true"
+			validate="int">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_MODULE_SITE</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_JOOMLA_MODULE_ADMIN</option>
+		</field>
 		<!-- Description Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -111,6 +127,34 @@
 			filter="HTML"
 			hint="COM_COMPONENTBUILDER_JOOMLA_MODULE_DESCRIPTION_HINT"
 		/>
+		<!-- Add_php_method_uninstall Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_method_uninstall"
+			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_ADD_PHP_METHOD_UNINSTALL_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_MODULE_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_MODULE_NO</option>
+		</field>
+		<!-- Add_php_postflight_update Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_postflight_update"
+			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_ADD_PHP_POSTFLIGHT_UPDATE_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_MODULE_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_MODULE_NO</option>
+		</field>
 		<!-- Add_php_postflight_install Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -139,17 +183,76 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_MODULE_NO</option>
 		</field>
-		<!-- Update_server Field. Type: Servers. (custom) -->
+		<!-- Addreadme Field. Type: Radio. (joomla) -->
 		<field
-			type="servers"
-			name="update_server"
-			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_UPDATE_SERVER_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_UPDATE_SERVER_DESCRIPTION"
+			type="radio"
+			name="addreadme"
+			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_ADDREADME_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_MODULE_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_MODULE_NO</option>
+		</field>
+		<!-- Note_libraries_options Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_libraries_options" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_LIBRARIES_OPTIONS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_LIBRARIES_OPTIONS_DESCRIPTION" heading="h4" class="alert alert-info note_libraries_options" />
+		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_linked_to_notice" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_LINKED_TO_NOTICE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_LINKED_TO_NOTICE_DESCRIPTION" heading="h4" class="note_linked_to_notice" />
+		<!-- Not_required Field. Type: Hidden. (joomla) -->
+		<field
+			type="hidden"
+			name="not_required"
+			default="一_一"
+		/>
+		<!-- Note_snippet_usage Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_snippet_usage" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_SNIPPET_USAGE_LABEL" heading="h4" class="snippet-usage note_snippet_usage" />
+		<!-- Default Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="default"
+			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_DEFAULT_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_DEFAULT_DESCRIPTION"
+			width="100%"
+			height="500px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="html"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
+		/>
+		<!-- Note_uikit_snippet Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_uikit_snippet" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_UIKIT_SNIPPET_LABEL" heading="h4" class="snippet-code note_uikit_snippet" />
+		<!-- Snippet Field. Type: Snippets. (custom) -->
+		<field
+			type="snippets"
+			name="snippet"
+			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_SNIPPET_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_SNIPPET_DESCRIPTION"
 			class="list_class"
 			multiple="false"
-			default="0"
+			required="false"
 			button="true"
 		/>
+		<!-- Note_add_language_string Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_language_string" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_ADD_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_ADD_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_language_string" />
+		<!-- Add_sql Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_sql"
+			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_ADD_SQL_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_MODULE_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_MODULE_NO</option>
+		</field>
 		<!-- Update_server_target Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -167,108 +270,6 @@
 			<option value="3">
 				COM_COMPONENTBUILDER_JOOMLA_MODULE_OTHER</option>
 		</field>
-		<!-- Addreadme Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="addreadme"
-			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_ADDREADME_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_MODULE_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_MODULE_NO</option>
-		</field>
-		<!-- Add_sql Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_sql"
-			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_ADD_SQL_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_MODULE_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_MODULE_NO</option>
-		</field>
-		<!-- Note_snippet_usage Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_snippet_usage" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_SNIPPET_USAGE_LABEL" heading="h4" class="snippet-usage note_snippet_usage" />
-		<!-- Note_uikit_snippet Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_uikit_snippet" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_UIKIT_SNIPPET_LABEL" heading="h4" class="snippet-code note_uikit_snippet" />
-		<!-- Snippet Field. Type: Snippets. (custom) -->
-		<field
-			type="snippets"
-			name="snippet"
-			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_SNIPPET_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_SNIPPET_DESCRIPTION"
-			class="list_class"
-			multiple="false"
-			required="false"
-			button="true"
-		/>
-		<!-- Note_add_language_string Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_add_language_string" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_ADD_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_ADD_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_language_string" />
-		<!-- Note_libraries_options Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_libraries_options" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_LIBRARIES_OPTIONS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_LIBRARIES_OPTIONS_DESCRIPTION" heading="h4" class="alert alert-info note_libraries_options" />
-		<!-- Libraries Field. Type: Libraries. (custom) -->
-		<field
-			type="libraries"
-			name="libraries"
-			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_LIBRARIES_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_LIBRARIES_DESCRIPTION"
-			class="list_class"
-			multiple="true"
-			default="0"
-			required="false"
-			button="true"
-		/>
-		<!-- Add_php_postflight_update Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_php_postflight_update"
-			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_ADD_PHP_POSTFLIGHT_UPDATE_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_MODULE_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_MODULE_NO</option>
-		</field>
-		<!-- Add_php_method_uninstall Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_php_method_uninstall"
-			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_ADD_PHP_METHOD_UNINSTALL_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_MODULE_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_MODULE_NO</option>
-		</field>
-		<!-- Default Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="default"
-			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_DEFAULT_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_DEFAULT_DESCRIPTION"
-			width="100%"
-			height="500px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="html"
-			editor="codemirror|none"
-			filter="raw"
-			validate="code"
-		/>
 		<!-- Add_sql_uninstall Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -283,8 +284,17 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_MODULE_NO</option>
 		</field>
-		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_linked_to_notice" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_LINKED_TO_NOTICE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_LINKED_TO_NOTICE_DESCRIPTION" heading="h4" class="note_linked_to_notice" />
+		<!-- Update_server Field. Type: Servers. (custom) -->
+		<field
+			type="servers"
+			name="update_server"
+			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_UPDATE_SERVER_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_UPDATE_SERVER_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			default="0"
+			button="true"
+		/>
 		<!-- Add_update_server Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -299,11 +309,17 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_MODULE_NO</option>
 		</field>
-		<!-- Not_required Field. Type: Hidden. (joomla) -->
+		<!-- Libraries Field. Type: Libraries. (custom) -->
 		<field
-			type="hidden"
-			name="not_required"
-			default="一_一"
+			type="libraries"
+			name="libraries"
+			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_LIBRARIES_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_LIBRARIES_DESCRIPTION"
+			class="list_class"
+			multiple="true"
+			default="0"
+			required="false"
+			button="true"
 		/>
 		<!-- Note_update_server_note_zip Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_update_server_note_zip" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_UPDATE_SERVER_NOTE_ZIP_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_UPDATE_SERVER_NOTE_ZIP_DESCRIPTION" heading="h4" class="alert alert-info note_update_server_note_zip" />
