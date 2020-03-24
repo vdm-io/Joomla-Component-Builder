@@ -1253,16 +1253,16 @@ class Infusion extends Interpretation
 		// get the other lang strings if there is any
 		$this->multiLangString = $this->getMultiLangStrings($values);
 		// update insert the current lang in to DB
-		$this->setLangPlaceholders($values);
+		$this->setLangPlaceholders($values, $this->componentID);
 		// remove old unused language strings
-		$this->purgeLanuageStrings($values);
+		$this->purgeLanuageStrings($values, $this->componentID);
 		// path to INI file
 		$getPAth = $this->templatePath . '/en-GB.com_admin.ini';
+		// Trigger Event: jcb_ce_onBeforeBuildAllLangFiles
+		$this->triggerEvent('jcb_ce_onBeforeBuildAllLangFiles', array(&$this->componentContext, &$this->languages, &$this->langTag));
 		// now we insert the values into the files
 		if (ComponentbuilderHelper::checkArray($this->languages))
 		{
-			// Trigger Event: jcb_ce_onBeforeBuildAllLangFiles
-			$this->triggerEvent('jcb_ce_onBeforeBuildAllLangFiles', array(&$this->componentContext, &$this->languages, &$this->langTag));
 			// rest xml array
 			$langXML = array();
 			foreach ($this->languages as $tag => $areas)

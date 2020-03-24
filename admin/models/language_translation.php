@@ -29,7 +29,9 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 			'fullwidth' => array(
 				'source',
 				'translation',
-				'components'
+				'components',
+				'modules',
+				'plugins'
 			)
 		)
 	);
@@ -903,6 +905,18 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 		{
 			// Set the empty translation to data
 			$data['translation'] = '';
+		}
+
+		// Set the plugins string to JSON string.
+		if (isset($data['plugins']))
+		{
+			$data['plugins'] = (string) json_encode($data['plugins']);
+		}
+
+		// Set the modules string to JSON string.
+		if (isset($data['modules']))
+		{
+			$data['modules'] = (string) json_encode($data['modules']);
 		}
 
 		// Set the components string to JSON string.

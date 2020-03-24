@@ -229,7 +229,7 @@
 			label="COM_COMPONENTBUILDER_CONFIG_LANGUAGE_LABEL"
 			class="list_class"
 			multiple="false"
-			default="0"
+			default="en-GB"
 			required="true"
 			button="true"
 		/>

@@ -794,7 +794,7 @@ class Get
 			{
 				foreach ($plugins as $plugin)
 				{
-					// get posible plugins
+					// get possible plugins
 					if (\JPluginHelper::isEnabled('extension', $plugin))
 					{
 						// Import the appropriate plugin group.
@@ -937,7 +937,7 @@ class Get
 	 * @param   string   $event  The event to trigger
 	 * @param   mix      $data   The values to pass to the event/plugin
 	 * 
-	 * @return  string
+	 * @return  void
 	 * 
 	 */
 	public function triggerEvent($event, $data)
@@ -3880,7 +3880,7 @@ class Get
 		{
 			$script = $this->setDynamicValues($script);
 		}
-		// check if we still hava a string
+		// check if we still have a string
 		if (ComponentbuilderHelper::checkString($script))
 		{
 			// now load the placeholder snippet if needed
@@ -5855,7 +5855,7 @@ class Get
 		$query->from($this->db->quoteName('#__componentbuilder_language_translation', 'a'));
 		if (ComponentbuilderHelper::checkArray($values))
 		{
-			$query->select($this->db->quoteName(array('a.id', 'a.translation', 'a.source', 'a.components', 'a.published')));
+			$query->select($this->db->quoteName(array('a.id', 'a.translation', 'a.source', 'a.components', 'a.modules', 'a.plugins', 'a.published')));
 			$query->where($this->db->quoteName('a.source') . ' IN (' . implode(',', array_map(function($a)
 					{
 						return $this->db->quote($a);
@@ -5872,12 +5872,12 @@ class Get
 
 	/**
 	 * Set the Current language values to DB
-	 * 
+	 *
 	 *
 	 * @return  void
-	 * 
+	 *
 	 */
-	public function setLangPlaceholders($strings)
+	public function setLangPlaceholders($strings, $target_id, $target = 'components')
 	{
 		$counterInsert = 0;
 		$counterUpdate = 0;
@@ -5888,7 +5888,7 @@ class Get
 			{
 				// to keep or remove
 				$remove = false;
-				// build the tranlations
+				// build the translations
 				if (ComponentbuilderHelper::checkString($string) && isset($this->multiLangString[$string]))
 				{
 					// make sure we have converted the string to array
@@ -5923,18 +5923,18 @@ class Get
 						$remove = true;
 					}
 				}
-				// do the database managment
+				// do the database management
 				if (ComponentbuilderHelper::checkString($string) && ($key = array_search($string, $strings)) !== false)
 				{
 					if (isset($this->multiLangString[$string]))
 					{
 						// update the existing placeholder in db
 						$id = $this->multiLangString[$string]['id'];
-						if (ComponentbuilderHelper::checkJson($this->multiLangString[$string]['components']))
+						if (ComponentbuilderHelper::checkJson($this->multiLangString[$string][$target]))
 						{
-							$components = (array) json_decode($this->multiLangString[$string]['components'], true);
-							// check if we should add the component ID
-							if (in_array($this->componentID, $components))
+							$targets = (array) json_decode($this->multiLangString[$string][$target], true);
+							// check if we should add the target ID
+							if (in_array($target_id, $targets))
 							{
 								// only skip the update if the string is published and has the component ID
 								if ($this->multiLangString[$string]['published'] == 1)
@@ -5944,19 +5944,19 @@ class Get
 							}
 							else
 							{
-								$components[] = $this->componentID;
+								$targets[] = $target_id;
 							}
 						}
 						else
 						{
-							$components = array($this->componentID);
+							$targets = array($target_id);
 						}
 						// start the bucket for this lang
-						$this->setUpdateExistingLangStrings($id, $components, 1, $today, $counterUpdate);
+						$this->setUpdateExistingLangStrings($id, $target, $targets, 1, $today, $counterUpdate);
 
 						$counterUpdate++;
 
-						// load to db 
+						// load to db
 						$this->setExistingLangStrings(50);
 						// remove string if needed
 						if ($remove)
@@ -5967,19 +5967,23 @@ class Get
 					else
 					{
 						// add the new lang placeholder to the db
-						$this->newLangStrings[$counterInsert] = array();
-						$this->newLangStrings[$counterInsert][] = $this->db->quote(json_encode(array($this->componentID))); // 'components'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote($string);  // 'source'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote(1);   // 'published'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote($today);  // 'created'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote((int) $this->user->id);   // 'created_by'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote(1);   // 'version'
-						$this->newLangStrings[$counterInsert][] = $this->db->quote(1);   // 'access'
+						if (!isset($this->newLangStrings[$target]))
+						{
+							$this->newLangStrings[$target] = array();
+						}
+						$this->newLangStrings[$target][$counterInsert] = array();
+						$this->newLangStrings[$target][$counterInsert][] = $this->db->quote(json_encode(array([$target_id]))); // 'target'
+						$this->newLangStrings[$target][$counterInsert][] = $this->db->quote($string);  // 'source'
+						$this->newLangStrings[$target][$counterInsert][] = $this->db->quote(1);   // 'published'
+						$this->newLangStrings[$target][$counterInsert][] = $this->db->quote($today);  // 'created'
+						$this->newLangStrings[$target][$counterInsert][] = $this->db->quote((int) $this->user->id);   // 'created_by'
+						$this->newLangStrings[$target][$counterInsert][] = $this->db->quote(1);   // 'version'
+						$this->newLangStrings[$target][$counterInsert][] = $this->db->quote(1);   // 'access'
 
 						$counterInsert++;
 
-						// load to db 
-						$this->setNewLangStrings(100);
+						// load to db
+						$this->setNewLangStrings($target, 100);
 					}
 					// only set the string once
 					unset($strings[$key]);
@@ -5988,20 +5992,21 @@ class Get
 		}
 		// just to make sure all is done
 		$this->setExistingLangStrings();
-		$this->setNewLangStrings();
+		$this->setNewLangStrings($target);
 	}
 
 	/**
 	 * store the language placeholders
-	 * 
-	 * @param   int	     $when  To set when to update
+	 *
+	 * @param   string	 $target  The target extention type
+	 * @param   int	     $when    To set when to update
 	 *
 	 * @return  void
 	 * 
 	 */
-	protected function setNewLangStrings($when = 1)
+	protected function setNewLangStrings($target, $when = 1)
 	{
-		if (count((array) $this->newLangStrings) >= $when)
+		if (isset($this->newLangStrings[$target]) && count((array) $this->newLangStrings[$target]) >= $when)
 		{
 			// Create a new query object.
 			$query = $this->db->getQuery(true);
@@ -6011,7 +6016,7 @@ class Get
 			// Prepare the insert query.
 			$query->insert($this->db->quoteName('#__componentbuilder_language_translation'));
 			$query->columns($this->db->quoteName($columns));
-			foreach ($this->newLangStrings as $values)
+			foreach ($this->newLangStrings[$target] as $values)
 			{
 				if (count((array) $values) == 7)
 				{
@@ -6024,7 +6029,7 @@ class Get
 				}
 			}
 			// clear the values array
-			$this->newLangStrings = array();
+			$this->newLangStrings[$target] = array();
 			if (!$continue)
 			{
 				return false; // insure we dont continue if no values were loaded
@@ -6095,12 +6100,16 @@ class Get
 	 * @return  void
 	 * 
 	 */
-	public function purgeLanuageStrings($values)
+	public function purgeLanuageStrings($values, $target_id, $target = 'components')
 	{
+		// the target types are
+		$target_types = array('components' => 'components', 'modules' => 'modules', 'plugins' => 'plugins');
+		// remove the current target
+		unset($target_types[$target]);
 		// Create a new query object.
 		$query = $this->db->getQuery(true);
 		$query->from($this->db->quoteName('#__componentbuilder_language_translation', 'a'));
-		$query->select($this->db->quoteName(array('a.id', 'a.translation', 'a.components')));
+		$query->select($this->db->quoteName(array('a.id', 'a.translation', 'a.components', 'a.modules', 'a.plugins')));
 		// get all string that are not linked to this component
 		$query->where($this->db->quoteName('a.source') . ' NOT IN (' . implode(',', array_map(function($a)
 				{
@@ -6116,54 +6125,71 @@ class Get
 			$today = JFactory::getDate()->toSql();
 			foreach ($otherStrings as $item)
 			{
-				if (ComponentbuilderHelper::checkJson($item['components']))
+				if (ComponentbuilderHelper::checkJson($item[$target]))
 				{
-					$components = (array) json_decode($item['components'], true);
+					$targets = (array) json_decode($item[$target], true);
 					// if component is not found ignore this string, and do nothing
-					if (($key = array_search($this->componentID, $components)) !== false)
+					if (($key = array_search($target_id, $targets)) !== false)
 					{
 						// first remove the component from the string
-						unset($components[$key]);
+						unset($targets[$key]);
 						// check if there are more components
-						if (ComponentbuilderHelper::checkArray($components))
+						if (ComponentbuilderHelper::checkArray($targets))
 						{
 							// just update the string to unlink the current component
-							$this->setUpdateExistingLangStrings($item['id'], $components, 1, $today, $counterUpdate);
+							$this->setUpdateExistingLangStrings($item['id'], $target, $targets, 1, $today, $counterUpdate);
 
 							$counterUpdate++;
 
 							// load to db 
 							$this->setExistingLangStrings(50);
 						}
-						// check if this string has been worked on
-						elseif (ComponentbuilderHelper::checkJson($item['translation']))
-						{
-							$translation = json_decode($item['translation'], true);
-							if (ComponentbuilderHelper::checkArray($translation))
-							{
-								// only archive the item and update the string to unlink the current component
-								$this->setUpdateExistingLangStrings($item['id'], $components, 2, $today, $counterUpdate);
-
-								$counterUpdate++;
-
-								// load to db 
-								$this->setExistingLangStrings(50);
-							}
-							else
-							{
-								// remove the string since no translation found and not linked to any other component
-								$this->removeExitingLangString($item['id']);
-							}
-						}
+						// check if this string has been worked on or is linked to other extensions
 						else
 						{
-							// remove the string since no translation found and not linked to any other component
-							$this->removeExitingLangString($item['id']);
+							// the action (1 = remove, 2 = archive, 0 = do nothing)
+							$action_with_string = 1;
+							// now check if it is linked to other extensions
+							foreach($target_types as $other_target)
+							{
+								// just one linked extension type is enough to stop the search
+								if ($action_with_string && ComponentbuilderHelper::checkJson($item[$other_target]))
+								{
+									$other_targets = (array)json_decode($item[$other_target], true);
+									// check if linked to other extensions
+									if (ComponentbuilderHelper::checkArray($other_targets))
+									{
+										$action_with_string = 0; // do nothing
+									}
+								}
+							}
+							// check we should just archive or remove string
+							if ($action_with_string && ComponentbuilderHelper::checkJson($item['translation']))
+							{
+								$translation = json_decode($item['translation'], true);
+								if (ComponentbuilderHelper::checkArray($translation))
+								{
+									// only archive the item and update the string to unlink the current component
+									$this->setUpdateExistingLangStrings($item['id'], $target, $targets, 2, $today, $counterUpdate);
+
+									$counterUpdate++;
+
+									// load to db
+									$this->setExistingLangStrings(50);
+
+									$action_with_string = 2; // we archived it
+								}
+							}
+							// remove the string since no translation found and not linked to any other extensions
+							if ($action_with_string == 1)
+							{
+								$this->removeExitingLangString($item['id']);
+							}
 						}
 					}
 				}
 			}
-			// load to db 
+			// load to db
 			$this->setExistingLangStrings();
 		}
 	}
@@ -6174,7 +6200,7 @@ class Get
 	 * @return  void
 	 * 
 	 */
-	protected function setUpdateExistingLangStrings($id, $components, $published, $today, $counterUpdate)
+	protected function setUpdateExistingLangStrings($id, $target, $targets, $published, $today, $counterUpdate)
 	{
 		// start the bucket for this lang
 		$this->existingLangStrings[$counterUpdate] = array();
@@ -6182,7 +6208,7 @@ class Get
 		$this->existingLangStrings[$counterUpdate]['conditions'] = array();
 		$this->existingLangStrings[$counterUpdate]['conditions'][] = $this->db->quoteName('id') . ' = ' . $this->db->quote($id);
 		$this->existingLangStrings[$counterUpdate]['fields'] = array();
-		$this->existingLangStrings[$counterUpdate]['fields'][] = $this->db->quoteName('components') . ' = ' . $this->db->quote(json_encode($components));
+		$this->existingLangStrings[$counterUpdate]['fields'][] = $this->db->quoteName($target) . ' = ' . $this->db->quote(json_encode($targets));
 		$this->existingLangStrings[$counterUpdate]['fields'][] = $this->db->quoteName('published') . ' = ' . $this->db->quote($published);
 		$this->existingLangStrings[$counterUpdate]['fields'][] = $this->db->quoteName('modified') . ' = ' . $this->db->quote($today);
 		$this->existingLangStrings[$counterUpdate]['fields'][] = $this->db->quoteName('modified_by') . ' = ' . $this->db->quote((int) $this->user->id);
@@ -6590,6 +6616,7 @@ class Get
 				{
 					// set GUI mapper field
 					$guiMapper['field'] = 'default';
+					$guiMapper['type'] = 'html';
 					$module->default = $this->setGuiCodePlaceholder(
 						$this->setPlaceholders($this->setDynamicValues(base64_decode($module->default)), $this->placeholders),
 						$guiMapper
@@ -8451,8 +8478,9 @@ class Get
 		$localPaths['admin'] = JPATH_ADMINISTRATOR . '/components/com_' . $this->componentCodeName;
 		// site path
 		$localPaths['site'] = JPATH_ROOT . '/components/com_' . $this->componentCodeName;
-		// TODO later to include the JS and CSS
+		// media path
 		$localPaths['media'] = JPATH_ROOT . '/media/com_' . $this->componentCodeName;
+		// lets also go over the REPOS (TODO)
 		// Painfull but we need to folder paths for the linked modules
 		if (($module_ids = $this->getModuleIDs()) !== false)
 		{

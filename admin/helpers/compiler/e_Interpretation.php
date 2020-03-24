@@ -16806,8 +16806,7 @@ function vdm_dkim() {
 		// now build the language files
 		if (isset($this->langContent[$module->key]))
 		{
-			$lang = array_map(function ($langstring, $placeholder)
-			{
+			$lang = array_map(function ($langstring, $placeholder){
 				return $placeholder . '="' . $langstring . '"';
 			}, $this->langContent[$module->key], array_keys($this->langContent[$module->key]));
 			// add to language file
@@ -17064,8 +17063,8 @@ function vdm_dkim() {
 		{
 			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(__LINE__) . ' Language files -->';
 			$xml .= PHP_EOL . $this->_t(1) . '<languages folder="language">';
-			$xml .= PHP_EOL . $this->_t(2) . '<language tag="en-GB">' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->code_name) . '.ini</language>';
-			$xml .= PHP_EOL . $this->_t(2) . '<language tag="en-GB">' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->code_name) . '.sys.ini</language>';
+			$xml .= PHP_EOL . $this->_t(2) . '<language tag="' . $this->langTag . '">' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->code_name) . '.ini</language>';
+			$xml .= PHP_EOL . $this->_t(2) . '<language tag="' . $this->langTag . '">' . $this->langTag . '/' . $this->langTag . '.plg_' . strtolower($plugin->group) . '_' . strtolower($plugin->code_name) . '.sys.ini</language>';
 			$xml .= PHP_EOL . $this->_t(1) . '</languages>';
 		}
 		// add the plugin files

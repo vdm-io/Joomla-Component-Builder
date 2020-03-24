@@ -5603,7 +5603,7 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	 *	Change to nice fancy date
+	 * Change to nice fancy date
 	 */
 	public static function fancyDate($date)
 	{
@@ -5615,7 +5615,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 *	get date based in period past
+	 * get date based in period past
 	 */
 	public static function fancyDynamicDate($date)
 	{
@@ -5641,7 +5641,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 *	Change to nice fancy day time and date
+	 * Change to nice fancy day time and date
 	 */
 	public static function fancyDayTimeDate($time)
 	{
@@ -5653,7 +5653,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 *	Change to nice fancy time and date
+	 * Change to nice fancy time and date
 	 */
 	public static function fancyDateTime($time)
 	{
@@ -5665,7 +5665,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 *	Change to nice hour:minutes time
+	 * Change to nice hour:minutes time
 	 */
 	public static function fancyTime($time)
 	{
@@ -5677,31 +5677,91 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 * set the date as 2004/05 (for charts)
+	 * set the date day as Sunday through Saturday
 	 */
-	public static function setYearMonth($date)
+	public static function setDayName($date)
 	{
 		if (!self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
-		return date('Y/m', $date);
+		return date('l', $date);
+	}
+
+	/**
+	 * set the date month as January through December
+	 */
+	public static function setMonthName($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('F', $date);
+	}
+
+	/**
+	 * set the date day as 1st
+	 */
+	public static function setDay($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('jS', $date);
+	}
+
+	/**
+	 * set the date month as 5
+	 */
+	public static function setMonth($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('n', $date);
+	}
+
+	/**
+	 * set the date year as 2004 (for charts)
+	 */
+	public static function setYear($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('Y', $date);
+	}
+
+	/**
+	 * set the date as 2004/05 (for charts)
+	 */
+	public static function setYearMonth($date, $spacer = '/')
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('Y' . $spacer . 'm', $date);
 	}
 
 	/**
 	 * set the date as 2004/05/03 (for charts)
 	 */
-	public static function setYearMonthDay($date)
+	public static function setYearMonthDay($date, $spacer = '/')
 	{
 		if (!self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
-		return date('Y/m/d', $date);
+		return date('Y' . $spacer . 'm' . $spacer . 'd', $date);
 	}
 
 	/**
-	 *	Check if string is a valid time stamp
+	 * Check if string is a valid time stamp
 	 */
 	public static function isValidTimeStamp($timestamp)
 	{
