@@ -1875,6 +1875,11 @@ class Infusion extends Interpretation
 				{
 					if (ComponentbuilderHelper::checkObject($module))
 					{
+						// Trigger Event: jcb_ce_onBeforeInfuseModuleData
+						$this->triggerEvent(
+							'jcb_ce_onBeforeInfuseModuleData',
+							array(&$this->componentContext, &$module, $this)
+						);
 						$this->target     = $module->key;
 						$this->lang       = $module->key;
 						$this->langPrefix = $module->lang_prefix;
@@ -1934,6 +1939,11 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$module->key][$this->hhh
 						. 'MAINXML' . $this->hhh]
 							= $this->getModuleMainXML($module);
+						// Trigger Event: jcb_ce_onAfterInfuseModuleData
+						$this->triggerEvent(
+							'jcb_ce_onAfterInfuseModuleData',
+							array(&$this->componentContext, &$module, $this)
+						);
 					}
 				}
 			}
@@ -1944,6 +1954,11 @@ class Infusion extends Interpretation
 				{
 					if (ComponentbuilderHelper::checkObject($plugin))
 					{
+						// Trigger Event: jcb_ce_onBeforeInfusePluginData
+						$this->triggerEvent(
+							'jcb_ce_onBeforeInfusePluginData',
+							array(&$this->componentContext, &$plugin, $this)
+						);
 						$this->target     = $plugin->key;
 						$this->lang       = $plugin->key;
 						$this->langPrefix = $plugin->lang_prefix;
@@ -1986,6 +2001,11 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$plugin->key][$this->hhh
 						. 'MAINXML' . $this->hhh]
 							= $this->getPluginMainXML($plugin);
+						// Trigger Event: jcb_ce_onAfterInfusePluginData
+						$this->triggerEvent(
+							'jcb_ce_onAfterInfusePluginData',
+							array(&$this->componentContext, &$plugin, $this)
+						);
 					}
 				}
 			}
@@ -2206,11 +2226,6 @@ class Infusion extends Interpretation
 				$tag = trim($tag);
 				foreach ($areas as $area => $languageStrings)
 				{
-					// check if language should be added
-					if (!$this->shouldLanguageBeAdded($tag, $languageStrings, $mainLangLoader[$area]))
-					{
-						continue;
-					}
 					// set naming convention
 					$p = 'admin';
 					$t = '';
@@ -2227,41 +2242,53 @@ class Infusion extends Interpretation
 					{
 						$t = '.sys';
 					}
-					// build the path to place the lang file
-					$path = $this->componentPath . '/' . $p . '/language/'
-						. $tag;
-					if (!JFolder::exists($path))
-					{
-						JFolder::create($path);
-						// count the folder created
-						$this->folderCount++;
-					}
 					// build the file name
-					$fileName = $tag . '.com_' . $this->componentCodeName . $t
+					$file_name = $tag . '.com_' . $this->componentCodeName . $t
 						. '.ini';
-					// move the file to its place
-					JFile::copy($getPAth, $path . '/' . $fileName);
-					// count the file created
-					$this->fileCount++;
-					// add content to it
-					$lang = array_map(
-						function ($langstring, $placeholder) {
-							return $placeholder . '="' . $langstring . '"';
-						}, $languageStrings, array_keys($languageStrings)
-					);
-					// add to language file
-					$this->writeFile(
-						$path . '/' . $fileName, implode(PHP_EOL, $lang)
-					);
-					// set the line counter
-					$this->lineCount = $this->lineCount + count((array) $lang);
-					// build xml strings
-					if (!isset($langXML[$p]))
+					// check if language should be added
+					if ($this->shouldLanguageBeAdded(
+						$tag, $languageStrings, $mainLangLoader[$area],
+						$file_name
+					))
 					{
-						$langXML[$p] = array();
+						// build the path to place the lang file
+						$path = $this->componentPath . '/' . $p . '/language/'
+							. $tag . '/';
+						if (!JFolder::exists($path))
+						{
+							JFolder::create($path);
+							// count the folder created
+							$this->folderCount++;
+						}
+						// move the file to its place
+						JFile::copy($getPAth, $path . $file_name);
+						// count the file created
+						$this->fileCount++;
+						// add content to it
+						$lang = array_map(
+							function ($langstring, $placeholder) {
+								return $placeholder . '="' . $langstring . '"';
+							}, array_values($languageStrings),
+							array_keys($languageStrings)
+						);
+						// add to language file
+						$this->writeFile(
+							$path . $file_name, implode(PHP_EOL, $lang)
+						);
+						// set the line counter
+						$this->lineCount = $this->lineCount + count(
+								(array) $lang
+							);
+						unset($lang);
+						// build xml strings
+						if (!isset($langXML[$p]))
+						{
+							$langXML[$p] = array();
+						}
+						$langXML[$p][] = '<language tag="' . $tag
+							. '">language/'
+							. $tag . '/' . $file_name . '</language>';
 					}
-					$langXML[$p][] = '<language tag="' . $tag . '">language/'
-						. $tag . '/' . $fileName . '</language>';
 				}
 			}
 			// load the lang xml

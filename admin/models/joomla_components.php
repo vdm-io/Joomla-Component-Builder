@@ -966,6 +966,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						$this->setData('field', $this->getValues($item->fields, 'subform++', 'fields.field'), 'id');
 						// add dynamic gets
 						$this->setSmartIDs($item->custom_get, 'dynamic_get');
+						// set module language strings
+						$this->setLanguageTranslation($item->id, 'modules');
 					}
 					// actions to take if table is joomla_plugin
 					if ('joomla_plugin' === $table)
@@ -982,6 +984,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						$this->setData('class_property', $this->getValues($item->property_selection, 'subform', 'property'), 'id');
 						// add class_method
 						$this->setData('class_method', $this->getValues($item->method_selection, 'subform', 'method'), 'id');
+						// set plugin language strings
+						$this->setLanguageTranslation($item->id, 'plugins');
 					}
 					// actions to take if table is joomla_plugin_group
 					if ('joomla_plugin_group' === $table)
@@ -1664,7 +1668,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*  @return  void
 	* 
 	*/
-	protected function setLanguageTranslation(&$id)
+	protected function setLanguageTranslation(&$id, $target = 'components')
 	{
 		// Create a new query object.
 		$query = $this->_db->getQuery(true);
@@ -1695,10 +1699,10 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				}
 				foreach ($items as $item)
 				{
-					if (!isset($this->smartBox['language_translation'][$item->id]) && ComponentbuilderHelper::checkJson($item->components))
+					if (!isset($this->smartBox['language_translation'][$item->id]) && ComponentbuilderHelper::checkJson($item->{$target}))
 					{
-						$components = json_decode($item->components, true);
-						if (in_array($id, $components))
+						$targets = json_decode($item->{$target}, true);
+						if (in_array($id, $targets))
 						{
 							// load to global object
 							$this->smartBox['language_translation'][$item->id] = $item;

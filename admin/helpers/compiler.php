@@ -25,7 +25,7 @@ class Compiler extends Infusion
 	 *
 	 * @var      string
 	 */
-	private $tempPath;
+	public $tempPath;
 
 	/**
 	 * The timer

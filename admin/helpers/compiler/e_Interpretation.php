@@ -25835,14 +25835,17 @@ function vdm_dkim() {
 			// Trigger Event: jcb_ce_onBeforeBuildModuleLang
 			$this->triggerEvent(
 				'jcb_ce_onBeforeBuildModuleLang',
-				array(&$module->context, &$this->langContent[$module->key],
+				array(&$this->componentContext, &$module,
+				      &$this->langContent[$module->key],
 				      &$module->lang_prefix, &$module->official_name)
 			);
 			// get other languages
 			$values = array_unique($this->langContent[$module->key]);
 			// get the other lang strings if there is any
 			$this->multiLangString = $this->getMultiLangStrings($values);
-			// start the modules language bucket
+			// start the modules language bucket (must rest every time)
+			$this->languages['modules'] = array();
+			$this->languages['modules'][$this->langTag] = array();
 			$this->languages['modules'][$this->langTag]['all']
 				= $this->langContent[$module->key];
 			unset($this->langContent[$module->key]);
@@ -25855,7 +25858,8 @@ function vdm_dkim() {
 			// Trigger Event: jcb_ce_onBeforeBuildModuleLangFiles
 			$this->triggerEvent(
 				'jcb_ce_onBeforeBuildModuleLangFiles',
-				array(&$module->context, &$this->languages['modules'],
+				array(&$this->componentContext, &$module,
+				      &$this->languages['modules'],
 				      &$this->langTag)
 			);
 			// now we insert the values into the files
@@ -25867,46 +25871,48 @@ function vdm_dkim() {
 					$tag = trim($tag);
 					foreach ($areas as $area => $languageStrings)
 					{
+						$file_name = $tag . '.' . $module->file_name . '.ini';
 						// check if language should be added
-						if (!$this->shouldLanguageBeAdded(
-							$tag, $languageStrings, $total
+						if ($this->shouldLanguageBeAdded(
+							$tag, $languageStrings, $total,
+							$file_name
 						))
 						{
-							continue;
-						}
-						$lang = array_map(
-							function ($langstring, $placeholder) {
-								return $placeholder . '="' . $langstring . '"';
-							}, array_values($languageStrings),
-							array_keys($languageStrings)
-						);
-						// set path
-						$path = $module->folder_path . '/language/' . $tag;
-						// create path if not exist
-						if (!JFolder::exists($path))
-						{
-							JFolder::create($path);
-							// count the folder created
-							$this->folderCount++;
-						}
-						// add to language files (for now we add all to both TODO)
-						$this->writeFile(
-							$path . '/' . $tag . '.' . $module->file_name
-							. '.ini',
-							implode(PHP_EOL, $lang)
-						);
-						$this->writeFile(
-							$path . '/' . $tag . '.' . $module->file_name
-							. '.sys.ini',
-							implode(PHP_EOL, $lang)
-						);
-						// set the line counter
-						$this->lineCount = $this->lineCount + count(
-								(array) $lang
+							$lang = array_map(
+								function ($langstring, $placeholder) {
+									return $placeholder . '="' . $langstring
+										. '"';
+								}, array_values($languageStrings),
+								array_keys($languageStrings)
 							);
-						unset($lang);
-						// trigger to add language
-						$addLang[$tag] = $tag;
+							// set path
+							$path = $module->folder_path . '/language/' . $tag
+								. '/';
+							// create path if not exist
+							if (!JFolder::exists($path))
+							{
+								JFolder::create($path);
+								// count the folder created
+								$this->folderCount++;
+							}
+							// add to language files (for now we add all to both TODO)
+							$this->writeFile(
+								$path . $file_name,
+								implode(PHP_EOL, $lang)
+							);
+							$this->writeFile(
+								$path . $tag . '.' . $module->file_name
+								. '.sys.ini',
+								implode(PHP_EOL, $lang)
+							);
+							// set the line counter
+							$this->lineCount = $this->lineCount + count(
+									(array) $lang
+								);
+							unset($lang);
+							// trigger to add language
+							$addLang[$tag] = $tag;
+						}
 					}
 				}
 			}
@@ -25995,7 +26001,7 @@ function vdm_dkim() {
 			}
 		}
 		// add language folder
-		if ($addLang)
+		if (ComponentbuilderHelper::checkArray($addLang))
 		{
 			$xml .= PHP_EOL . $this->_t(2) . '<folder>language</folder>';
 		}
@@ -26122,9 +26128,6 @@ function vdm_dkim() {
 
 	public function getPluginMainXML(&$plugin)
 	{
-		// set some defaults
-		$view     = '';
-		$viewType = 0;
 		// set the custom table key
 		$dbkey = 'yy';
 		// build the xml
@@ -26174,14 +26177,17 @@ function vdm_dkim() {
 			// Trigger Event: jcb_ce_onBeforeBuildPluginLang
 			$this->triggerEvent(
 				'jcb_ce_onBeforeBuildPluginLang',
-				array(&$plugin->context, &$this->langContent[$plugin->key],
+				array(&$this->componentContext, &$plugin,
+				      &$this->langContent[$plugin->key],
 				      &$plugin->lang_prefix, &$plugin->official_name)
 			);
 			// get other languages
 			$values = array_unique($this->langContent[$plugin->key]);
 			// get the other lang strings if there is any
 			$this->multiLangString = $this->getMultiLangStrings($values);
-			// start the plugins language bucket
+			// start the plugins language bucket (must rest every time)
+			$this->languages['plugins'] = array();
+			$this->languages['plugins'][$this->langTag] = array();
 			$this->languages['plugins'][$this->langTag]['all']
 				= $this->langContent[$plugin->key];
 			unset($this->langContent[$plugin->key]);
@@ -26194,7 +26200,8 @@ function vdm_dkim() {
 			// Trigger Event: jcb_ce_onBeforeBuildPluginLangFiles
 			$this->triggerEvent(
 				'jcb_ce_onBeforeBuildPluginLangFiles',
-				array(&$plugin->context, &$this->languages['plugins'],
+				array(&$this->componentContext, &$plugin,
+				      &$this->languages['plugins'],
 				      &$this->langTag)
 			);
 			// now we insert the values into the files
@@ -26206,47 +26213,53 @@ function vdm_dkim() {
 					$tag = trim($tag);
 					foreach ($areas as $area => $languageStrings)
 					{
+						$file_name = $tag . '.plg_' . strtolower($plugin->group)
+							. '_'
+							. strtolower($plugin->code_name) . '.ini';
 						// check if language should be added
-						if (!$this->shouldLanguageBeAdded(
-							$tag, $languageStrings, $total
+						if ($this->shouldLanguageBeAdded(
+							$tag, $languageStrings, $total,
+							$file_name
 						))
 						{
-							continue;
-						}
-						$lang = array_map(
-							function ($langstring, $placeholder) {
-								return $placeholder . '="' . $langstring . '"';
-							}, array_values($languageStrings),
-							array_keys($languageStrings)
-						);
-						// set path
-						$path = $plugin->folder_path . '/language/' . $tag . '/'
-							. $tag;
-						// create path if not exist
-						if (!JFolder::exists($path))
-						{
-							JFolder::create($path);
-							// count the folder created
-							$this->folderCount++;
-						}
-						// add to language file
-						$this->writeFile(
-							$path . '.plg_' . strtolower($plugin->group) . '_'
-							. strtolower($plugin->code_name) . '.ini',
-							implode(PHP_EOL, $lang)
-						);
-						$this->writeFile(
-							$path . '.plg_' . strtolower($plugin->group) . '_'
-							. strtolower($plugin->code_name) . '.sys.ini',
-							implode(PHP_EOL, $lang)
-						);
-						// set the line counter
-						$this->lineCount = $this->lineCount + count(
-								(array) $lang
+							$lang = array_map(
+								function ($langstring, $placeholder) {
+									return $placeholder . '="' . $langstring
+										. '"';
+								}, array_values($languageStrings),
+								array_keys($languageStrings)
 							);
-						unset($lang);
-						// trigger to add language
-						$addLang[$tag] = $tag;
+							// set path
+							$path = $plugin->folder_path . '/language/' . $tag
+								. '/';
+							// create path if not exist
+							if (!JFolder::exists($path))
+							{
+								JFolder::create($path);
+								// count the folder created
+								$this->folderCount++;
+							}
+							// add to language file
+							$this->writeFile(
+								$path . $file_name,
+								implode(PHP_EOL, $lang)
+							);
+							$this->writeFile(
+								$path . $tag . '.plg_' . strtolower(
+									$plugin->group
+								)
+								. '_'
+								. strtolower($plugin->code_name) . '.sys.ini',
+								implode(PHP_EOL, $lang)
+							);
+							// set the line counter
+							$this->lineCount = $this->lineCount + count(
+									(array) $lang
+								);
+							unset($lang);
+							// trigger to add language
+							$addLang[$tag] = $tag;
+						}
 					}
 				}
 			}
@@ -26338,7 +26351,7 @@ function vdm_dkim() {
 			}
 		}
 		// add language folder
-		if ($addLang)
+		if (ComponentbuilderHelper::checkArray($addLang))
 		{
 			$xml .= PHP_EOL . $this->_t(2) . '<folder>language</folder>';
 		}
@@ -26734,8 +26747,15 @@ function vdm_dkim() {
 		return $script;
 	}
 
-	public function shouldLanguageBeAdded(&$tag, &$languageStrings, &$total)
-	{
+	/**
+	 * check if a translation should be added
+	 *
+	 * @return  bool
+	 *
+	 */
+	public function shouldLanguageBeAdded(&$tag, &$languageStrings, &$total,
+		&$file_name
+	) {
 		// only log messages for none $this->langTag translations
 		if ($this->langTag !== $tag)
 		{
@@ -26756,7 +26776,7 @@ function vdm_dkim() {
 				if ($percentage < $this->percentageLanguageAdd)
 				{
 					// dont add
-					$this->langNot[$area . ' ' . $tag] = '<b>'
+					$this->langNot[$file_name] = '<b>'
 						. $total . '</b>(total '
 						. $this->langTag . ' strings) only <b>'
 						. $langStringNr . '</b>' . $stringNAme
@@ -26766,7 +26786,7 @@ function vdm_dkim() {
 				}
 			}
 			// show if it was added as well
-			$this->langSet[$area . ' ' . $tag] = '<b>'
+			$this->langSet[$file_name] = '<b>'
 				. $total . '</b>(total '
 				. $this->langTag . ' strings) and <b>'
 				. $langStringNr . '</b>' . $stringNAme . ' = '

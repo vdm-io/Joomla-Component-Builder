@@ -1249,6 +1249,11 @@ class Get
 			$component->system_name
 		);
 
+		// set the component name_code
+		$component->name_code = ComponentbuilderHelper::safeString(
+			$component->name_code
+		);
+
 		// ensure version naming is correct
 		$this->component_version = preg_replace(
 			'/[^0-9.]+/', '', $component->component_version
@@ -1447,7 +1452,7 @@ class Get
 					{
 						$this->setJoomlaFields = true;
 					}
-					// has become a lacacy issue, can't remove this
+					// has become a legacy issue, can't remove this
 					$array['view'] = $array['adminview'];
 					// get the admin settings/data
 					$array['settings'] = $this->getAdminViewData(

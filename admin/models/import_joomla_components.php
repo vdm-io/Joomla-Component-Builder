@@ -699,13 +699,13 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// the array of tables to store
 		$tables = array(
 			'validation_rule', 'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
-			'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code', 'placeholder', 'class_extends',
+			'template', 'layout', 'joomla_component', 'language', 'custom_code', 'placeholder', 'class_extends',
 			'joomla_module', 'joomla_module_files_folders_urls', 'joomla_module_updates',
 			'joomla_plugin_group', 'class_property', 'class_method', 'joomla_plugin', 'joomla_plugin_files_folders_urls', 'joomla_plugin_updates',
 			'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'admin_custom_tabs', 'component_admin_views',
 			'component_site_views', 'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
 			'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders',
-			'component_placeholders', 'component_modules', 'component_plugins'
+			'component_placeholders', 'component_modules', 'component_plugins', 'language_translation'
 		);
 		// get prefix
 		$prefix = $this->_db->getPrefix();
@@ -786,6 +786,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						if ($table === 'language_translation')
 						{
 							$item->localComponents = $local->components;
+							$item->localModules = $local->modules;
+							$item->localPlugins = $local->plugins;
 							$item->localTranslation = $local->translation;
 						}
 						// make sure we have the correct ID set
@@ -2192,40 +2194,49 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$item = $this->setNewID($item, 'component', 'joomla_component', $type);
 			break;
 			case 'language_translation':
-				// update the component ID where needed
-				$item = $this->setNewID($item, 'component', 'joomla_component', $type);
-				// load the local components if found
-				if (isset($item->localComponents) && ComponentbuilderHelper::checkJson($item->localComponents))
+				$langKeys = array(
+					array('target' => 'components', 'parent' => 'joomla_component', 'local' => 'localComponents'),
+					array('target' => 'modules', 'parent' => 'joomla_module', 'local' => 'localModules'),
+					array('target' => 'plugins', 'parent' => 'joomla_plugin', 'local' => 'localPlugins')
+				);
+				// we have a few to check so we loop them
+				foreach ($langKeys as $lang)
 				{
-					$components = array();
-					if (isset($item->components) && ComponentbuilderHelper::checkJson($item->components))
+					// update the target ID where needed
+					$item = $this->setNewID($item, $lang['target'], 'joomla_component', $type);
+					// load the local targets if found
+					if (isset($item->{$lang['local']}) && ComponentbuilderHelper::checkJson($item->{$lang['local']}))
 					{
-						$components = json_decode($item->components, true);
+						$targets = array();
+						if (isset($item->{$lang['target']}) && ComponentbuilderHelper::checkJson($item->{$lang['target']}))
+						{
+							$targets = json_decode($item->{$lang['target']}, true);
+						}
+						$localComponents = json_decode($item->{$lang['local']}, true);
+						foreach ($localComponents as $lid)
+						{
+							if (!is_numeric($lid))
+							{
+								continue;
+							}
+							// add if not already there
+							if (!in_array($lid, $targets))
+							{
+								$targets[] = $lid;
+							}
+						}
 					}
-					$localComponents = json_decode($item->localComponents, true);
-					foreach ($localComponents as $lid)
+					// remove the localComponents
+					if (isset($item->{$lang['local']}))
 					{
-						if (!is_numeric($lid))
-						{
-							continue;
-						}
-						// add if not already there
-						if (!in_array($lid, $components))
-						{
-							$components[] = $lid;
-						}
+						unset($item->{$lang['local']});
 					}
-				}
-				// remove the localComponents
-				if (isset($item->localComponents))
-				{
-					unset($item->localComponents);
-				}
-				// load it back
-				if (isset($components) && ComponentbuilderHelper::checkArray($components))
-				{
 					// load it back
-					$item->components = json_encode(array_values($components), JSON_FORCE_OBJECT);
+					if (isset($targets) && ComponentbuilderHelper::checkArray($targets))
+					{
+						// load it back
+						$item->{$lang['target']} = json_encode(array_values($targets), JSON_FORCE_OBJECT);
+					}
 				}
 				// merge the translations where needed
 				if (isset($item->translation) && isset($item->localTranslation) 
