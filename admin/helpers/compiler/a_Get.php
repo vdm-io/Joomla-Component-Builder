@@ -412,6 +412,20 @@ class Get
 	public $addEximport = false;
 
 	/**
+	 * The Import & Export View
+	 *
+	 * @var      array
+	 */
+	public $eximportView = array();
+
+	/**
+	 * The Import & Export Custom Script
+	 *
+	 * @var      array
+	 */
+	public $importCustomScripts = array();
+
+	/**
 	 * The Tag & History Switch
 	 *
 	 * @var      boolean

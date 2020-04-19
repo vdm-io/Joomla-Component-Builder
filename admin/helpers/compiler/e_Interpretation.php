@@ -467,6 +467,27 @@ class Interpretation extends Fields
 	}
 
 	/**
+	 * set Helper Dynamic Headers
+	 *
+	 * @param   string  $target_client
+	 *
+	 * @return string
+	 */
+	public function setHelperClassHeader($target_client)
+	{
+		$header = '';
+		// add only to admin client
+		if ('admin' === $target_client && $this->addEximport)
+		{
+			$header .= PHP_EOL . 'use PhpOffice\PhpSpreadsheet\IOFactory;';
+			$header .= PHP_EOL . 'use PhpOffice\PhpSpreadsheet\Spreadsheet;';
+			$header .= PHP_EOL . 'use PhpOffice\PhpSpreadsheet\Writer\Xlsx;';
+		}
+
+		return $header;
+	}
+
+	/**
 	 * set Helper License Lock
 	 *
 	 * @param   type  $_WHMCS
@@ -1563,33 +1584,29 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $help);
 	}
 
-	public function setExelHelperMethods()
+	public function setHelperExelMethods()
 	{
 		if ($this->addEximport)
 		{
 			$exel   = array();
 			$exel[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
-			$exel[] = $this->_t(1) . " * Prepares the xml document";
-			$exel[] = $this->_t(1) . " */";
+			$exel[] = $this->_t(1) . "* Prepares the xml document";
+			$exel[] = $this->_t(1) . "*/";
 			$exel[] = $this->_t(1)
-				. "public static function xls(\$rows,\$fileName = null,\$title = null,\$subjectTab = null,\$creator = '"
-				. $this->fileContentStatic[$this->hhh . 'COMPANYNAME'
-				. $this->hhh]
-				. "',\$description = null,\$category = null,\$keywords = null,\$modified = null)";
+				. "public static function xls(\$rows, \$fileName = null, \$title = null, \$subjectTab = null, \$creator = 'Joomla Component Builder', \$description = null, \$category = null,\$keywords = null, \$modified = null)";
 			$exel[] = $this->_t(1) . "{";
 			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " set the user";
 			$exel[] = $this->_t(2) . "\$user = JFactory::getUser();";
-			$exel[] = $this->_t(2);
 			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " set fieldname if not set";
+				. " set fileName if not set";
 			$exel[] = $this->_t(2) . "if (!\$fileName)";
 			$exel[] = $this->_t(2) . "{";
 			$exel[] = $this->_t(3)
 				. "\$fileName = 'exported_'.JFactory::getDate()->format('jS_F_Y');";
 			$exel[] = $this->_t(2) . "}";
 			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " set modiefied if not set";
+				. " set modified if not set";
 			$exel[] = $this->_t(2) . "if (!\$modified)";
 			$exel[] = $this->_t(2) . "{";
 			$exel[] = $this->_t(3) . "\$modified = \$user->name;";
@@ -1607,36 +1624,40 @@ class Interpretation extends Fields
 			$exel[] = $this->_t(3) . "\$subjectTab = 'Sheet1';";
 			$exel[] = $this->_t(2) . "}";
 			$exel[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " make sure the file is loaded";
+				. " make sure we have the composer classes loaded";
 			$exel[] = $this->_t(2)
-				. "JLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');";
+				. "self::composerAutoload('phpspreadsheet');";
 			$exel[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " Create new PHPExcel object";
-			$exel[] = $this->_t(2) . "\$objPHPExcel = new PHPExcel();";
+				. " Create new Spreadsheet object";
+			$exel[] = $this->_t(2) . "\$spreadsheet = new Spreadsheet();";
 			$exel[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Set document properties";
-			$exel[] = $this->_t(2)
-				. "\$objPHPExcel->getProperties()->setCreator(\$creator)";
-			$exel[] = $this->_t(3) . "->setCompany('"
-				. $this->fileContentStatic[$this->hhh . 'COMPANYNAME'
-				. $this->hhh] . "')";
+			$exel[] = $this->_t(2) . "\$spreadsheet->getProperties()";
+			$exel[] = $this->_t(3) . "->setCreator(\$creator)";
+			$exel[] = $this->_t(3) . "->setCompany('Joomla Component Builder')";
 			$exel[] = $this->_t(3) . "->setLastModifiedBy(\$modified)";
 			$exel[] = $this->_t(3) . "->setTitle(\$title)";
 			$exel[] = $this->_t(3) . "->setSubject(\$subjectTab);";
-			$exel[] = $this->_t(2) . "if (!\$description)";
+			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " set description";
+			$exel[] = $this->_t(2) . "if (\$description)";
 			$exel[] = $this->_t(2) . "{";
 			$exel[] = $this->_t(3)
-				. "\$objPHPExcel->getProperties()->setDescription(\$description);";
+				. "\$spreadsheet->getProperties()->setDescription(\$description);";
 			$exel[] = $this->_t(2) . "}";
-			$exel[] = $this->_t(2) . "if (!\$keywords)";
+			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " set keywords";
+			$exel[] = $this->_t(2) . "if (\$keywords)";
 			$exel[] = $this->_t(2) . "{";
 			$exel[] = $this->_t(3)
-				. "\$objPHPExcel->getProperties()->setKeywords(\$keywords);";
+				. "\$spreadsheet->getProperties()->setKeywords(\$keywords);";
 			$exel[] = $this->_t(2) . "}";
-			$exel[] = $this->_t(2) . "if (!\$category)";
+			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " set category";
+			$exel[] = $this->_t(2) . "if (\$category)";
 			$exel[] = $this->_t(2) . "{";
 			$exel[] = $this->_t(3)
-				. "\$objPHPExcel->getProperties()->setCategory(\$category);";
+				. "\$spreadsheet->getProperties()->setCategory(\$category);";
 			$exel[] = $this->_t(2) . "}";
 			$exel[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Some styles";
@@ -1669,20 +1690,20 @@ class Interpretation extends Fields
 			$exel[] = $this->_t(4) . "\$a = 'A';";
 			$exel[] = $this->_t(4) . "foreach (\$array as \$value){";
 			$exel[] = $this->_t(5)
-				. "\$objPHPExcel->setActiveSheetIndex(0)->setCellValue(\$a.\$i, \$value);";
+				. "\$spreadsheet->setActiveSheetIndex(0)->setCellValue(\$a.\$i, \$value);";
 			$exel[] = $this->_t(5) . "if (\$i == 1){";
 			$exel[] = $this->_t(6)
-				. "\$objPHPExcel->getActiveSheet()->getColumnDimension(\$a)->setAutoSize(true);";
+				. "\$spreadsheet->getActiveSheet()->getColumnDimension(\$a)->setAutoSize(true);";
 			$exel[] = $this->_t(6)
-				. "\$objPHPExcel->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$headerStyles);";
+				. "\$spreadsheet->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$headerStyles);";
 			$exel[] = $this->_t(6)
-				. "\$objPHPExcel->getActiveSheet()->getStyle(\$a.\$i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);";
+				. "\$spreadsheet->getActiveSheet()->getStyle(\$a.\$i)->getAlignment()->setHorizontal(PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);";
 			$exel[] = $this->_t(5) . "} elseif (\$a === 'A'){";
 			$exel[] = $this->_t(6)
-				. "\$objPHPExcel->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$sideStyles);";
+				. "\$spreadsheet->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$sideStyles);";
 			$exel[] = $this->_t(5) . "} else {";
 			$exel[] = $this->_t(6)
-				. "\$objPHPExcel->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$normalStyles);";
+				. "\$spreadsheet->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$normalStyles);";
 			$exel[] = $this->_t(5) . "}";
 			$exel[] = $this->_t(5) . "\$a++;";
 			$exel[] = $this->_t(4) . "}";
@@ -1696,10 +1717,10 @@ class Interpretation extends Fields
 			$exel[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Rename worksheet";
 			$exel[] = $this->_t(2)
-				. "\$objPHPExcel->getActiveSheet()->setTitle(\$subjectTab);";
+				. "\$spreadsheet->getActiveSheet()->setTitle(\$subjectTab);";
 			$exel[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Set active sheet index to the first sheet, so Excel opens this as the first sheet";
-			$exel[] = $this->_t(2) . "\$objPHPExcel->setActiveSheetIndex(0);";
+			$exel[] = $this->_t(2) . "\$spreadsheet->setActiveSheetIndex(0);";
 			$exel[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Redirect output to a client's web browser (Excel5)";
 			$exel[] = $this->_t(2)
@@ -1713,29 +1734,31 @@ class Interpretation extends Fields
 			$exel[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " If you're serving to IE over SSL, then the following may be needed";
 			$exel[] = $this->_t(2)
-				. "header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past";
+				. "header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); //"
+				. $this->setLine(__LINE__) . " Date in the past";
 			$exel[] = $this->_t(2)
-				. "header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified";
+				. "header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); //"
+				. $this->setLine(__LINE__) . " always modified";
 			$exel[] = $this->_t(2)
-				. "header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1";
-			$exel[] = $this->_t(2) . "header ('Pragma: public'); // HTTP/1.0";
+				. "header ('Cache-Control: cache, must-revalidate'); //"
+				. $this->setLine(__LINE__) . " HTTP/1.1";
+			$exel[] = $this->_t(2) . "header ('Pragma: public'); //"
+				. $this->setLine(__LINE__) . " HTTP/1.0";
 			$exel[] = PHP_EOL . $this->_t(2)
-				. "\$objWriter = PHPExcel_IOFactory::createWriter(\$objPHPExcel, 'Excel5');";
-			$exel[] = $this->_t(2) . "\$objWriter->save('php://output');";
+				. "\$writer = IOFactory::createWriter(\$spreadsheet, 'Xls');";
+			$exel[] = $this->_t(2) . "\$writer->save('php://output');";
 			$exel[] = $this->_t(2) . "jexit();";
 			$exel[] = $this->_t(1) . "}";
 			$exel[] = PHP_EOL . $this->_t(1) . "/**";
-			$exel[] = $this->_t(1) . " * Get CSV Headers";
-			$exel[] = $this->_t(1) . " */";
+			$exel[] = $this->_t(1) . "* Get CSV Headers";
+			$exel[] = $this->_t(1) . "*/";
 			$exel[] = $this->_t(1)
 				. "public static function getFileHeaders(\$dataType)";
 			$exel[] = $this->_t(1) . "{";
 			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " make sure these files are loaded";
+				. " make sure we have the composer classes loaded";
 			$exel[] = $this->_t(2)
-				. "JLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');";
-			$exel[] = $this->_t(2)
-				. "JLoader::import('ChunkReadFilter', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/PHPExcel/Reader');";
+				. "self::composerAutoload('phpspreadsheet');";
 			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " get session object";
 			$exel[] = $this->_t(2) . "\$session = JFactory::getSession();";
@@ -1747,19 +1770,18 @@ class Interpretation extends Fields
 				. " set the headers";
 			$exel[] = $this->_t(2) . "if(isset(\$package['dir']))";
 			$exel[] = $this->_t(2) . "{";
-			$exel[] = $this->_t(3)
-				. "\$chunkFilter = new PHPExcel_Reader_chunkReadFilter();";
 			$exel[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " only load first three rows";
-			$exel[] = $this->_t(3) . "\$chunkFilter->setRows(2,1);";
+			$exel[] = $this->_t(3)
+				. "\$chunkFilter = new PhpOffice\PhpSpreadsheet\Reader\chunkReadFilter(2,1);";
 			$exel[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " identify the file type";
 			$exel[] = $this->_t(3)
-				. "\$inputFileType = PHPExcel_IOFactory::identify(\$package['dir']);";
+				. "\$inputFileType = IOFactory::identify(\$package['dir']);";
 			$exel[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " create the reader for this file type";
 			$exel[] = $this->_t(3)
-				. "\$excelReader = PHPExcel_IOFactory::createReader(\$inputFileType);";
+				. "\$excelReader = IOFactory::createReader(\$inputFileType);";
 			$exel[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " load the limiting filter";
 			$exel[] = $this->_t(3)
@@ -1795,6 +1817,23 @@ class Interpretation extends Fields
 			$exel[] = $this->_t(3) . "return \$headers;";
 			$exel[] = $this->_t(2) . "}";
 			$exel[] = $this->_t(2) . "return false;";
+			$exel[] = $this->_t(1) . "}";
+			$exel[] = PHP_EOL . $this->_t(1) . "/**";
+			$exel[] = $this->_t(1)
+				. "* Load the Composer Vendor phpspreadsheet";
+			$exel[] = $this->_t(1) . "*/";
+			$exel[] = $this->_t(1)
+				. "protected static function composephpspreadsheet()";
+			$exel[] = $this->_t(1) . "{";
+			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " load the autoloader for phpspreadsheet";
+			$exel[] = $this->_t(2)
+				. "require_once JPATH_SITE . '/libraries/phpspreadsheet/vendor/autoload.php';";
+			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " do not load again";
+			$exel[] = $this->_t(2)
+				. "self::\$composer['phpspreadsheet'] = true;";
+			$exel[] = PHP_EOL . $this->_t(2) . "return  true;";
 			$exel[] = $this->_t(1) . "}";
 
 			// return the help methods
@@ -4571,9 +4610,9 @@ class Interpretation extends Fields
 	 * @param   string  $first   The first key
 	 * @param   string  $second  The second key
 	 * @param   string  $prefix  The prefix to add in front of the script if found
-	 * @param   string/bool  $note         The switch/note to add to the script
+	 * @param   string  $note    The switch/note to add to the script
 	 * @param   bool    $unset   The switch to unset the value if found
-	 * @param   string/bool  $default      The switch/string to use as default return if script not found
+	 * @param   string  $default The switch/string to use as default return if script not found
 	 * @param   string  $sufix   The sufix  to add after the script if found
 	 *
 	 * @return  mix    The string/script if found or the default value if not found
@@ -14454,43 +14493,51 @@ class Interpretation extends Fields
 		$target = array('admin' => 'import_' . $viewName_list);
 		$this->buildDynamique($target, 'customimport');
 		// load the custom script to the files
-		// IMPORT_EXT_METHOD_CUSTOM <<<DYNAMIC>>>
+		// IMPORT_EXT_METHOD <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
-		. 'IMPORT_EXT_METHOD_CUSTOM' . $this->hhh]
+		. 'IMPORT_EXT_METHOD' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'php_import_ext', 'import_' . $viewName_list, PHP_EOL, null, true
+			'php_import_ext', 'import_' . $viewName_list, PHP_EOL, null,
+			true
 		);
 		// IMPORT_DISPLAY_METHOD_CUSTOM <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
 		. 'IMPORT_DISPLAY_METHOD_CUSTOM' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'php_import_display', 'import_' . $viewName_list, PHP_EOL, null,
+			'php_import_display', 'import_' . $viewName_list, PHP_EOL,
+			null,
 			true
 		);
-		// IMPORT_SETDATE_METHOD_CUSTOM <<<DYNAMIC>>>
+		// IMPORT_SETDATA_METHOD <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
-		. 'IMPORT_SETDATE_METHOD_CUSTOM' . $this->hhh]
+		. 'IMPORT_SETDATA_METHOD' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'php_import_setdata', 'import_' . $viewName_list, PHP_EOL, null,
+			'php_import_setdata', 'import_' . $viewName_list, PHP_EOL,
+			null,
 			true
 		);
 		// IMPORT_METHOD_CUSTOM <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
 		. 'IMPORT_METHOD_CUSTOM' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'php_import', 'import_' . $viewName_list, PHP_EOL, null, true
+			'php_import', 'import_' . $viewName_list, PHP_EOL, null,
+			true
 		);
-		// IMPORT_SAVE_METHOD_CUSTOM <<<DYNAMIC>>>
+		// IMPORT_SAVE_METHOD <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
-		. 'IMPORT_SAVE_METHOD_CUSTOM' . $this->hhh]
+		. 'IMPORT_SAVE_METHOD' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'php_import_save', 'import_' . $viewName_list, PHP_EOL, null, true
+			'php_import_save', 'import_' . $viewName_list, PHP_EOL,
+			null,
+			true
 		);
 		// IMPORT_DEFAULT_VIEW_CUSTOM <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
 		. 'IMPORT_DEFAULT_VIEW_CUSTOM' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'html_import_view', 'import_' . $viewName_list, PHP_EOL, null, true
+			'html_import_view', 'import_' . $viewName_list, PHP_EOL,
+			null,
+			true
 		);
 
 		// insure we have the view placeholders setup
@@ -25844,10 +25891,10 @@ function vdm_dkim() {
 			// get the other lang strings if there is any
 			$this->multiLangString = $this->getMultiLangStrings($values);
 			// start the modules language bucket (must rest every time)
-			$this->languages['modules'] = array();
+			$this->languages['modules']                 = array();
 			$this->languages['modules'][$this->langTag] = array();
 			$this->languages['modules'][$this->langTag]['all']
-				= $this->langContent[$module->key];
+			                                            = $this->langContent[$module->key];
 			unset($this->langContent[$module->key]);
 			// update insert the current lang in to DB
 			$this->setLangPlaceholders($values, $module->id, 'modules');
@@ -26186,10 +26233,10 @@ function vdm_dkim() {
 			// get the other lang strings if there is any
 			$this->multiLangString = $this->getMultiLangStrings($values);
 			// start the plugins language bucket (must rest every time)
-			$this->languages['plugins'] = array();
+			$this->languages['plugins']                 = array();
 			$this->languages['plugins'][$this->langTag] = array();
 			$this->languages['plugins'][$this->langTag]['all']
-				= $this->langContent[$plugin->key];
+			                                            = $this->langContent[$plugin->key];
 			unset($this->langContent[$plugin->key]);
 			// update insert the current lang in to DB
 			$this->setLangPlaceholders($values, $plugin->id, 'plugins');

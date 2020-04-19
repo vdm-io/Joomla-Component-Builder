@@ -15,12 +15,22 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Language\Language;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * Componentbuilder component helper.
  */
 abstract class ComponentbuilderHelper
 {
+	/**
+	 * Composer Switch
+	 * 
+	 * @var      array
+	 */
+	protected static $composer = array();
+
 	/**
 	 * The Main Active Language
 	 * 
@@ -2906,8 +2916,8 @@ abstract class ComponentbuilderHelper
 			$script['setdata'][] = self::_t(1) . "{";
 			$script['setdata'][] = self::_t(2) . "if ([[[-#-#-Component]]]Helper::checkArray(\$target_headers))";
 			$script['setdata'][] = self::_t(2) . "{";
-			$script['setdata'][] = self::_t(3) . "// make sure the file is loaded" . self::_t(2) . "";
-			$script['setdata'][] = self::_t(3) . "JLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');";
+			$script['setdata'][] = self::_t(3) . "// make sure the file is loaded";
+			$script['setdata'][] = self::_t(3) . "[[[-#-#-Component]]]Helper::composerAutoload('phpspreadsheet');";
 			$script['setdata'][] = self::_t(3) . "\$jinput = JFactory::getApplication()->input;";
 			$script['setdata'][] = self::_t(3) . "foreach(\$target_headers as \$header)";
 			$script['setdata'][] = self::_t(3) . "{";
@@ -2916,14 +2926,14 @@ abstract class ComponentbuilderHelper
 			$script['setdata'][] = self::_t(3) . "// set the data";
 			$script['setdata'][] = self::_t(3) . "if(isset(\$package['dir']))";
 			$script['setdata'][] = self::_t(3) . "{";
-			$script['setdata'][] = self::_t(4) . "\$inputFileType = PHPExcel_IOFactory::identify(\$package['dir']);";
-			$script['setdata'][] = self::_t(4) . "\$excelReader = PHPExcel_IOFactory::createReader(\$inputFileType);";
+			$script['setdata'][] = self::_t(4) . "\$inputFileType = IOFactory::identify(\$package['dir']);";
+			$script['setdata'][] = self::_t(4) . "\$excelReader = IOFactory::createReader(\$inputFileType);";
 			$script['setdata'][] = self::_t(4) . "\$excelReader->setReadDataOnly(true);";
 			$script['setdata'][] = self::_t(4) . "\$excelObj = \$excelReader->load(\$package['dir']);";
 			$script['setdata'][] = self::_t(4) . "\$data['array'] = \$excelObj->getActiveSheet()->toArray(null, true,true,true);";
 			$script['setdata'][] = self::_t(4) . "\$excelObj->disconnectWorksheets();";
 			$script['setdata'][] = self::_t(4) . "unset(\$excelObj);";
-			$script['setdata'][] = self::_t(4) . "return \$this->save(\$data,\$table);";
+			$script['setdata'][] = self::_t(4) . "return \$this->save(\$data, \$table);";
 			$script['setdata'][] = self::_t(3) . "}";
 			$script['setdata'][] = self::_t(2) . "}";
 			$script['setdata'][] = self::_t(2) . "return false;";
@@ -4527,34 +4537,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Composer Switch
-	**/
-	protected static $composer = array(); 
-
-	/**
-	* Load the Composer Vendors
-	**/
-	public static function composerAutoload($target)
-	{
-		// insure we load the composer vendor only once
-		if (!isset(self::$composer[$target]))
-		{
-			// get the function name
-			$functionName = self::safeString('compose' . $target);
-			// check if method exist
-			if (method_exists(__CLASS__, $functionName))
-			{
-				return self::{$functionName}();
-			}
-			return false;
-		}
-		return self::$composer[$target];
-	}
-
-
-	/**
-	* Load the Composer Vendor phpseclib
-	**/
+	 * Load the Composer Vendor phpseclib
+	 */
 	protected static function composephpseclib()
 	{
 		// load the autoloader for phpseclib
@@ -5772,8 +5756,28 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	* Load the Component xml manifest.
-	**/
+	 * Load the Composer Vendors
+	 */
+	public static function composerAutoload($target)
+	{
+		// insure we load the composer vendor only once
+		if (!isset(self::$composer[$target]))
+		{
+			// get the function name
+			$functionName = self::safeString('compose' . $target);
+			// check if method exist
+			if (method_exists(__CLASS__, $functionName))
+			{
+				return self::{$functionName}();
+			}
+			return false;
+		}
+		return self::$composer[$target];
+	}
+
+	/**
+	 * Load the Component xml manifest.
+	 */
 	public static function manifest()
 	{
 		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_componentbuilder/componentbuilder.xml";
@@ -5781,13 +5785,13 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Joomla version object
-	**/	
+	 * Joomla version object
+	 */	
 	protected static $JVersion;
 
 	/**
-	* set/get Joomla version
-	**/
+	 * set/get Joomla version
+	 */
 	public static function jVersion()
 	{
 		// check if set
@@ -5799,8 +5803,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Load the Contributors details.
-	**/
+	 * Load the Contributors details.
+	 */
 	public static function getContributors()
 	{
 		// get params
@@ -5909,8 +5913,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Configure the Linkbar.
-	**/
+	 * Configure the Linkbar.
+	 */
 	public static function addSubmenu($submenu)
 	{
 		// load user for access menus
@@ -6114,19 +6118,18 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 * Prepares the xml document
-	 */
-	public static function xls($rows,$fileName = null,$title = null,$subjectTab = null,$creator = 'Joomla Component Builder',$description = null,$category = null,$keywords = null,$modified = null)
+	* Prepares the xml document
+	*/
+	public static function xls($rows, $fileName = null, $title = null, $subjectTab = null, $creator = 'Joomla Component Builder', $description = null, $category = null,$keywords = null, $modified = null)
 	{
 		// set the user
 		$user = JFactory::getUser();
-		
-		// set fieldname if not set
+		// set fileName if not set
 		if (!$fileName)
 		{
 			$fileName = 'exported_'.JFactory::getDate()->format('jS_F_Y');
 		}
-		// set modiefied if not set
+		// set modified if not set
 		if (!$modified)
 		{
 			$modified = $user->name;
@@ -6142,29 +6145,33 @@ abstract class ComponentbuilderHelper
 			$subjectTab = 'Sheet1';
 		}
 
-		// make sure the file is loaded
-		JLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');
+		// make sure we have the composer classes loaded
+		self::composerAutoload('phpspreadsheet');
 
-		// Create new PHPExcel object
-		$objPHPExcel = new PHPExcel();
+		// Create new Spreadsheet object
+		$spreadsheet = new Spreadsheet();
 
 		// Set document properties
-		$objPHPExcel->getProperties()->setCreator($creator)
+		$spreadsheet->getProperties()
+			->setCreator($creator)
 			->setCompany('Joomla Component Builder')
 			->setLastModifiedBy($modified)
 			->setTitle($title)
 			->setSubject($subjectTab);
-		if (!$description)
+		// set description
+		if ($description)
 		{
-			$objPHPExcel->getProperties()->setDescription($description);
+			$spreadsheet->getProperties()->setDescription($description);
 		}
-		if (!$keywords)
+		// set keywords
+		if ($keywords)
 		{
-			$objPHPExcel->getProperties()->setKeywords($keywords);
+			$spreadsheet->getProperties()->setKeywords($keywords);
 		}
-		if (!$category)
+		// set category
+		if ($category)
 		{
-			$objPHPExcel->getProperties()->setCategory($category);
+			$spreadsheet->getProperties()->setCategory($category);
 		}
 
 		// Some styles
@@ -6196,15 +6203,15 @@ abstract class ComponentbuilderHelper
 			foreach ($rows as $array){
 				$a = 'A';
 				foreach ($array as $value){
-					$objPHPExcel->setActiveSheetIndex(0)->setCellValue($a.$i, $value);
+					$spreadsheet->setActiveSheetIndex(0)->setCellValue($a.$i, $value);
 					if ($i == 1){
-						$objPHPExcel->getActiveSheet()->getColumnDimension($a)->setAutoSize(true);
-						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->applyFromArray($headerStyles);
-						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+						$spreadsheet->getActiveSheet()->getColumnDimension($a)->setAutoSize(true);
+						$spreadsheet->getActiveSheet()->getStyle($a.$i)->applyFromArray($headerStyles);
+						$spreadsheet->getActiveSheet()->getStyle($a.$i)->getAlignment()->setHorizontal(PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 					} elseif ($a === 'A'){
-						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->applyFromArray($sideStyles);
+						$spreadsheet->getActiveSheet()->getStyle($a.$i)->applyFromArray($sideStyles);
 					} else {
-						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->applyFromArray($normalStyles);
+						$spreadsheet->getActiveSheet()->getStyle($a.$i)->applyFromArray($normalStyles);
 					}
 					$a++;
 				}
@@ -6217,10 +6224,10 @@ abstract class ComponentbuilderHelper
 		}
 
 		// Rename worksheet
-		$objPHPExcel->getActiveSheet()->setTitle($subjectTab);
+		$spreadsheet->getActiveSheet()->setTitle($subjectTab);
 
 		// Set active sheet index to the first sheet, so Excel opens this as the first sheet
-		$objPHPExcel->setActiveSheetIndex(0);
+		$spreadsheet->setActiveSheetIndex(0);
 
 		// Redirect output to a client's web browser (Excel5)
 		header('Content-Type: application/vnd.ms-excel');
@@ -6235,19 +6242,18 @@ abstract class ComponentbuilderHelper
 		header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
 		header ('Pragma: public'); // HTTP/1.0
 
-		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-		$objWriter->save('php://output');
+		$writer = IOFactory::createWriter($spreadsheet, 'Xls');
+		$writer->save('php://output');
 		jexit();
 	}
 
 	/**
-	 * Get CSV Headers
-	 */
+	* Get CSV Headers
+	*/
 	public static function getFileHeaders($dataType)
 	{
-		// make sure these files are loaded
-		JLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');
-		JLoader::import('ChunkReadFilter', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/PHPExcel/Reader');
+		// make sure we have the composer classes loaded
+		self::composerAutoload('phpspreadsheet');
 		// get session object
 		$session = JFactory::getSession();
 		$package = $session->get('package', null);
@@ -6255,13 +6261,12 @@ abstract class ComponentbuilderHelper
 		// set the headers
 		if(isset($package['dir']))
 		{
-			$chunkFilter = new PHPExcel_Reader_chunkReadFilter();
 			// only load first three rows
-			$chunkFilter->setRows(2,1);
+			$chunkFilter = new PhpOffice\PhpSpreadsheet\Reader\chunkReadFilter(2,1);
 			// identify the file type
-			$inputFileType = PHPExcel_IOFactory::identify($package['dir']);
+			$inputFileType = IOFactory::identify($package['dir']);
 			// create the reader for this file type
-			$excelReader = PHPExcel_IOFactory::createReader($inputFileType);
+			$excelReader = IOFactory::createReader($inputFileType);
 			// load the limiting filter
 			$excelReader->setReadFilter($chunkFilter);
 			$excelReader->setReadDataOnly(true);
@@ -6289,6 +6294,19 @@ abstract class ComponentbuilderHelper
 			return $headers;
 		}
 		return false;
+	}
+
+	/**
+	* Load the Composer Vendor phpspreadsheet
+	*/
+	protected static function composephpspreadsheet()
+	{
+		// load the autoloader for phpspreadsheet
+		require_once JPATH_SITE . '/libraries/phpspreadsheet/vendor/autoload.php';
+		// do not load again
+		self::$composer['phpspreadsheet'] = true;
+
+		return  true;
 	}
 
 	/**
@@ -6502,18 +6520,18 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Get the action permissions
-	*
-	* @param  string   $view        The related view name
-	* @param  int      $record      The item to act upon
-	* @param  string   $views       The related list view name
-	* @param  mixed    $target      Only get this permission (like edit, create, delete)
-	* @param  string   $component   The target component
-	* @param  object   $user        The user whose permissions we are loading
-	*
-	* @return  object   The JObject of permission/authorised actions
-	* 
-	**/
+	 * Get the action permissions
+	 *
+	 * @param  string   $view        The related view name
+	 * @param  int      $record      The item to act upon
+	 * @param  string   $views       The related list view name
+	 * @param  mixed    $target      Only get this permission (like edit, create, delete)
+	 * @param  string   $component   The target component
+	 * @param  object   $user        The user whose permissions we are loading
+	 *
+	 * @return  object   The JObject of permission/authorised actions
+	 * 
+	 */
 	public static function getActions($view, &$record = null, $views = null, $target = null, $component = 'componentbuilder', $user = 'null')
 	{
 		// load the user if not given
@@ -6677,14 +6695,14 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Filter the action permissions
-	*
-	* @param  string   $action   The action to check
-	* @param  array    $targets  The array of target actions
-	*
-	* @return  boolean   true if action should be filtered out
-	* 
-	**/
+	 * Filter the action permissions
+	 *
+	 * @param  string   $action   The action to check
+	 * @param  array    $targets  The array of target actions
+	 *
+	 * @return  boolean   true if action should be filtered out
+	 * 
+	 */
 	protected static function filterActions(&$view, &$action, &$targets)
 	{
 		foreach ($targets as $target)
@@ -6700,8 +6718,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Get any component's model
-	**/
+	 * Get any component's model
+	 */
 	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $Component = 'Componentbuilder', $config = array())
 	{
 		// fix the name
@@ -6748,8 +6766,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Add to asset Table
-	*/
+	 * Add to asset Table
+	 */
 	public static function setAsset($id, $table, $inherit = true)
 	{
 		$parent = JTable::getInstance('Asset');
@@ -7056,12 +7074,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have an json string
-	*
-	* @input	string   The json string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an json string
+	 *
+	 * @input	string   The json string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkJson($string)
 	{
 		if (self::checkString($string))
@@ -7073,12 +7091,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have an object with a length
-	*
-	* @input	object   The object to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an object with a length
+	 *
+	 * @input	object   The object to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkObject($object)
 	{
 		if (isset($object) && is_object($object))
@@ -7089,12 +7107,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have an array with a length
-	*
-	* @input	array   The array to check
-	*
-	* @returns bool/int  number of items in array on success
-	**/
+	 * Check if have an array with a length
+	 *
+	 * @input	array   The array to check
+	 *
+	 * @returns bool/int  number of items in array on success
+	 */
 	public static function checkArray($array, $removeEmptyString = false)
 	{
 		if (isset($array) && is_array($array) && ($nr = count((array)$array)) > 0)
@@ -7117,12 +7135,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have a string with a length
-	*
-	* @input	string   The string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have a string with a length
+	 *
+	 * @input	string   The string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkString($string)
 	{
 		if (isset($string) && is_string($string) && strlen($string) > 0)
@@ -7133,11 +7151,11 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if we are connected
-	* Thanks https://stackoverflow.com/a/4860432/1429677
-	*
-	* @returns bool true on success
-	**/
+	 * Check if we are connected
+	 * Thanks https://stackoverflow.com/a/4860432/1429677
+	 *
+	 * @returns bool true on success
+	 */
 	public static function isConnected()
 	{
 		// If example.com is down, then probably the whole internet is down, since IANA maintains the domain. Right?
@@ -7158,12 +7176,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Merge an array of array's
-	*
-	* @input	array   The arrays you would like to merge
-	*
-	* @returns array on success
-	**/
+	 * Merge an array of array's
+	 *
+	 * @input	array   The arrays you would like to merge
+	 *
+	 * @returns array on success
+	 */
 	public static function mergeArrays($arrays)
 	{
 		if(self::checkArray($arrays))
@@ -7188,12 +7206,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Shorten a string
-	*
-	* @input	string   The you would like to shorten
-	*
-	* @returns string on success
-	**/
+	 * Shorten a string
+	 *
+	 * @input	string   The you would like to shorten
+	 *
+	 * @returns string on success
+	 */
 	public static function shorten($string, $length = 40, $addTip = true)
 	{
 		if (self::checkString($string))
@@ -7229,12 +7247,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Making strings safe (various ways)
-	*
-	* @input	string   The you would like to make safe
-	*
-	* @returns string on success
-	**/
+	 * Making strings safe (various ways)
+	 *
+	 * @input	string   The you would like to make safe
+	 *
+	 * @returns string on success
+	 */
 	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true, $keepOnlyCharacters = true)
 	{
 		if ($replaceNumbers === true)
@@ -7388,12 +7406,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Convert an integer into an English word string
-	* Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
-	*
-	* @input	an int
-	* @returns a string
-	**/
+	 * Convert an integer into an English word string
+	 * Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
+	 *
+	 * @input	an int
+	 * @returns a string
+	 */
 	public static function numberToString($x)
 	{
 		$nwords = array( "zero", "one", "two", "three", "four", "five", "six", "seven",
@@ -7479,10 +7497,10 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Random Key
-	*
-	* @returns a string
-	**/
+	 * Random Key
+	 *
+	 * @returns a string
+	 */
 	public static function randomkey($size)
 	{
 		$bag = "abcefghijknopqrstuwxyzABCDDEFGHIJKLLMMNOPQRSTUVVWXYZabcddefghijkllmmnopqrstuvvwxyzABCEFGHIJKNOPQRSTUWXYZ";

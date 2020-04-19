@@ -22,6 +22,13 @@ use Joomla\Utilities\ArrayHelper;
 abstract class ComponentbuilderHelper
 {
 	/**
+	 * Composer Switch
+	 * 
+	 * @var      array
+	 */
+	protected static $composer = array();
+
+	/**
 	 * The Main Active Language
 	 * 
 	 * @var      string
@@ -2906,8 +2913,8 @@ abstract class ComponentbuilderHelper
 			$script['setdata'][] = self::_t(1) . "{";
 			$script['setdata'][] = self::_t(2) . "if ([[[-#-#-Component]]]Helper::checkArray(\$target_headers))";
 			$script['setdata'][] = self::_t(2) . "{";
-			$script['setdata'][] = self::_t(3) . "// make sure the file is loaded" . self::_t(2) . "";
-			$script['setdata'][] = self::_t(3) . "JLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');";
+			$script['setdata'][] = self::_t(3) . "// make sure the file is loaded";
+			$script['setdata'][] = self::_t(3) . "[[[-#-#-Component]]]Helper::composerAutoload('phpspreadsheet');";
 			$script['setdata'][] = self::_t(3) . "\$jinput = JFactory::getApplication()->input;";
 			$script['setdata'][] = self::_t(3) . "foreach(\$target_headers as \$header)";
 			$script['setdata'][] = self::_t(3) . "{";
@@ -2916,14 +2923,14 @@ abstract class ComponentbuilderHelper
 			$script['setdata'][] = self::_t(3) . "// set the data";
 			$script['setdata'][] = self::_t(3) . "if(isset(\$package['dir']))";
 			$script['setdata'][] = self::_t(3) . "{";
-			$script['setdata'][] = self::_t(4) . "\$inputFileType = PHPExcel_IOFactory::identify(\$package['dir']);";
-			$script['setdata'][] = self::_t(4) . "\$excelReader = PHPExcel_IOFactory::createReader(\$inputFileType);";
+			$script['setdata'][] = self::_t(4) . "\$inputFileType = IOFactory::identify(\$package['dir']);";
+			$script['setdata'][] = self::_t(4) . "\$excelReader = IOFactory::createReader(\$inputFileType);";
 			$script['setdata'][] = self::_t(4) . "\$excelReader->setReadDataOnly(true);";
 			$script['setdata'][] = self::_t(4) . "\$excelObj = \$excelReader->load(\$package['dir']);";
 			$script['setdata'][] = self::_t(4) . "\$data['array'] = \$excelObj->getActiveSheet()->toArray(null, true,true,true);";
 			$script['setdata'][] = self::_t(4) . "\$excelObj->disconnectWorksheets();";
 			$script['setdata'][] = self::_t(4) . "unset(\$excelObj);";
-			$script['setdata'][] = self::_t(4) . "return \$this->save(\$data,\$table);";
+			$script['setdata'][] = self::_t(4) . "return \$this->save(\$data, \$table);";
 			$script['setdata'][] = self::_t(3) . "}";
 			$script['setdata'][] = self::_t(2) . "}";
 			$script['setdata'][] = self::_t(2) . "return false;";
@@ -4527,34 +4534,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Composer Switch
-	**/
-	protected static $composer = array(); 
-
-	/**
-	* Load the Composer Vendors
-	**/
-	public static function composerAutoload($target)
-	{
-		// insure we load the composer vendor only once
-		if (!isset(self::$composer[$target]))
-		{
-			// get the function name
-			$functionName = self::safeString('compose' . $target);
-			// check if method exist
-			if (method_exists(__CLASS__, $functionName))
-			{
-				return self::{$functionName}();
-			}
-			return false;
-		}
-		return self::$composer[$target];
-	}
-
-
-	/**
-	* Load the Composer Vendor phpseclib
-	**/
+	 * Load the Composer Vendor phpseclib
+	 */
 	protected static function composephpseclib()
 	{
 		// load the autoloader for phpseclib
@@ -5771,6 +5752,29 @@ abstract class ComponentbuilderHelper
 	}
 
 
+	/**
+	 * Load the Composer Vendors
+	 */
+	public static function composerAutoload($target)
+	{
+		// insure we load the composer vendor only once
+		if (!isset(self::$composer[$target]))
+		{
+			// get the function name
+			$functionName = self::safeString('compose' . $target);
+			// check if method exist
+			if (method_exists(__CLASS__, $functionName))
+			{
+				return self::{$functionName}();
+			}
+			return false;
+		}
+		return self::$composer[$target];
+	}
+
+	/**
+	 * Convert it into a string
+	 */
 	public static function jsonToString($value, $sperator = ", ", $table = null, $id = 'id', $name = 'name')
 	{
 		// do some table foot work
@@ -5820,8 +5824,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Load the Component xml manifest.
-	**/
+	 * Load the Component xml manifest.
+	 */
 	public static function manifest()
 	{
 		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_componentbuilder/componentbuilder.xml";
@@ -5829,13 +5833,13 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Joomla version object
-	**/	
+	 * Joomla version object
+	 */	
 	protected static $JVersion;
 
 	/**
-	* set/get Joomla version
-	**/
+	 * set/get Joomla version
+	 */
 	public static function jVersion()
 	{
 		// check if set
@@ -5847,8 +5851,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Load the Contributors details.
-	**/
+	 * Load the Contributors details.
+	 */
 	public static function getContributors()
 	{
 		// get params
@@ -5957,8 +5961,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Get any component's model
-	**/
+	 * Get any component's model
+	 */
 	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $Component = 'Componentbuilder', $config = array())
 	{
 		// fix the name
@@ -6005,8 +6009,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Add to asset Table
-	*/
+	 * Add to asset Table
+	 */
 	public static function setAsset($id, $table, $inherit = true)
 	{
 		$parent = JTable::getInstance('Asset');
@@ -6577,18 +6581,18 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Get the action permissions
-	*
-	* @param  string   $view        The related view name
-	* @param  int      $record      The item to act upon
-	* @param  string   $views       The related list view name
-	* @param  mixed    $target      Only get this permission (like edit, create, delete)
-	* @param  string   $component   The target component
-	* @param  object   $user        The user whose permissions we are loading
-	*
-	* @return  object   The JObject of permission/authorised actions
-	* 
-	**/
+	 * Get the action permissions
+	 *
+	 * @param  string   $view        The related view name
+	 * @param  int      $record      The item to act upon
+	 * @param  string   $views       The related list view name
+	 * @param  mixed    $target      Only get this permission (like edit, create, delete)
+	 * @param  string   $component   The target component
+	 * @param  object   $user        The user whose permissions we are loading
+	 *
+	 * @return  object   The JObject of permission/authorised actions
+	 * 
+	 */
 	public static function getActions($view, &$record = null, $views = null, $target = null, $component = 'componentbuilder', $user = 'null')
 	{
 		// load the user if not given
@@ -6752,14 +6756,14 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Filter the action permissions
-	*
-	* @param  string   $action   The action to check
-	* @param  array    $targets  The array of target actions
-	*
-	* @return  boolean   true if action should be filtered out
-	* 
-	**/
+	 * Filter the action permissions
+	 *
+	 * @param  string   $action   The action to check
+	 * @param  array    $targets  The array of target actions
+	 *
+	 * @return  boolean   true if action should be filtered out
+	 * 
+	 */
 	protected static function filterActions(&$view, &$action, &$targets)
 	{
 		foreach ($targets as $target)
@@ -6775,12 +6779,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have an json string
-	*
-	* @input	string   The json string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an json string
+	 *
+	 * @input	string   The json string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkJson($string)
 	{
 		if (self::checkString($string))
@@ -6792,12 +6796,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have an object with a length
-	*
-	* @input	object   The object to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an object with a length
+	 *
+	 * @input	object   The object to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkObject($object)
 	{
 		if (isset($object) && is_object($object))
@@ -6808,12 +6812,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have an array with a length
-	*
-	* @input	array   The array to check
-	*
-	* @returns bool/int  number of items in array on success
-	**/
+	 * Check if have an array with a length
+	 *
+	 * @input	array   The array to check
+	 *
+	 * @returns bool/int  number of items in array on success
+	 */
 	public static function checkArray($array, $removeEmptyString = false)
 	{
 		if (isset($array) && is_array($array) && ($nr = count((array)$array)) > 0)
@@ -6836,12 +6840,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have a string with a length
-	*
-	* @input	string   The string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have a string with a length
+	 *
+	 * @input	string   The string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkString($string)
 	{
 		if (isset($string) && is_string($string) && strlen($string) > 0)
@@ -6852,11 +6856,11 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if we are connected
-	* Thanks https://stackoverflow.com/a/4860432/1429677
-	*
-	* @returns bool true on success
-	**/
+	 * Check if we are connected
+	 * Thanks https://stackoverflow.com/a/4860432/1429677
+	 *
+	 * @returns bool true on success
+	 */
 	public static function isConnected()
 	{
 		// If example.com is down, then probably the whole internet is down, since IANA maintains the domain. Right?
@@ -6877,12 +6881,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Merge an array of array's
-	*
-	* @input	array   The arrays you would like to merge
-	*
-	* @returns array on success
-	**/
+	 * Merge an array of array's
+	 *
+	 * @input	array   The arrays you would like to merge
+	 *
+	 * @returns array on success
+	 */
 	public static function mergeArrays($arrays)
 	{
 		if(self::checkArray($arrays))
@@ -6907,12 +6911,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Shorten a string
-	*
-	* @input	string   The you would like to shorten
-	*
-	* @returns string on success
-	**/
+	 * Shorten a string
+	 *
+	 * @input	string   The you would like to shorten
+	 *
+	 * @returns string on success
+	 */
 	public static function shorten($string, $length = 40, $addTip = true)
 	{
 		if (self::checkString($string))
@@ -6948,12 +6952,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Making strings safe (various ways)
-	*
-	* @input	string   The you would like to make safe
-	*
-	* @returns string on success
-	**/
+	 * Making strings safe (various ways)
+	 *
+	 * @input	string   The you would like to make safe
+	 *
+	 * @returns string on success
+	 */
 	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true, $keepOnlyCharacters = true)
 	{
 		if ($replaceNumbers === true)
@@ -7107,12 +7111,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Convert an integer into an English word string
-	* Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
-	*
-	* @input	an int
-	* @returns a string
-	**/
+	 * Convert an integer into an English word string
+	 * Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
+	 *
+	 * @input	an int
+	 * @returns a string
+	 */
 	public static function numberToString($x)
 	{
 		$nwords = array( "zero", "one", "two", "three", "four", "five", "six", "seven",
@@ -7198,10 +7202,10 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Random Key
-	*
-	* @returns a string
-	**/
+	 * Random Key
+	 *
+	 * @returns a string
+	 */
 	public static function randomkey($size)
 	{
 		$bag = "abcefghijknopqrstuwxyzABCDDEFGHIJKLLMMNOPQRSTUVVWXYZabcddefghijkllmmnopqrstuvvwxyzABCEFGHIJKNOPQRSTUWXYZ";

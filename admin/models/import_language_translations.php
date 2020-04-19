@@ -12,6 +12,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 /**
  * Componentbuilder Import_language_translations Model
  */
@@ -375,8 +377,8 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 			break;
 		}
 		return false;
-	} 
-	
+	}
+
 	/**
 	 * Clean up temporary uploaded spreadsheet
 	 *
@@ -437,7 +439,7 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 			}
 		}
 		return false;
-	} 
+	}
 	
 	/**
 	* Save the data from the file to the database
@@ -701,7 +703,7 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 		}
 		return false;
 	}
-	
+
 	protected function getAlias($name,$type = false)
 	{
 		// sanitize the name to an alias

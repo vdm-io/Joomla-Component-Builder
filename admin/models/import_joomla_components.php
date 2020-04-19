@@ -12,6 +12,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 /**
  * Componentbuilder Import_joomla_components Model
  */
@@ -547,8 +549,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			break;
 		}
 		return false;
-	} 
-	
+	}
+
 	/**
 	 * Clean up temporary uploaded spreadsheet
 	 *
@@ -676,7 +678,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		}
 		$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWODATA_IS_CORRUPTHTWOTHIS_COULD_BE_DUE_TO_BROKEN_PACKAGE'), 'error');
 		return false;
-	} 
+	}
 	
 	/**
 	* Save the smart components
@@ -3188,7 +3190,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// add the full path if possible
 		return str_replace('//', '/', $this->setFullPath($path));
 	}
-	
+
 	protected function getAlias($name,$type = false)
 	{
 		// sanitize the name to an alias

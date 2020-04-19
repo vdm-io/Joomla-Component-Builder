@@ -17,9 +17,6 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Infusion extends Interpretation
 {
-
-	public $eximportView = array();
-	public $importCustomScripts = array();
 	public $langFiles = array();
 	public $removeSiteFolder = false;
 	public $removeSiteEditFolder = true;
@@ -664,6 +661,7 @@ class Infusion extends Interpretation
 						{
 							// this view has custom import scripting
 							$this->importCustomScripts[$viewName_list] = true;
+							// set all custom scripts
 							$this->setImportCustomScripts($viewName_list);
 						}
 					}
@@ -672,7 +670,7 @@ class Infusion extends Interpretation
 						$this->eximportView[$viewName_list] = false;
 					}
 
-					// set Autocheckin function
+					// set Auto check in function
 					if (isset($view['checkin']) && $view['checkin'] == 1)
 					{
 						// AUTOCHECKIN <<<DYNAMIC>>>
@@ -1063,10 +1061,7 @@ class Infusion extends Interpretation
 					. $this->hhh]
 						.= $this->setAccessSectionsJoomlaFields();
 				}
-				// HELPER_EXEL
-				$this->fileContentStatic[$this->hhh . 'HELPER_EXEL'
-				. $this->hhh]
-					= $this->setExelHelperMethods();
+
 				// Trigger Event: jcb_ce_onAfterBuildAdminViewContent
 				$this->triggerEvent(
 					'jcb_ce_onAfterBuildAdminViewContent',
@@ -1076,6 +1071,21 @@ class Infusion extends Interpretation
 					      &$this->hhh)
 				);
 			}
+
+			// ADMIN_HELPER_CLASS_HEADER
+			$this->fileContentStatic[$this->hhh . 'ADMIN_HELPER_CLASS_HEADER'
+			. $this->hhh]
+				= $this->setHelperClassHeader('admin');
+
+			// SITE_HELPER_CLASS_HEADER
+			$this->fileContentStatic[$this->hhh . 'SITE_HELPER_CLASS_HEADER'
+			. $this->hhh]
+				= $this->setHelperClassHeader('site');
+
+			// HELPER_EXEL
+			$this->fileContentStatic[$this->hhh . 'HELPER_EXEL'
+			. $this->hhh]
+				= $this->setHelperExelMethods();
 
 			// setup custom_admin_views and all needed stuff for the site
 			if (isset($this->componentData->custom_admin_views)
@@ -1385,10 +1395,24 @@ class Infusion extends Interpretation
 				// setup import files
 				$target = array('admin' => 'import');
 				$this->buildDynamique($target, 'import');
-				// set the controller
-				$this->fileContentDynamic['import'][$this->hhh . 'BLABLABLA'
-				. $this->hhh]
-					= '';
+				// IMPORT_EXT_METHOD <<<DYNAMIC>>>
+				$this->fileContentDynamic['import'][$this->hhh
+				. 'IMPORT_EXT_METHOD' . $this->hhh]
+					= PHP_EOL . PHP_EOL . $this->setPlaceholders(
+						ComponentbuilderHelper::getDynamicScripts('ext'), $this->placeholders
+					);
+				// IMPORT_SETDATA_METHOD <<<DYNAMIC>>>
+				$this->fileContentDynamic['import'][$this->hhh
+				. 'IMPORT_SETDATA_METHOD' . $this->hhh]
+					= PHP_EOL . PHP_EOL . $this->setPlaceholders(
+						ComponentbuilderHelper::getDynamicScripts('setdata'), $this->placeholders
+					);
+				// IMPORT_SAVE_METHOD <<<DYNAMIC>>>
+				$this->fileContentDynamic['import'][$this->hhh
+				. 'IMPORT_SAVE_METHOD' . $this->hhh]
+					= PHP_EOL . PHP_EOL . $this->setPlaceholders(
+						ComponentbuilderHelper::getDynamicScripts('save'), $this->placeholders
+					);
 			}
 
 			// ensure that the ajax model and controller is set if needed

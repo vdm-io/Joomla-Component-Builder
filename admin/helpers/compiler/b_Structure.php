@@ -2105,8 +2105,7 @@ class Structure extends Get
 		))
 		{
 			$codeName = $this->componentCodeName;
-			// TODO needs more looking at this must be dynamic actualy
-			$this->notNew[] = 'PHPExcel.php';
+			// TODO needs more looking at this must be dynamic actually
 			$this->notNew[] = 'LICENSE.txt';
 			// do license check
 			$LICENSE        = false;
@@ -2893,9 +2892,9 @@ class Structure extends Get
 				                                        'path'   => 'admin/views/import',
 				                                        'rename' => 1);
 				$this->componentData->folders[] = $importView;
-				// move the PHPExel Folder
-				$PHPExcel                       = array('folder' => 'PHPExcel',
-				                                        'path'   => 'admin/helpers',
+				// move the phpspreadsheet Folder (TODO we must move this to a library package)
+				$PHPExcel                       = array('folderpath' => 'JPATH_LIBRARIES/phpspreadsheet/vendor',
+				                                        'path'   => '/libraries/phpspreadsheet/',
 				                                        'rename' => 0);
 				$this->componentData->folders[] = $PHPExcel;
 			}
@@ -3041,17 +3040,8 @@ class Structure extends Get
 				&& ComponentbuilderHelper::checkArray(
 					$this->componentData->files
 				))
-			|| $this->addEximport
 			|| $this->googlechart)
 		{
-			if ($this->addEximport)
-			{
-				// move the PHPExel main file
-				$PHPExcel                     = array('file'   => 'PHPExcel.php',
-				                                      'path'   => 'admin/helpers',
-				                                      'rename' => 0);
-				$this->componentData->files[] = $PHPExcel;
-			}
 			if ($this->googlechart)
 			{
 				// move the google chart files

@@ -19,13 +19,20 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Language\Language;
 use Joomla\String\StringHelper;
-use Joomla\Utilities\ArrayHelper;
+use Joomla\Utilities\ArrayHelper;###ADMIN_HELPER_CLASS_HEADER###
 
 /**
  * ###Component### component helper.
  */
 abstract class ###Component###Helper
 {
+	/**
+	 * Composer Switch
+	 * 
+	 * @var      array
+	 */
+	protected static $composer = array();
+
 	/**
 	 * The Main Active Language
 	 * 
@@ -34,8 +41,28 @@ abstract class ###Component###Helper
 	public static $langTag;###ADMIN_GLOBAL_EVENT_HELPER######CUSTOM_HELPER_SCRIPT######BOTH_CUSTOM_HELPER_SCRIPT###
 
 	/**
-	* Load the Component xml manifest.
-	**/
+	 * Load the Composer Vendors
+	 */
+	public static function composerAutoload($target)
+	{
+		// insure we load the composer vendor only once
+		if (!isset(self::$composer[$target]))
+		{
+			// get the function name
+			$functionName = self::safeString('compose' . $target);
+			// check if method exist
+			if (method_exists(__CLASS__, $functionName))
+			{
+				return self::{$functionName}();
+			}
+			return false;
+		}
+		return self::$composer[$target];
+	}
+
+	/**
+	 * Load the Component xml manifest.
+	 */
 	public static function manifest()
 	{
 		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_###component###/###component###.xml";
@@ -43,13 +70,13 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Joomla version object
-	**/	
+	 * Joomla version object
+	 */	
 	protected static $JVersion;
 
 	/**
-	* set/get Joomla version
-	**/
+	 * set/get Joomla version
+	 */
 	public static function jVersion()
 	{
 		// check if set
@@ -61,8 +88,8 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Load the Contributors details.
-	**/
+	 * Load the Contributors details.
+	 */
 	public static function getContributors()
 	{
 		// get params
@@ -99,8 +126,8 @@ abstract class ###Component###Helper
 	}###HELP###
 
 	/**
-	* Configure the Linkbar.
-	**/
+	 * Configure the Linkbar.
+	 */
 	public static function addSubmenu($submenu)
 	{
 		// load user for access menus
@@ -320,18 +347,18 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Get the action permissions
-	*
-	* @param  string   $view        The related view name
-	* @param  int      $record      The item to act upon
-	* @param  string   $views       The related list view name
-	* @param  mixed    $target      Only get this permission (like edit, create, delete)
-	* @param  string   $component   The target component
-	* @param  object   $user        The user whose permissions we are loading
-	*
-	* @return  object   The JObject of permission/authorised actions
-	* 
-	**/
+	 * Get the action permissions
+	 *
+	 * @param  string   $view        The related view name
+	 * @param  int      $record      The item to act upon
+	 * @param  string   $views       The related list view name
+	 * @param  mixed    $target      Only get this permission (like edit, create, delete)
+	 * @param  string   $component   The target component
+	 * @param  object   $user        The user whose permissions we are loading
+	 *
+	 * @return  object   The JObject of permission/authorised actions
+	 * 
+	 */
 	public static function getActions($view, &$record = null, $views = null, $target = null, $component = '###component###', $user = 'null')
 	{
 		// load the user if not given
@@ -495,14 +522,14 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Filter the action permissions
-	*
-	* @param  string   $action   The action to check
-	* @param  array    $targets  The array of target actions
-	*
-	* @return  boolean   true if action should be filtered out
-	* 
-	**/
+	 * Filter the action permissions
+	 *
+	 * @param  string   $action   The action to check
+	 * @param  array    $targets  The array of target actions
+	 *
+	 * @return  boolean   true if action should be filtered out
+	 * 
+	 */
 	protected static function filterActions(&$view, &$action, &$targets)
 	{
 		foreach ($targets as $target)
@@ -518,8 +545,8 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Get any component's model
-	**/
+	 * Get any component's model
+	 */
 	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $Component = '###Component###', $config = array())
 	{
 		// fix the name
@@ -566,8 +593,8 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Add to asset Table
-	*/
+	 * Add to asset Table
+	 */
 	public static function setAsset($id, $table, $inherit = true)
 	{
 		$parent = JTable::getInstance('Asset');
@@ -874,12 +901,12 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Check if have an json string
-	*
-	* @input	string   The json string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an json string
+	 *
+	 * @input	string   The json string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkJson($string)
 	{
 		if (self::checkString($string))
@@ -891,12 +918,12 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Check if have an object with a length
-	*
-	* @input	object   The object to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an object with a length
+	 *
+	 * @input	object   The object to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkObject($object)
 	{
 		if (isset($object) && is_object($object))
@@ -907,12 +934,12 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Check if have an array with a length
-	*
-	* @input	array   The array to check
-	*
-	* @returns bool/int  number of items in array on success
-	**/
+	 * Check if have an array with a length
+	 *
+	 * @input	array   The array to check
+	 *
+	 * @returns bool/int  number of items in array on success
+	 */
 	public static function checkArray($array, $removeEmptyString = false)
 	{
 		if (isset($array) && is_array($array) && ($nr = count((array)$array)) > 0)
@@ -935,12 +962,12 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Check if have a string with a length
-	*
-	* @input	string   The string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have a string with a length
+	 *
+	 * @input	string   The string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkString($string)
 	{
 		if (isset($string) && is_string($string) && strlen($string) > 0)
@@ -951,11 +978,11 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Check if we are connected
-	* Thanks https://stackoverflow.com/a/4860432/1429677
-	*
-	* @returns bool true on success
-	**/
+	 * Check if we are connected
+	 * Thanks https://stackoverflow.com/a/4860432/1429677
+	 *
+	 * @returns bool true on success
+	 */
 	public static function isConnected()
 	{
 		// If example.com is down, then probably the whole internet is down, since IANA maintains the domain. Right?
@@ -976,12 +1003,12 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Merge an array of array's
-	*
-	* @input	array   The arrays you would like to merge
-	*
-	* @returns array on success
-	**/
+	 * Merge an array of array's
+	 *
+	 * @input	array   The arrays you would like to merge
+	 *
+	 * @returns array on success
+	 */
 	public static function mergeArrays($arrays)
 	{
 		if(self::checkArray($arrays))
@@ -1006,12 +1033,12 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Shorten a string
-	*
-	* @input	string   The you would like to shorten
-	*
-	* @returns string on success
-	**/
+	 * Shorten a string
+	 *
+	 * @input	string   The you would like to shorten
+	 *
+	 * @returns string on success
+	 */
 	public static function shorten($string, $length = 40, $addTip = true)
 	{
 		if (self::checkString($string))
@@ -1047,12 +1074,12 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Making strings safe (various ways)
-	*
-	* @input	string   The you would like to make safe
-	*
-	* @returns string on success
-	**/
+	 * Making strings safe (various ways)
+	 *
+	 * @input	string   The you would like to make safe
+	 *
+	 * @returns string on success
+	 */
 	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true, $keepOnlyCharacters = true)
 	{
 		if ($replaceNumbers === true)
@@ -1206,12 +1233,12 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Convert an integer into an English word string
-	* Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
-	*
-	* @input	an int
-	* @returns a string
-	**/
+	 * Convert an integer into an English word string
+	 * Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
+	 *
+	 * @input	an int
+	 * @returns a string
+	 */
 	public static function numberToString($x)
 	{
 		$nwords = array( "zero", "one", "two", "three", "four", "five", "six", "seven",
@@ -1297,10 +1324,10 @@ abstract class ###Component###Helper
 	}
 
 	/**
-	* Random Key
-	*
-	* @returns a string
-	**/
+	 * Random Key
+	 *
+	 * @returns a string
+	 */
 	public static function randomkey($size)
 	{
 		$bag = "abcefghijknopqrstuwxyzABCDDEFGHIJKLLMMNOPQRSTUVVWXYZabcddefghijkllmmnopqrstuvvwxyzABCEFGHIJKNOPQRSTUWXYZ";
