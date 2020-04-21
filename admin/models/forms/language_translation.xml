@@ -150,7 +150,7 @@
 					cols="20"
 					message="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_MESSAGE"
 					class="text_area translation_text_area"
-					filter="STRING"
+					filter="SAFEHTML"
 					hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_HINT"
 				/>
 				<!-- Language Field. Type: Lang. (custom) -->
