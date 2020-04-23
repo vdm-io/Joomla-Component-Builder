@@ -5359,6 +5359,8 @@ class Interpretation extends Fields
 			// validate selection
 			$validateSelection = 'true';
 		}
+		// reset buttons
+		$buttons = array();
 		// if site add buttons to view
 		if ($this->target === 'site')
 		{
@@ -5405,11 +5407,28 @@ class Interpretation extends Fields
 					break;
 			}
 		}
+		// add some buttons if custom admin view
+		elseif (1 == $type)
+		{
+			// add this button only if this is not the default view
+			if ($this->dynamicDashboardType !== 'custom_admin_views'
+				|| ($this->dynamicDashboardType === 'custom_admin_views'
+					&& $this->dynamicDashboard !== $viewName))
+			{
+				$buttons[] = $tab . $this->_t(2)
+					. "//" . $this->setLine(__LINE__) . " add cpanel button";
+				$buttons[] = $tab . $this->_t(2)
+					. "JToolBarHelper::custom('" . $viewName . "."
+					. "dashboard', 'grid-2', '', 'COM_"
+					. $this->fileContentStatic[$this->hhh
+					. 'COMPONENT' . $this->hhh]
+					. "_DASH', false);";
+			}
+		}
 		// check if custom button should be added
 		if (isset($view['settings']->add_custom_button)
 			&& $view['settings']->add_custom_button == 1)
 		{
-			$buttons                  = array();
 			$this->onlyFunctionButton = array();
 			$functionNames            = array();
 			if (isset($view['settings']->custom_buttons)
@@ -5592,27 +5611,26 @@ class Interpretation extends Fields
 						);
 				}
 			}
-			// return buttons if they were build
-			if (ComponentbuilderHelper::checkArray($buttons))
-			{
-				// set the custom get form method  JAVASCRIPT_FOR_BUTTONS
-				$this->fileContentDynamic[$view['settings']->code][$this->hhh
-				. $TARGET . '_JAVASCRIPT_FOR_BUTTONS' . $this->hhh]
-					= $this->setJavaScriptForButtons();
-				// insure the form is added (only if not form exist)
-				if (isset($view['settings']->default)
-					&& strpos(
-						$view['settings']->default, '<form'
-					) === false)
-				{
-					$this->addCustomForm[$this->target][$view['settings']->code]
-						= true;
-				}
-
-				return PHP_EOL . implode(PHP_EOL, $buttons);
-			}
 		}
+		// return buttons if they were build
+		if (ComponentbuilderHelper::checkArray($buttons))
+		{
+			// set the custom get form method  JAVASCRIPT_FOR_BUTTONS
+			$this->fileContentDynamic[$view['settings']->code][$this->hhh
+			. $TARGET . '_JAVASCRIPT_FOR_BUTTONS' . $this->hhh]
+				= $this->setJavaScriptForButtons();
+			// insure the form is added (only if no form exist)
+			if (isset($view['settings']->default)
+				&& strpos(
+					$view['settings']->default, '<form'
+				) === false)
+			{
+				$this->addCustomForm[$this->target][$view['settings']->code]
+					= true;
+			}
 
+			return PHP_EOL . implode(PHP_EOL, $buttons);
+		}
 		return '';
 	}
 

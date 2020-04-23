@@ -308,8 +308,6 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		$this->app->input->set('hidemainmenu', true);
 		// add title to the page
 		JToolbarHelper::title(JText::_('COM_COMPONENTBUILDER_COMPILER'),'cogs');
-		// add the back button
-		// JToolBarHelper::custom('compiler.back', 'undo-2', '', 'COM_COMPONENTBUILDER_BACK', false);
 		// add cpanel button
 		JToolBarHelper::custom('compiler.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
 		if ($this->canDo->get('compiler.run_expansion'))

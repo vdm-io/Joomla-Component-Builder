@@ -48,9 +48,7 @@ class ###Component###View###SView### extends JViewLegacy
 	 * Setting the toolbar
 	 */
 	protected function addToolBar()
-	{
-		// hide the main menu
-		$this->app->input->set('hidemainmenu', true);
+	{###HIDEMAINMENU###
 		// set the title
 		if (isset($this->item->name) && $this->item->name)
 		{
@@ -62,11 +60,7 @@ class ###Component###View###SView### extends JViewLegacy
 			$title = JText::_('COM_###COMPONENT###_###SVIEW###');
 		}
 		// add title to the page
-		JToolbarHelper::title($title,'###ICOMOON###');
-		// add the back button
-		// JToolBarHelper::custom('###sview###.back', 'undo-2', '', 'COM_###COMPONENT###_BACK', false);
-		// add cpanel button
-		JToolBarHelper::custom('###sview###.dashboard', 'grid-2', '', 'COM_###COMPONENT###_DASH', false);###CUSTOM_ADMIN_CUSTOM_BUTTONS###
+		JToolbarHelper::title($title,'###ICOMOON###');###CUSTOM_ADMIN_CUSTOM_BUTTONS###
 
 		// set help url for this view if found
 		$help_url = ###Component###Helper::getHelpUrl('###sviews###');

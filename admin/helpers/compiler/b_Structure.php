@@ -350,6 +350,13 @@ class Structure extends Get
 	public $dynamicDashboard = false;
 
 	/**
+	 * The default view type
+	 *
+	 * @var    string
+	 */
+	public $dynamicDashboardType;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct($config = array())
@@ -1696,6 +1703,8 @@ class Structure extends Get
 								= ComponentbuilderHelper::safeString(
 								$dashboard['settings']->{$keys[$t]}
 							);
+							$this->dynamicDashboardType
+								= $targets[$t];
 						}
 						else
 						{

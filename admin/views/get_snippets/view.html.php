@@ -252,8 +252,6 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		$this->app->input->set('hidemainmenu', true);
 		// add title to the page
 		JToolbarHelper::title(JText::_('COM_COMPONENTBUILDER_GET_SNIPPETS'),'search');
-		// add the back button
-		// JToolBarHelper::custom('get_snippets.back', 'undo-2', '', 'COM_COMPONENTBUILDER_BACK', false);
 		// add cpanel button
 		JToolBarHelper::custom('get_snippets.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
 		if ($this->canDo->get('get_snippets.custom_admin_views'))

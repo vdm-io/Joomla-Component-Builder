@@ -1175,6 +1175,26 @@ class Infusion extends Interpretation
 						$view['settings']->code, $this->target
 					);
 
+					// check if this custom admin view is the default view
+					if ($this->dynamicDashboardType === 'custom_admin_views'
+						&& $this->dynamicDashboard === $view['settings']->code)
+					{
+						// HIDEMAINMENU <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'HIDEMAINMENU' . $this->hhh] = '';
+					}
+					else
+					{
+						// HIDEMAINMENU <<<DYNAMIC>>>
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'HIDEMAINMENU' . $this->hhh]
+							= PHP_EOL . $this->_t(2) . '//' . $this->setLine(
+								__LINE__
+							) . " hide the main menu"
+							. PHP_EOL . $this->_t(2)
+							. "\$this->app->input->set('hidemainmenu', true);";
+					}
+
 					if ($view['settings']->main_get->gettype == 1)
 					{
 						// CUSTOM_ADMIN_BEFORE_GET_ITEM <<<DYNAMIC>>>
@@ -1399,19 +1419,22 @@ class Infusion extends Interpretation
 				$this->fileContentDynamic['import'][$this->hhh
 				. 'IMPORT_EXT_METHOD' . $this->hhh]
 					= PHP_EOL . PHP_EOL . $this->setPlaceholders(
-						ComponentbuilderHelper::getDynamicScripts('ext'), $this->placeholders
+						ComponentbuilderHelper::getDynamicScripts('ext'),
+						$this->placeholders
 					);
 				// IMPORT_SETDATA_METHOD <<<DYNAMIC>>>
 				$this->fileContentDynamic['import'][$this->hhh
 				. 'IMPORT_SETDATA_METHOD' . $this->hhh]
 					= PHP_EOL . PHP_EOL . $this->setPlaceholders(
-						ComponentbuilderHelper::getDynamicScripts('setdata'), $this->placeholders
+						ComponentbuilderHelper::getDynamicScripts('setdata'),
+						$this->placeholders
 					);
 				// IMPORT_SAVE_METHOD <<<DYNAMIC>>>
 				$this->fileContentDynamic['import'][$this->hhh
 				. 'IMPORT_SAVE_METHOD' . $this->hhh]
 					= PHP_EOL . PHP_EOL . $this->setPlaceholders(
-						ComponentbuilderHelper::getDynamicScripts('save'), $this->placeholders
+						ComponentbuilderHelper::getDynamicScripts('save'),
+						$this->placeholders
 					);
 			}
 
@@ -2237,7 +2260,8 @@ class Infusion extends Interpretation
 		// Trigger Event: jcb_ce_onBeforeBuildAllLangFiles
 		$this->triggerEvent(
 			'jcb_ce_onBeforeBuildAllLangFiles',
-			array(&$this->componentContext, &$this->languages['components'], &$this->langTag)
+			array(&$this->componentContext, &$this->languages['components'],
+			      &$this->langTag)
 		);
 		// now we insert the values into the files
 		if (ComponentbuilderHelper::checkArray($this->languages['components']))
