@@ -8165,7 +8165,7 @@ class Get
 				// set target client
 				if ($module->target == 2)
 				{
-					$module->target_client = 'admin';
+					$module->target_client = 'administrator';
 				}
 				else
 				{
