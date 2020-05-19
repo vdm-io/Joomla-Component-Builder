@@ -11651,7 +11651,7 @@ class Interpretation extends Fields
 					if ($item['sort'])
 					{
 						$title = "<?php echo JHtml::_('grid.sort', '"
-							. $item['lang'] . "', '" . $item['code']
+							. $item['lang'] . "', 'a." . $item['code']
 							. "', \$this->listDirn, \$this->listOrder); ?>";
 					}
 					$head .= PHP_EOL . $this->_t(1) . '<th class="' . $class
@@ -11670,7 +11670,7 @@ class Interpretation extends Fields
 					. '<th width="10" class="nowrap center" >';
 				$head .= PHP_EOL . $this->_t(3)
 					. "<?php echo JHtml::_('grid.sort', '" . $statusLangName
-					. "', 'published', \$this->listDirn, \$this->listOrder); ?>";
+					. "', 'a.published', \$this->listDirn, \$this->listOrder); ?>";
 				$head .= PHP_EOL . $this->_t(2) . "</th>";
 				$head .= PHP_EOL . $this->_t(1) . "<?php else: ?>";
 				$head .= PHP_EOL . $this->_t(2)
@@ -11686,7 +11686,7 @@ class Interpretation extends Fields
 					. '<th width="5" class="nowrap center hidden-phone" >';
 				$head .= PHP_EOL . $this->_t(3)
 					. "<?php echo JHtml::_('grid.sort', '" . $idLangName
-					. "', 'id', \$this->listDirn, \$this->listOrder); ?>";
+					. "', 'a.id', \$this->listDirn, \$this->listOrder); ?>";
 				$head .= PHP_EOL . $this->_t(1) . "</th>";
 			}
 			$head .= PHP_EOL . "</tr>";
@@ -19553,10 +19553,10 @@ class Interpretation extends Fields
 	public function setSortFields(&$view)
 	{
 		// keep track of all fields already added
-		$donelist = array('sorting', 'published');
+		$donelist = array('ordering', 'published');
 		// set the default first
 		$fields = "return array(";
-		$fields .= PHP_EOL . $this->_t(3) . "'a.sorting' => JText:"
+		$fields .= PHP_EOL . $this->_t(3) . "'ordering' => JText:"
 			. ":_('JGRID_HEADING_ORDERING')";
 		$fields .= "," . PHP_EOL . $this->_t(3) . "'a.published' => JText:"
 			. ":_('JSTATUS')";
