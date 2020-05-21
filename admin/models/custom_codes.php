@@ -12,6 +12,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Custom_codes Model
  */
@@ -27,7 +29,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.component','component',
+				'g.system_name',
 				'a.path','path',
 				'a.target','target',
 				'a.type','type',
@@ -294,7 +296,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'asc');	
+		$orderDirn = $this->state->get('list.direction', 'DESC');
 		if ($orderCol != '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
@@ -341,7 +343,7 @@ class ComponentbuilderModelCustom_codes extends JModelList
 			}
 
 			// Order the results by ordering
-			$query->order('a.ordering  ASC');
+			$query->order('a.id DESC');
 
 			// Load the items
 			$db->setQuery($query);

@@ -590,6 +590,13 @@ class Get
 	public $fieldRelations = array();
 
 	/**
+	 * The views default ordering
+	 *
+	 * @var     array
+	 */
+	public $viewsDefaultOrdering = array();
+
+	/**
 	 * Default Fields
 	 *
 	 * @var    array
@@ -1406,7 +1413,7 @@ class Get
 			? json_decode($component->addadmin_views, true) : null;
 		if (ComponentbuilderHelper::checkArray($component->addadmin_views))
 		{
-			// sort the views acording to order
+			// sort the views according to order
 			usort(
 				$component->addadmin_views, function ($a, $b) {
 				if ($a['order'] != 0 && $b['order'] != 0)
@@ -2443,7 +2450,7 @@ class Get
 					// clear this data
 					unset($old_view);
 				}
-				// sort the fields acording to order
+				// sort the fields according to order
 				usort(
 					$view->fields, function ($a, $b) {
 					if (isset($a['order_list']) && isset($b['order_list']))

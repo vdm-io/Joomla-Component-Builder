@@ -455,7 +455,7 @@
 					size="40"
 					maxlength="150"
 					description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_DESCRIPTION"
-					class="text_area fieldMedium"
+					class="text_area fieldLarge"
 					readonly="false"
 					disabled="false"
 					required="true"
@@ -954,8 +954,7 @@
 					class="list_class"
 					multiple="false"
 					filter="WORD"
-					required="true"
-					default="">
+					required="true">
 					<!-- Option Set. -->
 					<option value="ASC">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_ASCENDING</option>
@@ -1431,7 +1430,7 @@
 					size="40"
 					maxlength="150"
 					description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_FIELD_DESCRIPTION"
-					class="text_area fieldMedium"
+					class="text_area fieldLarge"
 					readonly="false"
 					disabled="false"
 					required="true"

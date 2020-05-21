@@ -248,7 +248,7 @@ class ComponentbuilderViewJoomla_plugin_groups extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_GROUP_NAME_LABEL'),
 			'g.name' => JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_GROUP_CLASS_EXTENDS_LABEL'),

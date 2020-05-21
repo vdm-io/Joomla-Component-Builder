@@ -77,8 +77,9 @@ class JFormFieldListfields extends JFormFieldList
 			if (ComponentbuilderHelper::checkArray($fieldIds))
 			{
 				$query = $db->getQuery(true);
-				$query->select($db->quoteName(array('a.id','a.name'),array('id','name')));
+				$query->select($db->quoteName(array('a.id','a.name', 'a.xml', 'b.name'),array('id','name', 'xml', 'type')));
 				$query->from($db->quoteName('#__componentbuilder_field', 'a'));
+				$query->join('LEFT', '#__componentbuilder_fieldtype AS b ON b.id = a.fieldtype');
 				$query->where($db->quoteName('a.published') . ' >= 1');
 				// only load these fields
 				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $fieldIds) . ')');
@@ -91,7 +92,9 @@ class JFormFieldListfields extends JFormFieldList
 					$options[] = JHtml::_('select.option', '', JText::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
 					foreach($items as $item)
 					{
-						$options[] = JHtml::_('select.option', $item->id, $item->name);
+						// get the field name (TODO this could slow down the system so we will need to improve on this)
+						$field_name = ComponentbuilderHelper::safeFieldName(ComponentbuilderHelper::getBetween(json_decode($item->xml),'name="','"'));
+						$options[] = JHtml::_('select.option', $item->id, $item->name . ' [ ' . $field_name . ' - ' . $item->type . ' ]');
 					}
 				}
 				return $options;

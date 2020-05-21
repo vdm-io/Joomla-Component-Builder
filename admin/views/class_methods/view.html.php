@@ -288,7 +288,7 @@ class ComponentbuilderViewClass_methods extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_NAME_LABEL'),
 			'a.visibility' => JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_VISIBILITY_LABEL'),

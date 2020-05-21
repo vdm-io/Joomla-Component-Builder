@@ -218,7 +218,7 @@ class ComponentbuilderViewAdmins_custom_tabs extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);

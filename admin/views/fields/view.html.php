@@ -400,7 +400,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_FIELD_NAME_LABEL'),
 			'g.name' => JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL'),
@@ -408,7 +408,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 			'a.indexes' => JText::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL'),
 			'a.null_switch' => JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL'),
 			'a.store' => JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL'),
-			'c.category_title' => JText::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'),
+			'category_title' => JText::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	}

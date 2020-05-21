@@ -12,6 +12,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Snippets Model
  */
@@ -29,9 +31,9 @@ class ComponentbuilderModelSnippets extends JModelList
 				'a.modified_by','modified_by',
 				'a.name','name',
 				'a.url','url',
-				'a.type','type',
+				'g.name',
 				'a.heading','heading',
-				'a.library','library'
+				'h.name'
 			);
 		}
 
@@ -321,7 +323,7 @@ class ComponentbuilderModelSnippets extends JModelList
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'asc');	
+		$orderDirn = $this->state->get('list.direction', 'asc');
 		if ($orderCol != '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));

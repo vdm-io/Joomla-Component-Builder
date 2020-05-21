@@ -13,6 +13,7 @@
 	pointer-events: none;
 }
 .fieldMedium { width: 120px; }
+.fieldLarge { width: 320px; }
 .fieldMid { width: 80px; }
 .fieldFull { width: 100%; }
 .fieldSmall { width: 60px; }

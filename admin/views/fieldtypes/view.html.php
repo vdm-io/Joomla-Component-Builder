@@ -245,11 +245,11 @@ class ComponentbuilderViewFieldtypes extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_FIELDTYPE_NAME_LABEL'),
 			'a.short_description' => JText::_('COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_LABEL'),
-			'c.category_title' => JText::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPES_CATEGORIES'),
+			'category_title' => JText::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPES_CATEGORIES'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	}

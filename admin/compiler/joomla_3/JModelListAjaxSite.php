@@ -17,7 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.helper');
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * ###Component### Ajax Model

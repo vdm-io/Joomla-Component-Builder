@@ -35,7 +35,7 @@ class JFormFieldLibconfigfield extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-		// load the db opbject
+		// load the db object
 		$db = JFactory::getDBO();		
 		// get the input from url
 		$jinput = JFactory::getApplication()->input;

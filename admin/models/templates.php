@@ -12,6 +12,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Templates Model
  */
@@ -29,7 +31,7 @@ class ComponentbuilderModelTemplates extends JModelList
 				'a.modified_by','modified_by',
 				'a.name','name',
 				'a.description','description',
-				'a.dynamic_get','dynamic_get',
+				'g.name',
 				'a.add_php_view','add_php_view'
 			);
 		}
@@ -233,7 +235,7 @@ class ComponentbuilderModelTemplates extends JModelList
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'asc');	
+		$orderDirn = $this->state->get('list.direction', 'DESC');
 		if ($orderCol != '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
@@ -280,7 +282,7 @@ class ComponentbuilderModelTemplates extends JModelList
 			}
 
 			// Order the results by ordering
-			$query->order('a.ordering  ASC');
+			$query->order('a.id DESC');
 
 			// Load the items
 			$db->setQuery($query);

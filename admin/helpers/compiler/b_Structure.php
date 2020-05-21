@@ -2555,62 +2555,94 @@ class Structure extends Get
 	 */
 	public function moveFieldsRules($field, $path)
 	{
-		// check if this is a custom field that should be moved
-		if (isset($this->extentionCustomfields[$field['type_name']]))
+		// check if we have a subform or repeatable field
+		if ($field['type_name'] === 'subform' || $field['type_name'] === 'repeatable')
 		{
-			// lets check if we already moved this
-			if (!isset(
-				$this->extentionTrackingFilesMoved[$path . 'type'
-				. $field['type_name']]
-			))
-			{
-				// check files exist
-				if (JFile::exists(
-					$this->componentPath . '/admin/models/fields/'
-					. $field['type_name'] . '.php'
-				))
-				{
-					// copy the custom field
-					JFile::copy(
-						$this->componentPath . '/admin/models/fields/'
-						. $field['type_name'] . '.php',
-						$path . '/fields/' . $field['type_name'] . '.php'
-					);
-				}
-				// stop from doing this again.
-				$this->extentionTrackingFilesMoved[$path . 'type'
-				. $field['type_name']]
-					= true;
-			}
+			// since we could have a custom field or rule inside
+			$this->moveMultiFieldsRules($field, $path);
 		}
-		// check if this has validation that should be moved
-		if (isset($this->validationLinkedFields[$field['field']]))
+		else
 		{
-			// lets check if we already moved this
-			if (!isset(
-				$this->extentionTrackingFilesMoved[$path . 'rule'
-				. $this->validationLinkedFields[$field['field']]]
-			))
+			// check if this is a custom field that should be moved
+			if (isset($this->extentionCustomfields[$field['type_name']]))
 			{
-				// check files exist
-				if (JFile::exists(
-					$this->componentPath . '/admin/models/rules/'
-					. $this->validationLinkedFields[$field['field']] . '.php'
-				))
+				$check = md5($path . 'type' . $field['type_name']);
+				// lets check if we already moved this
+				if (!isset($this->extentionTrackingFilesMoved[$check]))
 				{
-					// copy the custom field
-					JFile::copy(
+					// check files exist
+					if (JFile::exists(
+						$this->componentPath . '/admin/models/fields/'
+						. $field['type_name'] . '.php'
+					))
+					{
+						// copy the custom field
+						JFile::copy(
+							$this->componentPath . '/admin/models/fields/'
+							. $field['type_name'] . '.php',
+							$path . '/fields/' . $field['type_name'] . '.php'
+						);
+					}
+					// stop from doing this again.
+					$this->extentionTrackingFilesMoved[$check] = true;
+				}
+			}
+			// check if this has validation that should be moved
+			if (isset($this->validationLinkedFields[$field['field']]))
+			{
+				$check = md5(
+					$path . 'rule'
+					. $this->validationLinkedFields[$field['field']]
+				);
+				// lets check if we already moved this
+				if (!isset($this->extentionTrackingFilesMoved[$check]))
+				{
+					// check files exist
+					if (JFile::exists(
 						$this->componentPath . '/admin/models/rules/'
 						. $this->validationLinkedFields[$field['field']]
-						. '.php', $path . '/rules/'
-						. $this->validationLinkedFields[$field['field']]
 						. '.php'
-					);
+					))
+					{
+						// copy the custom field
+						JFile::copy(
+							$this->componentPath . '/admin/models/rules/'
+							. $this->validationLinkedFields[$field['field']]
+							. '.php', $path . '/rules/'
+							. $this->validationLinkedFields[$field['field']]
+							. '.php'
+						);
+					}
+					// stop from doing this again.
+					$this->extentionTrackingFilesMoved[$check] = true;
 				}
-				// stop from doing this again.
-				$this->extentionTrackingFilesMoved[$path . 'rule'
-				. $this->validationLinkedFields[$field['field']]]
-					= true;
+			}
+		}
+	}
+
+	/**
+	 * move the fields and Rules of multi fields
+	 *
+	 * @param   array   $multi_field  The field data
+	 * @param   string  $path   The path to move to
+	 *
+	 * @return void
+	 *
+	 */
+	protected function moveMultiFieldsRules($multi_field, $path)
+	{
+		// get the fields ids
+		$ids = array_map( 'trim', explode(',', ComponentbuilderHelper::getBetween($multi_field['settings']->xml, 'fields="', '"')));
+		if (ComponentbuilderHelper::checkArray($ids))
+		{
+			foreach ($ids as $id)
+			{
+				// setup the field
+				$field = array();
+				$field['field'] = $id;
+				$this->setFieldDetails($field);
+				// move field and rules if needed
+				$this->moveFieldsRules($field, $path);
 			}
 		}
 	}

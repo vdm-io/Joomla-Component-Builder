@@ -12,6 +12,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Joomla_plugins Model
  */
@@ -28,8 +30,8 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
 				'a.system_name','system_name',
-				'a.class_extends','class_extends',
-				'a.joomla_plugin_group','joomla_plugin_group'
+				'g.name',
+				'h.name'
 			);
 		}
 
@@ -369,7 +371,7 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'asc');	
+		$orderDirn = $this->state->get('list.direction', 'DESC');
 		if ($orderCol != '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));

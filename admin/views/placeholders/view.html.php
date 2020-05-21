@@ -228,7 +228,7 @@ class ComponentbuilderViewPlaceholders extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.target' => JText::_('COM_COMPONENTBUILDER_PLACEHOLDER_TARGET_LABEL'),
 			'a.value' => JText::_('COM_COMPONENTBUILDER_PLACEHOLDER_VALUE_LABEL'),

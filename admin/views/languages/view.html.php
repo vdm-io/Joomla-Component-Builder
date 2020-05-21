@@ -233,7 +233,7 @@ class ComponentbuilderViewLanguages extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_LANGUAGE_NAME_LABEL'),
 			'a.langtag' => JText::_('COM_COMPONENTBUILDER_LANGUAGE_LANGTAG_LABEL'),

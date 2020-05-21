@@ -248,7 +248,7 @@ class ComponentbuilderViewClass_extendings extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_CLASS_EXTENDS_NAME_LABEL'),
 			'a.extension_type' => JText::_('COM_COMPONENTBUILDER_CLASS_EXTENDS_EXTENSION_TYPE_LABEL'),

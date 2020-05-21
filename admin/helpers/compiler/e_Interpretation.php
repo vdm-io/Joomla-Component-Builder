@@ -237,7 +237,7 @@ class Interpretation extends Fields
 	 */
 	public function __construct($config = array())
 	{
-		// first we run the perent constructor
+		// first we run the parent constructor
 		if (parent::__construct($config))
 		{
 			return true;
@@ -4607,13 +4607,13 @@ class Interpretation extends Fields
 	/**
 	 * get the a script from the custom script builder
 	 *
-	 * @param   string  $first   The first key
-	 * @param   string  $second  The second key
-	 * @param   string  $prefix  The prefix to add in front of the script if found
-	 * @param   string  $note    The switch/note to add to the script
-	 * @param   bool    $unset   The switch to unset the value if found
-	 * @param   string  $default The switch/string to use as default return if script not found
-	 * @param   string  $sufix   The sufix  to add after the script if found
+	 * @param   string  $first    The first key
+	 * @param   string  $second   The second key
+	 * @param   string  $prefix   The prefix to add in front of the script if found
+	 * @param   string  $note     The switch/note to add to the script
+	 * @param   bool    $unset    The switch to unset the value if found
+	 * @param   string  $default  The switch/string to use as default return if script not found
+	 * @param   string  $sufix    The sufix  to add after the script if found
 	 *
 	 * @return  mix    The string/script if found or the default value if not found
 	 *
@@ -5631,6 +5631,7 @@ class Interpretation extends Fields
 
 			return PHP_EOL . implode(PHP_EOL, $buttons);
 		}
+
 		return '';
 	}
 
@@ -9067,9 +9068,9 @@ class Interpretation extends Fields
 		$batchcopy[] = $this->_t(2) . "}" . $customScript;
 
 		$batchcopy[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
-			. " get list of uniqe fields";
+			. " get list of unique fields";
 		$batchcopy[] = $this->_t(2)
-			. "\$uniqeFields = \$this->getUniqeFields();";
+			. "\$uniqueFields = \$this->getUniqueFields();";
 		$batchcopy[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 			. " remove move_copy from array";
 		$batchcopy[] = $this->_t(2) . "unset(\$values['move_copy']);";
@@ -9260,7 +9261,7 @@ class Interpretation extends Fields
 			$batchcopy[] = $this->_t(3) . "{";
 			$batchcopy[] = $this->_t(4) . "\$this->table->" . implode(
 					'', $titles
-				) . " = \$this->generateUniqe('" . implode('', $titles)
+				) . " = \$this->generateUnique('" . implode('', $titles)
 				. "',\$this->table->" . implode('', $titles) . ");";
 			$batchcopy[] = $this->_t(3) . "}";
 		}
@@ -9281,14 +9282,15 @@ class Interpretation extends Fields
 		$batchcopy[] = $this->_t(3) . "}" . PHP_EOL;
 
 		$batchcopy[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
-			. " update all uniqe fields";
+			. " update all unique fields";
 		$batchcopy[] = $this->_t(3) . "if (" . $Helper
-			. "::checkArray(\$uniqeFields))";
+			. "::checkArray(\$uniqueFields))";
 		$batchcopy[] = $this->_t(3) . "{";
-		$batchcopy[] = $this->_t(4) . "foreach (\$uniqeFields as \$uniqeField)";
+		$batchcopy[] = $this->_t(4)
+			. "foreach (\$uniqueFields as \$uniqueField)";
 		$batchcopy[] = $this->_t(4) . "{";
 		$batchcopy[] = $this->_t(5)
-			. "\$this->table->\$uniqeField = \$this->generateUniqe(\$uniqeField,\$this->table->\$uniqeField);";
+			. "\$this->table->\$uniqueField = \$this->generateUnique(\$uniqueField,\$this->table->\$uniqueField);";
 		$batchcopy[] = $this->_t(4) . "}";
 		$batchcopy[] = $this->_t(3) . "}";
 
@@ -9348,7 +9350,7 @@ class Interpretation extends Fields
 
 	public function setAliasTitleFix($viewName_single)
 	{
-		$fixUniqe = array();
+		$fixUnique = array();
 		// only load this if these two items are set
 		if (array_key_exists($viewName_single, $this->aliasBuilder)
 			&& (array_key_exists($viewName_single, $this->titleBuilder)
@@ -9381,16 +9383,16 @@ class Interpretation extends Fields
 				$titles = array($this->titleBuilder[$viewName_single]);
 			}
 			// start building the fix
-			$fixUniqe[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(
+			$fixUnique[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 					__LINE__
 				) . " Alter the " . implode(', ', $titles)
 				. " for save as copy";
-			$fixUniqe[] = $this->_t(2)
+			$fixUnique[] = $this->_t(2)
 				. "if (\$input->get('task') === 'save2copy')";
-			$fixUniqe[] = $this->_t(2) . "{";
-			$fixUniqe[] = $this->_t(3)
+			$fixUnique[] = $this->_t(2) . "{";
+			$fixUnique[] = $this->_t(3)
 				. "\$origTable = clone \$this->getTable();";
-			$fixUniqe[] = $this->_t(3)
+			$fixUnique[] = $this->_t(3)
 				. "\$origTable->load(\$input->getInt('id'));";
 			// reset the buckets
 			$ifStatment  = array();
@@ -9407,13 +9409,13 @@ class Interpretation extends Fields
 				$titleUpdate[] = $this->_t(4) . "\$data['" . $title . "'] = \$"
 					. $title . ";";
 			}
-			$fixUniqe[] = PHP_EOL . $this->_t(3) . "if (" . implode(
+			$fixUnique[] = PHP_EOL . $this->_t(3) . "if (" . implode(
 					' || ', $ifStatment
 				) . ")";
-			$fixUniqe[] = $this->_t(3) . "{";
+			$fixUnique[] = $this->_t(3) . "{";
 			if ($setCategory && count((array) $titles) == 1)
 			{
-				$fixUniqe[] = $this->_t(4) . "list(" . implode('', $titleVars)
+				$fixUnique[] = $this->_t(4) . "list(" . implode('', $titleVars)
 					. ", \$" . $alias . ") = \$this->generateNewTitle(\$data['"
 					. $category . "'], \$data['" . $alias . "'], " . implode(
 						'', $titleData
@@ -9421,136 +9423,141 @@ class Interpretation extends Fields
 			}
 			elseif (count((array) $titles) == 1)
 			{
-				$fixUniqe[] = $this->_t(4) . "list(" . implode(', ', $titleVars)
+				$fixUnique[] = $this->_t(4) . "list(" . implode(
+						', ', $titleVars
+					)
 					. ", \$" . $alias . ") = \$this->_generateNewTitle(\$data['"
 					. $alias . "'], " . implode('', $titleData) . ");";
 			}
 			else
 			{
-				$fixUniqe[] = $this->_t(4) . "list(" . implode(', ', $titleVars)
+				$fixUnique[] = $this->_t(4) . "list(" . implode(
+						', ', $titleVars
+					)
 					. ", \$" . $alias . ") = \$this->_generateNewTitle(\$data['"
 					. $alias . "'], array(" . implode(', ', $titleData) . "));";
 			}
-			$fixUniqe[] = implode("\n", $titleUpdate);
-			$fixUniqe[] = $this->_t(4) . "\$data['" . $alias . "'] = \$"
+			$fixUnique[] = implode("\n", $titleUpdate);
+			$fixUnique[] = $this->_t(4) . "\$data['" . $alias . "'] = \$"
 				. $alias . ";";
-			$fixUniqe[] = $this->_t(3) . "}";
-			$fixUniqe[] = $this->_t(3) . "else";
-			$fixUniqe[] = $this->_t(3) . "{";
-			$fixUniqe[] = $this->_t(4) . "if (\$data['" . $alias
+			$fixUnique[] = $this->_t(3) . "}";
+			$fixUnique[] = $this->_t(3) . "else";
+			$fixUnique[] = $this->_t(3) . "{";
+			$fixUnique[] = $this->_t(4) . "if (\$data['" . $alias
 				. "'] == \$origTable->" . $alias . ")";
-			$fixUniqe[] = $this->_t(4) . "{";
-			$fixUniqe[] = $this->_t(5) . "\$data['" . $alias . "'] = '';";
-			$fixUniqe[] = $this->_t(4) . "}";
-			$fixUniqe[] = $this->_t(3) . "}";
-			$fixUniqe[] = PHP_EOL . $this->_t(3) . "\$data['published'] = 0;";
-			$fixUniqe[] = $this->_t(2) . "}";
-			$fixUniqe[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(
+			$fixUnique[] = $this->_t(4) . "{";
+			$fixUnique[] = $this->_t(5) . "\$data['" . $alias . "'] = '';";
+			$fixUnique[] = $this->_t(4) . "}";
+			$fixUnique[] = $this->_t(3) . "}";
+			$fixUnique[] = PHP_EOL . $this->_t(3) . "\$data['published'] = 0;";
+			$fixUnique[] = $this->_t(2) . "}";
+			$fixUnique[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 					__LINE__
 				) . " Automatic handling of " . $alias . " for empty fields";
-			$fixUniqe[] = $this->_t(2)
+			$fixUnique[] = $this->_t(2)
 				. "if (in_array(\$input->get('task'), array('apply', 'save', 'save2new')) && (int) \$input->get('id') == 0)";
-			$fixUniqe[] = $this->_t(2) . "{";
-			$fixUniqe[] = $this->_t(3) . "if (\$data['" . $alias
+			$fixUnique[] = $this->_t(2) . "{";
+			$fixUnique[] = $this->_t(3) . "if (\$data['" . $alias
 				. "'] == null || empty(\$data['" . $alias . "']))";
-			$fixUniqe[] = $this->_t(3) . "{";
-			$fixUniqe[] = $this->_t(4)
+			$fixUnique[] = $this->_t(3) . "{";
+			$fixUnique[] = $this->_t(4)
 				. "if (JFactory::getConfig()->get('unicodeslugs') == 1)";
-			$fixUniqe[] = $this->_t(4) . "{";
-			$fixUniqe[] = $this->_t(5) . "\$data['" . $alias
+			$fixUnique[] = $this->_t(4) . "{";
+			$fixUnique[] = $this->_t(5) . "\$data['" . $alias
 				. "'] = JFilterOutput::stringURLUnicodeSlug(" . implode(
 					' . " " . ', $titleData
 				) . ");";
-			$fixUniqe[] = $this->_t(4) . "}";
-			$fixUniqe[] = $this->_t(4) . "else";
-			$fixUniqe[] = $this->_t(4) . "{";
-			$fixUniqe[] = $this->_t(5) . "\$data['" . $alias
+			$fixUnique[] = $this->_t(4) . "}";
+			$fixUnique[] = $this->_t(4) . "else";
+			$fixUnique[] = $this->_t(4) . "{";
+			$fixUnique[] = $this->_t(5) . "\$data['" . $alias
 				. "'] = JFilterOutput::stringURLSafe(" . implode(
 					' . " " . ', $titleData
 				) . ");";
-			$fixUniqe[] = $this->_t(4) . "}";
-			$fixUniqe[] = PHP_EOL . $this->_t(4)
+			$fixUnique[] = $this->_t(4) . "}";
+			$fixUnique[] = PHP_EOL . $this->_t(4)
 				. "\$table = JTable::getInstance('" . $viewName_single . "', '"
 				. $this->componentCodeName . "Table');";
 			if ($setCategory && count($titles) == 1)
 			{
-				$fixUniqe[] = PHP_EOL . $this->_t(4)
+				$fixUnique[] = PHP_EOL . $this->_t(4)
 					. "if (\$table->load(array('" . $alias . "' => \$data['"
 					. $alias . "'], '" . $category . "' => \$data['" . $category
 					. "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
-				$fixUniqe[] = $this->_t(4) . "{";
-				$fixUniqe[] = $this->_t(5) . "\$msg = JText:" . ":_('COM_"
+				$fixUnique[] = $this->_t(4) . "{";
+				$fixUnique[] = $this->_t(5) . "\$msg = JText:" . ":_('COM_"
 					. $this->fileContentStatic[$this->hhh . 'COMPONENT'
 					. $this->hhh] . "_" . $VIEW . "_SAVE_WARNING');";
-				$fixUniqe[] = $this->_t(4) . "}";
-				$fixUniqe[] = PHP_EOL . $this->_t(4) . "list(" . implode(
+				$fixUnique[] = $this->_t(4) . "}";
+				$fixUnique[] = PHP_EOL . $this->_t(4) . "list(" . implode(
 						'', $titleVars
 					) . ", \$" . $alias
 					. ") = \$this->generateNewTitle(\$data['" . $category
 					. "'], \$data['" . $alias . "'], " . implode('', $titleData)
 					. ");";
-				$fixUniqe[] = $this->_t(4) . "\$data['" . $alias . "'] = \$"
+				$fixUnique[] = $this->_t(4) . "\$data['" . $alias . "'] = \$"
 					. $alias . ";";
 			}
 			else
 			{
-				$fixUniqe[] = PHP_EOL . $this->_t(4)
+				$fixUnique[] = PHP_EOL . $this->_t(4)
 					. "if (\$table->load(array('" . $alias . "' => \$data['"
 					. $alias
 					. "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
-				$fixUniqe[] = $this->_t(4) . "{";
-				$fixUniqe[] = $this->_t(5) . "\$msg = JText:" . ":_('COM_"
+				$fixUnique[] = $this->_t(4) . "{";
+				$fixUnique[] = $this->_t(5) . "\$msg = JText:" . ":_('COM_"
 					. $this->fileContentStatic[$this->hhh . 'COMPONENT'
 					. $this->hhh] . "_" . $VIEW . "_SAVE_WARNING');";
-				$fixUniqe[] = $this->_t(4) . "}";
-				$fixUniqe[] = PHP_EOL . $this->_t(4) . "\$data['" . $alias
+				$fixUnique[] = $this->_t(4) . "}";
+				$fixUnique[] = PHP_EOL . $this->_t(4) . "\$data['" . $alias
 					. "'] = \$this->_generateNewTitle(\$data['" . $alias
 					. "']);";
 			}
-			$fixUniqe[] = PHP_EOL . $this->_t(4) . "if (isset(\$msg))";
-			$fixUniqe[] = $this->_t(4) . "{";
-			$fixUniqe[] = $this->_t(5)
+			$fixUnique[] = PHP_EOL . $this->_t(4) . "if (isset(\$msg))";
+			$fixUnique[] = $this->_t(4) . "{";
+			$fixUnique[] = $this->_t(5)
 				. "JFactory::getApplication()->enqueueMessage(\$msg, 'warning');";
-			$fixUniqe[] = $this->_t(4) . "}";
-			$fixUniqe[] = $this->_t(3) . "}";
-			$fixUniqe[] = $this->_t(2) . "}";
+			$fixUnique[] = $this->_t(4) . "}";
+			$fixUnique[] = $this->_t(3) . "}";
+			$fixUnique[] = $this->_t(2) . "}";
 
-//			$fixUniqe[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Update alias if still empty at this point";
-//			$fixUniqe[] = $this->_t(2) . "if (\$data['" . $alias . "'] == null || empty(\$data['" . $alias . "']))";
-//			$fixUniqe[] = $this->_t(2) . "{";
-//			$fixUniqe[] = $this->_t(3) . "if (JFactory::getConfig()->get('unicodeslugs') == 1)";
-//			$fixUniqe[] = $this->_t(3) . "{";
-//			$fixUniqe[] = $this->_t(4) . "\$data['" . $alias . "'] = JFilterOutput::stringURLUnicodeSlug(" . implode(' . " " . ', $titleData) . ");";
-//			$fixUniqe[] = $this->_t(3) . "}";
-//			$fixUniqe[] = $this->_t(3) . "else";
-//			$fixUniqe[] = $this->_t(3) . "{";
-//			$fixUniqe[] = $this->_t(4) . "\$data['" . $alias . "'] = JFilterOutput::stringURLSafe(" . implode(' . " " . ', $titleData) . ");";
-//			$fixUniqe[] = $this->_t(3) . "}";
-//			$fixUniqe[] = $this->_t(2) . "}";
+//			$fixUnique[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " Update alias if still empty at this point";
+//			$fixUnique[] = $this->_t(2) . "if (\$data['" . $alias . "'] == null || empty(\$data['" . $alias . "']))";
+//			$fixUnique[] = $this->_t(2) . "{";
+//			$fixUnique[] = $this->_t(3) . "if (JFactory::getConfig()->get('unicodeslugs') == 1)";
+//			$fixUnique[] = $this->_t(3) . "{";
+//			$fixUnique[] = $this->_t(4) . "\$data['" . $alias . "'] = JFilterOutput::stringURLUnicodeSlug(" . implode(' . " " . ', $titleData) . ");";
+//			$fixUnique[] = $this->_t(3) . "}";
+//			$fixUnique[] = $this->_t(3) . "else";
+//			$fixUnique[] = $this->_t(3) . "{";
+//			$fixUnique[] = $this->_t(4) . "\$data['" . $alias . "'] = JFilterOutput::stringURLSafe(" . implode(' . " " . ', $titleData) . ");";
+//			$fixUnique[] = $this->_t(3) . "}";
+//			$fixUnique[] = $this->_t(2) . "}";
 		}
-		// handel other uniqe fields
-		$fixUniqe[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
-			. " Alter the uniqe field for save as copy";
-		$fixUniqe[] = $this->_t(2)
+		// handel other unique fields
+		$fixUnique[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
+			. " Alter the unique field for save as copy";
+		$fixUnique[] = $this->_t(2)
 			. "if (\$input->get('task') === 'save2copy')";
-		$fixUniqe[] = $this->_t(2) . "{";
-		$fixUniqe[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
-			. " Automatic handling of other uniqe fields";
-		$fixUniqe[] = $this->_t(3)
-			. "\$uniqeFields = \$this->getUniqeFields();";
-		$fixUniqe[] = $this->_t(3) . "if ("
+		$fixUnique[] = $this->_t(2) . "{";
+		$fixUnique[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+			. " Automatic handling of other unique fields";
+		$fixUnique[] = $this->_t(3)
+			. "\$uniqueFields = \$this->getUniqueFields();";
+		$fixUnique[] = $this->_t(3) . "if ("
 			. $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh]
-			. "Helper::checkArray(\$uniqeFields))";
-		$fixUniqe[] = $this->_t(3) . "{";
-		$fixUniqe[] = $this->_t(4) . "foreach (\$uniqeFields as \$uniqeField)";
-		$fixUniqe[] = $this->_t(4) . "{";
-		$fixUniqe[] = $this->_t(5)
-			. "\$data[\$uniqeField] = \$this->generateUniqe(\$uniqeField,\$data[\$uniqeField]);";
-		$fixUniqe[] = $this->_t(4) . "}";
-		$fixUniqe[] = $this->_t(3) . "}";
-		$fixUniqe[] = $this->_t(2) . "}";
+			. "Helper::checkArray(\$uniqueFields))";
+		$fixUnique[] = $this->_t(3) . "{";
+		$fixUnique[] = $this->_t(4)
+			. "foreach (\$uniqueFields as \$uniqueField)";
+		$fixUnique[] = $this->_t(4) . "{";
+		$fixUnique[] = $this->_t(5)
+			. "\$data[\$uniqueField] = \$this->generateUnique(\$uniqueField,\$data[\$uniqueField]);";
+		$fixUnique[] = $this->_t(4) . "}";
+		$fixUnique[] = $this->_t(3) . "}";
+		$fixUnique[] = $this->_t(2) . "}";
 
-		return PHP_EOL . implode(PHP_EOL, $fixUniqe);
+		return PHP_EOL . implode(PHP_EOL, $fixUnique);
 	}
 
 	public function setGenerateNewTitle($viewName_single)
@@ -9597,7 +9604,7 @@ class Interpretation extends Fields
 				. "foreach(\$title as \$nr => &\$_title)";
 			$newFunction[] = $this->_t(4) . "{";
 			$newFunction[] = $this->_t(5)
-				. "\$_title = JString::increment(\$_title);";
+				. "\$_title = StringHelper::increment(\$_title);";
 			$newFunction[] = $this->_t(4) . "}";
 			$newFunction[] = $this->_t(3) . "}";
 			$newFunction[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
@@ -9605,10 +9612,10 @@ class Interpretation extends Fields
 			$newFunction[] = $this->_t(3) . "elseif (\$title)";
 			$newFunction[] = $this->_t(3) . "{";
 			$newFunction[] = $this->_t(4)
-				. "\$title = JString::increment(\$title);";
+				. "\$title = StringHelper::increment(\$title);";
 			$newFunction[] = $this->_t(3) . "}";
 			$newFunction[] = $this->_t(3)
-				. "\$alias = JString::increment(\$alias, 'dash');";
+				. "\$alias = StringHelper::increment(\$alias, 'dash');";
 			$newFunction[] = $this->_t(2) . "}";
 			$newFunction[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Check if this is an array of titles";
@@ -9655,7 +9662,7 @@ class Interpretation extends Fields
 				. "while (\$table->load(array('title' => \$title)))";
 			$newFunction[] = $this->_t(2) . "{";
 			$newFunction[] = $this->_t(3)
-				. "\$title = JString::increment(\$title);";
+				. "\$title = StringHelper::increment(\$title);";
 			$newFunction[] = $this->_t(2) . "}";
 			$newFunction[] = PHP_EOL . $this->_t(2) . "return \$title;";
 			$newFunction[] = $this->_t(1) . "}";
@@ -11635,24 +11642,44 @@ class Interpretation extends Fields
 						$item['lang']
 							= $this->listHeadOverRide[$viewName_list][$item['id']];
 					}
-					// set the custom code
-					if (ComponentbuilderHelper::checkArray($item['custom']))
-					{
-						$item['code'] = $item['code'] . '_'
-							. $item['custom']['text'];
-					}
 					$class = 'nowrap hidden-phone';
 					if ($item['link'])
 					{
 						$class = 'nowrap';
 					}
-					$title = "<?php echo JText:" . ":_('" . $item['lang']
-						. "'); ?>";
+					// add sort options if required
 					if ($item['sort'])
 					{
-						$title = "<?php echo JHtml::_('grid.sort', '"
-							. $item['lang'] . "', 'a." . $item['code']
-							. "', \$this->listDirn, \$this->listOrder); ?>";
+						// if category
+						if ($item['type'] === 'category')
+						{
+							// only one category per/view allowed at this point
+							$title = "<?php echo JHtml::_('grid.sort', '"
+								. $item['lang'] . "', 'category_title"
+								. "', \$this->listDirn, \$this->listOrder); ?>";
+						}
+						// set the custom code
+						elseif (ComponentbuilderHelper::checkArray(
+							$item['custom']
+						))
+						{
+							// keep an eye on this
+							$title = "<?php echo JHtml::_('grid.sort', '"
+								. $item['lang'] . "', '" . $item['custom']['db']
+								. "." . $item['custom']['text']
+								. "', \$this->listDirn, \$this->listOrder); ?>";
+						}
+						else
+						{
+							$title = "<?php echo JHtml::_('grid.sort', '"
+								. $item['lang'] . "', 'a." . $item['code']
+								. "', \$this->listDirn, \$this->listOrder); ?>";
+						}
+					}
+					else
+					{
+						$title = "<?php echo JText:" . ":_('" . $item['lang']
+							. "'); ?>";
 					}
 					$head .= PHP_EOL . $this->_t(1) . '<th class="' . $class
 						. '" >';
@@ -13674,12 +13701,42 @@ class Interpretation extends Fields
 				. "\$query->where('a.access IN (' . \$groups . ')');";
 			$query .= PHP_EOL . $this->_t(2) . "}";
 		}
-		$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
-				__LINE__
-			) . " Order the results by ordering";
-		$query .= PHP_EOL . $this->_t(2)
-			. "\$query->order('a.published  ASC');";
-		$query .= PHP_EOL . $this->_t(2) . "\$query->order('a.ordering  ASC');";
+		// add dynamic ordering (Linked view)
+		if (isset($this->viewsDefaultOrdering[$viewName_list])
+			&& $this->viewsDefaultOrdering[$viewName_list]['add_linked_ordering']
+			== 1)
+		{
+			foreach (
+				$this->viewsDefaultOrdering[$viewName_list]['linked_ordering_fields']
+				as $order_field
+			)
+			{
+				if (($order_field_name = $this->getFieldDatabaseName(
+						$viewName_list, $order_field['field'], 'listJoinBuilder'
+					)) !== false)
+				{
+					// default ordering is by publish and ordering
+					$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//"
+						. $this->setLine(
+							__LINE__
+						) . " Order the results by ordering";
+					$query .= PHP_EOL . $this->_t(2)
+						. "\$query->order('"
+						. $order_field_name . " " . $order_field['direction'] . "');";
+				}
+			}
+		}
+		else
+		{
+			// default ordering is by publish and ordering
+			$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
+					__LINE__
+				) . " Order the results by ordering";
+			$query .= PHP_EOL . $this->_t(2)
+				. "\$query->order('a.published  ASC');";
+			$query .= PHP_EOL . $this->_t(2)
+				. "\$query->order('a.ordering  ASC');";
+		}
 		$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 				__LINE__
 			) . " Load the items";
@@ -14044,7 +14101,7 @@ class Interpretation extends Fields
 					. "\$pks = \$input->post->get('cid', array(), 'array');";
 				$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 					. " Sanitize the input";
-				$method[] = $this->_t(3) . "JArrayHelper::toInteger(\$pks);";
+				$method[] = $this->_t(3) . "ArrayHelper::toInteger(\$pks);";
 				$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 					. " convert to string";
 				$method[] = $this->_t(3) . "\$ids = implode('_', \$pks);";
@@ -14211,11 +14268,40 @@ class Interpretation extends Fields
 					. "\$query->where('a.access IN (' . \$groups . ')');";
 				$query .= PHP_EOL . $this->_t(3) . "}";
 			}
-			$query .= PHP_EOL . PHP_EOL . $this->_t(3) . "//" . $this->setLine(
-					__LINE__
-				) . " Order the results by ordering";
-			$query .= PHP_EOL . $this->_t(3)
-				. "\$query->order('a.ordering  ASC');";
+			// add dynamic ordering (Exported data)
+			if (isset($this->viewsDefaultOrdering[$viewName_list])
+				&& $this->viewsDefaultOrdering[$viewName_list]['add_admin_ordering']
+				== 1)
+			{
+				foreach (
+					$this->viewsDefaultOrdering[$viewName_list]['admin_ordering_fields']
+					as $order_field
+				)
+				{
+					if (($order_field_name = $this->getFieldDatabaseName(
+							$viewName_list, $order_field['field']
+						)) !== false)
+					{
+						$query .= PHP_EOL . PHP_EOL . $this->_t(3) . "//"
+							. $this->setLine(
+								__LINE__
+							) . " Order the results by ordering";
+						$query .= PHP_EOL . $this->_t(3)
+							. "\$query->order('"
+							. $order_field_name . " "
+							. $order_field['direction'] . "');";
+					}
+				}
+			}
+			else
+			{
+				$query .= PHP_EOL . PHP_EOL . $this->_t(3) . "//"
+					. $this->setLine(
+						__LINE__
+					) . " Order the results by ordering";
+				$query .= PHP_EOL . $this->_t(3)
+					. "\$query->order('a.ordering  ASC');";
+			}
 			$query .= PHP_EOL . PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 					__LINE__
 				) . " Load the items";
@@ -14324,7 +14410,7 @@ class Interpretation extends Fields
 				. "\$pks = \$input->post->get('cid', array(), 'array');";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Sanitize the input";
-			$method[] = $this->_t(3) . "JArrayHelper::toInteger(\$pks);";
+			$method[] = $this->_t(3) . "ArrayHelper::toInteger(\$pks);";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Get the model";
 			$method[] = $this->_t(3) . "\$model = \$this->getModel('"
@@ -14715,7 +14801,7 @@ class Interpretation extends Fields
 				. "elseif (is_array(\$categoryId))";
 			$query .= PHP_EOL . $this->_t(2) . "{";
 			$query .= PHP_EOL . $this->_t(3)
-				. "JArrayHelper::toInteger(\$categoryId);";
+				. "ArrayHelper::toInteger(\$categoryId);";
 			$query .= PHP_EOL . $this->_t(3)
 				. "\$categoryId = implode(',', \$categoryId);";
 			$query .= PHP_EOL . $this->_t(3)
@@ -14723,22 +14809,125 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(2) . "}";
 			$query .= PHP_EOL;
 		}
-		$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
-				__LINE__
-			) . " Add the list ordering clause.";
-		$query .= PHP_EOL . $this->_t(2)
-			. "\$orderCol = \$this->state->get('list.ordering', 'a.id');";
-		$query .= PHP_EOL . $this->_t(2)
-			. "\$orderDirn = \$this->state->get('list.direction', 'asc');	";
-		$query .= PHP_EOL . $this->_t(2) . "if (\$orderCol != '')";
-		$query .= PHP_EOL . $this->_t(2) . "{";
-		$query .= PHP_EOL . $this->_t(3)
-			. "\$query->order(\$db->escape(\$orderCol . ' ' . \$orderDirn));";
-		$query .= PHP_EOL . $this->_t(2) . "}";
+		// add dynamic ordering (Admin view)
+		if (isset($this->viewsDefaultOrdering[$viewName_list])
+			&& $this->viewsDefaultOrdering[$viewName_list]['add_admin_ordering']
+			== 1)
+		{
+			// the first is from the state
+			$order_first = true;
+			foreach (
+				$this->viewsDefaultOrdering[$viewName_list]['admin_ordering_fields']
+				as $order_field
+			)
+			{
+				if (($order_field_name = $this->getFieldDatabaseName(
+						$viewName_list, $order_field['field']
+					)) !== false)
+				{
+					if ($order_first)
+					{
+						// just the first field is based on state
+						$order_first = false;
+						$query       .= PHP_EOL . PHP_EOL . $this->_t(2) . "//"
+							. $this->setLine(
+								__LINE__
+							) . " Add the list ordering clause.";
+						$query       .= PHP_EOL . $this->_t(2)
+							. "\$orderCol = \$this->state->get('list.ordering', '"
+							. $order_field_name . "');";
+						$query       .= PHP_EOL . $this->_t(2)
+							. "\$orderDirn = \$this->state->get('list.direction', '"
+							. $order_field['direction'] . "');";
+						$query       .= PHP_EOL . $this->_t(2)
+							. "if (\$orderCol != '')";
+						$query       .= PHP_EOL . $this->_t(2) . "{";
+						$query       .= PHP_EOL . $this->_t(3)
+							. "\$query->order(\$db->escape(\$orderCol . ' ' . \$orderDirn));";
+						$query       .= PHP_EOL . $this->_t(2) . "}";
+					}
+					else
+					{
+						$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//"
+							. $this->setLine(
+								__LINE__
+							) . " Add a permanent list ordering.";
+						$query .= PHP_EOL . $this->_t(2)
+							. "\$query->order(\$db->escape('"
+							. $order_field_name . " "
+							. $order_field['direction'] . "'));";
+					}
+				}
+			}
+		}
+		else
+		{
+			$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
+					__LINE__
+				) . " Add the list ordering clause.";
+			$query .= PHP_EOL . $this->_t(2)
+				. "\$orderCol = \$this->state->get('list.ordering', 'a.id');";
+			$query .= PHP_EOL . $this->_t(2)
+				. "\$orderDirn = \$this->state->get('list.direction', 'asc');";
+			$query .= PHP_EOL . $this->_t(2) . "if (\$orderCol != '')";
+			$query .= PHP_EOL . $this->_t(2) . "{";
+			$query .= PHP_EOL . $this->_t(3)
+				. "\$query->order(\$db->escape(\$orderCol . ' ' . \$orderDirn));";
+			$query .= PHP_EOL . $this->_t(2) . "}";
+		}
 		$query .= PHP_EOL;
 		$query .= PHP_EOL . $this->_t(2) . "return \$query;";
 
 		return $query;
+	}
+
+	/**
+	 * get the field database name and AS prefix
+	 *
+	 * @return  string
+	 *
+	 */
+	protected function getFieldDatabaseName($viewName_list, int $fieldId, $targetArea = 'listBuilder')
+	{
+		if (isset($this->{$targetArea}[$viewName_list]))
+		{
+			if ($fieldId < 0)
+			{
+				switch($fieldId)
+				{
+					case -1:
+						return 'a.id';
+					case -2:
+						return 'a.ordering';
+					case -3:
+						return 'a.published';
+				}
+			}
+			foreach ($this->{$targetArea}[$viewName_list] as $field)
+			{
+				if ($field['id'] == $fieldId)
+				{
+					// now check if this is a category
+					if ($field['type'] === 'category')
+					{
+						return 'c.title';
+					}
+					// set the custom code
+					elseif (ComponentbuilderHelper::checkArray(
+						$field['custom']
+					))
+					{
+						return $field['custom']['db'] . "."
+							. $field['custom']['text'];
+					}
+					else
+					{
+						return 'a.' . $field['code'];
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	public function setSearchQuery($viewName_list)
@@ -16923,7 +17112,7 @@ class Interpretation extends Fields
 		$fields[] = $this->_t(1) . " *";
 		$fields[] = $this->_t(1) . " * @since   3.0";
 		$fields[] = $this->_t(1) . " */";
-		$fields[] = $this->_t(1) . "protected function getUniqeFields()";
+		$fields[] = $this->_t(1) . "protected function getUniqueFields()";
 		$fields[] = $this->_t(1) . "{";
 		if (isset($this->dbUniqueKeys[$view])
 			&& ComponentbuilderHelper::checkArray($this->dbUniqueKeys[$view]))
@@ -17334,7 +17523,7 @@ class Interpretation extends Fields
 				$allow[] = $this->_t(2) . "}";
 			}
 			$allow[] = $this->_t(2)
-				. "\$categoryId = JArrayHelper::getValue(\$data, 'catid', \$this->input->getInt('filter_category_id'), 'int');";
+				. "\$categoryId = ArrayHelper::getValue(\$data, 'catid', \$this->input->getInt('filter_category_id'), 'int');";
 			$allow[] = $this->_t(2) . "\$allow = null;";
 			$allow[] = PHP_EOL . $this->_t(2) . "if (\$categoryId)";
 			$allow[] = $this->_t(2) . "{";
@@ -18928,12 +19117,20 @@ class Interpretation extends Fields
 					else
 					{
 						// check if custom field is set
-						/* if (ComponentbuilderHelper::checkArray($filter['custom']))
+						if (ComponentbuilderHelper::checkArray(
+							$filter['custom']
+						))
 						{
-							$fields .= ",".PHP_EOL.$this->_t(4) . "'".$filter['custom']['db'].".".$filter['custom']['text']."','".$filter['code']."_".$filter['custom']['text']."'";
-						} */
-						$fields .= "," . PHP_EOL . $this->_t(4) . "'a."
-							. $filter['code'] . "','" . $filter['code'] . "'";
+							$fields .= "," . PHP_EOL . $this->_t(4) . "'"
+								. $filter['custom']['db'] . "."
+								. $filter['custom']['text'] . "'";
+						}
+						else
+						{
+							$fields .= "," . PHP_EOL . $this->_t(4) . "'a."
+								. $filter['code'] . "','" . $filter['code']
+								. "'";
+						}
 					}
 					$donelist[] = $filter['code'];
 				}
@@ -19572,7 +19769,7 @@ class Interpretation extends Fields
 					if ($filter['type'] === 'category')
 					{
 						$fields .= "," . PHP_EOL . $this->_t(3)
-							. "'c.category_title' => JText:" . ":_('"
+							. "'category_title' => JText:" . ":_('"
 							. $filter['lang'] . "')";
 					}
 					elseif (ComponentbuilderHelper::checkArray(
