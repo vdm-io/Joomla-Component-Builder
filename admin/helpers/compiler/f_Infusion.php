@@ -858,6 +858,11 @@ class Infusion extends Interpretation
 						'css_views', $viewName_single, '', null, true
 					);
 
+					// ADMIN_DIPLAY_METHOD <<<DYNAMIC>>>
+					$this->fileContentDynamic[$viewName_list][$this->hhh
+					. 'ADMIN_DIPLAY_METHOD' . $this->hhh]
+						= $this->setAdminViewDisplayMethod($viewName_list);
+
 					// VIEWS_FOOTER_SCRIPT <<<DYNAMIC>>>
 					$scriptNote = PHP_EOL . '//' . $this->setLine(__LINE__)
 						. ' ' . $viewName_list . ' footer script';

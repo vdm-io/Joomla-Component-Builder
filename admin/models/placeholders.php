@@ -181,7 +181,7 @@ class ComponentbuilderModelPlaceholders extends JModelList
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'asc');
+		$orderDirn = $this->state->get('list.direction', 'desc');
 		if ($orderCol != '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
@@ -228,7 +228,7 @@ class ComponentbuilderModelPlaceholders extends JModelList
 			}
 
 			// Order the results by ordering
-			$query->order('a.ordering  ASC');
+			$query->order('a.id desc');
 
 			// Load the items
 			$db->setQuery($query);

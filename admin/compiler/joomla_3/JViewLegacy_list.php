@@ -38,9 +38,7 @@ class ###Component###View###Views### extends JViewLegacy
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
-		$this->user = JFactory::getUser();
-		$this->listOrder = $this->escape($this->state->get('list.ordering'));
-		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		$this->user = JFactory::getUser();###ADMIN_DIPLAY_METHOD###
 		$this->saveOrder = $this->listOrder == 'ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));

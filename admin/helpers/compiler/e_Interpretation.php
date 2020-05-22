@@ -4920,6 +4920,52 @@ class Interpretation extends Fields
 		return $script . $getItem;
 	}
 
+	public function setAdminViewDisplayMethod($viewName_list)
+	{
+		$script = '';
+		if (isset($this->viewsDefaultOrdering[$viewName_list])
+			&& $this->viewsDefaultOrdering[$viewName_list]['add_admin_ordering']
+			== 1)
+		{
+			// the first is from the state
+			$order_first = true;
+			foreach (
+				$this->viewsDefaultOrdering[$viewName_list]['admin_ordering_fields']
+				as $order_field
+			)
+			{
+				if ($order_first && ($order_field_name = $this->getFieldDatabaseName(
+						$viewName_list, $order_field['field']
+					)) !== false)
+				{
+					// just the first field is based on state
+					$order_first = false;
+					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(
+							__LINE__
+						) . " Add the list ordering clause.";
+					$script .= PHP_EOL . $this->_t(2)
+						. "\$this->listOrder = \$this->escape(\$this->state->get('list.ordering', '"
+						. $order_field_name . "'));";
+					$script .= PHP_EOL . $this->_t(2)
+						. "\$this->listDirn = \$this->escape(\$this->state->get('list.direction', '"
+						. $order_field['direction'] . "'));";
+				}
+			}
+		}
+		// if no ordering is added we must add default
+		if (!ComponentbuilderHelper::checkString($script))
+		{
+			$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(
+					__LINE__
+				) . " Add the list ordering clause.";
+			$script .= PHP_EOL . $this->_t(2)
+				. "\$this->listOrder = \$this->escape(\$this->state->get('list.ordering', 'a.id'));";
+			$script .= PHP_EOL . $this->_t(2)
+				. "\$this->listDirn = \$this->escape(\$this->state->get('list.direction', 'asc'));";
+		}
+		return $script;
+	}
+
 	public function setCustomViewDisplayMethod(&$view)
 	{
 		$method = '';
@@ -14809,6 +14855,8 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(2) . "}";
 			$query .= PHP_EOL;
 		}
+		// setup values for the view ordering
+
 		// add dynamic ordering (Admin view)
 		if (isset($this->viewsDefaultOrdering[$viewName_list])
 			&& $this->viewsDefaultOrdering[$viewName_list]['add_admin_ordering']
