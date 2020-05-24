@@ -1177,13 +1177,12 @@ class Interpretation extends Fields
 			{
 				$updateXML[] = '</updates>';
 				// UPDATE_SERVER_XML
-				$name   = str_replace(
-					'.xml', '', substr(
+				$name   = substr(
 						$this->componentData->update_server_url,
 						strrpos($this->componentData->update_server_url, '/')
 						+ 1
-					)
-				);
+					);
+				$name = explode('.xml', $name)[0];
 				$target = array('admin' => $name);
 				$this->buildDynamique($target, 'update_server');
 				$this->fileContentDynamic[$name][$this->hhh
