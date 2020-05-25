@@ -20480,7 +20480,7 @@ class Interpretation extends Fields
 			{
 				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3)
 					. "//" . $this->setLine(__LINE__)
-					. " use permissional control if globaly set.";
+					. " use permissional control if globally set.";
 				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3)
 					. "if (\$strict_permission_per_field)";
 				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3)
