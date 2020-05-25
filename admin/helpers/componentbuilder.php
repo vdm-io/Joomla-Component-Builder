@@ -2019,18 +2019,18 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Returns a GUIDv4 string
-	* 
-	* Thanks to Dave Pearson (and other)
-	* https://www.php.net/manual/en/function.com-create-guid.php#119168 
-	*
-	* Uses the best cryptographically secure method
-	* for all supported platforms with fallback to an older,
-	* less secure version.
-	*
-	* @param bool $trim
-	* @return string
-	*/
+	 * Returns a GUIDv4 string
+	 * 
+	 * Thanks to Dave Pearson (and other)
+	 * https://www.php.net/manual/en/function.com-create-guid.php#119168 
+	 *
+	 * Uses the best cryptographically secure method
+	 * for all supported platforms with fallback to an older,
+	 * less secure version.
+	 *
+	 * @param bool $trim
+	 * @return string
+	 */
 	public static function GUID ($trim = true)
 	{
 		// Windows
@@ -2071,15 +2071,58 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Validate the Globally Unique Identifier
-	*
-	* Thanks to Lewie
-	* https://stackoverflow.com/a/1515456/1429677
-	*
-	* @param string $guid
-	* @return bool
-	*/
-	public static function validGUID ($guid)
+	 * Validate the Globally Unique Identifier ( and check if table already has this identifier)
+	 *
+	 * @param string $guid
+	 * @param string $table
+	 * @param int      $id
+	 * @return bool
+	 */
+	public static function validGUID ($guid, $table = null, $id = 0)
+	{
+		// check if we have a string
+		if (self::validateGUID($guid))
+		{
+			// check if table already has this identifier
+			if (self::checkString($table))
+			{
+				// Get the database object and a new query object.
+				$db = \JFactory::getDbo();
+				$query = $db->getQuery(true);
+				$query->select('COUNT(*)')
+					->from('#__componentbuilder_' . (string) $table)
+					->where($db->quoteName('guid') . ' = ' . $db->quote($guid));
+
+				// remove this item from the list
+				if ($id > 0)
+				{
+					$query->where($db->quoteName('id') . ' <> ' . (int) $id);
+				}
+
+				// Set and query the database.
+				$db->setQuery($query);
+				$duplicate = (bool) $db->loadResult();
+
+				if ($duplicate)
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Validate the Globally Unique Identifier
+	 *
+	 * Thanks to Lewie
+	 * https://stackoverflow.com/a/1515456/1429677
+	 *
+	 * @param string $guid
+	 * @return bool
+	 */
+	protected static function validateGUID ($guid)
 	{
 		// check if we have a string
 		if (self::checkString($guid))

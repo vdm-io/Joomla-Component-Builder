@@ -8973,9 +8973,11 @@ class com_componentbuilderInstallerScript
 					}
 				}
 			}
-			// target version less then 2.11.0
-			if (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] < 11)
+			// target version less then or equal to 2.11.1
+			if (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && ($this->JCBversion[1] < 11 || ($this->JCBversion[1] == 11 && $this->JCBversion[2] <= 1)))
 			{
+				// keep track of used
+				$usedGUID = array();
 				/**
 				* Returns a GUIDv4 string
 				* 
@@ -9037,12 +9039,29 @@ class com_componentbuilderInstallerScript
 				* @param string $guid
 				* @return bool
 				*/
-				function validGUID ($guid)
+				function validateGUID ($guid)
 				{
 					// check if we have a string
 					if (ComponentbuilderHelper::checkString($guid))
 					{
 						return preg_match("/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i", $guid);
+					}
+					return false;
+				}
+
+				/**
+				* Validate the Globally Unique Identifier
+				*
+				* @param string $guid
+				* @return bool
+				*/
+				function validGUID ($guid, &$usedGUID)
+				{
+					// check if we have a string
+					if (validateGUID($guid) && !isset($usedGUID[$guid]))
+					{
+						$usedGUID[$guid] = true;
+						return true;
 					}
 					return false;
 				}
@@ -9077,10 +9096,14 @@ class com_componentbuilderInstallerScript
 					$db->execute();
 					if ($db->getNumRows())
 					{
+						// keep track of used
+						$usedGUID = array();
+						// get the rows
 						$rows = $db->loadObjectList();
 						foreach ($rows as $row)
 						{
-							if (!validGUID($row->guid))
+							// load value not to use it again
+							if (!validGUID($row->guid, $usedGUID))
 							{
 								// Create a new query object.
 								$query = $db->getQuery(true);
@@ -9100,8 +9123,6 @@ class com_componentbuilderInstallerScript
 						}
 					}
 				}
-				// set a notice that this was done
-				$app->enqueueMessage('<p>Globally Unique Identifier <b>GUID</b> was added to <b>various tables</b> in JCB, thanks to <strong><a href="https://vdm.bz/get-jcb-pro-membership" target="_blank">PRO members</a></strong> contribution!</p>', 'Notice');
 			}
 			// check if this install has the libraries in the helper folder, if so remove it
 			$vendorPath = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/vendor';

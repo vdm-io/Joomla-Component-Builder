@@ -96,6 +96,13 @@ class Fields extends Structure
 	public $dbUniqueKeys = array();
 
 	/**
+	 * unique guid swtich
+	 *
+	 * @var    array
+	 */
+	public $dbUniqueGuid = array();
+
+	/**
 	 * keys for database field
 	 *
 	 * @var    array
@@ -3850,6 +3857,7 @@ class Fields extends Structure
 			$this->queryBuilder[$view_name_single][$name]['null_switch']
 				= $field['settings']->null_switch;
 			// set index types
+			$_guid = true;
 			if ($field['settings']->indexes == 1
 				&& !in_array(
 					$field['settings']->datatype, $textKeys
@@ -3857,6 +3865,11 @@ class Fields extends Structure
 			{
 				// build unique keys of this view for db
 				$this->dbUniqueKeys[$view_name_single][] = $name;
+				// prevent guid from being added twice
+				if ('guid' === $name)
+				{
+					$_guid = false;
+				}
 			}
 			elseif (($field['settings']->indexes == 2
 					|| (isset($field['alias'])
@@ -3867,6 +3880,11 @@ class Fields extends Structure
 			{
 				// build keys of this view for db
 				$this->dbKeys[$view_name_single][] = $name;
+			}
+			// special treatment for GUID
+			if ('guid' === $name && $_guid)
+			{
+				$this->dbUniqueGuid[$view_name_single] = true;
 			}
 		}
 		// set list switch

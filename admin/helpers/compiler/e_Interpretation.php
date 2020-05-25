@@ -17164,9 +17164,24 @@ class Interpretation extends Fields
 		if (isset($this->dbUniqueKeys[$view])
 			&& ComponentbuilderHelper::checkArray($this->dbUniqueKeys[$view]))
 		{
-			$fields[] = $this->_t(2) . "return array('" . implode(
-					"','", $this->dbUniqueKeys[$view]
-				) . "');";
+			// if guid should also be added
+			if (isset($this->dbUniqueGuid[$view]))
+			{
+				$fields[] = $this->_t(2) . "return array('" . implode(
+						"','", $this->dbUniqueKeys[$view]
+					) . "', 'guid');";
+			}
+			else
+			{
+				$fields[] = $this->_t(2) . "return array('" . implode(
+						"','", $this->dbUniqueKeys[$view]
+					) . "');";
+			}
+		}
+		// if only GUID is found
+		elseif (isset($this->dbUniqueGuid[$view]))
+		{
+			$fields[] = $this->_t(2) . "return array('guid');";
 		}
 		else
 		{

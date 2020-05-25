@@ -972,7 +972,7 @@ class ComponentbuilderModelClass_method extends JModelAdmin
 		$data['name'] = ComponentbuilderHelper::safeClassFunctionName($data['name']);
 
 		// Set the GUID if empty or not valid
-		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid']))
+		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid'], "class_method", $data['id']))
 		{
 			$data['guid'] = (string) ComponentbuilderHelper::GUID();
 		}

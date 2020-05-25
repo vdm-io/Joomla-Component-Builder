@@ -1148,7 +1148,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 
 
 		// Set the GUID if empty or not valid
-		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid']))
+		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid'], "dynamic_get", $data['id']))
 		{
 			$data['guid'] = (string) ComponentbuilderHelper::GUID();
 		}

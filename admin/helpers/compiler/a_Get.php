@@ -9149,6 +9149,8 @@ class Get
 				// set some placeholder for this plugin
 				$this->placeholders[$this->bbb . 'Plugin_name' . $this->ddd]
 					= $plugin->official_name;
+				$this->placeholders[$this->hhh . 'PLUGIN_NAME' . $this->hhh]
+					= $plugin->official_name;
 				$this->placeholders[$this->bbb . 'Plugin' . $this->ddd]
 					= ucfirst(
 					$plugin->code_name
@@ -9167,11 +9169,15 @@ class Get
 				);
 				$this->placeholders[$this->bbb . 'plugin.version' . $this->ddd]
 					= $plugin->plugin_version;
+				$this->placeholders[$this->hhh . 'VERSION' . $this->hhh]
+					= $plugin->plugin_version;
 				$this->placeholders[$this->bbb . 'plugin_version' . $this->ddd]
 					= str_replace(
 					'.', '_', $plugin->plugin_version
 				);
-				// set description (TODO) add description field to plugin
+				// set description
+				$this->placeholders[$this->hhh . 'DESCRIPTION' . $this->hhh]
+					= '';
 				if (!isset($plugin->description)
 					|| !ComponentbuilderHelper::checkString(
 						$plugin->description
@@ -9189,6 +9195,9 @@ class Get
 						$plugin->key, $plugin->lang_prefix . '_DESCRIPTION',
 						$plugin->description
 					);
+					// set description
+					$this->placeholders[$this->hhh . 'DESCRIPTION' . $this->hhh]
+						= $plugin->description;
 					$plugin->description = '<p>' . $plugin->description
 						. '</p>';
 				}
@@ -9672,6 +9681,15 @@ class Get
 					$this->placeholders[$this->bbb . 'plugin_version'
 					. $this->ddd]
 				);
+				unset(
+					$this->placeholders[$this->hhh . 'VERSION'
+					. $this->hhh]);
+				unset(
+					$this->placeholders[$this->hhh . 'DESCRIPTION'
+					. $this->hhh]);
+				unset(
+					$this->placeholders[$this->hhh . 'PLUGIN_NAME'
+					. $this->hhh]);
 
 				$this->joomlaPlugins[$id] = $plugin;
 

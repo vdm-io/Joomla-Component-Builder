@@ -1048,7 +1048,7 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 
 
 		// Set the GUID if empty or not valid
-		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid']))
+		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid'], "library", $data['id']))
 		{
 			$data['guid'] = (string) ComponentbuilderHelper::GUID();
 		}
