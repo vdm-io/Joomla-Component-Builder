@@ -12,6 +12,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Joomla_plugin_files_folders_urls Controller
  */
