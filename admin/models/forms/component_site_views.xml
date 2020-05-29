@@ -103,7 +103,7 @@
 			type="subform"
 			name="addsite_views"
 			label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_ADDSITE_VIEWS_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
+			layout="repeatablejcb"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_ADDSITE_VIEWS_DESCRIPTION"
 			default=""

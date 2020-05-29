@@ -419,8 +419,8 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 	{
 		if (ComponentbuilderHelper::checkArray($target_headers))
 		{
-			// make sure the file is loaded		
-			JLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');
+			// make sure the file is loaded
+			ComponentbuilderHelper::composerAutoload('phpspreadsheet');
 			$jinput = JFactory::getApplication()->input;
 			foreach($target_headers as $header)
 			{
@@ -429,14 +429,14 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 			// set the data
 			if(isset($package['dir']))
 			{
-				$inputFileType = PHPExcel_IOFactory::identify($package['dir']);
-				$excelReader = PHPExcel_IOFactory::createReader($inputFileType);
+				$inputFileType = IOFactory::identify($package['dir']);
+				$excelReader = IOFactory::createReader($inputFileType);
 				$excelReader->setReadDataOnly(true);
 				$excelObj = $excelReader->load($package['dir']);
 				$data['array'] = $excelObj->getActiveSheet()->toArray(null, true,true,true);
 				$excelObj->disconnectWorksheets();
 				unset($excelObj);
-				return $this->save($data,$table);
+				return $this->save($data, $table);
 			}
 		}
 		return false;

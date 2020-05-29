@@ -13,9 +13,9 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * Componentbuilder Field Component Category Tree
+ * Componentbuilder Fieldtype Component Category Tree
  */
-class ComponentbuilderFieldsCategories extends JCategories
+class ComponentbuilderFieldtypeCategories extends JCategories
 {
 	/**
 	 * Class constructor
@@ -25,8 +25,8 @@ class ComponentbuilderFieldsCategories extends JCategories
 	 */
 	public function __construct($options = array())
 	{
-		$options['table'] = '#__componentbuilder_field';
-		$options['extension'] = 'com_componentbuilder.fields';
+		$options['table'] = '#__componentbuilder_fieldtype';
+		$options['extension'] = 'com_componentbuilder.fieldtype';
 
 		parent::__construct($options);
 	}

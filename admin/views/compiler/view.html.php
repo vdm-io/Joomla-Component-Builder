@@ -59,6 +59,10 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		parent::display($tpl);
 	}
 
+	// These are subform layouts used in JCB
+	// JLayoutHelper::render('sectionjcb', [?]); // added to ensure the layout is loaded
+	// JLayoutHelper::render('repeatablejcb', [?]); // added to ensure the layout is loaded
+
 	public function setForm()
 	{		
 		if(ComponentbuilderHelper::checkArray($this->Components))
@@ -192,8 +196,30 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			$this->document->addScript(JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		}
 
+		// Load the script to find all uikit components needed.
+		if ($uikit != 2)
+		{
+			// Set the default uikit components in this view.
+			$uikitComp = array();
+			$uikitComp[] = 'data-uk-grid';
+
+			// Get field uikit components needed in this view.
+			$uikitFieldComp = $this->get('UikitComp');
+			if (isset($uikitFieldComp) && ComponentbuilderHelper::checkArray($uikitFieldComp))
+			{
+				if (isset($uikitComp) && ComponentbuilderHelper::checkArray($uikitComp))
+				{
+					$uikitComp = array_merge($uikitComp, $uikitFieldComp);
+					$uikitComp = array_unique($uikitComp);
+				}
+				else
+				{
+					$uikitComp = $uikitFieldComp;
+				}
+			}
+		}
+
 		// Load the needed uikit components in this view.
-		$uikitComp = $this->get('UikitComp');
 		if ($uikit != 2 && isset($uikitComp) && ComponentbuilderHelper::checkArray($uikitComp))
 		{
 			// load just in case.

@@ -17461,24 +17461,24 @@ class Interpretation extends Fields
 			}
 			// load the category helper details in not already loaded
 			if (!isset(
-				$this->fileContentDynamic['category' . $otherViews][$this->hhh
+				$this->fileContentDynamic['category' . $otherView][$this->hhh
 				. 'view' . $this->hhh]
 			))
 			{
 				// lets also set the category helper for this view
-				$target = array('site' => 'category' . $viewName_list);
+				$target = array('site' => 'category' . $otherView);
 				$this->buildDynamique($target, 'category');
 				// insure the file gets updated
-				$this->fileContentDynamic['category' . $otherViews][$this->hhh
+				$this->fileContentDynamic['category' . $otherView][$this->hhh
 				. 'view' . $this->hhh]
 					= $otherView;
-				$this->fileContentDynamic['category' . $otherViews][$this->hhh
+				$this->fileContentDynamic['category' . $otherView][$this->hhh
 				. 'View' . $this->hhh]
 					= ucfirst($otherView);
-				$this->fileContentDynamic['category' . $otherViews][$this->hhh
+				$this->fileContentDynamic['category' . $otherView][$this->hhh
 				. 'views' . $this->hhh]
 					= $otherViews;
-				$this->fileContentDynamic['category' . $otherViews][$this->hhh
+				$this->fileContentDynamic['category' . $otherView][$this->hhh
 				. 'Views' . $this->hhh]
 					= ucfirst($otherViews);
 				// set script to global helper file
@@ -17486,12 +17486,12 @@ class Interpretation extends Fields
 				$includeHelper[] = "\n//" . $this->setLine(__LINE__)
 					. "Insure this view category file is loaded.";
 				$includeHelper[] = "\$classname = '" . ucfirst($component)
-					. ucfirst($viewName_list) . "Categories';";
+					. ucfirst($otherView) . "Categories';";
 				$includeHelper[] = "if (!class_exists(\$classname))";
 				$includeHelper[] = "{";
 				$includeHelper[] = $this->_t(1)
 					. "\$path = JPATH_SITE . '/components/com_" . $component
-					. "/helpers/category" . $viewName_list . ".php';";
+					. "/helpers/category" . $otherView . ".php';";
 				$includeHelper[] = $this->_t(1) . "if (is_file(\$path))";
 				$includeHelper[] = $this->_t(1) . "{";
 				$includeHelper[] = $this->_t(2) . "include_once \$path;";

@@ -103,7 +103,7 @@
 			type="subform"
 			name="addconditions"
 			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADDCONDITIONS_LABEL"
-			layout="joomla.form.field.subform.repeatable"
+			layout="repeatablejcb"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_ADDCONDITIONS_DESCRIPTION"
 			default=""

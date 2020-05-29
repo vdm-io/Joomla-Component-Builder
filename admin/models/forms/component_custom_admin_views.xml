@@ -103,7 +103,7 @@
 			type="subform"
 			name="addcustom_admin_views"
 			label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_ADDCUSTOM_ADMIN_VIEWS_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
+			layout="repeatablejcb"
 			multiple="true"
 			default=""
 			icon="list">

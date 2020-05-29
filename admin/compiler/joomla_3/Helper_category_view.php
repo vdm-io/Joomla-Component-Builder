@@ -20,7 +20,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * ###Component### ###View### Component Category Tree
  */
-class ###Component######Views###Categories extends JCategories
+class ###Component######View###Categories extends JCategories
 {
 	/**
 	 * Class constructor
@@ -31,7 +31,7 @@ class ###Component######Views###Categories extends JCategories
 	public function __construct($options = array())
 	{
 		$options['table'] = '#__###component###_###view###';
-		$options['extension'] = 'com_###component###.###views###';
+		$options['extension'] = 'com_###component###.###view###';
 
 		parent::__construct($options);
 	}

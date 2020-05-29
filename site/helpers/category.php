@@ -17,20 +17,20 @@ defined('_JEXEC') or die('Restricted access');
  */
 
 //Insure this view category file is loaded.
-$classname = 'ComponentbuilderFieldsCategories';
+$classname = 'ComponentbuilderFieldCategories';
 if (!class_exists($classname))
 {
-	$path = JPATH_SITE . '/components/com_componentbuilder/helpers/categoryfields.php';
+	$path = JPATH_SITE . '/components/com_componentbuilder/helpers/categoryfield.php';
 	if (is_file($path))
 	{
 		include_once $path;
 	}
 }
 //Insure this view category file is loaded.
-$classname = 'ComponentbuilderFieldtypesCategories';
+$classname = 'ComponentbuilderFieldtypeCategories';
 if (!class_exists($classname))
 {
-	$path = JPATH_SITE . '/components/com_componentbuilder/helpers/categoryfieldtypes.php';
+	$path = JPATH_SITE . '/components/com_componentbuilder/helpers/categoryfieldtype.php';
 	if (is_file($path))
 	{
 		include_once $path;

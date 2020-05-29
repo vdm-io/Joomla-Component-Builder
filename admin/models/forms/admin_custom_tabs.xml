@@ -103,7 +103,7 @@
 			type="subform"
 			name="tabs"
 			label="COM_COMPONENTBUILDER_ADMIN_CUSTOM_TABS_TABS_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
+			layout="joomla.form.field.subform.repeatable"
 			multiple="true"
 			buttons="add,remove,move"
 			description="COM_COMPONENTBUILDER_ADMIN_CUSTOM_TABS_TABS_DESCRIPTION"
