@@ -6033,12 +6033,12 @@ abstract class ComponentbuilderHelper
 		if ($user->authorise('field.access', 'com_componentbuilder') && $user->authorise('field.submenu', 'com_componentbuilder'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_FIELDS'), 'index.php?option=com_componentbuilder&view=fields', $submenu === 'fields');
-			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fields', $submenu === 'categories.fields');
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.field', $submenu === 'categories.field');
 		}
 		if ($user->authorise('fieldtype.access', 'com_componentbuilder') && $user->authorise('fieldtype.submenu', 'com_componentbuilder'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_FIELDTYPES'), 'index.php?option=com_componentbuilder&view=fieldtypes', $submenu === 'fieldtypes');
-			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPES_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fieldtypes', $submenu === 'categories.fieldtypes');
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPES_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fieldtype', $submenu === 'categories.fieldtype');
 		}
 		if ($user->authorise('language_translation.access', 'com_componentbuilder') && $user->authorise('language_translation.submenu', 'com_componentbuilder'))
 		{

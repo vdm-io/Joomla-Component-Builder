@@ -227,8 +227,7 @@
 			type="category"
 			name="catid"
 			label="COM_COMPONENTBUILDER_FIELD_CATID_LABEL"
-			extension="com_componentbuilder.fields"
-			default=""
+			extension="com_componentbuilder.field"
 			description="COM_COMPONENTBUILDER_FIELD_CATID_DESCRIPTION"
 			class="inputbox"
 		/>

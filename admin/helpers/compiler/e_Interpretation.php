@@ -8476,19 +8476,21 @@ class Interpretation extends Fields
 
 	public function getCategoryContentType($view, $views, $component)
 	{
+		// get the other view
+		$otherView = $this->catCodeBuilder[$view]['view'];
 		$category  = $this->catCodeBuilder[$view]['code'];
 		$Component = ComponentbuilderHelper::safeString($component, 'F');
 		$View      = ComponentbuilderHelper::safeString($view, 'F');
 		// build uninstall script for content types
 		$this->uninstallScriptBuilder[$View . ' ' . $category] = 'com_'
-			. $component . '.' . $views . '.category';
+			. $component . '.' . $otherView . '.category';
 		$this->uninstallScriptContent[$View . ' ' . $category] = $View . ' '
 			. $category;
 		// set the title
 		$array['type_title'] = $Component . ' ' . $View . ' '
 			. ComponentbuilderHelper::safeString($category, 'F');
 		// set the alias
-		$array['type_alias'] = 'com_' . $component . '.' . $views . '.category';
+		$array['type_alias'] = 'com_' . $component . '.' . $otherView . '.category';
 		// set the table
 		$array['table']
 			= '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
@@ -11450,13 +11452,10 @@ class Interpretation extends Fields
 		// if to be linked
 		if ($item['type'] === 'category' && !$item['title'])
 		{
-			// get the other view
-			$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
-
 			// return the link to category
 			return 'index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->'
-				. $item['code'] . '; ?>&extension=com_'
-				. $this->componentCodeName . '.' . $otherViews;
+				. $item['code'] . '; ?>&extension='
+				. $this->categoryBuilder[$viewName_list]['extension'];
 		}
 		elseif ($item['type'] === 'user' && !$item['title'])
 		{
@@ -11517,11 +11516,10 @@ class Interpretation extends Fields
 		if ($item['type'] === 'category' && !$item['title'])
 		{
 			// get the other view
-			$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
-
+			$otherView = $this->catCodeBuilder[$viewName_single]['view'];
 			// return the authority to category
 			return $user . "->authorise('core.edit', 'com_"
-				. $this->componentCodeName . "." . $otherViews
+				. $this->componentCodeName . "." . $otherView
 				. ".category.' . (int)\$item->" . $item['code'] . ")";
 		}
 		elseif ($item['type'] === 'user' && !$item['title'])
@@ -17459,6 +17457,10 @@ class Interpretation extends Fields
 				$otherViews = $viewName_list;
 				$otherView  = $viewName_single;
 			}
+			// set the OtherView value
+			$this->fileContentDynamic['category' . $otherView][$this->hhh
+			. 'otherview' . $this->hhh]
+				= $otherView;
 			// load the category helper details in not already loaded
 			if (!isset(
 				$this->fileContentDynamic['category' . $otherView][$this->hhh
@@ -17593,7 +17595,7 @@ class Interpretation extends Fields
 				. " If the category has been passed in the URL check it.";
 			$allow[] = $this->_t(3)
 				. "\$allow = \$user->authorise('core.create', \$this->option . '."
-				. $otherViews . ".category.' . \$categoryId);";
+				. $otherView . ".category.' . \$categoryId);";
 			$allow[] = $this->_t(2) . "}";
 			$allow[] = PHP_EOL . $this->_t(2) . "if (\$allow === null)";
 			$allow[] = $this->_t(2) . "{";
@@ -18168,6 +18170,8 @@ class Interpretation extends Fields
 				) . " Check for existing item.";
 			$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Modify the form based on Edit State access controls.";
+			// get the other view
+			$otherView = $this->catCodeBuilder[$viewName_single]['view'];
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.state'])
 				&& isset($this->permissionBuilder[$core['core.edit.state']])
@@ -18185,7 +18189,7 @@ class Interpretation extends Fields
 					. $viewName_single . ".' . (int) \$id))";
 				$getForm[] = $this->_t(3)
 					. "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $viewName_list
+					. $component . "." . $otherView
 					. ".category.' . (int) \$catid))";
 				$getForm[] = $this->_t(3)
 					. "|| (\$id == 0 && !\$user->authorise('"
@@ -18199,7 +18203,7 @@ class Interpretation extends Fields
 					. $component . "." . $viewName_single . ".' . (int) \$id))";
 				$getForm[] = $this->_t(3)
 					. "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $viewName_list
+					. $component . "." . $otherView
 					. ".category.' . (int) \$catid))";
 				$getForm[] = $this->_t(3)
 					. "|| (\$id == 0 && !\$user->authorise('core.edit.state', 'com_"
@@ -18728,7 +18732,7 @@ class Interpretation extends Fields
 			$allow[] = PHP_EOL . $this->_t(3) . "\$user = JFactory::getUser();";
 			$allow[] = $this->_t(3)
 				. "\$allow = \$user->authorise('core.delete', 'com_"
-				. $component . "." . $otherViews
+				. $component . "." . $otherView
 				. ".category.' . (int) \$record->catid);";
 			// check if the item has permissions.
 			if ($coreLoad
@@ -18882,7 +18886,7 @@ class Interpretation extends Fields
 			$allow[] = $this->_t(2) . "{";
 			$allow[] = $this->_t(3)
 				. "\$catpermission = \$user->authorise('core.edit.state', 'com_"
-				. $component . "." . $otherViews
+				. $component . "." . $otherView
 				. ".category.' . (int) \$record->catid);";
 			$allow[] = $this->_t(3)
 				. "if (!\$catpermission && !is_null(\$catpermission))";

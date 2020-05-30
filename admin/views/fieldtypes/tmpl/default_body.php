@@ -77,8 +77,8 @@ $edit = "index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.ed
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if ($this->user->authorise('core.edit', 'com_componentbuilder.fieldtypes.category.' . (int)$item->catid)): ?>
-					<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.fieldtypes"><?php echo $this->escape($item->category_title); ?></a>
+				<?php if ($this->user->authorise('core.edit', 'com_componentbuilder.fieldtype.category.' . (int)$item->catid)): ?>
+					<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.fieldtype"><?php echo $this->escape($item->category_title); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->category_title); ?>
 				<?php endif; ?>

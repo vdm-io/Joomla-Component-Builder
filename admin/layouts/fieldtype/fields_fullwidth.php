@@ -118,8 +118,8 @@ $can = ComponentbuilderHelper::getActions('field');
 			<?php echo JText::_($item->store); ?>
 		</td>
 		<td>
-			<?php if ($user->authorise('core.edit', 'com_componentbuilder.fields.category.' . (int)$item->catid)): ?>
-				<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.fields"><?php echo $displayData->escape($item->category_title); ?></a>
+			<?php if ($user->authorise('core.edit', 'com_componentbuilder.field.category.' . (int)$item->catid)): ?>
+				<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.field"><?php echo $displayData->escape($item->category_title); ?></a>
 			<?php else: ?>
 				<?php echo $displayData->escape($item->category_title); ?>
 			<?php endif; ?>

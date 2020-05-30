@@ -1516,7 +1516,7 @@ class com_componentbuilderInstallerScript
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
 		// Where Field catid alias is found
-		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fields.category') );
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.field.category') );
 		$db->setQuery($query);
 		// Execute query to see if alias is found
 		$db->execute();
@@ -1527,7 +1527,7 @@ class com_componentbuilderInstallerScript
 			// Since there are load the needed  field_catid type ids
 			$field_catid_ids = $db->loadColumn();
 			// Remove Field catid from the content type table
-			$field_catid_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fields.category') );
+			$field_catid_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.field.category') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__content_types'));
@@ -1538,11 +1538,11 @@ class com_componentbuilderInstallerScript
 			if ($field_catid_done)
 			{
 				// If succesfully remove Field catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fields.category) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Field catid items from the contentitem tag map table
-			$field_catid_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fields.category') );
+			$field_catid_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.field.category') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__contentitem_tag_map'));
@@ -1553,11 +1553,11 @@ class com_componentbuilderInstallerScript
 			if ($field_catid_done)
 			{
 				// If succesfully remove Field catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fields.category) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Field catid items from the ucm content table
-			$field_catid_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.fields.category') );
+			$field_catid_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.field.category') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__ucm_content'));
@@ -1568,7 +1568,7 @@ class com_componentbuilderInstallerScript
 			if ($field_catid_done)
 			{
 				// If succesfully remove Field catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fields.category) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Field catid items are cleared from DB
@@ -1688,7 +1688,7 @@ class com_componentbuilderInstallerScript
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
 		// Where Fieldtype catid alias is found
-		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fieldtypes.category') );
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fieldtype.category') );
 		$db->setQuery($query);
 		// Execute query to see if alias is found
 		$db->execute();
@@ -1699,7 +1699,7 @@ class com_componentbuilderInstallerScript
 			// Since there are load the needed  fieldtype_catid type ids
 			$fieldtype_catid_ids = $db->loadColumn();
 			// Remove Fieldtype catid from the content type table
-			$fieldtype_catid_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fieldtypes.category') );
+			$fieldtype_catid_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fieldtype.category') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__content_types'));
@@ -1710,11 +1710,11 @@ class com_componentbuilderInstallerScript
 			if ($fieldtype_catid_done)
 			{
 				// If succesfully remove Fieldtype catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtypes.category) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Fieldtype catid items from the contentitem tag map table
-			$fieldtype_catid_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fieldtypes.category') );
+			$fieldtype_catid_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fieldtype.category') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__contentitem_tag_map'));
@@ -1725,11 +1725,11 @@ class com_componentbuilderInstallerScript
 			if ($fieldtype_catid_done)
 			{
 				// If succesfully remove Fieldtype catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtypes.category) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Fieldtype catid items from the ucm content table
-			$fieldtype_catid_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.fieldtypes.category') );
+			$fieldtype_catid_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.fieldtype.category') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__ucm_content'));
@@ -1740,7 +1740,7 @@ class com_componentbuilderInstallerScript
 			if ($fieldtype_catid_done)
 			{
 				// If succesfully remove Fieldtype catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtypes.category) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Fieldtype catid items are cleared from DB
@@ -5890,6 +5890,75 @@ class com_componentbuilderInstallerScript
 						JFile::delete($wiki_menu);
 					}
 				}
+				// target version less then or equal to 2.11.2
+				if (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && ($this->JCBversion[1] < 11 || ($this->JCBversion[1] == 11 && $this->JCBversion[2] <= 2)))
+				{
+					// we need to make a database correction for the field categories and the fieldtype categories
+					$fix_categories = array(
+						'com_componentbuilder.fields' => 'com_componentbuilder.field',
+						'com_componentbuilder.fieldtypes' => 'com_componentbuilder.fieldtype'
+					);
+					// targeted tables (to fix all places categories are mapped into Joomla)
+					$fix_tables = array(
+						'content_types' => array(
+							'id' => 'type_id',
+							'key' => 'type_alias',
+							'suffix' => '.category'),
+						'contentitem_tag_map' => array(
+							'id' => 'type_id',
+							'key' => 'type_alias',
+							'suffix' => '.category'),
+						'ucm_content' => array(
+							'id' => 'core_content_id',
+							'key' => 'core_type_alias',
+							'suffix' => '.category'),
+						'categories' => array(
+							'id' => 'id',
+							'key' => 'extension',
+							'suffix' => '')
+					);
+
+					// the script that does the work
+					foreach ($fix_categories as $fix => $category)
+					{
+						// loop over the targeted tables
+						foreach ($fix_tables as $_table => $_update)
+						{
+							// Create a new query object.
+							$query = $db->getQuery(true);
+							// get all type_ids
+							$query->select($db->quoteName($_update['id']));
+							$query->from($db->quoteName('#__' . $_table));
+							$query->where( $db->quoteName($_update['key']) . ' = ' . $db->quote($fix . $_update['suffix']));
+							// Reset the query using our newly populated query object.
+							$db->setQuery($query);
+							$db->execute();
+							if ($db->getNumRows())
+							{
+
+								// all these must be updated
+								$ids = $db->loadColumn();
+								// Fields to update.
+								$fields = array(
+									$db->quoteName($_update['key']) . ' = ' . $db->quote($category . $_update['suffix'])
+								);
+								// Conditions for which records should be updated.
+								$conditions = array(
+									$db->quoteName($_update['id']) . ' IN (' . implode(', ', $ids) . ')'
+								);
+								$query->update($db->quoteName('#__' . $_table))->set($fields)->where($conditions);
+								$db->setQuery($query);
+								$result = $db->execute();
+								// on success
+								if ($result)
+								{
+									$app->enqueueMessage("<p>Updated <b>#__$_table - " . $_update['key'] . "</b> from <b>$fix</b>" . $_update['suffix'] . " to <b>$category</b>" . $_update['suffix'] . "!</p>", 'Notice');
+								}
+
+							}
+						}
+					}
+				}
 			}
 
 		}
@@ -6136,7 +6205,7 @@ class com_componentbuilderInstallerScript
 			// Create the field category content type object.
 			$field_category = new stdClass();
 			$field_category->type_title = 'Componentbuilder Field Catid';
-			$field_category->type_alias = 'com_componentbuilder.fields.category';
+			$field_category->type_alias = 'com_componentbuilder.field.category';
 			$field_category->table = '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
 			$field_category->field_mappings = '{"common":{"core_content_item_id":"id","core_title":"title","core_state":"published","core_alias":"alias","core_created_time":"created_time","core_modified_time":"modified_time","core_body":"description", "core_hits":"hits","core_publish_up":"null","core_publish_down":"null","core_access":"access", "core_params":"params", "core_featured":"null", "core_metadata":"metadata", "core_language":"language", "core_images":"null", "core_urls":"null", "core_version":"version", "core_ordering":"null", "core_metakey":"metakey", "core_metadesc":"metadesc", "core_catid":"parent_id", "core_xreference":"null", "asset_id":"asset_id"}, "special":{"parent_id":"parent_id","lft":"lft","rgt":"rgt","level":"level","path":"path","extension":"extension","note":"note"}}';
 			$field_category->router = 'ComponentbuilderHelperRoute::getCategoryRoute';
@@ -6160,7 +6229,7 @@ class com_componentbuilderInstallerScript
 			// Create the fieldtype category content type object.
 			$fieldtype_category = new stdClass();
 			$fieldtype_category->type_title = 'Componentbuilder Fieldtype Catid';
-			$fieldtype_category->type_alias = 'com_componentbuilder.fieldtypes.category';
+			$fieldtype_category->type_alias = 'com_componentbuilder.fieldtype.category';
 			$fieldtype_category->table = '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
 			$fieldtype_category->field_mappings = '{"common":{"core_content_item_id":"id","core_title":"title","core_state":"published","core_alias":"alias","core_created_time":"created_time","core_modified_time":"modified_time","core_body":"description", "core_hits":"hits","core_publish_up":"null","core_publish_down":"null","core_access":"access", "core_params":"params", "core_featured":"null", "core_metadata":"metadata", "core_language":"language", "core_images":"null", "core_urls":"null", "core_version":"version", "core_ordering":"null", "core_metakey":"metakey", "core_metadesc":"metadesc", "core_catid":"parent_id", "core_xreference":"null", "asset_id":"asset_id"}, "special":{"parent_id":"parent_id","lft":"lft","rgt":"rgt","level":"level","path":"path","extension":"extension","note":"note"}}';
 			$fieldtype_category->router = 'ComponentbuilderHelperRoute::getCategoryRoute';
@@ -7850,7 +7919,7 @@ class com_componentbuilderInstallerScript
 			// Create the field category content type object.
 			$field_category = new stdClass();
 			$field_category->type_title = 'Componentbuilder Field Catid';
-			$field_category->type_alias = 'com_componentbuilder.fields.category';
+			$field_category->type_alias = 'com_componentbuilder.field.category';
 			$field_category->table = '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
 			$field_category->field_mappings = '{"common":{"core_content_item_id":"id","core_title":"title","core_state":"published","core_alias":"alias","core_created_time":"created_time","core_modified_time":"modified_time","core_body":"description", "core_hits":"hits","core_publish_up":"null","core_publish_down":"null","core_access":"access", "core_params":"params", "core_featured":"null", "core_metadata":"metadata", "core_language":"language", "core_images":"null", "core_urls":"null", "core_version":"version", "core_ordering":"null", "core_metakey":"metakey", "core_metadesc":"metadesc", "core_catid":"parent_id", "core_xreference":"null", "asset_id":"asset_id"}, "special":{"parent_id":"parent_id","lft":"lft","rgt":"rgt","level":"level","path":"path","extension":"extension","note":"note"}}';
 			$field_category->router = 'ComponentbuilderHelperRoute::getCategoryRoute';
@@ -7908,7 +7977,7 @@ class com_componentbuilderInstallerScript
 			// Create the fieldtype category content type object.
 			$fieldtype_category = new stdClass();
 			$fieldtype_category->type_title = 'Componentbuilder Fieldtype Catid';
-			$fieldtype_category->type_alias = 'com_componentbuilder.fieldtypes.category';
+			$fieldtype_category->type_alias = 'com_componentbuilder.fieldtype.category';
 			$fieldtype_category->table = '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
 			$fieldtype_category->field_mappings = '{"common":{"core_content_item_id":"id","core_title":"title","core_state":"published","core_alias":"alias","core_created_time":"created_time","core_modified_time":"modified_time","core_body":"description", "core_hits":"hits","core_publish_up":"null","core_publish_down":"null","core_access":"access", "core_params":"params", "core_featured":"null", "core_metadata":"metadata", "core_language":"language", "core_images":"null", "core_urls":"null", "core_version":"version", "core_ordering":"null", "core_metakey":"metakey", "core_metadesc":"metadesc", "core_catid":"parent_id", "core_xreference":"null", "asset_id":"asset_id"}, "special":{"parent_id":"parent_id","lft":"lft","rgt":"rgt","level":"level","path":"path","extension":"extension","note":"note"}}';
 			$fieldtype_category->router = 'ComponentbuilderHelperRoute::getCategoryRoute';

@@ -4112,7 +4112,7 @@ class Fields extends Structure
 		{
 			$this->setScriptMediaSwitch[$typeName] = $typeName;
 		}
-		// setup gategory for this view
+		// setup category for this view
 		if ($dbSwitch && $typeName === 'category')
 		{
 			if (isset($this->catOtherName[$view_name_list])
@@ -4134,13 +4134,37 @@ class Fields extends Structure
 					$field['settings']->xml, 'extension="', '"'
 				), $this->placeholders
 			);
-			// if they left out the extention for some reason
+			// if they left out the extension for some reason
 			if (!ComponentbuilderHelper::checkString($_extension))
 			{
 				$_extension = 'com_' . $this->componentCodeName . '.'
 					. $otherView;
 			}
-			// load the category builder
+			// check the context (does our target match)
+			if (strpos($_extension, '.') !== false)
+			{
+				$target_view = trim(explode('.', $_extension)[1]);
+				// from my understanding the target extension view and the otherView must align
+				// so I will here check that it does, and if not raise an error message to fix this
+				if ($target_view !== $otherView)
+				{
+					$target_extension = trim(explode('.', $_extension)[0]);
+					$correction = $target_extension . '.' . $otherView;
+					$this->app->enqueueMessage(
+						JText::sprintf('<hr /><h3>Category targeting view mismatch</h3>
+								<a>The <a href="index.php?option=com_componentbuilder&view=fields&task=field.edit&id=%s" target="_blank" title="open field">
+								category field</a> in <b>(%s) admin view</b> has a mismatching target view.
+								<br />To correct the mismatch, the <b>extension</b> value <code>%s</code> in the <a href="index.php?option=com_componentbuilder&view=fields&task=field.edit&id=%s" target="_blank" title="open category field">
+								field</a> must be changed to <code>%s</code>
+								for <a href="https://github.com/vdm-io/Joomla-Component-Builder/issues/561" target="_blank" title="view issue on gitHub">
+								best category integration with Joomla</a>.
+								<br /><b>Please watch <a href="https://youtu.be/R4WQgcu6Xns" target="_blank" title="very important info on the topic">
+								this tutorial</a> before proceeding!!!</b>,
+								<a href="https://gist.github.com/Llewellynvdm/e053dc39ae3b2bf769c76a3e62c75b95" target="_blank" title="first watch the tutorial to understand how to use this code">code fix</a></p>', $field['field'], $view_name_single, $_extension, $field['field'], $correction), 'Error'
+					);
+				}
+			}
+			// load the category builder - TODO must move all to single view
 			$this->categoryBuilder[$view_name_list] = array('code'      => $name,
 			                                                'name'      => $listLangName,
 			                                                'extension' => $_extension);

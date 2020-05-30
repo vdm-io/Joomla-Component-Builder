@@ -449,7 +449,7 @@
 			type="category"
 			name="catid"
 			label="COM_COMPONENTBUILDER_FIELDTYPE_CATID_LABEL"
-			extension="com_componentbuilder.fieldtypes"
+			extension="com_componentbuilder.fieldtype"
 			default=""
 			description="COM_COMPONENTBUILDER_FIELDTYPE_CATID_DESCRIPTION"
 			class="inputbox"

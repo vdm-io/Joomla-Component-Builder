@@ -85,8 +85,8 @@ abstract class ComponentbuilderHelperRoute
 		}
 	
 		$views = array(
-			"com_componentbuilder.fields" => "field",
-			"com_componentbuilder.fieldtypes" => "fieldtype");
+			"com_componentbuilder.field" => "field",
+			"com_componentbuilder.fieldtype" => "fieldtype");
 		$view = $views[$category->extension];
        
 		if ($id < 1 || !($category instanceof JCategoryNode))
