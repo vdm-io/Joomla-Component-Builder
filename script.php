@@ -5898,6 +5898,7 @@ class com_componentbuilderInstallerScript
 						'com_componentbuilder.fields' => 'com_componentbuilder.field',
 						'com_componentbuilder.fieldtypes' => 'com_componentbuilder.fieldtype'
 					);
+
 					// targeted tables (to fix all places categories are mapped into Joomla)
 					$fix_tables = array(
 						'content_types' => array(
@@ -5917,7 +5918,6 @@ class com_componentbuilderInstallerScript
 							'key' => 'extension',
 							'suffix' => '')
 					);
-
 					// the script that does the work
 					foreach ($fix_categories as $fix => $category)
 					{
