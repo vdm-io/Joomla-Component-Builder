@@ -178,7 +178,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'joomla_componentTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('joomla_component.delete') || $this->canDo->get('joomla_component.edit.created_by') || $this->canDo->get('joomla_component.edit.state') || $this->canDo->get('joomla_component.edit.created')) : ?>
+	<?php if ($this->canDo->get('joomla_component.edit.created_by') || $this->canDo->get('joomla_component.edit.created') || $this->canDo->get('joomla_component.edit.state') || ($this->canDo->get('joomla_component.delete') && $this->canDo->get('joomla_component.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'publishing', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

@@ -18,6 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Language\Language;
+use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;###SITE_HELPER_CLASS_HEADER###
 

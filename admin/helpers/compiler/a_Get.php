@@ -1413,6 +1413,8 @@ class Get
 			? json_decode($component->addadmin_views, true) : null;
 		if (ComponentbuilderHelper::checkArray($component->addadmin_views))
 		{
+			$this->lang   = 'admin';
+			$this->target = 'admin';
 			// sort the views according to order
 			usort(
 				$component->addadmin_views, function ($a, $b) {
@@ -2923,6 +2925,10 @@ class Get
 						false,
 						$guiMapper
 					);
+
+					// check if we have template or layouts to load
+					$this->setTemplateAndLayoutData($view->{$scripter}, $name_single);
+
 					unset($view->{$scripter});
 				}
 			}
@@ -2953,6 +2959,9 @@ class Get
 							),
 							$guiMapper
 						);
+
+						// check if we have template or layouts to load
+						$this->setTemplateAndLayoutData($view->{$button_code_field}, $name_single);
 					}
 				}
 				// set the button array
@@ -3045,6 +3054,7 @@ class Get
 						$name_single,
 						$guiMapper
 					);
+
 					if ($addAjaxSite)
 					{
 						$this->setCustomScriptBuilder(
@@ -4988,6 +4998,8 @@ class Get
 			{
 				$script = $this->setGuiCodePlaceholder($script, $config);
 			}
+			// add base64 locking option of a string
+			$script = $this->setBase64LOCK($script);
 			// load the script
 			if ($first && $second && $third)
 			{
@@ -9851,7 +9863,7 @@ class Get
 	 */
 	protected function customCodeFactory(&$paths, &$today)
 	{
-		// we must first store the current woking directory
+		// we must first store the current working directory
 		$joomla  = getcwd();
 		$counter = array(1 => 0, 2 => 0);
 		// file types to get
@@ -10335,6 +10347,35 @@ class Get
 					. $this->db->quote($hashendtarget);
 			}
 		}
+	}
+
+	/**
+	 * Lock a string with bsae64 (basic)
+	 *
+	 * @param   string  $string  The code string
+	 *
+	 * @return  string
+	 *
+	 */
+	protected function setBase64LOCK($script)
+	{
+		if (strpos($script, 'LOCKBASE64((((') !== false)
+		{
+			// get the strings
+			$values = ComponentbuilderHelper::getAllBetween($script, 'LOCKBASE64((((', '))))');
+			$locker = array();
+			// convert them
+			foreach($values as $value)
+			{
+				$locker['LOCKBASE64((((' . $value . '))))'] = "base64_decode( preg_replace('/\s+/', ''," .
+					PHP_EOL . $this->_t(2) . "'" .
+					wordwrap(base64_encode($value), 64, PHP_EOL . $this->_t(2), true) .
+					"'));";
+			}
+			// update the script
+			return $this->setPlaceholders($script, $locker);
+		}
+		return $script;
 	}
 
 	/**

@@ -333,8 +333,8 @@ class ComponentbuilderModelClass_property extends JModelAdmin
 		}
 
 
-		// Only load the GUID if new item
-		if (0 == $id)
+		// Only load the GUID if new item (or empty)
+		if (0 == $id || !($val = $form->getValue('guid')))
 		{
 			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
 		}
@@ -963,8 +963,15 @@ class ComponentbuilderModelClass_property extends JModelAdmin
 		$data['name'] = ComponentbuilderHelper::safeClassFunctionName($data['name']);
 
 		// Set the GUID if empty or not valid
-		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid'], "class_property", $data['id']))
+		if (empty($data['guid']) && $data['id'] > 0)
 		{
+			// get the existing one
+			$data['guid'] = (string) ComponentbuilderHelper::getVar('class_property', $data['id'], 'id', 'guid');
+		}
+		// Set the GUID if empty or not valid
+		while (!ComponentbuilderHelper::validGUID($data['guid'], "class_property", $data['id']))
+		{
+			// must always be set
 			$data['guid'] = (string) ComponentbuilderHelper::GUID();
 		}
 

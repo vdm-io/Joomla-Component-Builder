@@ -63,7 +63,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'snippet_typeTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('snippet_type.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('snippet_type.edit.state') || $this->canDo->get('core.edit.created')) : ?>
+	<?php if ($this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.created') || $this->canDo->get('snippet_type.edit.state') || ($this->canDo->get('snippet_type.delete') && $this->canDo->get('snippet_type.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'snippet_typeTab', 'publishing', JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPE_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

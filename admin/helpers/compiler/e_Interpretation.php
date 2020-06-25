@@ -5260,7 +5260,10 @@ class Interpretation extends Fields
 				. " this is where you want to load your module position";
 			$addModule[] = $this->_t(3)
 				. "\$modules = JModuleHelper::getModules(\$position);";
-			$addModule[] = $this->_t(3) . "if (\$modules)";
+			$addModule[] = $this->_t(3) . "if ("
+				. $this->fileContentStatic[$this->hhh . 'Component'
+				. $this->hhh]
+				. "Helper::checkArray(\$modules, true))";
 			$addModule[] = $this->_t(3) . "{";
 			$addModule[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
 				. " set the place holder";
@@ -12622,10 +12625,11 @@ class Interpretation extends Fields
 		if ($items_one || $items_two)
 		{
 			// check if the item has permissions.
-			$publishingPer  = array();
-			$allToBeChekced = array('core.delete', 'core.edit.created_by',
-			                        'core.edit.state', 'core.edit.created');
-			foreach ($allToBeChekced as $core_permission)
+			$publishingPerOR  = array();
+			$allToBeChekcedOR = array('core.edit.created_by',
+			                          'core.edit.created',
+			                          'core.edit.state');
+			foreach ($allToBeChekcedOR as $core_permission)
 			{
 				if ($coreLoad && isset($core[$core_permission])
 					&& isset($this->permissionBuilder['global'][$core[$core_permission]])
@@ -12638,13 +12642,38 @@ class Interpretation extends Fields
 					))
 				{
 					// set permissions.
-					$publishingPer[] = "\$this->canDo->get('"
+					$publishingPerOR[] = "\$this->canDo->get('"
 						. $core[$core_permission] . "')";
 				}
 				else
 				{
 					// set permissions.
-					$publishingPer[] = "\$this->canDo->get('" . $core_permission
+					$publishingPerOR[] = "\$this->canDo->get('" . $core_permission
+						. "')";
+				}
+			}
+			$publishingPerAND  = array();
+			$allToBeChekcedAND = array('core.delete', 'core.edit.state');
+			foreach ($allToBeChekcedAND as $core_permission)
+			{
+				if ($coreLoad && isset($core[$core_permission])
+					&& isset($this->permissionBuilder['global'][$core[$core_permission]])
+					&& ComponentbuilderHelper::checkArray(
+						$this->permissionBuilder['global'][$core[$core_permission]]
+					)
+					&& in_array(
+						$view_name_single,
+						$this->permissionBuilder['global'][$core[$core_permission]]
+					))
+				{
+					// set permissions.
+					$publishingPerAND[] = "\$this->canDo->get('"
+						. $core[$core_permission] . "')";
+				}
+				else
+				{
+					// set permissions.
+					$publishingPerAND[] = "\$this->canDo->get('" . $core_permission
 						. "')";
 				}
 			}
@@ -12655,8 +12684,11 @@ class Interpretation extends Fields
 			{
 				$tabs .= $_customTabHTML;
 			}
+			// add the AND values to OR
+			$publishingPerOR[] = '(' . implode(' && ', $publishingPerAND) . ')';
+			// now build the complete showhide behaviour for the publishing area
 			$tabs .= PHP_EOL . PHP_EOL . $this->_t(1) . "<?php if (" . implode(
-					' || ', $publishingPer
+					' || ', $publishingPerOR
 				) . ") : ?>";
 			// set the default publishing tab
 			$tabs .= PHP_EOL . $this->_t(1)
@@ -20821,7 +20853,7 @@ class Interpretation extends Fields
 			// move the image to its place
 			JFile::copy(
 				JPATH_SITE . '/' . $path,
-				$imagePath . '/vdm-component.' . $type, '', true
+				$imagePath . '/vdm-component.' . $type
 			);
 			// now set the type to global for re-use
 			$this->componentImageType = $type;
@@ -21060,8 +21092,7 @@ class Interpretation extends Fields
 					}
 					// move the image to its place
 					JFile::copy(
-						JPATH_SITE . '/' . $path, $imagePath . '/' . $imageName,
-						'', true
+						JPATH_SITE . '/' . $path, $imagePath . '/' . $imageName
 					);
 				}
 			}

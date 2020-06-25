@@ -68,7 +68,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'placeholderTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('placeholder.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('placeholder.edit.state') || $this->canDo->get('core.edit.created')) : ?>
+	<?php if ($this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.created') || $this->canDo->get('placeholder.edit.state') || ($this->canDo->get('placeholder.delete') && $this->canDo->get('placeholder.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'placeholderTab', 'publishing', JText::_('COM_COMPONENTBUILDER_PLACEHOLDER_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

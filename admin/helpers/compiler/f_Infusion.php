@@ -1077,6 +1077,9 @@ class Infusion extends Interpretation
 				);
 			}
 
+			// setup the layouts
+			$this->setCustomViewLayouts();
+
 			// ADMIN_HELPER_CLASS_HEADER
 			$this->fileContentStatic[$this->hhh . 'ADMIN_HELPER_CLASS_HEADER'
 			. $this->hhh]
@@ -1760,6 +1763,7 @@ class Infusion extends Interpretation
 						      &$this->placeholders, &$this->hhh)
 					);
 				}
+
 				// setup the layouts
 				$this->setCustomViewLayouts();
 			}

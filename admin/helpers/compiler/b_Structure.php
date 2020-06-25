@@ -2556,7 +2556,8 @@ class Structure extends Get
 	public function moveFieldsRules($field, $path)
 	{
 		// check if we have a subform or repeatable field
-		if ($field['type_name'] === 'subform' || $field['type_name'] === 'repeatable')
+		if ($field['type_name'] === 'subform'
+			|| $field['type_name'] === 'repeatable')
 		{
 			// since we could have a custom field or rule inside
 			$this->moveMultiFieldsRules($field, $path);
@@ -2624,7 +2625,7 @@ class Structure extends Get
 	 * move the fields and Rules of multi fields
 	 *
 	 * @param   array   $multi_field  The field data
-	 * @param   string  $path   The path to move to
+	 * @param   string  $path         The path to move to
 	 *
 	 * @return void
 	 *
@@ -2632,13 +2633,19 @@ class Structure extends Get
 	protected function moveMultiFieldsRules($multi_field, $path)
 	{
 		// get the fields ids
-		$ids = array_map( 'trim', explode(',', ComponentbuilderHelper::getBetween($multi_field['settings']->xml, 'fields="', '"')));
+		$ids = array_map(
+			'trim', explode(
+			',', ComponentbuilderHelper::getBetween(
+			$multi_field['settings']->xml, 'fields="', '"'
+		)
+		)
+		);
 		if (ComponentbuilderHelper::checkArray($ids))
 		{
 			foreach ($ids as $id)
 			{
 				// setup the field
-				$field = array();
+				$field          = array();
 				$field['field'] = $id;
 				$this->setFieldDetails($field);
 				// move field and rules if needed
@@ -2835,10 +2842,24 @@ class Structure extends Get
 						{
 							$path = $details->path;
 						}
-						$zipPath = str_replace('c0mp0n3nt/', '', $path);
-						$path    = str_replace(
-							'c0mp0n3nt/', $this->componentPath . '/', $path
-						);
+						// make sure we have component to replace
+						if (strpos($path, 'c0mp0n3nt') !== false)
+						{
+							$zipPath = str_replace('c0mp0n3nt/', '', $path);
+							$path    = str_replace(
+								'c0mp0n3nt/', $this->componentPath . '/', $path
+							);
+						}
+						else
+						{
+							$this->app->enqueueMessage(
+								JText::sprintf(
+									'<hr /><h3>c0mp0n3nt issue found</h3><p>The path (%s) could not be used.</p>',
+									$path
+								), 'Error'
+							);
+							continue;
+						}
 
 						// setup the folder
 						if (!JFolder::exists($path))
@@ -2878,7 +2899,7 @@ class Structure extends Get
 							// move the file to its place
 							JFile::copy(
 								$this->templatePath . '/' . $item,
-								$path . '/' . $new, '', true
+								$path . '/' . $new
 							);
 							// count the file created
 							$this->fileCount++;
@@ -2934,9 +2955,10 @@ class Structure extends Get
 				                                        'rename' => 1);
 				$this->componentData->folders[] = $importView;
 				// move the phpspreadsheet Folder (TODO we must move this to a library package)
-				$PHPExcel                       = array('folderpath' => 'JPATH_LIBRARIES/phpspreadsheet/vendor',
-				                                        'path'   => '/libraries/phpspreadsheet/',
-				                                        'rename' => 0);
+				$PHPExcel
+					                            = array('folderpath' => 'JPATH_LIBRARIES/phpspreadsheet/vendor',
+					                                    'path'       => '/libraries/phpspreadsheet/',
+					                                    'rename'     => 0);
 				$this->componentData->folders[] = $PHPExcel;
 			}
 			if (2 == $this->uikit || 1 == $this->uikit)

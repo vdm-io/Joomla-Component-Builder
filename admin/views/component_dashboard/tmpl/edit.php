@@ -63,7 +63,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'component_dashboardTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('component_dashboard.delete') || $this->canDo->get('component_dashboard.edit.created_by') || $this->canDo->get('component_dashboard.edit.state') || $this->canDo->get('component_dashboard.edit.created')) : ?>
+	<?php if ($this->canDo->get('component_dashboard.edit.created_by') || $this->canDo->get('component_dashboard.edit.created') || $this->canDo->get('component_dashboard.edit.state') || ($this->canDo->get('component_dashboard.delete') && $this->canDo->get('component_dashboard.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'component_dashboardTab', 'publishing', JText::_('COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

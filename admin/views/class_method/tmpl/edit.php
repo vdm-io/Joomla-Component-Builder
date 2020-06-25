@@ -68,7 +68,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'class_methodTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('class_method.delete') || $this->canDo->get('class_method.edit.created_by') || $this->canDo->get('class_method.edit.state') || $this->canDo->get('class_method.edit.created')) : ?>
+	<?php if ($this->canDo->get('class_method.edit.created_by') || $this->canDo->get('class_method.edit.created') || $this->canDo->get('class_method.edit.state') || ($this->canDo->get('class_method.delete') && $this->canDo->get('class_method.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'class_methodTab', 'publishing', JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

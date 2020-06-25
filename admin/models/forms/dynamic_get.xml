@@ -227,7 +227,7 @@
 			type="subform"
 			name="join_db_table"
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_DB_TABLE_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
+			layout="repeatablejcb"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_DB_TABLE_DESCRIPTION"
 			icon="list">
@@ -1202,7 +1202,7 @@
 			type="subform"
 			name="join_view_table"
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_VIEW_TABLE_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
+			layout="repeatablejcb"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_JOIN_VIEW_TABLE_DESCRIPTION"
 			icon="list">

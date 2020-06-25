@@ -424,7 +424,7 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 			$jinput = JFactory::getApplication()->input;
 			foreach($target_headers as $header)
 			{
-				$data['target_headers'][$header] = $jinput->getString($header, null);
+				$data['target_headers'][$header] = $jinput->getString(strtolower($header), null);
 			}
 			// set the data
 			if(isset($package['dir']))

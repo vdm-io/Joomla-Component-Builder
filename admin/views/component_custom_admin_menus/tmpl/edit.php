@@ -63,7 +63,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'component_custom_admin_menusTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('component_custom_admin_menus.delete') || $this->canDo->get('component_custom_admin_menus.edit.created_by') || $this->canDo->get('component_custom_admin_menus.edit.state') || $this->canDo->get('component_custom_admin_menus.edit.created')) : ?>
+	<?php if ($this->canDo->get('component_custom_admin_menus.edit.created_by') || $this->canDo->get('component_custom_admin_menus.edit.created') || $this->canDo->get('component_custom_admin_menus.edit.state') || ($this->canDo->get('component_custom_admin_menus.delete') && $this->canDo->get('component_custom_admin_menus.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'component_custom_admin_menusTab', 'publishing', JText::_('COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

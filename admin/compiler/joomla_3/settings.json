@@ -376,6 +376,11 @@
 					"rename": "JFormRule",
 					"type": "rule"
 				},
+				"layout_admin.php": {
+					"path": "c0mp0n3nt/admin/layouts",
+					"rename": "layout_admin",
+					"type": "layout"
+				},
 				"layoutitems.php": {
 					"path": "c0mp0n3nt/admin/layouts/VIEW",
 					"rename": "layoutitems",

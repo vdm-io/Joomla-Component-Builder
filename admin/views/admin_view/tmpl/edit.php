@@ -161,7 +161,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'admin_viewTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('admin_view.delete') || $this->canDo->get('admin_view.edit.created_by') || $this->canDo->get('admin_view.edit.state') || $this->canDo->get('admin_view.edit.created')) : ?>
+	<?php if ($this->canDo->get('admin_view.edit.created_by') || $this->canDo->get('admin_view.edit.created') || $this->canDo->get('admin_view.edit.state') || ($this->canDo->get('admin_view.delete') && $this->canDo->get('admin_view.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_viewTab', 'publishing', JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

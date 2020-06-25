@@ -63,7 +63,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'component_mysql_tweaksTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('component_mysql_tweaks.delete') || $this->canDo->get('component_mysql_tweaks.edit.created_by') || $this->canDo->get('component_mysql_tweaks.edit.state') || $this->canDo->get('component_mysql_tweaks.edit.created')) : ?>
+	<?php if ($this->canDo->get('component_mysql_tweaks.edit.created_by') || $this->canDo->get('component_mysql_tweaks.edit.created') || $this->canDo->get('component_mysql_tweaks.edit.state') || ($this->canDo->get('component_mysql_tweaks.delete') && $this->canDo->get('component_mysql_tweaks.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'component_mysql_tweaksTab', 'publishing', JText::_('COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

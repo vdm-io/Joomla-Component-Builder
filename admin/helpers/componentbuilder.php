@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Language\Language;
+use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -5785,6 +5786,18 @@ abstract class ComponentbuilderHelper
 			$date = strtotime($date);
 		}
 		return date('Y' . $spacer . 'm' . $spacer . 'd', $date);
+	}
+
+	/**
+	 * set the date as 03/05/2004
+	 */
+	public static function setDayMonthYear($date, $spacer = '/')
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('d' . $spacer . 'm' . $spacer . 'Y', $date);
 	}
 
 	/**

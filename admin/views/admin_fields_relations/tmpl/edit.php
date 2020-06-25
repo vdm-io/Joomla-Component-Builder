@@ -63,7 +63,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'admin_fields_relationsTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('admin_fields_relations.delete') || $this->canDo->get('admin_fields_relations.edit.created_by') || $this->canDo->get('admin_fields_relations.edit.state') || $this->canDo->get('admin_fields_relations.edit.created')) : ?>
+	<?php if ($this->canDo->get('admin_fields_relations.edit.created_by') || $this->canDo->get('admin_fields_relations.edit.created') || $this->canDo->get('admin_fields_relations.edit.state') || ($this->canDo->get('admin_fields_relations.delete') && $this->canDo->get('admin_fields_relations.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'admin_fields_relationsTab', 'publishing', JText::_('COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

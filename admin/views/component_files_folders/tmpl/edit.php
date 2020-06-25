@@ -73,7 +73,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'component_files_foldersTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('component_files_folders.delete') || $this->canDo->get('component_files_folders.edit.created_by') || $this->canDo->get('component_files_folders.edit.state') || $this->canDo->get('component_files_folders.edit.created')) : ?>
+	<?php if ($this->canDo->get('component_files_folders.edit.created_by') || $this->canDo->get('component_files_folders.edit.created') || $this->canDo->get('component_files_folders.edit.state') || ($this->canDo->get('component_files_folders.delete') && $this->canDo->get('component_files_folders.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'component_files_foldersTab', 'publishing', JText::_('COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
