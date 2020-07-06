@@ -118,8 +118,7 @@
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_FIELD_DESCRIPTION"
 					class="list_class fieldFull"
 					multiple="false"
-					default=""
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- List Field. Type: List. (joomla) -->
@@ -130,7 +129,6 @@
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_LIST_DESCRIPTION"
 					class="fieldMedium count-the-items1235"
 					multiple="false"
-					required="false"
 					onchange="checkAdminBehaviour(this)">
 					<!-- Option Set. -->
 					<option value="">
@@ -151,7 +149,6 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDER_LIST_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDER_LIST_DESCRIPTION"
 					class="fieldSmall"
-					required="false"
 					first="0"
 					last="20"
 					step="1"
@@ -164,7 +161,6 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_TITLE_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_TITLE_DESCRIPTION"
 					class="inputbox"
 					onchange="checkTitle(this)"
@@ -176,7 +172,6 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ALIAS_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ALIAS_DESCRIPTION"
 					class="inputbox"
 					onchange="checkAlias(this)"
@@ -188,7 +183,6 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_SORT_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_SORT_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -199,7 +193,6 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_SEARCH_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_SEARCH_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -210,7 +203,6 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_FILTER_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_FILTER_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -221,7 +213,6 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_LINK_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_LINK_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -234,7 +225,6 @@
 					class="fieldMedium"
 					multiple="false"
 					default="1"
-					required="false"
 					button="false"
 				/>
 				<!-- Alignment Field. Type: List. (joomla) -->
@@ -246,7 +236,6 @@
 					class="fieldMedium"
 					multiple="false"
 					filter="INT"
-					required="false"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">
@@ -272,7 +261,6 @@
 					default="0"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDER_EDIT_DESCRIPTION"
 					class="fieldSmall"
-					required="false"
 					first="0"
 					last="100"
 					step="1"
@@ -284,8 +272,7 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_DESCRIPTION"
 					class="fieldMedium"
-					multiple="true"
-					required="false">
+					multiple="true">
 					<!-- Option Set. -->
 					<option value="1">
 						COM_COMPONENTBUILDER_ADMIN_FIELDS_EDITING</option>

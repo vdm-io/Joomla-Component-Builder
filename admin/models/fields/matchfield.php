@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -75,8 +75,9 @@ class JFormFieldMatchfield extends JFormFieldList
 			}
 		}
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','name')));
+		$query->select($db->quoteName(array('a.id','a.name','t.name'),array('id','name','type')));
 		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 't') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('t.id') . ')');
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		// filter by fields linked
 		if (ComponentbuilderHelper::checkArray($fieldIds))
@@ -93,10 +94,10 @@ class JFormFieldMatchfield extends JFormFieldList
 			$options[] = JHtml::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$options[] = JHtml::_('select.option', $item->id, $item->name);
+				$options[] = JHtml::_('select.option', $item->id, $item->name . ' [' . $item->type . ']');
 			}
 		}
-		
+
 		return $options;
 	}
 }

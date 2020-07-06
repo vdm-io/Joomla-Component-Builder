@@ -17,6 +17,8 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * ###View### Controller
  */
@@ -141,7 +143,7 @@ class ###Component###Controller###View### extends JControllerForm
 		$this->refid = $this->input->get('refid', 0, 'int');
 
 		// Check if there is a return value
-		$return = $this->input->get('return', null, 'base64');
+		$return = $this->input->get('return', null, 'base64');###JCONTROLLERFORM_BEFORECANCEL###
 
 		$cancel = parent::cancel($key);
 
@@ -177,7 +179,7 @@ class ###Component###Controller###View### extends JControllerForm
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
-		}
+		}###JCONTROLLERFORM_AFTERCANCEL###
 		return $cancel;
 	}
 

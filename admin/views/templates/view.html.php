@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -34,8 +34,9 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
-		$this->listOrder = $this->escape($this->state->get('list.ordering'));
-		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		// Add the list ordering clause.
+		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
 		$this->saveOrder = $this->listOrder == 'ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -193,7 +194,15 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 
 		// Set Dynamic Get Name Selection
 		$this->dynamic_getNameOptions = JFormHelper::loadFieldType('Dynamicget')->options;
-		if ($this->dynamic_getNameOptions)
+		// We do some sanitation for Dynamic Get Name filter
+		if (ComponentbuilderHelper::checkArray($this->dynamic_getNameOptions) &&
+			isset($this->dynamic_getNameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->dynamic_getNameOptions[0]->value))
+		{
+			unset($this->dynamic_getNameOptions[0]);
+		}
+		// Only load Dynamic Get Name filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->dynamic_getNameOptions))
 		{
 			// Dynamic Get Name Filter
 			JHtmlSidebar::addFilter(
@@ -215,7 +224,15 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 
 		// Set Add Php View Selection
 		$this->add_php_viewOptions = $this->getTheAdd_php_viewSelections();
-		if ($this->add_php_viewOptions)
+		// We do some sanitation for Add Php View filter
+		if (ComponentbuilderHelper::checkArray($this->add_php_viewOptions) &&
+			isset($this->add_php_viewOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_php_viewOptions[0]->value))
+		{
+			unset($this->add_php_viewOptions[0]);
+		}
+		// Only load Add Php View filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_php_viewOptions))
 		{
 			// Add Php View Filter
 			JHtmlSidebar::addFilter(
@@ -277,7 +294,7 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_TEMPLATE_NAME_LABEL'),
 			'a.description' => JText::_('COM_COMPONENTBUILDER_TEMPLATE_DESCRIPTION_LABEL'),

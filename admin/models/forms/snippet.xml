@@ -155,6 +155,20 @@
 			required="true"
 			button="true"
 		/>
+		<!-- Guid Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="guid"
+			label="COM_COMPONENTBUILDER_SNIPPET_GUID_LABEL"
+			size="40"
+			maxlength="40"
+			description="COM_COMPONENTBUILDER_SNIPPET_GUID_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="CMD"
+			validate="guid"
+			hint="COM_COMPONENTBUILDER_SNIPPET_GUID_HINT"
+		/>
 		<!-- Note_contributor_details Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_contributor_details" label="COM_COMPONENTBUILDER_SNIPPET_NOTE_CONTRIBUTOR_DETAILS_LABEL" description="COM_COMPONENTBUILDER_SNIPPET_NOTE_CONTRIBUTOR_DETAILS_DESCRIPTION" heading="h4" class="alert alert-info note_contributor_details" />
 		<!-- Contributor_email Field. Type: Text. (joomla) -->

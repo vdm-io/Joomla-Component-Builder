@@ -5,12 +5,15 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\Utilities\ArrayHelper;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 /**
  * Componentbuilder Import_language_translations Model
@@ -75,14 +78,14 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 	public function import()
 	{
 		$this->setState('action', 'import');
-		$app 		= JFactory::getApplication();
-		$session 	= JFactory::getSession();
-		$package 	= null;
-		$continue	= false;
+		$app = JFactory::getApplication();
+		$session = JFactory::getSession();
+		$package = null;
+		$continue = false;
 		// get import type
 		$this->getType = $app->input->getString('gettype', NULL);
 		// get import type
-		$this->dataType	= $session->get('dataType_VDM_IMPORTINTO', NULL);
+		$this->dataType = $session->get('dataType_VDM_IMPORTINTO', NULL);
 
 		if ($package === null)
 		{
@@ -375,8 +378,8 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 			break;
 		}
 		return false;
-	} 
-	
+	}
+
 	/**
 	 * Clean up temporary uploaded spreadsheet
 	 *
@@ -437,7 +440,7 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 			}
 		}
 		return false;
-	} 
+	}
 	
 	/**
 	* Save the data from the file to the database
@@ -447,68 +450,87 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 	* @return  boolean false on failure
 	*
 	**/
-	protected function save($data,$table)
+	protected function save($data, $table)
 	{
 		// import the data if there is any
 		if(ComponentbuilderHelper::checkArray($data['array']))
 		{
 			// get user object
-			$user  		= JFactory::getUser();
+			$user = JFactory::getUser();
 			// remove header if it has headers
-			$id_key 	= $data['target_headers']['id'];
+			$id_key = $data['target_headers']['id'];
 			if (isset($data['target_headers']['Source']))
 			{
-				$source_key 	= $data['target_headers']['Source'];
+				$source_key = $data['target_headers']['Source'];
 			}
 			else
 			{
-				$source_key 	= $data['target_headers']['English'];
+				$source_key = $data['target_headers']['English'];
 			}
 			// get the first array set
 			$firstSet = reset($data['array']);
-
 			// check if first array is a header array and remove if true
 			if($firstSet[$id_key] == 'id' || $firstSet[$source_key] == 'Source' || $firstSet[$source_key] == 'English')
 			{
 				array_shift($data['array']);
 			}
-			
 			// make sure there is still values in array and that it was not only headers
 			if(ComponentbuilderHelper::checkArray($data['array']) && $user->authorise($table.'.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
 			{
 				// set target.
-				$target	= array_flip($data['target_headers']);
+				$target = array_flip($data['target_headers']);
 				// Get a db connection.
 				$db = JFactory::getDbo();
 				// set some defaults
-				$todayDate		= JFactory::getDate()->toSql();
+				$todayDate = JFactory::getDate()->toSql();
 				// get global action permissions
-				$canDo			= ComponentbuilderHelper::getActions($table);
-				$canEdit		= $canDo->get('core.edit');
-				// proses the data
+				$canDo = ComponentbuilderHelper::getActions($table);
+				$canEdit = $canDo->get('core.edit');
+				$canCreate = $canDo->get('core.create');
+				$canState = $canDo->get('core.edit.state');
+				// get languages
+				$languages = ComponentbuilderHelper::getVars('language', 1, 'published', 'langtag');
+				// process the data
 				foreach($data['array'] as $row)
 				{
 					$found = false;
-					if (isset($row[$id_key]) && is_numeric($row[$id_key]) && $row[$id_key] > 0)
+					$has_id = false;
+					if ($canEdit && isset($row[$source_key]) && ComponentbuilderHelper::checkString($row[$source_key]))
 					{
 						// raw items import & update!
 						$query = $db->getQuery(true);
-						$query
-							->select($db->quoteName(array('version', 'translation')))
-							->from($db->quoteName('#__componentbuilder_'.$table))
-							->where($db->quoteName('id') . ' = '. $db->quote($row[$id_key]))
-							->where($db->quoteName('source') . ' = '. $db->quote($row[$source_key]));
+						$query->select($db->quoteName(array('id', 'version', 'translation')));
+						$query->from($db->quoteName('#__componentbuilder_'.$table));
+						if (isset($row[$id_key]) && is_numeric($row[$id_key]) && $row[$id_key] > 0)
+						{
+							$query->where($db->quoteName('id') . ' = '. $db->quote($row[$id_key]));
+							$has_id = true;
+						}
+						$query->where($db->quoteName('source') . ' = '. $db->quote($row[$source_key]));
 						// Reset the query using our newly populated query object.
 						$db->setQuery($query);
 						$db->execute();
 						$found = $db->getNumRows();
+						// check one more time, just with source
+						if(!$found && $has_id)
+						{
+							// raw items import & update!
+							$query = $db->getQuery(true);
+							$query->select($db->quoteName(array('id', 'version', 'translation')));
+							$query->from($db->quoteName('#__componentbuilder_'.$table));
+							$query->where($db->quoteName('source') . ' = '. $db->quote($row[$source_key]));
+							// Reset the query using our newly populated query object.
+							$db->setQuery($query);
+							$db->execute();
+							$found = $db->getNumRows();
+						}
 					}
-					
+					// check if we found the string
 					if($found && $canEdit)
 					{
 						// update item
-						$id 		= $row[$id_key];
-						$item	= $db->loadObject();
+						$item = $db->loadObject();
+						$id = $item->id;
 						// load previous translation strings
 						if (ComponentbuilderHelper::checkJson($item->translation))
 						{
@@ -522,16 +544,14 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 							$counter = 0;
 							$pre = false;
 						}
-						// get languages
-						$languages = ComponentbuilderHelper::getVars('language', 1, 'published', 'langtag');
 						// reset all buckets
-						$query 		= $db->getQuery(true);
-						$fields 	= array();
+						$query = $db->getQuery(true);
+						$fields = array();
 						// Fields to update.
 						foreach($row as $key => $cell)
 						{
 							// ignore column
-							if ('IGNORE' === $target[$key] || 'modified_by' === $target[$key] || 'modified' === $target[$key] || 'Source' === $target[$key] || 'English' === $target[$key] )
+							if ('IGNORE' === $target[$key] || 'modified_by' === $target[$key] || 'modified' === $target[$key] || 'created_by' === $target[$key] || 'created' === $target[$key] || 'source' === strtolower($target[$key]) || 'english' === strtolower($target[$key]))
 							{
 								continue;
 							}
@@ -589,14 +609,91 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 						{
 							$fields[] = $db->quoteName('translation') . ' = ' . $db->quote(json_encode($translations, JSON_FORCE_OBJECT));
 							// load the defaults
-							$fields[]	= $db->quoteName('modified_by') . ' = ' . $db->quote($user->id);
+							$fields[]	= $db->quoteName('modified_by') . ' = ' . (int) $user->id;
 							$fields[]	= $db->quoteName('modified') . ' = ' . $db->quote($todayDate);
 							// Conditions for which records should be updated.
 							$conditions = array(
 								$db->quoteName('id') . ' = ' . $id
 							);
-						
+							// update the local translation
 							$query->update($db->quoteName('#__componentbuilder_'.$table))->set($fields)->where($conditions);
+							$db->setQuery($query);
+							$db->execute();
+						}
+					}
+					elseif (!$found && $canCreate)
+					{
+						$translations = array();
+						$counter = 0;
+						// reset all buckets
+						$query = $db->getQuery(true);
+						$values = array();
+						$columns = array();
+						// Fields to update.
+						foreach($row as $key => $cell)
+						{
+							// ignore column
+							if ('IGNORE' === $target[$key] || 'modified_by' === $target[$key] || 'modified' === $target[$key] || 'created_by' === $target[$key] || 'created' === $target[$key] || 'version' == $target[$key])
+							{
+								continue;
+							}
+							// verify publish authority
+							if ('published' == $target[$key] && !$canState)
+							{
+								continue;
+							}
+							// set to translations
+							if(in_array($target[$key], $languages))
+							{
+								// only add if it has a string
+								if (ComponentbuilderHelper::checkString($cell))
+								{
+									$translations['translation'.$counter] = array('language' => $target[$key], 'translation' => $cell);
+									$counter++;
+								}
+							}
+							// load the source
+							elseif ('source' === strtolower($target[$key]) || 'english' === strtolower($target[$key]))
+							{
+								$columns[] = 'source';
+								$values[] = $db->quote($cell);
+							}
+							// set to update array
+							elseif(in_array($key, $data['target_headers']) && is_numeric($cell))
+							{
+								$columns[] = $target[$key];
+								$values[] = $cell;
+							}
+							elseif(in_array($key, $data['target_headers']) && is_string($cell))
+							{
+								$columns[] = $target[$key];
+								$values[] = $db->quote($cell);
+							}
+							elseif(in_array($key, $data['target_headers']) && is_null($cell))
+							{
+								// if import data is null then set empty
+								$columns[] = $target[$key];
+								$values[] = '';
+							}
+						}
+						// set the translation
+						if (ComponentbuilderHelper::checkArray($translations))
+						{
+							$columns[] = 'translation';
+							$values[] = $db->quote(json_encode($translations, JSON_FORCE_OBJECT));
+						}
+						// check if we have values
+						if (ComponentbuilderHelper::checkArray($values))
+						{
+							// load the defaults
+							$columns[] = 'created_by';
+							$values[] = (int) $user->id;
+							$columns[] = 'created';
+							$values[] = $db->quote($todayDate);
+							$columns[] = 'version';
+							$values[] = 1;
+							// update the local translation
+							$query->insert($db->quoteName('#__componentbuilder_'.$table))->columns($db->quoteName($columns))->values(implode(',', $values));
 							$db->setQuery($query);
 							$db->execute();
 						}
@@ -607,7 +704,7 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 		}
 		return false;
 	}
-	
+
 	protected function getAlias($name,$type = false)
 	{
 		// sanitize the name to an alias

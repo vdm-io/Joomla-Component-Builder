@@ -100,15 +100,34 @@
 			readonly="true"
 			disabled="true"
 		/>
+		<!-- Plugins Field. Type: Joomlaplugins. (custom) -->
+		<field
+			type="joomlaplugins"
+			name="plugins"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_PLUGINS_LABEL"
+			class="list_class span12"
+			multiple="true"
+			default="0"
+			button="true"
+		/>
+		<!-- Modules Field. Type: Joomlamodules. (custom) -->
+		<field
+			type="joomlamodules"
+			name="modules"
+			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_MODULES_LABEL"
+			class="list_class span12"
+			multiple="true"
+			default="0"
+			button="true"
+		/>
 		<!-- Components Field. Type: Components. (custom) -->
 		<field
 			type="components"
 			name="components"
 			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_COMPONENTS_LABEL"
-			class="list_class"
+			class="list_class span12"
 			multiple="true"
 			default="0"
-			required="true"
 			button="false"
 		/>
 		<!-- Translation Field. Type: Subform. (joomla) -->
@@ -131,9 +150,8 @@
 					cols="20"
 					message="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_MESSAGE"
 					class="text_area translation_text_area"
-					filter="STRING"
+					filter="SAFEHTML"
 					hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_HINT"
-					required="false"
 				/>
 				<!-- Language Field. Type: Lang. (custom) -->
 				<field
@@ -142,8 +160,8 @@
 					label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_LANGUAGE_LABEL"
 					class="list_class"
 					multiple="false"
-					default="0"
-					required="false"
+					default="en-GB"
+					required="true"
 					button="false"
 				/>
 			</form>

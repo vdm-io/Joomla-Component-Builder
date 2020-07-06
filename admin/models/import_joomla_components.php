@@ -5,12 +5,15 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\Utilities\ArrayHelper;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 /**
  * Componentbuilder Import_joomla_components Model
@@ -86,7 +89,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected $specialValue = false;
 	protected $checksum = null;
 	protected $checksumURLs = array('vdm' => 'https://raw.githubusercontent.com/vdm-io/JCB-Packages/master/', 'jcb' => 'https://raw.githubusercontent.com/vdm-io/JCB-Community-Packages/master/');
-	protected $mustMerge = array('validation_rule', 'fieldtype', 'snippet', 'language', 'language_translation');
+	protected $mustMerge = array('validation_rule', 'fieldtype', 'snippet', 'language', 'language_translation', 'class_extends', 'class_property', 'class_method', 'joomla_plugin_group');
 
 	/**
 	 * Import an spreadsheet from either folder, url or upload.
@@ -547,8 +550,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			break;
 		}
 		return false;
-	} 
-	
+	}
+
 	/**
 	 * Clean up temporary uploaded spreadsheet
 	 *
@@ -676,7 +679,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		}
 		$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWODATA_IS_CORRUPTHTWOTHIS_COULD_BE_DUE_TO_BROKEN_PACKAGE'), 'error');
 		return false;
-	} 
+	}
 	
 	/**
 	* Save the smart components
@@ -699,10 +702,13 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// the array of tables to store
 		$tables = array(
 			'validation_rule', 'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
-			'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code',
+			'template', 'layout', 'joomla_component', 'language', 'custom_code', 'placeholder', 'class_extends',
+			'joomla_module', 'joomla_module_files_folders_urls', 'joomla_module_updates',
+			'joomla_plugin_group', 'class_property', 'class_method', 'joomla_plugin', 'joomla_plugin_files_folders_urls', 'joomla_plugin_updates',
 			'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'admin_custom_tabs', 'component_admin_views',
 			'component_site_views', 'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
-			'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders'
+			'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders',
+			'component_placeholders', 'component_modules', 'component_plugins', 'language_translation'
 		);
 		// get prefix
 		$prefix = $this->_db->getPrefix();
@@ -783,6 +789,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						if ($table === 'language_translation')
 						{
 							$item->localComponents = $local->components;
+							$item->localModules = $local->modules;
+							$item->localPlugins = $local->plugins;
 							$item->localTranslation = $local->translation;
 						}
 						// make sure we have the correct ID set
@@ -1043,7 +1051,6 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_WAS_SUCCESSFULLY_UNLOCKED', $file),  'success');
 				}
 			}
-			
 		}
 	}
 
@@ -2056,6 +2063,44 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
+			case 'component_placeholders':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
+			break;
+			case 'component_modules':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
+				// subform fields to target
+				$updaterT = array(
+					// subformfield => array( field => type_value )
+					'addjoomla_modules' => array('module' => 'joomla_module')
+				);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'component_modules', $updaterT);
+			break;
+			case 'component_plugins':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_component ID where needed
+					$item = $this->setNewID($item, 'joomla_component', 'joomla_component', $type);
+				}
+				// subform fields to target
+				$updaterT = array(
+					// subformfield => array( field => type_value )
+					'addjoomla_plugins' => array('plugin' => 'joomla_plugin')
+				);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'component_plugins', $updaterT);
+			break;
 			case 'component_files_folders':
 				// diverged id already updated
 				if (!$diverged)
@@ -2072,45 +2117,129 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 			break;
+			case 'joomla_module':
+				// update the custom_get
+				$item = $this->setNewID($item, 'custom_get', 'dynamic_get', $type);
+				// if we can't merge add postfix to name
+				if ($this->postfix)
+				{
+					$item->system_name = $item->system_name.$this->postfix;
+				}
+				// subform fields to target
+				$updaterT = array(
+					// subformfield => array( field => type_value )
+					'fields' => array('field' => 'field')
+				);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'joomla_module', $updaterT);
+			break;
+			case 'joomla_module_files_folders_urls':
+			case 'joomla_module_updates':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_module ID where needed
+					$item = $this->setNewID($item, 'joomla_module', 'joomla_module', $type);
+				}
+			break;
+			case 'joomla_plugin_group':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the class_extends ID where needed
+					$item = $this->setNewID($item, 'class_extends', 'class_extends', $type);
+				}
+			break;
+			case 'class_method':
+			case 'class_property':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_plugin_group ID where needed
+					$item = $this->setNewID($item, 'joomla_plugin_group', 'joomla_plugin_group', $type);
+				}
+			break;
+			case 'joomla_plugin':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the class_extends ID where needed
+					$item = $this->setNewID($item, 'class_extends', 'class_extends', $type);
+					// update the joomla_plugin_group ID where needed
+					$item = $this->setNewID($item, 'joomla_plugin_group', 'joomla_plugin_group', $type);
+				}
+				// if we can't merge add postfix to name
+				if ($this->postfix)
+				{
+					$item->system_name = $item->system_name.$this->postfix;
+				}
+				// subform fields to target
+				$updaterT = array(
+					// subformfield => array( field => type_value )
+					'fields' => array('field' => 'field'),
+					'property_selection' => array('property' => 'class_property'),
+					'method_selection' => array('method' => 'class_method')
+				);
+				// update the subform ids
+				$this->updateSubformsIDs($item, 'joomla_plugin', $updaterT);
+			break;
+			case 'joomla_plugin_files_folders_urls':
+			case 'joomla_plugin_updates':
+				// diverged id already updated
+				if (!$diverged)
+				{
+					// update the joomla_plugin ID where needed
+					$item = $this->setNewID($item, 'joomla_plugin', 'joomla_plugin', $type);
+				}
+			break;
 			case 'custom_code':
 				// update the component ID where needed
 				$item = $this->setNewID($item, 'component', 'joomla_component', $type);
 			break;
 			case 'language_translation':
-				// update the component ID where needed
-				$item = $this->setNewID($item, 'component', 'joomla_component', $type);
-				// load the local components if found
-				if (isset($item->localComponents) && ComponentbuilderHelper::checkJson($item->localComponents))
+				$langKeys = array(
+					array('target' => 'components', 'parent' => 'joomla_component', 'local' => 'localComponents'),
+					array('target' => 'modules', 'parent' => 'joomla_module', 'local' => 'localModules'),
+					array('target' => 'plugins', 'parent' => 'joomla_plugin', 'local' => 'localPlugins')
+				);
+				// we have a few to check so we loop them
+				foreach ($langKeys as $lang)
 				{
-					$components = array();
-					if (isset($item->components) && ComponentbuilderHelper::checkJson($item->components))
+					// update the target ID where needed
+					$item = $this->setNewID($item, $lang['target'], 'joomla_component', $type);
+					// load the local targets if found
+					if (isset($item->{$lang['local']}) && ComponentbuilderHelper::checkJson($item->{$lang['local']}))
 					{
-						$components = json_decode($item->components, true);
+						$targets = array();
+						if (isset($item->{$lang['target']}) && ComponentbuilderHelper::checkJson($item->{$lang['target']}))
+						{
+							$targets = json_decode($item->{$lang['target']}, true);
+						}
+						$localComponents = json_decode($item->{$lang['local']}, true);
+						foreach ($localComponents as $lid)
+						{
+							if (!is_numeric($lid))
+							{
+								continue;
+							}
+							// add if not already there
+							if (!in_array($lid, $targets))
+							{
+								$targets[] = $lid;
+							}
+						}
 					}
-					$localComponents = json_decode($item->localComponents, true);
-					foreach ($localComponents as $lid)
+					// remove the localComponents
+					if (isset($item->{$lang['local']}))
 					{
-						if (!is_numeric($lid))
-						{
-							continue;
-						}
-						// add if not already there
-						if (!in_array($lid, $components))
-						{
-							$components[] = $lid;
-						}
+						unset($item->{$lang['local']});
 					}
-				}
-				// remove the localComponents
-				if (isset($item->localComponents))
-				{
-					unset($item->localComponents);
-				}
-				// load it back
-				if (isset($components) && ComponentbuilderHelper::checkArray($components))
-				{
 					// load it back
-					$item->components = json_encode(array_values($components), JSON_FORCE_OBJECT);
+					if (isset($targets) && ComponentbuilderHelper::checkArray($targets))
+					{
+						// load it back
+						$item->{$lang['target']} = json_encode(array_values($targets), JSON_FORCE_OBJECT);
+					}
 				}
 				// merge the translations where needed
 				if (isset($item->translation) && isset($item->localTranslation) 
@@ -2737,6 +2866,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						$retryAgain = 2;
 					}
 					break;
+				case 'placeholder':
+					// search for placeholder (since there should only be one)
+					$getter = 'target';
+					break;
 				case 'custom_code':
 					// search for custom code
 					$getter = array('comment_type', 'target');
@@ -2845,7 +2978,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				case 'component_custom_admin_menus':
 				case 'component_config':
 				case 'component_dashboard':
+				case 'component_placeholders':
 				case 'component_files_folders':
+				case 'component_modules':
+				case 'component_plugins':
 						// get by joomla_component (since there should only be one of each component)
 						$getter = array('joomla_component');
 						$this->specialValue = array();
@@ -2873,8 +3009,149 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						}
 					break;
 				case 'language':
-						// get by language tag since there should just be one
-						$getter = 'langtag';
+					// get by language tag since there should just be one
+					$getter = 'langtag';
+					break;
+				case 'joomla_module':
+					// get
+					if ($retry == 3)
+					{
+						// get by names, exteneded and group only
+						$getter = array('name', 'system_name');
+					}
+					elseif ($retry == 2)
+					{
+						// get by description
+						$getter = array('name', 'system_name', 'description'); 
+						$retryAgain = 3;
+					}
+					else
+					{
+						// get by id
+						$getter = array('id', 'name', 'system_name');
+						$retryAgain = 2;
+					}
+					break;
+				case 'joomla_module_files_folders_urls':
+				case 'joomla_module_updates':
+					// get by admin_view (since there should only be one of each name)
+					$getter = array('joomla_module');
+					$this->specialValue = array();
+					// Yet if diverged it makes sense that the ID is updated.
+					if ($diverged)
+					{
+						$this->specialValue['joomla_module'] = (int) $item->joomla_module;
+					}
+					elseif (isset($this->newID['joomla_module'][(int) $item->joomla_module]))
+					{
+						$this->specialValue['joomla_module'] = $this->newID['joomla_module'][(int) $item->joomla_module];
+					}
+					// (TODO) I have seen this happen, seems dangerous! 
+					else
+					{
+						return false;
+					}
+					break;
+				case 'joomla_plugin':
+					// get
+					if ($retry == 3)
+					{
+						// get by names, exteneded and group only
+						$getter = array('name', 'system_name', 'class_extends', 'joomla_plugin_group');
+					}
+					elseif ($retry == 2)
+					{
+						// get by description
+						$getter = array('name', 'system_name', 'class_extends', 'joomla_plugin_group', 'description'); 
+						$retryAgain = 3;
+					}
+					else
+					{
+						// get by id
+						$getter = array('id', 'name', 'system_name', 'class_extends', 'joomla_plugin_group');
+						$retryAgain = 2;
+					}
+					$this->specialValue = array();
+					// Yet if diverged it makes sense that the ID is updated.
+					if ($diverged)
+					{
+						$this->specialValue['class_extends'] = (int) $item->class_extends;
+						$this->specialValue['joomla_plugin_group'] = (int) $item->joomla_plugin_group;
+					}
+					elseif (isset($this->newID['class_extends'][(int) $item->class_extends]) && isset($this->newID['joomla_plugin_group'][(int) $item->joomla_plugin_group]))
+					{
+						$this->specialValue['class_extends'] = $this->newID['class_extends'][(int) $item->class_extends];
+						$this->specialValue['joomla_plugin_group'] = $this->newID['joomla_plugin_group'][(int) $item->joomla_plugin_group];
+					}
+					// (TODO) I have seen this happen, seems dangerous! 
+					else
+					{
+						return false;
+					}
+					break;
+				case 'joomla_plugin_files_folders_urls':
+				case 'joomla_plugin_updates':
+					// get by admin_view (since there should only be one of each name)
+					$getter = array('joomla_plugin');
+					$this->specialValue = array();
+					// Yet if diverged it makes sense that the ID is updated.
+					if ($diverged)
+					{
+						$this->specialValue['joomla_plugin'] = (int) $item->joomla_plugin;
+					}
+					elseif (isset($this->newID['joomla_plugin'][(int) $item->joomla_plugin]))
+					{
+						$this->specialValue['joomla_plugin'] = $this->newID['joomla_plugin'][(int) $item->joomla_plugin];
+					}
+					// (TODO) I have seen this happen, seems dangerous! 
+					else
+					{
+						return false;
+					}
+					break;
+				case 'joomla_plugin_group':
+					// get by name since there should just be one
+					$getter = array('name', 'class_extends');
+					$this->specialValue = array();
+					// Yet if diverged it makes sense that the ID is updated.
+					if ($diverged)
+					{
+						$this->specialValue['class_extends'] = (int) $item->class_extends;
+					}
+					elseif (isset($this->newID['class_extends'][(int) $item->class_extends]))
+					{
+						$this->specialValue['class_extends'] = $this->newID['class_extends'][(int) $item->class_extends];
+					}
+					// (TODO) I have seen this happen, seems dangerous! 
+					else
+					{
+						return false;
+					}
+					break;
+				case 'class_extends':
+				case 'class_method':
+				case 'class_property':
+					// get by name since there should just be one
+					$getter = array('name', 'extension_type');
+					// Yet if diverged it makes sense that the ID is updated.
+					if ('plugins' === $item->extension_type && isset($item->joomla_plugin_group))
+					{
+						$getter[] = 'joomla_plugin_group';
+						$this->specialValue = array();
+						if ($diverged)
+						{
+							$this->specialValue['joomla_plugin_group'] = (int) $item->joomla_plugin_group;
+						}
+						elseif (isset($this->newID['joomla_plugin_group'][(int) $item->joomla_plugin_group]))
+						{
+							$this->specialValue['joomla_plugin_group'] = $this->newID['joomla_plugin_group'][(int) $item->joomla_plugin_group];
+						}
+						// (TODO) I have seen this happen, seems dangerous! 
+						else
+						{
+							return false;
+						}
+					}
 					break;
 				default:
 					// can't be found so return false
@@ -2914,7 +3191,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// add the full path if possible
 		return str_replace('//', '/', $this->setFullPath($path));
 	}
-	
+
 	protected function getAlias($name,$type = false)
 	{
 		// sanitize the name to an alias

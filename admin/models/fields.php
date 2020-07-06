@@ -5,12 +5,14 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Fields Model
@@ -28,7 +30,7 @@ class ComponentbuilderModelFields extends JModelList
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
 				'a.name','name',
-				'a.fieldtype','fieldtype',
+				'g.name',
 				'a.datatype','datatype',
 				'a.indexes','indexes',
 				'a.null_switch','null_switch',
@@ -118,12 +120,18 @@ class ComponentbuilderModelFields extends JModelList
 		// load parent items
 		$items = parent::getItems();
 
-		// set values to display correctly.
+		// Set values to display correctly.
 		if (ComponentbuilderHelper::checkArray($items))
 		{
+			// Get the user object if not set.
+			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			foreach ($items as $nr => &$item)
 			{
-				$access = (JFactory::getUser()->authorise('field.access', 'com_componentbuilder.field.' . (int) $item->id) && JFactory::getUser()->authorise('field.access', 'com_componentbuilder'));
+				// Remove items the user can't access.
+				$access = ($user->authorise('field.access', 'com_componentbuilder.field.' . (int) $item->id) && $user->authorise('field.access', 'com_componentbuilder'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -227,7 +235,8 @@ class ComponentbuilderModelFields extends JModelList
 				2 => 'COM_COMPONENTBUILDER_FIELD_BASESIXTY_FOUR',
 				3 => 'COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALDBKEY',
 				5 => 'COM_COMPONENTBUILDER_FIELD_MEDIUM_ENCRYPTION_LOCALFILEKEY',
-				4 => 'COM_COMPONENTBUILDER_FIELD_WHMCSKEY_ENCRYPTION'
+				4 => 'COM_COMPONENTBUILDER_FIELD_WHMCSKEY_ENCRYPTION',
+				6 => 'COM_COMPONENTBUILDER_FIELD_EXPERT_MODE_CUSTOM'
 			);
 			// Now check if value is found in this array
 			if (isset($storeArray[$value]) && ComponentbuilderHelper::checkString($storeArray[$value]))
@@ -345,7 +354,7 @@ class ComponentbuilderModelFields extends JModelList
 		}
 		elseif (is_array($categoryId))
 		{
-			JArrayHelper::toInteger($categoryId);
+			ArrayHelper::toInteger($categoryId);
 			$categoryId = implode(',', $categoryId);
 			$query->where('a.category IN (' . $categoryId . ')');
 		}
@@ -353,7 +362,7 @@ class ComponentbuilderModelFields extends JModelList
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'asc');	
+		$orderDirn = $this->state->get('list.direction', 'desc');
 		if ($orderCol != '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
@@ -365,17 +374,23 @@ class ComponentbuilderModelFields extends JModelList
 	/**
 	 * Method to get list export data.
 	 *
+	 * @param   array  $pks  The ids of the items to get
+	 * @param   JUser  $user  The user making the request
+	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getExportData($pks)
+	public function getExportData($pks, $user = null)
 	{
 		// setup the query
 		if (ComponentbuilderHelper::checkArray($pks))
 		{
-			// Set a value to know this is exporting method.
+			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
 			$_export = true;
-			// Get the user object.
-			$user = JFactory::getUser();
+			// Get the user object if not set.
+			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			// Create a new query object.
 			$db = JFactory::getDBO();
 			$query = $db->getQuery(true);
@@ -394,7 +409,7 @@ class ComponentbuilderModelFields extends JModelList
 			}
 
 			// Order the results by ordering
-			$query->order('a.ordering  ASC');
+			$query->order('a.id desc');
 
 			// Load the items
 			$db->setQuery($query);
@@ -403,26 +418,35 @@ class ComponentbuilderModelFields extends JModelList
 			{
 				$items = $db->loadObjectList();
 
-				// set values to display correctly.
+				// Set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))
 				{
 					foreach ($items as $nr => &$item)
 					{
-						$access = (JFactory::getUser()->authorise('field.access', 'com_componentbuilder.field.' . (int) $item->id) && JFactory::getUser()->authorise('field.access', 'com_componentbuilder'));
+						// Remove items the user can't access.
+						$access = ($user->authorise('field.access', 'com_componentbuilder.field.' . (int) $item->id) && $user->authorise('field.access', 'com_componentbuilder'));
 						if (!$access)
 						{
 							unset($items[$nr]);
 							continue;
 						}
 
-						// decode css_views
-						$item->css_views = base64_decode($item->css_views);
+						// decode on_get_model_field
+						$item->on_get_model_field = base64_decode($item->on_get_model_field);
+						// decode on_save_model_field
+						$item->on_save_model_field = base64_decode($item->on_save_model_field);
+						// decode initiator_on_get_model
+						$item->initiator_on_get_model = base64_decode($item->initiator_on_get_model);
 						// decode css_view
 						$item->css_view = base64_decode($item->css_view);
 						// decode javascript_view_footer
 						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
+						// decode css_views
+						$item->css_views = base64_decode($item->css_views);
 						// decode javascript_views_footer
 						$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
+						// decode initiator_on_save_model
+						$item->initiator_on_save_model = base64_decode($item->initiator_on_save_model);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

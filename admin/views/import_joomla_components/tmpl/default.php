@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -18,7 +18,7 @@ JHtml::_('script', 'system/core.js', false, true);
 JHtml::_('behavior.keepalive');
 ?>
 <script type="text/javascript">
-<?php if ($this->hasPackage && $this->dataType === 'smart_package'): ?>
+<?php if (isset($this->hasPackage) && $this->hasPackage && $this->dataType === 'smart_package'): ?>
 	Joomla.continueExtImport = function()
 	{
 		var form = document.getElementById('adminForm');
@@ -168,7 +168,7 @@ jQuery(document).ready(function($) {
 		<div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
 	</div>
 	<div id="installer-import">
-	<?php if ($this->hasPackage && $this->dataType === 'smart_package') : ?>
+	<?php if (isset($this->hasPackage) && $this->hasPackage && $this->dataType === 'smart_package') : ?>
 		<?php
 			if (isset($this->packageInfo['name']) && ComponentbuilderHelper::checkArray($this->packageInfo['name'])) 
 			{
@@ -277,7 +277,7 @@ jQuery(document).ready(function($) {
 			</fieldset>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php if ($this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)): ?>
+		<?php if (isset($this->vdmPackages) && ComponentbuilderHelper::checkArray($this->vdmPackages)): ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_vdm', JText::_('COM_COMPONENTBUILDER_VDM_PACKAGES', true)); ?>
 				<div class="span12" id="vdm_packages_installer">
 					<div class="alert alert-success">
@@ -308,7 +308,7 @@ jQuery(document).ready(function($) {
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php endif; ?>
 
-		<?php if ($this->jcbPackages && ComponentbuilderHelper::checkArray($this->jcbPackages)) : ?>
+		<?php if (isset($this->jcbPackages) && ComponentbuilderHelper::checkArray($this->jcbPackages)) : ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_jcb', JText::_('COM_COMPONENTBUILDER_JCB_COMMUNITY_PACKAGES', true)); ?>
 				<div class="span12" id="jcb_packages_installer">
 					<div class="alert alert-success">
@@ -349,12 +349,12 @@ jQuery(document).ready(function($) {
 </form>
 </div>
 <script type="text/javascript">
-<?php if (($this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)) || ($this->jcbPackages && ComponentbuilderHelper::checkArray($this->jcbPackages))): ?>
+<?php if ((isset($this->vdmPackages) && $this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)) || (isset($this->jcbPackages) && $this->jcbPackages && ComponentbuilderHelper::checkArray($this->jcbPackages))): ?>
 // set packages that are on the page
 var packages = {};
 jQuery(document).ready(function($)
 {
-<?php if ($this->jcbPackages && ComponentbuilderHelper::checkArray($this->jcbPackages)): ?>
+<?php if (isset($this->jcbPackages) && $this->jcbPackages && ComponentbuilderHelper::checkArray($this->jcbPackages)): ?>
 	// get all jcb packages
 	jQuery("#jcb_package option").each(function()
 	{
@@ -362,7 +362,7 @@ jQuery(document).ready(function($)
 		packages[key] = 'jcb';
 	});
 <?php endif; ?>
-<?php if ($this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)): ?>
+<?php if (isset($this->vdmPackages) && $this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)): ?>
 	// get all vdm packages
 	jQuery("#vdm_package option").each(function()
 	{
@@ -535,7 +535,7 @@ jQuery(document).ready( function($) {
 ?>
 function JRouter(link) {
 <?php
-	if ($app->isSite())
+	if ($app->isClient('site'))
 	{
 		echo 'var url = "'.JURI::root().'";';
 	}

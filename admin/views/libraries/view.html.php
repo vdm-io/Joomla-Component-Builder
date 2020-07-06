@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -34,8 +34,9 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
-		$this->listOrder = $this->escape($this->state->get('list.ordering'));
-		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		// Add the list ordering clause.
+		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
 		$this->saveOrder = $this->listOrder == 'ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -181,9 +182,47 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 			);
 		}
 
+		// Set Target Selection
+		$this->targetOptions = $this->getTheTargetSelections();
+		// We do some sanitation for Target filter
+		if (ComponentbuilderHelper::checkArray($this->targetOptions) &&
+			isset($this->targetOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->targetOptions[0]->value))
+		{
+			unset($this->targetOptions[0]);
+		}
+		// Only load Target filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->targetOptions))
+		{
+			// Target Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_LIBRARY_TARGET_LABEL').' -',
+				'filter_target',
+				JHtml::_('select.options', $this->targetOptions, 'value', 'text', $this->state->get('filter.target'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Target Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LIBRARY_TARGET_LABEL').' -',
+					'batch[target]',
+					JHtml::_('select.options', $this->targetOptions, 'value', 'text')
+				);
+			}
+		}
+
 		// Set How Selection
 		$this->howOptions = JFormHelper::loadFieldType('Filebehaviour')->options;
-		if ($this->howOptions)
+		// We do some sanitation for How filter
+		if (ComponentbuilderHelper::checkArray($this->howOptions) &&
+			isset($this->howOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->howOptions[0]->value))
+		{
+			unset($this->howOptions[0]);
+		}
+		// Only load How filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->howOptions))
 		{
 			// How Filter
 			JHtmlSidebar::addFilter(
@@ -205,7 +244,15 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 
 		// Set Type Selection
 		$this->typeOptions = $this->getTheTypeSelections();
-		if ($this->typeOptions)
+		// We do some sanitation for Type filter
+		if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
+			isset($this->typeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
+		{
+			unset($this->typeOptions[0]);
+		}
+		// Only load Type filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->typeOptions))
 		{
 			// Type Filter
 			JHtmlSidebar::addFilter(
@@ -267,13 +314,50 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_LIBRARY_NAME_LABEL'),
-			'a.description' => JText::_('COM_COMPONENTBUILDER_LIBRARY_DESCRIPTION_LABEL'),
+			'a.target' => JText::_('COM_COMPONENTBUILDER_LIBRARY_TARGET_LABEL'),
 			'a.type' => JText::_('COM_COMPONENTBUILDER_LIBRARY_TYPE_LABEL'),
+			'a.description' => JText::_('COM_COMPONENTBUILDER_LIBRARY_DESCRIPTION_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
+	}
+
+	protected function getTheTargetSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('target'));
+		$query->from($db->quoteName('#__componentbuilder_library'));
+		$query->order($db->quoteName('target') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$_filter = array();
+			foreach ($results as $target)
+			{
+				// Translate the target selection
+				$text = $model->selectionTranslation($target,'target');
+				// Now add the target and its text to the options array
+				$_filter[] = JHtml::_('select.option', $target, JText::_($text));
+			}
+			return $_filter;
+		}
+		return false;
 	}
 
 	protected function getTheTypeSelections()

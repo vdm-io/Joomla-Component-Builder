@@ -24,7 +24,7 @@ JFormHelper::loadFieldClass('list');
 /**
  * ###Type### Form Field class for the ###Component### component
  */
-class JFormField###Type### extends JFormFieldList
+class ###JPREFIX###FormField###Type### extends JFormFieldList
 {
 	/**
 	 * The ###type### field type.

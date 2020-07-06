@@ -5,12 +5,14 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Component_updates Controller
@@ -315,6 +317,24 @@ class ComponentbuilderControllerComponent_updates extends JControllerForm
 	 */
 	protected function postSaveHook(JModelLegacy $model, $validData = array())
 	{
+		// update the component version to match the updated last version
+		if (isset($validData['joomla_component']) && is_numeric($validData['joomla_component']) && $validData['joomla_component'] > 0)
+		{
+			$objectUpdate = new stdClass();
+			$objectUpdate->id = (int) $validData['joomla_component'];
+			if (isset($validData['version_update']) && ComponentbuilderHelper::checkArray($validData['version_update'])
+				&& ($component_version = end($validData['version_update'])['version'])
+				&& ComponentbuilderHelper::checkString($component_version))
+			{
+				$objectUpdate->component_version = $component_version;
+			}
+			// be sure to update the table if we have a value
+			if (isset($objectUpdate->component_version))
+			{
+				JFactory::getDbo()->updateObject('#__componentbuilder_joomla_component', $objectUpdate, 'id');
+			}
+		}
+
 		return;
 	}
 

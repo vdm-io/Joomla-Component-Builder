@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -34,8 +34,9 @@ class ComponentbuilderViewServers extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
-		$this->listOrder = $this->escape($this->state->get('list.ordering'));
-		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		// Add the list ordering clause.
+		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'asc'));
 		$this->saveOrder = $this->listOrder == 'ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -188,7 +189,15 @@ class ComponentbuilderViewServers extends JViewLegacy
 
 		// Set Name Selection
 		$this->nameOptions = $this->getTheNameSelections();
-		if ($this->nameOptions)
+		// We do some sanitation for Name filter
+		if (ComponentbuilderHelper::checkArray($this->nameOptions) &&
+			isset($this->nameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->nameOptions[0]->value))
+		{
+			unset($this->nameOptions[0]);
+		}
+		// Only load Name filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->nameOptions))
 		{
 			// Name Filter
 			JHtmlSidebar::addFilter(
@@ -210,7 +219,15 @@ class ComponentbuilderViewServers extends JViewLegacy
 
 		// Set Protocol Selection
 		$this->protocolOptions = $this->getTheProtocolSelections();
-		if ($this->protocolOptions)
+		// We do some sanitation for Protocol filter
+		if (ComponentbuilderHelper::checkArray($this->protocolOptions) &&
+			isset($this->protocolOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->protocolOptions[0]->value))
+		{
+			unset($this->protocolOptions[0]);
+		}
+		// Only load Protocol filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->protocolOptions))
 		{
 			// Protocol Filter
 			JHtmlSidebar::addFilter(
@@ -272,7 +289,7 @@ class ComponentbuilderViewServers extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_SERVER_NAME_LABEL'),
 			'a.protocol' => JText::_('COM_COMPONENTBUILDER_SERVER_PROTOCOL_LABEL'),

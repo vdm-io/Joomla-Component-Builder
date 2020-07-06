@@ -1,0 +1,9 @@
+ALTER TABLE `#__componentbuilder_fieldtype` ADD `datadefault` CHAR(64) NOT NULL DEFAULT '' AFTER `catid`;
+ALTER TABLE `#__componentbuilder_fieldtype` ADD `datadefault_other` CHAR(64) NOT NULL DEFAULT '' AFTER `datadefault`;
+ALTER TABLE `#__componentbuilder_fieldtype` ADD `datalenght` CHAR(64) NOT NULL DEFAULT '' AFTER `datadefault_other`;
+ALTER TABLE `#__componentbuilder_fieldtype` ADD `datalenght_other` CHAR(64) NOT NULL DEFAULT '' AFTER `datalenght`;
+ALTER TABLE `#__componentbuilder_fieldtype` ADD `datatype` CHAR(64) NOT NULL DEFAULT '' AFTER `datalenght_other`;
+ALTER TABLE `#__componentbuilder_fieldtype` ADD `has_defaults` TINYINT(1) NOT NULL DEFAULT 0 AFTER `description`;
+ALTER TABLE `#__componentbuilder_fieldtype` ADD `indexes` CHAR(64) NOT NULL DEFAULT '' AFTER `has_defaults`;
+ALTER TABLE `#__componentbuilder_fieldtype` ADD `null_switch` CHAR(64) NOT NULL DEFAULT '' AFTER `indexes`;
+ALTER TABLE `#__componentbuilder_fieldtype` ADD `store` INT(11) NOT NULL DEFAULT 0 AFTER `short_description`;

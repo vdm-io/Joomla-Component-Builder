@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addrulepath="/administrator/components/com_componentbuilder/models/rules"
+	addfieldpath="/administrator/components/com_componentbuilder/models/fields"
+>
+	<fieldset name="details">
+		<!-- Default Fields. -->
+		<!-- Id Field. Type: Text (joomla) -->
+		<field
+			name="id"
+			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
+			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
+			readonly="true"
+		/>
+		<!-- Date Created Field. Type: Calendar (joomla) -->
+		<field
+			name="created"
+			type="calendar"
+			label="COM_COMPONENTBUILDER_COMPONENT_MODULES_CREATED_DATE_LABEL"
+			description="COM_COMPONENTBUILDER_COMPONENT_MODULES_CREATED_DATE_DESC"
+			size="22"
+			format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc"
+		/>
+		<!-- User Created Field. Type: User (joomla) -->
+		<field
+			name="created_by"
+			type="user"
+			label="COM_COMPONENTBUILDER_COMPONENT_MODULES_CREATED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_COMPONENT_MODULES_CREATED_BY_DESC"
+		/>
+		<!-- Published Field. Type: List (joomla) -->
+		<field name="published" type="list" label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
+			filter="intval" size="1" default="1" >
+			<option value="1">
+				JPUBLISHED</option>
+			<option value="0">
+				JUNPUBLISHED</option>
+			<option value="2">
+				JARCHIVED</option>
+			<option value="-2">
+				JTRASHED</option>
+		</field>
+		<!-- Date Modified Field. Type: Calendar (joomla) -->
+		<field name="modified" type="calendar" class="readonly"
+			label="COM_COMPONENTBUILDER_COMPONENT_MODULES_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_COMPONENT_MODULES_MODIFIED_DATE_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+		<!-- User Modified Field. Type: User (joomla) -->
+		<field name="modified_by" type="user"
+			label="COM_COMPONENTBUILDER_COMPONENT_MODULES_MODIFIED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_COMPONENT_MODULES_MODIFIED_BY_DESC"
+			class="readonly"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Access Field. Type: Accesslevel (joomla) -->
+		<field name="access"
+			type="accesslevel"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			default="1"
+			required="false"
+		/>
+		<!-- Ordering Field. Type: Numbers (joomla) -->
+		<field
+			name="ordering"
+			type="number"
+			class="inputbox validate-ordering"
+			label="COM_COMPONENTBUILDER_COMPONENT_MODULES_ORDERING_LABEL"
+			description=""
+			default="0"
+			size="6"
+			required="false"
+		/>
+		<!-- Version Field. Type: Text (joomla) -->
+		<field
+			name="version"
+			type="text"
+			class="readonly"
+			label="COM_COMPONENTBUILDER_COMPONENT_MODULES_VERSION_LABEL"
+			description="COM_COMPONENTBUILDER_COMPONENT_MODULES_VERSION_DESC"
+			size="6"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Dynamic Fields. -->
+		<!-- Joomla_component Field. Type: Joomlacomponents. (custom) -->
+		<field
+			type="joomlacomponents"
+			name="joomla_component"
+			label="COM_COMPONENTBUILDER_COMPONENT_MODULES_JOOMLA_COMPONENT_LABEL"
+			description="COM_COMPONENTBUILDER_COMPONENT_MODULES_JOOMLA_COMPONENT_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			default=""
+			required="true"
+			readonly="true"
+			button="false"
+		/>
+		<!-- Addjoomla_modules Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addjoomla_modules"
+			label="COM_COMPONENTBUILDER_COMPONENT_MODULES_ADDJOOMLA_MODULES_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_COMPONENT_MODULES_ADDJOOMLA_MODULES_DESCRIPTION"
+			default=""
+			icon="list"
+			min="1">
+			<form hidden="true" name="list_addjoomla_modules_modal" repeat="true">
+				<!-- Module Field. Type: Joomlamodules. (custom) -->
+				<field
+					type="joomlamodules"
+					name="module"
+					label="COM_COMPONENTBUILDER_COMPONENT_MODULES_MODULE_LABEL"
+					class="list_class span12"
+					multiple="false"
+					default="0"
+					button="false"
+				/>
+				<!-- Target Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="target"
+					label="COM_COMPONENTBUILDER_COMPONENT_MODULES_TARGET_LABEL"
+					description="COM_COMPONENTBUILDER_COMPONENT_MODULES_TARGET_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					default="0">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_COMPONENT_MODULES_COMPILE_ONLY</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_COMPONENT_MODULES_EXPORT_ONLY</option>
+					<option value="0">
+						COM_COMPONENTBUILDER_COMPONENT_MODULES_COMPILE_AMP_EXPORT</option>
+				</field>
+			</form>
+		</field>
+		<!-- Note_on_joomla_modules Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_joomla_modules" label="COM_COMPONENTBUILDER_COMPONENT_MODULES_NOTE_ON_JOOMLA_MODULES_LABEL" description="COM_COMPONENTBUILDER_COMPONENT_MODULES_NOTE_ON_JOOMLA_MODULES_DESCRIPTION" heading="h4" class="alert alert-info note_on_joomla_modules" />
+	</fieldset>
+	
+	<!-- Access Control Fields. -->
+	<fieldset name="accesscontrol">
+		<!-- Asset Id Field. Type: Hidden (joomla) -->
+		<field
+			name="asset_id"
+			type="hidden"
+			filter="unset"
+		/>
+		<!-- Rules Field. Type: Rules (joomla) -->
+		<field
+			name="rules"
+			type="rules"
+			label="Permissions in relation to this component_modules"
+			translate_label="false"
+			filter="rules"
+			validate="rules"
+			class="inputbox"
+			component="com_componentbuilder"
+			section="component_modules"
+		/>
+	</fieldset>
+</form>

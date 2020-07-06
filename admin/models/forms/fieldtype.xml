@@ -101,6 +101,202 @@
 			message="COM_COMPONENTBUILDER_FIELDTYPE_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
 		/>
+		<!-- Store Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="store"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_STORE_LABEL"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_STORE_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			filter="INT"
+			required="true"
+			default="0">
+			<!-- Option Set. -->
+			<option value="0">
+				COM_COMPONENTBUILDER_FIELDTYPE_DEFAULT</option>
+			<option value="1">
+				COM_COMPONENTBUILDER_FIELDTYPE_JSON</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_FIELDTYPE_BASESIXTY_FOUR</option>
+			<option value="3">
+				COM_COMPONENTBUILDER_FIELDTYPE_BASIC_ENCRYPTION_LOCALDBKEY</option>
+			<option value="5">
+				COM_COMPONENTBUILDER_FIELDTYPE_MEDIUM_ENCRYPTION_LOCALFILEKEY</option>
+			<option value="4">
+				COM_COMPONENTBUILDER_FIELDTYPE_WHMCSKEY_ENCRYPTION</option>
+			<option value="6">
+				COM_COMPONENTBUILDER_FIELDTYPE_EXPERT_MODE_CUSTOM</option>
+		</field>
+		<!-- Null_switch Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="null_switch"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_NULL_SWITCH_LABEL"
+			class="btn-group btn-group-yesno"
+			default="NOT NULL"
+			required="true">
+			<!-- Option Set. -->
+			<option value="NULL">
+				COM_COMPONENTBUILDER_FIELDTYPE_NULL</option>
+			<option value="NOT NULL">
+				COM_COMPONENTBUILDER_FIELDTYPE_NOT_NULL</option>
+		</field>
+		<!-- Indexes Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="indexes"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_INDEXES_LABEL"
+			class="btn-group"
+			multiple="false"
+			filter="INT"
+			required="true"
+			default="0">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_FIELDTYPE_UNIQUE_KEY</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_FIELDTYPE_KEY</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_FIELDTYPE_NONE</option>
+		</field>
+		<!-- Datadefault_other Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="datadefault_other"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_DATADEFAULT_OTHER_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_DATADEFAULT_OTHER_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_FIELDTYPE_DATADEFAULT_OTHER_MESSAGE"
+			hint="COM_COMPONENTBUILDER_FIELDTYPE_DATADEFAULT_OTHER_HINT"
+		/>
+		<!-- Datadefault Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="datadefault"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_DATADEFAULT_LABEL"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_DATADEFAULT_DESCRIPTION"
+			class="btn-group"
+			multiple="false"
+			default="">
+			<!-- Option Set. -->
+			<option value="">
+				COM_COMPONENTBUILDER_FIELDTYPE_NONE</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_FIELDTYPE_ZERO</option>
+			<option value="1">
+				COM_COMPONENTBUILDER_FIELDTYPE_ONE</option>
+			<option value="CURRENT_TIMESTAMP">
+				COM_COMPONENTBUILDER_FIELDTYPE_CURRENT_TIMESTAMP</option>
+			<option value="DATETIME">
+				COM_COMPONENTBUILDER_FIELDTYPE_DATETIME</option>
+			<option value="Other">
+				COM_COMPONENTBUILDER_FIELDTYPE_OTHER</option>
+		</field>
+		<!-- Datalenght_other Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="datalenght_other"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_MESSAGE"
+			hint="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_HINT"
+		/>
+		<!-- Short_description Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="short_description"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="HTML"
+			message="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_MESSAGE"
+			hint="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_HINT"
+		/>
+		<!-- Datatype Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="datatype"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_DATATYPE_LABEL"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_DATATYPE_DESCRIPTION"
+			class="btn-group"
+			multiple="false"
+			required="true"
+			default="">
+			<!-- Option Set. -->
+			<option value="">
+				COM_COMPONENTBUILDER_FIELDTYPE_SELECT_AN_OPTION</option>
+			<option value="CHAR">
+				COM_COMPONENTBUILDER_FIELDTYPE_CHAR</option>
+			<option value="VARCHAR">
+				COM_COMPONENTBUILDER_FIELDTYPE_VARCHAR</option>
+			<option value="TEXT">
+				COM_COMPONENTBUILDER_FIELDTYPE_TEXT</option>
+			<option value="MEDIUMTEXT">
+				COM_COMPONENTBUILDER_FIELDTYPE_MEDIUMTEXT</option>
+			<option value="LONGTEXT">
+				COM_COMPONENTBUILDER_FIELDTYPE_LONGTEXT</option>
+			<option value="BLOB">
+				COM_COMPONENTBUILDER_FIELDTYPE_BLOB</option>
+			<option value="TINYBLOB">
+				COM_COMPONENTBUILDER_FIELDTYPE_TINYBLOB</option>
+			<option value="MEDIUMBLOB">
+				COM_COMPONENTBUILDER_FIELDTYPE_MEDIUMBLOB</option>
+			<option value="LONGBLOB">
+				COM_COMPONENTBUILDER_FIELDTYPE_LONGBLOB</option>
+			<option value="DATETIME">
+				COM_COMPONENTBUILDER_FIELDTYPE_DATETIME</option>
+			<option value="DATE">
+				COM_COMPONENTBUILDER_FIELDTYPE_DATE</option>
+			<option value="TIME">
+				COM_COMPONENTBUILDER_FIELDTYPE_TIME</option>
+			<option value="INT">
+				COM_COMPONENTBUILDER_FIELDTYPE_INT</option>
+			<option value="TINYINT">
+				COM_COMPONENTBUILDER_FIELDTYPE_TINYINT</option>
+			<option value="BIGINT">
+				COM_COMPONENTBUILDER_FIELDTYPE_BIGINT</option>
+			<option value="FLOAT">
+				COM_COMPONENTBUILDER_FIELDTYPE_FLOAT</option>
+			<option value="DECIMAL">
+				COM_COMPONENTBUILDER_FIELDTYPE_DECIMAL</option>
+			<option value="DOUBLE">
+				COM_COMPONENTBUILDER_FIELDTYPE_DOUBLE</option>
+		</field>
+		<!-- Has_defaults Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="has_defaults"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_HAS_DEFAULTS_LABEL"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_HAS_DEFAULTS_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_FIELDTYPE_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_FIELDTYPE_NO</option>
+		</field>
+		<!-- Not_required Field. Type: Hidden. (joomla) -->
+		<field
+			type="hidden"
+			name="not_required"
+			default="一_一"
+		/>
 		<!-- Properties Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -122,7 +318,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_FIELDTYPE_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_FIELDTYPE_NAME_HINT"
@@ -140,7 +336,6 @@
 					class="text_area span12"
 					filter="RAW"
 					hint="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_HINT"
-					required="false"
 				/>
 				<!-- Adjustable Field. Type: Checkbox. (joomla) -->
 				<field
@@ -148,7 +343,6 @@
 					name="adjustable"
 					label="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_LABEL"
 					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_FIELDTYPE_ADJUSTABLE_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -158,7 +352,6 @@
 					name="mandatory"
 					label="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_LABEL"
 					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_FIELDTYPE_MANDATORY_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -168,7 +361,6 @@
 					name="translatable"
 					label="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_LABEL"
 					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_FIELDTYPE_TRANSLATABLE_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -183,7 +375,6 @@
 					class="text_area"
 					filter="HTML"
 					hint="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_HINT"
-					required="false"
 				/>
 			</form>
 		</field>
@@ -201,19 +392,57 @@
 			filter="HTML"
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_HINT"
 		/>
-		<!-- Short_description Field. Type: Text. (joomla) -->
+		<!-- Note_whmcs_encryption Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_whmcs_encryption" label="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_WHMCS_ENCRYPTION_LABEL" description="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_WHMCS_ENCRYPTION_DESCRIPTION" heading="h4" class="alert alert-success note_whmcs_encryption" />
+		<!-- Datalenght Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="datalenght"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_LABEL"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_DESCRIPTION"
+			class="btn-group"
+			multiple="false"
+			required="true"
+			default="">
+			<!-- Option Set. -->
+			<option value="">
+				COM_COMPONENTBUILDER_FIELDTYPE_NONE_SET</option>
+			<option value="1">
+				COM_COMPONENTBUILDER_FIELDTYPE_ONE</option>
+			<option value="7">
+				COM_COMPONENTBUILDER_FIELDTYPE_SEVEN</option>
+			<option value="10">
+				COM_COMPONENTBUILDER_FIELDTYPE_TEN</option>
+			<option value="11">
+				COM_COMPONENTBUILDER_FIELDTYPE_ELEVEN</option>
+			<option value="50">
+				COM_COMPONENTBUILDER_FIELDTYPE_FIFTY</option>
+			<option value="64">
+				COM_COMPONENTBUILDER_FIELDTYPE_SIXTY_FOUR</option>
+			<option value="100">
+				COM_COMPONENTBUILDER_FIELDTYPE_ONE_HUNDRED</option>
+			<option value="255">
+				COM_COMPONENTBUILDER_FIELDTYPE_TWO_HUNDRED_AND_FIFTY_FIVE</option>
+			<option value="1024">
+				COM_COMPONENTBUILDER_FIELDTYPE_ONE_THOUSAND_AND_TWENTY_FOUR</option>
+			<option value="2048">
+				COM_COMPONENTBUILDER_FIELDTYPE_TWO_THOUSAND_AND_FORTY_EIGHT</option>
+			<option value="Other">
+				COM_COMPONENTBUILDER_FIELDTYPE_OTHER</option>
+		</field>
+		<!-- Guid Field. Type: Text. (joomla) -->
 		<field
 			type="text"
-			name="short_description"
-			label="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_LABEL"
+			name="guid"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_GUID_LABEL"
 			size="40"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_DESCRIPTION"
+			maxlength="40"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_GUID_DESCRIPTION"
 			class="text_area"
-			required="true"
-			filter="HTML"
-			message="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_MESSAGE"
-			hint="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_HINT"
+			readonly="true"
+			filter="CMD"
+			validate="guid"
+			hint="COM_COMPONENTBUILDER_FIELDTYPE_GUID_HINT"
 		/>
 		<!-- Catid Field. Type: Category. (joomla) -->
 		<field

@@ -4,49 +4,49 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Some Global Values
-jform_vvvvwaevzr_required = false;
-jform_vvvvwafvzs_required = false;
-jform_vvvvwafvzt_required = false;
-jform_vvvvwafvzu_required = false;
+jform_vvvvwcbvxf_required = false;
+jform_vvvvwccvxg_required = false;
+jform_vvvvwccvxh_required = false;
+jform_vvvvwccvxi_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
 {
-	var target_vvvvwae = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwae(target_vvvvwae);
+	var target_vvvvwcb = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwcb(target_vvvvwcb);
 
-	var target_vvvvwaf = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwaf(target_vvvvwaf);
+	var target_vvvvwcc = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwcc(target_vvvvwcc);
 
-	var target_vvvvwag = jQuery("#jform_target input[type='radio']:checked").val();
-	var type_vvvvwag = jQuery("#jform_type input[type='radio']:checked").val();
-	vvvvwag(target_vvvvwag,type_vvvvwag);
+	var target_vvvvwcd = jQuery("#jform_target input[type='radio']:checked").val();
+	var type_vvvvwcd = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvwcd(target_vvvvwcd,type_vvvvwcd);
 
-	var type_vvvvwah = jQuery("#jform_type input[type='radio']:checked").val();
-	var target_vvvvwah = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwah(type_vvvvwah,target_vvvvwah);
+	var type_vvvvwce = jQuery("#jform_type input[type='radio']:checked").val();
+	var target_vvvvwce = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwce(type_vvvvwce,target_vvvvwce);
 });
 
-// the vvvvwae function
-function vvvvwae(target_vvvvwae)
+// the vvvvwcb function
+function vvvvwcb(target_vvvvwcb)
 {
 	// set the function logic
-	if (target_vvvvwae == 2)
+	if (target_vvvvwcb == 2)
 	{
 		jQuery('#jform_function_name').closest('.control-group').show();
 		// add required attribute to function_name field
-		if (jform_vvvvwaevzr_required)
+		if (jform_vvvvwcbvxf_required)
 		{
 			updateFieldRequired('function_name',0);
 			jQuery('#jform_function_name').prop('required','required');
 			jQuery('#jform_function_name').attr('aria-required',true);
 			jQuery('#jform_function_name').addClass('required');
-			jform_vvvvwaevzr_required = false;
+			jform_vvvvwcbvxf_required = false;
 		}
 		jQuery('.note_jcb_placeholder').closest('.control-group').show();
 		jQuery('#jform_system_name').closest('.control-group').show();
@@ -55,102 +55,102 @@ function vvvvwae(target_vvvvwae)
 	{
 		jQuery('#jform_function_name').closest('.control-group').hide();
 		// remove required attribute from function_name field
-		if (!jform_vvvvwaevzr_required)
+		if (!jform_vvvvwcbvxf_required)
 		{
 			updateFieldRequired('function_name',1);
 			jQuery('#jform_function_name').removeAttr('required');
 			jQuery('#jform_function_name').removeAttr('aria-required');
 			jQuery('#jform_function_name').removeClass('required');
-			jform_vvvvwaevzr_required = true;
+			jform_vvvvwcbvxf_required = true;
 		}
 		jQuery('.note_jcb_placeholder').closest('.control-group').hide();
 		jQuery('#jform_system_name').closest('.control-group').hide();
 	}
 }
 
-// the vvvvwaf function
-function vvvvwaf(target_vvvvwaf)
+// the vvvvwcc function
+function vvvvwcc(target_vvvvwcc)
 {
 	// set the function logic
-	if (target_vvvvwaf == 1)
+	if (target_vvvvwcc == 1)
 	{
 		jQuery('#jform_component').closest('.control-group').show();
 		// add required attribute to component field
-		if (jform_vvvvwafvzs_required)
+		if (jform_vvvvwccvxg_required)
 		{
 			updateFieldRequired('component',0);
 			jQuery('#jform_component').prop('required','required');
 			jQuery('#jform_component').attr('aria-required',true);
 			jQuery('#jform_component').addClass('required');
-			jform_vvvvwafvzs_required = false;
+			jform_vvvvwccvxg_required = false;
 		}
 		jQuery('#jform_path').closest('.control-group').show();
 		// add required attribute to path field
-		if (jform_vvvvwafvzt_required)
+		if (jform_vvvvwccvxh_required)
 		{
 			updateFieldRequired('path',0);
 			jQuery('#jform_path').prop('required','required');
 			jQuery('#jform_path').attr('aria-required',true);
 			jQuery('#jform_path').addClass('required');
-			jform_vvvvwafvzt_required = false;
+			jform_vvvvwccvxh_required = false;
 		}
 		jQuery('#jform_from_line').closest('.control-group').show();
 		jQuery('#jform_hashtarget').closest('.control-group').show();
 		jQuery('#jform_to_line').closest('.control-group').show();
 		jQuery('#jform_type').closest('.control-group').show();
 		// add required attribute to type field
-		if (jform_vvvvwafvzu_required)
+		if (jform_vvvvwccvxi_required)
 		{
 			updateFieldRequired('type',0);
 			jQuery('#jform_type').prop('required','required');
 			jQuery('#jform_type').attr('aria-required',true);
 			jQuery('#jform_type').addClass('required');
-			jform_vvvvwafvzu_required = false;
+			jform_vvvvwccvxi_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_component').closest('.control-group').hide();
 		// remove required attribute from component field
-		if (!jform_vvvvwafvzs_required)
+		if (!jform_vvvvwccvxg_required)
 		{
 			updateFieldRequired('component',1);
 			jQuery('#jform_component').removeAttr('required');
 			jQuery('#jform_component').removeAttr('aria-required');
 			jQuery('#jform_component').removeClass('required');
-			jform_vvvvwafvzs_required = true;
+			jform_vvvvwccvxg_required = true;
 		}
 		jQuery('#jform_path').closest('.control-group').hide();
 		// remove required attribute from path field
-		if (!jform_vvvvwafvzt_required)
+		if (!jform_vvvvwccvxh_required)
 		{
 			updateFieldRequired('path',1);
 			jQuery('#jform_path').removeAttr('required');
 			jQuery('#jform_path').removeAttr('aria-required');
 			jQuery('#jform_path').removeClass('required');
-			jform_vvvvwafvzt_required = true;
+			jform_vvvvwccvxh_required = true;
 		}
 		jQuery('#jform_from_line').closest('.control-group').hide();
 		jQuery('#jform_hashtarget').closest('.control-group').hide();
 		jQuery('#jform_to_line').closest('.control-group').hide();
 		jQuery('#jform_type').closest('.control-group').hide();
 		// remove required attribute from type field
-		if (!jform_vvvvwafvzu_required)
+		if (!jform_vvvvwccvxi_required)
 		{
 			updateFieldRequired('type',1);
 			jQuery('#jform_type').removeAttr('required');
 			jQuery('#jform_type').removeAttr('aria-required');
 			jQuery('#jform_type').removeClass('required');
-			jform_vvvvwafvzu_required = true;
+			jform_vvvvwccvxi_required = true;
 		}
 	}
 }
 
-// the vvvvwag function
-function vvvvwag(target_vvvvwag,type_vvvvwag)
+// the vvvvwcd function
+function vvvvwcd(target_vvvvwcd,type_vvvvwcd)
 {
 	// set the function logic
-	if (target_vvvvwag == 1 && type_vvvvwag == 1)
+	if (target_vvvvwcd == 1 && type_vvvvwcd == 1)
 	{
 		jQuery('#jform_hashendtarget').closest('.control-group').show();
 		jQuery('#jform_to_line').closest('.control-group').show();
@@ -162,11 +162,11 @@ function vvvvwag(target_vvvvwag,type_vvvvwag)
 	}
 }
 
-// the vvvvwah function
-function vvvvwah(type_vvvvwah,target_vvvvwah)
+// the vvvvwce function
+function vvvvwce(type_vvvvwce,target_vvvvwce)
 {
 	// set the function logic
-	if (type_vvvvwah == 1 && target_vvvvwah == 1)
+	if (type_vvvvwce == 1 && target_vvvvwce == 1)
 	{
 		jQuery('#jform_hashendtarget').closest('.control-group').show();
 		jQuery('#jform_to_line').closest('.control-group').show();
@@ -178,31 +178,46 @@ function vvvvwah(type_vvvvwah,target_vvvvwah)
 	}
 }
 
-// update required fields
-function updateFieldRequired(name,status)
-{
-	var not_required = jQuery('#jform_not_required').val();
+// update fields required
+function updateFieldRequired(name, status) {
+	// check if not_required exist
+	if (jQuery('#jform_not_required').length > 0) {
+		var not_required = jQuery('#jform_not_required').val().split(",");
 
-	if(status == 1)
-	{
-		if (isSet(not_required) && not_required != 0)
+		if(status == 1)
 		{
-			not_required = not_required+','+name;
+			not_required.push(name);
 		}
 		else
 		{
-			not_required = ','+name;
+			not_required = removeFieldFromNotRequired(not_required, name);
 		}
-	}
-	else
-	{
-		if (isSet(not_required) && not_required != 0)
-		{
-			not_required = not_required.replace(','+name,'');
-		}
-	}
 
-	jQuery('#jform_not_required').val(not_required);
+		jQuery('#jform_not_required').val(fixNotRequiredArray(not_required).toString());
+	}
+}
+
+// remove field from not_required
+function removeFieldFromNotRequired(array, what) {
+	return array.filter(function(element){
+		return element !== what;
+	});
+}
+
+// fix not required array
+function fixNotRequiredArray(array) {
+	var seen = {};
+	return removeEmptyFromNotRequiredArray(array).filter(function(item) {
+		return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+	});
+}
+
+// remove empty from not_required array
+function removeEmptyFromNotRequiredArray(array) {
+	return array.filter(function (el) {
+		// remove ( 一_一) as well - lol
+		return (el.length > 0 && '一_一' !== el);
+	});
 }
 
 // the isSet function
@@ -256,6 +271,7 @@ function setCustomCodePlaceholder() {
 		jQuery('.placeholder-key-id').text(ide);
 	}
 }
+
 function checkFunctionName(functioName) {
 	if (functioName.length > 2) {
 		var ide = jQuery('#jform_id').val();
@@ -270,7 +286,7 @@ function checkFunctionName(functioName) {
 				// now start search for where the function is used
 				usedin(result.name, ide);
 			} else if(result.message){
-				// show notice that functionName is not okay
+				// show notice that functioName is not okay
 				jQuery.UIkit.notify({message: result.message, timeout: 5000, status: result.status, pos: 'top-right'});
 				jQuery('#jform_function_name').val('');
 			} else {
@@ -289,20 +305,22 @@ function checkFunctionName(functioName) {
 		setCustomCodePlaceholder();
 	}
 }
-// check Function Name
+// check Function name
 function checkFunctionName_server(functioName, ide){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.checkFunctionName&format=json";
+	var getUrl = "index.php?option=com_componentbuilder&task=ajax.checkFunctionName&raw=true&format=json";
 	if(token.length > 0){
 		var request = 'token='+token+'&functioName='+functioName+'&id='+ide;
 	}
 	return jQuery.ajax({
 		type: 'POST',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
+
+
 // check where this Function is used
 function usedin(functioName, ide) {
 	var found = false;
@@ -310,8 +328,8 @@ function usedin(functioName, ide) {
 	jQuery('#note-usedin-not').hide();
 	jQuery('#note-usedin-found').hide();
 	jQuery('#loading-usedin').show();
-	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n']; // if you update this, also update (below 13) & [customcode-codeUsedInHtmlNote]!
-	var targetNumber = 13;
+	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u']; // if you update this, also update (below 20) & [customcode-codeUsedInHtmlNote]!
+	var targetNumber = 20;
 	var run = 0;
 	var usedinChecker = setInterval(function(){ 
 		var target = targets[run];
@@ -342,21 +360,22 @@ function usedin(functioName, ide) {
 function usedin_server(functioName, ide, target){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.usedin&format=json";
 	if(token.length > 0){
-		var request = 'token='+token+'&functioName='+functioName+'&id='+ide+'&target='+target+'&return_here='+return_here;
+		var request = token+'=1&functioName='+functioName+'&id='+ide+'&target='+target+'&raw=true&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
+
 function getEditCustomCodeButtons_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id+'&return_here='+return_here;
+		var request = token+'=1&id='+id+'&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -373,7 +392,7 @@ function getEditCustomCodeButtons(){
 	getEditCustomCodeButtons_server(id).done(function(result) {
 		if(isObject(result)){
 			jQuery.each(result, function( field, buttons ) {
-				jQuery('<div class="control-group"><div class="control-label"><label>Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
+				jQuery('<div class="control-group"><div class="control-label"><label>Add/Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
 				jQuery.each(buttons, function( name, button ) {
 					jQuery(".control-customcode-buttons-"+field).append(button);
 				});

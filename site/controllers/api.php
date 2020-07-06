@@ -5,12 +5,14 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Componentbuilder Api Controller
@@ -32,6 +34,225 @@ class ComponentbuilderControllerApi extends JControllerForm
 		parent::__construct($config);
 	}
 
+	/**
+	 * The methods that are allowed to be called
+	 * 
+	 * @var     array
+	 */
+	protected $allowedMethods = array('compileInstall', 'translate');
+
+	/**
+	 * The local methods that should be triggered
+	 * 
+	 * @var     array
+	 */
+	protected $localMethodTrigger = array('compileInstall' => '_autoloader');
+
+	/**
+	 * Run the Translator
+	 *
+	 * @return  mix
+	 */
+	public function translator()
+	{
+		// get params first
+		if (!isset($this->params) || !ComponentbuilderHelper::checkObject($this->params))
+		{
+			$this->params = JComponentHelper::getParams('com_componentbuilder');
+		}
+		// get model
+		$model = $this->getModel('api');
+		// check if user has the right
+		$user = $this->getApiUser();
+		// get components that have translation tools
+		if ($user->authorise('core.admin', 'com_componentbuilder') && ($components = $model->getTranslationLinkedComponents()) !== false)
+		{
+			// the message package
+			$message = array();
+			// make sure to not unlock
+			$unlock = false;
+			// get messages
+			$callback = function($messages) use (&$message, &$unlock) {
+				// unlock messages if needed
+				if ($unlock) {
+					$messages = ComponentbuilderHelper::unlock($messages);
+				}
+				// check if we have any messages
+				if (ComponentbuilderHelper::checkArray($messages)) {
+					$message[] = implode("<br />\n", $messages);
+				} else {
+					// var_dump($messages); // error debug message
+				}
+			};
+			// we have two options, doing them one at a time, or using curl to do them somewhat asynchronously 
+			if (count ( (array) $components) > 1 && function_exists('curl_version'))
+			{
+				// line up the translations
+				foreach ($components as $component)
+				{
+					ComponentbuilderHelper::setWorker($component, 'translate');
+				}
+				// make sure to unlock
+				$unlock = true;
+				// run workers
+				ComponentbuilderHelper::runWorker('translate', 1, $callback);
+			}
+			else
+			{
+				foreach ($components as $component)
+				{
+					$model->translate($component);
+				}
+				// check if we have any messages
+				$callback($model->messages);
+			}
+			// return messages if found
+			if (ComponentbuilderHelper::checkArray($message))
+			{
+				echo implode("<br />\n", $message);
+			}
+			else
+			{
+				echo 1;
+			}
+			// clear session
+			JFactory::getApplication()->getSession()->destroy();
+			jexit();
+		}
+		// clear session
+		JFactory::getApplication()->getSession()->destroy();
+		// return bool
+		echo 0;
+		jexit();
+	}
+
+	/**
+	 * Run the Expansion
+	 *
+	 * @return  mix
+	 */
+	public function expand()
+	{
+		// get params first
+		if (!isset($this->params) || !ComponentbuilderHelper::checkObject($this->params))
+		{
+			$this->params = JComponentHelper::getParams('com_componentbuilder');
+		}
+		// check if expansion is enabled
+		$method = $this->params->get('development_method', 1);
+		// check what kind of return values show we give
+		$returnOptionsBuild = $this->params->get('return_options_build', 2);
+		if (2 == $method)
+		{
+			// get expansion components
+			$expansion = $this->params->get('expansion', null);
+			// check if they are set
+			if (ComponentbuilderHelper::checkObject($expansion))
+			{
+				// check if user has the right
+				$user = $this->getApiUser();
+				// the message package
+				$message = array();
+				if ($user->authorise('core.admin', 'com_componentbuilder'))
+				{
+					// make sure to not unlock
+					$unlock = false;
+					// get messages
+					$callback = function($messages) use (&$message, &$unlock) {
+						// unlock messages if needed
+						if ($unlock) {
+							$messages = ComponentbuilderHelper::unlock($messages);
+						}
+						// check if we have any messages
+						if (ComponentbuilderHelper::checkArray($messages)) {
+							$message[] = implode("<br />\n", $messages);
+						} else {
+							// var_dump($messages); // error debug message
+						}
+					};
+					// we have two options, doing them one at a time, or using curl to do them somewhat asynchronously 
+					if (count ( (array) $expansion) > 1 && function_exists('curl_version'))
+					{
+						// set workers
+						foreach ($expansion as $component)
+						{
+							ComponentbuilderHelper::setWorker($component, 'compileInstall');
+						}
+						// make sure to unlock
+						$unlock = true;
+						// run workers
+						ComponentbuilderHelper::runWorker('compileInstall', 1, $callback);
+					}
+					else
+					{
+						// get model
+						$model = $this->getModel('api');
+						// load the compiler
+						$this->_autoloader();
+						// set workers
+						foreach ($expansion as $component)
+						{
+							// compile and install
+							$model->compileInstall($component);
+						}
+						// check if we have any messages
+						$callback($model->messages);
+					}
+					// return messages if found
+					if (1== $returnOptionsBuild && ComponentbuilderHelper::checkArray($message))
+					{
+						echo implode("<br />\n", $message);
+					}
+					else
+					{
+						echo 1;
+					}
+					// clear session
+					JFactory::getApplication()->getSession()->destroy();
+					jexit();
+				}
+				// check if message is to be returned
+				if (1== $returnOptionsBuild)
+				{
+					// clear session
+					JFactory::getApplication()->getSession()->destroy();
+					jexit('Access Denied!');
+				}
+			}
+		}
+		// clear session
+		JFactory::getApplication()->getSession()->destroy();
+		// check if message is to be returned
+		if (1== $returnOptionsBuild)
+		{
+			jexit('Expansion Disabled! Expansion can be enabled by your system administrator in the global Options of JCB under the Development Method tab.');
+		}
+		// return bool
+		echo 0;
+		jexit();
+	}
+
+	/**
+	 * Get API User
+	 *
+	 * @return  object
+	 */
+	protected function getApiUser()
+	{
+		// return user object
+		return JFactory::getUser($this->params->get('api', 0, 'INT'));
+	}
+
+	/**
+	 * Load the needed script
+	 *
+	 * @return  void
+	 */
+	protected function _autoloader()
+	{
+		// include component compiler
+		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/compiler.php';
+	}
 
 	public function backup()
 	{
@@ -47,7 +268,7 @@ class ComponentbuilderControllerApi extends JControllerForm
 		// make sure to set active type (adding this script from custom code :)
 		$model->activeType = 'backup';
 		// check if export is allowed for this user. (we need this sorry)
-		if ($model->user->authorise('joomla_component.export', 'com_componentbuilder') && $model->user->authorise('core.export', 'com_componentbuilder'))
+		if ($model->user->authorise('joomla_component.export_jcb_packages', 'com_componentbuilder') && $model->user->authorise('core.export', 'com_componentbuilder'))
 		{
 			// get all component IDs to backup
 			$pks = componentbuilderHelper::getComponentIDs();
@@ -193,122 +414,6 @@ class ComponentbuilderControllerApi extends JControllerForm
 		return;
 	}
 
-	/**
-	 * Run the Expansion
-	 *
-	 * @return  mix
-	 */
-	public function expand()
-	{
-		// get params first
-		if (!isset($this->params) || !ComponentbuilderHelper::checkObject($this->params))
-		{
-			$this->params = JComponentHelper::getParams('com_componentbuilder');
-		}
-		// check if expansion is enabled
-		$method = $this->params->get('development_method', 1);
-		// check what kind of return values show we give
-		$returnOptionsBuild = $this->params->get('return_options_build', 2);
-		if (2 == $method)
-		{
-			// get expansion components
-			$expansion = $this->params->get('expansion', null);
-			// check if they are set
-			if (ComponentbuilderHelper::checkObject($expansion))
-			{
-				// check if user has the right
-				$user = $this->getApiUser();
-				// the message package
-				$message = array();
-				if ($user->authorise('core.admin', 'com_componentbuilder'))
-				{
-					// make sure to not unlock
-					$unlock = false;
-					// get messages
-					$callback = function($messages) use (&$message, &$unlock) {
-						// unlock messages if needed
-						if ($unlock) {
-							$messages = ComponentbuilderHelper::unlock($messages);
-						}
-						// check if we have any messages
-						if (ComponentbuilderHelper::checkArray($messages)) {
-							$message[] = implode("<br />\n", $messages);
-						} else {
-							// var_dump($messages); // error debug message
-						}
-					};
-					// we have two options, doing them one at a time, use using curl to do tome somewhat asynchronously 
-					if (count ( (array) $expansion) > 1 && function_exists('curl_version'))
-					{
-						// set workers
-						foreach ($expansion as $component)
-						{
-							ComponentbuilderHelper::setWorker($component, 'compileInstall');
-						}
-						// make sure to unlock
-						$unlock = true;
-						// run workers
-						ComponentbuilderHelper::runWorker('compileInstall', 1, $callback);
-					}
-					else
-					{
-						// get model
-						$model = $this->getModel('api');
-						// load the compiler
-						$this->_autoloader();
-						// set workers
-						foreach ($expansion as $component)
-						{
-							// compile and install
-							$model->compileInstall($component);
-						}
-						// check if we have any messages
-						$callback($model->messages);
-					}
-					// return messages if found
-					if (1== $returnOptionsBuild && ComponentbuilderHelper::checkArray($message))
-					{
-						echo implode("<br />\n", $message);
-					}
-					else
-					{
-						echo 1;
-					}
-					// clear session
-					JFactory::getApplication()->getSession()->destroy();
-					jexit();
-				}
-				// check if message is to be returned
-				if (1== $returnOptionsBuild)
-				{
-					// clear session
-					JFactory::getApplication()->getSession()->destroy();
-					jexit('Access Denied!');
-				}
-			}
-		}
-		// clear session
-		JFactory::getApplication()->getSession()->destroy();
-		// check if message is to be returned
-		if (1== $returnOptionsBuild)
-		{
-			jexit('Expansion Disabled! Expansion can be enabled by your system administrator in the global Options of JCB under the Development Method tab.');
-		}
-		// return bool
-		echo 0;
-		jexit();
-	}
-
-	/**
-	 * Get API User
-	 *
-	 * @return  object
-	 */
-	protected function getApiUser()
-	{
-		// return user object
-		return JFactory::getUser($this->params->get('api', 0, 'INT'));
-	}
 
 	/**
 	 * Run worker request
@@ -337,25 +442,35 @@ class ComponentbuilderControllerApi extends JControllerForm
 			// check the for a string
 			if (1 == $type && ComponentbuilderHelper::checkObject($dataValues) && ComponentbuilderHelper::checkString($task))
 			{
-				// get params first
-				if (!isset($this->params) || !ComponentbuilderHelper::checkObject($this->params))
-				{
-					$this->params = JComponentHelper::getParams('com_componentbuilder');
-				}
 				// get model
 				$model = $this->getModel('api');
-				// open the compile Install function
-				if ('compileInstall' === $task)
+				// check if allowed and method exist and is callable
+				if (in_array($task, $this->allowedMethods) && method_exists($model, $task) && is_callable(array($model, $task)))
 				{
-					// load the compiler
-					$this->_autoloader();
-					// compile and install
-					$model->compileInstall($dataValues);
-					// return locked values
-					echo ComponentbuilderHelper::lock($model->messages);
-					// clear session
-					JFactory::getApplication()->getSession()->destroy();
-					jexit();
+					// trigger local method
+					if (isset($this->localMethodTrigger[$task]))
+					{
+						// run the local method
+						$this->{$this->localMethodTrigger[$task]}();
+					}
+					// run the model method
+					$result = $model->{$task}($dataValues);
+					// check if we have messages
+					if (ComponentbuilderHelper::checkArray($model->messages))
+					{
+						// return locked values
+						echo ComponentbuilderHelper::lock($model->messages);
+						// clear session
+						JFactory::getApplication()->getSession()->destroy();
+						jexit();
+					}
+					elseif ($result)
+					{
+						echo 1;
+						// clear session
+						JFactory::getApplication()->getSession()->destroy();
+						jexit();
+					}
 				}
 			}
 		}
@@ -366,16 +481,6 @@ class ComponentbuilderControllerApi extends JControllerForm
 		jexit();
 	}
 
-	/**
-	 * Load the needed script
-	 *
-	 * @return  void
-	 */
-	protected function _autoloader()
-	{
-		// include component compiler
-		require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/compiler.php';
-	}
 
 	/**
 	 * Method to check if you can edit an existing record.

@@ -24,7 +24,7 @@ JFormHelper::loadFieldClass('user');
 /**
  * ###Type### Form Field class for the ###Component### component
  */
-class JFormField###Type### extends JFormFieldUser
+class ###JPREFIX###FormField###Type### extends JFormFieldUser
 {
 	/**
 	 * The ###type### field type.

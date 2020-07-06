@@ -5,18 +5,35 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Language\Language;
+use Joomla\String\StringHelper;
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Componentbuilder component helper
  */
 abstract class ComponentbuilderHelper
 {
+	/**
+	 * Composer Switch
+	 * 
+	 * @var      array
+	 */
+	protected static $composer = array();
+
+	/**
+	 * The Main Active Language
+	 * 
+	 * @var      string
+	 */
+	public static $langTag;
 
 	/**
 	*	The Global Site Event Method.
@@ -26,6 +43,7 @@ abstract class ComponentbuilderHelper
 		// the Session keeps track of all data related to the current session of this user
 		self::loadSession();
 	}
+
 
 	/**
 	* Locked Libraries (we can not have these change)
@@ -61,17 +79,20 @@ abstract class ComponentbuilderHelper
 	/**
 	* The VDM packages paths
 	**/
-	public static $vdmGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Packages/git/trees/master";
 	public static $vdmGithubPackageUrl = "https://github.com/vdm-io/JCB-Packages/raw/master/";
+	public static $vdmGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Packages/git/trees/master";
 
 	/**
 	* The JCB packages paths
 	**/
-	public static $jcbGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Community-Packages/git/trees/master";
 	public static $jcbGithubPackageUrl = "https://github.com/vdm-io/JCB-Community-Packages/raw/master/";
+	public static $jcbGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Community-Packages/git/trees/master";
 
-	// not needed at this time (maybe latter)
-	public static $accessToken = "";
+	/**
+	* The bolerplate paths
+	**/
+	public static $bolerplatePath = 'https://raw.githubusercontent.com/vdm-io/boilerplate/jcb/';
+	public static $bolerplateAPI = 'https://api.github.com/repos/vdm-io/boilerplate/git/trees/jcb';
 
 	/**
 	 * The array of constant paths
@@ -123,6 +144,636 @@ abstract class ComponentbuilderHelper
 		// The path to the templates folder.
 		'JPATH_THEMES' => JPATH_THEMES
 	);
+
+	/**
+	* get the class method or property
+	*
+	* @input	int           The method/property ID
+	* @input	string      The target type
+	*
+	* @returns string on success
+	**/
+	public static function getClassCode($id, $type)
+	{
+		if ('property' === $type || 'method' === $type)
+		{
+			// Get a db connection.
+			$db = JFactory::getDbo();
+			// Get user object
+			$user = JFactory::getUser();
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			// get method
+			if ('method' === $type)
+			{
+				$query->select($db->quoteName(array('a.comment','a.name','a.visibility','a.arguments','a.code')));
+			}
+			// get property
+			elseif ('property' === $type)
+			{
+				$query->select($db->quoteName(array('a.comment','a.name','a.visibility','a.default')));
+			}
+			$query->from($db->quoteName('#__componentbuilder_class_' . $type,'a'));
+			$query->where($db->quoteName('a.id') . ' = ' . (int) $id);
+			// Implement View Level Access
+			if (!$user->authorise('core.options', 'com_componentbuilder'))
+			{
+				$columns = $db->getTableColumns('#__componentbuilder_class_' . $type);
+				if(isset($columns['access']))
+				{
+					$groups = implode(',', $user->getAuthorisedViewLevels());
+					$query->where('a.access IN (' . $groups . ')');
+				}
+			}
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				// get the code
+				$code = $db->loadObject();
+				// combine method values
+				$combinded = array();
+				// add comment if set
+				if (self::checkString($code->comment))
+				{
+					$comment = array_map('trim', (array) explode(PHP_EOL, base64_decode($code->comment)));
+					$combinded[] = "\t" . implode(PHP_EOL . "\t ", $comment);
+				}
+				// build method
+				if ('method' === $type)
+				{
+					// set the method signature
+					if (self::checkString($code->arguments))
+					{
+						$combinded[] = "\t" . $code->visibility . ' function ' . $code->name . '(' . base64_decode($code->arguments) . ')';
+					}
+					else
+					{
+						$combinded[] = "\t" . $code->visibility . ' function ' . $code->name . '()';
+					}
+					// set the method code
+					$combinded[] = "\t" . "{";
+					// add code if set
+					if (self::checkString(trim($code->code)))
+					{
+						$combinded[] = base64_decode($code->code);
+					}
+					else
+					{
+						$combinded[] = "\t\t// add your code here";
+					}
+					$combinded[] = "\t" . "}";
+				}
+				else
+				{
+					if (self::checkString($code->default))
+					{
+						$code->default = base64_decode($code->default);
+						if (is_int($code->default))
+						{
+							// set the class property
+							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = ' . (int) $code->default . ';';
+						}
+						elseif (is_float($code->default))
+						{
+							// set the class property
+							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = ' . (float) $code->default . ';';
+						}
+						elseif (('false' === $code->default || 'true' === $code->default)
+							|| (self::checkString($code->default) && (strpos($code->default, 'array(') !== false || strpos($code->default, '"') !== false)))
+						{
+							// set the class property
+							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = ' . $code->default . ';';
+						}
+						elseif (self::checkString($code->default) && strpos($code->default, '"') === false)
+						{
+							// set the class property
+							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = "' . $code->default . '";';
+						}
+						else
+						{
+							// set the class property
+							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ';';
+						}
+					}
+					else
+					{
+						// set the class property
+						$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ';';
+					}
+				}
+				// return the code
+				return implode(PHP_EOL, $combinded);
+			}
+		}
+		return false;
+	}
+
+	/**
+	* extract Boilerplate Class Extends
+	*
+	* @input	string       The class as a string
+	* @input	string       The type of class/extension
+	*
+	* @returns string on success
+	**/
+	public static function extractBoilerplateClassExtends(&$class, $type)
+	{
+		if (($strings = self::getAllBetween($class, 'class ', '}')) !== false && self::checkArray($strings))
+		{
+			foreach ($strings as $string)
+			{
+				if (($extends = self::getBetween($string, 'extends ', '{')) !== false && self::checkString($extends))
+				{
+					return trim($extends);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	* extract Boilerplate Class Header
+	*
+	* @input	string       The class as a string
+	* @input	string       The class being extended
+	* @input	string       The type of class/extension
+	*
+	* @returns string on success
+	**/
+	public static function extractBoilerplateClassHeader(&$class, $extends, $type)
+	{
+		if (($string = self::getBetween($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && self::checkString($string))
+		{
+			$headArray = explode(PHP_EOL, $string);
+			if (self::checkArray($headArray) && count($headArray) > 3)
+			{
+				// remove first since it still has the [or die;] string in it
+				array_shift($headArray);
+				// remove the last since it has the class declaration
+				array_pop($headArray);
+				// at this point we have the class comment still in as part of the header, lets remove that
+				$last = count($headArray);
+				while ($last > 0)
+				{
+					$last--;
+					if (isset($headArray[$last]) && strpos($headArray[$last], '*') !== false)
+					{
+						unset($headArray[$last]);
+					}
+					else
+					{
+						// moment the comment stops, we break out
+						$last = 0;
+					}
+				}
+				// make sure we only return if we have values
+				if (self::checkArray($headArray))
+				{
+					return implode(PHP_EOL, $headArray);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	* extract Boilerplate Class Comment
+	*
+	* @input	string       The class as a string
+	* @input	string       The class being extended
+	* @input	string       The type of class/extension
+	*
+	* @returns string on success
+	**/
+	public static function extractBoilerplateClassComment(&$class, $extends, $type)
+	{
+		if (($string = self::getBetween($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && self::checkString($string))
+		{
+			$headArray = explode(PHP_EOL, $string);
+			if (self::checkArray($headArray) && count($headArray) > 3)
+			{
+				$comment = array();
+				// remove the last since it has the class declaration
+				array_pop($headArray);
+				// at this point we have the class comment still in as part of the header, lets remove that
+				$last = count($headArray);
+				while ($last > 0)
+				{
+					$last--;
+					if (isset($headArray[$last]) && strpos($headArray[$last], '*') !== false)
+					{
+						$comment[$last] = $headArray[$last];
+					}
+					else
+					{
+						// moment the comment stops, we break out
+						$last = 0;
+					}
+				}
+				// make sure we only return if we have values
+				if (self::checkArray($comment))
+				{
+					// set the correct order
+					ksort($comment);
+					$replace = array('Foo' => '[[[Plugin_name]]]', '[PACKAGE_NAME]' => '[[[Plugin]]]', '1.0.0' => '[[[plugin.version]]]', '1.0' => '[[[plugin.version]]]');
+					// now update with JCB placeholders
+					return str_replace(array_keys($replace), array_values($replace), implode(PHP_EOL, $comment));
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	* extract Boilerplate Class Properties & Methods
+	*
+	* @input	string       The class as a string
+	* @input	string       The class being extended
+	* @input	string       The type of class/extension
+	* @input	int            The plugin groups
+	*
+	* @returns string on success
+	**/
+	public static function extractBoilerplateClassPropertiesMethods(&$class, $extends, $type, $plugin_group = null)
+	{
+		$bucket = array('property' => array(), 'method' => array());
+		// get the class code, and remove the head
+		$codeArrayTmp = explode('extends ' . $extends, $class);
+		// make sure we have the correct result
+		if (self::checkArray($codeArrayTmp) && count($codeArrayTmp) == 2)
+		{
+			// the triggers
+			$triggers = array('public' => 1, 'protected' => 2, 'private' => 3);
+			$codeArray = explode(PHP_EOL, $codeArrayTmp[1]);
+			unset($codeArrayTmp);
+			// clean the code
+			self::cleanBoilerplateCode($codeArray);
+			// temp bucket
+			$name = null;
+			$arg = null;
+			$target = null;
+			$visibility = null;
+			$tmp = array();
+			$comment = array();
+			// load method
+			$loadCode = function (&$bucket, &$target, &$name, &$arg, &$visibility, &$tmp, &$comment) use($type, $plugin_group){
+				$_tmp = array(
+					'name' => $name,
+					'visibility' => $visibility,
+					'extension_type' => $type
+					);
+				// build filter
+				$filters = array('extension_type' => $type);
+				// add more data based on target
+				if ('method' === $target && self::checkArray($tmp))
+				{
+					// clean the code
+					self::cleanBoilerplateCode($tmp);
+					// only load if there are values
+					if (self::checkArray($tmp, true))
+					{
+						$_tmp['code'] = implode(PHP_EOL, $tmp);
+					}
+					else
+					{
+						$_tmp['code'] = '';
+					}
+					// load arguments only if set
+					if (self::checkString($arg))
+					{
+						$_tmp['arguments'] = $arg;
+					}
+				}
+				elseif ('property' === $target)
+				{
+					// load default only if set
+					if (self::checkString($arg))
+					{
+						$_tmp['default'] = $arg;
+					}
+				}
+				// load comment only if set
+				if (self::checkArray($comment, true))
+				{
+					$_tmp['comment'] = implode(PHP_EOL, $comment);
+				}
+				// load the group target
+				if ($plugin_group)
+				{
+					$_tmp['joomla_plugin_group'] = $plugin_group;
+					$filters['joomla_plugin_group'] = $plugin_group;
+				}
+				// load the local values
+				if (($locals = self::getLocalBoilerplate($name, $target, $type, $filters)) !== false)
+				{
+					foreach ($locals as $key => $value)
+					{
+						$_tmp[$key] = $value;
+					}
+				}
+				else
+				{
+					$_tmp['id'] = 0;
+					$_tmp['published'] = 1;
+					$_tmp['version'] = 1;
+				}
+				// store the data based on target
+				$bucket[$target][] = $_tmp;
+			};
+			// now we start loading
+			foreach($codeArray as $line)
+			{
+				if ($visibility && $target && $name && strpos($line, '/**') !== false)
+				{
+					$loadCode($bucket, $target, $name, $arg, $visibility, $tmp, $comment);
+					// reset loop buckets
+					$name = null;
+					$arg = null;
+					$target = null;
+					$visibility = null;
+					$tmp = array();
+					$comment = array();
+				}
+				// load the comment before method/property
+				if (!$visibility && !$target && !$name && strpos($line, '*') !== false)
+				{
+					$comment[] = rtrim($line);
+				}
+				else
+				{
+					if (!$visibility && !$target && !$name)
+					{
+						// get the line values
+						$lineArray = array_values(array_map('trim', preg_split('/\s+/', trim($line))));
+						// check if we are at the main line
+						if (isset($lineArray[0]) && isset($triggers[$lineArray[0]]))
+						{
+							$visibility = $lineArray[0];
+							if (strpos($line, 'function') !== false)
+							{
+								$target = 'method';
+								// get the name
+								$name = trim(self::getBetween($line, 'function ', '('));
+								// get the arguments
+								$arg = trim(self::getBetween($line, ' ' . $name . '(', ')'));
+							}
+							else
+							{
+								$target = 'property';
+								if (strpos($line, '=') !== false)
+								{
+									// get the name
+									$name = trim(self::getBetween($line, '$', '='));
+									// get the default
+									$arg = trim(self::getBetween($line, '=', ';'));
+								}
+								else
+								{
+									// get the name
+									$name = trim(self::getBetween($line, '$', ';'));
+								}
+							}
+						}
+					}
+					else
+					{
+						$tmp[] = rtrim($line);
+					}
+				}
+			}
+			// check if a last method is still around
+			if ($visibility && $target && $name)
+			{
+				$loadCode($bucket, $target, $name, $arg, $visibility, $tmp, $comment);
+				// reset loop buckets
+				$name = null;
+				$arg = null;
+				$target = null;
+				$visibility = null;
+				$tmp = array();
+				$comment = array();
+			}
+			return $bucket;
+		}
+		return false;
+	}
+
+	protected static function getLocalBoilerplate($name, $table, $extension_type, $filters = array())
+	{
+		if ('property' === $table || 'method' === $table)
+		{
+			// Get a db connection.
+			$db = JFactory::getDbo();
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			// get method
+			$query->select($db->quoteName(array('a.id','a.published','a.version')));
+			$query->from($db->quoteName('#__componentbuilder_class_' . $table,'a'));
+			$query->where($db->quoteName('a.name') . ' = ' . $db->quote($name));
+			$query->where($db->quoteName('a.extension_type') . ' = ' . $db->quote($extension_type));
+			// add more filters
+			if (self::checkArray($filters))
+			{
+				foreach($filters as $where => $value)
+				{
+					if (is_numeric($value))
+					{
+						$query->where($db->quoteName('a.' . $where) . ' = ' . $value);
+					}
+					else
+					{
+						$query->where($db->quoteName('a.' . $where) . ' = ' . $db->quote($value));
+					}
+				}
+			}
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				// get the code
+				return $db->loadAssoc();
+			}
+		}
+		return false;
+	}
+
+	protected static function cleanBoilerplateCode(&$code)
+	{
+		// remove the first lines until a { is found
+		$key = 0;
+		$found = false;
+		while (!$found)
+		{
+			if (isset($code[$key]))
+			{
+				if (strpos($code[$key], '{') !== false)
+				{
+					unset($code[$key]);
+					// only remove the first } found
+					$found = true;
+				}
+				// remove empty lines
+				elseif (!self::checkString(trim($code[$key])))
+				{
+					unset($code[$key]);
+				}
+			}
+			// check next line
+			$key++;
+			// stop loop at line 30 (really this should never happen)
+			if ($key > 30)
+			{
+				$found = true;
+			}
+		}
+		// reset all keys
+		$code = array_values($code);
+		// remove last lines until }
+		$last = count($code);
+		while ($last > 0)
+		{
+			$last--;
+			if (isset($code[$last]))
+			{
+				if (strpos($code[$last], '}') !== false)
+				{
+					unset($code[$last]);
+					// only remove the first } found
+					$last = 0;
+				}
+				// remove empty lines
+				elseif (!self::checkString(trim($code[$last])))
+				{
+					unset($code[$last]);
+				}
+			}
+		}
+	}
+
+	/**
+	* Making class or function name safe
+	*
+	* @input	string       The name you would like to make safe
+	*
+	* @returns string on success
+	**/
+	public static function safeClassFunctionName($name)
+	{
+		// remove numbers if the first character is a number
+		if (is_numeric(substr($name, 0, 1)))
+		{
+			$name = self::replaceNumbers($name);
+		}
+		// remove all spaces and strange characters
+		return trim(preg_replace("/[^A-Za-z0-9_-]/", '', $name));
+	}
+
+	/**
+	* The field builder switch
+	**/
+	protected static $fieldNameBuilder = false;
+
+	/**
+	* Making field names safe
+	*
+	* @input	string       The you would like to make safe
+	* @input	boolean      The switch to return an ALL UPPER CASE string
+	* @input	string       The string to use in white space
+	*
+	* @returns string on success
+	**/
+	public static function safeFieldName($string, $allcap = false, $spacer = '_')
+	{
+		// get global value
+		if (self::$fieldNameBuilder === false)
+		{
+			self::$fieldNameBuilder = JComponentHelper::getParams('com_componentbuilder')->get('field_name_builder', 1);
+		}
+		// use the new convention
+		if (2 == self::$fieldNameBuilder)
+		{
+			// 0nly continue if we have a string
+			if (self::checkString($string))
+			{
+				// check that the first character is not a number
+				if (is_numeric(substr($string, 0, 1)))
+				{
+					$string = self::replaceNumbers($string);
+				}
+				// remove all other strange characters
+				$string = trim($string);
+				$string = preg_replace('/'.$spacer.'+/', ' ', $string);
+				$string = preg_replace('/\s+/', ' ', $string);
+				// Transliterate string
+				$string = self::transliterate($string);
+				// remove all and keep only characters and numbers
+				$string = preg_replace("/[^A-Za-z0-9 ]/", '', $string);
+				// replace white space with underscore (SAFEST OPTION)
+				$string = preg_replace('/\s+/', $spacer, $string);
+				// return all caps
+				if ($allcap)
+				{
+					return strtoupper($string);
+				}
+				// default is to return lower
+				return strtolower($string);
+			}
+			// not a string
+			return '';
+		}
+		// return all caps
+		if ($allcap)
+		{
+			return self::safeString($string, 'U');
+		}
+		// use the default (original behaviour/convention)
+		return self::safeString($string);
+	}
+
+	/**
+	* The type builder switch
+	**/
+	protected static $typeNameBuilder = false;
+
+	/**
+	* Making field type name safe
+	*
+	* @input	string       The you would like to make safe
+	*
+	* @returns string on success
+	**/
+	public static function safeTypeName($string)
+	{
+		// get global value
+		if (self::$typeNameBuilder === false)
+		{
+			self::$typeNameBuilder = JComponentHelper::getParams('com_componentbuilder')->get('type_name_builder', 1);
+		}
+		// use the new convention
+		if (2 == self::$typeNameBuilder)
+		{
+			// 0nly continue if we have a string
+			if (self::checkString($string))
+			{
+				// check that the first character is not a number
+				if (is_numeric(substr($string, 0, 1)))
+				{
+					$string = self::replaceNumbers($string);
+				}
+				// Transliterate string
+				$string = self::transliterate($string);
+				// remove all and keep only characters and numbers and point (TODO just one point)
+				$string = trim(preg_replace("/[^A-Za-z0-9\.]/", '', $string));
+				// best is to return lower (for all string equality in compiler)
+				return strtolower($string);
+			}
+			// not a string
+			return '';
+		}
+		// use the default (original behaviour/convention)
+		return self::safeString($string);
+	}
 
 	/*
 	 * Get the Array of Existing Validation Rule Names
@@ -191,13 +842,13 @@ abstract class ComponentbuilderHelper
 	*/
 	public static function getContributorDetails($filename, $type = 'snippet')
 	{
-		// start loading he contributor details
+		// start loading the contributor details
 		$contributor = array();
 		// get the path & content
 		switch ($type)
 		{
 			case 'snippet':
-				$path = $snippetPath.$filename;
+				$path = self::$snippetPath.$filename;
 				// get the file if available
 				$content = self::getFileContents($path);
 				if (self::checkJson($content))
@@ -407,7 +1058,41 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Fix the path to work in the JCB script <-- (main issue here)
+	 *	Since we need / slash in all paths, for the JCB script even if it is Windows
+	 *	and since MS works with both forward and back slashes
+	 *	we just convert all slashes to forward slashes
+	 * 
+	 * THIS is just my hack (fix) if you know a better way! speak-up!
+	 * 
+	 * @param   mix    $values   the array of paths or the path as a string
+	 * @param   array  $targets  paths to target
+	 *
+	 * @return  string
+	 * 
+	 */
+	public static function fixPath(&$values, $targets = array())
+	{
+		// if multiple to gets searched and fixed
+		if (self::checkArray($values) && self::checkArray($targets))
+		{
+			foreach ($targets as $target)
+			{
+				if (isset($values[$target]) && strpos($values[$target], '\\') !== false)
+				{
+					$values[$target] = str_replace('\\', '/', $values[$target]);
+				}
+			}
+		}
+		// if just a string
+		elseif (self::checkString($values) && strpos($values, '\\') !== false)
+		{
+			$values = str_replace('\\', '/', $values);
+		}
+	}
+
 	/**
 	 * get all the file paths in folder and sub folders
 	 * 
@@ -417,7 +1102,7 @@ abstract class ComponentbuilderHelper
 	 * @return  void
 	 * 
 	 */
-	public static function getAllFilePaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'))
+	public static function getAllFilePaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'), $recurse = true, $full = true)
 	{
 		if (JFolder::exists($folder))
 		{
@@ -425,11 +1110,25 @@ abstract class ComponentbuilderHelper
 			$joomla = getcwd();
 			// we are changing the working directory to the componet path
 			chdir($folder);
-			// get the files
-			foreach ($fileTypes as $type)
+			// make sure we have file type filter
+			if (self::checkArray($fileTypes))
+			{
+				// get the files
+				foreach ($fileTypes as $type)
+				{
+					// get a list of files in the current directory tree
+					$files[] = JFolder::files('.', $type, $recurse, $full);
+				}
+			}
+			elseif (self::checkString($fileTypes))
 			{
 				// get a list of files in the current directory tree
-				$files[] = JFolder::files('.', $type, true, true);
+				$files[] = JFolder::files('.', $fileTypes, $recurse, $full);
+			}
+			else
+			{
+				// get a list of files in the current directory tree
+				$files[] = JFolder::files('.', '.', $recurse, $full);
 			}
 			// change back to Joomla working directory
 			chdir($joomla);
@@ -1122,7 +1821,7 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
-	protected static function getFieldNameAndType($id)
+	public static function getFieldNameAndType($id, $spacers = false)
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -1146,35 +1845,124 @@ abstract class ComponentbuilderHelper
 			$field = $db->loadObject();
 			// load the values form params
 			$field->xml = json_decode($field->xml);
-			$field->type_name = self::safeString($field->type_name);
+			$field->type_name = self::safeTypeName($field->type_name);
 			$load = true;
 			// if category then name must be catid (only one per view)
-			if ($field->type_name == 'category')
+			if ($field->type_name === 'category')
 			{
 				$name = 'catid';
 			}
 			// if tag is set then enable all tag options for this view (only one per view)
-			elseif ($field->type_name == 'tag')
+			elseif ($field->type_name === 'tag')
 			{
 				$name = 'tags';
 			}
 			// don't add spacers or notes
-			elseif ($field->type_name == 'spacer' || $field->type_name == 'note')
+			elseif (!$spacers && ($field->type_name == 'spacer' || $field->type_name == 'note'))
 			{
 				// make sure the name is unique
 				return false;
 			}
 			else
 			{
-				$name = self::safeString(self::getBetween($field->xml,'name="','"'));
+				$name = self::safeFieldName(self::getBetween($field->xml,'name="','"'));
 			}
 
 			// use field core name only if not found in xml
 			if (!self::checkString($name))
 			{
-				$name = self::safeString($field->name);;
+				$name = self::safeFieldName($field->name);
 			}
 			return array('name' => $name, 'type' => $field->type_name);
+		}
+		return false;
+	}
+
+	/**
+	* validate that a placeholder is unique
+	**/
+	public static function validateUniquePlaceholder($id, $name, $bool = false)
+	{
+		// make sure no padding is set
+		$name = preg_replace("/[^A-Za-z0-9_]/", '', $name);
+		// this list may grow as we find more cases that break the compiler (just open an issue on github)
+		if (in_array($name, array('component', 'view', 'views')))
+		{
+			// check if we must return boolean
+			if (!$bool)
+			{
+				return array (
+					'message' => JText::_('COM_COMPONENTBUILDER_SORRY_THIS_PLACEHOLDER_IS_ALREADY_IN_USE_IN_THE_COMPILER'),
+					'status' => 'danger');
+			}
+			return false;
+		}
+		// add the padding (needed)
+		$name = '[[[' . trim($name) . ']]]';
+		if (self::placeholderIsSet($id, $name))
+		{
+			// check if we must return boolean
+			if (!$bool)
+			{
+				return array (
+					'message' => JText::_('COM_COMPONENTBUILDER_SORRY_THIS_PLACEHOLDER_IS_ALREADY_IN_USE'),
+					'status' => 'danger');
+			}
+			return false;
+		}
+		// check if we must return boolean
+		if (!$bool)
+		{
+			return array (
+				'name' => $name,
+				'message' => JText::_('COM_COMPONENTBUILDER_GREAT_THIS_PLACEHOLDER_WILL_WORK'),
+				'status' => 'success');
+		}
+		return true;
+	}
+
+	/**
+	* search for placeholder in table
+	**/
+	protected static function placeholderIsSet($id, $name)
+	{
+		// query the table for result array
+		if (($results = self::getPlaceholderTarget($id, $name)) !== false)
+		{
+			// check if we must continue the search
+			foreach ($results as $_id => $target)
+			{
+				if ($name === $target)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	* get placeholder target
+	**/
+	protected static function getPlaceholderTarget($id, $name)
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('id', 'target')));
+		$query->from($db->quoteName('#__componentbuilder_placeholder'));
+		$query->where($db->quoteName('target') . ' = '. $db->quote($name));
+		// check if we have id
+		if (is_numeric($id))
+		{
+			$query->where($db->quoteName('id') . ' <> ' . (int) $id);
+		}
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			return $db->loadAssocList('id', 'target');
 		}
 		return false;
 	}
@@ -1188,12 +1976,14 @@ abstract class ComponentbuilderHelper
 		// The banners by size
 		'banner' => array(
 			'728-90' => array(
-				'<a href="https://volunteers.joomla.org/" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-wide.gif" alt="Joomla! Volunteers Portal" width="728" height="90" border="0"></a>',
-				'<a href="https://magazine.joomla.org" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img alt="Joomla! Community Magazine | Because community matters..." src="https://magazine.joomla.org/images/banners/JCM_2010_728x90.png" width="728" height="90" border="0" /></a>'
+				'<a href="https://vdm.bz/joomla-volunteers" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-wide.gif" alt="Joomla! Volunteers Portal" width="728" height="90" border="0"></a>',
+				'<a href="https://vdm.bz/joomla-magazine" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img alt="Joomla! Community Magazine | Because community matters..." src="https://magazine.joomla.org/images/banners/JCM_2010_728x90.png" width="728" height="90" border="0" /></a>',
+				'<a href="https://vdm.bz/jcb-sponsor-tlwebdesign" target="_blank" title="tlwebdesign a JCB sponsor | Because community matters..."><img alt="tlwebdesign a JCB sponsor | Because community matters..." src="https://www.joomlacomponentbuilder.com/images/banners/tlwebdesign_jcb_sponsor_728_90.png" width="728" height="90" border="0" /></a>',
+				'<a href="https://vdm.bz/jcb-sponsor-vdm" target="_blank" title="VDM a JCB sponsor | Because community matters..."><img alt="VDM a JCB sponsor | Because community matters..." src="https://www.joomlacomponentbuilder.com/images/banners/vdm_jcb_sponsor_728_90.gif" width="728" height="90" border="0" /></a>'
 			),
 			'160-600' => array(
-				'<a href="https://volunteers.joomla.org/" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-tall.gif" alt="Joomla! Volunteers Portal" width="160" height="600" border="0"></a>',
-				'<a href="https://magazine.joomla.org" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img src="https://magazine.joomla.org/images/banners/JCM_2010_120x600.png" alt="Joomla! Community Magazine | Because community matters..." width="120" height="600" border="0"/></a>'
+				'<a href="https://vdm.bz/joomla-volunteers" target="_blank" title="Joomla! Volunteers Portal"><img src="https://cdn.joomla.org/volunteers/joomla-heart-tall.gif" alt="Joomla! Volunteers Portal" width="160" height="600" border="0"></a>',
+				'<a href="https://vdm.bz/joomla-magazine" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img src="https://magazine.joomla.org/images/banners/JCM_2010_120x600.png" alt="Joomla! Community Magazine | Because community matters..." width="120" height="600" border="0"/></a>'
 			)
 		),
 		// The build-gif by size
@@ -1226,17 +2016,167 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	the Butler
+	 * Returns a GUIDv4 string
+	 * 
+	 * Thanks to Dave Pearson (and other)
+	 * https://www.php.net/manual/en/function.com-create-guid.php#119168 
+	 *
+	 * Uses the best cryptographically secure method
+	 * for all supported platforms with fallback to an older,
+	 * less secure version.
+	 *
+	 * @param bool $trim
+	 * @return string
+	 */
+	public static function GUID ($trim = true)
+	{
+		// Windows
+		if (function_exists('com_create_guid') === true)
+		{
+			if ($trim === true)
+			{
+				return trim(com_create_guid(), '{}');
+			}
+			return com_create_guid();
+		}
+
+		// set the braces if needed
+		$lbrace = $trim ? "" : chr(123);    // "{"
+		$rbrace = $trim ? "" : chr(125);    // "}"
+
+		// OSX/Linux
+		if (function_exists('openssl_random_pseudo_bytes') === true)
+		{
+			$data = openssl_random_pseudo_bytes(16);
+			$data[6] = chr(ord($data[6]) & 0x0f | 0x40);    // set version to 0100
+			$data[8] = chr(ord($data[8]) & 0x3f | 0x80);    // set bits 6-7 to 10
+			return $lbrace . vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4)) . $lbrace;
+		}
+
+		// Fallback (PHP 4.2+)
+		mt_srand((double)microtime() * 10000);
+		$charid = strtolower(md5(uniqid(rand(), true)));
+		$hyphen = chr(45);                  // "-"
+		$guidv4 = $lbrace.
+			substr($charid,  0,  8).$hyphen.
+			substr($charid,  8,  4).$hyphen.
+			substr($charid, 12,  4).$hyphen.
+			substr($charid, 16,  4).$hyphen.
+			substr($charid, 20, 12).
+			$rbrace;
+		return $guidv4;
+	}
+
+	/**
+	 * Validate the Globally Unique Identifier ( and check if table already has this identifier)
+	 *
+	 * @param string $guid
+	 * @param string $table
+	 * @param int      $id
+	 * @return bool
+	 */
+	public static function validGUID ($guid, $table = null, $id = 0)
+	{
+		// check if we have a string
+		if (self::validateGUID($guid))
+		{
+			// check if table already has this identifier
+			if (self::checkString($table))
+			{
+				// Get the database object and a new query object.
+				$db = \JFactory::getDbo();
+				$query = $db->getQuery(true);
+				$query->select('COUNT(*)')
+					->from('#__componentbuilder_' . (string) $table)
+					->where($db->quoteName('guid') . ' = ' . $db->quote($guid));
+
+				// remove this item from the list
+				if ($id > 0)
+				{
+					$query->where($db->quoteName('id') . ' <> ' . (int) $id);
+				}
+
+				// Set and query the database.
+				$db->setQuery($query);
+				$duplicate = (bool) $db->loadResult();
+
+				if ($duplicate)
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Validate the Globally Unique Identifier
+	 *
+	 * Thanks to Lewie
+	 * https://stackoverflow.com/a/1515456/1429677
+	 *
+	 * @param string $guid
+	 * @return bool
+	 */
+	protected static function validateGUID ($guid)
+	{
+		// check if we have a string
+		if (self::checkString($guid))
+		{
+			return preg_match("/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i", $guid);
+		}
+		return false;
+	}
+
+
+	/**
+	 * Tab/spacer bucket (to speed-up the build)
+	 * 
+	 * @var   array
+	 */
+	protected static $tabSpacerBucket = array();
+
+	/**
+	 * Set tab/spacer
+	 * 
+	 * @var   string
+	 */
+	protected static $tabSpacer = "\t";
+
+	/**
+	 * Set the tab/space
+	 * 
+	 * @param   int   $nr  The number of tag/space
+	 * 
+	 * @return  string
+	 * 
+	 */
+	public static function _t($nr)
+	{
+		// check if we already have the string
+		if (!isset(self::$tabSpacerBucket[$nr]))
+		{
+			// get the string
+			self::$tabSpacerBucket[$nr] = str_repeat(self::$tabSpacer, (int) $nr);
+		}
+		// return stored string
+		return self::$tabSpacerBucket[$nr];
+	}
+
+
+	/**
+	* the Butler
 	**/
 	public static $session = array();
 
 	/**
-	* 	the Butler Assistant 
+	* the Butler Assistant 
 	**/
 	protected static $localSession = array();
 
 	/**
-	* 	start a session if not already set, and load with data
+	* start a session if not already set, and load with data
 	**/
 	public static function loadSession()
 	{
@@ -1249,7 +2189,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	give Session more to keep
+	* give Session more to keep
 	**/
 	public static function set($key, $value)
 	{
@@ -1264,7 +2204,7 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	get info from Session
+	* get info from Session
 	**/
 	public static function get($key, $default = null)
 	{
@@ -1282,7 +2222,13 @@ abstract class ComponentbuilderHelper
 	}
 
 
-	public static function getFieldOptions($value, $type, $settings = array(), $xml = null)
+	/**
+	 * get field type properties
+	 *
+	 * @return  array   on success
+	 * 
+	 */
+	public static function getFieldTypeProperties($value, $type, $settings = array(), $xml = null, $db_defaults = false)
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -1290,6 +2236,11 @@ abstract class ComponentbuilderHelper
 		// Create a new query object.
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
+		// load database default values
+		if ($db_defaults)
+		{
+			$query->select($db->quoteName(array('datadefault', 'datadefault_other', 'datalenght', 'datalenght_other', 'datatype', 'has_defaults', 'indexes', 'null_switch', 'store')));
+		}
 		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
 		$query->where($db->quoteName('published') . ' = 1');
 		$query->where($db->quoteName($type) . ' = '. $value);
@@ -1402,6 +2353,20 @@ abstract class ComponentbuilderHelper
 			}
 			$field['values'] .= PHP_EOL . "/>";
 			$field['values_description'] .= '</tbody></table>';
+			// load the database defaults if set and wanted
+			if ($db_defaults && isset($result->has_defaults) && $result->has_defaults == 1)
+			{
+				$field['database'] = array(
+					'datatype' => $result->datatype,
+					'datadefault' => $result->datadefault,
+					'datadefault_other' => $result->datadefault_other,
+					'datalenght' => $result->datalenght,
+					'datalenght_other' => $result->datalenght_other,
+					'indexes' => $result->indexes,
+					'null_switch' => $result->null_switch,
+					'store' => $result->store
+				);
+			}
 			// return found field options
 			return $field;
 		}
@@ -1420,6 +2385,100 @@ abstract class ComponentbuilderHelper
 			return self::getBetween($xml, $get . '="', '"', $confirmation);
 		}
 		return $confirmation;
+	}
+
+
+	/**
+	 * get field types properties
+	 *
+	 * @return  array   on success
+	 * 
+	 */
+	public static function getFieldTypesProperties($targets = array(), $filter = array(), $exclude = array(), $type = 'id', $operator = 'IN')
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('id','properties')));
+		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
+		$query->where($db->quoteName('published') . ' = 1');
+		// make sure we have ids (or get all)
+		if ('IN_STRINGS' === $operator || 'NOT IN_STRINGS' === $operator)
+		{
+			$query->where($db->quoteName($type) . ' ' . str_replace('_STRINGS', '', $operator) . ' ("' . implode('","',$targets) . '")');
+		}
+		else
+		{
+			$query->where($db->quoteName($type) . ' ' . $operator . ' (' . implode(',',$targets) . ')');
+		}
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$_types = array();
+			$_properties = array();
+			$types = $db->loadObjectList('id');
+			foreach ($types as $id => $type)
+			{
+				$properties = json_decode($type->properties);
+				foreach ($properties as $property)
+				{
+					if (!isset($_types[$id]))
+					{
+						$_types[$id] = array();
+					}
+					// add if no objection is found
+					$add = true;
+					// check if we have exclude
+					if (self::checkArray($exclude) && in_array($property->name, $exclude))
+					{
+						continue;
+					}
+					// check if we have filter
+					if (self::checkArray($filter))
+					{
+						foreach($filter as $key => $val)
+						{
+							if (!isset($property->$key) || $property->$key != $val)
+							{
+								$add = false;
+							}
+						}
+					}
+					// now add the property
+					if ($add)
+					{
+						$_types[$id][$property->name] = array('name' => ucfirst($property->name), 'example' => $property->example, 'description' => $property->description);
+						// set mandatory
+						if (isset($property->mandatory) && $property->mandatory == 1)
+						{
+							$_types[$id][$property->name]['mandatory'] = true;
+						}
+						else
+						{
+							$_types[$id][$property->name]['mandatory'] = false;
+						}
+						// set translatable
+						if (isset($property->translatable) && $property->translatable == 1)
+						{
+							$_types[$id][$property->name]['translatable'] = true;
+						}
+						else
+						{
+							$_types[$id][$property->name]['translatable'] = false;
+						}
+						$_properties[$property->name] = $_types[$id][$property->name]['name'];
+					}
+				}
+			}
+
+			// return found types & properties
+			return array('types' => $_types, 'properties' => $_properties);
+		}
+		return false;
 	}
 
 
@@ -1582,66 +2641,164 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	*	get the github repo file list
-	*
-	*	@return  array on success
-	* 
-	*/
+	* The github access token
+	**/
+	protected static $gitHubAccessToken = "";
+
+	/**
+	* The github repo get data errors
+	**/
+	public static $githubRepoDataErrors = array();
+
+	/**
+	 * get the github repo file list
+	 *
+	 * @return  array on success
+	 * 
+	 */
 	public static function getGithubRepoFileList($type, $target)
 	{
-		// get the current Packages (public)
-		if (!$repoData = self::get($type))
+		// get the repo data
+		if (($repoData = self::getGithubRepoData($type, $target, 'tree')) !== false)
 		{
-			if (self::urlExists($target))
-			{
-				$repoData = self::getFileContents($target);
-				if (self::checkJson($repoData))
-				{
-					$test = json_decode($repoData);
-					if (self::checkObject($test) && isset($test->tree) && self::checkArray($test->tree) )
-					{
-						// remember to set it
-						self::set($type, $repoData);
-					}
-					// check if we have error message from github
-					elseif ($errorMessage = self::githubErrorHandeler(array('error' => null), $test))
-					{
-						if (self::checkString($errorMessage['error']))
-						{
-							JFactory::getApplication()->enqueueMessage($errorMessage['error'], 'Error');
-						}
-						$repoData = false;
-					}
-				}
-				else
-				{
-					$repoData = false;
-				}
-			}
-			else
-			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DOES_NOT_EXIST', $target), 'Error');
-			}
-		}
-		// check if we could find packages
-		if (isset($repoData) && self::checkJson($repoData))
-		{
-			$repoData = json_decode($repoData);
-			if (self::checkObject($repoData) && isset($repoData->tree) && self::checkArray($repoData->tree) )
-			{
-				return $repoData->tree;
-			}
+			return $repoData->tree;
 		}
 		return false;
 	}
 
 	/**
-	*	get the github error messages
-	*
-	*	@return  array of errors on success
-	* 
-	*/
-	protected static function githubErrorHandeler($message, &$github)
+	 * get the github repo file list
+	 *
+	 * @return  array on success
+	 * 
+	 */
+	public static function getGithubRepoData($type, $url, $target = null, $return_type = 'object')
+	{
+		// always reset errors per/request
+		self::$githubRepoDataErrors = array();
+		// get the current Packages (public)
+		if ('nomemory' === $type || !$repoData = self::get($type))
+		{
+			// add the token if not already added
+			$_url = self::setGithubToken($url);
+			// check if the url exist
+			if (self::urlExists($_url))
+			{
+				// get the data from github
+				if (($repoData = self::getFileContents($_url)) !== false && self::checkJson($repoData))
+				{
+					$github_returned = json_decode($repoData);
+					if (self::checkString($target) &&
+						( (self::checkObject($github_returned) && isset($github_returned->{$target}) && self::checkArray($github_returned->{$target})) ||
+						(self::checkArray($github_returned) && isset($github_returned[$target]) && self::checkArray($github_returned[$target])) ))
+					{
+						if ('nomemory' !== $type)
+						{
+							// remember to set it
+							self::set($type, $repoData);
+						}
+					}
+					elseif (!self::checkString($target) && (self::checkArray($github_returned) || (self::checkObject($github_returned) && !isset($github_returned->message))))
+					{
+						if ('nomemory' !== $type)
+						{
+							// remember to set it
+							self::set($type, $repoData);
+						}
+					}
+					// check if we have error message from github
+					elseif (($errorMessage = self::githubErrorHandeler(array('error' => null), $github_returned, $type)) !== false)
+					{
+						if (isset($errorMessage['error']) && self::checkString($errorMessage['error']))
+						{
+							// set the error in the application
+							JFactory::getApplication()->enqueueMessage($errorMessage['error'], 'Error');
+							// set the error also in the class encase it is and Ajax call
+							self::$githubRepoDataErrors[] = $errorMessage['error'];
+						}
+						return false;
+					}
+					elseif (self::checkString($target))
+					{
+						// setup error string
+						$error = JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DID_NOT_RETURN_S_DATA', $url, $target);
+						// set the error in the application
+						JFactory::getApplication()->enqueueMessage($error, 'Error');
+						// set the error also in the class encase it is and Ajax call
+						self::$githubRepoDataErrors[] = $error;
+						// we are done here
+						return false;
+					}
+					elseif ('nomemory' !== $type)
+					{
+						// setup error string
+						$error = JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DID_NOT_RETURN_S_DATA', $url, $type);
+						// set the error in the application
+						JFactory::getApplication()->enqueueMessage($error, 'Error');
+						// set the error also in the class encase it is and Ajax call
+						self::$githubRepoDataErrors[] = $error;
+						// we are done here
+						return false;
+					}
+					else
+					{
+						// setup error string
+						$error = JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DID_NOT_RETURN_VALID_DATA', $url, $type);
+						// set the error in the application
+						JFactory::getApplication()->enqueueMessage($error, 'Error');
+						// set the error also in the class encase it is and Ajax call
+						self::$githubRepoDataErrors[] = $error;
+						// we are done here
+						return false;
+					}
+				}
+				else
+				{
+					// setup error string
+					$error = JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DOES_NOT_RETURN_ANY_DATA', $url);
+					// set the error in the application
+					JFactory::getApplication()->enqueueMessage($error, 'Error');
+					// set the error also in the class encase it is and Ajax call
+					self::$githubRepoDataErrors[] = $error;
+					// we are done here
+					return false;
+				}
+			}
+			else
+			{
+				// setup error string
+				$error = JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DOES_NOT_EXIST', $url);
+				// set the error in the application
+				JFactory::getApplication()->enqueueMessage($error, 'Error');
+				// set the error also in the class encase it is and Ajax call
+				self::$githubRepoDataErrors[] = $error;
+				// we are done here
+				return false;
+			}
+		}
+		// check if we could find packages
+		if (isset($repoData) && self::checkJson($repoData))
+		{
+			if ('object' === $return_type)
+			{
+				return json_decode($repoData);
+			}
+			elseif ('array' === $return_type)
+			{
+				return json_decode($repoData, true);
+			}
+			return $repoData;
+		}
+		return false;
+	}
+
+	/**
+	 * get the github error messages
+	 *
+	 * @return  array of errors on success
+	 * 
+	 */
+	protected static function githubErrorHandeler($message, &$github, $type)
 	{
 		if (self::checkObject($github) && isset($github->message) && self::checkString($github->message))
 		{
@@ -1650,13 +2807,17 @@ abstract class ComponentbuilderHelper
 			// add the documentation URL
 			if (isset($github->documentation_url) && self::checkString($github->documentation_url))
 			{
-				$errorMessage = $errorMessage.'<br />'.$github->documentation_url;
+				$errorMessage = $errorMessage . '<br />' . $github->documentation_url;
 			}
 			// check the message
 			if (strpos($errorMessage, 'Authenticated') !== false)
 			{
+				if ('nomemory' === $type)
+				{
+					$type = 'data';
+				}
 				// add little more help if it is an access token issue
-				$errorMessage = JText::sprintf('COM_COMPONENTBUILDER_SBR_YOU_CAN_ADD_AN_BACCESS_TOKENB_TO_GETBIBLE_GLOBAL_OPTIONS_TO_MAKE_AUTHENTICATED_REQUESTS_AN_ACCESS_TOKEN_WITH_ONLY_PUBLIC_ACCESS_WILL_DO', $errorMessage);
+				$errorMessage = JText::sprintf('COM_COMPONENTBUILDER_SBR_YOU_CAN_ADD_A_BGITHUB_ACCESS_TOKENB_TO_COMPONENTBUILDER_GLOBAL_OPTIONS_TO_MAKE_AUTHENTICATED_REQUESTS_TO_GITHUB_AN_ACCESS_TOKEN_WITH_ONLY_PUBLIC_ACCESS_WILL_DO_TO_RETRIEVE_S', $errorMessage, $type);
 			}
 			// set error notice
 			$message['error'] = $errorMessage;
@@ -1666,7 +2827,46 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
+	/**
+	 * set the github token
+	 *
+	 * @return  array of errors on success
+	 * 
+	 */
+	protected static function setGithubToken($url)
+	{
+		// first check if token already set
+		if (strpos($url, 'access_token=') !== false)
+		{
+			// make sure the token is loaded
+			if (!self::checkString(self::$gitHubAccessToken))
+			{
+				// get the global settings
+				if (!self::checkObject(self::$params))
+				{
+					self::$params = JComponentHelper::getParams('com_componentbuilder');
+				}
+				self::$gitHubAccessToken = self::$params->get('github_access_token', null);
+			}
+			// make sure the token is loaded at this point
+			if (self::checkString(self::$gitHubAccessToken))
+			{
+				$url .= '&access_token=' . self::$gitHubAccessToken;
+			}
+		}
+		return $url;
+	}
 
+
+	/**
+	 * get Dynamic Scripts
+	 * 
+	 * @param   string   $type  The target type of string
+	 * @param   string   $fieldName  The target field name of string
+	 * 
+	 * @return  void
+	 * 
+	 */
 	public static function getDynamicScripts($type, $fieldName = false)
 	{
 		// if field name is passed the convert to type
@@ -1695,697 +2895,696 @@ abstract class ComponentbuilderHelper
 		if ('display' === $type)
 		{
 			// set the display script
-			$script['display'][] = "\tprotected \$headerList;";
-			$script['display'][] = "\tprotected \$hasPackage = false;";
-			$script['display'][] = "\tprotected \$headers;";
-			$script['display'][] = "\tprotected \$hasHeader = 0;";
-			$script['display'][] = "\tprotected \$dataType;";
-			$script['display'][] = "\n\tpublic function display(\$tpl = null)";
-			$script['display'][] = "\t{";
-			$script['display'][] = "\t\tif (\$this->getLayout() !== 'modal')";
-			$script['display'][] = "\t\t{";
-			$script['display'][] = "\t\t\t// Include helper submenu";
-			$script['display'][] = "\t\t\t[[[-#-#-Component]]]Helper::addSubmenu('import');";
-			$script['display'][] = "\t\t}";
-			$script['display'][] = "\n\t\t\$paths = new stdClass;";
-			$script['display'][] = "\t\t\$paths->first = '';";
-			$script['display'][] = "\t\t\$state = \$this->get('state');";
-			$script['display'][] = "\n\t\t\$this->paths = &\$paths;";
-			$script['display'][] = "\t\t\$this->state = &\$state;";
-			$script['display'][] = "\t\t// get global action permissions";
-			$script['display'][] = "\t\t\$this->canDo = [[[-#-#-Component]]]Helper::getActions('import');";
-			$script['display'][] = "\n\t\t// We don't need toolbar in the modal window.";
-			$script['display'][] = "\t\tif (\$this->getLayout() !== 'modal')";
-			$script['display'][] = "\t\t{";
-			$script['display'][] = "\t\t\t\$this->addToolbar();";
-			$script['display'][] = "\t\t\t\$this->sidebar = JHtmlSidebar::render();";
-			$script['display'][] = "\t\t}";
-			$script['display'][] = "\n\t\t// get the session object";
-			$script['display'][] = "\t\t\$session = JFactory::getSession();";
-			$script['display'][] = "\t\t// check if it has package";
-			$script['display'][] = "\t\t\$this->hasPackage \t= \$session->get('hasPackage', false);";
-			$script['display'][] = "\t\t\$this->dataType \t= \$session->get('dataType', false);";
-			$script['display'][] = "\t\tif(\$this->hasPackage && \$this->dataType)";
-			$script['display'][] = "\t\t{";
-			$script['display'][] = "\t\t\t\$this->headerList \t= json_decode(\$session->get(\$this->dataType.'_VDM_IMPORTHEADERS', false),true);";
-			$script['display'][] = "\t\t\t\$this->headers \t\t= [[[-#-#-Component]]]Helper::getFileHeaders(\$this->dataType);";
-			$script['display'][] = "\t\t\t// clear the data type";
-			$script['display'][] = "\t\t\t\$session->clear('dataType');";
-			$script['display'][] = "\t\t}";
-			$script['display'][] = "\n\t\t// Check for errors.";
-			$script['display'][] = "\t\tif (count(\$errors = \$this->get('Errors'))){";
-			$script['display'][] = "\t\t\tthrow new Exception(implode(".'"\n", $errors), 500);';
-			$script['display'][] = "\t\t}";
-			$script['display'][] = "\n\t\t// Display the template";
-			$script['display'][] = "\t\tparent::display(\$tpl);";
-			$script['display'][] = "\t}";
+			$script['display'][] = self::_t(1) . "protected \$headerList;";
+			$script['display'][] = self::_t(1) . "protected \$hasPackage = false;";
+			$script['display'][] = self::_t(1) . "protected \$headers;";
+			$script['display'][] = self::_t(1) . "protected \$hasHeader = 0;";
+			$script['display'][] = self::_t(1) . "protected \$dataType;";
+			$script['display'][] = self::_t(1) . "public function display(\$tpl = null)";
+			$script['display'][] = self::_t(1) . "{";
+			$script['display'][] = self::_t(2) . "if (\$this->getLayout() !== 'modal')";
+			$script['display'][] = self::_t(2) . "{";
+			$script['display'][] = self::_t(3) . "// Include helper submenu";
+			$script['display'][] = self::_t(3) . "[[[-#-#-Component]]]Helper::addSubmenu('import');";
+			$script['display'][] = self::_t(2) . "}";
+			$script['display'][] = PHP_EOL . self::_t(2) . "\$paths = new stdClass;";
+			$script['display'][] = self::_t(2) . "\$paths->first = '';";
+			$script['display'][] = self::_t(2) . "\$state = \$this->get('state');";
+			$script['display'][] = PHP_EOL . self::_t(2) . "\$this->paths = &\$paths;";
+			$script['display'][] = self::_t(2) . "\$this->state = &\$state;";
+			$script['display'][] = self::_t(2) . "// get global action permissions";
+			$script['display'][] = self::_t(2) . "\$this->canDo = [[[-#-#-Component]]]Helper::getActions('import');";
+			$script['display'][] = PHP_EOL . self::_t(2) . "// We don't need toolbar in the modal window.";
+			$script['display'][] = self::_t(2) . "if (\$this->getLayout() !== 'modal')";
+			$script['display'][] = self::_t(2) . "{";
+			$script['display'][] = self::_t(3) . "\$this->addToolbar();";
+			$script['display'][] = self::_t(3) . "\$this->sidebar = JHtmlSidebar::render();";
+			$script['display'][] = self::_t(2) . "}";
+			$script['display'][] = PHP_EOL . self::_t(2) . "// get the session object";
+			$script['display'][] = self::_t(2) . "\$session = JFactory::getSession();";
+			$script['display'][] = self::_t(2) . "// check if it has package";
+			$script['display'][] = self::_t(2) . "\$this->hasPackage" . self::_t(1) . "= \$session->get('hasPackage', false);";
+			$script['display'][] = self::_t(2) . "\$this->dataType" . self::_t(1) . "= \$session->get('dataType', false);";
+			$script['display'][] = self::_t(2) . "if(\$this->hasPackage && \$this->dataType)";
+			$script['display'][] = self::_t(2) . "{";
+			$script['display'][] = self::_t(3) . "\$this->headerList" . self::_t(1) . "= json_decode(\$session->get(\$this->dataType.'_VDM_IMPORTHEADERS', false),true);";
+			$script['display'][] = self::_t(3) . "\$this->headers" . self::_t(2) . "= [[[-#-#-Component]]]Helper::getFileHeaders(\$this->dataType);";
+			$script['display'][] = self::_t(3) . "// clear the data type";
+			$script['display'][] = self::_t(3) . "\$session->clear('dataType');";
+			$script['display'][] = self::_t(2) . "}";
+			$script['display'][] = PHP_EOL . self::_t(2) . "// Check for errors.";
+			$script['display'][] = self::_t(2) . "if (count(\$errors = \$this->get('Errors'))){";
+			$script['display'][] = self::_t(3) . "throw new Exception(implode(PHP_EOL, \$errors), 500);";
+			$script['display'][] = self::_t(2) . "}";
+			$script['display'][] = PHP_EOL . self::_t(2) . "// Display the template";
+			$script['display'][] = self::_t(2) . "parent::display(\$tpl);";
+			$script['display'][] = self::_t(1) . "}";
 		}
 		elseif ('setdata' === $type)
 		{
 			// set the setdata script
 			$script['setdata'] = array();
-			$script['setdata'][] = "\t/**";
-			$script['setdata'][] = "\t* Set the data from the spreadsheet to the database";
-			$script['setdata'][] = "\t*";
-			$script['setdata'][] = "\t* @param string  \$package Paths to the uploaded package file";
-			$script['setdata'][] = "\t*";
-			$script['setdata'][] = "\t* @return  boolean false on failure";
-			$script['setdata'][] = "\t*";
-			$script['setdata'][] = "\t**/";
-			$script['setdata'][] = "\tprotected function setData(\$package,\$table,\$target_headers)";
-			$script['setdata'][] = "\t{";
-			$script['setdata'][] = "\t\tif ([[[-#-#-Component]]]Helper::checkArray(\$target_headers))";
-			$script['setdata'][] = "\t\t{";
-			$script['setdata'][] = "\t\t\t// make sure the file is loaded\t\t";
-			$script['setdata'][] = "\t\t\tJLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');";
-			$script['setdata'][] = "\t\t\t\$jinput = JFactory::getApplication()->input;";
-			$script['setdata'][] = "\t\t\tforeach(\$target_headers as \$header)";
-			$script['setdata'][] = "\t\t\t{";
-			$script['setdata'][] = "\t\t\t\t\$data['target_headers'][\$header] = \$jinput->getString(\$header, null);";
-			$script['setdata'][] = "\t\t\t}";
-			$script['setdata'][] = "\t\t\t// set the data";
-			$script['setdata'][] = "\t\t\tif(isset(\$package['dir']))";
-			$script['setdata'][] = "\t\t\t{";
-			$script['setdata'][] = "\t\t\t\t\$inputFileType = PHPExcel_IOFactory::identify(\$package['dir']);";
-			$script['setdata'][] = "\t\t\t\t\$excelReader = PHPExcel_IOFactory::createReader(\$inputFileType);";
-			$script['setdata'][] = "\t\t\t\t\$excelReader->setReadDataOnly(true);";
-			$script['setdata'][] = "\t\t\t\t\$excelObj = \$excelReader->load(\$package['dir']);";
-			$script['setdata'][] = "\t\t\t\t\$data['array'] = \$excelObj->getActiveSheet()->toArray(null, true,true,true);";
-			$script['setdata'][] = "\t\t\t\t\$excelObj->disconnectWorksheets();";
-			$script['setdata'][] = "\t\t\t\tunset(\$excelObj);";
-			$script['setdata'][] = "\t\t\t\treturn \$this->save(\$data,\$table);";
-			$script['setdata'][] = "\t\t\t}";
-			$script['setdata'][] = "\t\t}";
-			$script['setdata'][] = "\t\treturn false;";
-			$script['setdata'][] = "\t}";
+			$script['setdata'][] = self::_t(1) . "/**";
+			$script['setdata'][] = self::_t(1) . "* Set the data from the spreadsheet to the database";
+			$script['setdata'][] = self::_t(1) . "*";
+			$script['setdata'][] = self::_t(1) . "* @param string  \$package Paths to the uploaded package file";
+			$script['setdata'][] = self::_t(1) . "*";
+			$script['setdata'][] = self::_t(1) . "* @return  boolean false on failure";
+			$script['setdata'][] = self::_t(1) . "*";
+			$script['setdata'][] = self::_t(1) . "**/";
+			$script['setdata'][] = self::_t(1) . "protected function setData(\$package,\$table,\$target_headers)";
+			$script['setdata'][] = self::_t(1) . "{";
+			$script['setdata'][] = self::_t(2) . "if ([[[-#-#-Component]]]Helper::checkArray(\$target_headers))";
+			$script['setdata'][] = self::_t(2) . "{";
+			$script['setdata'][] = self::_t(3) . "// make sure the file is loaded";
+			$script['setdata'][] = self::_t(3) . "[[[-#-#-Component]]]Helper::composerAutoload('phpspreadsheet');";
+			$script['setdata'][] = self::_t(3) . "\$jinput = JFactory::getApplication()->input;";
+			$script['setdata'][] = self::_t(3) . "foreach(\$target_headers as \$header)";
+			$script['setdata'][] = self::_t(3) . "{";
+			$script['setdata'][] = self::_t(4) . "\$data['target_headers'][\$header] = \$jinput->getString(\$header, null);";
+			$script['setdata'][] = self::_t(3) . "}";
+			$script['setdata'][] = self::_t(3) . "// set the data";
+			$script['setdata'][] = self::_t(3) . "if(isset(\$package['dir']))";
+			$script['setdata'][] = self::_t(3) . "{";
+			$script['setdata'][] = self::_t(4) . "\$inputFileType = IOFactory::identify(\$package['dir']);";
+			$script['setdata'][] = self::_t(4) . "\$excelReader = IOFactory::createReader(\$inputFileType);";
+			$script['setdata'][] = self::_t(4) . "\$excelReader->setReadDataOnly(true);";
+			$script['setdata'][] = self::_t(4) . "\$excelObj = \$excelReader->load(\$package['dir']);";
+			$script['setdata'][] = self::_t(4) . "\$data['array'] = \$excelObj->getActiveSheet()->toArray(null, true,true,true);";
+			$script['setdata'][] = self::_t(4) . "\$excelObj->disconnectWorksheets();";
+			$script['setdata'][] = self::_t(4) . "unset(\$excelObj);";
+			$script['setdata'][] = self::_t(4) . "return \$this->save(\$data, \$table);";
+			$script['setdata'][] = self::_t(3) . "}";
+			$script['setdata'][] = self::_t(2) . "}";
+			$script['setdata'][] = self::_t(2) . "return false;";
+			$script['setdata'][] = self::_t(1) . "}";
 		}
 		elseif ('headers' === $type)
 		{
 			$script['headers'] = array();
-			$script['headers'][] = "\t/**";
-			$script['headers'][] = "\t* Method to get header.";
-			$script['headers'][] = "\t*";
-			$script['headers'][] = "\t* @return mixed  An array of data items on success, false on failure.";
-			$script['headers'][] = "\t*/";
-			$script['headers'][] = "\tpublic function getExImPortHeaders()";
-			$script['headers'][] = "\t{";
-			$script['headers'][] = "\t\t// Get a db connection.";
-			$script['headers'][] = "\t\t\$db = JFactory::getDbo();";
-			$script['headers'][] = "\t\t// get the columns";
-			$script['headers'][] = "\t\t\$columns = \$db->getTableColumns(\"#__[[[-#-#-component]]]_[[[-#-#-view]]]\");";
-			$script['headers'][] = "\t\tif ([[[-#-#-Component]]]Helper::checkArray(\$columns))";
-			$script['headers'][] = "\t\t{";
-			$script['headers'][] = "\t\t\t// remove the headers you don't import/export.";
-			$script['headers'][] = "\t\t\tunset(\$columns['asset_id']);";
-			$script['headers'][] = "\t\t\tunset(\$columns['checked_out']);";
-			$script['headers'][] = "\t\t\tunset(\$columns['checked_out_time']);";
-			$script['headers'][] = "\t\t\t\$headers = new stdClass();";
-			$script['headers'][] = "\t\t\tforeach (\$columns as \$column => \$type)";
-			$script['headers'][] = "\t\t\t{";
-			$script['headers'][] = "\t\t\t\t\$headers->{\$column} = \$column;";
-			$script['headers'][] = "\t\t\t}";
-			$script['headers'][] = "\t\t\treturn \$headers;";
-			$script['headers'][] = "\t\t}";
-			$script['headers'][] = "\t\treturn false;";
-			$script['headers'][] = "\t}";
+			$script['headers'][] = self::_t(1) . "/**";
+			$script['headers'][] = self::_t(1) . "* Method to get header.";
+			$script['headers'][] = self::_t(1) . "*";
+			$script['headers'][] = self::_t(1) . "* @return mixed  An array of data items on success, false on failure.";
+			$script['headers'][] = self::_t(1) . "*/";
+			$script['headers'][] = self::_t(1) . "public function getExImPortHeaders()";
+			$script['headers'][] = self::_t(1) . "{";
+			$script['headers'][] = self::_t(2) . "// Get a db connection.";
+			$script['headers'][] = self::_t(2) . "\$db = JFactory::getDbo();";
+			$script['headers'][] = self::_t(2) . "// get the columns";
+			$script['headers'][] = self::_t(2) . "\$columns = \$db->getTableColumns(\"#__[[[-#-#-component]]]_[[[-#-#-view]]]\");";
+			$script['headers'][] = self::_t(2) . "if ([[[-#-#-Component]]]Helper::checkArray(\$columns))";
+			$script['headers'][] = self::_t(2) . "{";
+			$script['headers'][] = self::_t(3) . "// remove the headers you don't import/export.";
+			$script['headers'][] = self::_t(3) . "unset(\$columns['asset_id']);";
+			$script['headers'][] = self::_t(3) . "unset(\$columns['checked_out']);";
+			$script['headers'][] = self::_t(3) . "unset(\$columns['checked_out_time']);";
+			$script['headers'][] = self::_t(3) . "\$headers = new stdClass();";
+			$script['headers'][] = self::_t(3) . "foreach (\$columns as \$column => \$type)";
+			$script['headers'][] = self::_t(3) . "{";
+			$script['headers'][] = self::_t(4) . "\$headers->{\$column} = \$column;";
+			$script['headers'][] = self::_t(3) . "}";
+			$script['headers'][] = self::_t(3) . "return \$headers;";
+			$script['headers'][] = self::_t(2) . "}";
+			$script['headers'][] = self::_t(2) . "return false;";
+			$script['headers'][] = self::_t(1) . "}";
 		}
 		elseif ('save' === $type)
 		{
 			$script['save'] = array();
-			$script['save'][] = "\t/**";
-			$script['save'][] = "\t* Save the data from the file to the database";
-			$script['save'][] = "\t*";
-			$script['save'][] = "\t* @param string  \$package Paths to the uploaded package file";
-			$script['save'][] = "\t*";
-			$script['save'][] = "\t* @return  boolean false on failure";
-			$script['save'][] = "\t*";
-			$script['save'][] = "\t**/";
-			$script['save'][] = "\tprotected function save(\$data,\$table)";
-			$script['save'][] = "\t{";
-			$script['save'][] = "\t\t// import the data if there is any";
-			$script['save'][] = "\t\tif([[[-#-#-Component]]]Helper::checkArray(\$data['array']))";
-			$script['save'][] = "\t\t{";
-			$script['save'][] = "\t\t\t// get user object";
-			$script['save'][] = "\t\t\t\$user  \t\t= JFactory::getUser();";
-			$script['save'][] = "\t\t\t// remove header if it has headers";
-			$script['save'][] = "\t\t\t\$id_key \t= \$data['target_headers']['id'];";
-			$script['save'][] = "\t\t\t\$published_key \t= \$data['target_headers']['published'];";
-			$script['save'][] = "\t\t\t\$ordering_key \t= \$data['target_headers']['ordering'];";
-			$script['save'][] = "\t\t\t// get the first array set";
-			$script['save'][] = "\t\t\t\$firstSet = reset(\$data['array']);";
+			$script['save'][] = self::_t(1) . "/**";
+			$script['save'][] = self::_t(1) . "* Save the data from the file to the database";
+			$script['save'][] = self::_t(1) . "*";
+			$script['save'][] = self::_t(1) . "* @param string  \$package Paths to the uploaded package file";
+			$script['save'][] = self::_t(1) . "*";
+			$script['save'][] = self::_t(1) . "* @return  boolean false on failure";
+			$script['save'][] = self::_t(1) . "*";
+			$script['save'][] = self::_t(1) . "**/";
+			$script['save'][] = self::_t(1) . "protected function save(\$data,\$table)";
+			$script['save'][] = self::_t(1) . "{";
+			$script['save'][] = self::_t(2) . "// import the data if there is any";
+			$script['save'][] = self::_t(2) . "if([[[-#-#-Component]]]Helper::checkArray(\$data['array']))";
+			$script['save'][] = self::_t(2) . "{";
+			$script['save'][] = self::_t(3) . "// get user object";
+			$script['save'][] = self::_t(3) . "\$user" . self::_t(2) . "= JFactory::getUser();";
+			$script['save'][] = self::_t(3) . "// remove header if it has headers";
+			$script['save'][] = self::_t(3) . "\$id_key" . self::_t(1) . "= \$data['target_headers']['id'];";
+			$script['save'][] = self::_t(3) . "\$published_key" . self::_t(1) . "= \$data['target_headers']['published'];";
+			$script['save'][] = self::_t(3) . "\$ordering_key" . self::_t(1) . "= \$data['target_headers']['ordering'];";
+			$script['save'][] = self::_t(3) . "// get the first array set";
+			$script['save'][] = self::_t(3) . "\$firstSet = reset(\$data['array']);";
 			$script['save'][] = "";
-			$script['save'][] = "\t\t\t// check if first array is a header array and remove if true";
-			$script['save'][] = "\t\t\tif(\$firstSet[\$id_key] == 'id' || \$firstSet[\$published_key] == 'published' || \$firstSet[\$ordering_key] == 'ordering')";
-			$script['save'][] = "\t\t\t{";
-			$script['save'][] = "\t\t\t\tarray_shift(\$data['array']);";
-			$script['save'][] = "\t\t\t}";
-			$script['save'][] = "\t\t\t";
-			$script['save'][] = "\t\t\t// make sure there is still values in array and that it was not only headers";
-			$script['save'][] = "\t\t\tif([[[-#-#-Component]]]Helper::checkArray(\$data['array']) && \$user->authorise(\$table.'.import', 'com_[[[-#-#-component]]]') && \$user->authorise('core.import', 'com_[[[-#-#-component]]]'))";
-			$script['save'][] = "\t\t\t{";
-			$script['save'][] = "\t\t\t\t// set target.";
-			$script['save'][] = "\t\t\t\t\$target\t= array_flip(\$data['target_headers']);";
-			$script['save'][] = "\t\t\t\t// Get a db connection.";
-			$script['save'][] = "\t\t\t\t\$db = JFactory::getDbo();";
-			$script['save'][] = "\t\t\t\t// set some defaults";
-			$script['save'][] = "\t\t\t\t\$todayDate\t\t= JFactory::getDate()->toSql();";
-			$script['save'][] = "\t\t\t\t// get global action permissions";
-			$script['save'][] = "\t\t\t\t\$canDo\t\t\t= [[[-#-#-Component]]]Helper::getActions(\$table);";
-			$script['save'][] = "\t\t\t\t\$canEdit\t\t= \$canDo->get('core.edit');";
-			$script['save'][] = "\t\t\t\t\$canState\t\t= \$canDo->get('core.edit.state');";
-			$script['save'][] = "\t\t\t\t\$canCreate\t\t= \$canDo->get('core.create');";
-			$script['save'][] = "\t\t\t\t\$hasAlias\t\t= \$this->getAliasesUsed(\$table);";
-			$script['save'][] = "\t\t\t\t// prosses the data";
-			$script['save'][] = "\t\t\t\tforeach(\$data['array'] as \$row)";
-			$script['save'][] = "\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\$found = false;";
-			$script['save'][] = "\t\t\t\t\tif (isset(\$row[\$id_key]) && is_numeric(\$row[\$id_key]) && \$row[\$id_key] > 0)";
-			$script['save'][] = "\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t// raw items import & update!";
-			$script['save'][] = "\t\t\t\t\t\t\$query = \$db->getQuery(true);";
-			$script['save'][] = "\t\t\t\t\t\t\$query";
-			$script['save'][] = "\t\t\t\t\t\t\t->select('version')";
-			$script['save'][] = "\t\t\t\t\t\t\t->from(\$db->quoteName('#__[[[-#-#-component]]]_'.\$table))";
-			$script['save'][] = "\t\t\t\t\t\t\t->where(\$db->quoteName('id') . ' = '. \$db->quote(\$row[\$id_key]));";
-			$script['save'][] = "\t\t\t\t\t\t// Reset the query using our newly populated query object.";
-			$script['save'][] = "\t\t\t\t\t\t\$db->setQuery(\$query);";
-			$script['save'][] = "\t\t\t\t\t\t\$db->execute();";
-			$script['save'][] = "\t\t\t\t\t\t\$found = \$db->getNumRows();";
-			$script['save'][] = "\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t";
-			$script['save'][] = "\t\t\t\t\tif(\$found && \$canEdit)";
-			$script['save'][] = "\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t// update item";
-			$script['save'][] = "\t\t\t\t\t\t\$id \t\t= \$row[\$id_key];";
-			$script['save'][] = "\t\t\t\t\t\t\$version\t= \$db->loadResult();";
-			$script['save'][] = "\t\t\t\t\t\t// reset all buckets";
-			$script['save'][] = "\t\t\t\t\t\t\$query \t\t= \$db->getQuery(true);";
-			$script['save'][] = "\t\t\t\t\t\t\$fields \t= array();";
-			$script['save'][] = "\t\t\t\t\t\t// Fields to update.";
-			$script['save'][] = "\t\t\t\t\t\tforeach(\$row as \$key => \$cell)";
-			$script['save'][] = "\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t// ignore column";
-			$script['save'][] = "\t\t\t\t\t\t\tif ('IGNORE' == \$target[\$key])";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\tcontinue;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\t// update modified";
-			$script['save'][] = "\t\t\t\t\t\t\tif ('modified_by' == \$target[\$key])";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\tcontinue;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\t// update modified";
-			$script['save'][] = "\t\t\t\t\t\t\tif ('modified' == \$target[\$key])";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\tcontinue;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\t// update version";
-			$script['save'][] = "\t\t\t\t\t\t\tif ('version' == \$target[\$key])";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$cell = (int) \$version + 1;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\t// verify publish authority";
-			$script['save'][] = "\t\t\t\t\t\t\tif ('published' == \$target[\$key] && !\$canState)";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\tcontinue;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\t// set to update array";
-			$script['save'][] = "\t\t\t\t\t\t\tif(in_array(\$key, \$data['target_headers']) && is_numeric(\$cell))";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$fields[] = \$db->quoteName(\$target[\$key]) . ' = ' . \$cell;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\telseif(in_array(\$key, \$data['target_headers']) && is_string(\$cell))";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$fields[] = \$db->quoteName(\$target[\$key]) . ' = ' . \$db->quote(\$cell);";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\telseif(in_array(\$key, \$data['target_headers']) && is_null(\$cell))";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\t// if import data is null then set empty";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$fields[] = \$db->quoteName(\$target[\$key]) . \" = ''\";";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t// load the defaults";
-			$script['save'][] = "\t\t\t\t\t\t\$fields[]\t= \$db->quoteName('modified_by') . ' = ' . \$db->quote(\$user->id);";
-			$script['save'][] = "\t\t\t\t\t\t\$fields[]\t= \$db->quoteName('modified') . ' = ' . \$db->quote(\$todayDate);";
-			$script['save'][] = "\t\t\t\t\t\t// Conditions for which records should be updated.";
-			$script['save'][] = "\t\t\t\t\t\t\$conditions = array(";
-			$script['save'][] = "\t\t\t\t\t\t\t\$db->quoteName('id') . ' = ' . \$id";
-			$script['save'][] = "\t\t\t\t\t\t);";
-			$script['save'][] = "\t\t\t\t\t\t";
-			$script['save'][] = "\t\t\t\t\t\t\$query->update(\$db->quoteName('#__[[[-#-#-component]]]_'.\$table))->set(\$fields)->where(\$conditions);";
-			$script['save'][] = "\t\t\t\t\t\t\$db->setQuery(\$query);";
-			$script['save'][] = "\t\t\t\t\t\t\$db->execute();";
-			$script['save'][] = "\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\telseif (\$canCreate)";
-			$script['save'][] = "\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t// insert item";
-			$script['save'][] = "\t\t\t\t\t\t\$query = \$db->getQuery(true);";
-			$script['save'][] = "\t\t\t\t\t\t// reset all buckets";
-			$script['save'][] = "\t\t\t\t\t\t\$columns \t= array();";
-			$script['save'][] = "\t\t\t\t\t\t\$values \t= array();";
-			$script['save'][] = "\t\t\t\t\t\t\$version\t= false;";
-			$script['save'][] = "\t\t\t\t\t\t// Insert columns. Insert values.";
-			$script['save'][] = "\t\t\t\t\t\tforeach(\$row as \$key => \$cell)";
-			$script['save'][] = "\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t// ignore column";
-			$script['save'][] = "\t\t\t\t\t\t\tif ('IGNORE' == \$target[\$key])";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\tcontinue;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\t// remove id";
-			$script['save'][] = "\t\t\t\t\t\t\tif ('id' == \$target[\$key])";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\tcontinue;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\t// update created";
-			$script['save'][] = "\t\t\t\t\t\t\tif ('created_by' == \$target[\$key])";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\tcontinue;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\t// update created";
-			$script['save'][] = "\t\t\t\t\t\t\tif ('created' == \$target[\$key])";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\tcontinue;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\t// Make sure the alias is incremented";
-			$script['save'][] = "\t\t\t\t\t\t\tif ('alias' == \$target[\$key])";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$cell = \$this->getAlias(\$cell,\$table);";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\t// update version";
-			$script['save'][] = "\t\t\t\t\t\t\tif ('version' == \$target[\$key])";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$cell = 1;";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$version = true;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\t// set to insert array";
-			$script['save'][] = "\t\t\t\t\t\t\tif(in_array(\$key, \$data['target_headers']) && is_numeric(\$cell))";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$columns[] \t= \$target[\$key];";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$values[] \t= \$cell;";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\telseif(in_array(\$key, \$data['target_headers']) && is_string(\$cell))";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$columns[] \t= \$target[\$key];";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$values[] \t= \$db->quote(\$cell);";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t\telseif(in_array(\$key, \$data['target_headers']) && is_null(\$cell))";
-			$script['save'][] = "\t\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\t// if import data is null then set empty";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$columns[] \t= \$target[\$key];";
-			$script['save'][] = "\t\t\t\t\t\t\t\t\$values[] \t= \"''\";";
-			$script['save'][] = "\t\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t// load the defaults";
-			$script['save'][] = "\t\t\t\t\t\t\$columns[] \t= 'created_by';";
-			$script['save'][] = "\t\t\t\t\t\t\$values[] \t= \$db->quote(\$user->id);";
-			$script['save'][] = "\t\t\t\t\t\t\$columns[] \t= 'created';";
-			$script['save'][] = "\t\t\t\t\t\t\$values[] \t= \$db->quote(\$todayDate);";
-			$script['save'][] = "\t\t\t\t\t\tif (!\$version)";
-			$script['save'][] = "\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\$columns[] \t= 'version';";
-			$script['save'][] = "\t\t\t\t\t\t\t\$values[] \t= 1;";
-			$script['save'][] = "\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t\t// Prepare the insert query.";
-			$script['save'][] = "\t\t\t\t\t\t\$query";
-			$script['save'][] = "\t\t\t\t\t\t\t->insert(\$db->quoteName('#__[[[-#-#-component]]]_'.\$table))";
-			$script['save'][] = "\t\t\t\t\t\t\t->columns(\$db->quoteName(\$columns))";
-			$script['save'][] = "\t\t\t\t\t\t\t->values(implode(',', \$values));";
-			$script['save'][] = "\t\t\t\t\t\t// Set the query using our newly populated query object and execute it.";
-			$script['save'][] = "\t\t\t\t\t\t\$db->setQuery(\$query);";
-			$script['save'][] = "\t\t\t\t\t\t\$done = \$db->execute();";
-			$script['save'][] = "\t\t\t\t\t\tif (\$done)";
-			$script['save'][] = "\t\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\t\t\$aId = \$db->insertid();";
-			$script['save'][] = "\t\t\t\t\t\t\t// make sure the access of asset is set";
-			$script['save'][] = "\t\t\t\t\t\t\t[[[-#-#-Component]]]Helper::setAsset(\$aId,\$table);";
-			$script['save'][] = "\t\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t\telse";
-			$script['save'][] = "\t\t\t\t\t{";
-			$script['save'][] = "\t\t\t\t\t\treturn false;";
-			$script['save'][] = "\t\t\t\t\t}";
-			$script['save'][] = "\t\t\t\t}";
-			$script['save'][] = "\t\t\t\treturn true;";
-			$script['save'][] = "\t\t\t}";
-			$script['save'][] = "\t\t}";
-			$script['save'][] = "\t\treturn false;";
-			$script['save'][] = "\t}";
+			$script['save'][] = self::_t(3) . "// check if first array is a header array and remove if true";
+			$script['save'][] = self::_t(3) . "if(\$firstSet[\$id_key] == 'id' || \$firstSet[\$published_key] == 'published' || \$firstSet[\$ordering_key] == 'ordering')";
+			$script['save'][] = self::_t(3) . "{";
+			$script['save'][] = self::_t(4) . "array_shift(\$data['array']);";
+			$script['save'][] = self::_t(3) . "}";
+			$script['save'][] = self::_t(3) . "";
+			$script['save'][] = self::_t(3) . "// make sure there is still values in array and that it was not only headers";
+			$script['save'][] = self::_t(3) . "if([[[-#-#-Component]]]Helper::checkArray(\$data['array']) && \$user->authorise(\$table.'.import', 'com_[[[-#-#-component]]]') && \$user->authorise('core.import', 'com_[[[-#-#-component]]]'))";
+			$script['save'][] = self::_t(3) . "{";
+			$script['save'][] = self::_t(4) . "// set target.";
+			$script['save'][] = self::_t(4) . "\$target" . self::_t(1) . "= array_flip(\$data['target_headers']);";
+			$script['save'][] = self::_t(4) . "// Get a db connection.";
+			$script['save'][] = self::_t(4) . "\$db = JFactory::getDbo();";
+			$script['save'][] = self::_t(4) . "// set some defaults";
+			$script['save'][] = self::_t(4) . "\$todayDate" . self::_t(2) . "= JFactory::getDate()->toSql();";
+			$script['save'][] = self::_t(4) . "// get global action permissions";
+			$script['save'][] = self::_t(4) . "\$canDo" . self::_t(3) . "= [[[-#-#-Component]]]Helper::getActions(\$table);";
+			$script['save'][] = self::_t(4) . "\$canEdit" . self::_t(2) . "= \$canDo->get('core.edit');";
+			$script['save'][] = self::_t(4) . "\$canState" . self::_t(2) . "= \$canDo->get('core.edit.state');";
+			$script['save'][] = self::_t(4) . "\$canCreate" . self::_t(2) . "= \$canDo->get('core.create');";
+			$script['save'][] = self::_t(4) . "\$hasAlias" . self::_t(2) . "= \$this->getAliasesUsed(\$table);";
+			$script['save'][] = self::_t(4) . "// prosses the data";
+			$script['save'][] = self::_t(4) . "foreach(\$data['array'] as \$row)";
+			$script['save'][] = self::_t(4) . "{";
+			$script['save'][] = self::_t(5) . "\$found = false;";
+			$script['save'][] = self::_t(5) . "if (isset(\$row[\$id_key]) && is_numeric(\$row[\$id_key]) && \$row[\$id_key] > 0)";
+			$script['save'][] = self::_t(5) . "{";
+			$script['save'][] = self::_t(6) . "// raw items import & update!";
+			$script['save'][] = self::_t(6) . "\$query = \$db->getQuery(true);";
+			$script['save'][] = self::_t(6) . "\$query";
+			$script['save'][] = self::_t(7) . "->select('version')";
+			$script['save'][] = self::_t(7) . "->from(\$db->quoteName('#__[[[-#-#-component]]]_'.\$table))";
+			$script['save'][] = self::_t(7) . "->where(\$db->quoteName('id') . ' = '. \$db->quote(\$row[\$id_key]));";
+			$script['save'][] = self::_t(6) . "// Reset the query using our newly populated query object.";
+			$script['save'][] = self::_t(6) . "\$db->setQuery(\$query);";
+			$script['save'][] = self::_t(6) . "\$db->execute();";
+			$script['save'][] = self::_t(6) . "\$found = \$db->getNumRows();";
+			$script['save'][] = self::_t(5) . "}";
+			$script['save'][] = self::_t(5) . "";
+			$script['save'][] = self::_t(5) . "if(\$found && \$canEdit)";
+			$script['save'][] = self::_t(5) . "{";
+			$script['save'][] = self::_t(6) . "// update item";
+			$script['save'][] = self::_t(6) . "\$id" . self::_t(2) . "= \$row[\$id_key];";
+			$script['save'][] = self::_t(6) . "\$version" . self::_t(1) . "= \$db->loadResult();";
+			$script['save'][] = self::_t(6) . "// reset all buckets";
+			$script['save'][] = self::_t(6) . "\$query" . self::_t(2) . "= \$db->getQuery(true);";
+			$script['save'][] = self::_t(6) . "\$fields" . self::_t(1) . "= array();";
+			$script['save'][] = self::_t(6) . "// Fields to update.";
+			$script['save'][] = self::_t(6) . "foreach(\$row as \$key => \$cell)";
+			$script['save'][] = self::_t(6) . "{";
+			$script['save'][] = self::_t(7) . "// ignore column";
+			$script['save'][] = self::_t(7) . "if ('IGNORE' == \$target[\$key])";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "continue;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "// update modified";
+			$script['save'][] = self::_t(7) . "if ('modified_by' == \$target[\$key])";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "continue;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "// update modified";
+			$script['save'][] = self::_t(7) . "if ('modified' == \$target[\$key])";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "continue;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "// update version";
+			$script['save'][] = self::_t(7) . "if ('version' == \$target[\$key])";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "\$cell = (int) \$version + 1;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "// verify publish authority";
+			$script['save'][] = self::_t(7) . "if ('published' == \$target[\$key] && !\$canState)";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "continue;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "// set to update array";
+			$script['save'][] = self::_t(7) . "if(in_array(\$key, \$data['target_headers']) && is_numeric(\$cell))";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "\$fields[] = \$db->quoteName(\$target[\$key]) . ' = ' . \$cell;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "elseif(in_array(\$key, \$data['target_headers']) && is_string(\$cell))";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "\$fields[] = \$db->quoteName(\$target[\$key]) . ' = ' . \$db->quote(\$cell);";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "elseif(in_array(\$key, \$data['target_headers']) && is_null(\$cell))";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "// if import data is null then set empty";
+			$script['save'][] = self::_t(8) . "\$fields[] = \$db->quoteName(\$target[\$key]) . \" = ''\";";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(6) . "}";
+			$script['save'][] = self::_t(6) . "// load the defaults";
+			$script['save'][] = self::_t(6) . "\$fields[]" . self::_t(1) . "= \$db->quoteName('modified_by') . ' = ' . \$db->quote(\$user->id);";
+			$script['save'][] = self::_t(6) . "\$fields[]" . self::_t(1) . "= \$db->quoteName('modified') . ' = ' . \$db->quote(\$todayDate);";
+			$script['save'][] = self::_t(6) . "// Conditions for which records should be updated.";
+			$script['save'][] = self::_t(6) . "\$conditions = array(";
+			$script['save'][] = self::_t(7) . "\$db->quoteName('id') . ' = ' . \$id";
+			$script['save'][] = self::_t(6) . ");";
+			$script['save'][] = self::_t(6) . "";
+			$script['save'][] = self::_t(6) . "\$query->update(\$db->quoteName('#__[[[-#-#-component]]]_'.\$table))->set(\$fields)->where(\$conditions);";
+			$script['save'][] = self::_t(6) . "\$db->setQuery(\$query);";
+			$script['save'][] = self::_t(6) . "\$db->execute();";
+			$script['save'][] = self::_t(5) . "}";
+			$script['save'][] = self::_t(5) . "elseif (\$canCreate)";
+			$script['save'][] = self::_t(5) . "{";
+			$script['save'][] = self::_t(6) . "// insert item";
+			$script['save'][] = self::_t(6) . "\$query = \$db->getQuery(true);";
+			$script['save'][] = self::_t(6) . "// reset all buckets";
+			$script['save'][] = self::_t(6) . "\$columns" . self::_t(1) . "= array();";
+			$script['save'][] = self::_t(6) . "\$values" . self::_t(1) . "= array();";
+			$script['save'][] = self::_t(6) . "\$version" . self::_t(1) . "= false;";
+			$script['save'][] = self::_t(6) . "// Insert columns. Insert values.";
+			$script['save'][] = self::_t(6) . "foreach(\$row as \$key => \$cell)";
+			$script['save'][] = self::_t(6) . "{";
+			$script['save'][] = self::_t(7) . "// ignore column";
+			$script['save'][] = self::_t(7) . "if ('IGNORE' == \$target[\$key])";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "continue;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "// remove id";
+			$script['save'][] = self::_t(7) . "if ('id' == \$target[\$key])";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "continue;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "// update created";
+			$script['save'][] = self::_t(7) . "if ('created_by' == \$target[\$key])";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "continue;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "// update created";
+			$script['save'][] = self::_t(7) . "if ('created' == \$target[\$key])";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "continue;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "// Make sure the alias is incremented";
+			$script['save'][] = self::_t(7) . "if ('alias' == \$target[\$key])";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "\$cell = \$this->getAlias(\$cell,\$table);";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "// update version";
+			$script['save'][] = self::_t(7) . "if ('version' == \$target[\$key])";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "\$cell = 1;";
+			$script['save'][] = self::_t(8) . "\$version = true;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "// set to insert array";
+			$script['save'][] = self::_t(7) . "if(in_array(\$key, \$data['target_headers']) && is_numeric(\$cell))";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "\$columns[]" . self::_t(1) . "= \$target[\$key];";
+			$script['save'][] = self::_t(8) . "\$values[]" . self::_t(1) . "= \$cell;";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "elseif(in_array(\$key, \$data['target_headers']) && is_string(\$cell))";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "\$columns[]" . self::_t(1) . "= \$target[\$key];";
+			$script['save'][] = self::_t(8) . "\$values[]" . self::_t(1) . "= \$db->quote(\$cell);";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(7) . "elseif(in_array(\$key, \$data['target_headers']) && is_null(\$cell))";
+			$script['save'][] = self::_t(7) . "{";
+			$script['save'][] = self::_t(8) . "// if import data is null then set empty";
+			$script['save'][] = self::_t(8) . "\$columns[]" . self::_t(1) . "= \$target[\$key];";
+			$script['save'][] = self::_t(8) . "\$values[]" . self::_t(1) . "= \"''\";";
+			$script['save'][] = self::_t(7) . "}";
+			$script['save'][] = self::_t(6) . "}";
+			$script['save'][] = self::_t(6) . "// load the defaults";
+			$script['save'][] = self::_t(6) . "\$columns[]" . self::_t(1) . "= 'created_by';";
+			$script['save'][] = self::_t(6) . "\$values[]" . self::_t(1) . "= \$db->quote(\$user->id);";
+			$script['save'][] = self::_t(6) . "\$columns[]" . self::_t(1) . "= 'created';";
+			$script['save'][] = self::_t(6) . "\$values[]" . self::_t(1) . "= \$db->quote(\$todayDate);";
+			$script['save'][] = self::_t(6) . "if (!\$version)";
+			$script['save'][] = self::_t(6) . "{";
+			$script['save'][] = self::_t(7) . "\$columns[]" . self::_t(1) . "= 'version';";
+			$script['save'][] = self::_t(7) . "\$values[]" . self::_t(1) . "= 1;";
+			$script['save'][] = self::_t(6) . "}";
+			$script['save'][] = self::_t(6) . "// Prepare the insert query.";
+			$script['save'][] = self::_t(6) . "\$query";
+			$script['save'][] = self::_t(7) . "->insert(\$db->quoteName('#__[[[-#-#-component]]]_'.\$table))";
+			$script['save'][] = self::_t(7) . "->columns(\$db->quoteName(\$columns))";
+			$script['save'][] = self::_t(7) . "->values(implode(',', \$values));";
+			$script['save'][] = self::_t(6) . "// Set the query using our newly populated query object and execute it.";
+			$script['save'][] = self::_t(6) . "\$db->setQuery(\$query);";
+			$script['save'][] = self::_t(6) . "\$done = \$db->execute();";
+			$script['save'][] = self::_t(6) . "if (\$done)";
+			$script['save'][] = self::_t(6) . "{";
+			$script['save'][] = self::_t(7) . "\$aId = \$db->insertid();";
+			$script['save'][] = self::_t(7) . "// make sure the access of asset is set";
+			$script['save'][] = self::_t(7) . "[[[-#-#-Component]]]Helper::setAsset(\$aId,\$table);";
+			$script['save'][] = self::_t(6) . "}";
+			$script['save'][] = self::_t(5) . "}";
+			$script['save'][] = self::_t(5) . "else";
+			$script['save'][] = self::_t(5) . "{";
+			$script['save'][] = self::_t(6) . "return false;";
+			$script['save'][] = self::_t(5) . "}";
+			$script['save'][] = self::_t(4) . "}";
+			$script['save'][] = self::_t(4) . "return true;";
+			$script['save'][] = self::_t(3) . "}";
+			$script['save'][] = self::_t(2) . "}";
+			$script['save'][] = self::_t(2) . "return false;";
+			$script['save'][] = self::_t(1) . "}";
 		}
 		elseif ('view' === $type)
 		{
 			$script['view'] = array();
 			$script['view'][] = "<script type=\"text/javascript\">";
 			$script['view'][] = "<?php if (\$this->hasPackage && [[[-#-#-Component]]]Helper::checkArray(\$this->headerList)) : ?>";
-			$script['view'][] = "\tJoomla.continueImport = function()";
-			$script['view'][] = "\t{";
-			$script['view'][] = "\t\tvar form = document.getElementById('adminForm');";
-			$script['view'][] = "\t\tvar error = false;";
-			$script['view'][] = "\t\tvar therequired = [<?php \$i = 0; foreach(\$this->headerList as \$name => \$title) { echo (\$i != 0)? ', \"vdm_'.\$name.'\"':'\"vdm_'.\$name.'\"'; \$i++; } ?>];";
-			$script['view'][] = "\t\tfor(i = 0; i < therequired.length; i++)";
-			$script['view'][] = "\t\t{";
-			$script['view'][] = "\t\t\tif(jQuery('#'+therequired[i]).val() == \"\" )";
-			$script['view'][] = "\t\t\t{";
-			$script['view'][] = "\t\t\t\terror = true;";
-			$script['view'][] = "\t\t\t\tbreak;";
-			$script['view'][] = "\t\t\t}";
-			$script['view'][] = "\t\t}";
-			$script['view'][] = "\t\t// do field validation";
-			$script['view'][] = "\t\tif (error)";
-			$script['view'][] = "\t\t{";
-			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_PLEASE_SELECT_ALL_COLUMNS', true); ?>\");";
-			$script['view'][] = "\t\t}";
-			$script['view'][] = "\t\telse";
-			$script['view'][] = "\t\t{";
-			$script['view'][] = "\t\t\tjQuery('#loading').css('display', 'block');";
+			$script['view'][] = self::_t(1) . "Joomla.continueImport = function()";
+			$script['view'][] = self::_t(1) . "{";
+			$script['view'][] = self::_t(2) . "var form = document.getElementById('adminForm');";
+			$script['view'][] = self::_t(2) . "var error = false;";
+			$script['view'][] = self::_t(2) . "var therequired = [<?php \$i = 0; foreach(\$this->headerList as \$name => \$title) { echo (\$i != 0)? ', \"vdm_'.\$name.'\"':'\"vdm_'.\$name.'\"'; \$i++; } ?>];";
+			$script['view'][] = self::_t(2) . "for(i = 0; i < therequired.length; i++)";
+			$script['view'][] = self::_t(2) . "{";
+			$script['view'][] = self::_t(3) . "if(jQuery('#'+therequired[i]).val() == \"\" )";
+			$script['view'][] = self::_t(3) . "{";
+			$script['view'][] = self::_t(4) . "error = true;";
+			$script['view'][] = self::_t(4) . "break;";
+			$script['view'][] = self::_t(3) . "}";
+			$script['view'][] = self::_t(2) . "}";
+			$script['view'][] = self::_t(2) . "// do field validation";
+			$script['view'][] = self::_t(2) . "if (error)";
+			$script['view'][] = self::_t(2) . "{";
+			$script['view'][] = self::_t(3) . "alert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_PLEASE_SELECT_ALL_COLUMNS', true); ?>\");";
+			$script['view'][] = self::_t(2) . "}";
+			$script['view'][] = self::_t(2) . "else";
+			$script['view'][] = self::_t(2) . "{";
+			$script['view'][] = self::_t(3) . "jQuery('#loading').css('display', 'block');";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t\t\tform.gettype.value = 'continue';";
-			$script['view'][] = "\t\t\tform.submit();";
-			$script['view'][] = "\t\t}";
-			$script['view'][] = "\t};";
+			$script['view'][] = PHP_EOL . self::_t(3) . "form.gettype.value = 'continue';";
+			$script['view'][] = self::_t(3) . "form.submit();";
+			$script['view'][] = self::_t(2) . "}";
+			$script['view'][] = self::_t(1) . "};";
 			$script['view'][] = "<?php else: ?>";
-			$script['view'][] = "\tJoomla.submitbutton = function()";
-			$script['view'][] = "\t{";
-			$script['view'][] = "\t\tvar form = document.getElementById('adminForm');";
+			$script['view'][] = self::_t(1) . "Joomla.submitbutton = function()";
+			$script['view'][] = self::_t(1) . "{";
+			$script['view'][] = self::_t(2) . "var form = document.getElementById('adminForm');";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t\t// do field validation";
-			$script['view'][] = "\t\tif (form.import_package.value == \"\")";
-			$script['view'][] = "\t\t{";
-			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_PLEASE_SELECT_A_FILE', true); ?>\");";
-			$script['view'][] = "\t\t}";
-			$script['view'][] = "\t\telse";
-			$script['view'][] = "\t\t{";
-			$script['view'][] = "\t\t\tjQuery('#loading').css('display', 'block');";
+			$script['view'][] = PHP_EOL . self::_t(2) . "// do field validation";
+			$script['view'][] = self::_t(2) . "if (form.import_package.value == \"\")";
+			$script['view'][] = self::_t(2) . "{";
+			$script['view'][] = self::_t(3) . "alert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_PLEASE_SELECT_A_FILE', true); ?>\");";
+			$script['view'][] = self::_t(2) . "}";
+			$script['view'][] = self::_t(2) . "else";
+			$script['view'][] = self::_t(2) . "{";
+			$script['view'][] = self::_t(3) . "jQuery('#loading').css('display', 'block');";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t\t\tform.gettype.value = 'upload';";
-			$script['view'][] = "\t\t\tform.submit();";
-			$script['view'][] = "\t\t}";
-			$script['view'][] = "\t};";
+			$script['view'][] = PHP_EOL . self::_t(3) . "form.gettype.value = 'upload';";
+			$script['view'][] = self::_t(3) . "form.submit();";
+			$script['view'][] = self::_t(2) . "}";
+			$script['view'][] = self::_t(1) . "};";
 			$script['view'][] = "";
-			$script['view'][] = "\n\tJoomla.submitbutton3 = function()";
-			$script['view'][] = "\t{";
-			$script['view'][] = "\t\tvar form = document.getElementById('adminForm');";
+			$script['view'][] = PHP_EOL . self::_t(1) . "Joomla.submitbutton3 = function()";
+			$script['view'][] = self::_t(1) . "{";
+			$script['view'][] = self::_t(2) . "var form = document.getElementById('adminForm');";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t\t// do field validation";
-			$script['view'][] = "\t\tif (form.import_directory.value == \"\"){";
-			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_PLEASE_SELECT_A_DIRECTORY', true); ?>\");";
-			$script['view'][] = "\t\t}";
-			$script['view'][] = "\t\telse";
-			$script['view'][] = "\t\t{";
-			$script['view'][] = "\t\t\tjQuery('#loading').css('display', 'block');";
+			$script['view'][] = PHP_EOL . self::_t(2) . "// do field validation";
+			$script['view'][] = self::_t(2) . "if (form.import_directory.value == \"\"){";
+			$script['view'][] = self::_t(3) . "alert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_PLEASE_SELECT_A_DIRECTORY', true); ?>\");";
+			$script['view'][] = self::_t(2) . "}";
+			$script['view'][] = self::_t(2) . "else";
+			$script['view'][] = self::_t(2) . "{";
+			$script['view'][] = self::_t(3) . "jQuery('#loading').css('display', 'block');";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t\t\tform.gettype.value = 'folder';";
-			$script['view'][] = "\t\t\tform.submit();";
-			$script['view'][] = "\t\t}";
-			$script['view'][] = "\t};";
+			$script['view'][] = PHP_EOL . self::_t(3) . "form.gettype.value = 'folder';";
+			$script['view'][] = self::_t(3) . "form.submit();";
+			$script['view'][] = self::_t(2) . "}";
+			$script['view'][] = self::_t(1) . "};";
 			$script['view'][] = "";
-			$script['view'][] = "\n\tJoomla.submitbutton4 = function()";
-			$script['view'][] = "\t{";
-			$script['view'][] = "\t\tvar form = document.getElementById('adminForm');";
+			$script['view'][] = PHP_EOL . self::_t(1) . "Joomla.submitbutton4 = function()";
+			$script['view'][] = self::_t(1) . "{";
+			$script['view'][] = self::_t(2) . "var form = document.getElementById('adminForm');";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t\t// do field validation";
-			$script['view'][] = "\t\tif (form.import_url.value == \"\" || form.import_url.value == \"http://\")";
-			$script['view'][] = "\t\t{";
-			$script['view'][] = "\t\t\talert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_ENTER_A_URL', true); ?>\");";
-			$script['view'][] = "\t\t}";
-			$script['view'][] = "\t\telse";
-			$script['view'][] = "\t\t{";
-			$script['view'][] = "\t\t\tjQuery('#loading').css('display', 'block');";
+			$script['view'][] = PHP_EOL . self::_t(2) . "// do field validation";
+			$script['view'][] = self::_t(2) . "if (form.import_url.value == \"\" || form.import_url.value == \"http://\")";
+			$script['view'][] = self::_t(2) . "{";
+			$script['view'][] = self::_t(3) . "alert(\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_MSG_ENTER_A_URL', true); ?>\");";
+			$script['view'][] = self::_t(2) . "}";
+			$script['view'][] = self::_t(2) . "else";
+			$script['view'][] = self::_t(2) . "{";
+			$script['view'][] = self::_t(3) . "jQuery('#loading').css('display', 'block');";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t\t\tform.gettype.value = 'url';";
-			$script['view'][] = "\t\t\tform.submit();";
-			$script['view'][] = "\t\t}";
-			$script['view'][] = "\t};";
+			$script['view'][] = PHP_EOL . self::_t(3) . "form.gettype.value = 'url';";
+			$script['view'][] = self::_t(3) . "form.submit();";
+			$script['view'][] = self::_t(2) . "}";
+			$script['view'][] = self::_t(1) . "};";
 			$script['view'][] = "<?php endif; ?>";
 			$script['view'][] = "";
-			$script['view'][] = "\n// Add spindle-wheel for importations:";
+			$script['view'][] = PHP_EOL . "// Add spindle-wheel for importations:";
 			$script['view'][] = "jQuery(document).ready(function(\$) {";
-			$script['view'][] = "\tvar outerDiv = \$('body');";
+			$script['view'][] = self::_t(1) . "var outerDiv = \$('body');";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t\$('<div id=\"loading\"></div>')";
-			$script['view'][] = "\t\t.css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_[[[-#-#-component]]]/assets/images/import.gif') 50% 15% no-repeat\")";
-			$script['view'][] = "\t\t.css(\"top\", outerDiv.position().top - \$(window).scrollTop())";
-			$script['view'][] = "\t\t.css(\"left\", outerDiv.position().left - \$(window).scrollLeft())";
-			$script['view'][] = "\t\t.css(\"width\", outerDiv.width())";
-			$script['view'][] = "\t\t.css(\"height\", outerDiv.height())";
-			$script['view'][] = "\t\t.css(\"position\", \"fixed\")";
-			$script['view'][] = "\t\t.css(\"opacity\", \"0.80\")";
-			$script['view'][] = "\t\t.css(\"-ms-filter\", \"progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)\")";
-			$script['view'][] = "\t\t.css(\"filter\", \"alpha(opacity = 80)\")";
-			$script['view'][] = "\t\t.css(\"display\", \"none\")";
-			$script['view'][] = "\t\t.appendTo(outerDiv);";
+			$script['view'][] = PHP_EOL . self::_t(1) . "\$('<div id=\"loading\"></div>')";
+			$script['view'][] = self::_t(2) . ".css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_[[[-#-#-component]]]/assets/images/import.gif') 50% 15% no-repeat\")";
+			$script['view'][] = self::_t(2) . ".css(\"top\", outerDiv.position().top - \$(window).scrollTop())";
+			$script['view'][] = self::_t(2) . ".css(\"left\", outerDiv.position().left - \$(window).scrollLeft())";
+			$script['view'][] = self::_t(2) . ".css(\"width\", outerDiv.width())";
+			$script['view'][] = self::_t(2) . ".css(\"height\", outerDiv.height())";
+			$script['view'][] = self::_t(2) . ".css(\"position\", \"fixed\")";
+			$script['view'][] = self::_t(2) . ".css(\"opacity\", \"0.80\")";
+			$script['view'][] = self::_t(2) . ".css(\"-ms-filter\", \"progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)\")";
+			$script['view'][] = self::_t(2) . ".css(\"filter\", \"alpha(opacity = 80)\")";
+			$script['view'][] = self::_t(2) . ".css(\"display\", \"none\")";
+			$script['view'][] = self::_t(2) . ".appendTo(outerDiv);";
 			$script['view'][] = "});";
 			$script['view'][] = "";
-			$script['view'][] = "\n</script>";
+			$script['view'][] = PHP_EOL . "</script>";
 			$script['view'][] = "";
-			$script['view'][] = "\n<div id=\"installer-import\" class=\"clearfix\">";
+			$script['view'][] = PHP_EOL . "<div id=\"installer-import\" class=\"clearfix\">";
 			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo JRoute::_('index.php?option=com_[[[-#-#-component]]]&view=import_[[[-#-#-views]]]');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t<?php if (!empty( \$this->sidebar)) : ?>";
-			$script['view'][] = "\t\t<div id=\"j-sidebar-container\" class=\"span2\">";
-			$script['view'][] = "\t\t\t<?php echo \$this->sidebar; ?>";
-			$script['view'][] = "\t\t</div>";
-			$script['view'][] = "\t\t<div id=\"j-main-container\" class=\"span10\">";
-			$script['view'][] = "\t<?php else : ?>";
-			$script['view'][] = "\t\t<div id=\"j-main-container\">";
-			$script['view'][] = "\t<?php endif;?>";
+			$script['view'][] = PHP_EOL . self::_t(1) . "<?php if (!empty( \$this->sidebar)) : ?>";
+			$script['view'][] = self::_t(2) . "<div id=\"j-sidebar-container\" class=\"span2\">";
+			$script['view'][] = self::_t(3) . "<?php echo \$this->sidebar; ?>";
+			$script['view'][] = self::_t(2) . "</div>";
+			$script['view'][] = self::_t(2) . "<div id=\"j-main-container\" class=\"span10\">";
+			$script['view'][] = self::_t(1) . "<?php else : ?>";
+			$script['view'][] = self::_t(2) . "<div id=\"j-main-container\">";
+			$script['view'][] = self::_t(1) . "<?php endif;?>";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t<?php if (\$this->hasPackage && [[[-#-#-Component]]]Helper::checkArray(\$this->headerList) && [[[-#-#-Component]]]Helper::checkArray(\$this->headers)) : ?>";
-			$script['view'][] = "\t\t<fieldset class=\"uploadform\">";
-			$script['view'][] = "\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_LINK_FILE_TO_TABLE_COLUMNS'); ?></legend>";
-			$script['view'][] = "\t\t\t<div class=\"control-group\">";
-			$script['view'][] = "\t\t\t\t<label class=\"control-label\" ><h4><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_TABLE_COLUMNS'); ?></h4></label>";
-			$script['view'][] = "\t\t\t\t<div class=\"controls\">";
-			$script['view'][] = "\t\t\t\t\t<label class=\"control-label\" ><h4><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FILE_COLUMNS'); ?></h4></label>";
-			$script['view'][] = "\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t</div>";
-			$script['view'][] = "\t\t\t<?php foreach(\$this->headerList as \$name => \$title): ?>";
-			$script['view'][] = "\t\t\t\t<div class=\"control-group\">";
-			$script['view'][] = "\t\t\t\t\t<label for=\"<?php echo \$name; ?>\" class=\"control-label\" ><?php echo \$title; ?></label>";
-			$script['view'][] = "\t\t\t\t\t<div class=\"controls\">";
-			$script['view'][] = "\t\t\t\t\t\t<select  name=\"<?php echo \$name; ?>\"  id=\"vdm_<?php echo \$name; ?>\" required class=\"required input_box\" >";
-			$script['view'][] = "\t\t\t\t\t\t\t<option value=\"\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_PLEASE_SELECT_COLUMN'); ?></option>";
-			$script['view'][] = "\t\t\t\t\t\t\t<option value=\"IGNORE\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_IGNORE_COLUMN'); ?></option>";
-			$script['view'][] = "\t\t\t\t\t\t\t<?php foreach(\$this->headers as \$value => \$option): ?>";
-			$script['view'][] = "\t\t\t\t\t\t\t\t<?php \$selected = (strtolower(\$option) ==  strtolower (\$title) || strtolower(\$option) == strtolower(\$name))? 'selected=\"selected\"':''; ?>";
-			$script['view'][] = "\t\t\t\t\t\t\t\t<option value=\"<?php echo [[[-#-#-Component]]]Helper::htmlEscape(\$value); ?>\" class=\"required\" <?php echo \$selected ?>><?php echo [[[-#-#-Component]]]Helper::htmlEscape(\$option); ?></option>";
-			$script['view'][] = "\t\t\t\t\t\t\t<?php endforeach; ?>";
-			$script['view'][] = "\t\t\t\t\t\t</select>";
-			$script['view'][] = "\t\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t<?php endforeach; ?>";
-			$script['view'][] = "\t\t\t<div class=\"form-actions\">";
-			$script['view'][] = "\t\t\t\t<input class=\"btn btn-primary\" type=\"button\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_CONTINUE'); ?>\" onclick=\"Joomla.continueImport()\" />";
-			$script['view'][] = "\t\t\t</div>";
-			$script['view'][] = "\t\t</fieldset>";
-			$script['view'][] = "\t\t<input type=\"hidden\" name=\"gettype\" value=\"continue\" />";
-			$script['view'][] = "\t<?php else: ?>";
-			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'upload')); ?>";
-			$script['view'][] = "\t\t";
-			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'upload', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FROM_UPLOAD', true)); ?>";
-			$script['view'][] = "\t\t\t<fieldset class=\"uploadform\">";
-			$script['view'][] = "\t\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPDATE_DATA'); ?></legend>";
-			$script['view'][] = "\t\t\t\t<div class=\"control-group\">";
-			$script['view'][] = "\t\t\t\t\t<label for=\"import_package\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_SELECT_FILE'); ?></label>";
-			$script['view'][] = "\t\t\t\t\t<div class=\"controls\">";
-			$script['view'][] = "\t\t\t\t\t\t<input class=\"input_box\" id=\"import_package\" name=\"import_package\" type=\"file\" size=\"57\" />";
-			$script['view'][] = "\t\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t\t<div class=\"form-actions\">";
-			$script['view'][] = "\t\t\t\t\t<input class=\"btn btn-primary\" type=\"button\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPLOAD_BOTTON'); ?>\" onclick=\"Joomla.submitbutton()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
-			$script['view'][] = "\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t</fieldset>";
-			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
-			$script['view'][] = "\t\t";
-			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'directory', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FROM_DIRECTORY', true)); ?>";
-			$script['view'][] = "\t\t\t<fieldset class=\"uploadform\">";
-			$script['view'][] = "\t\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPDATE_DATA'); ?></legend>";
-			$script['view'][] = "\t\t\t\t<div class=\"control-group\">";
-			$script['view'][] = "\t\t\t\t\t<label for=\"import_directory\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_SELECT_FILE_DIRECTORY'); ?></label>";
-			$script['view'][] = "\t\t\t\t\t<div class=\"controls\">";
-			$script['view'][] = "\t\t\t\t\t\t<input type=\"text\" id=\"import_directory\" name=\"import_directory\" class=\"span5 input_box\" size=\"70\" value=\"<?php echo \$this->state->get('import.directory'); ?>\" />";
-			$script['view'][] = "\t\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t\t<div class=\"form-actions\">";
-			$script['view'][] = "\t\t\t\t\t<input type=\"button\" class=\"btn btn-primary\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_GET_BOTTON'); ?>\" onclick=\"Joomla.submitbutton3()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
-			$script['view'][] = "\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t\t</fieldset>";
-			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
+			$script['view'][] = PHP_EOL . self::_t(1) . "<?php if (\$this->hasPackage && [[[-#-#-Component]]]Helper::checkArray(\$this->headerList) && [[[-#-#-Component]]]Helper::checkArray(\$this->headers)) : ?>";
+			$script['view'][] = self::_t(2) . "<fieldset class=\"uploadform\">";
+			$script['view'][] = self::_t(3) . "<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_LINK_FILE_TO_TABLE_COLUMNS'); ?></legend>";
+			$script['view'][] = self::_t(3) . "<div class=\"control-group\">";
+			$script['view'][] = self::_t(4) . "<label class=\"control-label\" ><h4><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_TABLE_COLUMNS'); ?></h4></label>";
+			$script['view'][] = self::_t(4) . "<div class=\"controls\">";
+			$script['view'][] = self::_t(5) . "<label class=\"control-label\" ><h4><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FILE_COLUMNS'); ?></h4></label>";
+			$script['view'][] = self::_t(4) . "</div>";
+			$script['view'][] = self::_t(3) . "</div>";
+			$script['view'][] = self::_t(3) . "<?php foreach(\$this->headerList as \$name => \$title): ?>";
+			$script['view'][] = self::_t(4) . "<div class=\"control-group\">";
+			$script['view'][] = self::_t(5) . "<label for=\"<?php echo \$name; ?>\" class=\"control-label\" ><?php echo \$title; ?></label>";
+			$script['view'][] = self::_t(5) . "<div class=\"controls\">";
+			$script['view'][] = self::_t(6) . "<select  name=\"<?php echo \$name; ?>\"  id=\"vdm_<?php echo \$name; ?>\" required class=\"required input_box\" >";
+			$script['view'][] = self::_t(7) . "<option value=\"\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_PLEASE_SELECT_COLUMN'); ?></option>";
+			$script['view'][] = self::_t(7) . "<option value=\"IGNORE\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_IGNORE_COLUMN'); ?></option>";
+			$script['view'][] = self::_t(7) . "<?php foreach(\$this->headers as \$value => \$option): ?>";
+			$script['view'][] = self::_t(8) . "<?php \$selected = (strtolower(\$option) ==  strtolower (\$title) || strtolower(\$option) == strtolower(\$name))? 'selected=\"selected\"':''; ?>";
+			$script['view'][] = self::_t(8) . "<option value=\"<?php echo [[[-#-#-Component]]]Helper::htmlEscape(\$value); ?>\" class=\"required\" <?php echo \$selected ?>><?php echo [[[-#-#-Component]]]Helper::htmlEscape(\$option); ?></option>";
+			$script['view'][] = self::_t(7) . "<?php endforeach; ?>";
+			$script['view'][] = self::_t(6) . "</select>";
+			$script['view'][] = self::_t(5) . "</div>";
+			$script['view'][] = self::_t(4) . "</div>";
+			$script['view'][] = self::_t(3) . "<?php endforeach; ?>";
+			$script['view'][] = self::_t(3) . "<div class=\"form-actions\">";
+			$script['view'][] = self::_t(4) . "<input class=\"btn btn-primary\" type=\"button\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_CONTINUE'); ?>\" onclick=\"Joomla.continueImport()\" />";
+			$script['view'][] = self::_t(3) . "</div>";
+			$script['view'][] = self::_t(2) . "</fieldset>";
+			$script['view'][] = self::_t(2) . "<input type=\"hidden\" name=\"gettype\" value=\"continue\" />";
+			$script['view'][] = self::_t(1) . "<?php else: ?>";
+			$script['view'][] = self::_t(2) . "<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'upload')); ?>";
+			$script['view'][] = self::_t(2) . "";
+			$script['view'][] = self::_t(2) . "<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'upload', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FROM_UPLOAD', true)); ?>";
+			$script['view'][] = self::_t(3) . "<fieldset class=\"uploadform\">";
+			$script['view'][] = self::_t(4) . "<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPDATE_DATA'); ?></legend>";
+			$script['view'][] = self::_t(4) . "<div class=\"control-group\">";
+			$script['view'][] = self::_t(5) . "<label for=\"import_package\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_SELECT_FILE'); ?></label>";
+			$script['view'][] = self::_t(5) . "<div class=\"controls\">";
+			$script['view'][] = self::_t(6) . "<input class=\"input_box\" id=\"import_package\" name=\"import_package\" type=\"file\" size=\"57\" />";
+			$script['view'][] = self::_t(5) . "</div>";
+			$script['view'][] = self::_t(4) . "</div>";
+			$script['view'][] = self::_t(4) . "<div class=\"form-actions\">";
+			$script['view'][] = self::_t(5) . "<input class=\"btn btn-primary\" type=\"button\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPLOAD_BOTTON'); ?>\" onclick=\"Joomla.submitbutton()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
+			$script['view'][] = self::_t(4) . "</div>";
+			$script['view'][] = self::_t(3) . "</fieldset>";
+			$script['view'][] = self::_t(2) . "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+			$script['view'][] = self::_t(2) . "";
+			$script['view'][] = self::_t(2) . "<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'directory', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FROM_DIRECTORY', true)); ?>";
+			$script['view'][] = self::_t(3) . "<fieldset class=\"uploadform\">";
+			$script['view'][] = self::_t(4) . "<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPDATE_DATA'); ?></legend>";
+			$script['view'][] = self::_t(4) . "<div class=\"control-group\">";
+			$script['view'][] = self::_t(5) . "<label for=\"import_directory\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_SELECT_FILE_DIRECTORY'); ?></label>";
+			$script['view'][] = self::_t(5) . "<div class=\"controls\">";
+			$script['view'][] = self::_t(6) . "<input type=\"text\" id=\"import_directory\" name=\"import_directory\" class=\"span5 input_box\" size=\"70\" value=\"<?php echo \$this->state->get('import.directory'); ?>\" />";
+			$script['view'][] = self::_t(5) . "</div>";
+			$script['view'][] = self::_t(4) . "</div>";
+			$script['view'][] = self::_t(4) . "<div class=\"form-actions\">";
+			$script['view'][] = self::_t(5) . "<input type=\"button\" class=\"btn btn-primary\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_GET_BOTTON'); ?>\" onclick=\"Joomla.submitbutton3()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
+			$script['view'][] = self::_t(4) . "</div>";
+			$script['view'][] = self::_t(4) . "</fieldset>";
+			$script['view'][] = self::_t(2) . "<?php echo JHtml::_('bootstrap.endTab'); ?>";
 			$script['view'][] = "";
-			$script['view'][] = "\n\t\t<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'url', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FROM_URL', true)); ?>";
-			$script['view'][] = "\t\t\t<fieldset class=\"uploadform\">";
-			$script['view'][] = "\t\t\t\t<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPDATE_DATA'); ?></legend>";
-			$script['view'][] = "\t\t\t\t<div class=\"control-group\">";
-			$script['view'][] = "\t\t\t\t\t<label for=\"import_url\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_SELECT_FILE_URL'); ?></label>";
-			$script['view'][] = "\t\t\t\t\t<div class=\"controls\">";
-			$script['view'][] = "\t\t\t\t\t\t<input type=\"text\" id=\"import_url\" name=\"import_url\" class=\"span5 input_box\" size=\"70\" value=\"http://\" />";
-			$script['view'][] = "\t\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t\t<div class=\"form-actions\">";
-			$script['view'][] = "\t\t\t\t\t<input type=\"button\" class=\"btn btn-primary\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_GET_BOTTON'); ?>\" onclick=\"Joomla.submitbutton4()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
-			$script['view'][] = "\t\t\t\t</div>";
-			$script['view'][] = "\t\t\t</fieldset>";
-			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.endTab'); ?>";
-			$script['view'][] = "\t\t<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
-			$script['view'][] = "\t\t<input type=\"hidden\" name=\"gettype\" value=\"upload\" />";
-			$script['view'][] = "\t<?php endif; ?>";
-			$script['view'][] = "\t<input type=\"hidden\" name=\"task\" value=\"import_[[[-#-#-views]]].import\" />";
-			$script['view'][] = "\t<?php echo JHtml::_('form.token'); ?>";
+			$script['view'][] = PHP_EOL . self::_t(2) . "<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'url', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FROM_URL', true)); ?>";
+			$script['view'][] = self::_t(3) . "<fieldset class=\"uploadform\">";
+			$script['view'][] = self::_t(4) . "<legend><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UPDATE_DATA'); ?></legend>";
+			$script['view'][] = self::_t(4) . "<div class=\"control-group\">";
+			$script['view'][] = self::_t(5) . "<label for=\"import_url\" class=\"control-label\"><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_SELECT_FILE_URL'); ?></label>";
+			$script['view'][] = self::_t(5) . "<div class=\"controls\">";
+			$script['view'][] = self::_t(6) . "<input type=\"text\" id=\"import_url\" name=\"import_url\" class=\"span5 input_box\" size=\"70\" value=\"http://\" />";
+			$script['view'][] = self::_t(5) . "</div>";
+			$script['view'][] = self::_t(4) . "</div>";
+			$script['view'][] = self::_t(4) . "<div class=\"form-actions\">";
+			$script['view'][] = self::_t(5) . "<input type=\"button\" class=\"btn btn-primary\" value=\"<?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_GET_BOTTON'); ?>\" onclick=\"Joomla.submitbutton4()\" />&nbsp;&nbsp;&nbsp;<small><?php echo JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_FORMATS_ACCEPTED'); ?> (.csv .xls .ods)</small>";
+			$script['view'][] = self::_t(4) . "</div>";
+			$script['view'][] = self::_t(3) . "</fieldset>";
+			$script['view'][] = self::_t(2) . "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+			$script['view'][] = self::_t(2) . "<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
+			$script['view'][] = self::_t(2) . "<input type=\"hidden\" name=\"gettype\" value=\"upload\" />";
+			$script['view'][] = self::_t(1) . "<?php endif; ?>";
+			$script['view'][] = self::_t(1) . "<input type=\"hidden\" name=\"task\" value=\"import_[[[-#-#-views]]].import\" />";
+			$script['view'][] = self::_t(1) . "<?php echo JHtml::_('form.token'); ?>";
 			$script['view'][] = "</form>";
 			$script['view'][] = "</div>";
 		}
 		elseif ('import' === $type)
 		{
 			$script['import'] = array();
-			$script['import'][] = "\t/**";
-			$script['import'][] = "\t * Import an spreadsheet from either folder, url or upload.";
-			$script['import'][] = "\t *";
-			$script['import'][] = "\t * @return  boolean result of import";
-			$script['import'][] = "\t *";
-			$script['import'][] = "\t */";
-			$script['import'][] = "\tpublic function import()";
-			$script['import'][] = "\t{";
-			$script['import'][] = "\t\t\$this->setState('action', 'import');";
-			$script['import'][] = "\t\t\$app \t\t= JFactory::getApplication();";
-			$script['import'][] = "\t\t\$session \t= JFactory::getSession();";
-			$script['import'][] = "\t\t\$package \t= null;";
-			$script['import'][] = "\t\t\$continue\t= false;";
-			$script['import'][] = "\t\t// get import type";
-			$script['import'][] = "\t\t\$this->getType = \$app->input->getString('gettype', NULL);";
-			$script['import'][] = "\t\t// get import type";
-			$script['import'][] = "\t\t\$this->dataType\t= \$session->get('dataType_VDM_IMPORTINTO', NULL);";
-			$script['import'][] = "\n\t\tif (\$package === null)";
-			$script['import'][] = "\t\t{";
-			$script['import'][] = "\t\t\tswitch (\$this->getType)";
-			$script['import'][] = "\t\t\t{";
-			$script['import'][] = "\t\t\t\tcase 'folder':";
-			$script['import'][] = "\t\t\t\t\t// Remember the 'Import from Directory' path.";
-			$script['import'][] = "\t\t\t\t\t\$app->getUserStateFromRequest(\$this->_context . '.import_directory', 'import_directory');";
-			$script['import'][] = "\t\t\t\t\t\$package = \$this->_getPackageFromFolder();";
-			$script['import'][] = "\t\t\t\t\tbreak;";
-			$script['import'][] = "\n\t\t\t\tcase 'upload':";
-			$script['import'][] = "\t\t\t\t\t\$package = \$this->_getPackageFromUpload();";
-			$script['import'][] = "\t\t\t\t\tbreak;";
-			$script['import'][] = "\n\t\t\t\tcase 'url':";
-			$script['import'][] = "\t\t\t\t\t\$package = \$this->_getPackageFromUrl();";
-			$script['import'][] = "\t\t\t\t\tbreak;";
-			$script['import'][] = "\n\t\t\t\tcase 'continue':";
-			$script['import'][] = "\t\t\t\t\t\$continue \t= true;";
-			$script['import'][] = "\t\t\t\t\t\$package\t= \$session->get('package', null);";
-			$script['import'][] = "\t\t\t\t\t\$package\t= json_decode(\$package, true);";
-			$script['import'][] = "\t\t\t\t\t// clear session";
-			$script['import'][] = "\t\t\t\t\t\$session->clear('package');";
-			$script['import'][] = "\t\t\t\t\t\$session->clear('dataType');";
-			$script['import'][] = "\t\t\t\t\t\$session->clear('hasPackage');";
-			$script['import'][] = "\t\t\t\t\tbreak;";
-			$script['import'][] = "\n\t\t\t\tdefault:";
-			$script['import'][] = "\t\t\t\t\t\$app->setUserState('com_[[[-#-#-component]]].message', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_NO_IMPORT_TYPE_FOUND'));";
-			$script['import'][] = "\n\t\t\t\t\treturn false;";
-			$script['import'][] = "\t\t\t\t\tbreak;";
-			$script['import'][] = "\t\t\t}";
-			$script['import'][] = "\t\t}";
-			$script['import'][] = "\t\t// Was the package valid?";
-			$script['import'][] = "\t\tif (!\$package || !\$package['type'])";
-			$script['import'][] = "\t\t{";
-			$script['import'][] = "\t\t\tif (in_array(\$this->getType, array('upload', 'url')))";
-			$script['import'][] = "\t\t\t{";
-			$script['import'][] = "\t\t\t\t\$this->remove(\$package['packagename']);";
-			$script['import'][] = "\t\t\t}";
-			$script['import'][] = "\n\t\t\t\$app->setUserState('com_[[[-#-#-component]]].message', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'));";
-			$script['import'][] = "\t\t\treturn false;";
-			$script['import'][] = "\t\t}";
-			$script['import'][] = "\t\t";
-			$script['import'][] = "\t\t// first link data to table headers";
-			$script['import'][] = "\t\tif(!\$continue){";
-			$script['import'][] = "\t\t\t\$package\t= json_encode(\$package);";
-			$script['import'][] = "\t\t\t\$session->set('package', \$package);";
-			$script['import'][] = "\t\t\t\$session->set('dataType', \$this->dataType);";
-			$script['import'][] = "\t\t\t\$session->set('hasPackage', true);";
-			$script['import'][] = "\t\t\treturn true;";
-			$script['import'][] = "\t\t}";
-			$script['import'][] = "\t\t// set the data";
-			$script['import'][] = "\t\t\$headerList = json_decode(\$session->get(\$this->dataType.'_VDM_IMPORTHEADERS', false), true);";
-			$script['import'][] = "\t\tif (!\$this->setData(\$package,\$this->dataType,\$headerList))";
-			$script['import'][] = "\t\t{";
-			$script['import'][] = "\t\t\t// There was an error importing the package";
-			$script['import'][] = "\t\t\t\$msg = JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_ERROR');";
-			$script['import'][] = "\t\t\t\$back = \$session->get('backto_VDM_IMPORT', NULL);";
-			$script['import'][] = "\t\t\tif (\$back)";
-			$script['import'][] = "\t\t\t{";
-			$script['import'][] = "\t\t\t\t\$app->setUserState('com_[[[-#-#-component]]].redirect_url', 'index.php?option=com_[[[-#-#-component]]]&view='.\$back);";
-			$script['import'][] = "\t\t\t\t\$session->clear('backto_VDM_IMPORT');";
-			$script['import'][] = "\t\t\t}";
-			$script['import'][] = "\t\t\t\$result = false;";
-			$script['import'][] = "\t\t}";
-			$script['import'][] = "\t\telse";
-			$script['import'][] = "\t\t{";
-			$script['import'][] = "\t\t\t// Package imported sucessfully";
-			$script['import'][] = "\t\t\t\$msg = JTe-#-#-xt::sprintf('COM_[[[-#-#-COMPONENT]]]_IMPORT_SUCCESS', \$package['packagename']);";
-			$script['import'][] = "\t\t\t\$back = \$session->get('backto_VDM_IMPORT', NULL);";
-			$script['import'][] = "\t\t\tif (\$back)";
-			$script['import'][] = "\t\t\t{";
-			$script['import'][] = "\t\t\t    \$app->setUserState('com_[[[-#-#-component]]].redirect_url', 'index.php?option=com_[[[-#-#-component]]]&view='.\$back);";
-			$script['import'][] = "\t\t\t    \$session->clear('backto_VDM_IMPORT');";
-			$script['import'][] = "\t\t\t}";
-			$script['import'][] = "\t\t\t\$result = true;";
-			$script['import'][] = "\t\t}";
-			$script['import'][] = "\n\t\t// Set some model state values";
-			$script['import'][] = "\t\t\$app->enqueueMessage(\$msg);";
-			$script['import'][] = "\n\t\t// remove file after import";
-			$script['import'][] = "\t\t\$this->remove(\$package['packagename']);";
-			$script['import'][] = "\t\t\$session->clear(\$this->getType.'_VDM_IMPORTHEADERS');";
-			$script['import'][] = "\t\treturn \$result;";
-			$script['import'][] = "\t}";
+			$script['import'][] = self::_t(1) . "/**";
+			$script['import'][] = self::_t(1) . " * Import an spreadsheet from either folder, url or upload.";
+			$script['import'][] = self::_t(1) . " *";
+			$script['import'][] = self::_t(1) . " * @return  boolean result of import";
+			$script['import'][] = self::_t(1) . " *";
+			$script['import'][] = self::_t(1) . " */";
+			$script['import'][] = self::_t(1) . "public function import()";
+			$script['import'][] = self::_t(1) . "{";
+			$script['import'][] = self::_t(2) . "\$this->setState('action', 'import');";
+			$script['import'][] = self::_t(2) . "\$app" . self::_t(2) . "= JFactory::getApplication();";
+			$script['import'][] = self::_t(2) . "\$session" . self::_t(1) . "= JFactory::getSession();";
+			$script['import'][] = self::_t(2) . "\$package" . self::_t(1) . "= null;";
+			$script['import'][] = self::_t(2) . "\$continue" . self::_t(1) . "= false;";
+			$script['import'][] = self::_t(2) . "// get import type";
+			$script['import'][] = self::_t(2) . "\$this->getType = \$app->input->getString('gettype', NULL);";
+			$script['import'][] = self::_t(2) . "// get import type";
+			$script['import'][] = self::_t(2) . "\$this->dataType" . self::_t(1) . "= \$session->get('dataType_VDM_IMPORTINTO', NULL);";
+			$script['import'][] = PHP_EOL . self::_t(2) . "if (\$package === null)";
+			$script['import'][] = self::_t(2) . "{";
+			$script['import'][] = self::_t(3) . "switch (\$this->getType)";
+			$script['import'][] = self::_t(3) . "{";
+			$script['import'][] = self::_t(4) . "case 'folder':";
+			$script['import'][] = self::_t(5) . "// Remember the 'Import from Directory' path.";
+			$script['import'][] = self::_t(5) . "\$app->getUserStateFromRequest(\$this->_context . '.import_directory', 'import_directory');";
+			$script['import'][] = self::_t(5) . "\$package = \$this->_getPackageFromFolder();";
+			$script['import'][] = self::_t(5) . "break;";
+			$script['import'][] = PHP_EOL . self::_t(4) . "case 'upload':";
+			$script['import'][] = self::_t(5) . "\$package = \$this->_getPackageFromUpload();";
+			$script['import'][] = self::_t(5) . "break;";
+			$script['import'][] = PHP_EOL . self::_t(4) . "case 'url':";
+			$script['import'][] = self::_t(5) . "\$package = \$this->_getPackageFromUrl();";
+			$script['import'][] = self::_t(5) . "break;";
+			$script['import'][] = PHP_EOL . self::_t(4) . "case 'continue':";
+			$script['import'][] = self::_t(5) . "\$continue" . self::_t(1) . "= true;";
+			$script['import'][] = self::_t(5) . "\$package" . self::_t(1) . "= \$session->get('package', null);";
+			$script['import'][] = self::_t(5) . "\$package" . self::_t(1) . "= json_decode(\$package, true);";
+			$script['import'][] = self::_t(5) . "// clear session";
+			$script['import'][] = self::_t(5) . "\$session->clear('package');";
+			$script['import'][] = self::_t(5) . "\$session->clear('dataType');";
+			$script['import'][] = self::_t(5) . "\$session->clear('hasPackage');";
+			$script['import'][] = self::_t(5) . "break;";
+			$script['import'][] = PHP_EOL . self::_t(4) . "default:";
+			$script['import'][] = self::_t(5) . "\$app->setUserState('com_[[[-#-#-component]]].message', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_NO_IMPORT_TYPE_FOUND'));";
+			$script['import'][] = PHP_EOL . self::_t(5) . "return false;";
+			$script['import'][] = self::_t(5) . "break;";
+			$script['import'][] = self::_t(3) . "}";
+			$script['import'][] = self::_t(2) . "}";
+			$script['import'][] = self::_t(2) . "// Was the package valid?";
+			$script['import'][] = self::_t(2) . "if (!\$package || !\$package['type'])";
+			$script['import'][] = self::_t(2) . "{";
+			$script['import'][] = self::_t(3) . "if (in_array(\$this->getType, array('upload', 'url')))";
+			$script['import'][] = self::_t(3) . "{";
+			$script['import'][] = self::_t(4) . "\$this->remove(\$package['packagename']);";
+			$script['import'][] = self::_t(3) . "}";
+			$script['import'][] = PHP_EOL . self::_t(3) . "\$app->setUserState('com_[[[-#-#-component]]].message', JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'));";
+			$script['import'][] = self::_t(3) . "return false;";
+			$script['import'][] = self::_t(2) . "}";
+			$script['import'][] = self::_t(2) . "";
+			$script['import'][] = self::_t(2) . "// first link data to table headers";
+			$script['import'][] = self::_t(2) . "if(!\$continue){";
+			$script['import'][] = self::_t(3) . "\$package" . self::_t(1) . "= json_encode(\$package);";
+			$script['import'][] = self::_t(3) . "\$session->set('package', \$package);";
+			$script['import'][] = self::_t(3) . "\$session->set('dataType', \$this->dataType);";
+			$script['import'][] = self::_t(3) . "\$session->set('hasPackage', true);";
+			$script['import'][] = self::_t(3) . "return true;";
+			$script['import'][] = self::_t(2) . "}";
+			$script['import'][] = self::_t(2) . "// set the data";
+			$script['import'][] = self::_t(2) . "\$headerList = json_decode(\$session->get(\$this->dataType.'_VDM_IMPORTHEADERS', false), true);";
+			$script['import'][] = self::_t(2) . "if (!\$this->setData(\$package,\$this->dataType,\$headerList))";
+			$script['import'][] = self::_t(2) . "{";
+			$script['import'][] = self::_t(3) . "// There was an error importing the package";
+			$script['import'][] = self::_t(3) . "\$msg = JTe-#-#-xt::_('COM_[[[-#-#-COMPONENT]]]_IMPORT_ERROR');";
+			$script['import'][] = self::_t(3) . "\$back = \$session->get('backto_VDM_IMPORT', NULL);";
+			$script['import'][] = self::_t(3) . "if (\$back)";
+			$script['import'][] = self::_t(3) . "{";
+			$script['import'][] = self::_t(4) . "\$app->setUserState('com_[[[-#-#-component]]].redirect_url', 'index.php?option=com_[[[-#-#-component]]]&view='.\$back);";
+			$script['import'][] = self::_t(4) . "\$session->clear('backto_VDM_IMPORT');";
+			$script['import'][] = self::_t(3) . "}";
+			$script['import'][] = self::_t(3) . "\$result = false;";
+			$script['import'][] = self::_t(2) . "}";
+			$script['import'][] = self::_t(2) . "else";
+			$script['import'][] = self::_t(2) . "{";
+			$script['import'][] = self::_t(3) . "// Package imported sucessfully";
+			$script['import'][] = self::_t(3) . "\$msg = JTe-#-#-xt::sprintf('COM_[[[-#-#-COMPONENT]]]_IMPORT_SUCCESS', \$package['packagename']);";
+			$script['import'][] = self::_t(3) . "\$back = \$session->get('backto_VDM_IMPORT', NULL);";
+			$script['import'][] = self::_t(3) . "if (\$back)";
+			$script['import'][] = self::_t(3) . "{";
+			$script['import'][] = self::_t(4) . "\$app->setUserState('com_[[[-#-#-component]]].redirect_url', 'index.php?option=com_[[[-#-#-component]]]&view='.\$back);";
+			$script['import'][] = self::_t(4) . "\$session->clear('backto_VDM_IMPORT');";
+			$script['import'][] = self::_t(3) . "}";
+			$script['import'][] = self::_t(3) . "\$result = true;";
+			$script['import'][] = self::_t(2) . "}";
+			$script['import'][] = PHP_EOL . self::_t(2) . "// Set some model state values";
+			$script['import'][] = self::_t(2) . "\$app->enqueueMessage(\$msg);";
+			$script['import'][] = PHP_EOL . self::_t(2) . "// remove file after import";
+			$script['import'][] = self::_t(2) . "\$this->remove(\$package['packagename']);";
+			$script['import'][] = self::_t(2) . "\$session->clear(\$this->getType.'_VDM_IMPORTHEADERS');";
+			$script['import'][] = self::_t(2) . "return \$result;";
+			$script['import'][] = self::_t(1) . "}";
 		}
 		elseif ('ext' === $type)
 		{
-			$script['ext'][] = "\t/**";
-			$script['ext'][] = "\t * Check the extension";
-			$script['ext'][] = "\t *";
-			$script['ext'][] = "\t * @param   string  \$file    Name of the uploaded file";
-			$script['ext'][] = "\t *";
-			$script['ext'][] = "\t * @return  boolean  True on success";
-			$script['ext'][] = "\t *";
-			$script['ext'][] = "\t */";
-			$script['ext'][] = "\tprotected function checkExtension(\$file)";
-			$script['ext'][] = "\t{";
-			$script['ext'][] = "\t\t// check the extention";
-			$script['ext'][] = "\t\tswitch(strtolower(pathinfo(\$file, PATHINFO_EXTENSION)))";
-			$script['ext'][] = "\t\t{";
-			$script['ext'][] = "\t\t\tcase 'xls':";
-			$script['ext'][] = "\t\t\tcase 'ods':";
-			$script['ext'][] = "\t\t\tcase 'csv':";
-			$script['ext'][] = "\t\t\treturn true;";
-			$script['ext'][] = "\t\t\tbreak;";
-			$script['ext'][] = "\t\t}";
-			$script['ext'][] = "\t\treturn false;";
-			$script['ext'][] = "\t}";
+			$script['ext'][] = self::_t(1) . "/**";
+			$script['ext'][] = self::_t(1) . " * Check the extension";
+			$script['ext'][] = self::_t(1) . " *";
+			$script['ext'][] = self::_t(1) . " * @param   string  \$file    Name of the uploaded file";
+			$script['ext'][] = self::_t(1) . " *";
+			$script['ext'][] = self::_t(1) . " * @return  boolean  True on success";
+			$script['ext'][] = self::_t(1) . " *";
+			$script['ext'][] = self::_t(1) . " */";
+			$script['ext'][] = self::_t(1) . "protected function checkExtension(\$file)";
+			$script['ext'][] = self::_t(1) . "{";
+			$script['ext'][] = self::_t(2) . "// check the extention";
+			$script['ext'][] = self::_t(2) . "switch(strtolower(pathinfo(\$file, PATHINFO_EXTENSION)))";
+			$script['ext'][] = self::_t(2) . "{";
+			$script['ext'][] = self::_t(3) . "case 'xls':";
+			$script['ext'][] = self::_t(3) . "case 'ods':";
+			$script['ext'][] = self::_t(3) . "case 'csv':";
+			$script['ext'][] = self::_t(3) . "return true;";
+			$script['ext'][] = self::_t(3) . "break;";
+			$script['ext'][] = self::_t(2) . "}";
+			$script['ext'][] = self::_t(2) . "return false;";
+			$script['ext'][] = self::_t(1) . "}";
 		}
 		elseif ('routerparse' === $type)
 		{
-			$script['routerparse'][] = "\t\t\t\t// default script in switch for this view";
-			$script['routerparse'][] = "\t\t\t\t\$vars['view'] = '[[[-#-#-sview]]]';";
-			$script['routerparse'][] = "\t\t\t\tif (is_numeric(\$segments[\$count-1]))";
-			$script['routerparse'][] = "\t\t\t\t{";
-			$script['routerparse'][] = "\t\t\t\t\t\$vars['id'] = (int) \$segments[\$count-1];";
-			$script['routerparse'][] = "\t\t\t\t}";
-			$script['routerparse'][] = "\t\t\t\telseif (\$segments[\$count-1])";
-			$script['routerparse'][] = "\t\t\t\t{";
-			$script['routerparse'][] = "\t\t\t\t\t\$id = \$this->getVar('[[[-#-#-sview]]]', \$segments[\$count-1], 'alias', 'id');";
-			$script['routerparse'][] = "\t\t\t\t\tif(\$id)";
-			$script['routerparse'][] = "\t\t\t\t\t{";
-			$script['routerparse'][] = "\t\t\t\t\t\t\$vars['id'] = \$id;";
-			$script['routerparse'][] = "\t\t\t\t\t}";
-			$script['routerparse'][] = "\t\t\t\t}";
+			$script['routerparse'][] = self::_t(4) . "// default script in switch for this view";
+			$script['routerparse'][] = self::_t(4) . "\$vars['view'] = '[[[-#-#-sview]]]';";
+			$script['routerparse'][] = self::_t(4) . "if (is_numeric(\$segments[\$count-1]))";
+			$script['routerparse'][] = self::_t(4) . "{";
+			$script['routerparse'][] = self::_t(5) . "\$vars['id'] = (int) \$segments[\$count-1];";
+			$script['routerparse'][] = self::_t(4) . "}";
+			$script['routerparse'][] = self::_t(4) . "elseif (\$segments[\$count-1])";
+			$script['routerparse'][] = self::_t(4) . "{";
+			$script['routerparse'][] = self::_t(5) . "\$id = \$this->getVar('[[[-#-#-sview]]]', \$segments[\$count-1], 'alias', 'id');";
+			$script['routerparse'][] = self::_t(5) . "if(\$id)";
+			$script['routerparse'][] = self::_t(5) . "{";
+			$script['routerparse'][] = self::_t(6) . "\$vars['id'] = \$id;";
+			$script['routerparse'][] = self::_t(5) . "}";
+			$script['routerparse'][] = self::_t(4) . "}";
 		}
 		// return the needed script
 		if (isset($script[$type]))
 		{
-			return str_replace('-#-#-', '', implode("\n",$script[$type]));
+			return str_replace('-#-#-', '', implode(PHP_EOL, $script[$type]));
 		}
 		return false;
 	}
-
 
 	/**
 	* get between
@@ -2456,42 +3655,36 @@ abstract class ComponentbuilderHelper
 	 **/
 	protected static $fieldGroups = array(
 		'default' => array(
-			'accesslevel', 'cachehandler', 'calendar', 'captcha', 'category', 'checkbox',
-			'checkboxes', 'color', 'combo', 'componentlayout', 'contentlanguage', 'editor',
-			'chromestyle', 'contenttype', 'databaseconnection', 'editors', 'email', 'file',
-			'filelist', 'folderlist', 'groupedlist', 'hidden', 'file', 'headertag', 'helpsite',
-			'imagelist', 'integer', 'language', 'list', 'media', 'menu', 'note', 'number', 'password',
-			'plugins', 'radio', 'repeatable', 'range', 'rules', 'subform', 'sessionhandler', 'spacer', 'sql', 'tag',
-			'tel', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition', 'moduletag',
-			'templatestyle', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
+			'accesslevel', 'cachehandler', 'calendar', 'captcha', 'category', 'checkbox', 'checkboxes', 'chromestyle',
+			'color', 'combo', 'componentlayout', 'contentlanguage', 'contenttype', 'databaseconnection', //  'components', (TODO) must be added but still in use as a custom field in JCB
+			'editor', 'editors', 'email', 'file', 'file', 'filelist', 'folderlist', 'groupedlist', 'headertag', 'helpsite', 'hidden', 'imagelist',
+			'integer', 'language', 'list', 'media', 'menu', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition',
+			'moduletag', 'note', 'number', 'password', 'plugins', 'predefinedlist', 'radio', 'range', 'repeatable', 'rules',
+			'sessionhandler', 'spacer', 'sql', 'subform', 'tag', 'tel', 'templatestyle', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
 		),
 		'plain' => array(
-			'accesslevel', 'checkbox', 'cachehandler', 'calendar', 'category', 'chromestyle', 'color',
-			'contenttype', 'combo', 'componentlayout', 'databaseconnection', 'editor', 'editors',
-			'email', 'file', 'filelist', 'folderlist', 'headertag', 'helpsite',
-			'hidden', 'imagelist', 'integer', 'language', 'media', 'menu',
-			'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules',
-			'sessionhandler', 'tag', 'tel', 'text', 'textarea',
-			'timezone', 'url', 'user', 'usergroup'
-		), 
+			'cachehandler', 'calendar', 'checkbox', 'chromestyle', 'color', 'componentlayout', 'contenttype', 'editor', 'editors', 'captcha',
+			'email', 'file', 'headertag', 'helpsite', 'hidden', 'integer', 'language', 'media', 'menu', 'menuitem', 'meter', 'modulelayout',
+			'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules', 'tag', 'tel', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
+		),
+		'option' => array(
+			'accesslevel', 'category', 'checkboxes', 'combo', 'contentlanguage', 'databaseconnection', // 'components',  (TODO) must be added but still in use as a custom field in JCB
+			'filelist', 'folderlist', 'imagelist', 'list', 'plugins', 'predefinedlist', 'radio', 'sessionhandler', 'sql', 'groupedlist'
+		),
 		'text' => array(
-			'calendar','color','editor','email','password','tel','text','textarea','url','number','range'
-		), 
+			'calendar', 'color', 'editor', 'email', 'number', 'password', 'range', 'tel', 'text', 'textarea', 'url'
+		),
 		'list' => array(
-			'checkboxes','checkbox','list','radio'
-		), 
+			'checkbox', 'checkboxes', 'list', 'radio', 'groupedlist'
+		),
 		'dynamic' => array(
-			'category','headertag','tag','rules','user','file','filelist','folderlist','imagelist','integer','timezone','media','meter'
+			'category', 'file', 'filelist', 'folderlist', 'headertag', 'imagelist', 'integer', 'media', 'meter', 'rules', 'tag', 'timezone', 'user'
 		),
 		'spacer' => array(
 			'note', 'spacer'
 		),
-		'option' => array(
-			'plugins', 'checkboxes', 'contentlanguage', 'list', 'radio', 'sql'
-		),
 		'special' => array(
-			'contentlanguage', 'groupedlist', 'moduleposition', 'plugin',
-			'repeatable', 'templatestyle', 'subform'
+			'contentlanguage', 'moduleposition', 'plugin', 'repeatable', 'subform', 'templatestyle'
 		)
 	);
 
@@ -2514,15 +3707,71 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
+	 * get the field types id -> name of a group or groups
+	 *
+	 * @return  array  ids of the spacer field types
+	 */
+	public static function getFieldTypesByGroup($groups = array())
+	{
+		// make sure we have a group
+		if (($ids = self::getFieldTypesIdsByGroup($groups)) !== false)
+		{
+			// get the database object to use quote
+			$db = JFactory::getDbo();
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id', 'name')));
+			$query->from($db->quoteName('#__componentbuilder_fieldtype'));
+			$query->where($db->quoteName('published') . ' = 1');
+			$query->where($db->quoteName('id') . ' IN (' . implode(',',$ids) . ')');
+			// Reset the query using our newly populated query object.
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				return $db->loadAssocList('id', 'name');
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * get the field types IDs of a group or groups
+	 *
+	 * @return  array  ids of the spacer field types
+	 */
+	public static function getFieldTypesIdsByGroup($groups = array())
+	{
+		// make sure we have a group
+		if (self::checkArray($groups))
+		{
+			$merge_groups = array();
+			foreach ($groups as $group)
+			{
+				if (isset(self::$fieldGroups[$group]))
+				{
+					$merge_groups[] = self::$fieldGroups[$group];
+				}
+			}
+			// make sure we have these types of groups
+			if (self::checkArray($merge_groups))
+			{
+				// get the database object to use quote
+				$db = JFactory::getDbo();
+				return self::getVars('fieldtype', (array) array_map(function($name) use($db) { return $db->quote(ucfirst($name)); }, self::mergeArrays($merge_groups)), 'name', 'id');
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * get the spacer IDs
 	 *
 	 * @return  array  ids of the spacer field types
 	 */
 	public static function getSpacerIds()
 	{
-		// get the database object to use quote
-		$db = JFactory::getDbo();
-		return self::getVars('fieldtype', (array) array_map(function($name) use($db) { return $db->quote(ucfirst($name)); }, self::$fieldGroups['spacer']), 'name', 'id');
+		return self::getFieldTypesIdsByGroup($groups = array('spacer'));
 	}
 
 
@@ -2809,24 +4058,537 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	* 	 Composer Switch
+	* the Crypt objects
 	**/
-	protected static $composer = false; 
+	protected static $CRYPT = array();
 
 	/**
-	* 	Load the Composer Vendors
+	* the Cipher MODE switcher (list of ciphers)
 	**/
-	public static function composerAutoload()
+	protected static $setCipherMode = array(
+		'AES' => true,
+		'Rijndael' => true,
+		'Twofish' => false, // can but not good idea
+		'Blowfish' => false,  // can but not good idea
+		'RC4' => false, // nope
+		'RC2' => false,  // can but not good idea
+		'TripleDES' => false,  // can but not good idea
+		'DES' => true
+	);
+
+	/**
+	* get the Crypt object
+	*
+	* @return  object on success with Crypt power
+	**/
+	public static function crypt($type, $mode = null)
 	{
-		// insure we load the composer vendors only once
-		if (!self::$composer)
+		// set key based on mode
+		if ($mode)
 		{
-			// load the autoloader
-			require_once JPATH_SITE.'/libraries/vdm_io/vendor/autoload.php';
-			// do not load again
-			self::$composer = true;
+			$key = $type . $mode;
 		}
+		else
+		{
+			$key = $type;
+		}
+		// check if it was already set
+		if (isset(self::$CRYPT[$key]) && self::checkObject(self::$CRYPT[$key]))
+		{
+			return self::$CRYPT[$key];
+		}
+		// make sure we have the composer classes loaded
+		self::composerAutoload('phpseclib');
+		// build class name
+		$CLASS = '\phpseclib\Crypt\\' . $type;
+		// make sure we have the phpseclib classes
+		if (!class_exists($CLASS))
+		{
+			// class not in place so send out error
+			JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_LIBRARYCLASS_IS_NOT_AVAILABLE_THIS_LIBRARYCLASS_SHOULD_HAVE_BEEN_ADDED_TO_YOUR_BLIBRARIESPHPSECLIBVENDORB_FOLDER_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO', $CLASS), 'Error');
+			return false;
+		}
+		// does this crypt class use mode
+		if ($mode && isset(self::$setCipherMode[$type]) && self::$setCipherMode[$type])
+		{
+			switch ($mode)
+			{
+				case 'CTR':
+					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_CTR);
+				break;
+				case 'ECB':
+					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_ECB);
+				break;
+				case 'CBC':
+					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_CBC);
+				break;
+				case 'CBC3':
+					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_CBC3);
+				break;
+				case 'CFB':
+					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_CFB);
+				break;
+				case 'CFB8':
+					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_CFB8);
+				break;
+				case 'OFB':
+					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_OFB);
+				break;
+				case 'GCM':
+					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_GCM);
+				break;
+				case 'STREAM':
+					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_STREAM);
+				break;
+				default:
+					// No valid mode has been specified
+					JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_NO_VALID_MODE_HAS_BEEN_SPECIFIED'), 'Error');
+					return false;
+				break;
+			}
+		}
+		else
+		{
+			// set the 
+			self::$CRYPT[$key] = new $CLASS();
+		}
+		// return the object
+		return self::$CRYPT[$key];
 	}
+
+	/**
+	* Move File to Server
+	*
+	* @param   string    $localPath     The local path to the file
+	* @param   string    $fileName      The the actual file name
+	* @param   int         $serverID       The server local id to use
+	* @param   int         $protocol        The server protocol to use
+	* @param   string    $permission    The permission validation area
+	*
+	* @return  bool      true on success
+	**/
+	public static function moveToServer($localPath, $fileName, $serverID, $protocol = null, $permission = 'core.export')
+	{
+		// get the server
+		if ($server = self::getServer( (int) $serverID, $protocol, $permission))
+		{
+			// use the FTP protocol
+			if (1 == $server->jcb_protocol)
+			{
+				// now move the file
+				if (!$server->store($localPath, $fileName))
+				{
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_FILE_COULD_NOT_BE_MOVED_TO_BSB_SERVER', $fileName, $server->jcb_remote_server_name[(int) $serverID]), 'Error');
+					return false;
+				}
+				// close the connection
+				$server->quit();
+			}
+			// use the SFTP protocol
+			elseif (2 == $server->jcb_protocol)
+			{
+				// now move the file
+				if (!$server->put($server->jcb_remote_server_path[(int) $serverID] . $fileName, self::getFileContents($localPath, null)))
+				{
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_FILE_COULD_NOT_BE_MOVED_TO_BSB_PATH_ON_BSB_SERVER', $fileName, $server->jcb_remote_server_path[(int) $serverID], $server->jcb_remote_server_name[(int) $serverID]), 'Error');
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	* the SFTP objects
+	**/
+	protected static $sftp = array();
+
+	/**
+	* the FTP objects
+	**/
+	protected static $ftp = array();
+
+	/**
+	* get the server object
+	*
+	* @param   int         $serverID       The server local id to use
+	* @param   int         $protocol        The server protocol to use
+	* @param   string    $permission    The permission validation area
+	*
+	* @return  object     on success server object
+	**/
+	public static function getServer($serverID, $protocol = null, $permission = 'core.export')
+	{
+		// if not protocol is given get it (sad I know)
+		if (!$protocol)
+		{
+			$protocol = self::getVar('server', (int) $serverID, 'id', 'protocol');
+		}
+		// return the server object
+		switch ($protocol)
+		{
+			case 1: // FTP
+				return self::getFtp($serverID, $permission);
+			break;
+			case 2: // SFTP
+				return self::getSftp($serverID, $permission);
+			break;
+		}
+		return false;
+	}
+
+	/**
+	* get the sftp object
+	*
+	* @param   int         $serverID       The server local id to use
+	* @param   string    $permission    The permission validation area
+	*
+	* @return  object on success with sftp power
+	**/
+	public static function getSftp($serverID, $permission = 'core.export')
+	{
+		// check if we have a server with that id
+		if ($server = self::getServerDetails($serverID, 2, $permission))
+		{
+			// check if it was already set
+			if (!isset(self::$sftp[$server->cache]) || !self::checkObject(self::$sftp[$server->cache]))
+			{
+				// make sure we have the composer classes loaded
+				self::composerAutoload('phpseclib');
+				// make sure we have the phpseclib classes
+				if (!class_exists('\phpseclib\Net\SFTP'))
+				{
+					// class not in place so send out error
+					JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_THE_BPHPSECLIBNETSFTPB_LIBRARYCLASS_IS_NOT_AVAILABLE_THIS_LIBRARYCLASS_SHOULD_HAVE_BEEN_ADDED_TO_YOUR_BLIBRARIESVDM_IOVENDORB_FOLDER_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO'), 'Error');
+					return false;
+				}
+				// insure the port is set
+				$server->port = (isset($server->port) && is_int($server->port) && $server->port > 0) ? $server->port : 22;
+				// open the connection
+				self::$sftp[$server->cache] = new phpseclib\Net\SFTP($server->host, $server->port);
+				// heads-up on protocol
+				self::$sftp[$server->cache]->jcb_protocol = 2; // SFTP <-- if called not knowing what type of protocol is being used
+				// now login based on authentication type
+				switch($server->authentication)
+				{
+					case 1: // password
+						if (!self::$sftp[$server->cache]->login($server->username, $server->password))
+						{
+							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
+							unset(self::$sftp[$server->cache]);
+							return false;
+						}
+					break;
+					case 2: // private key file
+						if (self::checkObject(self::crypt('RSA')))
+						{
+							// check if we have a passprase
+							if (self::checkString($server->secret))
+							{
+								self::crypt('RSA')->setPassword($server->secret);
+							}
+							// now load the key file
+							if (!self::crypt('RSA')->loadKey(self::getFileContents($server->private, null)))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+							// now login
+							if (!self::$sftp[$server->cache]->login($server->username, self::crypt('RSA')))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+						}
+					break;
+					case 3: // both password and private key file
+						if (self::checkObject(self::crypt('RSA')))
+						{
+							// check if we have a passphrase
+							if (self::checkString($server->secret))
+							{
+								self::crypt('RSA')->setPassword($server->secret);
+							}
+							// now load the key file
+							if (!self::crypt('RSA')->loadKey(self::getFileContents($server->private, null)))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+							// now login
+							if (!self::$sftp[$server->cache]->login($server->username, $server->password, self::crypt('RSA')))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+						}
+					break;
+					case 4: // private key field
+						if (self::checkObject(self::crypt('RSA')))
+						{
+							// check if we have a passprase
+							if (self::checkString($server->secret))
+							{
+								self::crypt('RSA')->setPassword($server->secret);
+							}
+							// now load the key field
+							if (!self::crypt('RSA')->loadKey($server->private_key))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FIELD_COULD_NOT_BE_LOADED_FOR_BSB_SERVER', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+							// now login
+							if (!self::$sftp[$server->cache]->login($server->username, self::crypt('RSA')))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+						}
+					break;
+					case 5: // both password and private key field
+						if (self::checkObject(self::crypt('RSA')))
+						{
+							// check if we have a passphrase
+							if (self::checkString($server->secret))
+							{
+								self::crypt('RSA')->setPassword($server->secret);
+							}
+							// now load the key file
+							if (!self::crypt('RSA')->loadKey($server->private_key))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FIELD_COULD_NOT_BE_LOADED_FOR_BSB_SERVER', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+							// now login
+							if (!self::$sftp[$server->cache]->login($server->username, $server->password, self::crypt('RSA')))
+							{
+								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
+								unset(self::$sftp[$server->cache]);
+								return false;
+							}
+						}
+					break;
+				}
+			}
+			// only continue if object is set
+			if (isset(self::$sftp[$server->cache]) && self::checkObject(self::$sftp[$server->cache]))
+			{
+				// set the unique buckets
+				if (!isset(self::$sftp[$server->cache]->jcb_remote_server_name))
+				{
+					self::$sftp[$server->cache]->jcb_remote_server_name = array();
+					self::$sftp[$server->cache]->jcb_remote_server_path = array();
+				}
+				// always set the name and remote server path
+				self::$sftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
+				self::$sftp[$server->cache]->jcb_remote_server_path[$serverID] = (self::checkString($server->path) && $server->path !== '/') ? $server->path : '';
+				// return the sftp object
+				return self::$sftp[$server->cache];
+			}
+		}
+		return false;
+	}
+
+	/**
+	* get the JClientFtp object
+	*
+	* @param   int        $serverID         The server local id to use
+	* @param   string    $permission    The permission validation area
+	*
+	* @return  object on success with ftp power
+	**/
+	public static function getFtp($serverID, $permission)
+	{
+		// check if we have a server with that id
+		if ($server = self::getServerDetails($serverID, 1, $permission))
+		{
+			// check if we already have the server instance
+			if (isset(self::$ftp[$server->cache]) && self::$ftp[$server->cache] instanceof JClientFtp)
+			{
+				// always set the name and remote server path
+				self::$ftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
+				// if still connected we are ready to go
+				if (self::$ftp[$server->cache]->isConnected())
+				{
+					// return the FTP instance
+					return self::$ftp[$server->cache];
+				}
+				// check if we can reinitialise the server
+				if (self::$ftp[$server->cache]->reinit())
+				{
+					// return the FTP instance
+					return self::$ftp[$server->cache];
+				}
+			}
+			// make sure we have a string and it is not default or empty
+			if (self::checkString($server->signature))
+			{
+				// turn into variables
+				parse_str($server->signature); // because of this I am using strange variable naming to avoid any collisions.
+				// set options
+				if (isset($options) && self::checkArray($options))
+				{
+					foreach ($options as $o__p0t1on => $vAln3)
+					{
+						if ('timeout' === $o__p0t1on)
+						{
+							$options[$o__p0t1on] = (int) $vAln3;
+						}
+						if ('type' === $o__p0t1on)
+						{
+							$options[$o__p0t1on] = (string) $vAln3;
+						}
+					}
+				}
+				else
+				{
+					$options = array();
+				}
+				// get ftp object
+				if (isset($host) && $host != 'HOSTNAME' && isset($port) && $port != 'PORT_INT' && isset($username) && $username != 'user@name.com' && isset($password) && $password != 'password')
+				{
+					// load for reuse
+					self::$ftp[$server->cache] = JClientFtp::getInstance($host, $port, $options, $username, $password);
+				}
+				else
+				{
+					// load error to indicate signature was in error
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_FTP_SIGNATURE_FOR_BSB_WAS_NOT_WELL_FORMED_PLEASE_CHECK_YOUR_SIGNATURE_DETAILS', $server->name), 'Error');
+					return false;
+				}
+				// check if we are connected
+				if (self::$ftp[$server->cache] instanceof JClientFtp && self::$ftp[$server->cache]->isConnected())
+				{
+					// heads-up on protocol
+					self::$ftp[$server->cache]->jcb_protocol = 1; // FTP <-- if called not knowing what type of protocol is being used
+					// set the unique buckets
+					if (!isset(self::$ftp[$server->cache]->jcb_remote_server_name))
+					{
+						self::$ftp[$server->cache]->jcb_remote_server_name = array();
+					}
+					// always set the name and remote server path
+					self::$ftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
+					// return the FTP instance
+					return self::$ftp[$server->cache];
+				}
+				// reset since we have no connection
+				unset(self::$ftp[$server->cache]);
+			}
+			// load error to indicate signature was in error
+			JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_FTP_CONNECTION_FOR_BSB_COULD_NOT_BE_MADE_PLEASE_CHECK_YOUR_SIGNATURE_DETAILS', $server->name), 'Error');
+		}
+		return false;
+	}
+
+	/**
+	* get the server details
+	*
+	* @param   int         $serverID       The server local id to use
+	* @param   int         $protocol        The server protocol to use
+	* @param   string    $permission    The permission validation area
+	*
+	* @return  object    on success with server details
+	**/
+	public static function getServerDetails($serverID, $protocol = 2, $permission = 'core.export')
+	{
+		// check if this user has permission to access items
+		if (!JFactory::getUser()->authorise($permission, 'com_componentbuilder'))
+		{
+			// set message to inform the user that permission was denied
+			JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_ACCESS_THE_SERVER_DETAILS_BS_DENIEDB_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO', self::safeString($permission, 'w')), 'Error');
+			return false;
+		}
+		// now insure we have correct values 
+		if (is_int($serverID) && is_int($protocol))
+		{
+			// Get a db connection
+			$db = JFactory::getDbo();
+			// start the query
+			$query = $db->getQuery(true);
+			// select based to protocol
+			if (2 == $protocol)
+			{
+				// SFTP
+				$query->select($db->quoteName(array('name','authentication','username','host','password','path','port','private','private_key','secret')));
+				// cache builder
+				$cache = array('authentication','username','host','password','port','private','private_key','secret');
+			}
+			else
+			{
+				// FTP
+				$query->select($db->quoteName(array('name','signature')));
+				// cache builder
+				$cache = array('signature');
+			}
+			$query->from($db->quoteName('#__componentbuilder_server'));
+			$query->where($db->quoteName('id') . ' = ' . (int) $serverID);
+			$query->where($db->quoteName('protocol') . ' = ' . (int) $protocol);
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				$server = $db->loadObject();
+				// Get the basic encryption.
+				$basickey = self::getCryptKey('basic', 'Th1sMnsTbL0ck@d');
+				// Get the encryption object.
+				$basic = new FOFEncryptAes($basickey, 128);
+				// start cache keys
+				$keys = array();
+				// unlock the needed fields
+				foreach($server as $name => &$value)
+				{
+					// unlock the needed fields
+					if ($name !== 'name' && !empty($value) && $basickey && !is_numeric($value) && $value === base64_encode(base64_decode($value, true)))
+					{
+						// basic decrypt of data
+						$value = rtrim($basic->decryptString($value), "\0");
+					}
+					// build cache (keys) for lower connection latency
+					if (in_array($name, $cache))
+					{
+						$keys[] = $value;
+					}
+				}
+				// check if cache keys were found
+				if (self::checkArray($keys))
+				{
+					// now set cache
+					$server->cache = md5(implode('', $keys));
+				}
+				else
+				{
+					// default is ID
+					$server->cache = $serverID;
+				}
+				// return the server details
+				return $server;
+			}
+		}
+		JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_SERVER_DETAILS_FOR_BID_SB_COULD_NOT_BE_RETRIEVED', $serverID), 'Error');
+		return false;
+	}
+
+	/**
+	 * Load the Composer Vendor phpseclib
+	 */
+	protected static function composephpseclib()
+	{
+		// load the autoloader for phpseclib
+		require_once JPATH_SITE . '/libraries/phpseclib/vendor/autoload.php';
+		// do not load again
+		self::$composer['phpseclib'] = true;
+
+		return  true;
+	}
+
 
 	/**
 	 * bc math wrapper (very basic not for accounting)
@@ -2905,6 +4667,7 @@ abstract class ComponentbuilderHelper
 		// fall back on array sum
 		return array_sum($array);
 	}
+
 
 	/**
 	* the locker
@@ -3537,426 +5300,6 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Move File to Server
-	*
-	* @param   string    $localPath     The local path to the file
-	* @param   string    $fileName      The the actual file name
-	* @param   int         $serverID       The server local id to use
-	* @param   int         $protocol        The server protocol to use
-	* @param   string    $permission    The permission validation area
-	*
-	* @return  bool      true on success
-	**/
-	public static function moveToServer($localPath, $fileName, $serverID, $protocol = null, $permission = 'core.export')
-	{
-		// get the server
-		if ($server = self::getServer( (int) $serverID, $protocol, $permission))
-		{
-			// use the FTP protocol
-			if (1 == $server->jcb_protocol)
-			{
-				// now move the file
-				if (!$server->store($localPath, $fileName))
-				{
-					JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_FILE_COULD_NOT_BE_MOVED_TO_BSB_SERVER', $fileName, $server->jcb_remote_server_name[(int) $serverID]), 'Error');
-					return false;
-				}
-				// close the connection
-				$server->quit();
-			}
-			// use the SFTP protocol
-			elseif (2 == $server->jcb_protocol)
-			{
-				// now move the file
-				if (!$server->put($server->jcb_remote_server_path[(int) $serverID] . $fileName, self::getFileContents($localPath, null)))
-				{
-					JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_FILE_COULD_NOT_BE_MOVED_TO_BSB_PATH_ON_BSB_SERVER', $fileName, $server->jcb_remote_server_path[(int) $serverID], $server->jcb_remote_server_name[(int) $serverID]), 'Error');
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	* the SFTP objects
-	**/
-	protected static $sftp = array();
-
-	/**
-	* the FTP objects
-	**/
-	protected static $ftp = array();
-
-	/**
-	* get the server object
-	*
-	* @param   int         $serverID       The server local id to use
-	* @param   int         $protocol        The server protocol to use
-	* @param   string    $permission    The permission validation area
-	*
-	* @return  object     on success server object
-	**/
-	public static function getServer($serverID, $protocol = null, $permission = 'core.export')
-	{
-		// if not protocol is given get it (sad I know)
-		if (!$protocol)
-		{
-			$protocol = self::getVar('server', (int) $serverID, 'id', 'protocol');
-		}
-		// return the server object
-		switch ($protocol)
-		{
-			case 1: // FTP
-				return self::getFtp($serverID, $permission);
-			break;
-			case 2: // SFTP
-				return self::getSftp($serverID, $permission);
-			break;
-		}
-		return false;
-	}
-
-	/**
-	* get the sftp object
-	*
-	* @param   int         $serverID       The server local id to use
-	* @param   string    $permission    The permission validation area
-	*
-	* @return  object on success with sftp power
-	**/
-	public static function getSftp($serverID, $permission = 'core.export')
-	{
-		// check if we have a server with that id
-		if ($server = self::getServerDetails($serverID, 2, $permission))
-		{
-			// check if it was already set
-			if (!isset(self::$sftp[$server->cache]) || !self::checkObject(self::$sftp[$server->cache]))
-			{
-				// make sure we have the composer classes loaded
-				self::composerAutoload();
-				// make sure we have the phpseclib classes
-				if (!class_exists('\phpseclib\Net\SFTP'))
-				{
-					// class not in place so send out error
-					JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_THE_BPHPSECLIBNETSFTPB_LIBRARYCLASS_IS_NOT_AVAILABLE_THIS_LIBRARYCLASS_SHOULD_HAVE_BEEN_ADDED_TO_YOUR_BLIBRARIESVDM_IOVENDORB_FOLDER_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO'), 'Error');
-					return false;
-				}
-				// insure the port is set
-				$server->port = (isset($server->port) && is_int($server->port) && $server->port > 0) ? $server->port : 22;
-				// open the connection
-				self::$sftp[$server->cache] = new phpseclib\Net\SFTP($server->host, $server->port);
-				// heads-up on protocol
-				self::$sftp[$server->cache]->jcb_protocol = 2; // SFTP <-- if called not knowing what type of protocol is being used
-				// now login based on authentication type
-				switch($server->authentication)
-				{
-					case 1: // password
-						if (!self::$sftp[$server->cache]->login($server->username, $server->password))
-						{
-							JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
-							unset(self::$sftp[$server->cache]);
-							return false;
-						}
-					break;
-					case 2: // private key file
-						if (self::checkObject(self::crypt('RSA')))
-						{
-							// check if we have a passprase
-							if (self::checkString($server->secret))
-							{
-								self::crypt('RSA')->setPassword($server->secret);
-							}
-							// now load the key file
-							if (!self::crypt('RSA')->loadKey(self::getFileContents($server->private, null)))
-							{
-								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
-								unset(self::$sftp[$server->cache]);
-								return false;
-							}
-							// now login
-							if (!self::$sftp[$server->cache]->login($server->username, self::crypt('RSA')))
-							{
-								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
-								unset(self::$sftp[$server->cache]);
-								return false;
-							}
-						}
-					break;
-					case 3: // both password and private key file
-						if (self::checkObject(self::crypt('RSA')))
-						{
-							// check if we have a passphrase
-							if (self::checkString($server->secret))
-							{
-								self::crypt('RSA')->setPassword($server->secret);
-							}
-							// now load the key file
-							if (!self::crypt('RSA')->loadKey(self::getFileContents($server->private, null)))
-							{
-								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
-								unset(self::$sftp[$server->cache]);
-								return false;
-							}
-							// now login
-							if (!self::$sftp[$server->cache]->login($server->username, $server->password, self::crypt('RSA')))
-							{
-								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
-								unset(self::$sftp[$server->cache]);
-								return false;
-							}
-						}
-					break;
-					case 4: // private key field
-						if (self::checkObject(self::crypt('RSA')))
-						{
-							// check if we have a passprase
-							if (self::checkString($server->secret))
-							{
-								self::crypt('RSA')->setPassword($server->secret);
-							}
-							// now load the key field
-							if (!self::crypt('RSA')->loadKey($server->private_key))
-							{
-								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FIELD_COULD_NOT_BE_LOADED_FOR_BSB_SERVER', $server->name), 'Error');
-								unset(self::$sftp[$server->cache]);
-								return false;
-							}
-							// now login
-							if (!self::$sftp[$server->cache]->login($server->username, self::crypt('RSA')))
-							{
-								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
-								unset(self::$sftp[$server->cache]);
-								return false;
-							}
-						}
-					break;
-					case 5: // both password and private key field
-						if (self::checkObject(self::crypt('RSA')))
-						{
-							// check if we have a passphrase
-							if (self::checkString($server->secret))
-							{
-								self::crypt('RSA')->setPassword($server->secret);
-							}
-							// now load the key file
-							if (!self::crypt('RSA')->loadKey($server->private_key))
-							{
-								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FIELD_COULD_NOT_BE_LOADED_FOR_BSB_SERVER', $server->name), 'Error');
-								unset(self::$sftp[$server->cache]);
-								return false;
-							}
-							// now login
-							if (!self::$sftp[$server->cache]->login($server->username, $server->password, self::crypt('RSA')))
-							{
-								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_LOGIN_TO_BSB_HAS_FAILED_PLEASE_CHECK_THAT_YOUR_DETAILS_ARE_CORRECT', $server->name), 'Error');
-								unset(self::$sftp[$server->cache]);
-								return false;
-							}
-						}
-					break;
-				}
-			}
-			// only continue if object is set
-			if (isset(self::$sftp[$server->cache]) && self::checkObject(self::$sftp[$server->cache]))
-			{
-				// set the unique buckets
-				if (!isset(self::$sftp[$server->cache]->jcb_remote_server_name))
-				{
-					self::$sftp[$server->cache]->jcb_remote_server_name = array();
-					self::$sftp[$server->cache]->jcb_remote_server_path = array();
-				}
-				// always set the name and remote server path
-				self::$sftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
-				self::$sftp[$server->cache]->jcb_remote_server_path[$serverID] = (self::checkString($server->path) && $server->path !== '/') ? $server->path : '';
-				// return the sftp object
-				return self::$sftp[$server->cache];
-			}
-		}
-		return false;
-	}
-
-	/**
-	* get the JClientFtp object
-	*
-	* @param   int        $serverID         The server local id to use
-	* @param   string    $permission    The permission validation area
-	*
-	* @return  object on success with ftp power
-	**/
-	public static function getFtp($serverID, $permission)
-	{
-		// check if we have a server with that id
-		if ($server = self::getServerDetails($serverID, 1, $permission))
-		{
-			// check if we already have the server instance
-			if (isset(self::$ftp[$server->cache]) && self::$ftp[$server->cache] instanceof JClientFtp)
-			{
-				// always set the name and remote server path
-				self::$ftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
-				// if still connected we are ready to go
-				if (self::$ftp[$server->cache]->isConnected())
-				{
-					// return the FTP instance
-					return self::$ftp[$server->cache];
-				}
-				// check if we can reinitialise the server
-				if (self::$ftp[$server->cache]->reinit())
-				{
-					// return the FTP instance
-					return self::$ftp[$server->cache];
-				}
-			}
-			// make sure we have a string and it is not default or empty
-			if (self::checkString($server->signature))
-			{
-				// turn into variables
-				parse_str($server->signature); // because of this I am using strange variable naming to avoid any collisions.
-				// set options
-				if (isset($options) && self::checkArray($options))
-				{
-					foreach ($options as $o__p0t1on => $vAln3)
-					{
-						if ('timeout' === $o__p0t1on)
-						{
-							$options[$o__p0t1on] = (int) $vAln3;
-						}
-						if ('type' === $o__p0t1on)
-						{
-							$options[$o__p0t1on] = (string) $vAln3;
-						}
-					}
-				}
-				else
-				{
-					$options = array();
-				}
-				// get ftp object
-				if (isset($host) && $host != 'HOSTNAME' && isset($port) && $port != 'PORT_INT' && isset($username) && $username != 'user@name.com' && isset($password) && $password != 'password')
-				{
-					// load for reuse
-					self::$ftp[$server->cache] = JClientFtp::getInstance($host, $port, $options, $username, $password);
-				}
-				else
-				{
-					// load error to indicate signature was in error
-					JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_FTP_SIGNATURE_FOR_BSB_WAS_NOT_WELL_FORMED_PLEASE_CHECK_YOUR_SIGNATURE_DETAILS', $server->name), 'Error');
-					return false;
-				}
-				// check if we are connected
-				if (self::$ftp[$server->cache] instanceof JClientFtp && self::$ftp[$server->cache]->isConnected())
-				{
-					// heads-up on protocol
-					self::$ftp[$server->cache]->jcb_protocol = 1; // FTP <-- if called not knowing what type of protocol is being used
-					// set the unique buckets
-					if (!isset(self::$ftp[$server->cache]->jcb_remote_server_name))
-					{
-						self::$ftp[$server->cache]->jcb_remote_server_name = array();
-					}
-					// always set the name and remote server path
-					self::$ftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
-					// return the FTP instance
-					return self::$ftp[$server->cache];
-				}
-				// reset since we have no connection
-				unset(self::$ftp[$server->cache]);
-			}
-			// load error to indicate signature was in error
-			JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_FTP_CONNECTION_FOR_BSB_COULD_NOT_BE_MADE_PLEASE_CHECK_YOUR_SIGNATURE_DETAILS', $server->name), 'Error');
-		}
-		return false;
-	}
-
-	/**
-	* get the server details
-	*
-	* @param   int         $serverID       The server local id to use
-	* @param   int         $protocol        The server protocol to use
-	* @param   string    $permission    The permission validation area
-	*
-	* @return  object    on success with server details
-	**/
-	public static function getServerDetails($serverID, $protocol = 2, $permission = 'core.export')
-	{
-		// check if this user has permission to access items
-		if (!JFactory::getUser()->authorise($permission, 'com_componentbuilder'))
-		{
-			// set message to inform the user that permission was denied
-			JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_ACCESS_THE_SERVER_DETAILS_BS_DENIEDB_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO', self::safeString($permission, 'w')), 'Error');
-			return false;
-		}
-		// now insure we have correct values 
-		if (is_int($serverID) && is_int($protocol))
-		{
-			// Get a db connection
-			$db = JFactory::getDbo();
-			// start the query
-			$query = $db->getQuery(true);
-			// select based to protocol
-			if (2 == $protocol)
-			{
-				// SFTP
-				$query->select($db->quoteName(array('name','authentication','username','host','password','path','port','private','private_key','secret')));
-				// cache builder
-				$cache = array('authentication','username','host','password','port','private','private_key','secret');
-			}
-			else
-			{
-				// FTP
-				$query->select($db->quoteName(array('name','signature')));
-				// cache builder
-				$cache = array('signature');
-			}
-			$query->from($db->quoteName('#__componentbuilder_server'));
-			$query->where($db->quoteName('id') . ' = ' . (int) $serverID);
-			$query->where($db->quoteName('protocol') . ' = ' . (int) $protocol);
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getNumRows())
-			{
-				$server = $db->loadObject();
-				// Get the basic encryption.
-				$basickey = self::getCryptKey('basic', 'Th1sMnsTbL0ck@d');
-				// Get the encryption object.
-				$basic = new FOFEncryptAes($basickey, 128);
-				// start cache keys
-				$keys = array();
-				// unlock the needed fields
-				foreach($server as $name => &$value)
-				{
-					// unlock the needed fields
-					if ($name !== 'name' && !empty($value) && $basickey && !is_numeric($value) && $value === base64_encode(base64_decode($value, true)))
-					{
-						// basic decrypt of data
-						$value = rtrim($basic->decryptString($value), "\0");
-					}
-					// build cache (keys) for lower connection latency
-					if (in_array($name, $cache))
-					{
-						$keys[] = $value;
-					}
-				}
-				// check if cache keys were found
-				if (self::checkArray($keys))
-				{
-					// now set cache
-					$server->cache = md5(implode('', $keys));
-				}
-				else
-				{
-					// default is ID
-					$server->cache = $serverID;
-				}
-				// return the server details
-				return $server;
-			}
-		}
-		JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_SERVER_DETAILS_FOR_BID_SB_COULD_NOT_BE_RETRIEVED', $serverID), 'Error');
-		return false;
-	}
-
-	/**
 	* Get an edit button
 	* 
 	* @param  int      $item       The item to edit
@@ -3991,6 +5334,10 @@ abstract class ComponentbuilderHelper
 				{
 					$checked_out = (int) $item->checked_out;
 				}
+				else
+				{
+					$checked_out = self::getVar($view, $item->id, 'id', 'checked_out', '=', str_replace('com_', '', $component));
+				}
 			}
 			elseif (self::checkArray($item) && isset($item['id']))
 			{
@@ -3999,6 +5346,14 @@ abstract class ComponentbuilderHelper
 				{
 					$checked_out = (int) $item['checked_out'];
 				}
+				else
+				{
+					$checked_out = self::getVar($view, $item['id'], 'id', 'checked_out', '=', str_replace('com_', '', $component));
+				}
+			}
+			elseif (is_numeric($item) && $item > 0)
+			{
+				$checked_out = self::getVar($view, $item, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 			}
 			// set the link title
 			$title = self::safeString(JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');
@@ -4091,6 +5446,10 @@ abstract class ComponentbuilderHelper
 				{
 					$checked_out = (int) $item->checked_out;
 				}
+				else
+				{
+					$checked_out = self::getVar($view, $item->id, 'id', 'checked_out', '=', str_replace('com_', '', $component));
+				}
 			}
 			elseif (self::checkArray($item) && isset($item['id']))
 			{
@@ -4099,6 +5458,14 @@ abstract class ComponentbuilderHelper
 				{
 					$checked_out = (int) $item['checked_out'];
 				}
+				else
+				{
+					$checked_out = self::getVar($view, $item['id'], 'id', 'checked_out', '=', str_replace('com_', '', $component));
+				}
+			}
+			elseif (is_numeric($item) && $item > 0)
+			{
+				$checked_out = self::getVar($view, $item, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 			}
 			// set the link title
 			$title = self::safeString(JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');
@@ -4222,41 +5589,6 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	* 	the Crypt objects
-	**/
-	protected static $CRYPT = array();
-
-	/**
-	* 	get the Crypt object
-	* 	
-	* 	@return  object on success with Crypt power
-	**/
-	public static function crypt($TYPE)
-	{
-		// check if it was already set
-		if (isset(self::$CRYPT[$TYPE]) && self::checkObject(self::$CRYPT[$TYPE]))
-		{
-			return self::$CRYPT[$TYPE];
-		}
-		// make sure we have the composer classes loaded
-		self::composerAutoload();
-		// build class name
-		$CLASS = '\phpseclib\Crypt\\'.$TYPE;
-		// make sure we have the phpseclib classes
-		if (!class_exists($CLASS))
-		{
-			// class not in place so send out error
-			JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_LIBRARYCLASS_IS_NOT_AVAILABLE_THIS_LIBRARYCLASS_SHOULD_HAVE_BEEN_ADDED_TO_YOUR_BLIBRARIESVDM_IOVENDORB_FOLDER_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO', $CLASS), 'Error');
-			return false;
-		}
-		// set the 
-		self::$CRYPT[$TYPE] = new $CLASS();
-		// return the object
-		return self::$CRYPT[$TYPE];
-	}
-
-
-	/**
 	 * set subform type table
 	 *
 	 * @param   array   $head    The header names
@@ -4293,7 +5625,199 @@ abstract class ComponentbuilderHelper
 		return implode("\n", $table);
 	}
 
-	
+
+	/**
+	 * Change to nice fancy date
+	 */
+	public static function fancyDate($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('jS \o\f F Y',$date);
+	}
+
+	/**
+	 * get date based in period past
+	 */
+	public static function fancyDynamicDate($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		// older then year
+		$lastyear = date("Y", strtotime("-1 year"));
+		$tragetyear = date("Y", $date);
+		if ($tragetyear <= $lastyear)
+		{
+			return date('m/d/y', $date);
+		}
+		// same day
+		$yesterday = strtotime("-1 day");
+		if ($date > $yesterday)
+		{
+			return date('g:i A', $date);
+		}
+		// just month day
+		return date('M j', $date);
+	}
+
+	/**
+	 * Change to nice fancy day time and date
+	 */
+	public static function fancyDayTimeDate($time)
+	{
+		if (!self::isValidTimeStamp($time))
+		{
+			$time = strtotime($time);
+		}
+		return date('D ga jS \o\f F Y',$time);
+	}
+
+	/**
+	 * Change to nice fancy time and date
+	 */
+	public static function fancyDateTime($time)
+	{
+		if (!self::isValidTimeStamp($time))
+		{
+			$time = strtotime($time);
+		}
+		return date('(G:i) jS \o\f F Y',$time);
+	}
+
+	/**
+	 * Change to nice hour:minutes time
+	 */
+	public static function fancyTime($time)
+	{
+		if (!self::isValidTimeStamp($time))
+		{
+			$time = strtotime($time);
+		}
+		return date('G:i',$time);
+	}
+
+	/**
+	 * set the date day as Sunday through Saturday
+	 */
+	public static function setDayName($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('l', $date);
+	}
+
+	/**
+	 * set the date month as January through December
+	 */
+	public static function setMonthName($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('F', $date);
+	}
+
+	/**
+	 * set the date day as 1st
+	 */
+	public static function setDay($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('jS', $date);
+	}
+
+	/**
+	 * set the date month as 5
+	 */
+	public static function setMonth($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('n', $date);
+	}
+
+	/**
+	 * set the date year as 2004 (for charts)
+	 */
+	public static function setYear($date)
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('Y', $date);
+	}
+
+	/**
+	 * set the date as 2004/05 (for charts)
+	 */
+	public static function setYearMonth($date, $spacer = '/')
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('Y' . $spacer . 'm', $date);
+	}
+
+	/**
+	 * set the date as 2004/05/03 (for charts)
+	 */
+	public static function setYearMonthDay($date, $spacer = '/')
+	{
+		if (!self::isValidTimeStamp($date))
+		{
+			$date = strtotime($date);
+		}
+		return date('Y' . $spacer . 'm' . $spacer . 'd', $date);
+	}
+
+	/**
+	 * Check if string is a valid time stamp
+	 */
+	public static function isValidTimeStamp($timestamp)
+	{
+		return ((int) $timestamp === $timestamp)
+		&& ($timestamp <= PHP_INT_MAX)
+		&& ($timestamp >= ~PHP_INT_MAX);
+	}
+
+
+	/**
+	 * Load the Composer Vendors
+	 */
+	public static function composerAutoload($target)
+	{
+		// insure we load the composer vendor only once
+		if (!isset(self::$composer[$target]))
+		{
+			// get the function name
+			$functionName = self::safeString('compose' . $target);
+			// check if method exist
+			if (method_exists(__CLASS__, $functionName))
+			{
+				return self::{$functionName}();
+			}
+			return false;
+		}
+		return self::$composer[$target];
+	}
+
+	/**
+	 * Convert it into a string
+	 */
 	public static function jsonToString($value, $sperator = ", ", $table = null, $id = 'id', $name = 'name')
 	{
 		// do some table foot work
@@ -4343,8 +5867,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Load the Component xml manifest.
-	**/
+	 * Load the Component xml manifest.
+	 */
 	public static function manifest()
 	{
 		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_componentbuilder/componentbuilder.xml";
@@ -4352,13 +5876,13 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Joomla version object
-	**/	
+	 * Joomla version object
+	 */	
 	protected static $JVersion;
 
 	/**
-	* set/get Joomla version
-	**/
+	 * set/get Joomla version
+	 */
 	public static function jVersion()
 	{
 		// check if set
@@ -4370,8 +5894,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Load the Contributors details.
-	**/
+	 * Load the Contributors details.
+	 */
 	public static function getContributors()
 	{
 		// get params
@@ -4480,40 +6004,44 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Get any component's model
-	**/
-	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $component = 'Componentbuilder', $config = array())
+	 * Get any component's model
+	 */
+	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $Component = 'Componentbuilder', $config = array())
 	{
 		// fix the name
 		$name = self::safeString($name);
-		// full path
-		$fullPath = $path . '/models';
-		// set prefix
-		$prefix = $component.'Model';
+		// full path to models
+		$fullPathModels = $path . '/models';
 		// load the model file
-		JModelLegacy::addIncludePath($fullPath, $prefix);
+		JModelLegacy::addIncludePath($fullPathModels, $Component . 'Model');
+		// make sure the table path is loaded
+		if (!isset($config['table_path']) || !self::checkString($config['table_path']))
+		{
+			// This is the JCB default path to tables in Joomla 3.x
+			$config['table_path'] = JPATH_ADMINISTRATOR . '/components/com_' . strtolower($Component) . '/tables';
+		}
 		// get instance
-		$model = JModelLegacy::getInstance($name, $prefix, $config);
+		$model = JModelLegacy::getInstance($name, $Component . 'Model', $config);
 		// if model not found (strange)
 		if ($model == false)
 		{
 			jimport('joomla.filesystem.file');
 			// get file path
-			$filePath = $path.'/'.$name.'.php';
-			$fullPath = $fullPath.'/'.$name.'.php';
+			$filePath = $path . '/' . $name . '.php';
+			$fullPathModel = $fullPathModels . '/' . $name . '.php';
 			// check if it exists
 			if (JFile::exists($filePath))
 			{
 				// get the file
 				require_once $filePath;
 			}
-			elseif (JFile::exists($fullPath))
+			elseif (JFile::exists($fullPathModel))
 			{
 				// get the file
-				require_once $fullPath;
+				require_once $fullPathModel;
 			}
 			// build class names
-			$modelClass = $prefix.$name;
+			$modelClass = $Component . 'Model' . $name;
 			if (class_exists($modelClass))
 			{
 				// initialize the model
@@ -4524,8 +6052,8 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Add to asset Table
-	*/
+	 * Add to asset Table
+	 */
 	public static function setAsset($id, $table, $inherit = true)
 	{
 		$parent = JTable::getInstance('Asset');
@@ -4631,7 +6159,7 @@ abstract class ComponentbuilderHelper
 				}
 			}
 			// check if there are any view values remaining
-			if (count($_result))
+			if (count((array) $_result))
 			{
 				$_result = json_encode($_result);
 				$_result = array($_result);
@@ -4745,7 +6273,7 @@ abstract class ComponentbuilderHelper
 	 * @return  object
 	 *
 	 */
-	public static function getFieldObject($attributes, $default = '', $options = null)
+	public static function getFieldObject(&$attributes, $default = '', $options = null)
 	{
 		// make sure we have attributes and a type value
 		if (self::checkArray($attributes) && isset($attributes['type']))
@@ -4756,7 +6284,31 @@ abstract class ComponentbuilderHelper
 				jimport('joomla.form.form');
 			}
 			// get field type
-			$field = JFormHelper::loadFieldType($attributes['type'],true);
+			$field = JFormHelper::loadFieldType($attributes['type'], true);
+			// get field xml
+			$XML = self::getFieldXML($attributes, $options);
+			// setup the field
+			$field->setup($XML, $default);
+			// return the field object
+			return $field;
+		}
+		return false;
+	}
+
+	/**
+	 * get the field xml
+	 *
+	 * @param   array      $attributes   The array of attributes
+	 * @param   array      $options      The options to apply to the XML element
+	 *
+	 * @return  object
+	 *
+	 */
+	public static function getFieldXML(&$attributes, $options = null)
+	{
+		// make sure we have attributes and a type value
+		if (self::checkArray($attributes))
+		{
 			// start field xml
 			$XML = new SimpleXMLElement('<field/>');
 			// load the attributes
@@ -4767,10 +6319,8 @@ abstract class ComponentbuilderHelper
 				// load the options
 				self::xmlAddOptions($XML, $options);
 			}
-			// setup the field
-			$field->setup($XML, $default);
-			// return the field object
-			return $field;
+			// return the field xml
+			return $XML;
 		}
 		return false;
 	}
@@ -5011,7 +6561,15 @@ abstract class ComponentbuilderHelper
 			{
 				$query->from($db->quoteName('#_'.$main.'_'.$table));
 			}
-			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
+			// add strings to array search
+			if ('IN_STRINGS' === $operator || 'NOT IN_STRINGS' === $operator)
+			{
+				$query->where($db->quoteName($whereString) . ' ' . str_replace('_STRINGS', '', $operator) . ' ("' . implode('","',$where) . '")');
+			}
+			else
+			{
+				$query->where($db->quoteName($whereString) . ' ' . $operator . ' (' . implode(',',$where) . ')');
+			}
 			$db->setQuery($query);
 			$db->execute();
 			if ($db->getNumRows())
@@ -5066,21 +6624,26 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Get the action permissions
-	*
-	* @param  string   $view        The related view name
-	* @param  int      $record      The item to act upon
-	* @param  string   $views       The related list view name
-	* @param  mixed    $target      Only get this permission (like edit, create, delete)
-	* @param  string   $component   The target component
-	*
-	* @return  object   The JObject of permission/authorised actions
-	* 
-	**/
-	public static function getActions($view, &$record = null, $views = null, $target = null, $component = 'componentbuilder')
+	 * Get the action permissions
+	 *
+	 * @param  string   $view        The related view name
+	 * @param  int      $record      The item to act upon
+	 * @param  string   $views       The related list view name
+	 * @param  mixed    $target      Only get this permission (like edit, create, delete)
+	 * @param  string   $component   The target component
+	 * @param  object   $user        The user whose permissions we are loading
+	 *
+	 * @return  object   The JObject of permission/authorised actions
+	 * 
+	 */
+	public static function getActions($view, &$record = null, $views = null, $target = null, $component = 'componentbuilder', $user = 'null')
 	{
-		// get the user object
-		$user = JFactory::getUser();
+		// load the user if not given
+		if (!self::checkObject($user))
+		{
+			// get the user object
+			$user = JFactory::getUser();
+		}
 		// load the JObject
 		$result = new JObject;
 		// make view name safe (just incase)
@@ -5236,14 +6799,14 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Filter the action permissions
-	*
-	* @param  string   $action   The action to check
-	* @param  array    $targets  The array of target actions
-	*
-	* @return  boolean   true if action should be filtered out
-	* 
-	**/
+	 * Filter the action permissions
+	 *
+	 * @param  string   $action   The action to check
+	 * @param  array    $targets  The array of target actions
+	 *
+	 * @return  boolean   true if action should be filtered out
+	 * 
+	 */
 	protected static function filterActions(&$view, &$action, &$targets)
 	{
 		foreach ($targets as $target)
@@ -5259,12 +6822,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have an json string
-	*
-	* @input	string   The json string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an json string
+	 *
+	 * @input	string   The json string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkJson($string)
 	{
 		if (self::checkString($string))
@@ -5276,12 +6839,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have an object with a length
-	*
-	* @input	object   The object to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an object with a length
+	 *
+	 * @input	object   The object to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkObject($object)
 	{
 		if (isset($object) && is_object($object))
@@ -5292,12 +6855,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have an array with a length
-	*
-	* @input	array   The array to check
-	*
-	* @returns bool/int  number of items in array on success
-	**/
+	 * Check if have an array with a length
+	 *
+	 * @input	array   The array to check
+	 *
+	 * @returns bool/int  number of items in array on success
+	 */
 	public static function checkArray($array, $removeEmptyString = false)
 	{
 		if (isset($array) && is_array($array) && ($nr = count((array)$array)) > 0)
@@ -5320,12 +6883,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if have a string with a length
-	*
-	* @input	string   The string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have a string with a length
+	 *
+	 * @input	string   The string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkString($string)
 	{
 		if (isset($string) && is_string($string) && strlen($string) > 0)
@@ -5336,11 +6899,11 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Check if we are connected
-	* Thanks https://stackoverflow.com/a/4860432/1429677
-	*
-	* @returns bool true on success
-	**/
+	 * Check if we are connected
+	 * Thanks https://stackoverflow.com/a/4860432/1429677
+	 *
+	 * @returns bool true on success
+	 */
 	public static function isConnected()
 	{
 		// If example.com is down, then probably the whole internet is down, since IANA maintains the domain. Right?
@@ -5361,12 +6924,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Merge an array of array's
-	*
-	* @input	array   The arrays you would like to merge
-	*
-	* @returns array on success
-	**/
+	 * Merge an array of array's
+	 *
+	 * @input	array   The arrays you would like to merge
+	 *
+	 * @returns array on success
+	 */
 	public static function mergeArrays($arrays)
 	{
 		if(self::checkArray($arrays))
@@ -5391,12 +6954,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Shorten a string
-	*
-	* @input	string   The you would like to shorten
-	*
-	* @returns string on success
-	**/
+	 * Shorten a string
+	 *
+	 * @input	string   The you would like to shorten
+	 *
+	 * @returns string on success
+	 */
 	public static function shorten($string, $length = 40, $addTip = true)
 	{
 		if (self::checkString($string))
@@ -5432,12 +6995,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Making strings safe (various ways)
-	*
-	* @input	string   The you would like to make safe
-	*
-	* @returns string on success
-	**/
+	 * Making strings safe (various ways)
+	 *
+	 * @input	string   The you would like to make safe
+	 *
+	 * @returns string on success
+	 */
 	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true, $keepOnlyCharacters = true)
 	{
 		if ($replaceNumbers === true)
@@ -5467,6 +7030,8 @@ abstract class ComponentbuilderHelper
 			$string = trim($string);
 			$string = preg_replace('/'.$spacer.'+/', ' ', $string);
 			$string = preg_replace('/\s+/', ' ', $string);
+			// Transliterate string
+			$string = self::transliterate($string);
 			// remove all and keep only characters
 			if ($keepOnlyCharacters)
 			{
@@ -5535,6 +7100,19 @@ abstract class ComponentbuilderHelper
 		return '';
 	}
 
+	public static function transliterate($string)
+	{
+		// set tag only once
+		if (!self::checkString(self::$langTag))
+		{
+			// get global value
+			self::$langTag = JComponentHelper::getParams('com_componentbuilder')->get('language', 'en-GB');
+		}
+		// Transliterate on the language requested
+		$lang = Language::getInstance(self::$langTag);
+		return $lang->transliterate($string);
+	}
+
 	public static function htmlEscape($var, $charset = 'UTF-8', $shorten = false, $length = 40)
 	{
 		if (self::checkString($var))
@@ -5576,12 +7154,12 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Convert an integer into an English word string
-	* Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
-	*
-	* @input	an int
-	* @returns a string
-	**/
+	 * Convert an integer into an English word string
+	 * Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
+	 *
+	 * @input	an int
+	 * @returns a string
+	 */
 	public static function numberToString($x)
 	{
 		$nwords = array( "zero", "one", "two", "three", "four", "five", "six", "seven",
@@ -5667,10 +7245,10 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Random Key
-	*
-	* @returns a string
-	**/
+	 * Random Key
+	 *
+	 * @returns a string
+	 */
 	public static function randomkey($size)
 	{
 		$bag = "abcefghijknopqrstuwxyzABCDDEFGHIJKLLMMNOPQRSTUVVWXYZabcddefghijkllmmnopqrstuvvwxyzABCEFGHIJKNOPQRSTUWXYZ";

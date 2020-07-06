@@ -281,7 +281,7 @@ class Builder extends Mapping
 		$settings['default'] = ($field['default'] == 'Other') ? $field['defaultOther'] : $field['default'];
 		$settings['hint'] = $field['label'] .' Here!';
 		// okay set the xml field values
-		if ($fieldOptions = ComponentbuilderHelper::getFieldOptions($fieldId, 'id', $settings))
+		if ($fieldOptions = ComponentbuilderHelper::getFieldTypeProperties($fieldId, 'id', $settings))
 		{
 			return json_encode($fieldOptions['values']);
 		}

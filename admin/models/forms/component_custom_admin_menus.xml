@@ -119,7 +119,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NAME_HINT"
@@ -134,7 +134,7 @@
 					default=""
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NAME_CODE_DESCRIPTION"
 					class="text_area"
-					required="false"
+					required="true"
 					filter="CMD"
 					message="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NAME_CODE_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NAME_CODE_HINT"
@@ -172,7 +172,6 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_MAINMENU_LABEL"
 					value="1"
 					default="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_MAINMENU_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -183,7 +182,6 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_DASHBOARD_LIST_LABEL"
 					value="1"
 					default="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_DASHBOARD_LIST_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -194,7 +192,6 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_SUBMENU_LABEL"
 					value="1"
 					default="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_SUBMENU_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -206,8 +203,6 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_BEFORE_DESCRIPTION"
 					class="list_class fieldMedium"
 					multiple="false"
-					default=""
-					required="false"
 					button="false"
 				/>
 			</form>

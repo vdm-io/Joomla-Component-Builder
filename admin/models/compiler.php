@@ -5,12 +5,14 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Componentbuilder Model for Compiler
@@ -163,15 +165,15 @@ class ComponentbuilderModelCompiler extends JModelList
 		$set['placeholders'] = $addPlaceholders;
 		$set['debuglinenr'] = $debugLinenr;
 		$set['minify'] = $minify;
-		// start up Compiler
-		$this->compiler	 = new Compiler($set);
+		// run compiler
+		$this->compiler = new Compiler($set);
 		if($this->compiler)
 		{
 			return true;
 		}
 		return false;
 	}
-	
+
 	public function emptyFolder($dir, $removeDir = false)
 	{
 		jimport('joomla.filesystem.folder');
@@ -210,7 +212,7 @@ class ComponentbuilderModelCompiler extends JModelList
 		}
 		return false;
 	}
-	
+
 	public function install($p_file)
 	{
 		$this->setState('action', 'install');
@@ -238,7 +240,7 @@ class ComponentbuilderModelCompiler extends JModelList
 		{
 			return false;
 		}
-		
+
 		$config   = JFactory::getConfig();
 		$tmp_dest = $config->get('tmp_path');
 
@@ -259,7 +261,7 @@ class ComponentbuilderModelCompiler extends JModelList
 		{
 			return false;
 		}
-		
+
 		// Was the package unpacked?
 		if (!$package || !$package['type'])
 		{
@@ -280,7 +282,7 @@ class ComponentbuilderModelCompiler extends JModelList
 		}
 		else
 		{
-			// Package installed sucessfully.
+			// Package installed successfully.
 			$msg = JText::sprintf('COM_INSTALLER_INSTALL_SUCCESS', JText::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
 			$result = true;
 			$msgType = 'message';

@@ -118,7 +118,7 @@
 					class="fieldMedium"
 					multiple="false"
 					default=""
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Menu Field. Type: Checkbox. (joomla) -->
@@ -128,7 +128,6 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_MENU_LABEL"
 					value="1"
 					default="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_MENU_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -139,7 +138,6 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_METADATA_LABEL"
 					value="1"
 					default="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_METADATA_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -150,7 +148,6 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_DEFAULT_VIEW_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_DEFAULT_VIEW_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -161,7 +158,6 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_ACCESS_LABEL"
 					value="1"
 					default="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_ACCESS_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -172,7 +168,6 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_PUBLIC_ACCESS_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_PUBLIC_ACCESS_DESCRIPTION"
 					class="inputbox"
 				/>

@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -129,18 +129,18 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_vvvvvzb function
+// #jform_add_php_view listeners for add_php_view_vvvvway function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_vvvvvzb = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvzb(add_php_view_vvvvvzb);
+	var add_php_view_vvvvway = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvway(add_php_view_vvvvway);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_vvvvvzb = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvzb(add_php_view_vvvvvzb);
+	var add_php_view_vvvvway = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvway(add_php_view_vvvvway);
 
 });
 
@@ -214,4 +214,21 @@ jQuery(document).ready(function() {
 // some lang strings
 var select_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_SELECT_A_SNIPPET'); ?>';
 var create_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_CREATE_A_SNIPPET'); ?>';
+
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isClient('site'))
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}
 </script>

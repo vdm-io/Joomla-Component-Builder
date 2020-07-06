@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -44,7 +44,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
-			throw new Exception(implode("\n", $errors), 500);
+			throw new Exception(implode(PHP_EOL, $errors), 500);
 		}
 
 		parent::display($tpl);
@@ -128,6 +128,7 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				$local_snippets[$path] = $item;
 			}
 		}
+		
 		// Add the JavaScript for JStore
 		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jquery.json.min.js');
 		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jstorage.min.js');
@@ -161,6 +162,8 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 			// set to use no storage
 			$expire = 30000; // only 30 seconds
 		}
+		// Set the Time To Live To JavaScript
+		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
 		// set snippet path
 		$this->document->addScriptDeclaration("var snippetPath = '". ComponentbuilderHelper::$snippetPath ."';");
 		$this->document->addScriptDeclaration("var snippetsPath = '". ComponentbuilderHelper::$snippetsPath ."';");
@@ -230,8 +233,6 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 				}
 			}
 		");
-		// Set the Time To Live To JavaScript
-		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
 		// load the local snippets
 		if (ComponentbuilderHelper::checkArray($this->items))
 		{
@@ -251,8 +252,6 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		$this->app->input->set('hidemainmenu', true);
 		// add title to the page
 		JToolbarHelper::title(JText::_('COM_COMPONENTBUILDER_GET_SNIPPETS'),'search');
-		// add the back button
-		// JToolBarHelper::custom('get_snippets.back', 'undo-2', '', 'COM_COMPONENTBUILDER_BACK', false);
 		// add cpanel button
 		JToolBarHelper::custom('get_snippets.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
 		if ($this->canDo->get('get_snippets.custom_admin_views'))

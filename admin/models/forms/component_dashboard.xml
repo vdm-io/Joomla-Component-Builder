@@ -98,6 +98,19 @@
 			readonly="true"
 			button="false"
 		/>
+		<!-- Php_dashboard_methods Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="php_dashboard_methods"
+			label="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_LABEL"
+			rows="17"
+			cols="5"
+			description="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_HINT"
+			required="false"
+		/>
 		<!-- Dashboard_tab Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -120,7 +133,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_NAME_HINT"
@@ -136,7 +149,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_HEADER_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_HEADER_HINT"
@@ -152,23 +165,12 @@
 					class="text_area tab_html"
 					filter="raw"
 					hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_HTML_HINT"
-					required="false"
+					required="true"
 				/>
 			</form>
 		</field>
-		<!-- Php_dashboard_methods Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="php_dashboard_methods"
-			label="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_LABEL"
-			rows="17"
-			cols="5"
-			description="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_PHP_DASHBOARD_METHODS_HINT"
-			required="false"
-		/>
+		<!-- Note_php_dashboard_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_php_dashboard_note" description="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_NOTE_PHP_DASHBOARD_NOTE_DESCRIPTION" class="note_php_dashboard_note" />
 	</fieldset>
 	
 	<!-- Access Control Fields. -->

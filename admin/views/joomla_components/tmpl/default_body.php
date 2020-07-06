@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -72,10 +72,11 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 			<?php endif; ?>
 				- <?php echo $this->escape($item->component_version); ?>
 			</div>
-			<?php	// setup the return path
-				if (!isset($returnpath))
+			<?php
+				// always make sure the $this->return_here is set
+				if (!isset($this->return_here))
 				{
-					$returnpath = urlencode(base64_encode((string) JUri::getInstance()));
+					$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
 				}
 				// setup the buttons
 				if (!isset($_buttons) || !ComponentbuilderHelper::checkArray($_buttons))
@@ -105,6 +106,11 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 						);
 					$_buttons[1] = array(
 						array(
+							'view' => 'component_placeholders',
+							'views' => 'components_placeholders',
+							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_PLACEHOLDERS'),
+							'icon' => 'search'),
+						array(
 							'view' => 'component_updates',
 							'views' => 'components_updates',
 							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_UPDATES'),
@@ -130,16 +136,26 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 							'view' => 'component_dashboard',
 							'views' => 'components_dashboard',
 							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_DASHBOARD'),
-							'icon' => 'dashboard')
+							'icon' => 'dashboard'),
+						array(
+							'view' => 'component_modules',
+							'views' => 'components_modules',
+							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_MODULES'),
+							'icon' => 'cube'),
+						array(
+							'view' => 'component_plugins',
+							'views' => 'components_plugins',
+							'title' => JText::_('COM_COMPONENTBUILDER_THE_COMPONENT_PLUGINS'),
+							'icon' => 'power-cord')
 						);
 				}
 			?>
 			<div class="btn-group" style="margin: 5px 0 0 0;">
 			<?php foreach ($_buttons[0] as $_button): ?>
 				<?php if ($canDo->get($_button['view'].'.edit') && ($id = ComponentbuilderHelper::getVar($_button['view'], $item->id, 'joomla_component', 'id')) !== false): ?>
-					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $returnpath; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php elseif ($canDo->get($_button['view'].'.create')): ?>
-					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=joomla_component&refid=<?php echo $item->id; ?>&return=<?php echo $returnpath; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=joomla_component&refid=<?php echo $item->id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php endif; ?>
 			<?php endforeach; ?>
 			</div>
@@ -151,9 +167,9 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 			<div class="btn-group" style="margin: 5px 0 0 0;">
 			<?php foreach ($_buttons[1] as $_button): ?>
 				<?php if ($canDo->get($_button['view'].'.edit') && ($id = ComponentbuilderHelper::getVar($_button['view'], $item->id, 'joomla_component', 'id')) !== false): ?>
-					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $returnpath; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php elseif ($canDo->get($_button['view'].'.create')): ?>
-					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=joomla_component&refid=<?php echo $item->id; ?>&return=<?php echo $returnpath; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=joomla_component&refid=<?php echo $item->id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php endif; ?>
 			<?php endforeach; ?>
 			</div>
@@ -165,9 +181,9 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 			<div class="btn-group" style="margin: 5px 0 0 0;">
 			<?php foreach ($_buttons[2] as $_button): ?>
 				<?php if ($canDo->get($_button['view'].'.edit') && ($id = ComponentbuilderHelper::getVar($_button['view'], $item->id, 'joomla_component', 'id')) !== false): ?>
-					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $returnpath; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php elseif ($canDo->get($_button['view'].'.create')): ?>
-					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=joomla_component&refid=<?php echo $item->id; ?>&return=<?php echo $returnpath; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=joomla_component&refid=<?php echo $item->id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php endif; ?>
 			<?php endforeach; ?>
 			</div>

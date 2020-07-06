@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -34,8 +34,9 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
-		$this->listOrder = $this->escape($this->state->get('list.ordering'));
-		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		// Add the list ordering clause.
+		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'asc'));
 		$this->saveOrder = $this->listOrder == 'ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -188,7 +189,15 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 
 		// Set Type Selection
 		$this->typeOptions = $this->getTheTypeSelections();
-		if ($this->typeOptions)
+		// We do some sanitation for Type filter
+		if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
+			isset($this->typeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
+		{
+			unset($this->typeOptions[0]);
+		}
+		// Only load Type filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->typeOptions))
 		{
 			// Type Filter
 			JHtmlSidebar::addFilter(
@@ -210,7 +219,15 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 
 		// Set Location Selection
 		$this->locationOptions = $this->getTheLocationSelections();
-		if ($this->locationOptions)
+		// We do some sanitation for Location filter
+		if (ComponentbuilderHelper::checkArray($this->locationOptions) &&
+			isset($this->locationOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->locationOptions[0]->value))
+		{
+			unset($this->locationOptions[0]);
+		}
+		// Only load Location filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->locationOptions))
 		{
 			// Location Filter
 			JHtmlSidebar::addFilter(
@@ -232,7 +249,15 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 
 		// Set Admin View Selection
 		$this->admin_viewOptions = JFormHelper::loadFieldType('Adminviewfolderlist')->options;
-		if ($this->admin_viewOptions)
+		// We do some sanitation for Admin View filter
+		if (ComponentbuilderHelper::checkArray($this->admin_viewOptions) &&
+			isset($this->admin_viewOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->admin_viewOptions[0]->value))
+		{
+			unset($this->admin_viewOptions[0]);
+		}
+		// Only load Admin View filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->admin_viewOptions))
 		{
 			// Admin View Filter
 			JHtmlSidebar::addFilter(
@@ -254,7 +279,15 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 
 		// Set Site View Selection
 		$this->site_viewOptions = JFormHelper::loadFieldType('Siteviewfolderlist')->options;
-		if ($this->site_viewOptions)
+		// We do some sanitation for Site View filter
+		if (ComponentbuilderHelper::checkArray($this->site_viewOptions) &&
+			isset($this->site_viewOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->site_viewOptions[0]->value))
+		{
+			unset($this->site_viewOptions[0]);
+		}
+		// Only load Site View filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->site_viewOptions))
 		{
 			// Site View Filter
 			JHtmlSidebar::addFilter(
@@ -316,7 +349,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.title' => JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_TITLE_LABEL'),
 			'a.type' => JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_TYPE_LABEL'),

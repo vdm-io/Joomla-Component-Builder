@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -35,7 +35,7 @@ class JFormFieldViewtabs extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-				// get the input from url
+		// get the input from url
 		$jinput = JFactory::getApplication()->input;
 		// get the view name & id
 		$fieldsID = $jinput->getInt('id', 0);
@@ -77,14 +77,19 @@ class JFormFieldViewtabs extends JFormFieldList
 		if (isset($item->addtabs) && ComponentbuilderHelper::checkJson($item->addtabs))
 		{
 			$items = json_decode($item->addtabs, true);
-			$nr = 1;
-			foreach($items as $itemName)
+			// check if the array has values
+			if (ComponentbuilderHelper::checkArray($items))
 			{
-				$options[] = JHtml::_('select.option', $nr, $itemName['name']);
-				$nr++;
+				$nr = 1;
+				foreach($items as $itemName)
+				{
+					$options[] = JHtml::_('select.option', $nr, $itemName['name']);
+					$nr++;
+				}
 			}
 		}
-		else
+		// check if any were loaded
+		if (!ComponentbuilderHelper::checkArray($options))
 		{
 			$options[] = JHtml::_('select.option', 1, JText::_('COM_COMPONENTBUILDER_DETAILS'));
 		}

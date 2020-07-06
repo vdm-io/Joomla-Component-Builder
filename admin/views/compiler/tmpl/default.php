@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -24,11 +24,9 @@ JHtml::_('behavior.keepalive');
 ?>
 <?php if ($this->canDo->get('compiler.access')): ?>
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=compiler'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
-        <input type="hidden" name="task" value="" />
-        <?php echo JHtml::_('form.token'); ?>
-</form>
+
 <script type="text/javascript">
-Joomla.submitbutton = function(task)
+Joomla.submitbutton = function(task, key)
 {
 	if (task == ''){
 		return false;
@@ -42,11 +40,12 @@ Joomla.submitbutton = function(task)
 		if (isValid){
 			jQuery('#form').hide();
 			// get correct form based on task
-			if (task == 'compiler.compiler') {
-				var form = document.getElementById('compilerForm');
-			} else {
-				var form = document.getElementById('adminForm');
+			var form = document.getElementById('adminForm');
+			// set the plugin id
+			if (task == 'compiler.installCompiledModule' || task == 'compiler.installCompiledPlugin') {
+				form.install_item_id.value = key;
 			}
+			// set the task value
 			form.task.value = task;
 			form.submit();
 			// some ui movements
@@ -67,20 +66,21 @@ Joomla.submitbutton = function(task)
 }
 // Add spindle-wheel for importations:
 jQuery(document).ready(function($) {
-	var outerDiv = $('body');
 
-	$('<div id="loading"></div>')
-		.css("background", "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat")
-		.css("top", outerDiv.position().top - $(window).scrollTop())
-		.css("left", outerDiv.position().left - $(window).scrollLeft())
-		.css("width", outerDiv.width())
-		.css("height", outerDiv.height())
-		.css("position", "fixed")
-		.css("opacity", "0.80")
-		.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
-		.css("filter", "alpha(opacity = 80)")
-		.css("display", "none")
-		.appendTo(outerDiv);
+// waiting spinner
+var outerDiv = jQuery('body');
+jQuery('<div id="loading"></div>')
+	.css("background", "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat")
+	.css("top", outerDiv.position().top - jQuery(window).scrollTop())
+	.css("left", outerDiv.position().left - jQuery(window).scrollLeft())
+	.css("width", outerDiv.width())
+	.css("height", outerDiv.height())
+	.css("position", "fixed")
+	.css("opacity", "0.80")
+	.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
+	.css("filter", "alpha(opacity = 80)")
+	.css("display", "none")
+	.appendTo(outerDiv);
 });
 </script>
 <?php if(!empty( $this->sidebar)): ?>
@@ -94,7 +94,7 @@ jQuery(document).ready(function($) {
 	<div id="form">
 		<div class="span4">
 			<h3><?php echo JText::_('COM_COMPONENTBUILDER_READY_TO_COMPILE_A_COMPONENT'); ?></h3>
-			<form action="index.php?option=com_componentbuilder&view=compiler" method="post" name="compilerForm" id="compilerForm" class="form-validate" enctype="multipart/form-data">
+			<div id="compilerForm">
 				<div>
 				<span class="notice" style="display:none; color:red;"><?php echo JText::_('COM_COMPONENTBUILDER_YOU_MUST_SELECT_A_COMPONENT'); ?></span><br />
 				<?php if ($this->form): ?>
@@ -111,21 +111,13 @@ jQuery(document).ready(function($) {
 				<button class="btn btn-small btn-success" onclick="Joomla.submitbutton('compiler.compiler')"><span class="icon-cog icon-white"></span>
 					<?php echo JText::_('COM_COMPONENTBUILDER_COMPILE_COMPONENT'); ?>
 				</button>
+				<input type="hidden" name="install_item_id" value="0"> 
 				<input type="hidden" name="version" value="3" />
-				<input type="hidden" name="task" value="compiler.compiler" />
-				<?php echo JHtml::_('form.token'); ?>
-			</form>
+			</div>
 		</div>
 		<div class="span7">
 			<div id="component-details"><?php echo $selectNotice; ?></div>
-			<div id="noticeboard">
-				<div  class="well well-small">
-					<h2 class="module-title nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span id="vdm-new-notice" style="display:none; color:red;"> (<?php echo JText::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>
-					<div id="noticeboard-md"><small><?php echo JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING'); ?><span class="loading-dots">.</span></small></div>
-					<div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
-				</div>
-				<div><?php echo ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
-			</div>
+			<?php echo JLayoutHelper::render('jcbnoticeboardtabs', null); ?>
 		</div>
 	</div>
 	<div id="clear" style="display:none;">
@@ -174,7 +166,7 @@ jQuery(document).ready( function($) {
 ?>
 function JRouter(link) {
 <?php
-	if ($app->isSite())
+	if ($app->isClient('site'))
 	{
 		echo 'var url = "'.JURI::root().'";';
 	}
@@ -186,6 +178,9 @@ function JRouter(link) {
 	return url+link;
 }
 </script>
+<input type="hidden" name="task" value="" />
+<?php echo JHtml::_('form.token'); ?>
+</form>
 <?php else: ?>
         <h1><?php echo JText::_('COM_COMPONENTBUILDER_NO_ACCESS_GRANTED'); ?></h1>
 <?php endif; ?>

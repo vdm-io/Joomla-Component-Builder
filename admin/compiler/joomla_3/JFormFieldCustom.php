@@ -24,7 +24,7 @@ JFormHelper::loadFieldClass('###JFORM_extends###');
 /**
  * ###Type### Form Field class for the ###Component### component
  */
-class JFormField###Type### extends JFormField###JFORM_EXTENDS###
+class ###JPREFIX###FormField###Type### extends JFormField###JFORM_EXTENDS###
 {
 	/**
 	 * The ###type### field type.

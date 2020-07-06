@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -107,7 +107,6 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		<input type="hidden" name="task" value="validation_rule.edit" />
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
-	</div>
 </div>
 </form>
 </div>
@@ -122,14 +121,12 @@ jQuery('#componentbuilder_loader').on('change', '#jform_inherit',function (e) {
 	var rulefilename = jQuery("#jform_inherit option:selected").val();
 	getExistingValidationRuleCode(rulefilename);
 });
-
 jQuery('#componentbuilder_loader').on('change', '#jform_name',function (e)
 {
 	var ruleName = jQuery('#jform_name').val();
 	// check if this rule name is taken
 	checkRuleName(ruleName);
 });
-
 
 // nice little dot trick :)
 jQuery(document).ready( function($) {
@@ -142,5 +139,22 @@ jQuery(document).ready( function($) {
 	}
 	$(".loading-dots").text(dots);
   } , 500);
-}); 
+});
+
+<?php
+	$app = JFactory::getApplication();
+?>
+function JRouter(link) {
+<?php
+	if ($app->isClient('site'))
+	{
+		echo 'var url = "'.JURI::root().'";';
+	}
+	else
+	{
+		echo 'var url = "";';
+	}
+?>
+	return url+link;
+}
 </script>

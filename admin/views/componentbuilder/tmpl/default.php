@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -83,6 +83,9 @@ JHtml::_('behavior.tooltip');
 				<?php  echo JHtml::_('bootstrap.startAccordion', 'notice_board_accordian', array('active' => 'notice_board_one')); ?>
 					<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'Vast Development Method', 'notice_board_one'); ?>
 						<?php echo $this->loadTemplate('notice_board_vast_development_method');?>
+					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'JCB Pro Membership', 'notice_board_two'); ?>
+						<?php echo $this->loadTemplate('notice_board_jcb_pro_membership');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
 			</div>

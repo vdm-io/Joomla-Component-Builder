@@ -4,7 +4,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -32,16 +32,16 @@ jQuery(document).ready(function()
 });
 
 function getExistingValidationRuleCode_server(rulefilename){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getExistingValidationRuleCode&format=json";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getExistingValidationRuleCode&format=json&raw=true");
 	if(token.length > 0 && rulefilename.length > 0){
-		var request = 'token='+token+'&name='+rulefilename;
+		var request = token+'=1&name='+rulefilename;
 	}
 	return jQuery.ajax({
 		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
@@ -84,23 +84,23 @@ function checkRuleName(ruleName) {
 }
 // check Function Name
 function checkRuleName_server(ruleName, ide){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.checkRuleName&format=json";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.checkRuleName&format=json&raw=true");
 	if(token.length > 0){
-		var request = 'token='+token+'&name='+ruleName+'&id='+ide;
+		var request = token+'=1&name='+ruleName+'&id='+ide;
 	}
 	return jQuery.ajax({
-		type: 'POST',
+		type: 'GET',
 		url: getUrl,
-		dataType: 'jsonp',
+		dataType: 'json',
 		data: request,
-		jsonp: 'callback'
+		jsonp: false
 	});
 }
 
 function getEditCustomCodeButtons_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id+'&return_here='+return_here;
+		var request = token+'=1&id='+id+'&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -117,7 +117,7 @@ function getEditCustomCodeButtons(){
 	getEditCustomCodeButtons_server(id).done(function(result) {
 		if(isObject(result)){
 			jQuery.each(result, function( field, buttons ) {
-				jQuery('<div class="control-group"><div class="control-label"><label>Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
+				jQuery('<div class="control-group"><div class="control-label"><label>Add/Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
 				jQuery.each(buttons, function( name, button ) {
 					jQuery(".control-customcode-buttons-"+field).append(button);
 				});

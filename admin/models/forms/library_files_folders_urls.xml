@@ -136,7 +136,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="PATH"
 					message="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_MESSAGE"
 					hint="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_HINT"
@@ -148,7 +148,6 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_RENAME_LABEL"
 					value="1"
 					default=""
-					required="false"
 					class="inputbox"
 				/>
 			</form>
@@ -192,7 +191,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="PATH"
 					message="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_MESSAGE"
 					hint="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_HINT"
@@ -204,7 +203,6 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -232,7 +230,7 @@
 					class="list_class"
 					multiple="false"
 					default="0"
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Path Field. Type: Text. (joomla) -->
@@ -246,7 +244,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="PATH"
 					message="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_MESSAGE"
 					hint="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_HINT"
@@ -258,7 +256,6 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_RENAME_LABEL"
 					value="1"
 					default=""
-					required="false"
 					class="inputbox"
 				/>
 			</form>
@@ -285,7 +282,7 @@
 					class="list_class"
 					multiple="false"
 					default="0"
-					required="false"
+					required="true"
 					button="false"
 				/>
 				<!-- Path Field. Type: Text. (joomla) -->
@@ -299,7 +296,7 @@
 					class="text_area"
 					readonly="false"
 					disabled="false"
-					required="false"
+					required="true"
 					filter="PATH"
 					message="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_MESSAGE"
 					hint="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_PATH_HINT"
@@ -311,7 +308,6 @@
 					label="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NOTNEW_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -340,7 +336,7 @@
 					default=""
 					description="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_URL_DESCRIPTION"
 					class="text_area"
-					required="false"
+					required="true"
 					filter="url"
 					validated="url"
 					message="COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_URL_MESSAGE"
@@ -355,7 +351,7 @@
 					class="list_class"
 					multiple="false"
 					filter="INT"
-					required="false"
+					required="true"
 					default="1">
 					<!-- Option Set. -->
 					<option value="1">

@@ -5,12 +5,14 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Componentbuilder Api Model
@@ -161,10 +163,37 @@ class ComponentbuilderModelApi extends JModelItem
 
 	protected $compiler;
 
+	public function getTranslationLinkedComponents()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// for now we only have crowdin
+		$query->select($db->quoteName(array('id', 'translation_tool', 'crowdin_account_api_key', 'crowdin_project_api_key' ,'crowdin_project_identifier', 'crowdin_username')));
+		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
+		$query->where($db->quoteName('translation_tool') . ' > 0');
+		$query->where($db->quoteName('published') . ' >= 1');
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			return $db->loadObjectList();
+		}
+		return false;
+	}
+
+	public function translate($component)
+	{
+		$this->messages[] = JText::_('COM_COMPONENTBUILDER_TRANSLATOR_MODULE_NOT_READYBR_THIS_AREA_IS_STILL_UNDER_PRODUCTION_HOPEFULLY_WITH_NEXT_UPDATE');
+		return false;
+	}
+
 	public function compileInstall($component)
 	{
 		$values = array(
 			'version' => 3,
+			'install' => 1,
 			'component' => 0,
 			'backup' => 0,
 			'repository' => 0,
@@ -190,7 +219,7 @@ class ComponentbuilderModelApi extends JModelItem
 			if (1 == $published && $checked_out == 0)
 			{
 				// start up Compiler
-				$this->compiler	 = new Compiler($values);
+				$this->compiler = new Compiler($values);
 				if($this->compiler)
 				{
 					// component was compiled
@@ -198,10 +227,27 @@ class ComponentbuilderModelApi extends JModelItem
 					// get compiler model to run the installer
 					$model = ComponentbuilderHelper::getModel('compiler', JPATH_COMPONENT_ADMINISTRATOR);
 					// now install components
-					if ($model->install($this->compiler->componentFolderName.'.zip'))
+					if (1 == $values['install'] && $model->install($this->compiler->componentFolderName.'.zip'))
 					{
 						// component was installed
 						$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_SUCCESSFULLY_INSTALLED_AND_REMOVED_FROM_TEMP_FOLDER', $this->compiler->componentFolderName);
+					}
+					elseif (1 != $values['install'])
+					{
+						jimport('joomla.filesystem.file');
+						$config = JFactory::getConfig();
+						$package = $config->get('tmp_path') . '/' . $this->compiler->componentFolderName.'.zip';
+						// just remove from temp
+						if (JFile::delete($package) && !is_file($package))
+						{
+							// component was installed
+							$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_BY_YOUR_REQUEST_AND_IS_ALSO_REMOVED_FROM_TEMP_FOLDER', $this->compiler->componentFolderName);
+						}
+						else
+						{
+							// component was not installed
+							$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_BY_YOUR_REQUEST_AND_IS_STILL_IN_THE_TEMP_FOLDER', $this->compiler->componentFolderName);
+						}
 					}
 					else
 					{

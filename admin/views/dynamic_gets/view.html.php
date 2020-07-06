@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -34,8 +34,9 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
-		$this->listOrder = $this->escape($this->state->get('list.ordering'));
-		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		// Add the list ordering clause.
+		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
 		$this->saveOrder = $this->listOrder == 'ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -193,7 +194,15 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 
 		// Set Main Source Selection
 		$this->main_sourceOptions = $this->getTheMain_sourceSelections();
-		if ($this->main_sourceOptions)
+		// We do some sanitation for Main Source filter
+		if (ComponentbuilderHelper::checkArray($this->main_sourceOptions) &&
+			isset($this->main_sourceOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->main_sourceOptions[0]->value))
+		{
+			unset($this->main_sourceOptions[0]);
+		}
+		// Only load Main Source filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->main_sourceOptions))
 		{
 			// Main Source Filter
 			JHtmlSidebar::addFilter(
@@ -215,7 +224,15 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 
 		// Set Gettype Selection
 		$this->gettypeOptions = $this->getTheGettypeSelections();
-		if ($this->gettypeOptions)
+		// We do some sanitation for Gettype filter
+		if (ComponentbuilderHelper::checkArray($this->gettypeOptions) &&
+			isset($this->gettypeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->gettypeOptions[0]->value))
+		{
+			unset($this->gettypeOptions[0]);
+		}
+		// Only load Gettype filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->gettypeOptions))
 		{
 			// Gettype Filter
 			JHtmlSidebar::addFilter(
@@ -277,7 +294,7 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_NAME_LABEL'),
 			'a.main_source' => JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_MAIN_SOURCE_LABEL'),

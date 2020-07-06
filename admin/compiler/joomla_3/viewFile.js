@@ -1,4 +1,4 @@
 ###BOM###
 
 /* JS Document */
-###ADMINJS###
+###ADMIN_JAVASCRIPT_FILE###

@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,18 +13,183 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
+use Joomla\String\StringHelper;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Componentbuilder Admin_view Model
  */
 class ComponentbuilderModelAdmin_view extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'details' => array(
+			'left' => array(
+				'name_single',
+				'name_list',
+				'type',
+				'icon',
+				'icon_add',
+				'icon_category'
+			),
+			'right' => array(
+				'short_description',
+				'description',
+				'add_fadein'
+			),
+			'fullwidth' => array(
+				'note_linked_to_notice'
+			),
+			'above' => array(
+				'system_name'
+			),
+			'under' => array(
+				'not_required'
+			)
+		),
+		'php' => array(
+			'fullwidth' => array(
+				'add_php_ajax',
+				'php_ajaxmethod',
+				'ajax_input',
+				'add_php_getitem',
+				'php_getitem',
+				'add_php_getitems',
+				'php_getitems',
+				'add_php_getitems_after_all',
+				'php_getitems_after_all',
+				'add_php_getlistquery',
+				'php_getlistquery',
+				'add_php_getform',
+				'php_getform',
+				'add_php_before_save',
+				'php_before_save',
+				'add_php_save',
+				'php_save',
+				'add_php_postsavehook',
+				'php_postsavehook',
+				'add_php_allowadd',
+				'php_allowadd',
+				'add_php_allowedit',
+				'php_allowedit',
+				'add_php_before_cancel',
+				'php_before_cancel',
+				'add_php_after_cancel',
+				'php_after_cancel',
+				'add_php_batchcopy',
+				'php_batchcopy',
+				'add_php_batchmove',
+				'php_batchmove',
+				'add_php_before_publish',
+				'php_before_publish',
+				'add_php_after_publish',
+				'php_after_publish',
+				'add_php_before_delete',
+				'php_before_delete',
+				'add_php_after_delete',
+				'php_after_delete',
+				'add_php_document',
+				'php_document'
+			)
+		),
+		'custom_import' => array(
+			'fullwidth' => array(
+				'note_beginner_import',
+				'note_advanced_import',
+				'add_custom_import',
+				'php_import_display',
+				'html_import_view',
+				'php_import',
+				'php_import_headers',
+				'php_import_setdata',
+				'php_import_save',
+				'php_import_ext'
+			)
+		),
+		'mysql' => array(
+			'left' => array(
+				'mysql_table_engine',
+				'mysql_table_charset',
+				'mysql_table_collate',
+				'mysql_table_row_format',
+				'add_sql',
+				'source',
+				'addtables'
+			),
+			'fullwidth' => array(
+				'sql'
+			)
+		),
+		'settings' => array(
+			'fullwidth' => array(
+				'note_on_permissions',
+				'addpermissions',
+				'note_on_tabs',
+				'addtabs',
+				'note_custom_tabs_note',
+				'note_on_linked_views',
+				'addlinked_views'
+			)
+		),
+		'fields' => array(
+			'left' => array(
+				'note_create_edit_notice',
+				'alias_builder_type',
+				'note_alias_builder_custom',
+				'note_alias_builder_default',
+				'alias_builder'
+			),
+			'right' => array(
+				'note_create_edit_buttons'
+			),
+			'fullwidth' => array(
+				'note_create_edit_display'
+			)
+		),
+		'css' => array(
+			'fullwidth' => array(
+				'add_css_view',
+				'css_view',
+				'add_css_views',
+				'css_views'
+			)
+		),
+		'javascript' => array(
+			'fullwidth' => array(
+				'add_javascript_view_file',
+				'javascript_view_file',
+				'add_javascript_view_footer',
+				'javascript_view_footer',
+				'add_javascript_views_file',
+				'javascript_views_file',
+				'add_javascript_views_footer',
+				'javascript_views_footer'
+			)
+		),
+		'custom_buttons' => array(
+			'left' => array(
+				'add_custom_button',
+				'custom_button'
+			),
+			'fullwidth' => array(
+				'php_controller',
+				'php_model',
+				'php_controller_list',
+				'php_model_list'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *
@@ -52,10 +217,54 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		return JTable::getInstance($type, $prefix, $config);
 	}
 
+
+	/**
+	 * get VDM internal session key
+	 *
+	 * @return  string  the session key
+	 *
+	 */
 	public function getVDM()
 	{
+		if (!isset($this->vastDevMod))
+		{
+			$_id = 0; // new item probably (since it was not set in the getItem method)
+
+			if (empty($_id))
+			{
+				$id = 0;
+			}
+			else
+			{
+				$id = $_id;
+			}
+			// set the id and view name to session
+			if ($vdm = ComponentbuilderHelper::get('admin_view__'.$id))
+			{
+				$this->vastDevMod = $vdm;
+			}
+			else
+			{
+				// set the vast development method key
+				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				ComponentbuilderHelper::set($this->vastDevMod, 'admin_view__'.$id);
+				ComponentbuilderHelper::set('admin_view__'.$id, $this->vastDevMod);
+				// set a return value if found
+				$jinput = JFactory::getApplication()->input;
+				$return = $jinput->get('return', null, 'base64');
+				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				// set a GUID value if found
+				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+					&& method_exists('ComponentbuilderHelper', 'validGUID')
+					&& ComponentbuilderHelper::validGUID($item->guid))
+				{
+					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+				}
+			}
+		}
 		return $this->vastDevMod;
 	}
+
     
 	/**
 	 * Method to get a single record.
@@ -86,82 +295,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_import_headers))
+			if (!empty($item->php_before_cancel))
 			{
-				// base64 Decode php_import_headers.
-				$item->php_import_headers = base64_decode($item->php_import_headers);
-			}
-
-			if (!empty($item->html_import_view))
-			{
-				// base64 Decode html_import_view.
-				$item->html_import_view = base64_decode($item->html_import_view);
-			}
-
-			if (!empty($item->php_import_save))
-			{
-				// base64 Decode php_import_save.
-				$item->php_import_save = base64_decode($item->php_import_save);
-			}
-
-			if (!empty($item->php_getitems))
-			{
-				// base64 Decode php_getitems.
-				$item->php_getitems = base64_decode($item->php_getitems);
-			}
-
-			if (!empty($item->php_getitems_after_all))
-			{
-				// base64 Decode php_getitems_after_all.
-				$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
-			}
-
-			if (!empty($item->php_getlistquery))
-			{
-				// base64 Decode php_getlistquery.
-				$item->php_getlistquery = base64_decode($item->php_getlistquery);
-			}
-
-			if (!empty($item->css_view))
-			{
-				// base64 Decode css_view.
-				$item->css_view = base64_decode($item->css_view);
-			}
-
-			if (!empty($item->php_getform))
-			{
-				// base64 Decode php_getform.
-				$item->php_getform = base64_decode($item->php_getform);
-			}
-
-			if (!empty($item->php_before_save))
-			{
-				// base64 Decode php_before_save.
-				$item->php_before_save = base64_decode($item->php_before_save);
-			}
-
-			if (!empty($item->css_views))
-			{
-				// base64 Decode css_views.
-				$item->css_views = base64_decode($item->css_views);
-			}
-
-			if (!empty($item->php_save))
-			{
-				// base64 Decode php_save.
-				$item->php_save = base64_decode($item->php_save);
-			}
-
-			if (!empty($item->php_postsavehook))
-			{
-				// base64 Decode php_postsavehook.
-				$item->php_postsavehook = base64_decode($item->php_postsavehook);
-			}
-
-			if (!empty($item->javascript_view_file))
-			{
-				// base64 Decode javascript_view_file.
-				$item->javascript_view_file = base64_decode($item->javascript_view_file);
+				// base64 Decode php_before_cancel.
+				$item->php_before_cancel = base64_decode($item->php_before_cancel);
 			}
 
 			if (!empty($item->php_allowadd))
@@ -170,52 +307,22 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_allowadd = base64_decode($item->php_allowadd);
 			}
 
-			if (!empty($item->php_allowedit))
+			if (!empty($item->php_save))
 			{
-				// base64 Decode php_allowedit.
-				$item->php_allowedit = base64_decode($item->php_allowedit);
+				// base64 Decode php_save.
+				$item->php_save = base64_decode($item->php_save);
 			}
 
-			if (!empty($item->javascript_view_footer))
+			if (!empty($item->php_getform))
 			{
-				// base64 Decode javascript_view_footer.
-				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
+				// base64 Decode php_getform.
+				$item->php_getform = base64_decode($item->php_getform);
 			}
 
-			if (!empty($item->php_batchcopy))
+			if (!empty($item->php_import_display))
 			{
-				// base64 Decode php_batchcopy.
-				$item->php_batchcopy = base64_decode($item->php_batchcopy);
-			}
-
-			if (!empty($item->php_batchmove))
-			{
-				// base64 Decode php_batchmove.
-				$item->php_batchmove = base64_decode($item->php_batchmove);
-			}
-
-			if (!empty($item->javascript_views_file))
-			{
-				// base64 Decode javascript_views_file.
-				$item->javascript_views_file = base64_decode($item->javascript_views_file);
-			}
-
-			if (!empty($item->php_before_publish))
-			{
-				// base64 Decode php_before_publish.
-				$item->php_before_publish = base64_decode($item->php_before_publish);
-			}
-
-			if (!empty($item->php_after_publish))
-			{
-				// base64 Decode php_after_publish.
-				$item->php_after_publish = base64_decode($item->php_after_publish);
-			}
-
-			if (!empty($item->javascript_views_footer))
-			{
-				// base64 Decode javascript_views_footer.
-				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
+				// base64 Decode php_import_display.
+				$item->php_import_display = base64_decode($item->php_import_display);
 			}
 
 			if (!empty($item->php_before_delete))
@@ -224,16 +331,130 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_before_delete = base64_decode($item->php_before_delete);
 			}
 
-			if (!empty($item->php_after_delete))
+			if (!empty($item->php_batchcopy))
 			{
-				// base64 Decode php_after_delete.
-				$item->php_after_delete = base64_decode($item->php_after_delete);
+				// base64 Decode php_batchcopy.
+				$item->php_batchcopy = base64_decode($item->php_batchcopy);
+			}
+
+			if (!empty($item->php_before_publish))
+			{
+				// base64 Decode php_before_publish.
+				$item->php_before_publish = base64_decode($item->php_before_publish);
 			}
 
 			if (!empty($item->php_document))
 			{
 				// base64 Decode php_document.
 				$item->php_document = base64_decode($item->php_document);
+			}
+
+			if (!empty($item->sql))
+			{
+				// base64 Decode sql.
+				$item->sql = base64_decode($item->sql);
+			}
+
+			if (!empty($item->php_import_setdata))
+			{
+				// base64 Decode php_import_setdata.
+				$item->php_import_setdata = base64_decode($item->php_import_setdata);
+			}
+
+			if (!empty($item->php_getlistquery))
+			{
+				// base64 Decode php_getlistquery.
+				$item->php_getlistquery = base64_decode($item->php_getlistquery);
+			}
+
+			if (!empty($item->php_before_save))
+			{
+				// base64 Decode php_before_save.
+				$item->php_before_save = base64_decode($item->php_before_save);
+			}
+
+			if (!empty($item->php_postsavehook))
+			{
+				// base64 Decode php_postsavehook.
+				$item->php_postsavehook = base64_decode($item->php_postsavehook);
+			}
+
+			if (!empty($item->php_allowedit))
+			{
+				// base64 Decode php_allowedit.
+				$item->php_allowedit = base64_decode($item->php_allowedit);
+			}
+
+			if (!empty($item->php_after_cancel))
+			{
+				// base64 Decode php_after_cancel.
+				$item->php_after_cancel = base64_decode($item->php_after_cancel);
+			}
+
+			if (!empty($item->php_batchmove))
+			{
+				// base64 Decode php_batchmove.
+				$item->php_batchmove = base64_decode($item->php_batchmove);
+			}
+
+			if (!empty($item->php_after_publish))
+			{
+				// base64 Decode php_after_publish.
+				$item->php_after_publish = base64_decode($item->php_after_publish);
+			}
+
+			if (!empty($item->php_after_delete))
+			{
+				// base64 Decode php_after_delete.
+				$item->php_after_delete = base64_decode($item->php_after_delete);
+			}
+
+			if (!empty($item->php_import))
+			{
+				// base64 Decode php_import.
+				$item->php_import = base64_decode($item->php_import);
+			}
+
+			if (!empty($item->php_import_ext))
+			{
+				// base64 Decode php_import_ext.
+				$item->php_import_ext = base64_decode($item->php_import_ext);
+			}
+
+			if (!empty($item->css_view))
+			{
+				// base64 Decode css_view.
+				$item->css_view = base64_decode($item->css_view);
+			}
+
+			if (!empty($item->css_views))
+			{
+				// base64 Decode css_views.
+				$item->css_views = base64_decode($item->css_views);
+			}
+
+			if (!empty($item->javascript_view_file))
+			{
+				// base64 Decode javascript_view_file.
+				$item->javascript_view_file = base64_decode($item->javascript_view_file);
+			}
+
+			if (!empty($item->javascript_view_footer))
+			{
+				// base64 Decode javascript_view_footer.
+				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
+			}
+
+			if (!empty($item->javascript_views_file))
+			{
+				// base64 Decode javascript_views_file.
+				$item->javascript_views_file = base64_decode($item->javascript_views_file);
+			}
+
+			if (!empty($item->javascript_views_footer))
+			{
+				// base64 Decode javascript_views_footer.
+				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
 			}
 
 			if (!empty($item->php_controller))
@@ -260,34 +481,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_model_list = base64_decode($item->php_model_list);
 			}
 
-			if (!empty($item->sql))
-			{
-				// base64 Decode sql.
-				$item->sql = base64_decode($item->sql);
-			}
-
 			if (!empty($item->php_ajaxmethod))
 			{
 				// base64 Decode php_ajaxmethod.
 				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
-			}
-
-			if (!empty($item->php_import_display))
-			{
-				// base64 Decode php_import_display.
-				$item->php_import_display = base64_decode($item->php_import_display);
-			}
-
-			if (!empty($item->php_import))
-			{
-				// base64 Decode php_import.
-				$item->php_import = base64_decode($item->php_import);
-			}
-
-			if (!empty($item->php_import_setdata))
-			{
-				// base64 Decode php_import_setdata.
-				$item->php_import_setdata = base64_decode($item->php_import_setdata);
 			}
 
 			if (!empty($item->php_getitem))
@@ -296,18 +493,34 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->php_getitem = base64_decode($item->php_getitem);
 			}
 
-			if (!empty($item->php_import_ext))
+			if (!empty($item->html_import_view))
 			{
-				// base64 Decode php_import_ext.
-				$item->php_import_ext = base64_decode($item->php_import_ext);
+				// base64 Decode html_import_view.
+				$item->html_import_view = base64_decode($item->html_import_view);
 			}
 
-			if (!empty($item->addtables))
+			if (!empty($item->php_import_headers))
 			{
-				// Convert the addtables field to an array.
-				$addtables = new Registry;
-				$addtables->loadString($item->addtables);
-				$item->addtables = $addtables->toArray();
+				// base64 Decode php_import_headers.
+				$item->php_import_headers = base64_decode($item->php_import_headers);
+			}
+
+			if (!empty($item->php_getitems))
+			{
+				// base64 Decode php_getitems.
+				$item->php_getitems = base64_decode($item->php_getitems);
+			}
+
+			if (!empty($item->php_import_save))
+			{
+				// base64 Decode php_import_save.
+				$item->php_import_save = base64_decode($item->php_import_save);
+			}
+
+			if (!empty($item->php_getitems_after_all))
+			{
+				// base64 Decode php_getitems_after_all.
+				$item->php_getitems_after_all = base64_decode($item->php_getitems_after_all);
 			}
 
 			if (!empty($item->addpermissions))
@@ -350,6 +563,14 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->custom_button = $custom_button->toArray();
 			}
 
+			if (!empty($item->addtables))
+			{
+				// Convert the addtables field to an array.
+				$addtables = new Registry;
+				$addtables->loadString($item->addtables);
+				$item->addtables = $addtables->toArray();
+			}
+
 			if (!empty($item->ajax_input))
 			{
 				// Convert the ajax_input field to an array.
@@ -382,8 +603,14 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$jinput = JFactory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				// set a GUID value if found
+				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+					&& method_exists('ComponentbuilderHelper', 'validGUID')
+					&& ComponentbuilderHelper::validGUID($item->guid))
+				{
+					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+				}
 			}
-
 			// update the fields
 			$objectUpdate = new stdClass();
 			$objectUpdate->id = (int) $item->id;
@@ -419,6 +646,23 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			{
 				$this->_db->updateObject('#__componentbuilder_admin_view', $objectUpdate, 'id');
 			}
+
+			// update the mysql_table_engine defaults
+			if (isset($item->mysql_table_engine) && is_numeric($item->mysql_table_engine))
+			{
+				$item->mysql_table_engine = 'MyISAM';
+			}
+			// update the mysql_table_charset defaults
+			if (isset($item->mysql_table_charset) && is_numeric($item->mysql_table_charset))
+			{
+				$item->mysql_table_charset = 'utf8';
+			}
+			// update the mysql_table_collate defaults
+			if (isset($item->mysql_table_collate) && is_numeric($item->mysql_table_collate))
+			{
+				$item->mysql_table_collate = 'utf8_general_ci';
+			}
+
 			
 			if (!empty($item->id))
 			{
@@ -445,8 +689,23 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
+		// check if xpath was set in options
+		$xpath = false;
+		if (isset($options['xpath']))
+		{
+			$xpath = $options['xpath'];
+			unset($options['xpath']);
+		}
+		// check if clear form was set in options
+		$clear = false;
+		if (isset($options['clear']))
+		{
+			$clear = $options['clear'];
+			unset($options['clear']);
+		}
+
 		// Get the form.
-		$form = $this->loadForm('com_componentbuilder.admin_view', 'admin_view', $options);
+		$form = $this->loadForm('com_componentbuilder.admin_view', 'admin_view', $options, $clear, $xpath);
 
 		if (empty($form))
 		{
@@ -538,6 +797,13 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				// set the field editor value (with none as fallback)
 				$form->setFieldAttribute($name, 'editor', $global_editor . '|none');
 			}
+		}
+
+
+		// Only load the GUID if new item
+		if (0 == $id)
+		{
+			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
 		}
 
 		return $form;
@@ -695,6 +961,8 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+			// run the perprocess of the data
+			$this->preprocessData('com_componentbuilder.admin_view', $data);
 		}
 
 		return $data;
@@ -743,9 +1011,9 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	protected function getUniqeFields()
+	protected function getUniqueFields()
 	{
-		return false;
+		return array('guid');
 	}
 	
 	/**
@@ -846,7 +1114,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	{
 		// Sanitize ids.
 		$pks = array_unique($pks);
-		JArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($pks);
 
 		// Remove any values of zero.
 		if (array_search(0, $pks, true))
@@ -887,7 +1155,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 
 		if (!empty($commands['move_copy']))
 		{
-			$cmd = JArrayHelper::getValue($commands, 'move_copy', 'c');
+			$cmd = ArrayHelper::getValue($commands, 'move_copy', 'c');
 
 			if ($cmd == 'c')
 			{
@@ -954,8 +1222,8 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			return false;
 		}
 
-		// get list of uniqe fields
-		$uniqeFields = $this->getUniqeFields();
+		// get list of unique fields
+		$uniqueFields = $this->getUniqueFields();
 		// remove move_copy from array
 		unset($values['move_copy']);
 
@@ -1015,12 +1283,12 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				}
 			}
 
-			// update all uniqe fields
-			if (ComponentbuilderHelper::checkArray($uniqeFields))
+			// update all unique fields
+			if (ComponentbuilderHelper::checkArray($uniqueFields))
 			{
-				foreach ($uniqeFields as $uniqeField)
+				foreach ($uniqueFields as $uniqueField)
 				{
-					$this->table->$uniqeField = $this->generateUniqe($uniqeField,$this->table->$uniqeField);
+					$this->table->$uniqueField = $this->generateUnique($uniqueField,$this->table->$uniqueField);
 				}
 			}
 
@@ -1216,24 +1484,18 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['metadata'] = (string) $metadata;
 		}
 
-		// if system name is empty create from name_single
+		// if system name is empty create a system name from the name_single
 		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
 		{
 			$data['system_name'] = $data['name_single'];
 		}
 
-		// Set the addtables items to data.
-		if (isset($data['addtables']) && is_array($data['addtables']))
+		// Set the GUID if empty or not valid
+		if (isset($data['guid']) && !ComponentbuilderHelper::validGUID($data['guid'], "admin_view", $data['id']))
 		{
-			$addtables = new JRegistry;
-			$addtables->loadArray($data['addtables']);
-			$data['addtables'] = (string) $addtables;
+			$data['guid'] = (string) ComponentbuilderHelper::GUID();
 		}
-		elseif (!isset($data['addtables']))
-		{
-			// Set the empty addtables to data
-			$data['addtables'] = '';
-		}
+
 
 		// Set the addpermissions items to data.
 		if (isset($data['addpermissions']) && is_array($data['addpermissions']))
@@ -1300,6 +1562,19 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['custom_button'] = '';
 		}
 
+		// Set the addtables items to data.
+		if (isset($data['addtables']) && is_array($data['addtables']))
+		{
+			$addtables = new JRegistry;
+			$addtables->loadArray($data['addtables']);
+			$data['addtables'] = (string) $addtables;
+		}
+		elseif (!isset($data['addtables']))
+		{
+			// Set the empty addtables to data
+			$data['addtables'] = '';
+		}
+
 		// Set the ajax_input items to data.
 		if (isset($data['ajax_input']) && is_array($data['ajax_input']))
 		{
@@ -1313,82 +1588,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['ajax_input'] = '';
 		}
 
-		// Set the php_import_headers string to base64 string.
-		if (isset($data['php_import_headers']))
+		// Set the php_before_cancel string to base64 string.
+		if (isset($data['php_before_cancel']))
 		{
-			$data['php_import_headers'] = base64_encode($data['php_import_headers']);
-		}
-
-		// Set the html_import_view string to base64 string.
-		if (isset($data['html_import_view']))
-		{
-			$data['html_import_view'] = base64_encode($data['html_import_view']);
-		}
-
-		// Set the php_import_save string to base64 string.
-		if (isset($data['php_import_save']))
-		{
-			$data['php_import_save'] = base64_encode($data['php_import_save']);
-		}
-
-		// Set the php_getitems string to base64 string.
-		if (isset($data['php_getitems']))
-		{
-			$data['php_getitems'] = base64_encode($data['php_getitems']);
-		}
-
-		// Set the php_getitems_after_all string to base64 string.
-		if (isset($data['php_getitems_after_all']))
-		{
-			$data['php_getitems_after_all'] = base64_encode($data['php_getitems_after_all']);
-		}
-
-		// Set the php_getlistquery string to base64 string.
-		if (isset($data['php_getlistquery']))
-		{
-			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
-		}
-
-		// Set the css_view string to base64 string.
-		if (isset($data['css_view']))
-		{
-			$data['css_view'] = base64_encode($data['css_view']);
-		}
-
-		// Set the php_getform string to base64 string.
-		if (isset($data['php_getform']))
-		{
-			$data['php_getform'] = base64_encode($data['php_getform']);
-		}
-
-		// Set the php_before_save string to base64 string.
-		if (isset($data['php_before_save']))
-		{
-			$data['php_before_save'] = base64_encode($data['php_before_save']);
-		}
-
-		// Set the css_views string to base64 string.
-		if (isset($data['css_views']))
-		{
-			$data['css_views'] = base64_encode($data['css_views']);
-		}
-
-		// Set the php_save string to base64 string.
-		if (isset($data['php_save']))
-		{
-			$data['php_save'] = base64_encode($data['php_save']);
-		}
-
-		// Set the php_postsavehook string to base64 string.
-		if (isset($data['php_postsavehook']))
-		{
-			$data['php_postsavehook'] = base64_encode($data['php_postsavehook']);
-		}
-
-		// Set the javascript_view_file string to base64 string.
-		if (isset($data['javascript_view_file']))
-		{
-			$data['javascript_view_file'] = base64_encode($data['javascript_view_file']);
+			$data['php_before_cancel'] = base64_encode($data['php_before_cancel']);
 		}
 
 		// Set the php_allowadd string to base64 string.
@@ -1397,52 +1600,22 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_allowadd'] = base64_encode($data['php_allowadd']);
 		}
 
-		// Set the php_allowedit string to base64 string.
-		if (isset($data['php_allowedit']))
+		// Set the php_save string to base64 string.
+		if (isset($data['php_save']))
 		{
-			$data['php_allowedit'] = base64_encode($data['php_allowedit']);
+			$data['php_save'] = base64_encode($data['php_save']);
 		}
 
-		// Set the javascript_view_footer string to base64 string.
-		if (isset($data['javascript_view_footer']))
+		// Set the php_getform string to base64 string.
+		if (isset($data['php_getform']))
 		{
-			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
+			$data['php_getform'] = base64_encode($data['php_getform']);
 		}
 
-		// Set the php_batchcopy string to base64 string.
-		if (isset($data['php_batchcopy']))
+		// Set the php_import_display string to base64 string.
+		if (isset($data['php_import_display']))
 		{
-			$data['php_batchcopy'] = base64_encode($data['php_batchcopy']);
-		}
-
-		// Set the php_batchmove string to base64 string.
-		if (isset($data['php_batchmove']))
-		{
-			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
-		}
-
-		// Set the javascript_views_file string to base64 string.
-		if (isset($data['javascript_views_file']))
-		{
-			$data['javascript_views_file'] = base64_encode($data['javascript_views_file']);
-		}
-
-		// Set the php_before_publish string to base64 string.
-		if (isset($data['php_before_publish']))
-		{
-			$data['php_before_publish'] = base64_encode($data['php_before_publish']);
-		}
-
-		// Set the php_after_publish string to base64 string.
-		if (isset($data['php_after_publish']))
-		{
-			$data['php_after_publish'] = base64_encode($data['php_after_publish']);
-		}
-
-		// Set the javascript_views_footer string to base64 string.
-		if (isset($data['javascript_views_footer']))
-		{
-			$data['javascript_views_footer'] = base64_encode($data['javascript_views_footer']);
+			$data['php_import_display'] = base64_encode($data['php_import_display']);
 		}
 
 		// Set the php_before_delete string to base64 string.
@@ -1451,16 +1624,130 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_before_delete'] = base64_encode($data['php_before_delete']);
 		}
 
-		// Set the php_after_delete string to base64 string.
-		if (isset($data['php_after_delete']))
+		// Set the php_batchcopy string to base64 string.
+		if (isset($data['php_batchcopy']))
 		{
-			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
+			$data['php_batchcopy'] = base64_encode($data['php_batchcopy']);
+		}
+
+		// Set the php_before_publish string to base64 string.
+		if (isset($data['php_before_publish']))
+		{
+			$data['php_before_publish'] = base64_encode($data['php_before_publish']);
 		}
 
 		// Set the php_document string to base64 string.
 		if (isset($data['php_document']))
 		{
 			$data['php_document'] = base64_encode($data['php_document']);
+		}
+
+		// Set the sql string to base64 string.
+		if (isset($data['sql']))
+		{
+			$data['sql'] = base64_encode($data['sql']);
+		}
+
+		// Set the php_import_setdata string to base64 string.
+		if (isset($data['php_import_setdata']))
+		{
+			$data['php_import_setdata'] = base64_encode($data['php_import_setdata']);
+		}
+
+		// Set the php_getlistquery string to base64 string.
+		if (isset($data['php_getlistquery']))
+		{
+			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
+		}
+
+		// Set the php_before_save string to base64 string.
+		if (isset($data['php_before_save']))
+		{
+			$data['php_before_save'] = base64_encode($data['php_before_save']);
+		}
+
+		// Set the php_postsavehook string to base64 string.
+		if (isset($data['php_postsavehook']))
+		{
+			$data['php_postsavehook'] = base64_encode($data['php_postsavehook']);
+		}
+
+		// Set the php_allowedit string to base64 string.
+		if (isset($data['php_allowedit']))
+		{
+			$data['php_allowedit'] = base64_encode($data['php_allowedit']);
+		}
+
+		// Set the php_after_cancel string to base64 string.
+		if (isset($data['php_after_cancel']))
+		{
+			$data['php_after_cancel'] = base64_encode($data['php_after_cancel']);
+		}
+
+		// Set the php_batchmove string to base64 string.
+		if (isset($data['php_batchmove']))
+		{
+			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
+		}
+
+		// Set the php_after_publish string to base64 string.
+		if (isset($data['php_after_publish']))
+		{
+			$data['php_after_publish'] = base64_encode($data['php_after_publish']);
+		}
+
+		// Set the php_after_delete string to base64 string.
+		if (isset($data['php_after_delete']))
+		{
+			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
+		}
+
+		// Set the php_import string to base64 string.
+		if (isset($data['php_import']))
+		{
+			$data['php_import'] = base64_encode($data['php_import']);
+		}
+
+		// Set the php_import_ext string to base64 string.
+		if (isset($data['php_import_ext']))
+		{
+			$data['php_import_ext'] = base64_encode($data['php_import_ext']);
+		}
+
+		// Set the css_view string to base64 string.
+		if (isset($data['css_view']))
+		{
+			$data['css_view'] = base64_encode($data['css_view']);
+		}
+
+		// Set the css_views string to base64 string.
+		if (isset($data['css_views']))
+		{
+			$data['css_views'] = base64_encode($data['css_views']);
+		}
+
+		// Set the javascript_view_file string to base64 string.
+		if (isset($data['javascript_view_file']))
+		{
+			$data['javascript_view_file'] = base64_encode($data['javascript_view_file']);
+		}
+
+		// Set the javascript_view_footer string to base64 string.
+		if (isset($data['javascript_view_footer']))
+		{
+			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
+		}
+
+		// Set the javascript_views_file string to base64 string.
+		if (isset($data['javascript_views_file']))
+		{
+			$data['javascript_views_file'] = base64_encode($data['javascript_views_file']);
+		}
+
+		// Set the javascript_views_footer string to base64 string.
+		if (isset($data['javascript_views_footer']))
+		{
+			$data['javascript_views_footer'] = base64_encode($data['javascript_views_footer']);
 		}
 
 		// Set the php_controller string to base64 string.
@@ -1487,34 +1774,10 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_model_list'] = base64_encode($data['php_model_list']);
 		}
 
-		// Set the sql string to base64 string.
-		if (isset($data['sql']))
-		{
-			$data['sql'] = base64_encode($data['sql']);
-		}
-
 		// Set the php_ajaxmethod string to base64 string.
 		if (isset($data['php_ajaxmethod']))
 		{
 			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
-		}
-
-		// Set the php_import_display string to base64 string.
-		if (isset($data['php_import_display']))
-		{
-			$data['php_import_display'] = base64_encode($data['php_import_display']);
-		}
-
-		// Set the php_import string to base64 string.
-		if (isset($data['php_import']))
-		{
-			$data['php_import'] = base64_encode($data['php_import']);
-		}
-
-		// Set the php_import_setdata string to base64 string.
-		if (isset($data['php_import_setdata']))
-		{
-			$data['php_import_setdata'] = base64_encode($data['php_import_setdata']);
 		}
 
 		// Set the php_getitem string to base64 string.
@@ -1523,10 +1786,34 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
 
-		// Set the php_import_ext string to base64 string.
-		if (isset($data['php_import_ext']))
+		// Set the html_import_view string to base64 string.
+		if (isset($data['html_import_view']))
 		{
-			$data['php_import_ext'] = base64_encode($data['php_import_ext']);
+			$data['html_import_view'] = base64_encode($data['html_import_view']);
+		}
+
+		// Set the php_import_headers string to base64 string.
+		if (isset($data['php_import_headers']))
+		{
+			$data['php_import_headers'] = base64_encode($data['php_import_headers']);
+		}
+
+		// Set the php_getitems string to base64 string.
+		if (isset($data['php_getitems']))
+		{
+			$data['php_getitems'] = base64_encode($data['php_getitems']);
+		}
+
+		// Set the php_import_save string to base64 string.
+		if (isset($data['php_import_save']))
+		{
+			$data['php_import_save'] = base64_encode($data['php_import_save']);
+		}
+
+		// Set the php_getitems_after_all string to base64 string.
+		if (isset($data['php_getitems_after_all']))
+		{
+			$data['php_getitems_after_all'] = base64_encode($data['php_getitems_after_all']);
 		}
         
 		// Set the Params Items to data
@@ -1537,16 +1824,16 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 			$data['params'] = (string) $params;
 		}
 
-		// Alter the uniqe field for save as copy
+		// Alter the unique field for save as copy
 		if ($input->get('task') === 'save2copy')
 		{
-			// Automatic handling of other uniqe fields
-			$uniqeFields = $this->getUniqeFields();
-			if (ComponentbuilderHelper::checkArray($uniqeFields))
+			// Automatic handling of other unique fields
+			$uniqueFields = $this->getUniqueFields();
+			if (ComponentbuilderHelper::checkArray($uniqueFields))
 			{
-				foreach ($uniqeFields as $uniqeField)
+				foreach ($uniqueFields as $uniqueField)
 				{
-					$data[$uniqeField] = $this->generateUniqe($uniqeField,$data[$uniqeField]);
+					$data[$uniqueField] = $this->generateUnique($uniqueField,$data[$uniqueField]);
 				}
 			}
 		}
@@ -1559,7 +1846,7 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	}
 	
 	/**
-	 * Method to generate a uniqe value.
+	 * Method to generate a unique value.
 	 *
 	 * @param   string  $field name.
 	 * @param   string  $value data.
@@ -1568,15 +1855,15 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	protected function generateUniqe($field,$value)
+	protected function generateUnique($field,$value)
 	{
 
-		// set field value uniqe 
+		// set field value unique
 		$table = $this->getTable();
 
 		while ($table->load(array($field => $value)))
 		{
-			$value = JString::increment($value);
+			$value = StringHelper::increment($value);
 		}
 
 		return $value;

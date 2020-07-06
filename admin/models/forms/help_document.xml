@@ -165,7 +165,7 @@
 		<field
 			type="hidden"
 			name="not_required"
-			default="[]"
+			default="一_一"
 		/>
 		<!-- Content Field. Type: Editor. (joomla) -->
 		<field
@@ -176,7 +176,6 @@
 			height="300 px"
 			buttons="false"
 			filter="safehtml"
-			required="true"
 		/>
 		<!-- Article Field. Type: Articles. (custom) -->
 		<field

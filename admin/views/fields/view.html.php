@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -34,8 +34,9 @@ class ComponentbuilderViewFields extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
-		$this->listOrder = $this->escape($this->state->get('list.ordering'));
-		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		// Add the list ordering clause.
+		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
 		$this->saveOrder = $this->listOrder == 'ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -210,7 +211,15 @@ class ComponentbuilderViewFields extends JViewLegacy
 
 		// Set Fieldtype Name Selection
 		$this->fieldtypeNameOptions = JFormHelper::loadFieldType('Fieldtypes')->options;
-		if ($this->fieldtypeNameOptions)
+		// We do some sanitation for Fieldtype Name filter
+		if (ComponentbuilderHelper::checkArray($this->fieldtypeNameOptions) &&
+			isset($this->fieldtypeNameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->fieldtypeNameOptions[0]->value))
+		{
+			unset($this->fieldtypeNameOptions[0]);
+		}
+		// Only load Fieldtype Name filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->fieldtypeNameOptions))
 		{
 			// Fieldtype Name Filter
 			JHtmlSidebar::addFilter(
@@ -232,7 +241,15 @@ class ComponentbuilderViewFields extends JViewLegacy
 
 		// Set Datatype Selection
 		$this->datatypeOptions = $this->getTheDatatypeSelections();
-		if ($this->datatypeOptions)
+		// We do some sanitation for Datatype filter
+		if (ComponentbuilderHelper::checkArray($this->datatypeOptions) &&
+			isset($this->datatypeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->datatypeOptions[0]->value))
+		{
+			unset($this->datatypeOptions[0]);
+		}
+		// Only load Datatype filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->datatypeOptions))
 		{
 			// Datatype Filter
 			JHtmlSidebar::addFilter(
@@ -254,7 +271,15 @@ class ComponentbuilderViewFields extends JViewLegacy
 
 		// Set Indexes Selection
 		$this->indexesOptions = $this->getTheIndexesSelections();
-		if ($this->indexesOptions)
+		// We do some sanitation for Indexes filter
+		if (ComponentbuilderHelper::checkArray($this->indexesOptions) &&
+			isset($this->indexesOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->indexesOptions[0]->value))
+		{
+			unset($this->indexesOptions[0]);
+		}
+		// Only load Indexes filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->indexesOptions))
 		{
 			// Indexes Filter
 			JHtmlSidebar::addFilter(
@@ -276,7 +301,15 @@ class ComponentbuilderViewFields extends JViewLegacy
 
 		// Set Null Switch Selection
 		$this->null_switchOptions = $this->getTheNull_switchSelections();
-		if ($this->null_switchOptions)
+		// We do some sanitation for Null Switch filter
+		if (ComponentbuilderHelper::checkArray($this->null_switchOptions) &&
+			isset($this->null_switchOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->null_switchOptions[0]->value))
+		{
+			unset($this->null_switchOptions[0]);
+		}
+		// Only load Null Switch filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->null_switchOptions))
 		{
 			// Null Switch Filter
 			JHtmlSidebar::addFilter(
@@ -298,7 +331,15 @@ class ComponentbuilderViewFields extends JViewLegacy
 
 		// Set Store Selection
 		$this->storeOptions = $this->getTheStoreSelections();
-		if ($this->storeOptions)
+		// We do some sanitation for Store filter
+		if (ComponentbuilderHelper::checkArray($this->storeOptions) &&
+			isset($this->storeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->storeOptions[0]->value))
+		{
+			unset($this->storeOptions[0]);
+		}
+		// Only load Store filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->storeOptions))
 		{
 			// Store Filter
 			JHtmlSidebar::addFilter(
@@ -360,7 +401,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_COMPONENTBUILDER_FIELD_NAME_LABEL'),
 			'g.name' => JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL'),
@@ -368,7 +409,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 			'a.indexes' => JText::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL'),
 			'a.null_switch' => JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL'),
 			'a.store' => JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL'),
-			'c.category_title' => JText::_('COM_COMPONENTBUILDER_FIELD_FIELD_CATEGORY'),
+			'category_title' => JText::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	}

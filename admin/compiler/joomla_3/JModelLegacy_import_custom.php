@@ -17,6 +17,9 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 /**
  * ###Component### ###View### Model
  */
@@ -251,8 +254,8 @@ class ###Component###Model###View### extends JModelLegacy
 		
 		return $check;
 	}
-	###IMPORT_EXT_METHOD_CUSTOM### 
-	
+	###IMPORT_EXT_METHOD###
+
 	/**
 	 * Clean up temporary uploaded spreadsheet
 	 *
@@ -279,9 +282,9 @@ class ###Component###Model###View### extends JModelLegacy
 			JFile::delete(JPath::clean($package));
 		}
 	}
-	###IMPORT_SETDATE_METHOD_CUSTOM### 
-	###IMPORT_SAVE_METHOD_CUSTOM###
-	
+	###IMPORT_SETDATA_METHOD###
+	###IMPORT_SAVE_METHOD###
+
 	protected function getAlias($name,$type = false)
 	{
 		// sanitize the name to an alias

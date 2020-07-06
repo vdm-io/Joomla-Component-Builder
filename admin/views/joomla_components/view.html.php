@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -34,8 +34,9 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
-		$this->listOrder = $this->escape($this->state->get('list.ordering'));
-		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		// Add the list ordering clause.
+		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
 		$this->saveOrder = $this->listOrder == 'ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -218,7 +219,15 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 
 		// Set Companyname Selection
 		$this->companynameOptions = $this->getTheCompanynameSelections();
-		if ($this->companynameOptions)
+		// We do some sanitation for Companyname filter
+		if (ComponentbuilderHelper::checkArray($this->companynameOptions) &&
+			isset($this->companynameOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->companynameOptions[0]->value))
+		{
+			unset($this->companynameOptions[0]);
+		}
+		// Only load Companyname filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->companynameOptions))
 		{
 			// Companyname Filter
 			JHtmlSidebar::addFilter(
@@ -240,7 +249,15 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 
 		// Set Author Selection
 		$this->authorOptions = $this->getTheAuthorSelections();
-		if ($this->authorOptions)
+		// We do some sanitation for Author filter
+		if (ComponentbuilderHelper::checkArray($this->authorOptions) &&
+			isset($this->authorOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->authorOptions[0]->value))
+		{
+			unset($this->authorOptions[0]);
+		}
+		// Only load Author filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->authorOptions))
 		{
 			// Author Filter
 			JHtmlSidebar::addFilter(
@@ -302,7 +319,7 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.system_name' => JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SYSTEM_NAME_LABEL'),
 			'a.name_code' => JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_CODE_LABEL'),

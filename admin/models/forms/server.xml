@@ -126,7 +126,7 @@
 		<field
 			type="hidden"
 			name="not_required"
-			default="[]"
+			default="一_一"
 		/>
 		<!-- Note_ftp_signature Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_ftp_signature" label="COM_COMPONENTBUILDER_SERVER_NOTE_FTP_SIGNATURE_LABEL" description="COM_COMPONENTBUILDER_SERVER_NOTE_FTP_SIGNATURE_DESCRIPTION" heading="h4" class="alert alert-success note_ftp_signature" />

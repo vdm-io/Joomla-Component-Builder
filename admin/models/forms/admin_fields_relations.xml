@@ -103,7 +103,7 @@
 			type="subform"
 			name="addrelations"
 			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_ADDRELATIONS_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
+			layout="joomla.form.field.subform.repeatable"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_ADDRELATIONS_DESCRIPTION"
 			default=""
@@ -115,10 +115,10 @@
 					name="listfield"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_LISTFIELD_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_LISTFIELD_DESCRIPTION"
-					class="fieldMedium"
+					class="fieldLarge"
 					multiple="false"
 					default=""
-					required="false"
+					required="true"
 					onchange="getCodeGlueOptions(this)"
 					button="false"
 				/>
@@ -130,8 +130,7 @@
 					size="50"
 					maxlength="50"
 					default="Default"
-					class="text_area"
-					required="false"
+					class="text_area fieldLarge"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_COLUMN_NAME_MESSAGE"
 					hint="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_COLUMN_NAME_HINT"
@@ -143,10 +142,8 @@
 					name="joinfields"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_JOINFIELDS_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_JOINFIELDS_DESCRIPTION"
-					class="fieldMedium"
+					class="fieldLarge"
 					multiple="true"
-					default=""
-					required="false"
 					onchange="getCodeGlueOptions(this)"
 					button="false"
 				/>
@@ -155,9 +152,8 @@
 					type="list"
 					name="area"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_AREA_LABEL"
-					class="list_class"
+					class="list_class fieldLarge"
 					multiple="false"
-					required="false"
 					validate="int"
 					default="1"
 					onchange="getCodeGlueOptions(this)">
@@ -174,9 +170,8 @@
 					type="list"
 					name="join_type"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_JOIN_TYPE_LABEL"
-					class="list_class"
+					class="list_class fieldLarge"
 					multiple="false"
-					required="false"
 					validate="int"
 					default="1"
 					onchange="getCodeGlueOptions(this)">
@@ -197,7 +192,6 @@
 					class="text_area codefield"
 					filter="raw"
 					hint="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_SET_HINT"
-					required="false"
 				/>
 			</form>
 		</field>

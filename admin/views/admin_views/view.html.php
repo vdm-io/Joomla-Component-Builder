@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -34,8 +34,9 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
-		$this->listOrder = $this->escape($this->state->get('list.ordering'));
-		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		// Add the list ordering clause.
+		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
 		$this->saveOrder = $this->listOrder == 'ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -193,7 +194,15 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 
 		// Set Add Fadein Selection
 		$this->add_fadeinOptions = $this->getTheAdd_fadeinSelections();
-		if ($this->add_fadeinOptions)
+		// We do some sanitation for Add Fadein filter
+		if (ComponentbuilderHelper::checkArray($this->add_fadeinOptions) &&
+			isset($this->add_fadeinOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_fadeinOptions[0]->value))
+		{
+			unset($this->add_fadeinOptions[0]);
+		}
+		// Only load Add Fadein filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_fadeinOptions))
 		{
 			// Add Fadein Filter
 			JHtmlSidebar::addFilter(
@@ -215,7 +224,15 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 
 		// Set Type Selection
 		$this->typeOptions = $this->getTheTypeSelections();
-		if ($this->typeOptions)
+		// We do some sanitation for Type filter
+		if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
+			isset($this->typeOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
+		{
+			unset($this->typeOptions[0]);
+		}
+		// Only load Type filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->typeOptions))
 		{
 			// Type Filter
 			JHtmlSidebar::addFilter(
@@ -235,31 +252,17 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 			}
 		}
 
-		// Set Add Custom Import Selection
-		$this->add_custom_importOptions = $this->getTheAdd_custom_importSelections();
-		if ($this->add_custom_importOptions)
-		{
-			// Add Custom Import Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL').' -',
-				'filter_add_custom_import',
-				JHtml::_('select.options', $this->add_custom_importOptions, 'value', 'text', $this->state->get('filter.add_custom_import'))
-			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Add Custom Import Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL').' -',
-					'batch[add_custom_import]',
-					JHtml::_('select.options', $this->add_custom_importOptions, 'value', 'text')
-				);
-			}
-		}
-
 		// Set Add Custom Button Selection
 		$this->add_custom_buttonOptions = $this->getTheAdd_custom_buttonSelections();
-		if ($this->add_custom_buttonOptions)
+		// We do some sanitation for Add Custom Button filter
+		if (ComponentbuilderHelper::checkArray($this->add_custom_buttonOptions) &&
+			isset($this->add_custom_buttonOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_custom_buttonOptions[0]->value))
+		{
+			unset($this->add_custom_buttonOptions[0]);
+		}
+		// Only load Add Custom Button filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_custom_buttonOptions))
 		{
 			// Add Custom Button Filter
 			JHtmlSidebar::addFilter(
@@ -281,7 +284,15 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 
 		// Set Add Php Ajax Selection
 		$this->add_php_ajaxOptions = $this->getTheAdd_php_ajaxSelections();
-		if ($this->add_php_ajaxOptions)
+		// We do some sanitation for Add Php Ajax filter
+		if (ComponentbuilderHelper::checkArray($this->add_php_ajaxOptions) &&
+			isset($this->add_php_ajaxOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_php_ajaxOptions[0]->value))
+		{
+			unset($this->add_php_ajaxOptions[0]);
+		}
+		// Only load Add Php Ajax filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_php_ajaxOptions))
 		{
 			// Add Php Ajax Filter
 			JHtmlSidebar::addFilter(
@@ -297,6 +308,36 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AJAX_LABEL').' -',
 					'batch[add_php_ajax]',
 					JHtml::_('select.options', $this->add_php_ajaxOptions, 'value', 'text')
+				);
+			}
+		}
+
+		// Set Add Custom Import Selection
+		$this->add_custom_importOptions = $this->getTheAdd_custom_importSelections();
+		// We do some sanitation for Add Custom Import filter
+		if (ComponentbuilderHelper::checkArray($this->add_custom_importOptions) &&
+			isset($this->add_custom_importOptions[0]->value) &&
+			!ComponentbuilderHelper::checkString($this->add_custom_importOptions[0]->value))
+		{
+			unset($this->add_custom_importOptions[0]);
+		}
+		// Only load Add Custom Import filter if it has values
+		if (ComponentbuilderHelper::checkArray($this->add_custom_importOptions))
+		{
+			// Add Custom Import Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL').' -',
+				'filter_add_custom_import',
+				JHtml::_('select.options', $this->add_custom_importOptions, 'value', 'text', $this->state->get('filter.add_custom_import'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Add Custom Import Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL').' -',
+					'batch[add_custom_import]',
+					JHtml::_('select.options', $this->add_custom_importOptions, 'value', 'text')
 				);
 			}
 		}
@@ -343,7 +384,7 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.system_name' => JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_SYSTEM_NAME_LABEL'),
 			'a.name_single' => JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_SINGLE_LABEL'),
@@ -424,42 +465,6 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 		return false;
 	}
 
-	protected function getTheAdd_custom_importSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('add_custom_import'));
-		$query->from($db->quoteName('#__componentbuilder_admin_view'));
-		$query->order($db->quoteName('add_custom_import') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $add_custom_import)
-			{
-				// Translate the add_custom_import selection
-				$text = $model->selectionTranslation($add_custom_import,'add_custom_import');
-				// Now add the add_custom_import and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_custom_import, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
 	protected function getTheAdd_custom_buttonSelections()
 	{
 		// Get a db connection.
@@ -526,6 +531,42 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 				$text = $model->selectionTranslation($add_php_ajax,'add_php_ajax');
 				// Now add the add_php_ajax and its text to the options array
 				$_filter[] = JHtml::_('select.option', $add_php_ajax, JText::_($text));
+			}
+			return $_filter;
+		}
+		return false;
+	}
+
+	protected function getTheAdd_custom_importSelections()
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select the text.
+		$query->select($db->quoteName('add_custom_import'));
+		$query->from($db->quoteName('#__componentbuilder_admin_view'));
+		$query->order($db->quoteName('add_custom_import') . ' ASC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		$results = $db->loadColumn();
+
+		if ($results)
+		{
+			// get model
+			$model = $this->getModel();
+			$results = array_unique($results);
+			$_filter = array();
+			foreach ($results as $add_custom_import)
+			{
+				// Translate the add_custom_import selection
+				$text = $model->selectionTranslation($add_custom_import,'add_custom_import');
+				// Now add the add_custom_import and its text to the options array
+				$_filter[] = JHtml::_('select.option', $add_custom_import, JText::_($text));
 			}
 			return $_filter;
 		}

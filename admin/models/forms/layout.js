@@ -4,77 +4,29 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-
-// Some Global Values
-jform_vvvvvzcvyw_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
 {
-	var add_php_view_vvvvvzc = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvzc(add_php_view_vvvvvzc);
+	var add_php_view_vvvvwaz = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvwaz(add_php_view_vvvvwaz);
 });
 
-// the vvvvvzc function
-function vvvvvzc(add_php_view_vvvvvzc)
+// the vvvvwaz function
+function vvvvwaz(add_php_view_vvvvwaz)
 {
 	// set the function logic
-	if (add_php_view_vvvvvzc == 1)
+	if (add_php_view_vvvvwaz == 1)
 	{
 		jQuery('#jform_php_view-lbl').closest('.control-group').show();
-		// add required attribute to php_view field
-		if (jform_vvvvvzcvyw_required)
-		{
-			updateFieldRequired('php_view',0);
-			jQuery('#jform_php_view').prop('required','required');
-			jQuery('#jform_php_view').attr('aria-required',true);
-			jQuery('#jform_php_view').addClass('required');
-			jform_vvvvvzcvyw_required = false;
-		}
 	}
 	else
 	{
 		jQuery('#jform_php_view-lbl').closest('.control-group').hide();
-		// remove required attribute from php_view field
-		if (!jform_vvvvvzcvyw_required)
-		{
-			updateFieldRequired('php_view',1);
-			jQuery('#jform_php_view').removeAttr('required');
-			jQuery('#jform_php_view').removeAttr('aria-required');
-			jQuery('#jform_php_view').removeClass('required');
-			jform_vvvvvzcvyw_required = true;
-		}
 	}
-}
-
-// update required fields
-function updateFieldRequired(name,status)
-{
-	var not_required = jQuery('#jform_not_required').val();
-
-	if(status == 1)
-	{
-		if (isSet(not_required) && not_required != 0)
-		{
-			not_required = not_required+','+name;
-		}
-		else
-		{
-			not_required = ','+name;
-		}
-	}
-	else
-	{
-		if (isSet(not_required) && not_required != 0)
-		{
-			not_required = not_required.replace(','+name,'');
-		}
-	}
-
-	jQuery('#jform_not_required').val(not_required);
 }
 
 // the isSet function
@@ -93,10 +45,25 @@ jQuery(document).ready(function($)
 	getEditCustomCodeButtons();
 });
 
+function getCodeFrom_server(id, type, type_name, callingName){
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod);
+	if(token.length > 0 && id > 0 && type.length > 0) {
+		var request = token + '=1&' + type_name + '=' + type + '&id=' + id;
+	}
+	return jQuery.ajax({
+		type: 'GET',
+		url: getUrl,
+		dataType: 'json',
+		data: request,
+		jsonp: false
+	});
+}
+
+
 function getEditCustomCodeButtons_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
 	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id+'&return_here='+return_here;
+		var request = token+'=1&id='+id+'&return_here='+return_here;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -113,7 +80,7 @@ function getEditCustomCodeButtons(){
 	getEditCustomCodeButtons_server(id).done(function(result) {
 		if(isObject(result)){
 			jQuery.each(result, function( field, buttons ) {
-				jQuery('<div class="control-group"><div class="control-label"><label>Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
+				jQuery('<div class="control-group"><div class="control-label"><label>Add/Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div></div>').insertBefore(".control-wrapper-"+ field);
 				jQuery.each(buttons, function( name, button ) {
 					jQuery(".control-customcode-buttons-"+field).append(button);
 				});
@@ -132,22 +99,8 @@ function isObject(obj) {
 	return false;
 }
 
-function getSnippetDetails_server(snippetId){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.snippetDetails&format=json";
-	if(token.length > 0 && snippetId > 0){
-		var request = 'token='+token+'&id='+snippetId;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
-}
-
 function getSnippetDetails(id){
-	getSnippetDetails_server(id).done(function(result) {
+	getCodeFrom_server(id, '_type', '_type', 'snippetDetails').done(function(result) {
 		if(result.snippet){
 			var description = '';
 			if (result.description.length > 0) {
@@ -182,9 +135,9 @@ function getSnippetDetails(id){
 }
 
 function getDynamicValues_server(dynamicId){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getDynamicValues&format=json";
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getDynamicValues&format=json");
 	if(token.length > 0 && dynamicId > 0){
-		var request = 'token='+token+'&view=layout&id='+dynamicId;
+		var request = token+'=1&view=layout&id='+dynamicId;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -209,9 +162,9 @@ function getDynamicValues(id){
 }
 
 function getLayoutDetails_server(id){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json&vdm="+vastDevMod;
+	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json&vdm="+vastDevMod);
 	if(token.length > 0 && id > 0){
-		var request = 'token='+token+'&id='+id;
+		var request = token+'=1&id='+id;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -251,28 +204,15 @@ jQuery(document).ready(function($)
 	getSnippets();
 });
 
-function getSnippets_server(libraries){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getSnippets&raw=true&format=json";
-	if(token.length > 0 && libraries.length > 0){
-		var request = 'token='+token+'&libraries='+JSON.stringify(libraries);
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
 function getSnippets(){
 	jQuery("#loading").show();
 	// clear the selection
 	jQuery('#jform_snippet').find('option').remove().end();
 	jQuery('#jform_snippet').trigger('liszt:updated');
-	// get country value if set
+	// get libraries value if set
 	var libraries = jQuery("#jform_libraries").val();
 	if (libraries) {
-		getSnippets_server(libraries).done(function(result) {
+		getCodeFrom_server(1, JSON.stringify(libraries), 'libraries', 'getSnippets').done(function(result) {
 			setSnippets(result);
 			jQuery("#loading").hide();
 			if (typeof snippetButton !== 'undefined') {

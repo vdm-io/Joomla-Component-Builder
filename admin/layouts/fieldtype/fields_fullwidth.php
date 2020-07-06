@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items = $displayData->waffields;
+$items = $displayData->vyffields;
 $user = JFactory::getUser();
 $id = $displayData->item->id;
 // set the edit URL
@@ -26,12 +26,20 @@ if ($_return = $jinput->get('return', null, 'base64'))
 {
 	$return .= "&return=" . $_return;
 }
-// set the referral values
-$ref = ($id) ? "&ref=fieldtype&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "";
+// check if return value was set
+if (ComponentbuilderHelper::checkString($return))
+{
+	// set the referral values
+	$ref = ($id) ? "&ref=fieldtype&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));
+}
+else
+{
+	$ref = ($id) ? "&ref=fieldtype&refid=" . $id : "";
+}
 // set the create new URL
-$new = "index.php?option=com_componentbuilder&view=field&layout=edit".$ref;
+$new = "index.php?option=com_componentbuilder&view=fields&task=field.edit" . $ref;
 // set the create new and close URL
-$close_new = "index.php?option=com_componentbuilder&view=field&layout=edit";
+$close_new = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 // load the action object
 $can = ComponentbuilderHelper::getActions('field');
 
@@ -66,7 +74,7 @@ $can = ComponentbuilderHelper::getActions('field');
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL'); ?>
 		</th>
 		<th data-breakpoints="all" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELD_CATEGORY'); ?>
+			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'); ?>
 		</th>
 		<th width="10" data-breakpoints="xs sm md">
 			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_STATUS'); ?>

@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -155,10 +155,11 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 	<?php echo JHtml::_('bootstrap.addTab', 'joomla_componentTab', 'dynamic_integration', JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC_INTEGRATION', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
-		</div>
-		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
-				<?php echo JLayoutHelper::render('joomla_component.dynamic_integration_fullwidth', $this); ?>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('joomla_component.dynamic_integration_left', $this); ?>
+			</div>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('joomla_component.dynamic_integration_right', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -214,7 +215,6 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<div>
 		<input type="hidden" name="task" value="joomla_component.edit" />
 		<?php echo JHtml::_('form.token'); ?>
-	</div>
 	</div>
 </div>
 
@@ -736,6 +736,21 @@ jQuery('#adminForm').on('change', '#jform_dashboard_type',function (e)
 
 });
 
+// #jform_translation_tool listeners for translation_tool_vvvvvxa function
+jQuery('#jform_translation_tool').on('keyup',function()
+{
+	var translation_tool_vvvvvxa = jQuery("#jform_translation_tool").val();
+	vvvvvxa(translation_tool_vvvvvxa);
+
+});
+jQuery('#adminForm').on('change', '#jform_translation_tool',function (e)
+{
+	e.preventDefault();
+	var translation_tool_vvvvvxa = jQuery("#jform_translation_tool").val();
+	vvvvvxa(translation_tool_vvvvvxa);
+
+});
+
 
 
 
@@ -744,7 +759,7 @@ jQuery('#adminForm').on('change', '#jform_dashboard_type',function (e)
 ?>
 function JRouter(link) {
 <?php
-	if ($app->isSite())
+	if ($app->isClient('site'))
 	{
 		echo 'var url = "'.JURI::root().'";';
 	}

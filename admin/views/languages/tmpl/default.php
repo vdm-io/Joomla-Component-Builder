@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -75,8 +75,8 @@ if ($this->saveOrder)
                 $this->loadTemplate('batch_body')
             ); ?>
         <?php endif; ?>
-		<input type="hidden" name="filter_order" value="" />
-		<input type="hidden" name="filter_order_Dir" value="" />
+		<input type="hidden" name="filter_order" value="<?php echo $this->listOrder; ?>" />
+		<input type="hidden" name="filter_order_Dir" value="<?php echo $this->listDirn; ?>" />
 		<input type="hidden" name="boxchecked" value="0" />
 	</div>
 <?php endif; ?>
@@ -85,6 +85,7 @@ if ($this->saveOrder)
 </form>
 <script type="text/javascript">
 // languages footer script
+
 // waiting spinner
 var outerDiv = jQuery('body');
 jQuery('<div id="loading"></div>')
@@ -99,7 +100,6 @@ jQuery('<div id="loading"></div>')
 	.css("filter", "alpha(opacity = 80)")
 	.css("display", "none")
 	.appendTo(outerDiv);
-
 // when the build button is clicked
 jQuery('#toolbar').on('click',"button.button-joomla", function(e){
 	jQuery('#loading').show();

@@ -5,7 +5,7 @@
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
- * @copyright  Copyright (C) 2015 - 2018 Vast Development Method. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -104,13 +104,16 @@ $edit = "index.php?option=com_componentbuilder&view=libraries&task=library.edit"
 			</div>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->description); ?>
+			<?php echo JText::_($item->target); ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->how); ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo JText::_($item->type); ?>
+		</td>
+		<td class="hidden-phone">
+			<?php echo $this->escape($item->description); ?>
 		</td>
 		<td class="center">
 		<?php if ($canDo->get('library.edit.state')) : ?>

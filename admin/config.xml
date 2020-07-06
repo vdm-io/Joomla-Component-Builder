@@ -57,8 +57,31 @@
 			folder="editors"
 			filter="cmd"
 		/>
-		<!-- No Manual Options Were Added In Field Settings. -->
-
+		<!-- Compiler_plugin Field. Type: Plugins. (joomla) -->
+		<field
+			type="plugins"
+			name="compiler_plugin"
+			label="COM_COMPONENTBUILDER_CONFIG_COMPILER_PLUGIN_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_COMPILER_PLUGIN_DESCRIPTION"
+			multiple="true"
+			folder="extension"
+			filter="cmd"
+		/>
+		<!-- Github_access_token Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="github_access_token"
+			label="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_LABEL"
+			size="128"
+			maxlength="128"
+			description="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_DESCRIPTION"
+			class="text_area full-width"
+			required="false"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_HINT"
+			autocomplete="off"
+		/>
 		<!-- Spacer_hr_one Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_one" hr="true" class="spacer_hr_one" />
 		<!-- Manage_jcb_package_directories Field. Type: Radio. (joomla) -->
@@ -206,7 +229,7 @@
 			label="COM_COMPONENTBUILDER_CONFIG_LANGUAGE_LABEL"
 			class="list_class"
 			multiple="false"
-			default="0"
+			default="en-GB"
 			required="true"
 			button="true"
 		/>
@@ -240,6 +263,34 @@
 				COM_COMPONENTBUILDER_CONFIG_STRING_MANIPULATION</option>
 			<option value="2">
 				COM_COMPONENTBUILDER_CONFIG_SIMPLEXMLELEMENT_CLASS</option>
+		</field>
+		<!-- Field_name_builder Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="field_name_builder"
+			label="COM_COMPONENTBUILDER_CONFIG_FIELD_NAME_BUILDER_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_FIELD_NAME_BUILDER_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_CONFIG_ALPHANUMERIC</option>
+		</field>
+		<!-- Type_name_builder Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="type_name_builder"
+			label="COM_COMPONENTBUILDER_CONFIG_TYPE_NAME_BUILDER_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_TYPE_NAME_BUILDER_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_CONFIG_ALPHANUMERICDOT</option>
 		</field>
 		<!-- Spacer_hr_seven Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_seven" hr="true" class="spacer_hr_seven" />
@@ -713,16 +764,29 @@
 					class="list_class"
 					multiple="false"
 					default="0"
-					required="false"
 					button="false"
 				/>
+				<!-- Install Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="install"
+					label="COM_COMPONENTBUILDER_CONFIG_INSTALL_LABEL"
+					description="COM_COMPONENTBUILDER_CONFIG_INSTALL_DESCRIPTION"
+					class="list_class"
+					multiple="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_CONFIG_TRUE</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_CONFIG_FALSE</option>
+				</field>
 				<!-- Backup Field. Type: Checkbox. (joomla) -->
 				<field
 					type="checkbox"
 					name="backup"
 					label="COM_COMPONENTBUILDER_CONFIG_BACKUP_LABEL"
 					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_CONFIG_BACKUP_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -732,7 +796,6 @@
 					name="repository"
 					label="COM_COMPONENTBUILDER_CONFIG_REPOSITORY_LABEL"
 					value="1"
-					required="false"
 					description="COM_COMPONENTBUILDER_CONFIG_REPOSITORY_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -743,7 +806,6 @@
 					label="COM_COMPONENTBUILDER_CONFIG_PLACEHOLDERS_LABEL"
 					value="1"
 					default=""
-					required="false"
 					description="COM_COMPONENTBUILDER_CONFIG_PLACEHOLDERS_DESCRIPTION"
 					class="inputbox"
 				/>
@@ -845,7 +907,6 @@
 			class="text_area"
 			readonly="false"
 			disabled="false"
-			required="true"
 			filter="STRING"
 			message="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_HINT"
