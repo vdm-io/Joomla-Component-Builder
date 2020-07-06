@@ -3024,12 +3024,7 @@ class Interpretation extends Fields
 								. $this->_t(1) . "\$query->where('"
 								. $ter['table_key'] . " " . $ter['operator']
 								. " (' . implode(',', \$array) . ')');";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "}";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "else";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "{";
-							$string .= PHP_EOL . $this->_t(2) . $tab
-								. $this->_t(1) . "return false;";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "}";
+							$string .= PHP_EOL . $this->_t(2) . $tab . "}";							
 						}
 						else
 						{
@@ -3057,12 +3052,7 @@ class Interpretation extends Fields
 								. $this->_t(1) . "\$query->where('"
 								. $ter['table_key'] . " " . $ter['operator']
 								. " ' . \$checkValue);";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "}";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "else";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "{";
-							$string .= PHP_EOL . $this->_t(2) . $tab
-								. $this->_t(1) . "return false;";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "}";
+							$string .= PHP_EOL . $this->_t(2) . $tab . "}";							
 						}
 						break;
 					case 9:
