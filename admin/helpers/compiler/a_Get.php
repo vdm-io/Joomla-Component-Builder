@@ -8729,6 +8729,8 @@ class Get
 				                                    'php_method');
 				$addScriptTypes             = array('install', 'update',
 				                                    'uninstall');
+				// the next are php placeholders
+				$guiMapper['type']          = 'php';
 				foreach ($addScriptMethods as $scriptMethod)
 				{
 					foreach ($addScriptTypes as $scriptType)

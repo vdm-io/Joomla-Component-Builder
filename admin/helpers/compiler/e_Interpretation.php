@@ -1917,7 +1917,7 @@ class Interpretation extends Fields
 				. " Lineup new user data array";
 			$method[] = $this->_t(2) . "\$data = array(";
 			$method[] = $this->_t(3) . "'username' => \$credentials['username'],";
-			$method[] = $this->_t(3) . "'name' => \$credentials['name']";
+			$method[] = $this->_t(3) . "'name' => \$credentials['name'],";
 			$method[] = $this->_t(3) . "'block' => 0 );";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Added details based on mode";
@@ -1951,7 +1951,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Now Add password if set";
 			$method[] = $this->_t(2)
-				. "if (isset(\$credentials['password']) && isset(\$credentials['password2'])  && self::checkString(\$credentials['password']) && self::checkString(\$credentials['password2'])))";
+				. "if (isset(\$credentials['password']) && isset(\$credentials['password2'])  && self::checkString(\$credentials['password']) && self::checkString(\$credentials['password2']))";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3) . "if (\$mode = 1)";
 			$method[] = $this->_t(3) . "{";
@@ -1962,6 +1962,14 @@ class Interpretation extends Fields
 			$method[] = $this->_t(4) . "\$data['password'] = \$credentials['password'];";
 			$method[] = $this->_t(3) . "}";
 			$method[] = $this->_t(3) . "\$data['password2'] = \$credentials['password2'];";
+			$method[] = $this->_t(2) . "}";
+			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " Load the group/s value if set, only for Admin Registration (\$mode == 0)";
+			$method[] = $this->_t(2)
+				. "if (\$mode == 0 && isset(\$credentials['groups']) && self::checkArray(\$credentials['groups']))";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3)
+				. "\$data['groups'] = \$credentials['groups'];";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Create the new user";
@@ -2002,7 +2010,14 @@ class Interpretation extends Fields
 				. " Auto Login if Needed";
 			$method[] = $this->_t(3) . "if (\$autologin && isset(\$credentials['password']))";
 			$method[] = $this->_t(3) . "{";
-			$method[] = $this->_t(4) . "JFactory::getApplication()->login(\$credentials);";
+			$method[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+				. " Try to login";
+			$method[] = $this->_t(4) . "try{";
+			$method[] = $this->_t(5) . "JFactory::getApplication()->login(\$credentials);";
+			$method[] = $this->_t(4) . "} catch (Exception \$exception){";
+			$method[] = $this->_t(5) . "//" . $this->setLine(__LINE__)
+				. " Do noting for now, may want to set redirect.";
+			$method[] = $this->_t(4) . "}";
 			$method[] = $this->_t(3) . "}";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Return ID";
@@ -2037,7 +2052,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Execute the query";
 			$method[] = $this->_t(3) . "\$db->setQuery(\$query);";
-			$method[] = $this->_t(3) . "\$db->query();";
+			$method[] = $this->_t(3) . "\$db->execute();";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "return \$was;";
 			$method[] = $this->_t(1) . "}";
