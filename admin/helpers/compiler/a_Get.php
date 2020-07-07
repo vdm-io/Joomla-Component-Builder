@@ -322,8 +322,8 @@ class Get
 		= array(
 			'Joomla' . '.JText._(',
 			'JText:' . ':script(',
-			'JText:' . ':_(',
-			'JText:' . ':sprintf(',
+			'Text:' . ':_(',        // namespace and J version will be found
+			'Text:' . ':sprintf(',  // namespace and J version will be found
 			'JustTEXT:' . ':_('
 		);
 
@@ -1201,7 +1201,7 @@ class Get
 			array(&$this->componentContext, &$component)
 		);
 
-		// set upater
+		// set updater
 		$updater = array(
 			'unique' => array(
 				'addadmin_views'        => array('table' => 'component_admin_views',
@@ -1281,7 +1281,8 @@ class Get
 		);
 
 		// set the add targets
-		$addArrayF = array('files'           => 'files', 'folders' => 'folders',
+		$addArrayF = array('files'           => 'files',
+		                   'folders'         => 'folders',
 		                   'filesfullpath'   => 'files',
 		                   'foldersfullpath' => 'folders');
 		foreach ($addArrayF as $addTarget => $targetHere)
@@ -10370,7 +10371,7 @@ class Get
 				$locker['LOCKBASE64((((' . $value . '))))'] = "base64_decode( preg_replace('/\s+/', ''," .
 					PHP_EOL . $this->_t(2) . "'" .
 					wordwrap(base64_encode($value), 64, PHP_EOL . $this->_t(2), true) .
-					"'));";
+					"'))";
 			}
 			// update the script
 			return $this->setPlaceholders($script, $locker);

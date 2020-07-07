@@ -1849,9 +1849,20 @@ class Interpretation extends Fields
 			$method   = array();
 			$method[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
 			$method[] = $this->_t(1) . " * Greate user and update given table";
+			$method[] = $this->_t(1) . " *";
+			$method[] = $this->_t(1) . " * @param   array  \$credentials  Array('name' => string, 'username' => string, 'email' => string, 'password' => string, 'password2' => string)";
+			$method[] = $this->_t(1) . " * @param   int    \$autologin";
+			$method[] = $this->_t(1) . " * @param   array  \$params  Array('useractivation' => int, 'sendpassword' => int, 'allowUserRegistration' => int)";
+			$method[] = $this->_t(1) . " * @param   array  \$mode 1 = Site Registrations; 0 = Admin Registration";
+			$method[] = $this->_t(1) . " *";
+			$method[] = $this->_t(1) . " * @return  int|Error  User ID on success, or an error.";
 			$method[] = $this->_t(1) . " */";
 			$method[] = $this->_t(1)
-				. "public static function createUser(\$new)";
+				. "public static function createUser(\$credentials, \$autologin = 0,";
+			$method[] = $this->_t(2) . "\$params = array(";
+			$method[] = $this->_t(3) . "'useractivation' => 0, 'sendpassword' => 1";
+			$method[] = $this->_t(2) . "), \$mode = 1";
+			$method[] = $this->_t(1) . ")";
 			$method[] = $this->_t(1) . "{";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " load the user component language files if there is an error.";
@@ -1864,75 +1875,144 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2)
 				. "\$lang->load(\$extension, \$base_dir, \$language_tag, \$reload);";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " load the user regestration model";
-			$method[] = $this->_t(2)
-				. "\$model = self::getModel('registration', JPATH_ROOT. '/components/com_users', 'Users');";
-			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " make sure no activation is needed";
-			$method[] = $this->_t(2)
-				. "\$useractivation = self::setParams('com_users','useractivation',0);";
-			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " make sure password is send";
-			$method[] = $this->_t(2)
-				. "\$sendpassword = self::setParams('com_users','sendpassword',1);";
-			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " Check if password was set";
-			$method[] = $this->_t(2)
-				. "if (isset(\$new['password']) && isset(\$new['password2']) && self::checkString(\$new['password']) && self::checkString(\$new['password2']))";
+				. " Load the correct user model.";
+			$method[] = $this->_t(2) . "if (\$mode == 1)";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
-				. " Use the users passwords";
-			$method[] = $this->_t(3) . "\$password = \$new['password'];";
-			$method[] = $this->_t(3) . "\$password2 = \$new['password2'];";
+				. " Load the backend-user model";
+			$method[] = $this->_t(3)
+				. "\$model = self::getModel('user', JPATH_ADMINISTRATOR . '/components/com_users', 'Users');";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "else";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
-				. " Set random password";
-			$method[] = $this->_t(3) . "\$password = self::randomkey(8);";
-			$method[] = $this->_t(3) . "\$password2 = \$password;";
+				. " Load the user site-registration model";
+			$method[] = $this->_t(3)
+				. "\$model = self::getModel('registration', JPATH_ROOT. '/components/com_users', 'Users');";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " set username if not set";
+				. " Check if we have params/config";
+			$method[] = $this->_t(2) . "if (self::checkArray(\$params))";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+			. " Make changes to user config";
+			$method[] = $this->_t(3)
+				. "foreach (\$params as \$param => \$set)";
+			$method[] = $this->_t(3) . "{";
+			$method[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+				. " If you know of a better path, let me know";
+			$method[] = $this->_t(4)
+				."\$params[\$param] = self::setParams('com_users', \$param, \$set);";
+			$method[] = $this->_t(3) . "}";
+			$method[] = $this->_t(2) . "}";
+			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " Set username to email if not set";
 			$method[] = $this->_t(2)
-				. "if (!isset(\$new['username']) || !self::checkString(\$new['username']))";
+				. "if (!isset(\$credentials['username']) || !self::checkString(\$credentials['username']))";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3)
-				. "\$new['username'] = self::safeString(\$new['name']);";
+				. "\$credentials['username'] = \$credentials['email'];";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " linup new user data";
+				. " Lineup new user data array";
 			$method[] = $this->_t(2) . "\$data = array(";
-			$method[] = $this->_t(3) . "'username' => \$new['username'],";
-			$method[] = $this->_t(3) . "'name' => \$new['name'],";
-			$method[] = $this->_t(3) . "'email1' => \$new['email'],";
-			$method[] = $this->_t(3)
-				. "'password1' => \$password, // First password field";
-			$method[] = $this->_t(3)
-				. "'password2' => \$password2, // Confirm password field";
+			$method[] = $this->_t(3) . "'username' => \$credentials['username'],";
+			$method[] = $this->_t(3) . "'name' => \$credentials['name']";
 			$method[] = $this->_t(3) . "'block' => 0 );";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " register the new user";
-			$method[] = $this->_t(2) . "\$userId = \$model->register(\$data);";
+				. " Added details based on mode";
+			$method[] = $this->_t(2) . "if (\$mode == 1)";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Site-registration mode";
+			$method[] = $this->_t(3) . "\$data['email1'] = \$credentials['email'];";
+			$method[] = $this->_t(2) . "}";
+			$method[] = $this->_t(2) . "else";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Admin-registration mode";
+			$method[] = $this->_t(3) . "\$data['email'] = \$credentials['email'];";
+			$method[] = $this->_t(3) . "\$data['registerDate'] = JFactory::getDate()->toSql();";
+			$method[] = $this->_t(2) . "}";
+
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " set activation back to default";
+			. " Check if password was set";
 			$method[] = $this->_t(2)
-				. "self::setParams('com_users','useractivation',\$useractivation);";
+				. "if (\$mode = 1 && (!isset(\$credentials['password']) || !isset(\$credentials['password2']) || !self::checkString(\$credentials['password']) || !self::checkString(\$credentials['password2'])))";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Set random password when empty password was submitted,";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " and we are using the site-registration mode";
+			$method[] = $this->_t(3) . "\$credentials['password'] = self::randomkey(8);";
+			$method[] = $this->_t(3) . "\$credentials['password2'] = \$credentials['password'];";
+			$method[] = $this->_t(2) . "}";
+
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " set send password back to default";
+				. " Now Add password if set";
 			$method[] = $this->_t(2)
-				. "self::setParams('com_users','sendpassword',\$sendpassword);";
+				. "if (isset(\$credentials['password']) && isset(\$credentials['password2'])  && self::checkString(\$credentials['password']) && self::checkString(\$credentials['password2'])))";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "if (\$mode = 1)";
+			$method[] = $this->_t(3) . "{";
+			$method[] = $this->_t(4) . "\$data['password1'] = \$credentials['password'];";
+			$method[] = $this->_t(3) . "}";
+			$method[] = $this->_t(3) . "else";
+			$method[] = $this->_t(3) . "{";
+			$method[] = $this->_t(4) . "\$data['password'] = \$credentials['password'];";
+			$method[] = $this->_t(3) . "}";
+			$method[] = $this->_t(3) . "\$data['password2'] = \$credentials['password2'];";
+			$method[] = $this->_t(2) . "}";
+			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " Create the new user";
+			$method[] = $this->_t(2) . "if (\$mode = 1)";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Site-registration mode";
+			$method[] = $this->_t(3) . "\$userId = \$model->register(\$data);";
+			$method[] = $this->_t(2) . "}";
+			$method[] = $this->_t(2) . "else";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Admin-registration mode";
+			$method[] = $this->_t(3) . "\$model->save(\$data);";
+			$method[] = $this->_t(3) . "\$userId = \$model->getState('user.id', 0);";
+			$method[] = $this->_t(2) . "}";
+
+			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " Check if we have params";
+			$method[] = $this->_t(2) . "if (self::checkArray(\$params))";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Change user params/config back";
+			$method[] = $this->_t(3)
+				. "foreach (\$params as \$param => \$set)";
+			$method[] = $this->_t(3) . "{";
+			$method[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+				. " If you know of a better path, let me know";
+			$method[] = $this->_t(4)
+				."self::setParams('com_users', \$param, \$set);";
+			$method[] = $this->_t(3) . "}";
+			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " if user is created";
 			$method[] = $this->_t(2) . "if (\$userId > 0)";
 			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Auto Login if Needed";
+			$method[] = $this->_t(3) . "if (\$autologin && isset(\$credentials['password']))";
+			$method[] = $this->_t(3) . "{";
+			$method[] = $this->_t(4) . "JFactory::getApplication()->login(\$credentials);";
+			$method[] = $this->_t(3) . "}";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Return ID";
 			$method[] = $this->_t(3) . "return \$userId;";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "return \$model->getError();";
 			$method[] = $this->_t(1) . "}";
 
 			$method[] = PHP_EOL . $this->_t(1)
-				. "protected static function setParams(\$component,\$target,\$value)";
+				. "public static function setParams(\$component,\$target,\$value)";
 			$method[] = $this->_t(1) . "{";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Get the params and set the new values";
@@ -5663,10 +5743,16 @@ class Interpretation extends Fields
 		// return buttons if they were build
 		if (ComponentbuilderHelper::checkArray($buttons))
 		{
-			// set the custom get form method  JAVASCRIPT_FOR_BUTTONS
-			$this->fileContentDynamic[$view['settings']->code][$this->hhh
-			. $TARGET . '_JAVASCRIPT_FOR_BUTTONS' . $this->hhh]
-				= $this->setJavaScriptForButtons();
+			// just to check if the submission script is manually added
+			if (!isset($view['settings']->php_document) ||
+					strpos(implode(' ', $view['settings']->php_document),
+						'/submitbutton.js') === false)
+			{
+				// set the custom get form method  JAVASCRIPT_FOR_BUTTONS
+				$this->fileContentDynamic[$view['settings']->code][$this->hhh
+				. $TARGET . '_JAVASCRIPT_FOR_BUTTONS' . $this->hhh]
+					= $this->setJavaScriptForButtons();
+			}
 			// insure the form is added (only if no form exist)
 			if (isset($view['settings']->default)
 				&& strpos(
@@ -26396,10 +26482,10 @@ function vdm_dkim() {
 				$xml .= PHP_EOL . $this->_t(1) . '<config';
 				$xml .= PHP_EOL . $this->_t(2)
 					. 'addrulepath="/administrator/components/com_'
-					. $this->componentCodeName . '/modules/rules"';
+					. $this->componentCodeName . '/models/rules"';
 				$xml .= PHP_EOL . $this->_t(2)
 					. 'addfieldpath="/administrator/components/com_'
-					. $this->componentCodeName . '/modules/fields"';
+					. $this->componentCodeName . '/models/fields"';
 				$xml .= PHP_EOL . $this->_t(1) . '>';
 			}
 			else
@@ -26432,12 +26518,24 @@ function vdm_dkim() {
 							. $fieldset . ' fieldset points to the module -->';
 						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
 							. $fieldset . '" label="' . $label . '"';
-						$xml .= PHP_EOL . $this->_t(2)
-							. 'addrulepath="/modules/' . $module->file_name
-							. '/rules"';
-						$xml .= PHP_EOL . $this->_t(2)
-							. 'addfieldpath="/modules/' . $module->file_name
-							. '/fields"';
+						if ($module->target == 2)
+						{
+							$xml .= PHP_EOL . $this->_t(2)
+								. 'addrulepath="/administrator/modules/' . $module->file_name
+								. '/rules"';
+							$xml .= PHP_EOL . $this->_t(2)
+								. 'addfieldpath="/administrator/modules/' . $module->file_name
+								. '/fields"';
+						}
+						else
+						{
+							$xml .= PHP_EOL . $this->_t(2)
+								. 'addrulepath="/modules/' . $module->file_name
+								. '/rules"';
+							$xml .= PHP_EOL . $this->_t(2)
+								. 'addfieldpath="/modules/' . $module->file_name
+								. '/fields"';
+						}
 						$xml .= PHP_EOL . $this->_t(1) . '>';
 					}
 					else

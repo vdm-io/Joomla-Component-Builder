@@ -5533,13 +5533,60 @@ abstract class ComponentbuilderHelper
 	*/
 	public static function getEditURL(&$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $jRoute = true)
 	{
+		// build record
+		$record = new stdClass();
+		// check if user can edit
+		if (self::canEditItem($record, $item, $view, $views, $component))
+		{
+			// set the edit link
+			if ($jRoute)
+			{
+				return JRoute::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref);
+			}
+			return "index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref;
+		}
+		return false;
+	}
+
+	/**
+	* Can Edit (either any, or own)
+	* 
+	* @param  int      $item        The item to edit
+	* @param  string   $view        The type of item to edit
+	* @param  string   $views       The list view controller name
+	* @param  string   $component   The component these views belong to
+	*
+	* @return  bool    if user can edit returns true els
+	* 
+	*/
+	public static function allowEdit(&$item, $view, $views, $component = 'com_componentbuilder')
+	{
+		// build record
+		$record = new stdClass();
+		return self::canEditItem($record, $item, $view, $views, $component);
+	}
+
+
+	/**
+	* Can Edit (either any, or own)
+	* 
+	* @param  int      $item        The item to edit
+	* @param  string   $view        The type of item to edit
+	* @param  string   $views       The list view controller name
+	* @param  string   $component   The component these views belong to
+	*
+	* @return  bool    if user can edit returns true els
+	* 
+	*/
+	protected static function canEditItem(&$record, &$item, $view, $views, $component = 'com_componentbuilder')
+	{
 		// make sure the user has access to view
 		if (!JFactory::getUser()->authorise($view. '.access', $component))
 		{
 			return false;
 		}
-		// build record
-		$record = new stdClass();
+		// we start with false.
+		$can_edit = false;
 		// check that we have the ID
 		if (self::checkObject($item) && isset($item->id))
 		{
@@ -5569,25 +5616,14 @@ abstract class ComponentbuilderHelper
 			// get user action permission to edit
 			$action = self::getActions($view, $record, $views, 'edit', str_replace('com_', '', $component));
 			// check if the view permission is set
-			if (($edit = $action->get($view . '.edit', 'none-set')) === 'none-set')
+			if (($can_edit = $action->get($view . '.edit', 'none-set')) === 'none-set')
 			{
-				// fall back on the core permission then
-				$edit = $action->get('core.edit', 'none-set');
-			}
-			// can edit
-			if ($edit)
-			{
-				// set the edit link
-				if ($jRoute)
-				{
-					return JRoute::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref);
-				}
-				return "index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref;
+				// fall back on the core permission then (this can be an issue)
+				$can_edit = ($action->get('core.edit', false) || $action->get('core.edit.own', false));
 			}
 		}
-		return false;
+		return $can_edit;
 	}
-
 
 	/**
 	 * set subform type table
@@ -5630,9 +5666,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * Change to nice fancy date
 	 */
-	public static function fancyDate($date)
+	public static function fancyDate($date, $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($date))
+		if ($check_stamp && !self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
@@ -5642,9 +5678,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * get date based in period past
 	 */
-	public static function fancyDynamicDate($date)
+	public static function fancyDynamicDate($date, $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($date))
+		if ($check_stamp && !self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
@@ -5668,9 +5704,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * Change to nice fancy day time and date
 	 */
-	public static function fancyDayTimeDate($time)
+	public static function fancyDayTimeDate($time, $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($time))
+		if ($check_stamp && !self::isValidTimeStamp($time))
 		{
 			$time = strtotime($time);
 		}
@@ -5680,9 +5716,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * Change to nice fancy time and date
 	 */
-	public static function fancyDateTime($time)
+	public static function fancyDateTime($time, $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($time))
+		if ($check_stamp && !self::isValidTimeStamp($time))
 		{
 			$time = strtotime($time);
 		}
@@ -5692,9 +5728,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * Change to nice hour:minutes time
 	 */
-	public static function fancyTime($time)
+	public static function fancyTime($time, $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($time))
+		if ($check_stamp && !self::isValidTimeStamp($time))
 		{
 			$time = strtotime($time);
 		}
@@ -5704,9 +5740,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * set the date day as Sunday through Saturday
 	 */
-	public static function setDayName($date)
+	public static function setDayName($date, $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($date))
+		if ($check_stamp && !self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
@@ -5716,9 +5752,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * set the date month as January through December
 	 */
-	public static function setMonthName($date)
+	public static function setMonthName($date, $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($date))
+		if ($check_stamp && !self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
@@ -5728,9 +5764,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * set the date day as 1st
 	 */
-	public static function setDay($date)
+	public static function setDay($date, $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($date))
+		if ($check_stamp && !self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
@@ -5740,9 +5776,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * set the date month as 5
 	 */
-	public static function setMonth($date)
+	public static function setMonth($date, $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($date))
+		if ($check_stamp && !self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
@@ -5752,9 +5788,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * set the date year as 2004 (for charts)
 	 */
-	public static function setYear($date)
+	public static function setYear($date, $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($date))
+		if ($check_stamp && !self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
@@ -5764,9 +5800,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * set the date as 2004/05 (for charts)
 	 */
-	public static function setYearMonth($date, $spacer = '/')
+	public static function setYearMonth($date, $spacer = '/', $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($date))
+		if ($check_stamp && !self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
@@ -5776,9 +5812,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * set the date as 2004/05/03 (for charts)
 	 */
-	public static function setYearMonthDay($date, $spacer = '/')
+	public static function setYearMonthDay($date, $spacer = '/', $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($date))
+		if ($check_stamp && !self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
@@ -5788,9 +5824,9 @@ abstract class ComponentbuilderHelper
 	/**
 	 * set the date as 03/05/2004
 	 */
-	public static function setDayMonthYear($date, $spacer = '/')
+	public static function setDayMonthYear($date, $spacer = '/', $check_stamp = true)
 	{
-		if (!self::isValidTimeStamp($date))
+		if ($check_stamp && !self::isValidTimeStamp($date))
 		{
 			$date = strtotime($date);
 		}
@@ -5805,6 +5841,16 @@ abstract class ComponentbuilderHelper
 		return ((int) $timestamp === $timestamp)
 		&& ($timestamp <= PHP_INT_MAX)
 		&& ($timestamp >= ~PHP_INT_MAX);
+	}
+
+	/**
+	 * Check if string is a valid date
+	 * https://www.php.net/manual/en/function.checkdate.php#113205
+	 */
+	public static function isValidateDate($date, $format = 'Y-m-d H:i:s')
+	{
+		$d = DateTime::createFromFormat($format, $date);
+		return $d && $d->format($format) == $date;
 	}
 
 
