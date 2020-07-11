@@ -57,7 +57,7 @@ abstract class ComponentbuilderHelper
 	/**
 	* Array of php fields Allowed (16)
 	**/
-	public static $phpFieldArray = array('', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'x');
+	public static $phpFieldArray = array('', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'x', 'HEADER');
 
 	/**
 	* The global params
@@ -2965,7 +2965,15 @@ abstract class ComponentbuilderHelper
 			$script['setdata'][] = self::_t(3) . "\$jinput = JFactory::getApplication()->input;";
 			$script['setdata'][] = self::_t(3) . "foreach(\$target_headers as \$header)";
 			$script['setdata'][] = self::_t(3) . "{";
-			$script['setdata'][] = self::_t(4) . "\$data['target_headers'][\$header] = \$jinput->getString(\$header, null);";
+			$script['setdata'][] = self::_t(4) . "if ((\$column = \$jinput->getString(\$header, false)) !== false ||";
+			$script['setdata'][] = self::_t(5) . "(\$column = \$jinput->getString(strtolower(\$header), false)) !== false)";
+			$script['setdata'][] = self::_t(4) . "{";
+			$script['setdata'][] = self::_t(5) . "\$data['target_headers'][\$header] = \$column;";
+			$script['setdata'][] = self::_t(4) . "}";
+			$script['setdata'][] = self::_t(4) . "else";
+			$script['setdata'][] = self::_t(4) . "{";
+			$script['setdata'][] = self::_t(5) . "\$data['target_headers'][\$header] = null;";
+			$script['setdata'][] = self::_t(4) . "}";
 			$script['setdata'][] = self::_t(3) . "}";
 			$script['setdata'][] = self::_t(3) . "// set the data";
 			$script['setdata'][] = self::_t(3) . "if(isset(\$package['dir']))";

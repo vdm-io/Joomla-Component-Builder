@@ -426,7 +426,15 @@ class ComponentbuilderModelImport extends JModelLegacy
 			$jinput = JFactory::getApplication()->input;
 			foreach($target_headers as $header)
 			{
-				$data['target_headers'][$header] = $jinput->getString($header, null);
+				if (($column = $jinput->getString($header, false)) !== false ||
+					($column = $jinput->getString(strtolower($header), false)) !== false)
+				{
+					$data['target_headers'][$header] = $column;
+				}
+				else
+				{
+					$data['target_headers'][$header] = null;
+				}
 			}
 			// set the data
 			if(isset($package['dir']))

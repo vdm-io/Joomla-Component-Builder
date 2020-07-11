@@ -1876,19 +1876,21 @@ class Interpretation extends Fields
 				. "\$lang->load(\$extension, \$base_dir, \$language_tag, \$reload);";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Load the correct user model.";
-			$method[] = $this->_t(2) . "if (\$mode == 1)";
-			$method[] = $this->_t(2) . "{";
-			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
-				. " Load the backend-user model";
-			$method[] = $this->_t(3)
-				. "\$model = self::getModel('user', JPATH_ADMINISTRATOR . '/components/com_users', 'Users');";
-			$method[] = $this->_t(2) . "}";
-			$method[] = $this->_t(2) . "else";
+			$method[] = $this->_t(2) . "if (\$mode == 1) //" . $this->setLine(__LINE__)
+				. " 1 = Site Registrations";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Load the user site-registration model";
 			$method[] = $this->_t(3)
 				. "\$model = self::getModel('registration', JPATH_ROOT. '/components/com_users', 'Users');";
+			$method[] = $this->_t(2) . "}";
+			$method[] = $this->_t(2) . "else //" . $this->setLine(__LINE__)
+				. " 0 = Admin Registration";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Load the backend-user model";
+			$method[] = $this->_t(3)
+				. "\$model = self::getModel('user', JPATH_ADMINISTRATOR . '/components/com_users', 'Users');";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Check if we have params/config";
@@ -1921,16 +1923,14 @@ class Interpretation extends Fields
 			$method[] = $this->_t(3) . "'block' => 0 );";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Added details based on mode";
-			$method[] = $this->_t(2) . "if (\$mode == 1)";
+			$method[] = $this->_t(2) . "if (\$mode == 1) //". $this->setLine(__LINE__)
+				. " 1 = Site-registration mode";
 			$method[] = $this->_t(2) . "{";
-			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
-				. " Site-registration mode";
 			$method[] = $this->_t(3) . "\$data['email1'] = \$credentials['email'];";
 			$method[] = $this->_t(2) . "}";
-			$method[] = $this->_t(2) . "else";
+			$method[] = $this->_t(2) . "else //" . $this->setLine(__LINE__)
+				. " 0 = Admin-registration mode";
 			$method[] = $this->_t(2) . "{";
-			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
-				. " Admin-registration mode";
 			$method[] = $this->_t(3) . "\$data['email'] = \$credentials['email'];";
 			$method[] = $this->_t(3) . "\$data['registerDate'] = JFactory::getDate()->toSql();";
 			$method[] = $this->_t(2) . "}";
@@ -1943,7 +1943,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Set random password when empty password was submitted,";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
-				. " and we are using the site-registration mode";
+				. " when using the 1 = site-registration mode";
 			$method[] = $this->_t(3) . "\$credentials['password'] = self::randomkey(8);";
 			$method[] = $this->_t(3) . "\$credentials['password2'] = \$credentials['password'];";
 			$method[] = $this->_t(2) . "}";

@@ -424,7 +424,15 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 			$jinput = JFactory::getApplication()->input;
 			foreach($target_headers as $header)
 			{
-				$data['target_headers'][$header] = $jinput->getString(strtolower($header), null);
+				if (($column = $jinput->getString($header, false)) !== false ||
+					($column = $jinput->getString(strtolower($header), false)) !== false)
+				{
+					$data['target_headers'][$header] = $column;
+				}
+				else
+				{
+					$data['target_headers'][$header] = null;
+				}
 			}
 			// set the data
 			if(isset($package['dir']))
@@ -463,9 +471,13 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 			{
 				$source_key = $data['target_headers']['Source'];
 			}
-			else
+			elseif (isset($data['target_headers']['English']))
 			{
 				$source_key = $data['target_headers']['English'];
+			}
+			else
+			{
+				$source_key = null;
 			}
 			// get the first array set
 			$firstSet = reset($data['array']);
