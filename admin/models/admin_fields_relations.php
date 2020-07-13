@@ -308,6 +308,9 @@ class ComponentbuilderModelAdmin_fields_relations extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
+
+		// update the addrelations (sub form) layout
+		$form->setFieldAttribute('addrelations', 'layout', ComponentbuilderHelper::getSubformLayout('admin_fields_relations', 'addrelations'));
 		return $form;
 	}
 

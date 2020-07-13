@@ -225,6 +225,9 @@ class ComponentbuilderModelAdmin_custom_tabs extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
+
+		// update the tabs (sub form) layout
+		$form->setFieldAttribute('tabs', 'layout', ComponentbuilderHelper::getSubformLayout('admin_custom_tabs', 'tabs'));
 		return $form;
 	}
 

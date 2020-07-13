@@ -1934,7 +1934,7 @@ class Infusion extends Interpretation
 						// Trigger Event: jcb_ce_onBeforeInfuseModuleData
 						$this->triggerEvent(
 							'jcb_ce_onBeforeInfuseModuleData',
-							array(&$this->componentContext, &$module, $this)
+							array(&$this->componentContext, &$module, &$this)
 						);
 						$this->target     = $module->key;
 						$this->lang       = $module->key;
@@ -1998,7 +1998,7 @@ class Infusion extends Interpretation
 						// Trigger Event: jcb_ce_onAfterInfuseModuleData
 						$this->triggerEvent(
 							'jcb_ce_onAfterInfuseModuleData',
-							array(&$this->componentContext, &$module, $this)
+							array(&$this->componentContext, &$module, &$this)
 						);
 					}
 				}
@@ -2013,7 +2013,7 @@ class Infusion extends Interpretation
 						// Trigger Event: jcb_ce_onBeforeInfusePluginData
 						$this->triggerEvent(
 							'jcb_ce_onBeforeInfusePluginData',
-							array(&$this->componentContext, &$plugin, $this)
+							array(&$this->componentContext, &$plugin, &$this)
 						);
 						$this->target     = $plugin->key;
 						$this->lang       = $plugin->key;
@@ -2060,7 +2060,7 @@ class Infusion extends Interpretation
 						// Trigger Event: jcb_ce_onAfterInfusePluginData
 						$this->triggerEvent(
 							'jcb_ce_onAfterInfusePluginData',
-							array(&$this->componentContext, &$plugin, $this)
+							array(&$this->componentContext, &$plugin, &$this)
 						);
 					}
 				}

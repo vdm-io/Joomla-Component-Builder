@@ -4194,7 +4194,7 @@ class Fields extends Structure
 					= '8qvZHoyuFYQqpj0YQbc6F3o5DhBlmS-_-a8pmCZfOVSfANjkmV5LG8pCdAY2JNYu6cB';
 				foreach ($phpTracker as $searchKey => $phpKey)
 				{
-					// we must search for more code in the xml just incase
+					// we must search for more code in the xml just encase
 					foreach (range(2, 30) as $phpLine)
 					{
 						$get_ = $searchKey . '_' . $phpLine;
@@ -4953,17 +4953,16 @@ class Fields extends Structure
 			$replace = array(
 				$this->bbb . 'JPREFIX' . $this->ddd   => $jprefix,
 				$this->bbb . 'TABLE'
-				. $this->ddd                          => $data['custom']['table'],
+				. $this->ddd                          => (isset($data['custom']['table'])) ? $data['custom']['table'] :'',
 				$this->bbb . 'ID'
-				. $this->ddd                          => $data['custom']['id'],
+				. $this->ddd                          => (isset($data['custom']['id'])) ? $data['custom']['id'] :'',
 				$this->bbb . 'TEXT'
-				. $this->ddd                          => $data['custom']['text'],
-				$this->bbb . 'CODE_TEXT' . $this->ddd => $data['code'] . '_'
-					. $data['custom']['text'],
-				$this->bbb . 'CODE' . $this->ddd      => $data['code'],
+				. $this->ddd                          => (isset($data['custom']['text'])) ? $data['custom']['text'] :'',
+				$this->bbb . 'CODE_TEXT' . $this->ddd => (isset($data['code'], $data['custom']['text'])) ? $data['code'] . '_' . $data['custom']['text'] :'',
+				$this->bbb . 'CODE' . $this->ddd      => (isset($data['code'])) ? $data['code'] :'',
 				$this->bbb . 'view_type' . $this->ddd => $view_name_single
 					. '_' . $data['type'],
-				$this->bbb . 'type' . $this->ddd      => $data['type'],
+				$this->bbb . 'type' . $this->ddd      => (isset($data['type'])) ? $data['type'] :'',
 				$this->bbb . 'com_component'
 				. $this->ddd                          => (isset($data['custom']['component'])
 					&& ComponentbuilderHelper::checkString(

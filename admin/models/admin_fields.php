@@ -246,6 +246,9 @@ class ComponentbuilderModelAdmin_fields extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
+
+		// update the addfields (sub form) layout
+		$form->setFieldAttribute('addfields', 'layout', ComponentbuilderHelper::getSubformLayout('admin_fields', 'addfields'));
 		return $form;
 	}
 

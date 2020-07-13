@@ -835,7 +835,7 @@ class Get
 				}
 			}
 			// Trigger Event: jcb_ce_onBeforeGet
-			$this->triggerEvent('jcb_ce_onBeforeGet', array(&$config, $this));
+			$this->triggerEvent('jcb_ce_onBeforeGet', array(&$config, &$this));
 			// set the Joomla version
 			$this->joomlaVersion = $config['version'];
 			// set the minfy switch of the JavaScript
@@ -923,14 +923,14 @@ class Get
 				// Trigger Event: jcb_ce_onBeforeGetComponentData
 				$this->triggerEvent(
 					'jcb_ce_onBeforeGetComponentData',
-					array(&$this->componentContext, $this)
+					array(&$this->componentContext, &$this)
 				);
 				// get the component data
 				$this->componentData = $this->getComponentData();
 				// Trigger Event: jcb_ce_onAfterGetComponentData
 				$this->triggerEvent(
 					'jcb_ce_onAfterGetComponentData',
-					array(&$this->componentContext, $this)
+					array(&$this->componentContext, &$this)
 				);
 				// make sure we have a version
 				if (strpos($this->componentData->component_version, '.')
@@ -969,7 +969,7 @@ class Get
 
 				// Trigger Event: jcb_ce_onBeforeGet
 				$this->triggerEvent(
-					'jcb_ce_onAfterGet', array(&$this->componentContext, $this)
+					'jcb_ce_onAfterGet', array(&$this->componentContext, &$this)
 				);
 
 				return true;

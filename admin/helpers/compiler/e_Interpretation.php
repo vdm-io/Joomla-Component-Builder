@@ -25193,7 +25193,7 @@ function vdm_dkim() {
 		// Trigger Event: jcb_ce_onBeforeBuildAccessSections
 		$this->triggerEvent(
 			'jcb_ce_onBeforeBuildAccessSections',
-			array(&$this->componentContext, $this)
+			array(&$this->componentContext, &$this)
 		);
 
 		$this->componentHead[] = '<section name="component">';
@@ -25620,7 +25620,7 @@ function vdm_dkim() {
 			// Trigger Event: jcb_ce_onAfterBuildAccessSections
 			$this->triggerEvent(
 				'jcb_ce_onAfterBuildAccessSections',
-				array(&$this->componentContext, $this)
+				array(&$this->componentContext, &$this)
 			);
 
 			// set the views permissions now

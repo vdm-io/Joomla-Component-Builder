@@ -526,6 +526,12 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
 		}
 
+
+		// update the join_view_table (sub form) layout
+		$form->setFieldAttribute('join_view_table', 'layout', ComponentbuilderHelper::getSubformLayout('dynamic_get', 'join_view_table'));
+
+		// update the join_db_table (sub form) layout
+		$form->setFieldAttribute('join_db_table', 'layout', ComponentbuilderHelper::getSubformLayout('dynamic_get', 'join_db_table'));
 		return $form;
 	}
 

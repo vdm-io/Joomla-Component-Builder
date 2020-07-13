@@ -257,6 +257,9 @@ class ComponentbuilderModelComponent_site_views extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
+
+		// update the addsite_views (sub form) layout
+		$form->setFieldAttribute('addsite_views', 'layout', ComponentbuilderHelper::getSubformLayout('component_site_views', 'addsite_views'));
 		return $form;
 	}
 

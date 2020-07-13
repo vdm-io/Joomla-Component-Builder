@@ -246,6 +246,9 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
+
+		// update the addconditions (sub form) layout
+		$form->setFieldAttribute('addconditions', 'layout', ComponentbuilderHelper::getSubformLayout('admin_fields_conditions', 'addconditions'));
 		return $form;
 	}
 

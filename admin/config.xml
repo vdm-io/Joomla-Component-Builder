@@ -47,6 +47,71 @@
 		/>
 		<field type="spacer" name="spacerHistory" hr="true" />
 
+		<!-- Subform_layouts Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="subform_layouts"
+			label="COM_COMPONENTBUILDER_CONFIG_SUBFORM_LAYOUTS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			buttons="add,remove,move"
+			description="COM_COMPONENTBUILDER_CONFIG_SUBFORM_LAYOUTS_DESCRIPTION"
+			icon="list"
+			max="9"
+			min="1">
+			<form hidden="true" name="list_subform_layouts_modal" repeat="true">
+				<!-- View_field Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="view_field"
+					label="COM_COMPONENTBUILDER_CONFIG_VIEW_FIELD_LABEL"
+					class="list_class"
+					multiple="false"
+					filter="CMD"
+					required="true"
+					default="default">
+					<!-- Option Set. -->
+					<option value="default">
+						COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
+					<option value="admin_custom_tabs.tabs">
+						COM_COMPONENTBUILDER_CONFIG_ADMIN_CUSTOM_TABS_TABS</option>
+					<option value="admin_fields.addfields">
+						COM_COMPONENTBUILDER_CONFIG_ADMIN_FIELDS_ADDFIELDS</option>
+					<option value="admin_fields_conditions.addconditions">
+						COM_COMPONENTBUILDER_CONFIG_ADMIN_FIELDS_CONDITIONS_ADDCONDITIONS</option>
+					<option value="admin_fields_relations.addrelations">
+						COM_COMPONENTBUILDER_CONFIG_ADMIN_FIELDS_RELATIONS_ADDRELATIONS</option>
+					<option value="component_admin_views.addadmin_views">
+						COM_COMPONENTBUILDER_CONFIG_COMPONENT_ADMIN_VIEWS_ADDADMIN_VIEWS</option>
+					<option value="component_custom_admin_views.addcustom_admin_views">
+						COM_COMPONENTBUILDER_CONFIG_COMPONENT_CUSTOM_ADMIN_VIEWS_ADDCUSTOM_ADMIN_VIEWS</option>
+					<option value="component_site_views.addsite_views">
+						COM_COMPONENTBUILDER_CONFIG_COMPONENT_SITE_VIEWS_ADDSITE_VIEWS</option>
+					<option value="dynamic_get.join_db_table">
+						COM_COMPONENTBUILDER_CONFIG_DYNAMIC_GET_JOIN_DB_TABLE</option>
+					<option value="dynamic_get.join_view_table">
+						COM_COMPONENTBUILDER_CONFIG_DYNAMIC_GET_JOIN_VIEW_TABLE</option>
+				</field>
+				<!-- Layout Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="layout"
+					label="COM_COMPONENTBUILDER_CONFIG_LAYOUT_LABEL"
+					class="list_class"
+					multiple="false"
+					filter="CMD"
+					required="true"
+					default="joomla.form.field.subform.repeatable-table">
+					<!-- Option Set. -->
+					<option value="joomla.form.field.subform.repeatable-table">
+						COM_COMPONENTBUILDER_CONFIG_REPEATABLETABLE_JOOMLA</option>
+					<option value="joomla.form.field.subform.repeatable">
+						COM_COMPONENTBUILDER_CONFIG_REPEATABLE_JOOMLA</option>
+					<option value="repeatablejcb">
+						COM_COMPONENTBUILDER_CONFIG_REPEATABLE_UIKIT</option>
+				</field>
+			</form>
+		</field>
 		<!-- Editor Field. Type: Plugins. (joomla) -->
 		<field
 			type="plugins"

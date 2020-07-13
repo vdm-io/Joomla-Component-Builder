@@ -5866,6 +5866,47 @@ abstract class ComponentbuilderHelper
 
 
 	/**
+	* The subform layouts
+	**/
+	protected static $subformLayouts = false;
+
+	/**
+	* get the subform layout
+	*
+	* @input	string      The view name
+	* @input	string      The string name
+	*
+	* @returns string on success
+	**/
+	public static function getSubformLayout($view, $field, $default = 'repeatablejcb')
+	{
+		// get global values
+		if (self::$subformLayouts === false)
+		{
+			self::$subformLayouts = JComponentHelper::getParams('com_componentbuilder')->get('subform_layouts', false);
+		}
+		// check what we found (else) return default
+		if (self::checkObject(self::$subformLayouts))
+		{
+			// looking for
+			$target = $view . '.' . $field;
+			foreach (self::$subformLayouts as $subform)
+			{
+				if ($target === $subform->view_field)
+				{
+					return $subform->layout;
+				}
+				elseif ('default' === $subform->view_field)
+				{
+					$default = $subform->layout;
+				}
+			}
+		}
+		return $default;
+	}
+
+
+	/**
 	 * Load the Composer Vendors
 	 */
 	public static function composerAutoload($target)

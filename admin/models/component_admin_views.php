@@ -257,6 +257,9 @@ class ComponentbuilderModelComponent_admin_views extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
+
+		// update the addadmin_views (sub form) layout
+		$form->setFieldAttribute('addadmin_views', 'layout', ComponentbuilderHelper::getSubformLayout('component_admin_views', 'addadmin_views'));
 		return $form;
 	}
 
