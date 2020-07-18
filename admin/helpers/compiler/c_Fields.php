@@ -4141,10 +4141,6 @@ class Fields extends Structure
 					{
 						$xmlValue = 'JGLOBAL_TITLE';
 					}
-					elseif ($property['name'] === 'description')
-					{
-						$xmlValue = 'JFIELD_TITLE_DESC';
-					}
 				}
 				// only load value if found or is mandatory
 				if (ComponentbuilderHelper::checkString($xmlValue)

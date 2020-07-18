@@ -90,7 +90,6 @@
 			type="joomlaplugins"
 			name="joomla_plugin"
 			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_UPDATES_JOOMLA_PLUGIN_LABEL"
-			description="JFIELD_TITLE_DESC"
 			class="list_class span12"
 			multiple="false"
 			default="0"

@@ -92,7 +92,6 @@
 			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_SOURCE_LABEL"
 			rows="4"
 			cols="5"
-			description="JFIELD_TITLE_DESC"
 			message="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_SOURCE_MESSAGE"
 			class="text_area span12"
 			filter="safehtml"
@@ -150,7 +149,7 @@
 					cols="20"
 					message="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_MESSAGE"
 					class="text_area translation_text_area"
-					filter="SAFEHTML"
+					filter="RAW"
 					hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_HINT"
 				/>
 				<!-- Language Field. Type: Lang. (custom) -->

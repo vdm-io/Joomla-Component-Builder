@@ -90,7 +90,6 @@
 			type="component"
 			name="component"
 			label="COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL"
-			description="JFIELD_TITLE_DESC"
 			class="list_class"
 			multiple="false"
 			default="0"

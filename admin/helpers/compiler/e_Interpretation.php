@@ -1853,7 +1853,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(1) . " * @param   array  \$credentials  Array('name' => string, 'username' => string, 'email' => string, 'password' => string, 'password2' => string)";
 			$method[] = $this->_t(1) . " * @param   int    \$autologin";
 			$method[] = $this->_t(1) . " * @param   array  \$params  Array('useractivation' => int, 'sendpassword' => int, 'allowUserRegistration' => int)";
-			$method[] = $this->_t(1) . " * @param   array  \$mode 1 = Site Registrations; 0 = Admin Registration";
+			$method[] = $this->_t(1) . " * @param   array  \$mode 1 = Site Registrations; 0 = Admin Registration; 2 = Custom Helper Method Called registerUser";
 			$method[] = $this->_t(1) . " *";
 			$method[] = $this->_t(1) . " * @return  int|Error  User ID on success, or an error.";
 			$method[] = $this->_t(1) . " */";
@@ -1864,6 +1864,23 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2) . "), \$mode = 1";
 			$method[] = $this->_t(1) . ")";
 			$method[] = $this->_t(1) . "{";
+			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " Override mode";
+			$method[] = $this->_t(2) . "if (\$mode == 2 && method_exists(__CLASS__, 'registerUser'))";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Update params";
+			$method[] = $this->_t(3) . "\$params['autologin'] = \$autologin;";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Now Register User";
+			$method[] = $this->_t(3) . "return self::registerUser(\$credentials, \$params);";
+			$method[] = $this->_t(2) . "}";
+			$method[] = $this->_t(2) . "elseif (\$mode == 2)";
+			$method[] = $this->_t(2) . "{";
+			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Fallback to Site Registrations";
+			$method[] = $this->_t(3) . "\$mode = 1;";
+			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " load the user component language files if there is an error.";
 			$method[] = $this->_t(2) . "\$lang = JFactory::getLanguage();";
@@ -1882,7 +1899,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Load the user site-registration model";
 			$method[] = $this->_t(3)
-				. "\$model = self::getModel('registration', JPATH_ROOT. '/components/com_users', 'Users');";
+				. "\$model = self::getModel('registration', \$base_dir . '/components/' . \$extension, 'Users');";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "else //" . $this->setLine(__LINE__)
 				. " 0 = Admin Registration";
@@ -1890,7 +1907,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Load the backend-user model";
 			$method[] = $this->_t(3)
-				. "\$model = self::getModel('user', JPATH_ADMINISTRATOR . '/components/com_users', 'Users');";
+				. "\$model = self::getModel('user', JPATH_ADMINISTRATOR . '/components/' . \$extension, 'Users');";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Check if we have params/config";
@@ -1904,7 +1921,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
 				. " If you know of a better path, let me know";
 			$method[] = $this->_t(4)
-				."\$params[\$param] = self::setParams('com_users', \$param, \$set);";
+				."\$params[\$param] = self::setParams(\$extension, \$param, \$set);";
 			$method[] = $this->_t(3) . "}";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -1938,7 +1955,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 			. " Check if password was set";
 			$method[] = $this->_t(2)
-				. "if (\$mode = 1 && (!isset(\$credentials['password']) || !isset(\$credentials['password2']) || !self::checkString(\$credentials['password']) || !self::checkString(\$credentials['password2'])))";
+				. "if (\$mode == 1 && (!isset(\$credentials['password']) || !isset(\$credentials['password2']) || !self::checkString(\$credentials['password']) || !self::checkString(\$credentials['password2'])))";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Set random password when empty password was submitted,";
@@ -1953,11 +1970,13 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2)
 				. "if (isset(\$credentials['password']) && isset(\$credentials['password2'])  && self::checkString(\$credentials['password']) && self::checkString(\$credentials['password2']))";
 			$method[] = $this->_t(2) . "{";
-			$method[] = $this->_t(3) . "if (\$mode = 1)";
+			$method[] = $this->_t(3) . "if (\$mode == 1) //". $this->setLine(__LINE__)
+				. " 1 = Site-registration mode";
 			$method[] = $this->_t(3) . "{";
 			$method[] = $this->_t(4) . "\$data['password1'] = \$credentials['password'];";
 			$method[] = $this->_t(3) . "}";
-			$method[] = $this->_t(3) . "else";
+			$method[] = $this->_t(3) . "else //" . $this->setLine(__LINE__)
+				. " 0 = Admin-registration mode";
 			$method[] = $this->_t(3) . "{";
 			$method[] = $this->_t(4) . "\$data['password'] = \$credentials['password'];";
 			$method[] = $this->_t(3) . "}";
@@ -1973,16 +1992,14 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Create the new user";
-			$method[] = $this->_t(2) . "if (\$mode = 1)";
+			$method[] = $this->_t(2) . "if (\$mode == 1) //". $this->setLine(__LINE__)
+				. " 1 = Site-registration mode";
 			$method[] = $this->_t(2) . "{";
-			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
-				. " Site-registration mode";
 			$method[] = $this->_t(3) . "\$userId = \$model->register(\$data);";
 			$method[] = $this->_t(2) . "}";
-			$method[] = $this->_t(2) . "else";
+			$method[] = $this->_t(2) . "else //" . $this->setLine(__LINE__)
+				. " 0 = Admin-registration mode";
 			$method[] = $this->_t(2) . "{";
-			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
-				. " Admin-registration mode";
 			$method[] = $this->_t(3) . "\$model->save(\$data);";
 			$method[] = $this->_t(3) . "\$userId = \$model->getState('user.id', 0);";
 			$method[] = $this->_t(2) . "}";
@@ -1999,7 +2016,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
 				. " If you know of a better path, let me know";
 			$method[] = $this->_t(4)
-				."self::setParams('com_users', \$param, \$set);";
+				."self::setParams(\$extension, \$param, \$set);";
 			$method[] = $this->_t(3) . "}";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -2086,17 +2103,12 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "// set username";
 			$method[] = $this->_t(2)
-				. "if (isset(\$new['username']) && self::checkString(\$new['username']))";
+				. "if (!isset(\$new['username']) || !self::checkString(\$new['username']))";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3)
-				. "\$new['username'] = self::safeString(\$new['username']);";
+				. "\$new['username'] = \$new['email'];";
 			$method[] = $this->_t(2) . "}";
-			$method[] = $this->_t(2) . "else";
-			$method[] = $this->_t(2) . "{";
-			$method[] = $this->_t(3)
-				. "\$new['username'] = self::safeString(\$new['name']);";
-			$method[] = $this->_t(2) . "}";
-			$method[] = $this->_t(2) . "// linup update user data";
+			$method[] = $this->_t(2) . "// lineup update user data";
 			$method[] = $this->_t(2) . "\$data = array(";
 			$method[] = $this->_t(3) . "'id' => \$new['id'],";
 			$method[] = $this->_t(3) . "'username' => \$new['username'],";
@@ -16756,7 +16768,7 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . $this->_t(1) . "{";
 			$fix .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " check if the not_required field is set";
-			$fix .= PHP_EOL . $this->_t(2) . "if (" . $Component
+			$fix .= PHP_EOL . $this->_t(2) . "if (isset(\$data['not_required']) && " . $Component
 				. "Helper::checkString(\$data['not_required']))";
 			$fix .= PHP_EOL . $this->_t(2) . "{";
 			$fix .= PHP_EOL . $this->_t(3)

@@ -710,7 +710,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 	public function validate($form, $data, $group = null)
 	{
 		// check if the not_required field is set
-		if (ComponentbuilderHelper::checkString($data['not_required']))
+		if (isset($data['not_required']) && ComponentbuilderHelper::checkString($data['not_required']))
 		{
 			$requiredFields = (array) explode(',',(string) $data['not_required']);
 			$requiredFields = array_unique($requiredFields);
