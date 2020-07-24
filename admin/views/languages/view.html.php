@@ -138,7 +138,7 @@ class ComponentbuilderViewLanguages extends JViewLegacy
 		if ($this->user->authorise('language.build', 'com_componentbuilder'))
 		{
 			// add Build button.
-			JToolBarHelper::custom('languages.buildLanguages', 'joomla', '', 'COM_COMPONENTBUILDER_BUILD', false);
+			JToolBarHelper::custom('languages.buildLanguages', 'joomla custom-button-buildlanguages', '', 'COM_COMPONENTBUILDER_BUILD', false);
 		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('language.import'))

@@ -201,7 +201,7 @@ class ComponentbuilderModelPlaceholders extends JModelList
 	public function getExportData($pks, $user = null)
 	{
 		// setup the query
-		if (ComponentbuilderHelper::checkArray($pks))
+		if (($pks_size = ComponentbuilderHelper::checkArray($pks)) !== false || 'bulk' === $pks)
 		{
 			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
 			$_export = true;
@@ -219,7 +219,24 @@ class ComponentbuilderModelPlaceholders extends JModelList
 
 			// From the componentbuilder_placeholder table
 			$query->from($db->quoteName('#__componentbuilder_placeholder', 'a'));
-			$query->where('a.id IN (' . implode(',',$pks) . ')');
+			// The bulk export path
+			if ('bulk' === $pks)
+			{
+				$query->where('a.id > 0');
+			}
+			// A large array of ID's will not work out well
+			elseif ($pks_size > 500)
+			{
+				// Use lowest ID
+				$query->where('a.id >= ' . (int) min($pks));
+				// Use highest ID
+				$query->where('a.id <= ' . (int) max($pks));
+			}
+			// The normal default path
+			else
+			{
+				$query->where('a.id IN (' . implode(',',$pks) . ')');
+			}
 			// Implement View Level Access
 			if (!$user->authorise('core.options', 'com_componentbuilder'))
 			{

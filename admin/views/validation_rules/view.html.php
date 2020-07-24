@@ -138,7 +138,7 @@ class ComponentbuilderViewValidation_rules extends JViewLegacy
 		if ($this->user->authorise('validation_rule.run_expansion', 'com_componentbuilder'))
 		{
 			// add Run Expansion button.
-			JToolBarHelper::custom('validation_rules.runExpansion', 'expand-2', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+			JToolBarHelper::custom('validation_rules.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
 		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('validation_rule.import'))

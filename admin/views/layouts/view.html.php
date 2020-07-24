@@ -138,7 +138,7 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 		if ($this->user->authorise('layout.get_snippets', 'com_componentbuilder'))
 		{
 			// add Get Snippets button.
-			JToolBarHelper::custom('layouts.getSnippets', 'search', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
+			JToolBarHelper::custom('layouts.getSnippets', 'search custom-button-getsnippets', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
 		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('layout.import'))

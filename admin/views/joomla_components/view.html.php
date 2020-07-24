@@ -123,12 +123,12 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 			if ($this->user->authorise('joomla_component.clone', 'com_componentbuilder'))
 			{
 				// add Clone button.
-				JToolBarHelper::custom('joomla_components.cloner', 'save-copy', '', 'COM_COMPONENTBUILDER_CLONE', 'true');
+				JToolBarHelper::custom('joomla_components.cloner', 'save-copy custom-button-cloner', '', 'COM_COMPONENTBUILDER_CLONE', 'true');
 			}
 			if ($this->user->authorise('joomla_component.export_jcb_packages', 'com_componentbuilder'))
 			{
 				// add Export JCB Packages button.
-				JToolBarHelper::custom('joomla_components.smartExport', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_JCB_PACKAGES', 'true');
+				JToolBarHelper::custom('joomla_components.smartExport', 'download custom-button-smartexport', '', 'COM_COMPONENTBUILDER_EXPORT_JCB_PACKAGES', 'true');
 			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
@@ -148,22 +148,22 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 		if ($this->user->authorise('joomla_component.import_jcb_packages', 'com_componentbuilder'))
 		{
 			// add Import JCB Packages button.
-			JToolBarHelper::custom('joomla_components.smartImport', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_JCB_PACKAGES', false);
+			JToolBarHelper::custom('joomla_components.smartImport', 'upload custom-button-smartimport', '', 'COM_COMPONENTBUILDER_IMPORT_JCB_PACKAGES', false);
 		}
 		if ($this->user->authorise('joomla_component.run_expansion', 'com_componentbuilder'))
 		{
 			// add Run Expansion button.
-			JToolBarHelper::custom('joomla_components.runExpansion', 'expand-2', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+			JToolBarHelper::custom('joomla_components.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
 		}
 		if ($this->user->authorise('joomla_component.backup', 'com_componentbuilder'))
 		{
 			// add Backup button.
-			JToolBarHelper::custom('joomla_components.backup', 'archive', '', 'COM_COMPONENTBUILDER_BACKUP', false);
+			JToolBarHelper::custom('joomla_components.backup', 'archive custom-button-backup', '', 'COM_COMPONENTBUILDER_BACKUP', false);
 		}
 		if ($this->user->authorise('joomla_component.clear_tmp', 'com_componentbuilder'))
 		{
 			// add Clear tmp button.
-			JToolBarHelper::custom('joomla_components.clearTmp', 'purge', '', 'COM_COMPONENTBUILDER_CLEAR_TMP', false);
+			JToolBarHelper::custom('joomla_components.clearTmp', 'purge custom-button-cleartmp', '', 'COM_COMPONENTBUILDER_CLEAR_TMP', false);
 		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('joomla_component.import'))

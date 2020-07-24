@@ -138,7 +138,7 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		if ($this->user->authorise('custom_code.run_expansion', 'com_componentbuilder'))
 		{
 			// add Run Expansion button.
-			JToolBarHelper::custom('custom_codes.runExpansion', 'expand-2', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+			JToolBarHelper::custom('custom_codes.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
 		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('custom_code.import'))

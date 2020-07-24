@@ -133,22 +133,22 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 		if ($this->user->authorise('joomla_plugin.run_expansion', 'com_componentbuilder'))
 		{
 			// add Run Expansion button.
-			JToolBarHelper::custom('joomla_plugins.runExpansion', 'expand-2', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+			JToolBarHelper::custom('joomla_plugins.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
 		}
 		if ($this->user->authorise('joomla_plugin.get_boilerplate', 'com_componentbuilder'))
 		{
 			// add Get Boilerplate button.
-			JToolBarHelper::custom('joomla_plugins.getBoilerplate', 'joomla', '', 'COM_COMPONENTBUILDER_GET_BOILERPLATE', false);
+			JToolBarHelper::custom('joomla_plugins.getBoilerplate', 'joomla custom-button-getboilerplate', '', 'COM_COMPONENTBUILDER_GET_BOILERPLATE', false);
 		}
 		if ($this->user->authorise('joomla_plugin.methods', 'com_componentbuilder'))
 		{
 			// add Methods button.
-			JToolBarHelper::custom('joomla_plugins.openClassMethods', 'joomla', '', 'COM_COMPONENTBUILDER_METHODS', false);
+			JToolBarHelper::custom('joomla_plugins.openClassMethods', 'joomla custom-button-openclassmethods', '', 'COM_COMPONENTBUILDER_METHODS', false);
 		}
 		if ($this->user->authorise('joomla_plugin.properties', 'com_componentbuilder'))
 		{
 			// add Properties button.
-			JToolBarHelper::custom('joomla_plugins.openClassProperties', 'joomla', '', 'COM_COMPONENTBUILDER_PROPERTIES', false);
+			JToolBarHelper::custom('joomla_plugins.openClassProperties', 'joomla custom-button-openclassproperties', '', 'COM_COMPONENTBUILDER_PROPERTIES', false);
 		}
 
 		// set help url for this view if found

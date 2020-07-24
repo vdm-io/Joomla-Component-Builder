@@ -1638,6 +1638,9 @@ class Interpretation extends Fields
 			$exel[] = $this->_t(3) . "->setTitle(\$title)";
 			$exel[] = $this->_t(3) . "->setSubject(\$subjectTab);";
 			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " The file type";
+			$exel[] = $this->_t(2) . "\$file_type = 'Xls';";
+			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " set description";
 			$exel[] = $this->_t(2) . "if (\$description)";
 			$exel[] = $this->_t(2) . "{";
@@ -1682,27 +1685,52 @@ class Interpretation extends Fields
 			$exel[] = $this->_t(2) . "));";
 			$exel[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Add some data";
-			$exel[] = $this->_t(2) . "if (self::checkArray(\$rows))";
+			$exel[] = $this->_t(2) . "if ((\$size = self::checkArray(\$rows)) !== false)";
 			$exel[] = $this->_t(2) . "{";
 			$exel[] = $this->_t(3) . "\$i = 1;";
-			$exel[] = $this->_t(3) . "foreach (\$rows as \$array){";
+			$exel[] = PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Based on data size we adapt the behaviour.";
+			$exel[] = $this->_t(3) . "\$xls_mode = 1;";
+			$exel[] = $this->_t(3) . "if (\$size > 3000)";
+			$exel[] = $this->_t(3) . "{";
+			$exel[] = $this->_t(4) . "\$xls_mode = 3;";
+			$exel[] = $this->_t(4) . "\$file_type = 'Csv';";
+			$exel[] = $this->_t(3) . "}";
+			$exel[] = $this->_t(3) . "elseif (\$size > 2000)";
+			$exel[] = $this->_t(3) . "{";
+			$exel[] = $this->_t(4) . "\$xls_mode = 2;";
+			$exel[] = $this->_t(3) . "}";
+			$exel[] = PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " Set active sheet and get it.";
+			$exel[] = $this->_t(3) . "\$active_sheet = \$spreadsheet->setActiveSheetIndex(0);";
+			$exel[] = $this->_t(3) . "foreach (\$rows as \$array)";
+			$exel[] = $this->_t(3) . "{";
 			$exel[] = $this->_t(4) . "\$a = 'A';";
-			$exel[] = $this->_t(4) . "foreach (\$array as \$value){";
+			$exel[] = $this->_t(4) . "foreach (\$array as \$value)";
+			$exel[] = $this->_t(4) . "{";
 			$exel[] = $this->_t(5)
-				. "\$spreadsheet->setActiveSheetIndex(0)->setCellValue(\$a.\$i, \$value);";
-			$exel[] = $this->_t(5) . "if (\$i == 1){";
-			$exel[] = $this->_t(6)
-				. "\$spreadsheet->getActiveSheet()->getColumnDimension(\$a)->setAutoSize(true);";
-			$exel[] = $this->_t(6)
-				. "\$spreadsheet->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$headerStyles);";
-			$exel[] = $this->_t(6)
-				. "\$spreadsheet->getActiveSheet()->getStyle(\$a.\$i)->getAlignment()->setHorizontal(PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);";
-			$exel[] = $this->_t(5) . "} elseif (\$a === 'A'){";
-			$exel[] = $this->_t(6)
-				. "\$spreadsheet->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$sideStyles);";
-			$exel[] = $this->_t(5) . "} else {";
-			$exel[] = $this->_t(6)
-				. "\$spreadsheet->getActiveSheet()->getStyle(\$a.\$i)->applyFromArray(\$normalStyles);";
+				. "\$active_sheet->setCellValue(\$a.\$i, \$value);";
+			$exel[] = $this->_t(5) . "if (\$xls_mode != 3)";
+			$exel[] = $this->_t(5) . "{";
+				$exel[] = $this->_t(6) . "if (\$i == 1)";
+			$exel[] = $this->_t(6) . "{";
+			$exel[] = $this->_t(7)
+				. "\$active_sheet->getColumnDimension(\$a)->setAutoSize(true);";
+			$exel[] = $this->_t(7)
+				. "\$active_sheet->getStyle(\$a.\$i)->applyFromArray(\$headerStyles);";
+			$exel[] = $this->_t(7)
+				. "\$active_sheet->getStyle(\$a.\$i)->getAlignment()->setHorizontal(PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);";
+			$exel[] = $this->_t(6) . "}";
+			$exel[] = $this->_t(6) . "elseif (\$a === 'A')";
+			$exel[] = $this->_t(6) . "{";
+			$exel[] = $this->_t(7)
+				. "\$active_sheet->getStyle(\$a.\$i)->applyFromArray(\$sideStyles);";
+			$exel[] = $this->_t(6) . "}";
+			$exel[] = $this->_t(6) . "elseif (\$xls_mode == 1)";
+			$exel[] = $this->_t(6) . "{";
+			$exel[] = $this->_t(7)
+				. "\$active_sheet->getStyle(\$a.\$i)->applyFromArray(\$normalStyles);";
+			$exel[] = $this->_t(6) . "}";
 			$exel[] = $this->_t(5) . "}";
 			$exel[] = $this->_t(5) . "\$a++;";
 			$exel[] = $this->_t(4) . "}";
@@ -1725,7 +1753,7 @@ class Interpretation extends Fields
 			$exel[] = $this->_t(2)
 				. "header('Content-Type: application/vnd.ms-excel');";
 			$exel[] = $this->_t(2)
-				. "header('Content-Disposition: attachment;filename=\"'.\$fileName.'.xls\"');";
+				. "header('Content-Disposition: attachment;filename=\"' . \$fileName . '.' . strtolower(\$file_type) .'\"');";
 			$exel[] = $this->_t(2) . "header('Cache-Control: max-age=0');";
 			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " If you're serving to IE 9, then the following may be needed";
@@ -1744,7 +1772,7 @@ class Interpretation extends Fields
 			$exel[] = $this->_t(2) . "header ('Pragma: public'); //"
 				. $this->setLine(__LINE__) . " HTTP/1.0";
 			$exel[] = PHP_EOL . $this->_t(2)
-				. "\$writer = IOFactory::createWriter(\$spreadsheet, 'Xls');";
+				. "\$writer = IOFactory::createWriter(\$spreadsheet, \$file_type);";
 			$exel[] = $this->_t(2) . "\$writer->save('php://output');";
 			$exel[] = $this->_t(2) . "jexit();";
 			$exel[] = $this->_t(1) . "}";
@@ -5631,7 +5659,8 @@ class Interpretation extends Fields
 						$buttons[] = $this->_t(1) . $tab . $this->_t(2)
 							. "JToolBarHelper::custom('" . $viewName . "."
 							. $custom_button['method'] . "', '"
-							. $custom_button['icomoon'] . "', '', '" . $keyLang
+							. $custom_button['icomoon'] . " custom-button-"
+							. strtolower($custom_button['method']) . "', '', '" . $keyLang
 							. "', false);";
 						$buttons[] = $this->_t(1) . $tab . $this->_t(1) . "}";
 					}
@@ -5665,7 +5694,8 @@ class Interpretation extends Fields
 								) . $tab . $this->_t(1)
 								. "JToolBarHelper::custom('" . $viewsName . "."
 								. $custom_button['method'] . "', '"
-								. $custom_button['icomoon'] . "', '', '"
+								. $custom_button['icomoon'] . " custom-button-"
+								. strtolower($custom_button['method']) . "', '', '"
 								. $keyLang . "', false);";
 							$this->onlyFunctionButton[$viewsName][] = $this->_t(
 									1
@@ -5685,7 +5715,8 @@ class Interpretation extends Fields
 							$buttons[] = $this->_t(1) . $tab . $this->_t(2)
 								. "JToolBarHelper::custom('" . $viewsName . "."
 								. $custom_button['method'] . "', '"
-								. $custom_button['icomoon'] . "', '', '"
+								. $custom_button['icomoon'] . " custom-button-"
+								. strtolower($custom_button['method']) . "', '', '"
 								. $keyLang . "', '" . $validateSelection
 								. "');";
 							$buttons[] = $this->_t(1) . $tab . $this->_t(1)
@@ -14365,9 +14396,9 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(1) . "{";
 			$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " setup the query";
-			$query .= PHP_EOL . $this->_t(2) . "if ("
+			$query .= PHP_EOL . $this->_t(2) . "if ((\$pks_size = "
 				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh] . "Helper::checkArray(\$pks))";
+				. $this->hhh] . "Helper::checkArray(\$pks)) !== false || 'bulk' === \$pks)";
 			$query .= PHP_EOL . $this->_t(2) . "{";
 			$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Set a value to know this is " . $config['type']
@@ -14399,8 +14430,39 @@ class Interpretation extends Fields
 				. "\$query->from(\$db->quoteName('#__"
 				. $this->componentCodeName . "_" . $viewName_single
 				. "', 'a'));";
+			$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " The bulk export path";
+			$query .= PHP_EOL . $this->_t(3) . "if ('bulk' === \$pks)";
 			$query .= PHP_EOL . $this->_t(3)
+				. "{";
+			$query .= PHP_EOL . $this->_t(4)
+				. "\$query->where('a.id > 0');";
+			$query .= PHP_EOL . $this->_t(3)
+				. "}";
+			$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " A large array of ID's will not work out well";
+			$query .= PHP_EOL . $this->_t(3) . "elseif (\$pks_size > 500)";
+			$query .= PHP_EOL . $this->_t(3)
+				. "{";
+			$query .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__)
+				. " Use lowest ID";
+			$query .= PHP_EOL . $this->_t(4)
+				. "\$query->where('a.id >= ' . (int) min(\$pks));";
+			$query .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__)
+				. " Use highest ID";
+			$query .= PHP_EOL . $this->_t(4)
+				. "\$query->where('a.id <= ' . (int) max(\$pks));";
+			$query .= PHP_EOL . $this->_t(3)
+				. "}";
+			$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
+				. " The normal default path";
+			$query .= PHP_EOL . $this->_t(3) . "else";
+			$query .= PHP_EOL . $this->_t(3)
+				. "{";
+			$query .= PHP_EOL . $this->_t(4)
 				. "\$query->where('a.id IN (' . implode(',',\$pks) . ')');";
+			$query .= PHP_EOL . $this->_t(3)
+				. "}";
 			// add custom filtering php
 			$query .= $this->getCustomScriptBuilder(
 				'php_getlistquery', $viewName_single,

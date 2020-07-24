@@ -138,7 +138,7 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		if ($this->user->authorise('dynamic_get.run_expansion', 'com_componentbuilder'))
 		{
 			// add Run Expansion button.
-			JToolBarHelper::custom('dynamic_gets.runExpansion', 'expand-2', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+			JToolBarHelper::custom('dynamic_gets.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
 		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('dynamic_get.import'))

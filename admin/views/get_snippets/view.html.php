@@ -257,32 +257,32 @@ class ComponentbuilderViewGet_snippets extends JViewLegacy
 		if ($this->canDo->get('get_snippets.custom_admin_views'))
 		{
 			// add Custom Admin Views button.
-			JToolBarHelper::custom('get_snippets.openCustomAdminViews', 'screen', '', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS', false);
+			JToolBarHelper::custom('get_snippets.openCustomAdminViews', 'screen custom-button-opencustomadminviews', '', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS', false);
 		}
 		if ($this->canDo->get('get_snippets.site_views'))
 		{
 			// add Site Views button.
-			JToolBarHelper::custom('get_snippets.openSiteViews', 'palette', '', 'COM_COMPONENTBUILDER_SITE_VIEWS', false);
+			JToolBarHelper::custom('get_snippets.openSiteViews', 'palette custom-button-opensiteviews', '', 'COM_COMPONENTBUILDER_SITE_VIEWS', false);
 		}
 		if ($this->canDo->get('get_snippets.templates'))
 		{
 			// add Templates button.
-			JToolBarHelper::custom('get_snippets.openTemplates', 'brush', '', 'COM_COMPONENTBUILDER_TEMPLATES', false);
+			JToolBarHelper::custom('get_snippets.openTemplates', 'brush custom-button-opentemplates', '', 'COM_COMPONENTBUILDER_TEMPLATES', false);
 		}
 		if ($this->canDo->get('get_snippets.layouts'))
 		{
 			// add Layouts button.
-			JToolBarHelper::custom('get_snippets.openLayouts', 'brush', '', 'COM_COMPONENTBUILDER_LAYOUTS', false);
+			JToolBarHelper::custom('get_snippets.openLayouts', 'brush custom-button-openlayouts', '', 'COM_COMPONENTBUILDER_LAYOUTS', false);
 		}
 		if ($this->canDo->get('get_snippets.snippets'))
 		{
 			// add Snippets button.
-			JToolBarHelper::custom('get_snippets.openSnippets', 'pin', '', 'COM_COMPONENTBUILDER_SNIPPETS', false);
+			JToolBarHelper::custom('get_snippets.openSnippets', 'pin custom-button-opensnippets', '', 'COM_COMPONENTBUILDER_SNIPPETS', false);
 		}
 		if ($this->canDo->get('get_snippets.libraries'))
 		{
 			// add Libraries button.
-			JToolBarHelper::custom('get_snippets.openLibraries', 'puzzle', '', 'COM_COMPONENTBUILDER_LIBRARIES', false);
+			JToolBarHelper::custom('get_snippets.openLibraries', 'puzzle custom-button-openlibraries', '', 'COM_COMPONENTBUILDER_LIBRARIES', false);
 		}
 
 		// set help url for this view if found

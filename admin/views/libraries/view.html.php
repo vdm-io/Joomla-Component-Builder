@@ -133,7 +133,7 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 		if ($this->user->authorise('library.get_snippets', 'com_componentbuilder'))
 		{
 			// add Get Snippets button.
-			JToolBarHelper::custom('libraries.getSnippets', 'search', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
+			JToolBarHelper::custom('libraries.getSnippets', 'search custom-button-getsnippets', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
 		}
 
 		// set help url for this view if found
