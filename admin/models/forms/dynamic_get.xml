@@ -810,6 +810,16 @@
 					message="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_MESSAGE"
 					hint="COM_COMPONENTBUILDER_DYNAMIC_GET_TABLE_KEY_HINT"
 				/>
+				<!-- Empty Field. Type: Checkbox. (joomla) -->
+				<field
+					type="checkbox"
+					name="empty"
+					label="COM_COMPONENTBUILDER_DYNAMIC_GET_EMPTY_LABEL"
+					value="1"
+					default="0"
+					description="COM_COMPONENTBUILDER_DYNAMIC_GET_EMPTY_DESCRIPTION"
+					class="inputbox"
+				/>
 			</form>
 		</field>
 		<!-- Add_php_after_getitems Field. Type: Radio. (joomla) -->

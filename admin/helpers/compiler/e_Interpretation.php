@@ -3160,11 +3160,16 @@ class Interpretation extends Fields
 								. $ter['table_key'] . " " . $ter['operator']
 								. " (' . implode(',', \$array) . ')');";
 							$string .= PHP_EOL . $this->_t(2) . $tab . "}";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "else";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "{";
-							$string .= PHP_EOL . $this->_t(2) . $tab
-								. $this->_t(1) . "return false;";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "}";
+							// check if empty is allowed
+							if (!isset($ter['empty']) || !$ter['empty'])
+							{
+								$string .= PHP_EOL . $this->_t(2) . $tab
+									. "else";
+								$string .= PHP_EOL . $this->_t(2) . $tab . "{";
+								$string .= PHP_EOL . $this->_t(2) . $tab
+									. $this->_t(1) . "return false;";
+								$string .= PHP_EOL . $this->_t(2) . $tab . "}";
+							}
 						}
 						else
 						{
@@ -3193,11 +3198,16 @@ class Interpretation extends Fields
 								. $ter['table_key'] . " " . $ter['operator']
 								. " ' . \$checkValue);";
 							$string .= PHP_EOL . $this->_t(2) . $tab . "}";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "else";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "{";
-							$string .= PHP_EOL . $this->_t(2) . $tab
-								. $this->_t(1) . "return false;";
-							$string .= PHP_EOL . $this->_t(2) . $tab . "}";
+							// check if empty is allowed
+							if (!isset($ter['empty']) || !$ter['empty'])
+							{
+								$string .= PHP_EOL . $this->_t(2) . $tab
+									. "else";
+								$string .= PHP_EOL . $this->_t(2) . $tab . "{";
+								$string .= PHP_EOL . $this->_t(2) . $tab
+									. $this->_t(1) . "return false;";
+								$string .= PHP_EOL . $this->_t(2) . $tab . "}";
+							}
 						}
 						break;
 					case 9:
