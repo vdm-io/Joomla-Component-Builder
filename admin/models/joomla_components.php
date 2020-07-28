@@ -1672,6 +1672,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*/
 	protected function setLanguageTranslation(&$id, $target = 'components')
 	{
+		// check if the export of language strings is allowed
+		if ($this->params->get('export_language_strings', 1) != 1)
+		{
+			return;
+		}
 		// Create a new query object.
 		$query = $this->_db->getQuery(true);
 		$query->select(array('a.*'));

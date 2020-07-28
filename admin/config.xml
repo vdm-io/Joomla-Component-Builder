@@ -311,6 +311,20 @@
 			max="100"
 			step="10"
 		/>
+		<!-- Export_language_strings Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="export_language_strings"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_NO</option>
+		</field>
 		<!-- Spacer_hr_six Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_six" hr="true" class="spacer_hr_six" />
 		<!-- Compiler_field_builder_type Field. Type: List. (joomla) -->
