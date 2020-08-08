@@ -130,7 +130,7 @@ class ComponentbuilderModelApi extends JModelItem
 				if ($e->getCode() == 404)
 				{
 					// Need to go thru the error handler to allow Redirect to work.
-					JError::raiseWaring(404, $e->getMessage());
+					JError::raiseWarning(404, $e->getMessage());
 				}
 				else
 				{
