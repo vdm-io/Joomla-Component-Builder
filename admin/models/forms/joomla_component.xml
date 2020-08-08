@@ -367,7 +367,7 @@
 			default="Copyright (C) 2015. All Rights Reserved"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COPYRIGHT_DESCRIPTION"
 			class="text_area span12"
-			filter="HTML"
+			filter="SAFEHTML"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COPYRIGHT_HINT"
 			required="true"
 		/>
