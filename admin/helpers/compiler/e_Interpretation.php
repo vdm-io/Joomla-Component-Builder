@@ -10013,7 +10013,7 @@ class Interpretation extends Fields
 					elseif ($default === 'DATETIME'
 						|| $default === 'CURRENT_TIMESTAMP')
 					{
-						$default = $default . ' ' . $data['null_switch'];
+						$default = $data['null_switch'] . ' ' . $default;
 					}
 					elseif ($default == 0 || $default)
 					{
