@@ -21165,6 +21165,7 @@ class Interpretation extends Fields
 					$this->setLangContent($this->lang, $langKey, $langName);
 					$counter++;
 				}
+				// dashboard link to category on dashboard is build here
 				if (isset($this->categoryBuilder[$name_list])
 					&& ComponentbuilderHelper::checkArray(
 						$this->categoryBuilder[$name_list]
@@ -21194,8 +21195,13 @@ class Interpretation extends Fields
 								$otherViews, 'W'
 							);
 					}
+					// only load this category once
 					if (!in_array($otherViews, $catArray))
 					{
+						// set the extension key string, new convention (more stable)
+						$_key_extension = str_replace('.', '_po0O0oq_',
+							$this->categoryBuilder[$name_list]['extension']);
+
 						// add to lang
 						$langKey = $this->langPrefix . '_DASHBOARD_'
 							. ComponentbuilderHelper::safeString(
@@ -21223,12 +21229,12 @@ class Interpretation extends Fields
 						if ($counter == 0)
 						{
 							$icons .= "'" . $type . $otherViews . "." . $catCode
-								. "'";
+								. '_qpo0O0oqp_' . $_key_extension . "'";
 						}
 						else
 						{
 							$icons .= ", '" . $type . $otherViews . "."
-								. $catCode . "'";
+								. $catCode . '_qpo0O0oqp_' . $_key_extension . "'";
 						}
 						$counter++;
 						// make sure we add a category only once
@@ -21770,14 +21776,14 @@ class Interpretation extends Fields
 						)
 						&& !in_array($otherViews, $catArray))
 					{
-						// get the extention array
-						$_extetion_array = (array) explode(
+						// get the extension array
+						$_extension_array = (array) explode(
 							'.', $this->categoryBuilder[$nameList]['extension']
 						);
-						// set the meny selection
-						if (isset($_extetion_array[1]))
+						// set the menu selection
+						if (isset($_extension_array[1]))
 						{
-							$_menu = "categories." . trim($_extetion_array[1]);
+							$_menu = "categories." . trim($_extension_array[1]);
 						}
 						else
 						{

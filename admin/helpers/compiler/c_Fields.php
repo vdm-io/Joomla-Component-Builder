@@ -4438,7 +4438,7 @@ class Fields extends Structure
 		}
 		else
 		{
-			// set lang (just incase)
+			// set lang (just in case)
 			$listLangName = $langView . '_'
 				. ComponentbuilderHelper::safeFieldName($name, true);
 			// add to lang array
@@ -4654,7 +4654,7 @@ class Fields extends Structure
 					$this->app->enqueueMessage(
 						JText::sprintf(
 							'<hr /><h3>Category targeting view mismatch</h3>
-								<a>The <a href="index.php?option=com_componentbuilder&view=fields&task=field.edit&id=%s" target="_blank" title="open field">
+								<p>The <a href="index.php?option=com_componentbuilder&view=fields&task=field.edit&id=%s" target="_blank" title="open field">
 								category field</a> in <b>(%s) admin view</b> has a mismatching target view.
 								<br />To correct the mismatch, the <b>extension</b> value <code>%s</code> in the <a href="index.php?option=com_componentbuilder&view=fields&task=field.edit&id=%s" target="_blank" title="open category field">
 								field</a> must be changed to <code>%s</code>
@@ -5080,7 +5080,7 @@ class Fields extends Structure
 				{
 					// reset the php bucket
 					$phpBucket = '';
-					// only set if avaliable
+					// only set if available
 					if (isset($data['custom']['php' . $x])
 						&& ComponentbuilderHelper::checkArray(
 							$data['custom']['php' . $x]

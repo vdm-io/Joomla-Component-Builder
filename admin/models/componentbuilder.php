@@ -25,7 +25,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 		$icons  = array();
 		// view groups array
 		$viewGroups = array(
-			'main' => array('png.compiler', 'png.joomla_components', 'png.joomla_modules', 'png.joomla_plugins', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid', 'png.fieldtypes', 'png.fieldtypes.catid', 'png.language_translations', 'png.servers', 'png.help_documents')
+			'main' => array('png.compiler', 'png.joomla_components', 'png.joomla_modules', 'png.joomla_plugins', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_field', 'png.fieldtypes', 'png.fieldtypes.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_fieldtype', 'png.language_translations', 'png.servers', 'png.help_documents')
 		);
 		// view access array
 		$viewAccess = array(
@@ -232,8 +232,8 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 							$viewName 	= $name;
 							$alt 		= $name;
 							$url 		= $url;
-							$image 		= $name.'.'.$type;
-							$name 		= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U');
+							$image 		= $name . '.' . $type;
+							$name 		= 'COM_COMPONENTBUILDER_DASHBOARD_' . ComponentbuilderHelper::safeString($name,'U');
 						}
 					}
 					// internal views
@@ -255,17 +255,27 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 							switch($action)
 							{
 								case 'add':
-									$url 	= 'index.php?option=com_componentbuilder&view='.$name.'&layout=edit';
-									$image 	= $name.'_'.$action.'.'.$type;
-									$alt 	= $name.'&nbsp;'.$action;
+									$url	= 'index.php?option=com_componentbuilder&view=' . $name . '&layout=edit';
+									$image	= $name . '_' . $action.  '.' . $type;
+									$alt	= $name . '&nbsp;' . $action;
 									$name	= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U').'_ADD';
 									$add	= true;
 								break;
 								default:
-									$url 	= 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.'.$name;
-									$image 	= $name.'_'.$action.'.'.$type;
-									$alt 	= $name.'&nbsp;'.$action;
-									$name	= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U').'_'.ComponentbuilderHelper::safeString($action,'U');
+									// check for new convention (more stable)
+									if (strpos($action, '_qpo0O0oqp_') !== false)
+									{
+										list($action, $extension) = (array) explode('_qpo0O0oqp_', $action);
+										$extension = str_replace('_po0O0oq_', '.', $extension);
+									}
+									else
+									{
+										$extension = 'com_componentbuilder.' . $name;
+									}
+									$url	= 'index.php?option=com_categories&view=categories&extension=' . $extension;
+									$image	= $name . '_' . $action . '.' . $type;
+									$alt	= $viewName . '&nbsp;' . $action;
+									$name	= 'COM_COMPONENTBUILDER_DASHBOARD_' . ComponentbuilderHelper::safeString($name,'U') . '_' . ComponentbuilderHelper::safeString($action,'U');
 								break;
 							}
 						}
@@ -273,9 +283,9 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 						{
 							$viewName 	= $name;
 							$alt 		= $name;
-							$url 		= 'index.php?option=com_componentbuilder&view='.$name;
-							$image 		= $name.'.'.$type;
-							$name 		= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U');
+							$url 		= 'index.php?option=com_componentbuilder&view=' . $name;
+							$image 		= $name . '.' . $type;
+							$name 		= 'COM_COMPONENTBUILDER_DASHBOARD_' . ComponentbuilderHelper::safeString($name,'U');
 							$hover		= false;
 						}
 					}
@@ -283,8 +293,8 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 					{
 						$viewName 	= $view;
 						$alt 		= $view;
-						$url 		= 'index.php?option=com_componentbuilder&view='.$view;
-						$image 		= $view.'.png';
+						$url 		= 'index.php?option=com_componentbuilder&view=' . $view;
+						$image 		= $view . '.png';
 						$name 		= ucwords($view).'<br /><br />';
 						$hover		= false;
 					}
@@ -296,7 +306,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 						$dashboard_list = false;
 						$accessTo = '';
 						$accessAdd = '';
-						// acces checking start
+						// access checking start
 						$accessCreate = (isset($viewAccess[$viewName.'.create'])) ? ComponentbuilderHelper::checkString($viewAccess[$viewName.'.create']):false;
 						$accessAccess = (isset($viewAccess[$viewName.'.access'])) ? ComponentbuilderHelper::checkString($viewAccess[$viewName.'.access']):false;
 						// set main controllers
@@ -311,7 +321,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 						{
 							$accessAdd = 'core.create';
 						}
-						// check if acces to view is set
+						// check if access to view is set
 						if ($accessAccess)
 						{
 							$accessTo = $viewAccess[$viewName.'.access'];

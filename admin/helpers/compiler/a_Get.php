@@ -4038,7 +4038,7 @@ class Get
 		{
 			$field['permission'] = array($field['permission']);
 		}
-		// set unigue name keeper
+		// set unique name keeper
 		if ($listViewName)
 		{
 			$this->setUniqueNameCounter(
@@ -4176,7 +4176,7 @@ class Get
 		);
 		// set the name of the field
 		$name = ComponentbuilderHelper::safeFieldName($field['settings']->name);
-		// check that we have the poperties
+		// check that we have the properties
 		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
 		{
 			foreach ($field['settings']->properties as $property)
