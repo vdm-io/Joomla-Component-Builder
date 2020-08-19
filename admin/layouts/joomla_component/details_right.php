@@ -38,7 +38,8 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'whmcs_buy_link',
 	'license',
 	'bom',
-	'image'
+	'image',
+	'copyright'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

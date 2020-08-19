@@ -292,6 +292,21 @@
 			<option value="3">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_USE_ONLY_FIRST_NUMBER_OF_GLOBAL_VERSION_ONEXX</option>
 		</field>
+		<!-- Remove_line_breaks Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="remove_line_breaks"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_REMOVE_LINE_BREAKS_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_REMOVE_LINE_BREAKS_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
 		<!-- Add_placeholders Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -357,34 +372,6 @@
 			multiple="false"
 			default=""
 		/>
-		<!-- Copyright Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="copyright"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COPYRIGHT_LABEL"
-			rows="7"
-			cols="10"
-			default="Copyright (C) 2015. All Rights Reserved"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COPYRIGHT_DESCRIPTION"
-			class="text_area span12"
-			filter="SAFEHTML"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COPYRIGHT_HINT"
-			required="true"
-		/>
-		<!-- Add_php_postflight_update Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_php_postflight_update"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_POSTFLIGHT_UPDATE_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
 		<!-- Author Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -401,13 +388,14 @@
 			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_HINT"
 		/>
-		<!-- Addreadme Field. Type: Radio. (joomla) -->
+		<!-- Add_php_postflight_update Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="addreadme"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADDREADME_LABEL"
+			name="add_php_postflight_update"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_POSTFLIGHT_UPDATE_LABEL"
 			class="btn-group btn-group-yesno"
-			default="0">
+			default="0"
+			required="true">
 			<!-- Option Set. -->
 			<option value="1">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
@@ -429,15 +417,13 @@
 			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_HINT"
 		/>
-		<!-- Debug_linenr Field. Type: Radio. (joomla) -->
+		<!-- Addreadme Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="debug_linenr"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEBUG_LINENR_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEBUG_LINENR_DESCRIPTION"
+			name="addreadme"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADDREADME_LABEL"
 			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
+			default="0">
 			<!-- Option Set. -->
 			<option value="1">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
@@ -460,19 +446,21 @@
 			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_HINT"
 		/>
-		<!-- Buildcompsql Field. Type: Textarea. (joomla) -->
+		<!-- Debug_linenr Field. Type: Radio. (joomla) -->
 		<field
-			type="textarea"
-			name="buildcompsql"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_HINT"
-			required="true"
-		/>
+			type="radio"
+			name="debug_linenr"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEBUG_LINENR_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEBUG_LINENR_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
 		<!-- Add_license Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -488,20 +476,19 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Add_php_helper_both Field. Type: Radio. (joomla) -->
+		<!-- Buildcompsql Field. Type: Textarea. (joomla) -->
 		<field
-			type="radio"
-			name="add_php_helper_both"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_HELPER_BOTH_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
+			type="textarea"
+			name="buildcompsql"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_HINT"
+			required="true"
+		/>
 		<!-- License_type Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -523,11 +510,11 @@
 			<option value="4">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CUSTOM_USED_IN_CUSTOM_CODE</option>
 		</field>
-		<!-- Add_admin_event Field. Type: Radio. (joomla) -->
+		<!-- Add_php_helper_both Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_admin_event"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_ADMIN_EVENT_LABEL"
+			name="add_php_helper_both"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_HELPER_BOTH_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -539,11 +526,11 @@
 		</field>
 		<!-- Note_whmcs_lisencing_note Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_whmcs_lisencing_note" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_WHMCS_LISENCING_NOTE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_WHMCS_LISENCING_NOTE_DESCRIPTION" heading="h4" class="alert alert-success note_whmcs_lisencing_note" />
-		<!-- Add_site_event Field. Type: Radio. (joomla) -->
+		<!-- Add_admin_event Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_site_event"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_SITE_EVENT_LABEL"
+			name="add_admin_event"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_ADMIN_EVENT_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -566,11 +553,11 @@
 			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WHMCS_KEY_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WHMCS_KEY_HINT"
 		/>
-		<!-- Add_css_admin Field. Type: Radio. (joomla) -->
+		<!-- Add_site_event Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_css_admin"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_CSS_ADMIN_LABEL"
+			name="add_site_event"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_SITE_EVENT_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -595,20 +582,19 @@
 			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WHMCS_URL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WHMCS_URL_HINT"
 		/>
-		<!-- Dashboard_type Field. Type: Radio. (joomla) -->
+		<!-- Add_css_admin Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="dashboard_type"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASHBOARD_TYPE_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASHBOARD_TYPE_DESCRIPTION"
+			name="add_css_admin"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_CSS_ADMIN_LABEL"
 			class="btn-group btn-group-yesno"
-			default="1"
+			default="0"
 			required="true">
 			<!-- Option Set. -->
 			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEFAULT</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
 		<!-- Whmcs_buy_link Field. Type: Url. (joomla) -->
 		<field
@@ -625,19 +611,20 @@
 			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WHMCS_BUY_LINK_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WHMCS_BUY_LINK_HINT"
 		/>
-		<!-- Add_php_preflight_install Field. Type: Radio. (joomla) -->
+		<!-- Dashboard_type Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_preflight_install"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_PREFLIGHT_INSTALL_LABEL"
+			name="dashboard_type"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASHBOARD_TYPE_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASHBOARD_TYPE_DESCRIPTION"
 			class="btn-group btn-group-yesno"
-			default="0"
+			default="1"
 			required="true">
 			<!-- Option Set. -->
 			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEFAULT</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC</option>
 		</field>
 		<!-- License Field. Type: Textarea. (joomla) -->
 		<field
@@ -653,11 +640,11 @@
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_LICENSE_HINT"
 			required="true"
 		/>
-		<!-- Add_php_postflight_install Field. Type: Radio. (joomla) -->
+		<!-- Add_php_preflight_install Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_postflight_install"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_POSTFLIGHT_INSTALL_LABEL"
+			name="add_php_preflight_install"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_PREFLIGHT_INSTALL_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -679,11 +666,11 @@
 			hide_none="true"
 			hide_default="true"
 		/>
-		<!-- Add_php_method_uninstall Field. Type: Radio. (joomla) -->
+		<!-- Add_php_postflight_install Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_method_uninstall"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_METHOD_UNINSTALL_LABEL"
+			name="add_php_postflight_install"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_POSTFLIGHT_INSTALL_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -700,6 +687,34 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_IMAGE_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_IMAGE_DESCRIPTION"
 			directory=""
+		/>
+		<!-- Add_php_method_uninstall Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_method_uninstall"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_METHOD_UNINSTALL_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
+		<!-- Copyright Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="copyright"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COPYRIGHT_LABEL"
+			rows="7"
+			cols="10"
+			default="Copyright (C) 2015. All Rights Reserved"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COPYRIGHT_DESCRIPTION"
+			class="text_area span12"
+			filter="SAFEHTML"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COPYRIGHT_HINT"
+			required="true"
 		/>
 		<!-- Add_sql_uninstall Field. Type: Radio. (joomla) -->
 		<field

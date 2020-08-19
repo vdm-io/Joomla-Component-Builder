@@ -31,13 +31,13 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'component_version',
 	'debug_linenr',
 	'add_placeholders',
+	'remove_line_breaks',
 	'mvc_versiondate',
 	'note_version_options_one',
 	'note_version_options_two',
 	'note_version_options_three',
 	'short_description',
-	'description',
-	'copyright'
+	'description'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

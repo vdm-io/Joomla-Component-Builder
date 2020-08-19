@@ -34,13 +34,13 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				'component_version',
 				'debug_linenr',
 				'add_placeholders',
+				'remove_line_breaks',
 				'mvc_versiondate',
 				'note_version_options_one',
 				'note_version_options_two',
 				'note_version_options_three',
 				'short_description',
-				'description',
-				'copyright'
+				'description'
 			),
 			'right' => array(
 				'companyname',
@@ -55,7 +55,8 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				'whmcs_buy_link',
 				'license',
 				'bom',
-				'image'
+				'image',
+				'copyright'
 			),
 			'above' => array(
 				'system_name'

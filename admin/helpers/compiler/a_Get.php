@@ -103,6 +103,13 @@ class Get
 	public $addPlaceholders = false;
 
 	/**
+	 * Switch to remove line breaks from language strings
+	 *
+	 * @var     bool
+	 */
+	public $removeLineBreaks = false;
+
+	/**
 	 * The placeholders for custom code keys
 	 *
 	 * @var     array
@@ -814,6 +821,8 @@ class Get
 	{
 		if (isset($config) && count($config))
 		{
+			// we do not yet have this set as an option
+			$config['remove_line_breaks'] = 2; // 2 is global (use the components value)
 			// load application
 			$this->app = JFactory::getApplication();
 			// Set the params
@@ -891,6 +900,14 @@ class Get
 				// set component context
 				$this->componentContext = $this->componentCodeName . '.'
 					. $this->componentID;
+				// set if language strings line breaks should be removed
+				$global                = ((int) ComponentbuilderHelper::getVar(
+						'joomla_component', $this->componentID, 'id',
+						'remove_line_breaks'
+					) == 1) ? true : false;
+				$this->removeLineBreaks = ((int) $config['remove_line_breaks'] == 0)
+					? false
+					: (((int) $config['remove_line_breaks'] == 1) ? true : $global);
 				// set if placeholders should be added to customcode
 				$global                = ((int) ComponentbuilderHelper::getVar(
 						'joomla_component', $this->componentID, 'id',
@@ -2059,12 +2076,29 @@ class Get
 			))
 		{
 			$this->langContent[$target][$this->langPrefix . '_' . $language]
-				= trim($string);
+				= $this->fixLangString($string);
 		}
 		elseif (!isset($this->langContent[$target][$language]))
 		{
-			$this->langContent[$target][$language] = trim($string);
+			$this->langContent[$target][$language] = $this->fixLangString($string);
 		}
+	}
+
+	/**
+	 * We need to remove all text breaks from all language strings
+	 *
+	 * @param   string   $string     The language string
+	 *
+	 * @return  string
+	 *
+	 */
+	public function fixLangString(&$string)
+	{
+		if ($this->removeLineBreaks)
+		{
+			return trim(str_replace(array(PHP_EOL, "\r", "\n"), '', $string));
+		}
+		return trim($string);
 	}
 
 	/**

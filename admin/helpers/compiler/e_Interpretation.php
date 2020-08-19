@@ -13454,63 +13454,81 @@ class Interpretation extends Fields
 					$counter++;
 				}
 			}
-			$counter    = $counter + 2;
 			$data_value = (3 == $this->footableVersion) ? 'data-sort-value'
-				: 'data-value';
+					: 'data-value';
+
 			// add the defaults
-			$body .= PHP_EOL . $this->_t(2)
-				. "<?php if (\$item->published == 1):?>";
-			$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
-				. $data_value . '="1">';
-			$body .= PHP_EOL . $this->_t(4)
-				. '<span class="status-metro status-published" title="<?php echo JText:'
-				. ':_(' . "'" . $this->langPrefix . "_PUBLISHED'" . ');  ?>">';
-			$body .= PHP_EOL . $this->_t(5) . '<?php echo JText:' . ':_(' . "'"
-				. $this->langPrefix . "_PUBLISHED'" . '); ?>';
-			$body .= PHP_EOL . $this->_t(4) . '</span>';
-			$body .= PHP_EOL . $this->_t(3) . '</td>';
+			if (!isset($this->fieldsNames[$viewName_single]['published']))
+			{
+				$counter++;
+				// add the defaults
+				$body .= PHP_EOL . $this->_t(2)
+					. "<?php if (\$item->published == 1):?>";
+				$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
+					. $data_value . '="1">';
+				$body .= PHP_EOL . $this->_t(4)
+					. '<span class="status-metro status-published" title="<?php echo JText:'
+					. ':_(' . "'" . $this->langPrefix . "_PUBLISHED'"
+					. ');  ?>">';
+				$body .= PHP_EOL . $this->_t(5) . '<?php echo JText:' . ':_('
+					. "'"
+					. $this->langPrefix . "_PUBLISHED'" . '); ?>';
+				$body .= PHP_EOL . $this->_t(4) . '</span>';
+				$body .= PHP_EOL . $this->_t(3) . '</td>';
 
-			$body .= PHP_EOL . $this->_t(2)
-				. "<?php elseif (\$item->published == 0):?>";
-			$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
-				. $data_value . '="2">';
-			$body .= PHP_EOL . $this->_t(4)
-				. '<span class="status-metro status-inactive" title="<?php echo JText:'
-				. ':_(' . "'" . $this->langPrefix . "_INACTIVE'" . ');  ?>">';
-			$body .= PHP_EOL . $this->_t(5) . '<?php echo JText:' . ':_(' . "'"
-				. $this->langPrefix . "_INACTIVE'" . '); ?>';
-			$body .= PHP_EOL . $this->_t(4) . '</span>';
-			$body .= PHP_EOL . $this->_t(3) . '</td>';
+				$body .= PHP_EOL . $this->_t(2)
+					. "<?php elseif (\$item->published == 0):?>";
+				$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
+					. $data_value . '="2">';
+				$body .= PHP_EOL . $this->_t(4)
+					. '<span class="status-metro status-inactive" title="<?php echo JText:'
+					. ':_(' . "'" . $this->langPrefix . "_INACTIVE'"
+					. ');  ?>">';
+				$body .= PHP_EOL . $this->_t(5) . '<?php echo JText:' . ':_('
+					. "'"
+					. $this->langPrefix . "_INACTIVE'" . '); ?>';
+				$body .= PHP_EOL . $this->_t(4) . '</span>';
+				$body .= PHP_EOL . $this->_t(3) . '</td>';
 
-			$body .= PHP_EOL . $this->_t(2)
-				. "<?php elseif (\$item->published == 2):?>";
-			$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
-				. $data_value . '="3">';
-			$body .= PHP_EOL . $this->_t(4)
-				. '<span class="status-metro status-archived" title="<?php echo JText:'
-				. ':_(' . "'" . $this->langPrefix . "_ARCHIVED'" . ');  ?>">';
-			$body .= PHP_EOL . $this->_t(5) . '<?php echo JText:' . ':_(' . "'"
-				. $this->langPrefix . "_ARCHIVED'" . '); ?>';
-			$body .= PHP_EOL . $this->_t(4) . '</span>';
-			$body .= PHP_EOL . $this->_t(3) . '</td>';
+				$body .= PHP_EOL . $this->_t(2)
+					. "<?php elseif (\$item->published == 2):?>";
+				$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
+					. $data_value . '="3">';
+				$body .= PHP_EOL . $this->_t(4)
+					. '<span class="status-metro status-archived" title="<?php echo JText:'
+					. ':_(' . "'" . $this->langPrefix . "_ARCHIVED'"
+					. ');  ?>">';
+				$body .= PHP_EOL . $this->_t(5) . '<?php echo JText:' . ':_('
+					. "'"
+					. $this->langPrefix . "_ARCHIVED'" . '); ?>';
+				$body .= PHP_EOL . $this->_t(4) . '</span>';
+				$body .= PHP_EOL . $this->_t(3) . '</td>';
 
-			$body .= PHP_EOL . $this->_t(2)
-				. "<?php elseif (\$item->published == -2):?>";
-			$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
-				. $data_value . '="4">';
-			$body .= PHP_EOL . $this->_t(4)
-				. '<span class="status-metro status-trashed" title="<?php echo JText:'
-				. ':_(' . "'" . $this->langPrefix . "_TRASHED'" . ');  ?>">';
-			$body .= PHP_EOL . $this->_t(5) . '<?php echo JText:' . ':_(' . "'"
-				. $this->langPrefix . "_TRASHED'" . '); ?>';
-			$body .= PHP_EOL . $this->_t(4) . '</span>';
-			$body .= PHP_EOL . $this->_t(3) . '</td>';
-			$body .= PHP_EOL . $this->_t(2) . '<?php endif; ?>';
+				$body .= PHP_EOL . $this->_t(2)
+					. "<?php elseif (\$item->published == -2):?>";
+				$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
+					. $data_value . '="4">';
+				$body .= PHP_EOL . $this->_t(4)
+					. '<span class="status-metro status-trashed" title="<?php echo JText:'
+					. ':_(' . "'" . $this->langPrefix . "_TRASHED'"
+					. ');  ?>">';
+				$body .= PHP_EOL . $this->_t(5) . '<?php echo JText:' . ':_('
+					. "'"
+					. $this->langPrefix . "_TRASHED'" . '); ?>';
+				$body .= PHP_EOL . $this->_t(4) . '</span>';
+				$body .= PHP_EOL . $this->_t(3) . '</td>';
+				$body .= PHP_EOL . $this->_t(2) . '<?php endif; ?>';
+			}
 
-			$body .= PHP_EOL . $this->_t(2)
-				. '<td class="nowrap center hidden-phone">';
-			$body .= PHP_EOL . $this->_t(3) . "<?php echo \$item->id; ?>";
-			$body .= PHP_EOL . $this->_t(2) . "</td>";
+			// add the defaults
+			if (!isset($this->fieldsNames[$viewName_single]['id']))
+			{
+				$counter++;
+				$body .= PHP_EOL . $this->_t(2)
+					. '<td class="nowrap center hidden-phone">';
+				$body .= PHP_EOL . $this->_t(3) . "<?php echo \$item->id; ?>";
+				$body .= PHP_EOL . $this->_t(2) . "</td>";
+			}
 			$body .= PHP_EOL . $this->_t(1) . "</tr>";
 			$body .= PHP_EOL . "<?php endforeach; ?>";
 			$body .= PHP_EOL . "</tbody>";
@@ -13714,17 +13732,25 @@ class Interpretation extends Fields
 				? 'data-hide="phone,tablet"' : 'data-breakpoints="xs sm md"';
 			$data_type = (2 == $this->footableVersion) ? 'data-type="numeric"'
 				: 'data-type="number"';
-			// set default
-			$head .= PHP_EOL . $this->_t(2) . '<th width="10" ' . $data_hide
-				. '>';
-			$head .= PHP_EOL . $this->_t(3) . "<?php echo JText:" . ":_('"
-				. $statusLangName . "'); ?>";
-			$head .= PHP_EOL . $this->_t(2) . "</th>";
-			$head .= PHP_EOL . $this->_t(2) . '<th width="5" ' . $data_type
-				. ' ' . $data_hide . '>';
-			$head .= PHP_EOL . $this->_t(3) . "<?php echo JText:" . ":_('"
-				. $idLangName . "'); ?>";
-			$head .= PHP_EOL . $this->_t(2) . "</th>";
+			// add the defaults
+			if (!isset($this->fieldsNames[$viewName_single]['published']))
+			{
+				$head .= PHP_EOL . $this->_t(2) . '<th width="10" ' . $data_hide
+					. '>';
+				$head .= PHP_EOL . $this->_t(3) . "<?php echo JText:" . ":_('"
+					. $statusLangName . "'); ?>";
+				$head .= PHP_EOL . $this->_t(2) . "</th>";
+			}
+
+			// add the defaults
+			if (!isset($this->fieldsNames[$viewName_single]['id']))
+			{
+				$head .= PHP_EOL . $this->_t(2) . '<th width="5" ' . $data_type
+					. ' ' . $data_hide . '>';
+				$head .= PHP_EOL . $this->_t(3) . "<?php echo JText:" . ":_('"
+					. $idLangName . "'); ?>";
+				$head .= PHP_EOL . $this->_t(2) . "</th>";
+			}
 			$head .= PHP_EOL . $this->_t(1) . "</tr>";
 			$head .= PHP_EOL . "</thead>";
 
