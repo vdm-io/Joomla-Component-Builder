@@ -485,6 +485,14 @@ class Fields extends Structure
 				"%s " . $view['settings']->name_single . " unpublished."
 			);
 			$this->setLangContent(
+				$this->lang, $langViews . '_N_ITEMS_FAILED_PUBLISHING',
+				"%s " . $view['settings']->name_list . " failed publishing."
+			);
+			$this->setLangContent(
+				$this->lang, $langViews . '_N_ITEMS_FAILED_PUBLISHING_1',
+				"%s " . $view['settings']->name_single . " failed publishing."
+			);
+			$this->setLangContent(
 				$this->lang, $langViews . '_BATCH_OPTIONS',
 				"Batch process the selected " . $view['settings']->name_list
 			);
@@ -2322,12 +2330,13 @@ class Fields extends Structure
 		elseif ($setType === 'custom')
 		{
 			// now add to the field set
-			$field .= PHP_EOL . $this->_t(2) . $taber . "<!--" . $this->setLine(
+			$field     .= PHP_EOL . $this->_t(2) . $taber . "<!--"
+				. $this->setLine(
 					__LINE__
 				) . " " . ucfirst($name) . " Field. Type: "
 				. ComponentbuilderHelper::safeString($typeName, 'F')
 				. ". (custom) -->";
-			$field .= PHP_EOL . $this->_t(2) . $taber . "<field";
+			$field     .= PHP_EOL . $this->_t(2) . $taber . "<field";
 			$optionSet = '';
 			foreach ($fieldAttributes as $property => $value)
 			{
@@ -4949,16 +4958,23 @@ class Fields extends Structure
 			$replace = array(
 				$this->bbb . 'JPREFIX' . $this->ddd   => $jprefix,
 				$this->bbb . 'TABLE'
-				. $this->ddd                          => (isset($data['custom']['table'])) ? $data['custom']['table'] :'',
+				. $this->ddd                          => (isset($data['custom']['table']))
+					? $data['custom']['table'] : '',
 				$this->bbb . 'ID'
-				. $this->ddd                          => (isset($data['custom']['id'])) ? $data['custom']['id'] :'',
+				. $this->ddd                          => (isset($data['custom']['id']))
+					? $data['custom']['id'] : '',
 				$this->bbb . 'TEXT'
-				. $this->ddd                          => (isset($data['custom']['text'])) ? $data['custom']['text'] :'',
-				$this->bbb . 'CODE_TEXT' . $this->ddd => (isset($data['code'], $data['custom']['text'])) ? $data['code'] . '_' . $data['custom']['text'] :'',
-				$this->bbb . 'CODE' . $this->ddd      => (isset($data['code'])) ? $data['code'] :'',
+				. $this->ddd                          => (isset($data['custom']['text']))
+					? $data['custom']['text'] : '',
+				$this->bbb . 'CODE_TEXT'
+				. $this->ddd                          => (isset($data['code'], $data['custom']['text']))
+					? $data['code'] . '_' . $data['custom']['text'] : '',
+				$this->bbb . 'CODE' . $this->ddd      => (isset($data['code']))
+					? $data['code'] : '',
 				$this->bbb . 'view_type' . $this->ddd => $view_name_single
 					. '_' . $data['type'],
-				$this->bbb . 'type' . $this->ddd      => (isset($data['type'])) ? $data['type'] :'',
+				$this->bbb . 'type' . $this->ddd      => (isset($data['type']))
+					? $data['type'] : '',
 				$this->bbb . 'com_component'
 				. $this->ddd                          => (isset($data['custom']['component'])
 					&& ComponentbuilderHelper::checkString(
@@ -5058,7 +5074,8 @@ class Fields extends Structure
 				. $data['type']][$this->hhh . 'JFORM_TYPE_HEADER' . $this->hhh]
 				                    = "//" . $this->setLine(
 						__LINE__
-					) . " Import the " . $JFORM_extends . " field type classes needed";
+					) . " Import the " . $JFORM_extends
+					. " field type classes needed";
 				// JFORM_extens <<<DYNAMIC>>>
 				$this->fileContentDynamic['customfield_'
 				. $data['type']][$this->hhh . 'JFORM_extends' . $this->hhh]
@@ -5096,7 +5113,7 @@ class Fields extends Structure
 							}
 						}
 						// check if this is header text
-						if('HEADER' === $x)
+						if ('HEADER' === $x)
 						{
 							$this->fileContentDynamic['customfield_'
 							. $data['type']][$this->hhh . 'JFORM_TYPE_HEADER'
