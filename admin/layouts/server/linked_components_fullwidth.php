@@ -217,25 +217,25 @@ else
 			<?php endif; ?>
 			</div>
 		</td>
-		<?php if ($item->published == 1):?>
+		<?php if ($item->published == 1): ?>
 			<td class="center"  data-sort-value="1">
 				<span class="status-metro status-published" title="<?php echo JText::_('COM_COMPONENTBUILDER_PUBLISHED');  ?>">
 					<?php echo JText::_('COM_COMPONENTBUILDER_PUBLISHED'); ?>
 				</span>
 			</td>
-		<?php elseif ($item->published == 0):?>
+		<?php elseif ($item->published == 0): ?>
 			<td class="center"  data-sort-value="2">
 				<span class="status-metro status-inactive" title="<?php echo JText::_('COM_COMPONENTBUILDER_INACTIVE');  ?>">
 					<?php echo JText::_('COM_COMPONENTBUILDER_INACTIVE'); ?>
 				</span>
 			</td>
-		<?php elseif ($item->published == 2):?>
+		<?php elseif ($item->published == 2): ?>
 			<td class="center"  data-sort-value="3">
 				<span class="status-metro status-archived" title="<?php echo JText::_('COM_COMPONENTBUILDER_ARCHIVED');  ?>">
 					<?php echo JText::_('COM_COMPONENTBUILDER_ARCHIVED'); ?>
 				</span>
 			</td>
-		<?php elseif ($item->published == -2):?>
+		<?php elseif ($item->published == -2): ?>
 			<td class="center"  data-sort-value="4">
 				<span class="status-metro status-trashed" title="<?php echo JText::_('COM_COMPONENTBUILDER_TRASHED');  ?>">
 					<?php echo JText::_('COM_COMPONENTBUILDER_TRASHED'); ?>

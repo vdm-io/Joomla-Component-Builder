@@ -954,7 +954,7 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_MENU_PREFIX_LABEL"
 			size="30"
 			maxlength="30"
-			default="&amp;#187;"
+			default=""
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_MENU_PREFIX_DESCRIPTION"
 			class="text_area"
 			filter="SAFEHTML"

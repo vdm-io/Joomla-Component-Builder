@@ -13463,7 +13463,7 @@ class Interpretation extends Fields
 				$counter++;
 				// add the defaults
 				$body .= PHP_EOL . $this->_t(2)
-					. "<?php if (\$item->published == 1):?>";
+					. "<?php if (\$item->published == 1): ?>";
 				$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
 					. $data_value . '="1">';
 				$body .= PHP_EOL . $this->_t(4)
@@ -13477,7 +13477,7 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . $this->_t(3) . '</td>';
 
 				$body .= PHP_EOL . $this->_t(2)
-					. "<?php elseif (\$item->published == 0):?>";
+					. "<?php elseif (\$item->published == 0): ?>";
 				$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
 					. $data_value . '="2">';
 				$body .= PHP_EOL . $this->_t(4)
@@ -13491,7 +13491,7 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . $this->_t(3) . '</td>';
 
 				$body .= PHP_EOL . $this->_t(2)
-					. "<?php elseif (\$item->published == 2):?>";
+					. "<?php elseif (\$item->published == 2): ?>";
 				$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
 					. $data_value . '="3">';
 				$body .= PHP_EOL . $this->_t(4)
@@ -13505,7 +13505,7 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . $this->_t(3) . '</td>';
 
 				$body .= PHP_EOL . $this->_t(2)
-					. "<?php elseif (\$item->published == -2):?>";
+					. "<?php elseif (\$item->published == -2): ?>";
 				$body .= PHP_EOL . $this->_t(3) . '<td class="center"  '
 					. $data_value . '="4">';
 				$body .= PHP_EOL . $this->_t(4)
@@ -13730,8 +13730,6 @@ class Interpretation extends Fields
 			// set some V3 attr
 			$data_hide = (2 == $this->footableVersion)
 				? 'data-hide="phone,tablet"' : 'data-breakpoints="xs sm md"';
-			$data_type = (2 == $this->footableVersion) ? 'data-type="numeric"'
-				: 'data-type="number"';
 			// add the defaults
 			if (!isset($this->fieldsNames[$viewName_single]['published']))
 			{
@@ -13745,6 +13743,8 @@ class Interpretation extends Fields
 			// add the defaults
 			if (!isset($this->fieldsNames[$viewName_single]['id']))
 			{
+				$data_type = (2 == $this->footableVersion) ? 'data-type="numeric"'
+					: 'data-type="number"';
 				$head .= PHP_EOL . $this->_t(2) . '<th width="5" ' . $data_type
 					. ' ' . $data_hide . '>';
 				$head .= PHP_EOL . $this->_t(3) . "<?php echo JText:" . ":_('"
@@ -13967,7 +13967,9 @@ class Interpretation extends Fields
 			)
 			{
 				if (($order_field_name = $this->getFieldDatabaseName(
-						$viewName_list, $order_field['field'], 'listJoinBuilder'
+						$viewName_list, $order_field['field']
+						// We Removed This 'listJoinBuilder' as targetArea
+						// we will keep an eye on this
 					)) !== false)
 				{
 					// default ordering is by publish and ordering
