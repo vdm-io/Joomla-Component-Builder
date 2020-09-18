@@ -2143,7 +2143,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(3) . "'name' => \$new['name'],";
 			$method[] = $this->_t(3) . "'email' => \$new['email'],";
 			$method[] = $this->_t(3)
-				. "'password1' => \$password, // First password field";
+				. "'password' => \$password, // First password field";
 			$method[] = $this->_t(3)
 				. "'password2' => \$password2, // Confirm password field";
 			$method[] = $this->_t(3) . "'block' => 0 );";
