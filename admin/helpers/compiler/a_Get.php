@@ -3026,6 +3026,12 @@ class Get
 					{
 						// update GUI mapper field
 						$guiMapper['field'] = $importScripter;
+						$guiMapper['type'] = 'php';
+						// Make sure html gets HTML comment for placeholder
+						if ('html_import_view' === $importScripter)
+						{
+							$guiMapper['type'] = 'html';
+						}
 						$this->setCustomScriptBuilder(
 							$view->$importScripter,
 							$importScripter,
@@ -3046,7 +3052,6 @@ class Get
 					}
 				}
 			}
-
 			// add_Ajax for this view
 			if (isset($view->add_php_ajax) && $view->add_php_ajax == 1)
 			{
@@ -3080,6 +3085,8 @@ class Get
 				}
 				if (ComponentbuilderHelper::checkString($view->php_ajaxmethod))
 				{
+					// make sure we are still in PHP
+					$guiMapper['type'] = 'php';
 					// update GUI mapper field
 					$guiMapper['field'] = 'php_ajaxmethod';
 					$this->setCustomScriptBuilder(
