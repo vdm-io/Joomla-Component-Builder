@@ -6883,44 +6883,113 @@ class Interpretation extends Fields
 			if ($view['settings']->main_get->gettype == 2
 				&& $view['settings']->main_get->pagination == 1)
 			{
-				// build body
-				$body = array();
-				// add limit box
-				if (strpos(
+				// does this view have a custom limitbox position
+				$has_limitbox = (strpos(
 						$view['settings']->default,
 						$this->bbb . 'LIMITBOX' . $this->ddd
-					) !== false)
+					) !== false);
+				// does this view have a custom pages counter position
+				$has_pagescounter = (strpos(
+						$view['settings']->default,
+						$this->bbb . 'PAGESCOUNTER' . $this->ddd
+					) !== false);
+				// does this view have a custom pages links position
+				$has_pageslinks = (strpos(
+						$view['settings']->default,
+						$this->bbb . 'PAGESLINKS' . $this->ddd
+					) !== false);
+				// does this view have a custom pagination start position
+				$has_pagination_start = (strpos(
+						$view['settings']->default,
+						$this->bbb . 'PAGINATIONSTART' . $this->ddd
+					) !== false);
+				// does this view have a custom pagination end position
+				$has_pagination_end = (strpos(
+						$view['settings']->default,
+						$this->bbb . 'PAGINATIONEND' . $this->ddd
+					) !== false);
+
+				// add pagination start
+				$this->placeholders[$this->bbb . 'PAGINATIONSTART' . $this->ddd]
+					= PHP_EOL
+					. '<?php if (isset($this->items) && isset($this->pagination) && isset($this->pagination->pagesTotal) && $this->pagination->pagesTotal > 1): ?>';
+				$this->placeholders[$this->bbb . 'PAGINATIONSTART' . $this->ddd]
+					.= PHP_EOL . $this->_t(1) . '<div class="pagination">';
+				$this->placeholders[$this->bbb . 'PAGINATIONSTART' . $this->ddd]
+					.= PHP_EOL . $this->_t(2)
+					. '<?php if ($this->params->def(\'show_pagination_results\', 1)) : ?>';
+
+				// add pagination end
+				$this->placeholders[$this->bbb . 'PAGINATIONEND' . $this->ddd]
+					= $this->_t(2) . '<?php endif; ?>';
+				// only add if no custom page link is found
+				if (!$has_pageslinks)
 				{
-					$this->placeholders[$this->bbb . 'LIMITBOX' . $this->ddd]
-						= '<?php echo $this->pagination->getLimitBox(); ?>';
+					$this->placeholders[$this->bbb . 'PAGINATIONEND'
+					. $this->ddd]
+						.= PHP_EOL . $this->_t(2)
+						. '<?php echo $this->pagination->getPagesLinks(); ?>';
 				}
+				$this->placeholders[$this->bbb . 'PAGINATIONEND' . $this->ddd]
+					.= PHP_EOL . $this->_t(1) . '</div>';
+				$this->placeholders[$this->bbb . 'PAGINATIONEND' . $this->ddd]
+					.= PHP_EOL . '<?php endif; ?>';
+
+				// add limit box
+				$this->placeholders[$this->bbb . 'LIMITBOX' . $this->ddd]
+					= '<?php echo $this->pagination->getLimitBox(); ?>';
+
+				// add pages counter
+				$this->placeholders[$this->bbb . 'PAGESCOUNTER' . $this->ddd]
+					= '<?php echo $this->pagination->getPagesCounter(); ?>';
+
+				// add pages links
+				$this->placeholders[$this->bbb . 'PAGESLINKS' . $this->ddd]
+					= '<?php echo $this->pagination->getPagesLinks(); ?>';
+
+				// build body
+				$body = array();
+				// Load the default values to the body
 				$body[] = $this->setPlaceholders(
 					$view['settings']->default, $this->placeholders
 				);
-				$body[] = PHP_EOL
-					. '<?php if (isset($this->items) && isset($this->pagination) && isset($this->pagination->pagesTotal) && $this->pagination->pagesTotal > 1): ?>';
-				$body[] = $this->_t(1) . '<div class="pagination">';
-				$body[] = $this->_t(2)
-					. '<?php if ($this->params->def(\'show_pagination_results\', 1)) : ?>';
+				// only load these if at-least one is not set via a custom placeholder
+				if (!$has_limitbox || !$has_pagescounter || !$has_pageslinks ||
+					!$has_pagination_start || !$has_pagination_end)
+				{
+					// add pagination start
+					if (!$has_pagination_start)
+					{
+						$body[] = $this->placeholders[$this->bbb . 'PAGINATIONSTART' . $this->ddd];
+					}
 
-				if (strpos(
-						$view['settings']->default,
-						$this->bbb . 'LIMITBOX' . $this->ddd
-					) === false)
-				{
-					$body[] = $this->_t(3)
-						. '<p class="counter pull-right"> <?php echo $this->pagination->getPagesCounter(); ?> <?php echo $this->pagination->getLimitBox(); ?></p>';
+					if (!$has_limitbox && !$has_pagescounter)
+					{
+						$body[] = $this->_t(3)
+							. '<p class="counter pull-right"> <?php echo $this->pagination->getPagesCounter(); ?> <?php echo $this->pagination->getLimitBox(); ?></p>';
+					}
+					elseif (!$has_limitbox)
+					{
+						$body[] = $this->_t(3)
+							. '<p class="counter pull-right"> <?php echo $this->pagination->getLimitBox(); ?></p>';
+					}
+					elseif (!$has_pagescounter)
+					{
+						$body[] = $this->_t(3)
+							. '<p class="counter pull-right"> <?php echo $this->pagination->getPagesCounter(); ?> </p>';
+					}
+					// add pagination end
+					if (!$has_pagination_end)
+					{
+						$body[] = $this->placeholders[$this->bbb . 'PAGINATIONEND' . $this->ddd];
+					}
 				}
-				else
-				{
-					$body[] = $this->_t(3)
-						. '<p class="counter pull-right"> <?php echo $this->pagination->getPagesCounter(); ?> </p>';
-				}
-				$body[] = $this->_t(2) . '<?php endif; ?>';
-				$body[] = $this->_t(2)
-					. '<?php echo $this->pagination->getPagesLinks(); ?>';
-				$body[] = $this->_t(1) . '</div>';
-				$body[] = '<?php endif; ?>';
+				// lets clear the placeholders just in case
+				unset($this->placeholders[$this->bbb . 'LIMITBOX' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'PAGESCOUNTER' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'PAGESLINKS' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'PAGINATIONSTART' . $this->ddd]);
+				unset($this->placeholders[$this->bbb . 'PAGINATIONEND' . $this->ddd]);
 				// insure the form is added (only if no form exist)
 				if (strpos($view['settings']->default, '<form') === false)
 				{
