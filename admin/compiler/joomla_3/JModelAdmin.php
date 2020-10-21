@@ -17,9 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Registry\Registry;
-use Joomla\String\StringHelper;
-use Joomla\Utilities\ArrayHelper;
+###ADMIN_VIEW_MODEL_HEADER###
 
 /**
  * ###Component### ###View### Model

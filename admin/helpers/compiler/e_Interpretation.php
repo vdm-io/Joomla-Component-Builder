@@ -6953,36 +6953,31 @@ class Interpretation extends Fields
 				$body[] = $this->setPlaceholders(
 					$view['settings']->default, $this->placeholders
 				);
-				// only load these if at-least one is not set via a custom placeholder
-				if (!$has_limitbox || !$has_pagescounter || !$has_pageslinks ||
-					!$has_pagination_start || !$has_pagination_end)
+				// add pagination start
+				if (!$has_pagination_start)
 				{
-					// add pagination start
-					if (!$has_pagination_start)
-					{
-						$body[] = $this->placeholders[$this->bbb . 'PAGINATIONSTART' . $this->ddd];
-					}
+					$body[] = $this->placeholders[$this->bbb . 'PAGINATIONSTART' . $this->ddd];
+				}
 
-					if (!$has_limitbox && !$has_pagescounter)
-					{
-						$body[] = $this->_t(3)
-							. '<p class="counter pull-right"> <?php echo $this->pagination->getPagesCounter(); ?> <?php echo $this->pagination->getLimitBox(); ?></p>';
-					}
-					elseif (!$has_limitbox)
-					{
-						$body[] = $this->_t(3)
-							. '<p class="counter pull-right"> <?php echo $this->pagination->getLimitBox(); ?></p>';
-					}
-					elseif (!$has_pagescounter)
-					{
-						$body[] = $this->_t(3)
-							. '<p class="counter pull-right"> <?php echo $this->pagination->getPagesCounter(); ?> </p>';
-					}
-					// add pagination end
-					if (!$has_pagination_end)
-					{
-						$body[] = $this->placeholders[$this->bbb . 'PAGINATIONEND' . $this->ddd];
-					}
+				if (!$has_limitbox && !$has_pagescounter)
+				{
+					$body[] = $this->_t(3)
+						. '<p class="counter pull-right"> <?php echo $this->pagination->getPagesCounter(); ?> <?php echo $this->pagination->getLimitBox(); ?></p>';
+				}
+				elseif (!$has_limitbox)
+				{
+					$body[] = $this->_t(3)
+						. '<p class="counter pull-right"> <?php echo $this->pagination->getLimitBox(); ?></p>';
+				}
+				elseif (!$has_pagescounter)
+				{
+					$body[] = $this->_t(3)
+						. '<p class="counter pull-right"> <?php echo $this->pagination->getPagesCounter(); ?> </p>';
+				}
+				// add pagination end
+				if (!$has_pagination_end)
+				{
+					$body[] = $this->placeholders[$this->bbb . 'PAGINATIONEND' . $this->ddd];
 				}
 				// lets clear the placeholders just in case
 				unset($this->placeholders[$this->bbb . 'LIMITBOX' . $this->ddd]);
@@ -20938,6 +20933,30 @@ class Interpretation extends Fields
 
 		// add the encryption script
 		return $script . $forEachStart . $fix;
+	}
+
+	public function setClassHeaders($context, $viewName)
+	{
+		// set the default
+		switch($context)
+		{
+			case 'admin.view.model':
+			case 'site.admin.view.model':
+				$header = 'use Joomla\Registry\Registry;';
+				$header .= PHP_EOL . 'use Joomla\String\StringHelper;';
+				$header .= PHP_EOL . 'use Joomla\Utilities\ArrayHelper;';
+				break;
+			default:
+				$header = 'use Joomla\Utilities\ArrayHelper;';
+				break;
+		}
+		// Trigger Event: jcb_ce_setClassHeader
+		$this->triggerEvent(
+			'jcb_ce_setClassHeader',
+			array(&$this->componentContext, &$context, &$viewName,
+			      &$header)
+		);
+		return $header;
 	}
 
 	protected function setModelFieldRelation($item, $viewName_list, $tab)

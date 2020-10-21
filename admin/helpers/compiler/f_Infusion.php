@@ -614,12 +614,25 @@ class Infusion extends Interpretation
 								$viewName_single, $view
 							);
 						}
+						// SITE_ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
+						$this->fileContentDynamic[$viewName_single][$this->hhh
+						. 'SITE_ADMIN_VIEW_MODEL_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'site.admin.view.model', $viewName_single
+						);
 					}
 
 					// TABLAYOUTFIELDSARRAY <<<DYNAMIC>>> add the tab layout fields array to the model
 					$this->fileContentDynamic[$viewName_single][$this->hhh
 					. 'TABLAYOUTFIELDSARRAY' . $this->hhh]
 						= $this->getTabLayoutFieldsArray($viewName_single);
+
+					// ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
+					$this->fileContentDynamic[$viewName_single][$this->hhh
+					. 'ADMIN_VIEW_MODEL_HEADER' . $this->hhh]
+						= $this->setClassHeaders(
+						'admin.view.model', $viewName_single
+					);
 
 					// Trigger Event: jcb_ce_onAfterBuildAdminEditViewContent
 					$this->triggerEvent(
@@ -895,6 +908,13 @@ class Infusion extends Interpretation
 						. 'VIEWS_FOOTER_SCRIPT' . $this->hhh]
 							= '';
 					}
+
+					// ADMIN_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
+					$this->fileContentDynamic[$viewName_list][$this->hhh
+					. 'ADMIN_VIEWS_MODEL_HEADER' . $this->hhh]
+						= $this->setClassHeaders(
+						'admin.views.model', $viewName_list
+					);
 
 					// Trigger Event: jcb_ce_onAfterBuildAdminListViewContent
 					$this->triggerEvent(
@@ -1189,7 +1209,8 @@ class Infusion extends Interpretation
 					{
 						// HIDEMAINMENU <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh
-						. 'HIDEMAINMENU' . $this->hhh] = '';
+						. 'HIDEMAINMENU' . $this->hhh]
+							= '';
 					}
 					else
 					{
@@ -1321,6 +1342,26 @@ class Infusion extends Interpretation
 						$view['settings']->code,
 						$view['settings']->main_get->gettype, 2
 					);
+
+					// set headers based on the main get type
+					if ($view['settings']->main_get->gettype == 1)
+					{
+						// CUSTOM_ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'CUSTOM_ADMIN_VIEW_MODEL_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'custom.admin.view.model', $view['settings']->code
+						);
+					}
+					elseif ($view['settings']->main_get->gettype == 2)
+					{
+						// CUSTOM_ADMIN_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'CUSTOM_ADMIN_VIEWS_MODEL_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'custom.admin.views.model', $view['settings']->code
+						);
+					}
 
 					// Trigger Event: jcb_ce_onAfterBuildCustomAdminViewContent
 					$this->triggerEvent(
@@ -1752,6 +1793,26 @@ class Infusion extends Interpretation
 						$view['settings']->code,
 						$view['settings']->main_get->gettype, 2
 					);
+
+					// set headers based on the main get type
+					if ($view['settings']->main_get->gettype == 1)
+					{
+						// SITE_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'SITE_VIEW_MODEL_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'site.view.model', $view['settings']->code
+						);
+					}
+					elseif ($view['settings']->main_get->gettype == 2)
+					{
+						// SITE_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'SITE_VIEWS_MODEL_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'site.views.model', $view['settings']->code
+						);
+					}
 
 					// Trigger Event: jcb_ce_onAfterBuildSiteViewContent
 					$this->triggerEvent(
