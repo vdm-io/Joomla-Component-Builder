@@ -614,6 +614,12 @@ class Infusion extends Interpretation
 								$viewName_single, $view
 							);
 						}
+						// SITE_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+						$this->fileContentDynamic[$viewName_single][$this->hhh
+						. 'SITE_ADMIN_VIEW_CONTROLLER_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'site.admin.view.controller', $viewName_single
+						);
 						// SITE_ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
 						$this->fileContentDynamic[$viewName_single][$this->hhh
 						. 'SITE_ADMIN_VIEW_MODEL_HEADER' . $this->hhh]
@@ -627,6 +633,12 @@ class Infusion extends Interpretation
 					. 'TABLAYOUTFIELDSARRAY' . $this->hhh]
 						= $this->getTabLayoutFieldsArray($viewName_single);
 
+					// ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+					$this->fileContentDynamic[$viewName_single][$this->hhh
+					. 'ADMIN_VIEW_CONTROLLER_HEADER' . $this->hhh]
+						= $this->setClassHeaders(
+						'admin.view.controller', $viewName_single
+					);
 					// ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
 					$this->fileContentDynamic[$viewName_single][$this->hhh
 					. 'ADMIN_VIEW_MODEL_HEADER' . $this->hhh]
@@ -909,6 +921,12 @@ class Infusion extends Interpretation
 							= '';
 					}
 
+					// ADMIN_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+					$this->fileContentDynamic[$viewName_list][$this->hhh
+					. 'ADMIN_VIEWS_CONTROLLER_HEADER' . $this->hhh]
+						= $this->setClassHeaders(
+						'admin.views.controller', $viewName_list
+					);
 					// ADMIN_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
 					$this->fileContentDynamic[$viewName_list][$this->hhh
 					. 'ADMIN_VIEWS_MODEL_HEADER' . $this->hhh]
@@ -1346,6 +1364,12 @@ class Infusion extends Interpretation
 					// set headers based on the main get type
 					if ($view['settings']->main_get->gettype == 1)
 					{
+						// CUSTOM_ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'CUSTOM_ADMIN_VIEW_CONTROLLER_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'custom.admin.view.controller', $view['settings']->code
+						);
 						// CUSTOM_ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh
 						. 'CUSTOM_ADMIN_VIEW_MODEL_HEADER' . $this->hhh]
@@ -1355,6 +1379,12 @@ class Infusion extends Interpretation
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
+						// CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'custom.admin.views.controller', $view['settings']->code
+						);
 						// CUSTOM_ADMIN_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh
 						. 'CUSTOM_ADMIN_VIEWS_MODEL_HEADER' . $this->hhh]
@@ -1797,6 +1827,19 @@ class Infusion extends Interpretation
 					// set headers based on the main get type
 					if ($view['settings']->main_get->gettype == 1)
 					{
+						// insure the controller headers are added
+						if (ComponentbuilderHelper::checkString(
+								$view['settings']->php_controller
+							)
+							&& $view['settings']->php_controller != '//')
+						{
+							// SITE_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+							$this->fileContentDynamic[$view['settings']->code][$this->hhh
+							. 'SITE_VIEW_CONTROLLER_HEADER' . $this->hhh]
+								= $this->setClassHeaders(
+								'site.view.controller', $view['settings']->code
+							);
+						}
 						// SITE_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh
 						. 'SITE_VIEW_MODEL_HEADER' . $this->hhh]
@@ -1806,6 +1849,19 @@ class Infusion extends Interpretation
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
+						// insure the controller headers are added
+						if (ComponentbuilderHelper::checkString(
+								$view['settings']->php_controller
+							)
+							&& $view['settings']->php_controller != '//')
+						{
+							// SITE_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+							$this->fileContentDynamic[$view['settings']->code][$this->hhh
+							. 'SITE_VIEW_CONTROLLER_HEADER' . $this->hhh]
+								= $this->setClassHeaders(
+								'site.views.controller', $view['settings']->code
+							);
+						}
 						// SITE_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh
 						. 'SITE_VIEWS_MODEL_HEADER' . $this->hhh]

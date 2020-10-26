@@ -20937,26 +20937,28 @@ class Interpretation extends Fields
 
 	public function setClassHeaders($context, $viewName)
 	{
-		// set the default
+		// set the defaults
+		$headers = array();
 		switch($context)
 		{
 			case 'admin.view.model':
 			case 'site.admin.view.model':
-				$header = 'use Joomla\Registry\Registry;';
-				$header .= PHP_EOL . 'use Joomla\String\StringHelper;';
-				$header .= PHP_EOL . 'use Joomla\Utilities\ArrayHelper;';
+				$headers[] = 'use Joomla\Registry\Registry;';
+				$headers[] = 'use Joomla\String\StringHelper;';
+				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
 				break;
 			default:
-				$header = 'use Joomla\Utilities\ArrayHelper;';
+				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
 				break;
 		}
 		// Trigger Event: jcb_ce_setClassHeader
 		$this->triggerEvent(
 			'jcb_ce_setClassHeader',
 			array(&$this->componentContext, &$context, &$viewName,
-			      &$header)
+			      &$headers)
 		);
-		return $header;
+		// return the headers
+		return implode(PHP_EOL, $headers);
 	}
 
 	protected function setModelFieldRelation($item, $viewName_list, $tab)

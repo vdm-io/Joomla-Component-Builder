@@ -17,7 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+###CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER###
 
 /**
  * ###SViews### Controller
