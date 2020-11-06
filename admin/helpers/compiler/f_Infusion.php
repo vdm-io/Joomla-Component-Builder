@@ -2076,7 +2076,7 @@ class Infusion extends Interpretation
 						// MODDEFAULT
 						$this->fileContentDynamic[$module->key][$this->hhh
 						. 'MODDEFAULT' . $this->hhh]
-							= $this->getModDefault($module);
+							= $this->getModDefault($module, $module->key);
 						// only add install script if needed
 						if ($module->add_install_script)
 						{

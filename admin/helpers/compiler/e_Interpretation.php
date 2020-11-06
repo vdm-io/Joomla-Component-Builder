@@ -1178,11 +1178,11 @@ class Interpretation extends Fields
 				$updateXML[] = '</updates>';
 				// UPDATE_SERVER_XML
 				$name   = substr(
-						$this->componentData->update_server_url,
-						strrpos($this->componentData->update_server_url, '/')
-						+ 1
-					);
-				$name = explode('.xml', $name)[0];
+					$this->componentData->update_server_url,
+					strrpos($this->componentData->update_server_url, '/')
+					+ 1
+				);
+				$name   = explode('.xml', $name)[0];
 				$target = array('admin' => $name);
 				$this->buildDynamique($target, 'update_server');
 				$this->fileContentDynamic[$name][$this->hhh
@@ -1685,7 +1685,8 @@ class Interpretation extends Fields
 			$exel[] = $this->_t(2) . "));";
 			$exel[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Add some data";
-			$exel[] = $this->_t(2) . "if ((\$size = self::checkArray(\$rows)) !== false)";
+			$exel[] = $this->_t(2)
+				. "if ((\$size = self::checkArray(\$rows)) !== false)";
 			$exel[] = $this->_t(2) . "{";
 			$exel[] = $this->_t(3) . "\$i = 1;";
 			$exel[] = PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
@@ -1702,7 +1703,8 @@ class Interpretation extends Fields
 			$exel[] = $this->_t(3) . "}";
 			$exel[] = PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Set active sheet and get it.";
-			$exel[] = $this->_t(3) . "\$active_sheet = \$spreadsheet->setActiveSheetIndex(0);";
+			$exel[] = $this->_t(3)
+				. "\$active_sheet = \$spreadsheet->setActiveSheetIndex(0);";
 			$exel[] = $this->_t(3) . "foreach (\$rows as \$array)";
 			$exel[] = $this->_t(3) . "{";
 			$exel[] = $this->_t(4) . "\$a = 'A';";
@@ -1712,7 +1714,7 @@ class Interpretation extends Fields
 				. "\$active_sheet->setCellValue(\$a.\$i, \$value);";
 			$exel[] = $this->_t(5) . "if (\$xls_mode != 3)";
 			$exel[] = $this->_t(5) . "{";
-				$exel[] = $this->_t(6) . "if (\$i == 1)";
+			$exel[] = $this->_t(6) . "if (\$i == 1)";
 			$exel[] = $this->_t(6) . "{";
 			$exel[] = $this->_t(7)
 				. "\$active_sheet->getColumnDimension(\$a)->setAutoSize(true);";
@@ -1878,30 +1880,37 @@ class Interpretation extends Fields
 			$method[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
 			$method[] = $this->_t(1) . " * Greate user and update given table";
 			$method[] = $this->_t(1) . " *";
-			$method[] = $this->_t(1) . " * @param   array  \$credentials  Array('name' => string, 'username' => string, 'email' => string, 'password' => string, 'password2' => string)";
+			$method[] = $this->_t(1)
+				. " * @param   array  \$credentials  Array('name' => string, 'username' => string, 'email' => string, 'password' => string, 'password2' => string)";
 			$method[] = $this->_t(1) . " * @param   int    \$autologin";
-			$method[] = $this->_t(1) . " * @param   array  \$params  Array('useractivation' => int, 'sendpassword' => int, 'allowUserRegistration' => int)";
-			$method[] = $this->_t(1) . " * @param   array  \$mode 1 = Site Registrations; 0 = Admin Registration; 2 = Custom Helper Method Called registerUser";
+			$method[] = $this->_t(1)
+				. " * @param   array  \$params  Array('useractivation' => int, 'sendpassword' => int, 'allowUserRegistration' => int)";
+			$method[] = $this->_t(1)
+				. " * @param   array  \$mode 1 = Site Registrations; 0 = Admin Registration; 2 = Custom Helper Method Called registerUser";
 			$method[] = $this->_t(1) . " *";
-			$method[] = $this->_t(1) . " * @return  int|Error  User ID on success, or an error.";
+			$method[] = $this->_t(1)
+				. " * @return  int|Error  User ID on success, or an error.";
 			$method[] = $this->_t(1) . " */";
 			$method[] = $this->_t(1)
 				. "public static function createUser(\$credentials, \$autologin = 0,";
 			$method[] = $this->_t(2) . "\$params = array(";
-			$method[] = $this->_t(3) . "'useractivation' => 0, 'sendpassword' => 1";
+			$method[] = $this->_t(3)
+				. "'useractivation' => 0, 'sendpassword' => 1";
 			$method[] = $this->_t(2) . "), \$mode = 1";
 			$method[] = $this->_t(1) . ")";
 			$method[] = $this->_t(1) . "{";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Override mode";
-			$method[] = $this->_t(2) . "if (\$mode == 2 && method_exists(__CLASS__, 'registerUser'))";
+			$method[] = $this->_t(2)
+				. "if (\$mode == 2 && method_exists(__CLASS__, 'registerUser'))";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Update params";
 			$method[] = $this->_t(3) . "\$params['autologin'] = \$autologin;";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Now Register User";
-			$method[] = $this->_t(3) . "return self::registerUser(\$credentials, \$params);";
+			$method[] = $this->_t(3)
+				. "return self::registerUser(\$credentials, \$params);";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "elseif (\$mode == 2)";
 			$method[] = $this->_t(2) . "{";
@@ -1921,7 +1930,9 @@ class Interpretation extends Fields
 				. "\$lang->load(\$extension, \$base_dir, \$language_tag, \$reload);";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Load the correct user model.";
-			$method[] = $this->_t(2) . "if (\$mode == 1) //" . $this->setLine(__LINE__)
+			$method[] = $this->_t(2) . "if (\$mode == 1) //" . $this->setLine(
+					__LINE__
+				)
 				. " 1 = Site Registrations";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
@@ -1942,14 +1953,14 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2) . "if (self::checkArray(\$params))";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
-			. " Make changes to user config";
+				. " Make changes to user config";
 			$method[] = $this->_t(3)
 				. "foreach (\$params as \$param => \$set)";
 			$method[] = $this->_t(3) . "{";
 			$method[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
 				. " If you know of a better path, let me know";
 			$method[] = $this->_t(4)
-				."\$params[\$param] = self::setParams(\$extension, \$param, \$set);";
+				. "\$params[\$param] = self::setParams(\$extension, \$param, \$set);";
 			$method[] = $this->_t(3) . "}";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -1963,25 +1974,31 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Lineup new user data array";
 			$method[] = $this->_t(2) . "\$data = array(";
-			$method[] = $this->_t(3) . "'username' => \$credentials['username'],";
+			$method[] = $this->_t(3)
+				. "'username' => \$credentials['username'],";
 			$method[] = $this->_t(3) . "'name' => \$credentials['name'],";
 			$method[] = $this->_t(3) . "'block' => 0 );";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Added details based on mode";
-			$method[] = $this->_t(2) . "if (\$mode == 1) //". $this->setLine(__LINE__)
+			$method[] = $this->_t(2) . "if (\$mode == 1) //" . $this->setLine(
+					__LINE__
+				)
 				. " 1 = Site-registration mode";
 			$method[] = $this->_t(2) . "{";
-			$method[] = $this->_t(3) . "\$data['email1'] = \$credentials['email'];";
+			$method[] = $this->_t(3)
+				. "\$data['email1'] = \$credentials['email'];";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "else //" . $this->setLine(__LINE__)
 				. " 0 = Admin-registration mode";
 			$method[] = $this->_t(2) . "{";
-			$method[] = $this->_t(3) . "\$data['email'] = \$credentials['email'];";
-			$method[] = $this->_t(3) . "\$data['registerDate'] = JFactory::getDate()->toSql();";
+			$method[] = $this->_t(3)
+				. "\$data['email'] = \$credentials['email'];";
+			$method[] = $this->_t(3)
+				. "\$data['registerDate'] = JFactory::getDate()->toSql();";
 			$method[] = $this->_t(2) . "}";
 
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-			. " Check if password was set";
+				. " Check if password was set";
 			$method[] = $this->_t(2)
 				. "if (\$mode == 1 && (!isset(\$credentials['password']) || !isset(\$credentials['password2']) || !self::checkString(\$credentials['password']) || !self::checkString(\$credentials['password2'])))";
 			$method[] = $this->_t(2) . "{";
@@ -1989,8 +2006,10 @@ class Interpretation extends Fields
 				. " Set random password when empty password was submitted,";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " when using the 1 = site-registration mode";
-			$method[] = $this->_t(3) . "\$credentials['password'] = self::randomkey(8);";
-			$method[] = $this->_t(3) . "\$credentials['password2'] = \$credentials['password'];";
+			$method[] = $this->_t(3)
+				. "\$credentials['password'] = self::randomkey(8);";
+			$method[] = $this->_t(3)
+				. "\$credentials['password2'] = \$credentials['password'];";
 			$method[] = $this->_t(2) . "}";
 
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -1998,17 +2017,22 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2)
 				. "if (isset(\$credentials['password']) && isset(\$credentials['password2'])  && self::checkString(\$credentials['password']) && self::checkString(\$credentials['password2']))";
 			$method[] = $this->_t(2) . "{";
-			$method[] = $this->_t(3) . "if (\$mode == 1) //". $this->setLine(__LINE__)
+			$method[] = $this->_t(3) . "if (\$mode == 1) //" . $this->setLine(
+					__LINE__
+				)
 				. " 1 = Site-registration mode";
 			$method[] = $this->_t(3) . "{";
-			$method[] = $this->_t(4) . "\$data['password1'] = \$credentials['password'];";
+			$method[] = $this->_t(4)
+				. "\$data['password1'] = \$credentials['password'];";
 			$method[] = $this->_t(3) . "}";
 			$method[] = $this->_t(3) . "else //" . $this->setLine(__LINE__)
 				. " 0 = Admin-registration mode";
 			$method[] = $this->_t(3) . "{";
-			$method[] = $this->_t(4) . "\$data['password'] = \$credentials['password'];";
+			$method[] = $this->_t(4)
+				. "\$data['password'] = \$credentials['password'];";
 			$method[] = $this->_t(3) . "}";
-			$method[] = $this->_t(3) . "\$data['password2'] = \$credentials['password2'];";
+			$method[] = $this->_t(3)
+				. "\$data['password2'] = \$credentials['password2'];";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Load the group/s value if set, only for Admin Registration (\$mode == 0)";
@@ -2020,7 +2044,9 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Create the new user";
-			$method[] = $this->_t(2) . "if (\$mode == 1) //". $this->setLine(__LINE__)
+			$method[] = $this->_t(2) . "if (\$mode == 1) //" . $this->setLine(
+					__LINE__
+				)
 				. " 1 = Site-registration mode";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3) . "\$userId = \$model->register(\$data);";
@@ -2029,7 +2055,8 @@ class Interpretation extends Fields
 				. " 0 = Admin-registration mode";
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3) . "\$model->save(\$data);";
-			$method[] = $this->_t(3) . "\$userId = \$model->getState('user.id', 0);";
+			$method[] = $this->_t(3)
+				. "\$userId = \$model->getState('user.id', 0);";
 			$method[] = $this->_t(2) . "}";
 
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -2044,7 +2071,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
 				. " If you know of a better path, let me know";
 			$method[] = $this->_t(4)
-				."self::setParams(\$extension, \$param, \$set);";
+				. "self::setParams(\$extension, \$param, \$set);";
 			$method[] = $this->_t(3) . "}";
 			$method[] = $this->_t(2) . "}";
 			$method[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -2053,12 +2080,14 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2) . "{";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Auto Login if Needed";
-			$method[] = $this->_t(3) . "if (\$autologin && isset(\$credentials['password']))";
+			$method[] = $this->_t(3)
+				. "if (\$autologin && isset(\$credentials['password']))";
 			$method[] = $this->_t(3) . "{";
 			$method[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
 				. " Try to login";
 			$method[] = $this->_t(4) . "try{";
-			$method[] = $this->_t(5) . "JFactory::getApplication()->login(\$credentials);";
+			$method[] = $this->_t(5)
+				. "JFactory::getApplication()->login(\$credentials);";
 			$method[] = $this->_t(4) . "} catch (Exception \$exception){";
 			$method[] = $this->_t(5) . "//" . $this->setLine(__LINE__)
 				. " Do noting for now, may want to set redirect.";
@@ -5078,19 +5107,21 @@ class Interpretation extends Fields
 				as $order_field
 			)
 			{
-				if ($order_first && ($order_field_name = $this->getFieldDatabaseName(
+				if ($order_first
+					&& ($order_field_name = $this->getFieldDatabaseName(
 						$viewName_list, $order_field['field']
 					)) !== false)
 				{
 					// just the first field is based on state
 					$order_first = false;
-					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(
+					$script      .= PHP_EOL . $this->_t(2) . "//"
+						. $this->setLine(
 							__LINE__
 						) . " Add the list ordering clause.";
-					$script .= PHP_EOL . $this->_t(2)
+					$script      .= PHP_EOL . $this->_t(2)
 						. "\$this->listOrder = \$this->escape(\$this->state->get('list.ordering', '"
 						. $order_field_name . "'));";
-					$script .= PHP_EOL . $this->_t(2)
+					$script      .= PHP_EOL . $this->_t(2)
 						. "\$this->listDirn = \$this->escape(\$this->state->get('list.direction', '"
 						. $order_field['direction'] . "'));";
 				}
@@ -5107,6 +5138,7 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . $this->_t(2)
 				. "\$this->listDirn = \$this->escape(\$this->state->get('list.direction', 'asc'));";
 		}
+
 		return $script;
 	}
 
@@ -5670,7 +5702,8 @@ class Interpretation extends Fields
 							. "JToolBarHelper::custom('" . $viewName . "."
 							. $custom_button['method'] . "', '"
 							. $custom_button['icomoon'] . " custom-button-"
-							. strtolower($custom_button['method']) . "', '', '" . $keyLang
+							. strtolower($custom_button['method']) . "', '', '"
+							. $keyLang
 							. "', false);";
 						$buttons[] = $this->_t(1) . $tab . $this->_t(1) . "}";
 					}
@@ -5705,7 +5738,8 @@ class Interpretation extends Fields
 								. "JToolBarHelper::custom('" . $viewsName . "."
 								. $custom_button['method'] . "', '"
 								. $custom_button['icomoon'] . " custom-button-"
-								. strtolower($custom_button['method']) . "', '', '"
+								. strtolower($custom_button['method'])
+								. "', '', '"
 								. $keyLang . "', false);";
 							$this->onlyFunctionButton[$viewsName][] = $this->_t(
 									1
@@ -5726,7 +5760,8 @@ class Interpretation extends Fields
 								. "JToolBarHelper::custom('" . $viewsName . "."
 								. $custom_button['method'] . "', '"
 								. $custom_button['icomoon'] . " custom-button-"
-								. strtolower($custom_button['method']) . "', '', '"
+								. strtolower($custom_button['method'])
+								. "', '', '"
 								. $keyLang . "', '" . $validateSelection
 								. "');";
 							$buttons[] = $this->_t(1) . $tab . $this->_t(1)
@@ -5812,9 +5847,11 @@ class Interpretation extends Fields
 		if (ComponentbuilderHelper::checkArray($buttons))
 		{
 			// just to check if the submission script is manually added
-			if (!isset($view['settings']->php_document) ||
-					strpos(implode(' ', $view['settings']->php_document),
-						'/submitbutton.js') === false)
+			if (!isset($view['settings']->php_document)
+				|| strpos(
+					implode(' ', $view['settings']->php_document),
+					'/submitbutton.js'
+				) === false)
 			{
 				// set the custom get form method  JAVASCRIPT_FOR_BUTTONS
 				$this->fileContentDynamic[$view['settings']->code][$this->hhh
@@ -6956,7 +6993,8 @@ class Interpretation extends Fields
 				// add pagination start
 				if (!$has_pagination_start)
 				{
-					$body[] = $this->placeholders[$this->bbb . 'PAGINATIONSTART' . $this->ddd];
+					$body[] = $this->placeholders[$this->bbb . 'PAGINATIONSTART'
+					. $this->ddd];
 				}
 
 				if (!$has_limitbox && !$has_pagescounter)
@@ -6977,14 +7015,28 @@ class Interpretation extends Fields
 				// add pagination end
 				if (!$has_pagination_end)
 				{
-					$body[] = $this->placeholders[$this->bbb . 'PAGINATIONEND' . $this->ddd];
+					$body[] = $this->placeholders[$this->bbb . 'PAGINATIONEND'
+					. $this->ddd];
 				}
 				// lets clear the placeholders just in case
-				unset($this->placeholders[$this->bbb . 'LIMITBOX' . $this->ddd]);
-				unset($this->placeholders[$this->bbb . 'PAGESCOUNTER' . $this->ddd]);
-				unset($this->placeholders[$this->bbb . 'PAGESLINKS' . $this->ddd]);
-				unset($this->placeholders[$this->bbb . 'PAGINATIONSTART' . $this->ddd]);
-				unset($this->placeholders[$this->bbb . 'PAGINATIONEND' . $this->ddd]);
+				unset(
+					$this->placeholders[$this->bbb . 'LIMITBOX' . $this->ddd]
+				);
+				unset(
+					$this->placeholders[$this->bbb . 'PAGESCOUNTER'
+					. $this->ddd]
+				);
+				unset(
+					$this->placeholders[$this->bbb . 'PAGESLINKS' . $this->ddd]
+				);
+				unset(
+					$this->placeholders[$this->bbb . 'PAGINATIONSTART'
+					. $this->ddd]
+				);
+				unset(
+					$this->placeholders[$this->bbb . 'PAGINATIONEND'
+					. $this->ddd]
+				);
 				// insure the form is added (only if no form exist)
 				if (strpos($view['settings']->default, '<form') === false)
 				{
@@ -8711,7 +8763,8 @@ class Interpretation extends Fields
 		$array['type_title'] = $Component . ' ' . $View . ' '
 			. ComponentbuilderHelper::safeString($category, 'F');
 		// set the alias
-		$array['type_alias'] = 'com_' . $component . '.' . $otherView . '.category';
+		$array['type_alias'] = 'com_' . $component . '.' . $otherView
+			. '.category';
 		// set the table
 		$array['table']
 			= '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
@@ -10077,7 +10130,8 @@ class Interpretation extends Fields
 					elseif ($default === 'DATETIME'
 						|| $default === 'CURRENT_TIMESTAMP')
 					{
-						$default = $data['null_switch'] . ' DEFAULT ' . $default;
+						$default = $data['null_switch'] . ' DEFAULT '
+							. $default;
 					}
 					elseif ($default == 0 || $default)
 					{
@@ -11738,6 +11792,7 @@ class Interpretation extends Fields
 		{
 			// get the other view
 			$otherView = $this->catCodeBuilder[$viewName_single]['view'];
+
 			// return the authority to category
 			return $user . "->authorise('core.edit', 'com_"
 				. $this->componentCodeName . "." . $otherView
@@ -12866,7 +12921,8 @@ class Interpretation extends Fields
 				else
 				{
 					// set permissions.
-					$publishingPerOR[] = "\$this->canDo->get('" . $core_permission
+					$publishingPerOR[] = "\$this->canDo->get('"
+						. $core_permission
 						. "')";
 				}
 			}
@@ -12891,7 +12947,8 @@ class Interpretation extends Fields
 				else
 				{
 					// set permissions.
-					$publishingPerAND[] = "\$this->canDo->get('" . $core_permission
+					$publishingPerAND[] = "\$this->canDo->get('"
+						. $core_permission
 						. "')";
 				}
 			}
@@ -13519,7 +13576,7 @@ class Interpretation extends Fields
 				}
 			}
 			$data_value = (3 == $this->footableVersion) ? 'data-sort-value'
-					: 'data-value';
+				: 'data-value';
 
 			// add the defaults
 			if (!isset($this->fieldsNames[$viewName_single]['published']))
@@ -13807,13 +13864,16 @@ class Interpretation extends Fields
 			// add the defaults
 			if (!isset($this->fieldsNames[$viewName_single]['id']))
 			{
-				$data_type = (2 == $this->footableVersion) ? 'data-type="numeric"'
+				$data_type = (2 == $this->footableVersion)
+					? 'data-type="numeric"'
 					: 'data-type="number"';
-				$head .= PHP_EOL . $this->_t(2) . '<th width="5" ' . $data_type
+				$head      .= PHP_EOL . $this->_t(2) . '<th width="5" '
+					. $data_type
 					. ' ' . $data_hide . '>';
-				$head .= PHP_EOL . $this->_t(3) . "<?php echo JText:" . ":_('"
+				$head      .= PHP_EOL . $this->_t(3) . "<?php echo JText:"
+					. ":_('"
 					. $idLangName . "'); ?>";
-				$head .= PHP_EOL . $this->_t(2) . "</th>";
+				$head      .= PHP_EOL . $this->_t(2) . "</th>";
 			}
 			$head .= PHP_EOL . $this->_t(1) . "</tr>";
 			$head .= PHP_EOL . "</thead>";
@@ -14032,8 +14092,8 @@ class Interpretation extends Fields
 			{
 				if (($order_field_name = $this->getFieldDatabaseName(
 						$viewName_list, $order_field['field']
-						// We Removed This 'listJoinBuilder' as targetArea
-						// we will keep an eye on this
+					// We Removed This 'listJoinBuilder' as targetArea
+					// we will keep an eye on this
 					)) !== false)
 				{
 					// default ordering is by publish and ordering
@@ -14043,7 +14103,8 @@ class Interpretation extends Fields
 						) . " Order the results by ordering";
 					$query .= PHP_EOL . $this->_t(2)
 						. "\$query->order('"
-						. $order_field_name . " " . $order_field['direction'] . "');";
+						. $order_field_name . " " . $order_field['direction']
+						. "');";
 				}
 			}
 		}
@@ -14500,7 +14561,8 @@ class Interpretation extends Fields
 				. " setup the query";
 			$query .= PHP_EOL . $this->_t(2) . "if ((\$pks_size = "
 				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh] . "Helper::checkArray(\$pks)) !== false || 'bulk' === \$pks)";
+				. $this->hhh]
+				. "Helper::checkArray(\$pks)) !== false || 'bulk' === \$pks)";
 			$query .= PHP_EOL . $this->_t(2) . "{";
 			$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Set a value to know this is " . $config['type']
@@ -15241,13 +15303,14 @@ class Interpretation extends Fields
 	 * @return  string
 	 *
 	 */
-	protected function getFieldDatabaseName($viewName_list, int $fieldId, $targetArea = 'listBuilder')
-	{
+	protected function getFieldDatabaseName($viewName_list, int $fieldId,
+		$targetArea = 'listBuilder'
+	) {
 		if (isset($this->{$targetArea}[$viewName_list]))
 		{
 			if ($fieldId < 0)
 			{
-				switch($fieldId)
+				switch ($fieldId)
 				{
 					case -1:
 						return 'a.id';
@@ -15281,6 +15344,7 @@ class Interpretation extends Fields
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -16932,7 +16996,8 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . $this->_t(1) . "{";
 			$fix .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " check if the not_required field is set";
-			$fix .= PHP_EOL . $this->_t(2) . "if (isset(\$data['not_required']) && " . $Component
+			$fix .= PHP_EOL . $this->_t(2)
+				. "if (isset(\$data['not_required']) && " . $Component
 				. "Helper::checkString(\$data['not_required']))";
 			$fix .= PHP_EOL . $this->_t(2) . "{";
 			$fix .= PHP_EOL . $this->_t(3)
@@ -20939,7 +21004,7 @@ class Interpretation extends Fields
 	{
 		// set the defaults
 		$headers = array();
-		switch($context)
+		switch ($context)
 		{
 			case 'admin.view.model':
 			case 'site.admin.view.model':
@@ -20957,6 +21022,7 @@ class Interpretation extends Fields
 			array(&$this->componentContext, &$context, &$viewName,
 			      &$headers)
 		);
+
 		// return the headers
 		return implode(PHP_EOL, $headers);
 	}
@@ -21317,8 +21383,10 @@ class Interpretation extends Fields
 					if (!in_array($otherViews, $catArray))
 					{
 						// set the extension key string, new convention (more stable)
-						$_key_extension = str_replace('.', '_po0O0oq_',
-							$this->categoryBuilder[$name_list]['extension']);
+						$_key_extension = str_replace(
+							'.', '_po0O0oq_',
+							$this->categoryBuilder[$name_list]['extension']
+						);
 
 						// add to lang
 						$langKey = $this->langPrefix . '_DASHBOARD_'
@@ -21352,7 +21420,8 @@ class Interpretation extends Fields
 						else
 						{
 							$icons .= ", '" . $type . $otherViews . "."
-								. $catCode . '_qpo0O0oqp_' . $_key_extension . "'";
+								. $catCode . '_qpo0O0oqp_' . $_key_extension
+								. "'";
 						}
 						$counter++;
 						// make sure we add a category only once
@@ -26378,10 +26447,26 @@ function vdm_dkim() {
 		return $_helper . PHP_EOL . $code . PHP_EOL;
 	}
 
-	public function getModDefault(&$module)
+	public function getModDefault(&$module, &$key)
 	{
-		return PHP_EOL . $module->default_header . PHP_EOL . '?>' . PHP_EOL
-			. $module->default . PHP_EOL;
+		// first add the header
+		$default = PHP_EOL . $module->default_header . PHP_EOL . '?>';
+		// add any css from the fields
+		$default .= $this->getCustomScriptBuilder(
+			'css_view', $key, PHP_EOL . '<style>' . PHP_EOL, '', true, null,
+			PHP_EOL . '</style>' . PHP_EOL
+		);
+		// now add the body
+		$default .= PHP_EOL . $module->default . PHP_EOL;
+		// add any JavaScript from the fields
+		$default .= $this->getCustomScriptBuilder(
+			'view_footer', $key,
+			PHP_EOL . '<script type="text/javascript">' . PHP_EOL, '', true,
+			null, PHP_EOL . '</script>' . PHP_EOL
+		);
+
+		// return the default content for the model default area
+		return $default;
 	}
 
 	public function getModHelperCode(&$module)
@@ -26744,10 +26829,12 @@ function vdm_dkim() {
 						if ($module->target == 2)
 						{
 							$xml .= PHP_EOL . $this->_t(2)
-								. 'addrulepath="/administrator/modules/' . $module->file_name
+								. 'addrulepath="/administrator/modules/'
+								. $module->file_name
 								. '/rules"';
 							$xml .= PHP_EOL . $this->_t(2)
-								. 'addfieldpath="/administrator/modules/' . $module->file_name
+								. 'addfieldpath="/administrator/modules/'
+								. $module->file_name
 								. '/fields"';
 						}
 						else
