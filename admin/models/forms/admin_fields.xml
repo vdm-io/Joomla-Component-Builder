@@ -196,16 +196,24 @@
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_SEARCH_DESCRIPTION"
 					class="inputbox"
 				/>
-				<!-- Filter Field. Type: Checkbox. (joomla) -->
+				<!-- Filter Field. Type: List. (joomla) -->
 				<field
-					type="checkbox"
+					type="list"
 					name="filter"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_FILTER_LABEL"
-					value="1"
-					default=""
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_FILTER_DESCRIPTION"
-					class="inputbox"
-				/>
+					class="fieldSmall"
+					multiple="false"
+					default=""
+					onchange="explainFilterBehaviour(this)">
+					<!-- Option Set. -->
+					<option value="">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_NO</option>
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_YES_SINGLE</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_YES_MULTI</option>
+				</field>
 				<!-- Link Field. Type: Checkbox. (joomla) -->
 				<field
 					type="checkbox"

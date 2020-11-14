@@ -26453,14 +26453,14 @@ function vdm_dkim() {
 		$default = PHP_EOL . $module->default_header . PHP_EOL . '?>';
 		// add any css from the fields
 		$default .= $this->getCustomScriptBuilder(
-			'css_view', $key, PHP_EOL . '<style>' . PHP_EOL, '', true, null,
+			'css_views', $key, PHP_EOL . '<style>' . PHP_EOL, '', true, null,
 			PHP_EOL . '</style>' . PHP_EOL
 		);
 		// now add the body
 		$default .= PHP_EOL . $module->default . PHP_EOL;
 		// add any JavaScript from the fields
 		$default .= $this->getCustomScriptBuilder(
-			'view_footer', $key,
+			'views_footer', $key,
 			PHP_EOL . '<script type="text/javascript">' . PHP_EOL, '', true,
 			null, PHP_EOL . '</script>' . PHP_EOL
 		);

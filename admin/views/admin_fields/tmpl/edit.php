@@ -129,11 +129,11 @@ function checkAdminBehaviour(field) {
 		}
 		// do some house cleaning
 		jQuery('#'+subID+'__order_list').val(0).trigger('liszt:updated');
+		jQuery('#'+subID+'__filter').val('').trigger('liszt:updated');
 		jQuery('#'+subID+'__title').prop('checked', false).trigger('change');
 		jQuery('#'+subID+'__alias').prop('checked', false).trigger('change');
 		jQuery('#'+subID+'__sort').prop('checked', false).trigger('change');
 		jQuery('#'+subID+'__search').prop('checked', false).trigger('change');
-		jQuery('#'+subID+'__filter').prop('checked', false).trigger('change');
 		jQuery('#'+subID+'__link').prop('checked', false).trigger('change');
 	} else if (1 == value || 3 == value  || 4 == value) {
 		// get number of items
@@ -159,8 +159,8 @@ function checkAdminBehaviour(field) {
 	} else {
 		// do some house cleaning
 		jQuery('#'+subID+'__order_list').val(0).trigger('liszt:updated');
+		jQuery('#'+subID+'__filter').val('').trigger('liszt:updated');
 		jQuery('#'+subID+'__sort').prop('checked', false).trigger('change');
-		jQuery('#'+subID+'__filter').prop('checked', false).trigger('change');
 		jQuery('#'+subID+'__link').prop('checked', false).trigger('change');
 	}
 }
@@ -275,6 +275,21 @@ function checkAlias(field) {
 				jQuery("#"+id_check).prop('checked', false).trigger('change');
 			}
 		}
+	}
+}
+// little script to check value and give notice
+function explainFilterBehaviour(field) {
+	// get the ID
+	let id = jQuery(field).attr('id');
+	// get value
+	let value = jQuery('#'+id).val();
+	// set notice and do house cleaning
+	if (2 == value) {
+		// means multi option can be selected in the filter, this is just available with the new filters
+		jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_THE_BMULTI_FILTERB_SELECTION_OPTION_ALLOWS_THE_USER_TO_SELECT_MORE_THEN_ONE_VALUE_IN_THIS_FILTERFIELD_PLEASE_NOTE_THAT_THIS_OPTION_BONLY_WORKSB_WITH_THE_BNEWB_FILTERS_THAT_LOAD_ABOVE_THE_ADMIN_LIST_VIEW_YOU_CAN_SELECT_THE_NEW_FILTER_OPTION_WHENWHERE_YOU_ADD_THE_VIEW_TO_THE_COMPONENT'), timeout: 10000, status: 'primary', pos: 'top-right'});
+	} else if (1 == value) {
+		// means single option can be selected in the filter
+		jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_THE_BSINGLE_FILTERB_SELECTION_OPTION_ALLOWS_THE_USER_TO_SELECT_JUST_ONE_VALUE_IN_THIS_FILTERFIELD'), timeout: 5000, status: 'primary', pos: 'top-right'});
 	}
 }
 </script>

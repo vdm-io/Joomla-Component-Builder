@@ -106,7 +106,7 @@
 			layout="repeatablejcb"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ADDADMIN_VIEWS_DESCRIPTION"
-			default="[{&quot;submenu&quot;:&quot;1&quot;,&quot;checkin&quot;:&quot;1&quot;,&quot;history&quot;:&quot;1&quot;,&quot;access&quot;:&quot;1&quot;,&quot;port&quot;:&quot;1&quot;}]"
+			default="[{&quot;submenu&quot;:&quot;1&quot;,&quot;checkin&quot;:&quot;1&quot;,&quot;history&quot;:&quot;1&quot;,&quot;access&quot;:&quot;1&quot;,&quot;port&quot;:&quot;1&quot;,&quot;filter&quot;:&quot;1&quot;}]"
 			icon="list"
 			min="1">
 			<form hidden="true" name="list_addadmin_views_modal" repeat="true">
@@ -653,13 +653,28 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_PORT_DESCRIPTION"
 					class="inputbox"
 				/>
+				<!-- Filter Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="filter"
+					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_FILTER_LABEL"
+					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_FILTER_DESCRIPTION"
+					class="fieldMedium"
+					multiple="false"
+					default="1">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_SIDE_OLD</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ABOVE_NEW</option>
+				</field>
 				<!-- Edit_create_site_view Field. Type: List. (joomla) -->
 				<field
 					type="list"
 					name="edit_create_site_view"
 					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_EDIT_CREATE_SITE_VIEW_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_EDIT_CREATE_SITE_VIEW_DESCRIPTION"
-					class="list_class fieldMedium"
+					class="fieldMedium"
 					multiple="false">
 					<!-- Option Set. -->
 					<option value="">

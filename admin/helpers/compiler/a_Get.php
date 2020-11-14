@@ -6420,7 +6420,6 @@ class Get
 				}
 			}
 		}
-
 		return false;
 	}
 
