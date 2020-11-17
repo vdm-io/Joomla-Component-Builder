@@ -454,6 +454,13 @@ class Get
 	public $siteEditView = array();
 
 	/**
+	 * The admin list view filter type
+	 *
+	 * @var     array
+	 */
+	public $adminFilterType = array();
+
+	/**
 	 * The Language target
 	 *
 	 * @var     string
@@ -1477,16 +1484,19 @@ class Get
 						$this->siteEditView[$array['adminview']] = true;
 						$this->lang                              = 'both';
 					}
+					// set the import/export option for this view
 					if (isset($array['port']) && $array['port']
 						&& !$this->addEximport)
 					{
 						$this->addEximport = true;
 					}
+					// set the history tracking option for this view
 					if (isset($array['history']) && $array['history']
 						&& !$this->setTagHistory)
 					{
 						$this->setTagHistory = true;
 					}
+					// set the custom field integration for this view
 					if (isset($array['joomla_fields'])
 						&& $array['joomla_fields']
 						&& !$this->setJoomlaFields)
@@ -1499,7 +1509,16 @@ class Get
 					$array['settings'] = $this->getAdminViewData(
 						$array['view']
 					);
-
+					// set the filter option for this view
+					$this->adminFilterType[$array['settings']->name_list_code] = 1; // Side (old) [default for now]
+					if (isset($array['filter'])
+						&& is_numeric(
+							$array['filter']
+						)
+						&& $array['filter'] > 0)
+					{
+						$this->adminFilterType[$array['settings']->name_list_code] = (int) $array['filter'];
+					}
 					return $array;
 				}, array_values($component->addadmin_views)
 			);
@@ -2175,13 +2194,25 @@ class Get
 			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
 			$view = $this->db->loadObject();
 
-			// setup view name to use in storing the data
-			$name_single = ComponentbuilderHelper::safeString(
-				$view->name_single
-			);
-			$name_list   = ComponentbuilderHelper::safeString($view->name_list);
+			// setup single view code names to use in storing the data
+			$view->name_single_code = 'oops_hmm_' . $id;
+			if (isset($view->name_single) && $view->name_single != 'null')
+			{
+				$view->name_single_code = ComponentbuilderHelper::safeString(
+					$view->name_single
+				);
+			}
 
-			// set upater
+			// setup list view code name to use in storing the data
+			$view->name_list_code = 'oops_hmmm_' . $id;
+			if (isset($view->name_list) && $view->name_list != 'null')
+			{
+				$view->name_list_code = ComponentbuilderHelper::safeString(
+					$view->name_list
+				);
+			}
+
+			// set updater
 			$updater = array(
 				'unique' => array(
 					'addfields'     => array('table' => 'admin_fields',
@@ -2217,32 +2248,28 @@ class Get
 			{
 				$this->customScriptBuilder['token'] = array();
 			}
-			$this->customScriptBuilder['token'][$name_single] = false;
-			$this->customScriptBuilder['token'][$name_list]   = false;
+			$this->customScriptBuilder['token'][$view->name_single_code] = false;
+			$this->customScriptBuilder['token'][$view->name_list_code]   = false;
 			// set some placeholders
 			$this->placeholders[$this->hhh . 'view' . $this->hhh]
-				= ComponentbuilderHelper::safeString(
-				$name_single
-			);
+				= $view->name_single_code;
 			$this->placeholders[$this->hhh . 'views' . $this->hhh]
-				= ComponentbuilderHelper::safeString(
-				$name_list
-			);
+				= $view->name_list_code;
 			$this->placeholders[$this->hhh . 'View' . $this->hhh]
 				= ComponentbuilderHelper::safeString(
-				$name_single, 'F'
+				$view->name_single, 'F'
 			);
 			$this->placeholders[$this->hhh . 'Views' . $this->hhh]
 				= ComponentbuilderHelper::safeString(
-				$name_list, 'F'
+				$view->name_list, 'F'
 			);
 			$this->placeholders[$this->hhh . 'VIEW' . $this->hhh]
 				= ComponentbuilderHelper::safeString(
-				$name_single, 'U'
+				$view->name_single, 'U'
 			);
 			$this->placeholders[$this->hhh . 'VIEWS' . $this->hhh]
 				= ComponentbuilderHelper::safeString(
-				$name_list, 'U'
+				$view->name_list, 'U'
 			);
 			$this->placeholders[$this->bbb . 'view' . $this->ddd]
 				= $this->placeholders[$this->hhh . 'view' . $this->hhh];
@@ -2274,17 +2301,17 @@ class Get
 			unset($view->addtables);
 
 			// set custom tabs
-			$this->customTabs[$name_single] = null;
+			$this->customTabs[$view->name_single_code] = null;
 			$view->customtabs               = (isset($view->customtabs)
 				&& ComponentbuilderHelper::checkJson($view->customtabs))
 				? json_decode($view->customtabs, true) : null;
 			if (ComponentbuilderHelper::checkArray($view->customtabs))
 			{
 				// setup custom tabs to global data sets
-				$this->customTabs[$name_single] = array_map(
-					function ($tab) use ($name_single) {
+				$this->customTabs[$view->name_single_code] = array_map(
+					function ($tab) use (&$view) {
 						// set the view name
-						$tab['view'] = $name_single;
+						$tab['view'] = $view->name_single_code;
 						// load the dynamic data
 						$tab['html'] = $this->setPlaceholders(
 							$this->setDynamicValues($tab['html']),
@@ -2445,11 +2472,11 @@ class Get
 				// load the field data
 				$view->fields = array_map(
 					function ($field) use (
-						$name_single, $name_list, &$ignoreFields
+						&$view, &$ignoreFields
 					) {
 						// set the field details
 						$this->setFieldDetails(
-							$field, $name_single, $name_list
+							$field, $view->name_single_code, $view->name_list_code
 						);
 						// check if this field is a default field OR
 						// check if this is none database related field
@@ -2480,7 +2507,7 @@ class Get
 					{
 						$this->setUpdateSQL(
 							json_decode($old_view->addfields, true),
-							$view->addfields, 'field', $name_single,
+							$view->addfields, 'field', $view->name_single_code,
 							$ignoreFields
 						);
 					}
@@ -2515,7 +2542,7 @@ class Get
 				foreach ($view->fields as $field)
 				{
 					// so first we lock the field name in
-					$field_name = $this->getFieldName($field, $name_list);
+					$field_name = $this->getFieldName($field, $view->name_list_code);
 					// check if the field changed since the last compilation (default fields never change and are always added)
 					if (!isset($ignoreFields[$field['field']])
 						&& ComponentbuilderHelper::checkObject(
@@ -2528,7 +2555,7 @@ class Get
 							$this->setUpdateSQL(
 								$field['settings']->history->datatype,
 								$field['settings']->datatype, 'field.datatype',
-								$name_single . '.' . $field_name
+								$view->name_single_code . '.' . $field_name
 							);
 						}
 						// check if the datatype lenght changed
@@ -2540,7 +2567,7 @@ class Get
 								. $field['settings']->history->datalenght_other,
 								$field['settings']->datalenght
 								. $field['settings']->datalenght_other,
-								'field.lenght', $name_single . '.' . $field_name
+								'field.lenght', $view->name_single_code . '.' . $field_name
 							);
 						}
 						// check if the name changed
@@ -2578,13 +2605,13 @@ class Get
 								);
 
 								// only run this if not a multi field
-								if (!isset($this->uniqueNames[$name_list]['names'][$field_name]))
+								if (!isset($this->uniqueNames[$view->name_list_code]['names'][$field_name]))
 								{
 									// this only works when the field is not multiple of the same field
 									$this->setUpdateSQL(
 										$old_field_name, $field_name,
 										'field.name',
-										$name_single . '.' . $field_name
+										$view->name_single_code . '.' . $field_name
 									);
 								}
 								elseif ($old_field_name !== $field_name)
@@ -2597,7 +2624,7 @@ class Get
 									$this->app->enqueueMessage(
 										JText::sprintf(
 											'You have a field called <b>%s</b> that has been added multiple times to the <b>%s</b> view, the name of that field has changed to <b>%s</b>. Normaly we would automaticly add the update SQL to your component, but with multiple fields this does not work automaticly since it could be that noting changed and it just seems like it did. Therefore you will have to do this manualy if it actualy did change!',
-											$field_name, $name_single,
+											$field_name, $view->name_single_code,
 											$old_field_name
 										), 'Notice'
 									);
@@ -2619,7 +2646,7 @@ class Get
 					$this->setUpdateSQL(
 						ComponentbuilderHelper::safeString(
 							$old_view->name_single
-						), $name_single, 'table_name', $name_single
+						), $view->name_single_code, 'table_name', $view->name_single_code
 					);
 				}
 				// loop the mysql table settings
@@ -2634,7 +2661,7 @@ class Get
 						$this->setUpdateSQL(
 							$old_view->{'mysql_table_' . $_mysqlTableKey},
 							$view->{'mysql_table_' . $_mysqlTableKey},
-							'table_' . $_mysqlTableKey, $name_single
+							'table_' . $_mysqlTableKey, $view->name_single_code
 						);
 					}
 					// check if there is no history on table engine, and it changed from the default/global
@@ -2649,7 +2676,7 @@ class Get
 						$this->setUpdateSQL(
 							$_mysqlTableVal['default'],
 							$view->{'mysql_table_' . $_mysqlTableKey},
-							'table_' . $_mysqlTableKey, $name_single
+							'table_' . $_mysqlTableKey, $view->name_single_code
 						);
 					}
 				}
@@ -2702,7 +2729,7 @@ class Get
 									$conditionValue['target_field'][$fieldKey]
 										= array(
 										'name'     => $this->getFieldName(
-											$fieldValues, $name_list
+											$fieldValues, $view->name_list_code
 										),
 										'type'     => $this->getFieldType(
 											$fieldValues
@@ -2730,7 +2757,7 @@ class Get
 								// set the field details
 								$conditionValue['match_name']
 									                          = $this->getFieldName(
-									$fieldValue, $name_list
+									$fieldValue, $view->name_list_code
 								);
 								$conditionValue['match_type'] = $type;
 								$conditionValue['match_xml']
@@ -2760,9 +2787,9 @@ class Get
 			unset($view->addconditions);
 
 			// prep the buckets
-			$this->fieldRelations[$name_list]   = array();
-			$this->listJoinBuilder[$name_list]  = array();
-			$this->listHeadOverRide[$name_list] = array();
+			$this->fieldRelations[$view->name_list_code]   = array();
+			$this->listJoinBuilder[$view->name_list_code]  = array();
+			$this->listHeadOverRide[$view->name_list_code] = array();
 			// set the relations
 			$view->addrelations = (isset($view->addrelations)
 				&& ComponentbuilderHelper::checkJson($view->addrelations))
@@ -2792,16 +2819,16 @@ class Get
 							);
 						}
 						// check that the arrays are set
-						if (!isset($this->fieldRelations[$name_list][(int) $relationsValue['listfield']])
+						if (!isset($this->fieldRelations[$view->name_list_code][(int) $relationsValue['listfield']])
 							|| !ComponentbuilderHelper::checkArray(
-								$this->fieldRelations[$name_list][(int) $relationsValue['listfield']]
+								$this->fieldRelations[$view->name_list_code][(int) $relationsValue['listfield']]
 							))
 						{
-							$this->fieldRelations[$name_list][(int) $relationsValue['listfield']]
+							$this->fieldRelations[$view->name_list_code][(int) $relationsValue['listfield']]
 								= array();
 						}
 						// load the field relations
-						$this->fieldRelations[$name_list][(int) $relationsValue['listfield']][(int) $relationsValue['area']]
+						$this->fieldRelations[$view->name_list_code][(int) $relationsValue['listfield']][(int) $relationsValue['area']]
 							= $relationsValue;
 						// load the list joints
 						if (isset($relationsValue['joinfields'])
@@ -2811,7 +2838,7 @@ class Get
 						{
 							foreach ($relationsValue['joinfields'] as $join)
 							{
-								$this->listJoinBuilder[$name_list][(int) $join]
+								$this->listJoinBuilder[$view->name_list_code][(int) $join]
 									= (int) $join;
 							}
 						}
@@ -2829,7 +2856,7 @@ class Get
 							{
 								$column_name_lang = $this->langPrefix . '_'
 									. ComponentbuilderHelper::safeString(
-										$name_list, 'U'
+										$view->name_list_code, 'U'
 									) . '_'
 									. ComponentbuilderHelper::safeString(
 										$relationsValue['column_name'], 'U'
@@ -2838,7 +2865,7 @@ class Get
 									'admin', $column_name_lang,
 									$relationsValue['column_name']
 								);
-								$this->listHeadOverRide[$name_list][(int) $relationsValue['listfield']]
+								$this->listHeadOverRide[$view->name_list_code][(int) $relationsValue['listfield']]
 									= $column_name_lang;
 							}
 						}
@@ -2848,7 +2875,7 @@ class Get
 			unset($view->addrelations);
 
 			// set linked views
-			$this->linkedAdminViews[$name_single] = null;
+			$this->linkedAdminViews[$view->name_single_code] = null;
 			$view->addlinked_views
 			                                      = (isset($view->addlinked_views)
 				&& ComponentbuilderHelper::checkJson($view->addlinked_views))
@@ -2856,7 +2883,7 @@ class Get
 			if (ComponentbuilderHelper::checkArray($view->addlinked_views))
 			{
 				// setup linked views to global data sets
-				$this->linkedAdminViews[$name_single] = array_values(
+				$this->linkedAdminViews[$view->name_single_code] = array_values(
 					$view->addlinked_views
 				);
 			}
@@ -2890,7 +2917,7 @@ class Get
 					$this->setCustomScriptBuilder(
 						$view->{$scripter},
 						$scripter_target,
-						$name_single,
+						$view->name_single_code,
 						false,
 						$guiMapper,
 						true,
@@ -2903,9 +2930,9 @@ class Get
 							$view->$scripter, "task=ajax"
 						) !== false)
 					{
-						if (!$this->customScriptBuilder['token'][$name_single])
+						if (!$this->customScriptBuilder['token'][$view->name_single_code])
 						{
-							$this->customScriptBuilder['token'][$name_single]
+							$this->customScriptBuilder['token'][$view->name_single_code]
 								= true;
 						}
 					}
@@ -2924,7 +2951,7 @@ class Get
 					$this->setCustomScriptBuilder(
 						$view->{$scripter},
 						$scripter,
-						$name_single,
+						$view->name_single_code,
 						false,
 						array('prefix' => PHP_EOL),
 						true,
@@ -2956,13 +2983,13 @@ class Get
 					$this->setCustomScriptBuilder(
 						$view->{$scripter},
 						$scripter,
-						$name_single,
+						$view->name_single_code,
 						false,
 						$guiMapper
 					);
 
 					// check if we have template or layouts to load
-					$this->setTemplateAndLayoutData($view->{$scripter}, $name_single);
+					$this->setTemplateAndLayoutData($view->{$scripter}, $view->name_single_code);
 
 					unset($view->{$scripter});
 				}
@@ -2996,7 +3023,7 @@ class Get
 						);
 
 						// check if we have template or layouts to load
-						$this->setTemplateAndLayoutData($view->{$button_code_field}, $name_single);
+						$this->setTemplateAndLayoutData($view->{$button_code_field}, $view->name_single_code);
 					}
 				}
 				// set the button array
@@ -3035,7 +3062,7 @@ class Get
 						$this->setCustomScriptBuilder(
 							$view->$importScripter,
 							$importScripter,
-							'import_' . $name_list,
+							'import_' . $view->name_list_code,
 							false,
 							$guiMapper
 						);
@@ -3045,7 +3072,7 @@ class Get
 					{
 						// load the default
 						$this->customScriptBuilder[$importScripter]['import_'
-						. $name_list]
+						. $view->name_list_code]
 							= ComponentbuilderHelper::getDynamicScripts(
 							$importScripter, true
 						);
@@ -3056,7 +3083,7 @@ class Get
 			if (isset($view->add_php_ajax) && $view->add_php_ajax == 1)
 			{
 				// insure the token is added to edit view atleast
-				$this->customScriptBuilder['token'][$name_single] = true;
+				$this->customScriptBuilder['token'][$view->name_single_code] = true;
 				$addAjaxSite                                      = false;
 				if (isset($this->siteEditView[$id]) && $this->siteEditView[$id])
 				{
@@ -3075,10 +3102,10 @@ class Get
 				{
 					if ($addAjaxSite)
 					{
-						$this->customScriptBuilder['site']['ajax_controller'][$name_single]
+						$this->customScriptBuilder['site']['ajax_controller'][$view->name_single_code]
 							= array_values($view->ajax_input);
 					}
-					$this->customScriptBuilder['admin']['ajax_controller'][$name_single]
+					$this->customScriptBuilder['admin']['ajax_controller'][$view->name_single_code]
 						           = array_values($view->ajax_input);
 					$this->addAjax = true;
 					unset($view->ajax_input);
@@ -3093,7 +3120,7 @@ class Get
 						$view->php_ajaxmethod,
 						'admin',
 						'ajax_model',
-						$name_single,
+						$view->name_single_code,
 						$guiMapper
 					);
 
@@ -3103,7 +3130,7 @@ class Get
 							$view->php_ajaxmethod,
 							'site',
 							'ajax_model',
-							$name_single,
+							$view->name_single_code,
 							$guiMapper,
 							false,
 							false
@@ -3115,7 +3142,7 @@ class Get
 				}
 			}
 			// activate alias builder
-			if (!isset($this->customAliasBuilder[$name_single])
+			if (!isset($this->customAliasBuilder[$view->name_single_code])
 				&& isset($view->alias_builder_type)
 				&& 2 == $view->alias_builder_type
 				&& isset($view->alias_builder)
@@ -3139,9 +3166,9 @@ class Get
 				if (ComponentbuilderHelper::checkArray($alias_fields))
 				{
 					// load the field names
-					$this->customAliasBuilder[$name_single] = (array) array_map(
-						function ($field) use ($name_list) {
-							return $this->getFieldName($field, $name_list);
+					$this->customAliasBuilder[$view->name_single_code] = (array) array_map(
+						function ($field) use (&$view) {
+							return $this->getFieldName($field, $view->name_list_code);
 						}, $alias_fields
 					);
 				}
@@ -3154,8 +3181,8 @@ class Get
 				if ($view->source == 1 && isset($view->tables))
 				{
 					// build and add the SQL dump
-					$this->customScriptBuilder['sql'][$name_single]
-						= $this->buildSqlDump($view->tables, $name_single, $id);
+					$this->customScriptBuilder['sql'][$view->name_single_code]
+						= $this->buildSqlDump($view->tables, $view->name_single_code, $id);
 					unset($view->tables);
 				}
 				elseif ($view->source == 2 && isset($view->sql))
@@ -3164,15 +3191,15 @@ class Get
 					$this->setCustomScriptBuilder(
 						$view->sql,
 						'sql',
-						$name_single
+						$view->name_single_code
 					);
 					unset($view->sql);
 				}
 			}
 			// load table settings
-			if (!isset($this->mysqlTableSetting[$name_single]))
+			if (!isset($this->mysqlTableSetting[$view->name_single_code]))
 			{
-				$this->mysqlTableSetting[$name_single] = array();
+				$this->mysqlTableSetting[$view->name_single_code] = array();
 			}
 			// set mySql Table Settings
 			foreach (
@@ -3185,12 +3212,12 @@ class Get
 					)
 					&& !is_numeric($view->{'mysql_table_' . $_mysqlTableKey}))
 				{
-					$this->mysqlTableSetting[$name_single][$_mysqlTableKey]
+					$this->mysqlTableSetting[$view->name_single_code][$_mysqlTableKey]
 						= $view->{'mysql_table_' . $_mysqlTableKey};
 				}
 				else
 				{
-					$this->mysqlTableSetting[$name_single][$_mysqlTableKey]
+					$this->mysqlTableSetting[$view->name_single_code][$_mysqlTableKey]
 						= $_mysqlTableVal['default'];
 				}
 				// remove the table values since we moved to another object

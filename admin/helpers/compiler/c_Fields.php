@@ -4876,7 +4876,7 @@ class Fields extends Structure
 			                                                'list'   => $_list);
 		}
 		// build the filter values
-		if ($dbSwitch && (isset($field['filter']) && $field['filter'] == 1)
+		if ($dbSwitch && (isset($field['filter']) && $field['filter'] >= 1)
 			&& ($listSwitch || $listJoin)
 			&& (!$multiple && $typeName != 'checkbox'
 				&& $typeName != 'checkboxes'
@@ -4884,6 +4884,7 @@ class Fields extends Structure
 				&& $typeName != 'subform'))
 		{
 			$this->filterBuilder[$view_name_list][] = array('type'     => $typeName,
+			                                                'multi'    => $field['filter'],
 			                                                'code'     => $name,
 			                                                'lang'     => $listLangName,
 			                                                'database' => $view_name_single,

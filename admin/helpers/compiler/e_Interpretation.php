@@ -842,9 +842,8 @@ class Interpretation extends Fields
 			JText::_('<hr /><h3>WHMCS Error</h3>'), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
-				'The <b>WHMCS class</b> could not be added to this component. You will need to enable the add-on in the Joomla Component area (Add WHMCS)->Yes. If you have done this, then please check that you have your own <b>Basic Encryption<b/> set in the global settings of JCB. Then open and save this component again, making sure that your WHMCS settings are still correct.',
-				$this->libraries[$id]->name
+			JText::_(
+				'The <b>WHMCS class</b> could not be added to this component. You will need to enable the add-on in the Joomla Component area (Add WHMCS)->Yes. If you have done this, then please check that you have your own <b>Basic Encryption<b/> set in the global settings of JCB. Then open and save this component again, making sure that your WHMCS settings are still correct.'
 			), 'Error'
 		);
 
@@ -17233,7 +17232,10 @@ class Interpretation extends Fields
 
 	public function setFilterFunctions($viewName_single, $viewName_list)
 	{
-		if (isset($this->filterBuilder[$viewName_list])
+		// the old filter type uses these functions
+		if (isset($this->adminFilterType[$viewName_list])
+			&& $this->adminFilterType[$viewName_list] == 1
+			&& isset($this->filterBuilder[$viewName_list])
 			&& ComponentbuilderHelper::checkArray(
 				$this->filterBuilder[$viewName_list]
 			))
@@ -21201,7 +21203,7 @@ class Interpretation extends Fields
 		{
 			$router = PHP_EOL . $this->_t(2) . "case '" . $viewName . "':";
 			$router .= PHP_EOL . $this->_t(3)
-				. "\$id = explode(':', \$segments[$count-1]);";
+				. "\$id = explode(':', \$segments[\$count-1]);";
 			$router .= PHP_EOL . $this->_t(3) . "\$vars['id'] = (int) \$id[0];";
 			$router .= PHP_EOL . $this->_t(3) . "\$vars['view'] = '" . $viewName
 				. "';";
