@@ -39,11 +39,17 @@ class ComponentbuilderModelLibraries extends JModelList
 
 		parent::__construct($config);
 	}
-	
+
 	/**
 	 * Method to auto-populate the model state.
 	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
+	 *
 	 * @return  void
+	 *
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
@@ -54,38 +60,39 @@ class ComponentbuilderModelLibraries extends JModelList
 		{
 			$this->context .= '.' . $layout;
 		}
-		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
-		$this->setState('filter.name', $name);
 
-		$target = $this->getUserStateFromRequest($this->context . '.filter.target', 'filter_target');
-		$this->setState('filter.target', $target);
-
-		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
-		$this->setState('filter.type', $type);
-
-		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
-		$this->setState('filter.description', $description);
-
-		$how = $this->getUserStateFromRequest($this->context . '.filter.how', 'filter_how');
-		$this->setState('filter.how', $how);
-        
-		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
-		$this->setState('filter.sorting', $sorting);
-        
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
 		$this->setState('filter.access', $access);
-        
-		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
-		$this->setState('filter.search', $search);
 
 		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
-        
+
 		$created_by = $this->getUserStateFromRequest($this->context . '.filter.created_by', 'filter_created_by', '');
 		$this->setState('filter.created_by', $created_by);
 
 		$created = $this->getUserStateFromRequest($this->context . '.filter.created', 'filter_created');
 		$this->setState('filter.created', $created);
+
+		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
+		$this->setState('filter.sorting', $sorting);
+
+		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
+		$this->setState('filter.search', $search);
+
+		$target = $this->getUserStateFromRequest($this->context . '.filter.target', 'filter_target');
+		$this->setState('filter.target', $target);
+
+		$how = $this->getUserStateFromRequest($this->context . '.filter.how', 'filter_how');
+		$this->setState('filter.how', $how);
+
+		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
+		$this->setState('filter.type', $type);
+
+		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
+		$this->setState('filter.name', $name);
+
+		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
+		$this->setState('filter.description', $description);
 
 		// List state information.
 		parent::populateState($ordering, $direction);
@@ -264,7 +271,7 @@ class ComponentbuilderModelLibraries extends JModelList
 		{
 			$query->where('a.target = ' . $db->quote($db->escape($target)));
 		}
-		// Filter by how.
+		// Filter by How.
 		if ($how = $this->getState('filter.how'))
 		{
 			$query->where('a.how = ' . $db->quote($db->escape($how)));

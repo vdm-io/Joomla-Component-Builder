@@ -15485,47 +15485,51 @@ class Interpretation extends Fields
 		}
 	}
 
-	public function setFilterQuery($viewName_list)
+	/**
+	 * build model filter per/field in the list view
+	 *
+	 * @param   string  $view_name_list    The list view name
+	 *
+	 * @return  string The php to place in model to filter
+	 *
+	 */
+	public function setFilterQuery($view_name_list)
 	{
-		if (isset($this->filterBuilder[$viewName_list])
+		if (isset($this->filterBuilder[$view_name_list])
 			&& ComponentbuilderHelper::checkArray(
-				$this->filterBuilder[$viewName_list]
+				$this->filterBuilder[$view_name_list]
 			))
 		{
+			// component helper name
+			$Helper = $this->fileContentStatic[$this->hhh . 'Component'
+				. $this->hhh] . 'Helper';
+			// start building the filter query
 			$filterQuery = "";
-			foreach ($this->filterBuilder[$viewName_list] as $filter)
+			foreach ($this->filterBuilder[$view_name_list] as $filter)
 			{
-				if ($filter['type'] != 'category'
-					&& ComponentbuilderHelper::checkArray($filter['custom']))
+				// only add for none category fields
+				if ($filter['type'] != 'category')
 				{
 					$filterQuery .= PHP_EOL . $this->_t(2) . "//"
 						. $this->setLine(__LINE__) . " Filter by "
-						. $filter['code'] . ".";
-					$filterQuery .= PHP_EOL . $this->_t(2) . "if (\$"
-						. $filter['code'] . " = \$this->getState('filter."
-						. $filter['code'] . "'))";
-					$filterQuery .= PHP_EOL . $this->_t(2) . "{";
-					$filterQuery .= PHP_EOL . $this->_t(3)
-						. "\$query->where('a." . $filter['code']
-						. " = ' . \$db->quote(\$db->escape(\$" . $filter['code']
-						. ")));";
-					$filterQuery .= PHP_EOL . $this->_t(2) . "}";
-				}
-				elseif ($filter['type'] != 'category')
-				{
-					$filterQuery .= PHP_EOL . $this->_t(2) . "//"
-						. $this->setLine(__LINE__) . " Filter by " . ucwords(
-							$filter['code']
-						) . ".";
-					$filterQuery .= PHP_EOL . $this->_t(2) . "if (\$"
-						. $filter['code'] . " = \$this->getState('filter."
-						. $filter['code'] . "'))";
-					$filterQuery .= PHP_EOL . $this->_t(2) . "{";
-					$filterQuery .= PHP_EOL . $this->_t(3)
-						. "\$query->where('a." . $filter['code']
-						. " = ' . \$db->quote(\$db->escape(\$" . $filter['code']
-						. ")));";
-					$filterQuery .= PHP_EOL . $this->_t(2) . "}";
+						. ucwords($filter['code']) . ".";
+					// we only add multi filter option if new filter type
+					// and we have multi filter set for this field
+					if (isset($this->adminFilterType[$view_name_list])
+						&& $this->adminFilterType[$view_name_list] == 2
+						&& isset($filter['multi'])
+						&& $filter['multi'] == 2)
+					{
+						$filterQuery .= $this->setMultiFilterQuery(
+							$filter, $Helper
+						);
+					}
+					else
+					{
+						$filterQuery .= $this->setSingleFilterQuery(
+							$filter
+						);
+					}
 				}
 			}
 
@@ -15533,6 +15537,112 @@ class Interpretation extends Fields
 		}
 
 		return '';
+	}
+
+	/**
+	 * build single filter query
+	 *
+	 * @param   array  $filter   The field/filter
+	 * @param   string $a        The db table target name (a)
+	 *
+	 * @return  string The php to place in model to filter this field
+	 *
+	 */
+	protected function setSingleFilterQuery($filter, $a = "a")
+	{
+		$filterQuery = PHP_EOL . $this->_t(2) . "if (\$"
+			. $filter['code'] . " = \$this->getState('filter."
+			. $filter['code'] . "'))";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(3)
+			. "\$query->where('" . $a . "." . $filter['code']
+			. " = ' . \$db->quote(\$db->escape(\$"
+			. $filter['code']
+			. ")));";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "}";
+
+		return $filterQuery;
+	}
+
+	/**
+	 * build multiple filter query
+	 *
+	 * @param   array  $filter   The field/filter
+	 * @param   string $Helper   The helper name of the component being build
+	 * @param   string $a        The db table target name (a)
+	 *
+	 * @return  string The php to place in model to filter this field
+	 *
+	 */
+	protected function setMultiFilterQuery($filter, $Helper, $a = "a")
+	{
+		$filterQuery = PHP_EOL . $this->_t(2) . "\$_"
+			. $filter['code'] . " = \$this->getState('filter."
+			. $filter['code'] . "');";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "if (is_numeric(\$_"
+			. $filter['code'] . "))";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "if (is_float(\$_"
+			. $filter['code'] . "))";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(4)
+			. "\$query->where('" . $a . "." . $filter['code']
+			. " = ' . (float) \$_" . $filter['code'] . ");";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "}";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "else";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(4)
+			. "\$query->where('" . $a . "." . $filter['code']
+			. " = ' . (int) \$_" . $filter['code'] . ");";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "}";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "}";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "elseif ("
+			. $Helper . "::checkString(\$_" . $filter['code'] . "))";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(3)
+			. "\$query->where('" . $a . "." . $filter['code']
+			. " = ' . \$db->quote(\$db->escape(\$_" . $filter['code']
+			. ")));";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "}";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "elseif ("
+			. $Helper . "::checkArray(\$_" . $filter['code'] . "))";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "{";
+
+		$filterQuery .= PHP_EOL . $this->_t(3) . "//"
+			. $this->setLine(__LINE__) . " Secure the array for the query";
+
+		$filterQuery .= PHP_EOL . $this->_t(3) . "\$_" . $filter['code']
+			. " = array_map( function (\$val) use(&\$db) {";
+		$filterQuery .= PHP_EOL . $this->_t(4) . "if (is_numeric(\$val))";
+		$filterQuery .= PHP_EOL . $this->_t(4) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(5) . "if (is_float(\$val))";
+		$filterQuery .= PHP_EOL . $this->_t(5) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(6) . "return (float) \$val;";
+		$filterQuery .= PHP_EOL . $this->_t(5) . "}";
+		$filterQuery .= PHP_EOL . $this->_t(5) . "else";
+		$filterQuery .= PHP_EOL . $this->_t(5) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(6) . "return (int) \$val;";
+		$filterQuery .= PHP_EOL . $this->_t(5) . "}";
+		$filterQuery .= PHP_EOL . $this->_t(4) . "}";
+		$filterQuery .= PHP_EOL . $this->_t(4) . "elseif ("
+			. $Helper . "::checkString(\$val))";
+		$filterQuery .= PHP_EOL . $this->_t(4) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(5)
+			. "return \$db->quote(\$db->escape(\$val));";
+		$filterQuery .= PHP_EOL . $this->_t(4) . "}";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "}, \$_"
+			. $filter['code'] . ");";
+
+		$filterQuery .= PHP_EOL . $this->_t(3) . "//"
+			. $this->setLine(__LINE__) . " Filter by the "
+			. ucwords($filter['code']) . " Array.";
+
+		$filterQuery .= PHP_EOL . $this->_t(3)
+			. "\$query->where('" . $a . "." . $filter['code']
+			. " IN (' . implode(',', \$_" . $filter['code'] . ") . ')');";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "}";
+
+		return $filterQuery;
 	}
 
 	public function buildTheViewScript($viewArray)
@@ -20042,149 +20152,139 @@ class Interpretation extends Fields
 		return $toolBar;
 	}
 
-	public function setPopulateState(&$view)
+	/**
+	 * set the populate state code
+	 *
+	 * @param   string  $name_single_code  The single view name
+	 * @param   string  $name_list_code    The list view name
+	 *
+	 * @return  string The code for the populate state
+	 *
+	 */
+	public function setPopulateState(&$name_single_code, &$name_list_code)
 	{
-		// reset buket
+		// reset bucket
 		$state = '';
 		// keep track of all fields already added
 		$donelist = array();
+		// add the default populate states
+		$state .= $this->setDefaultPopulateState($name_single_code);
+		// we must add the formSubmited code if new above filters is used
+		$new_filter = false;
+		if (isset($this->adminFilterType[$name_list_code])
+			&& $this->adminFilterType[$name_list_code] == 2)
+		{
+			$state .= PHP_EOL . PHP_EOL . $this->_t(2) . "//"
+				. $this->setLine(__LINE__) . " Check if the form was submitted";
+			$state .= PHP_EOL . $this->_t(2) . "\$formSubmited"
+				. " = \$app->input->post->get('form_submited');";
+			$new_filter = true;
+		}
+		// add the filters
+		if (isset($this->filterBuilder[$name_list_code])
+			&& ComponentbuilderHelper::checkArray($this->filterBuilder[$name_list_code]))
+		{
+			foreach ($this->filterBuilder[$name_list_code] as $filter)
+			{
+				if (!in_array($filter['code'], $donelist))
+				{
+					$state .= $this->getPopulateStateFilterCode($filter['code'], $new_filter);
+					$donelist[] = $filter['code'];
+				}
+			}
+		}
+		// add the rest of the set filters
+		if (isset($this->sortBuilder[$name_list_code])
+			&& ComponentbuilderHelper::checkArray($this->sortBuilder[$name_list_code]))
+		{
+			foreach ($this->sortBuilder[$name_list_code] as $filter)
+			{
+				if (!in_array($filter['code'], $donelist))
+				{
+					$state .= $this->getPopulateStateFilterCode($filter['code'], $new_filter);
+					$donelist[] = $filter['code'];
+				}
+			}
+		}
 
-		// add the rest of the set filters
-		if (isset($this->sortBuilder[$view])
-			&& ComponentbuilderHelper::checkArray($this->sortBuilder[$view]))
+		return $state;
+	}
+
+	/**
+	 * Add the code of the filter in the populate state
+	 *
+	 * @param   string $key          The field key (code)
+	 * @param   bool   $new_filter   The switch to use the new filter
+	 * @param   string $extra        The defaults/extra options of the filter
+	 *
+	 * @return  string    The code for the populate state
+	 *
+	 */
+	protected function getPopulateStateFilterCode($key, $new_filter, $extra = '')
+	{
+		$state = PHP_EOL . PHP_EOL . $this->_t(2) . "\$" . $key
+			. " = \$this->getUserStateFromRequest(\$this->context . '.filter."
+			. $key . "', 'filter_" . $key
+			. "'" . $extra . ");";
+		if ($new_filter)
 		{
-			foreach ($this->sortBuilder[$view] as $filter)
-			{
-				if (!in_array($filter['code'], $donelist))
-				{
-					if ($filter['type'] === 'category')
-					{
-						if (strlen($state) == 0)
-						{
-							$spacer = "";
-						}
-						else
-						{
-							$spacer = PHP_EOL . PHP_EOL . $this->_t(2);
-						}
-						$state .= $spacer
-							. "\$category = \$app->getUserStateFromRequest(\$this->context . '.filter.category', 'filter_category');";
-						$state .= PHP_EOL . $this->_t(2)
-							. "\$this->setState('filter.category', \$category);";
-						$state .= PHP_EOL . PHP_EOL . $this->_t(2)
-							. "\$categoryId = \$this->getUserStateFromRequest(\$this->context . '.filter.category_id', 'filter_category_id');";
-						$state .= PHP_EOL . $this->_t(2)
-							. "\$this->setState('filter.category_id', \$categoryId);";
-						if ($filter['code'] != 'category')
-						{
-							$state .= PHP_EOL . PHP_EOL . $this->_t(2) . "\$"
-								. $filter['code']
-								. " = \$app->getUserStateFromRequest(\$this->context . '.filter."
-								. $filter['code'] . "', 'filter_"
-								. $filter['code'] . "');";
-							$state .= PHP_EOL . $this->_t(2)
-								. "\$this->setState('filter." . $filter['code']
-								. "', \$" . $filter['code'] . ");";
-						}
-					}
-					else
-					{
-						if (strlen($state) == 0)
-						{
-							$spacer = "";
-						}
-						else
-						{
-							$spacer = PHP_EOL . PHP_EOL . $this->_t(2);
-						}
-						// check if custom field is set
-						/* if (ComponentbuilderHelper::checkArray($filter['custom']))
-						{
-							$state .= $spacer."\$".$filter['code']."_".$filter['custom']['text']." = \$this->getUserStateFromRequest(\$this->context . '.filter.".$filter['code']."_".$filter['custom']['text']."', 'filter_".$filter['code']."_".$filter['custom']['text']."');";
-							$state .= PHP_EOL.$this->_t(2) . "\$this->setState('filter.".$filter['code']."_".$filter['custom']['text']."', \$".$filter['code']."_".$filter['custom']['text'].");";
-							$spacer = PHP_EOL.PHP_EOL.$this->_t(2);
-						} */
-						$state .= $spacer . "\$" . $filter['code']
-							. " = \$this->getUserStateFromRequest(\$this->context . '.filter."
-							. $filter['code'] . "', 'filter_" . $filter['code']
-							. "');";
-						$state .= PHP_EOL . $this->_t(2)
-							. "\$this->setState('filter." . $filter['code']
-							. "', \$" . $filter['code'] . ");";
-					}
-					$donelist[] = $filter['code'];
-				}
-			}
+			// add the new filter option
+			$state .= PHP_EOL . $this->_t(2)
+				. "if (\$formSubmited)";
+			$state .= PHP_EOL . $this->_t(2) . "{";
+			$state .= PHP_EOL . $this->_t(3) . "\$" . $key
+				. " = \$app->input->post->get('" . $key . "');";
+			$state .= PHP_EOL . $this->_t(3)
+				. "\$this->setState('filter." . $key
+				. "', \$" . $key . ");";
+			$state .= PHP_EOL . $this->_t(2) . "}";
 		}
-		// add the rest of the set filters
-		if (isset($this->filterBuilder[$view])
-			&& ComponentbuilderHelper::checkArray($this->filterBuilder[$view]))
+		else
 		{
-			foreach ($this->filterBuilder[$view] as $filter)
-			{
-				if (!in_array($filter['code'], $donelist))
-				{
-					if ($filter['type'] === 'category')
-					{
-						if (strlen($state) == 0)
-						{
-							$spacer = "";
-						}
-						else
-						{
-							$spacer = PHP_EOL . PHP_EOL . $this->_t(2);
-						}
-						$state .= $spacer
-							. "\$category = \$app->getUserStateFromRequest(\$this->context . '.filter.category', 'filter_category');";
-						$state .= PHP_EOL . $this->_t(2)
-							. "\$this->setState('filter.category', \$category);";
-						$state .= PHP_EOL . PHP_EOL . $this->_t(2)
-							. "\$categoryId = \$this->getUserStateFromRequest(\$this->context . '.filter.category_id', 'filter_category_id');";
-						$state .= PHP_EOL . $this->_t(2)
-							. "\$this->setState('filter.category_id', \$categoryId);";
-						if ($filter['code'] != 'category')
-						{
-							$state .= PHP_EOL . PHP_EOL . $this->_t(2) . "\$"
-								. $filter['code']
-								. " = \$app->getUserStateFromRequest(\$this->context . '.filter."
-								. $filter['code'] . "', 'filter_"
-								. $filter['code'] . "');";
-							$state .= PHP_EOL . $this->_t(2)
-								. "\$this->setState('filter." . $filter['code']
-								. "', \$" . $filter['code'] . ");";
-						}
-					}
-					else
-					{
-						if (strlen($state) == 0)
-						{
-							$spacer = "";
-						}
-						else
-						{
-							$spacer = PHP_EOL . PHP_EOL . $this->_t(2);
-						}
-						// check if custom field is set
-						/* if (ComponentbuilderHelper::checkArray($filter['custom']))
-						{
-							$state .= $spacer."\$".$filter['custom']['text']." = \$this->getUserStateFromRequest(\$this->context . '.filter.".$filter['custom']['text']."', 'filter_".$filter['custom']['text']."');";
-							$state .= PHP_EOL.$this->_t(2) . "\$this->setState('filter.".$filter['custom']['text']."', \$".$filter['custom']['text'].");";
-							$state .= PHP_EOL.$this->_t(2) . "\$".$filter['code']."_".$filter['custom']['text']." = \$this->getUserStateFromRequest(\$this->context . '.filter.".$filter['code']."_".$filter['custom']['text']."', 'filter_".$filter['code']."_".$filter['custom']['text']."');";
-							$state .= PHP_EOL.$this->_t(2) . "\$this->setState('filter.".$filter['code']."_".$filter['custom']['text']."', \$".$filter['code']."_".$filter['custom']['text'].");";
-							$spacer = PHP_EOL.PHP_EOL.$this->_t(2);
-						} */
-						$state .= $spacer . "\$" . $filter['code']
-							. " = \$this->getUserStateFromRequest(\$this->context . '.filter."
-							. $filter['code'] . "', 'filter_" . $filter['code']
-							. "');";
-						$state .= PHP_EOL . $this->_t(2)
-							. "\$this->setState('filter." . $filter['code']
-							. "', \$" . $filter['code'] . ");";
-					}
-					$donelist[] = $filter['code'];
-				}
-			}
+			// the old filter option
+			$state .= PHP_EOL . $this->_t(2)
+				. "\$this->setState('filter." . $key
+				. "', \$" . $key . ");";
 		}
+		return $state;
+	}
+
+	/**
+	 * set the default populate state code
+	 *
+	 * @param   string  $name_single_code  The single view name
+	 *
+	 * @return  string The state code added
+	 *
+	 */
+	protected function setDefaultPopulateState(&$name_single_code)
+	{
+		$state = '';
+		// if access is not set
+		if (!isset($this->fieldsNames[$name_single_code]['access']))
+		{
+			$state .= $this->getPopulateStateFilterCode('access', false, ", 0, 'int'");
+		}
+		// if published is not set
+		if (!isset($this->fieldsNames[$name_single_code]['published']))
+		{
+			$state .= $this->getPopulateStateFilterCode('published', false, ", ''");
+		}
+		// if created_by is not set
+		if (!isset($this->fieldsNames[$name_single_code]['created_by']))
+		{
+			$state .= $this->getPopulateStateFilterCode('created_by', false, ", ''");
+		}
+		// if created is not set
+		if (!isset($this->fieldsNames[$name_single_code]['created']))
+		{
+			$state .= $this->getPopulateStateFilterCode('created', false);
+		}
+
+		// the sorting defaults are always added
+		$state .= $this->getPopulateStateFilterCode('sorting', false, ", 0, 'int'");
+		// the search defaults are always added
+		$state .= $this->getPopulateStateFilterCode('search', false);
 
 		return $state;
 	}

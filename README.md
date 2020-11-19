@@ -144,11 +144,11 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 17th November, 2020
++ *Last Build*: 20th November, 2020
 + *Version*: 2.11.7
 + *Copyright*: Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **283896**
++ *Line count*: **284083**
 + *Field count*: **1537**
 + *File count*: **1799**
 + *Folder count*: **304**
@@ -156,8 +156,9 @@ TODO
 > This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](http://joomlacomponentbuilder.com).
 > Developed by [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 
+
 ## Contributors
-This project exists thanks to all the people who contribute. 
+This project exists thanks to all the people who contribute to the [Joomla Component Builder Project](https://github.com/vdm-io/Joomla-Component-Builder).
 
 [![Contributors](https://opencollective.com/Joomla-Component-Builder/contributors.svg?width=890&button=false)](https://github.com/vdm-io/Joomla-Component-Builder/graphs/contributors)
 
@@ -179,3 +180,14 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 [![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/7/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/7/website)
 [![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/8/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/8/website)
 [![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/9/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/9/website)
+[![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/10/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/10/website)
+[![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/11/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/11/website)
+[![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/12/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/12/website)
+[![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/13/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/13/website)
+[![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/14/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/14/website)
+[![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/15/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/15/website)
+[![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/16/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/16/website)
+[![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/17/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/17/website)
+[![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/18/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/18/website)
+[![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/19/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/19/website)
+[![Sponsor](https://opencollective.com/Joomla-Component-Builder/sponsor/20/avatar.svg)](https://opencollective.com/Joomla-Component-Builder/sponsor/20/website)

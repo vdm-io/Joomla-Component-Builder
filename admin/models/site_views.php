@@ -41,11 +41,17 @@ class ComponentbuilderModelSite_views extends JModelList
 
 		parent::__construct($config);
 	}
-	
+
 	/**
 	 * Method to auto-populate the model state.
 	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
+	 *
 	 * @return  void
+	 *
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
@@ -56,6 +62,34 @@ class ComponentbuilderModelSite_views extends JModelList
 		{
 			$this->context .= '.' . $layout;
 		}
+
+		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
+		$this->setState('filter.access', $access);
+
+		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
+		$this->setState('filter.published', $published);
+
+		$created_by = $this->getUserStateFromRequest($this->context . '.filter.created_by', 'filter_created_by', '');
+		$this->setState('filter.created_by', $created_by);
+
+		$created = $this->getUserStateFromRequest($this->context . '.filter.created', 'filter_created');
+		$this->setState('filter.created', $created);
+
+		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
+		$this->setState('filter.sorting', $sorting);
+
+		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
+		$this->setState('filter.search', $search);
+
+		$main_get = $this->getUserStateFromRequest($this->context . '.filter.main_get', 'filter_main_get');
+		$this->setState('filter.main_get', $main_get);
+
+		$add_php_ajax = $this->getUserStateFromRequest($this->context . '.filter.add_php_ajax', 'filter_add_php_ajax');
+		$this->setState('filter.add_php_ajax', $add_php_ajax);
+
+		$add_custom_button = $this->getUserStateFromRequest($this->context . '.filter.add_custom_button', 'filter_add_custom_button');
+		$this->setState('filter.add_custom_button', $add_custom_button);
+
 		$system_name = $this->getUserStateFromRequest($this->context . '.filter.system_name', 'filter_system_name');
 		$this->setState('filter.system_name', $system_name);
 
@@ -65,35 +99,8 @@ class ComponentbuilderModelSite_views extends JModelList
 		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
 		$this->setState('filter.description', $description);
 
-		$main_get = $this->getUserStateFromRequest($this->context . '.filter.main_get', 'filter_main_get');
-		$this->setState('filter.main_get', $main_get);
-
 		$context = $this->getUserStateFromRequest($this->context . '.filter.context', 'filter_context');
 		$this->setState('filter.context', $context);
-
-		$add_php_ajax = $this->getUserStateFromRequest($this->context . '.filter.add_php_ajax', 'filter_add_php_ajax');
-		$this->setState('filter.add_php_ajax', $add_php_ajax);
-
-		$add_custom_button = $this->getUserStateFromRequest($this->context . '.filter.add_custom_button', 'filter_add_custom_button');
-		$this->setState('filter.add_custom_button', $add_custom_button);
-        
-		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
-		$this->setState('filter.sorting', $sorting);
-        
-		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
-        
-		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
-		$this->setState('filter.search', $search);
-
-		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
-		$this->setState('filter.published', $published);
-        
-		$created_by = $this->getUserStateFromRequest($this->context . '.filter.created_by', 'filter_created_by', '');
-		$this->setState('filter.created_by', $created_by);
-
-		$created = $this->getUserStateFromRequest($this->context . '.filter.created', 'filter_created');
-		$this->setState('filter.created', $created);
 
 		// List state information.
 		parent::populateState($ordering, $direction);
@@ -249,7 +256,7 @@ class ComponentbuilderModelSite_views extends JModelList
 			}
 		}
 
-		// Filter by main_get.
+		// Filter by Main_get.
 		if ($main_get = $this->getState('filter.main_get'))
 		{
 			$query->where('a.main_get = ' . $db->quote($db->escape($main_get)));

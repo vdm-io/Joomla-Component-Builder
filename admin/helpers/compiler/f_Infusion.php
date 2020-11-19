@@ -818,7 +818,7 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$name_list_code][$this->hhh
 					. 'POPULATESTATE' . $this->hhh]
 						= $this->setPopulateState(
-						$name_list_code
+						$name_single_code, $name_list_code
 					);
 
 					// SORTFIELDS <<<DYNAMIC>>>
