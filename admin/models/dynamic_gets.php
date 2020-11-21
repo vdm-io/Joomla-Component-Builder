@@ -29,9 +29,9 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.name','name',
 				'a.main_source','main_source',
-				'a.gettype','gettype'
+				'a.gettype','gettype',
+				'a.name','name'
 			);
 		}
 
@@ -415,9 +415,9 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.name');
 		$id .= ':' . $this->getState('filter.main_source');
 		$id .= ':' . $this->getState('filter.gettype');
+		$id .= ':' . $this->getState('filter.name');
 
 		return parent::getStoreId($id);
 	}

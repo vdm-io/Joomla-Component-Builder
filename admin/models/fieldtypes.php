@@ -29,11 +29,11 @@ class ComponentbuilderModelFieldtypes extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.name','name',
-				'a.short_description','short_description',
 				'c.title','category_title',
 				'c.id', 'category_id',
-				'a.catid', 'catid'
+				'a.catid','catid',
+				'a.name','name',
+				'a.short_description','short_description'
 			);
 		}
 
@@ -362,11 +362,11 @@ class ComponentbuilderModelFieldtypes extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.name');
-		$id .= ':' . $this->getState('filter.short_description');
 		$id .= ':' . $this->getState('filter.category');
 		$id .= ':' . $this->getState('filter.category_id');
 		$id .= ':' . $this->getState('filter.catid');
+		$id .= ':' . $this->getState('filter.name');
+		$id .= ':' . $this->getState('filter.short_description');
 
 		return parent::getStoreId($id);
 	}

@@ -29,9 +29,9 @@ class ComponentbuilderModelClass_properties extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.name','name',
 				'a.visibility','visibility',
-				'a.extension_type','extension_type'
+				'a.extension_type','extension_type',
+				'a.name','name'
 			);
 		}
 
@@ -406,9 +406,9 @@ class ComponentbuilderModelClass_properties extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.name');
 		$id .= ':' . $this->getState('filter.visibility');
 		$id .= ':' . $this->getState('filter.extension_type');
+		$id .= ':' . $this->getState('filter.name');
 
 		return parent::getStoreId($id);
 	}

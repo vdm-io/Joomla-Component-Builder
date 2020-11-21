@@ -29,11 +29,11 @@ class ComponentbuilderModelHelp_documents extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.title','title',
 				'a.type','type',
 				'a.location','location',
-				'g.',
-				'h.'
+				'a.admin_view','admin_view',
+				'a.site_view','site_view',
+				'a.title','title'
 			);
 		}
 
@@ -405,11 +405,11 @@ class ComponentbuilderModelHelp_documents extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.title');
 		$id .= ':' . $this->getState('filter.type');
 		$id .= ':' . $this->getState('filter.location');
 		$id .= ':' . $this->getState('filter.admin_view');
 		$id .= ':' . $this->getState('filter.site_view');
+		$id .= ':' . $this->getState('filter.title');
 
 		return parent::getStoreId($id);
 	}

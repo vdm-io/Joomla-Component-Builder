@@ -29,11 +29,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
+				'a.companyname','companyname',
+				'a.author','author',
 				'a.system_name','system_name',
 				'a.name_code','name_code',
-				'a.short_description','short_description',
-				'a.companyname','companyname',
-				'a.author','author'
+				'a.short_description','short_description'
 			);
 		}
 
@@ -2454,11 +2454,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
+		$id .= ':' . $this->getState('filter.companyname');
+		$id .= ':' . $this->getState('filter.author');
 		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.name_code');
 		$id .= ':' . $this->getState('filter.short_description');
-		$id .= ':' . $this->getState('filter.companyname');
-		$id .= ':' . $this->getState('filter.author');
 
 		return parent::getStoreId($id);
 	}

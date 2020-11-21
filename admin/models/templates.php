@@ -29,10 +29,10 @@ class ComponentbuilderModelTemplates extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
+				'g.name','dynamic_get',
+				'a.add_php_view','add_php_view',
 				'a.name','name',
-				'a.description','description',
-				'g.name',
-				'a.add_php_view','add_php_view'
+				'a.description','description'
 			);
 		}
 
@@ -392,10 +392,10 @@ class ComponentbuilderModelTemplates extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.name');
-		$id .= ':' . $this->getState('filter.description');
 		$id .= ':' . $this->getState('filter.dynamic_get');
 		$id .= ':' . $this->getState('filter.add_php_view');
+		$id .= ':' . $this->getState('filter.name');
+		$id .= ':' . $this->getState('filter.description');
 
 		return parent::getStoreId($id);
 	}

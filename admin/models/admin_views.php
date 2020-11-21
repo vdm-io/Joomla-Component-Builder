@@ -29,14 +29,14 @@ class ComponentbuilderModelAdmin_views extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.system_name','system_name',
-				'a.name_single','name_single',
-				'a.short_description','short_description',
 				'a.add_fadein','add_fadein',
 				'a.type','type',
 				'a.add_custom_button','add_custom_button',
 				'a.add_php_ajax','add_php_ajax',
-				'a.add_custom_import','add_custom_import'
+				'a.add_custom_import','add_custom_import',
+				'a.system_name','system_name',
+				'a.name_single','name_single',
+				'a.short_description','short_description'
 			);
 		}
 
@@ -621,14 +621,14 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.system_name');
-		$id .= ':' . $this->getState('filter.name_single');
-		$id .= ':' . $this->getState('filter.short_description');
 		$id .= ':' . $this->getState('filter.add_fadein');
 		$id .= ':' . $this->getState('filter.type');
 		$id .= ':' . $this->getState('filter.add_custom_button');
 		$id .= ':' . $this->getState('filter.add_php_ajax');
 		$id .= ':' . $this->getState('filter.add_custom_import');
+		$id .= ':' . $this->getState('filter.system_name');
+		$id .= ':' . $this->getState('filter.name_single');
+		$id .= ':' . $this->getState('filter.short_description');
 
 		return parent::getStoreId($id);
 	}

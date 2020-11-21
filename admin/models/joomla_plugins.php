@@ -29,9 +29,9 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.system_name','system_name',
-				'g.name',
-				'h.name'
+				'g.name','class_extends',
+				'h.name','joomla_plugin_group',
+				'a.system_name','system_name'
 			);
 		}
 
@@ -402,9 +402,9 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.class_extends');
 		$id .= ':' . $this->getState('filter.joomla_plugin_group');
+		$id .= ':' . $this->getState('filter.system_name');
 
 		return parent::getStoreId($id);
 	}

@@ -29,11 +29,11 @@ class ComponentbuilderModelCustom_codes extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'g.system_name',
-				'a.path','path',
+				'g.system_name','component',
 				'a.target','target',
 				'a.type','type',
-				'a.comment_type','comment_type'
+				'a.comment_type','comment_type',
+				'a.path','path'
 			);
 		}
 
@@ -469,10 +469,10 @@ class ComponentbuilderModelCustom_codes extends JModelList
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.component');
-		$id .= ':' . $this->getState('filter.path');
 		$id .= ':' . $this->getState('filter.target');
 		$id .= ':' . $this->getState('filter.type');
 		$id .= ':' . $this->getState('filter.comment_type');
+		$id .= ':' . $this->getState('filter.path');
 
 		return parent::getStoreId($id);
 	}

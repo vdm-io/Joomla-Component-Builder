@@ -29,13 +29,13 @@ class ComponentbuilderModelSite_views extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
+				'g.name','main_get',
+				'a.add_php_ajax','add_php_ajax',
+				'a.add_custom_button','add_custom_button',
 				'a.system_name','system_name',
 				'a.name','name',
 				'a.description','description',
-				'g.name',
-				'a.context','context',
-				'a.add_php_ajax','add_php_ajax',
-				'a.add_custom_button','add_custom_button'
+				'a.context','context'
 			);
 		}
 
@@ -444,13 +444,13 @@ class ComponentbuilderModelSite_views extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
+		$id .= ':' . $this->getState('filter.main_get');
+		$id .= ':' . $this->getState('filter.add_php_ajax');
+		$id .= ':' . $this->getState('filter.add_custom_button');
 		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.name');
 		$id .= ':' . $this->getState('filter.description');
-		$id .= ':' . $this->getState('filter.main_get');
 		$id .= ':' . $this->getState('filter.context');
-		$id .= ':' . $this->getState('filter.add_php_ajax');
-		$id .= ':' . $this->getState('filter.add_custom_button');
 
 		return parent::getStoreId($id);
 	}

@@ -29,11 +29,11 @@ class ComponentbuilderModelSnippets extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
+				'g.name','type',
+				'h.name','library',
 				'a.name','name',
 				'a.url','url',
-				'g.name',
-				'a.heading','heading',
-				'h.name'
+				'a.heading','heading'
 			);
 		}
 
@@ -478,11 +478,11 @@ class ComponentbuilderModelSnippets extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
+		$id .= ':' . $this->getState('filter.type');
+		$id .= ':' . $this->getState('filter.library');
 		$id .= ':' . $this->getState('filter.name');
 		$id .= ':' . $this->getState('filter.url');
-		$id .= ':' . $this->getState('filter.type');
 		$id .= ':' . $this->getState('filter.heading');
-		$id .= ':' . $this->getState('filter.library');
 
 		return parent::getStoreId($id);
 	}

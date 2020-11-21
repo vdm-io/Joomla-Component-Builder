@@ -29,15 +29,15 @@ class ComponentbuilderModelFields extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.name','name',
-				'g.name',
+				'g.name','fieldtype',
 				'a.datatype','datatype',
 				'a.indexes','indexes',
 				'a.null_switch','null_switch',
 				'a.store','store',
 				'c.title','category_title',
 				'c.id', 'category_id',
-				'a.catid', 'catid'
+				'a.catid','catid',
+				'a.name','name'
 			);
 		}
 
@@ -525,7 +525,6 @@ class ComponentbuilderModelFields extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.name');
 		$id .= ':' . $this->getState('filter.fieldtype');
 		$id .= ':' . $this->getState('filter.datatype');
 		$id .= ':' . $this->getState('filter.indexes');
@@ -534,6 +533,7 @@ class ComponentbuilderModelFields extends JModelList
 		$id .= ':' . $this->getState('filter.category');
 		$id .= ':' . $this->getState('filter.category_id');
 		$id .= ':' . $this->getState('filter.catid');
+		$id .= ':' . $this->getState('filter.name');
 
 		return parent::getStoreId($id);
 	}
