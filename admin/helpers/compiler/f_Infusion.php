@@ -367,8 +367,8 @@ class Infusion extends Interpretation
 				$this->lang   = 'admin';
 
 				// set local names
-				$name_single_code = $view['settings']->name_single_code;
-				$name_list_code = $view['settings']->name_list_code;
+				$nameSingleCode = $view['settings']->name_single_code;
+				$nameListCode   = $view['settings']->name_list_code;
 
 				// set the view placeholders
 				$this->setViewPlaceholders($view['settings']);
@@ -381,68 +381,68 @@ class Infusion extends Interpretation
 					&& $view['edit_create_site_view'] > 0)
 				{
 					$site_edit_view_array[] = $this->_t(4) . "'"
-						. $name_single_code . "'";
+						. $nameSingleCode . "'";
 					$this->lang             = 'both';
 					// insure site view does not get removed
 					$this->removeSiteEditFolder = false;
 				}
 				// check if help is being loaded
-				$this->checkHelp($name_single_code);
+				$this->checkHelp($nameSingleCode);
 				// set custom admin view list links
 				$this->setCustomAdminViewListLink(
-					$view, $name_list_code
+					$view, $nameListCode
 				);
 
 				// set view array
 				$viewarray[] = $this->_t(4) . "'"
-					. $name_single_code . "' => '"
-					. $name_list_code . "'";
+					. $nameSingleCode . "' => '"
+					. $nameListCode . "'";
 				// set the view names
 				if (isset($view['settings']->name_single)
 					&& $view['settings']->name_single != 'null')
 				{
 					// set license per view if needed
 					$this->setLockLicensePer(
-						$name_single_code, $this->target
+						$nameSingleCode, $this->target
 					);
 					$this->setLockLicensePer(
-						$name_list_code, $this->target
+						$nameListCode, $this->target
 					);
 
 					// Trigger Event: jcb_ce_onBeforeBuildAdminEditViewContent
 					$this->triggerEvent(
 						'jcb_ce_onBeforeBuildAdminEditViewContent',
 						array(&$this->componentContext, &$view,
-						      &$name_single_code,
-						      &$name_list_code,
+						      &$nameSingleCode,
+						      &$nameListCode,
 						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$name_single_code],
+						      &$this->fileContentDynamic[$nameSingleCode],
 						      &$this->placeholders, &$this->hhh)
 					);
 
 					// FIELDSETS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'FIELDSETS' . $this->hhh]
 						= $this->setFieldSet(
 						$view, $this->componentCodeName,
-						$name_single_code,
-						$name_list_code
+						$nameSingleCode,
+						$nameListCode
 					);
 
 					// ACCESSCONTROL <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'ACCESSCONTROL' . $this->hhh]
 						= $this->setFieldSetAccessControl(
-						$name_single_code
+						$nameSingleCode
 					);
 
 					// LINKEDVIEWITEMS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'LINKEDVIEWITEMS' . $this->hhh]
 						= '';
 
 					// ADDTOOLBAR <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'ADDTOOLBAR' . $this->hhh]
 						= $this->setAddToolBar($view);
 
@@ -450,34 +450,34 @@ class Infusion extends Interpretation
 					$this->buildTheViewScript($view);
 
 					// VIEW_SCRIPT
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'VIEW_SCRIPT' . $this->hhh]
 						= $this->setViewScript(
-						$name_single_code, 'fileScript'
+						$nameSingleCode, 'fileScript'
 					);
 
 					// EDITBODYSCRIPT
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'EDITBODYSCRIPT' . $this->hhh]
 						= $this->setViewScript(
-						$name_single_code, 'footerScript'
+						$nameSingleCode, 'footerScript'
 					);
 
 					// AJAXTOKE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'AJAXTOKE' . $this->hhh]
 						= $this->setAjaxToke(
-						$name_single_code
+						$nameSingleCode
 					);
 
 					// DOCUMENT_CUSTOM_PHP <<<DYNAMIC>>>
 					if ($phpDocument = $this->getCustomScriptBuilder(
-						'php_document', $name_single_code,
+						'php_document', $nameSingleCode,
 						PHP_EOL, null, true,
 						false
 					))
 					{
-						$this->fileContentDynamic[$name_single_code][$this->hhh
+						$this->fileContentDynamic[$nameSingleCode][$this->hhh
 						. 'DOCUMENT_CUSTOM_PHP' . $this->hhh]
 							= str_replace(
 							'$document->', '$this->document->', $phpDocument
@@ -487,126 +487,126 @@ class Infusion extends Interpretation
 					}
 					else
 					{
-						$this->fileContentDynamic[$name_single_code][$this->hhh
+						$this->fileContentDynamic[$nameSingleCode][$this->hhh
 						. 'DOCUMENT_CUSTOM_PHP' . $this->hhh]
 							= '';
 					}
 					// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'LINKEDVIEWTABLESCRIPTS' . $this->hhh]
 						= '';
 
 					// VALIDATEFIX <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'VALIDATIONFIX' . $this->hhh]
 						= $this->setValidationFix(
-						$name_single_code,
+						$nameSingleCode,
 						$this->fileContentStatic[$this->hhh . 'Component'
 						. $this->hhh]
 					);
 
 					// EDITBODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'EDITBODY' . $this->hhh]
 						= $this->setEditBody($view);
 
 					// EDITBODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'EDITBODYFADEIN' . $this->hhh]
 						= $this->setFadeInEfect($view);
 
 					// JTABLECONSTRUCTOR <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'JTABLECONSTRUCTOR' . $this->hhh]
 						= $this->setJtableConstructor(
-						$name_single_code
+						$nameSingleCode
 					);
 
 					// JTABLEALIASCATEGORY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'JTABLEALIASCATEGORY' . $this->hhh]
 						= $this->setJtableAliasCategory(
-						$name_single_code
+						$nameSingleCode
 					);
 
 					// METHOD_GET_ITEM <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'METHOD_GET_ITEM' . $this->hhh]
 						= $this->setMethodGetItem(
-						$name_single_code
+						$nameSingleCode
 					);
 
 					// LINKEDVIEWGLOBAL <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'LINKEDVIEWGLOBAL' . $this->hhh]
 						= '';
 
 					// LINKEDVIEWMETHODS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'LINKEDVIEWMETHODS' . $this->hhh]
 						= '';
 
 					// JMODELADMIN_BEFORE_DELETE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'JMODELADMIN_BEFORE_DELETE' . $this->hhh]
 						= $this->getCustomScriptBuilder(
 						'php_before_delete',
-						$name_single_code, PHP_EOL
+						$nameSingleCode, PHP_EOL
 					);
 
 					// JMODELADMIN_AFTER_DELETE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'JMODELADMIN_AFTER_DELETE' . $this->hhh]
 						= $this->getCustomScriptBuilder(
-						'php_after_delete', $name_single_code,
+						'php_after_delete', $nameSingleCode,
 						PHP_EOL . PHP_EOL
 					);
 
 					// JMODELADMIN_BEFORE_DELETE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'JMODELADMIN_BEFORE_PUBLISH' . $this->hhh]
 						= $this->getCustomScriptBuilder(
 						'php_before_publish',
-						$name_single_code, PHP_EOL
+						$nameSingleCode, PHP_EOL
 					);
 
 					// JMODELADMIN_AFTER_DELETE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'JMODELADMIN_AFTER_PUBLISH' . $this->hhh]
 						= $this->getCustomScriptBuilder(
 						'php_after_publish',
-						$name_single_code, PHP_EOL . PHP_EOL
+						$nameSingleCode, PHP_EOL . PHP_EOL
 					);
 
 					// CHECKBOX_SAVE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'CHECKBOX_SAVE' . $this->hhh]
 						= $this->setCheckboxSave(
-						$name_single_code
+						$nameSingleCode
 					);
 
 					// METHOD_ITEM_SAVE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'METHOD_ITEM_SAVE' . $this->hhh]
 						= $this->setMethodItemSave(
-						$name_single_code
+						$nameSingleCode
 					);
 
 					// POSTSAVEHOOK <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'POSTSAVEHOOK' . $this->hhh]
 						= $this->getCustomScriptBuilder(
-						'php_postsavehook', $name_single_code,
+						'php_postsavehook', $nameSingleCode,
 						PHP_EOL, null,
 						true, PHP_EOL . $this->_t(2) . "return;",
 						PHP_EOL . PHP_EOL . $this->_t(2) . "return;"
 					);
 
 					// VIEWCSS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'VIEWCSS' . $this->hhh]
 						= $this->getCustomScriptBuilder(
-						'css_view', $name_single_code, '',
+						'css_view', $nameSingleCode, '',
 						null, true
 					);
 
@@ -617,65 +617,65 @@ class Infusion extends Interpretation
 						)
 						&& $view['edit_create_site_view'] > 0)
 					{
-						$this->fileContentDynamic[$name_single_code][$this->hhh
+						$this->fileContentDynamic[$nameSingleCode][$this->hhh
 						. 'SITE_VIEWCSS' . $this->hhh]
-							= $this->fileContentDynamic[$name_single_code][$this->hhh
+							= $this->fileContentDynamic[$nameSingleCode][$this->hhh
 						. 'VIEWCSS' . $this->hhh];
 						// check if we should add a create menu
 						if ($view['edit_create_site_view'] == 2)
 						{
 							// SITE_MENU_XML <<<DYNAMIC>>>
-							$this->fileContentDynamic[$name_single_code][$this->hhh
+							$this->fileContentDynamic[$nameSingleCode][$this->hhh
 							. 'SITE_MENU_XML' . $this->hhh]
 								= $this->setAdminViewMenu(
-								$name_single_code, $view
+								$nameSingleCode, $view
 							);
 						}
 						// SITE_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
-						$this->fileContentDynamic[$name_single_code][$this->hhh
+						$this->fileContentDynamic[$nameSingleCode][$this->hhh
 						. 'SITE_ADMIN_VIEW_CONTROLLER_HEADER' . $this->hhh]
 							= $this->setClassHeaders(
 							'site.admin.view.controller',
-							$name_single_code
+							$nameSingleCode
 						);
 						// SITE_ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-						$this->fileContentDynamic[$name_single_code][$this->hhh
+						$this->fileContentDynamic[$nameSingleCode][$this->hhh
 						. 'SITE_ADMIN_VIEW_MODEL_HEADER' . $this->hhh]
 							= $this->setClassHeaders(
 							'site.admin.view.model',
-							$name_single_code
+							$nameSingleCode
 						);
 					}
 
 					// TABLAYOUTFIELDSARRAY <<<DYNAMIC>>> add the tab layout fields array to the model
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'TABLAYOUTFIELDSARRAY' . $this->hhh]
 						= $this->getTabLayoutFieldsArray(
-						$name_single_code
+						$nameSingleCode
 					);
 
 					// ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'ADMIN_VIEW_CONTROLLER_HEADER' . $this->hhh]
 						= $this->setClassHeaders(
 						'admin.view.controller',
-						$name_single_code
+						$nameSingleCode
 					);
 					// ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-					$this->fileContentDynamic[$name_single_code][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'ADMIN_VIEW_MODEL_HEADER' . $this->hhh]
 						= $this->setClassHeaders(
-						'admin.view.model', $name_single_code
+						'admin.view.model', $nameSingleCode
 					);
 
 					// Trigger Event: jcb_ce_onAfterBuildAdminEditViewContent
 					$this->triggerEvent(
 						'jcb_ce_onAfterBuildAdminEditViewContent',
 						array(&$this->componentContext, &$view,
-						      &$name_single_code,
-						      &$name_list_code,
+						      &$nameSingleCode,
+						      &$nameListCode,
 						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$name_single_code],
+						      &$this->fileContentDynamic[$nameSingleCode],
 						      &$this->placeholders, &$this->hhh)
 					);
 				}
@@ -686,7 +686,7 @@ class Infusion extends Interpretation
 					$this->lang = 'admin';
 
 					// ICOMOON <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'ICOMOON' . $this->hhh]
 						= $view['icomoon'];
 
@@ -694,10 +694,10 @@ class Infusion extends Interpretation
 					$this->triggerEvent(
 						'jcb_ce_onBeforeBuildAdminListViewContent',
 						array(&$this->componentContext, &$view,
-						      &$name_single_code,
-						      &$name_list_code,
+						      &$nameSingleCode,
+						      &$nameListCode,
 						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$name_list_code],
+						      &$this->fileContentDynamic[$nameListCode],
 						      &$this->placeholders, &$this->hhh)
 					);
 
@@ -705,22 +705,22 @@ class Infusion extends Interpretation
 					if (isset($view['port']) && $view['port']
 						|| 1 == $view['settings']->add_custom_import)
 					{
-						$this->eximportView[$name_list_code]
+						$this->eximportView[$nameListCode]
 							= true;
 						if (1 == $view['settings']->add_custom_import)
 						{
 							// this view has custom import scripting
-							$this->importCustomScripts[$name_list_code]
+							$this->importCustomScripts[$nameListCode]
 								= true;
 							// set all custom scripts
 							$this->setImportCustomScripts(
-								$name_list_code
+								$nameListCode
 							);
 						}
 					}
 					else
 					{
-						$this->eximportView[$name_list_code]
+						$this->eximportView[$nameListCode]
 							= false;
 					}
 
@@ -728,111 +728,111 @@ class Infusion extends Interpretation
 					if (isset($view['checkin']) && $view['checkin'] == 1)
 					{
 						// AUTOCHECKIN <<<DYNAMIC>>>
-						$this->fileContentDynamic[$name_list_code][$this->hhh
+						$this->fileContentDynamic[$nameListCode][$this->hhh
 						. 'AUTOCHECKIN' . $this->hhh]
 							= $this->setAutoCheckin(
-							$name_single_code,
+							$nameSingleCode,
 							$this->componentCodeName
 						);
 						// CHECKINCALL <<<DYNAMIC>>>
-						$this->fileContentDynamic[$name_list_code][$this->hhh
+						$this->fileContentDynamic[$nameListCode][$this->hhh
 						. 'CHECKINCALL' . $this->hhh]
 							= $this->setCheckinCall();
 					}
 					else
 					{
 						// AUTOCHECKIN <<<DYNAMIC>>>
-						$this->fileContentDynamic[$name_list_code][$this->hhh
+						$this->fileContentDynamic[$nameListCode][$this->hhh
 						. 'AUTOCHECKIN' . $this->hhh]
 							= '';
 						// CHECKINCALL <<<DYNAMIC>>>
-						$this->fileContentDynamic[$name_list_code][$this->hhh
+						$this->fileContentDynamic[$nameListCode][$this->hhh
 						. 'CHECKINCALL' . $this->hhh]
 							= '';
 					}
 					// admin list file contnet
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'ADMIN_JAVASCRIPT_FILE' . $this->hhh]
 						= $this->setViewScript(
-						$name_list_code, 'list_fileScript'
+						$nameListCode, 'list_fileScript'
 					);
 					// ADMIN_CUSTOM_BUTTONS_LIST
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'ADMIN_CUSTOM_BUTTONS_LIST' . $this->hhh]
 						= $this->setCustomButtons($view, 3, $this->_t(1));
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST' . $this->hhh]
 						= $this->setFunctionOnlyButtons(
-						$name_list_code
+						$nameListCode
 					);
 
 					// GET_ITEMS_METHOD_STRING_FIX <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'GET_ITEMS_METHOD_STRING_FIX' . $this->hhh]
 						= $this->setGetItemsMethodStringFix(
-						$name_single_code,
-						$name_list_code,
+						$nameSingleCode,
+						$nameListCode,
 						$this->fileContentStatic[$this->hhh . 'Component'
 						. $this->hhh]
 					);
 
 					// GET_ITEMS_METHOD_AFTER_ALL <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'GET_ITEMS_METHOD_AFTER_ALL' . $this->hhh]
 						= $this->getCustomScriptBuilder(
 						'php_getitems_after_all',
-						$name_single_code, PHP_EOL
+						$nameSingleCode, PHP_EOL
 					);
 
 					// SELECTIONTRANSLATIONFIX <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'SELECTIONTRANSLATIONFIX' . $this->hhh]
 						= $this->setSelectionTranslationFix(
-						$name_list_code,
+						$nameListCode,
 						$this->fileContentStatic[$this->hhh . 'Component'
 						. $this->hhh]
 					);
 
 					// SELECTIONTRANSLATIONFIXFUNC <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'SELECTIONTRANSLATIONFIXFUNC' . $this->hhh]
 						= $this->setSelectionTranslationFixFunc(
-						$name_list_code,
+						$nameListCode,
 						$this->fileContentStatic[$this->hhh . 'Component'
 						. $this->hhh]
 					);
 
 					// FILTER_FIELDS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'FILTER_FIELDS' . $this->hhh]
 						= $this->setFilterFields(
-						$name_list_code
+						$nameListCode
 					);
 
 					// STOREDID <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'STOREDID' . $this->hhh]
-						= $this->setStoredId($name_list_code);
+						= $this->setStoredId($nameListCode);
 
 					// POPULATESTATE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'POPULATESTATE' . $this->hhh]
 						= $this->setPopulateState(
-						$name_single_code, $name_list_code
+						$nameSingleCode, $nameListCode
 					);
 
 					// SORTFIELDS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'SORTFIELDS' . $this->hhh]
 						= $this->setSortFields(
-						$name_list_code
+						$nameListCode
 					);
 
 					// CATEGORYFILTER <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'CATEGORYFILTER' . $this->hhh]
 						= $this->setCategoryFilter(
-						$name_list_code
+						$nameListCode
 					);
 
 					// CATEGORY_VIEWS
@@ -848,120 +848,120 @@ class Infusion extends Interpretation
 					$this->fileContentStatic[$this->hhh
 					. 'ROUTER_CATEGORY_VIEWS' . $this->hhh]
 						.= $this->setRouterCategoryViews(
-						$name_single_code,
-						$name_list_code
+						$nameSingleCode,
+						$nameListCode
 					);
 
 					// OTHERFILTERS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'OTHERFILTERS' . $this->hhh]
 						= $this->setOtherFilter(
-						$name_list_code
+						$nameListCode
 					);
 
 					// FILTERFUNCTIONS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'FILTERFUNCTIONS' . $this->hhh]
 						= $this->setFilterFunctions(
-						$name_single_code,
-						$name_list_code
+						$nameSingleCode,
+						$nameListCode
 					);
 
 					// LISTQUERY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'LISTQUERY' . $this->hhh]
 						= $this->setListQuery(
-						$name_single_code,
-						$name_list_code
+						$nameSingleCode,
+						$nameListCode
 					);
 
 					// MODELEXPORTMETHOD <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'MODELEXPORTMETHOD' . $this->hhh]
 						= $this->setGetItemsModelMethod(
-						$name_single_code,
-						$name_list_code
+						$nameSingleCode,
+						$nameListCode
 					);
 
 					// MODELEXIMPORTMETHOD <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'CONTROLLEREXIMPORTMETHOD' . $this->hhh]
 						= $this->setControllerEximportMethod(
-						$name_single_code,
-						$name_list_code
+						$nameSingleCode,
+						$nameListCode
 					);
 
 					// EXPORTBUTTON <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'EXPORTBUTTON' . $this->hhh]
 						= $this->setExportButton(
-						$name_single_code,
-						$name_list_code
+						$nameSingleCode,
+						$nameListCode
 					);
 
 					// IMPORTBUTTON <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'IMPORTBUTTON' . $this->hhh]
 						= $this->setImportButton(
-						$name_single_code,
-						$name_list_code
+						$nameSingleCode,
+						$nameListCode
 					);
 
 					// LISTHEAD <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'LISTHEAD' . $this->hhh]
 						= $this->setListHead(
-						$name_single_code,
-						$name_list_code
+						$nameSingleCode,
+						$nameListCode
 					);
 
 					// LISTBODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'LISTBODY' . $this->hhh]
 						= $this->setListBody(
-						$name_single_code,
-						$name_list_code
+						$nameSingleCode,
+						$nameListCode
 					);
 
 					// LISTCOLNR <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'LISTCOLNR' . $this->hhh]
 						= $this->setListColnr(
-						$name_list_code
+						$nameListCode
 					);
 
 					// JVIEWLISTCANDO <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'JVIEWLISTCANDO' . $this->hhh]
 						= $this->setJviewListCanDo(
-						$name_single_code,
-						$name_list_code
+						$nameSingleCode,
+						$nameListCode
 					);
 
 					// VIEWSCSS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'VIEWSCSS' . $this->hhh]
 						= $this->getCustomScriptBuilder(
-						'css_views', $name_single_code, '',
+						'css_views', $nameSingleCode, '',
 						null, true
 					);
 
 					// ADMIN_DIPLAY_METHOD <<<DYNAMIC>>>
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'ADMIN_DIPLAY_METHOD' . $this->hhh]
 						= $this->setAdminViewDisplayMethod(
-						$name_list_code
+						$nameListCode
 					);
 
 					// VIEWS_FOOTER_SCRIPT <<<DYNAMIC>>>
 					$scriptNote = PHP_EOL . '//' . $this->setLine(__LINE__)
-						. ' ' . $name_list_code
+						. ' ' . $nameListCode
 						. ' footer script';
-					if ($footerScript = $this->getCustomScriptBuilder(
-						'views_footer', $name_single_code, '',
-						$scriptNote, true,
-						false, PHP_EOL
-					))
+					if (($footerScript = $this->getCustomScriptBuilder(
+							'views_footer', $nameSingleCode, '',
+							$scriptNote, true,
+							false, PHP_EOL
+						)) !== false)
 					{
 						// only minfy if no php is added to the footer script
 						if ($this->minify
@@ -974,7 +974,7 @@ class Infusion extends Interpretation
 							// clear some memory
 							unset($minifier);
 						}
-						$this->fileContentDynamic[$name_list_code][$this->hhh
+						$this->fileContentDynamic[$nameListCode][$this->hhh
 						. 'VIEWS_FOOTER_SCRIPT' . $this->hhh]
 							= PHP_EOL . '<script type="text/javascript">'
 							. $footerScript . "</script>";
@@ -983,158 +983,158 @@ class Infusion extends Interpretation
 					}
 					else
 					{
-						$this->fileContentDynamic[$name_list_code][$this->hhh
+						$this->fileContentDynamic[$nameListCode][$this->hhh
 						. 'VIEWS_FOOTER_SCRIPT' . $this->hhh]
 							= '';
 					}
 
 					// ADMIN_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'ADMIN_VIEWS_CONTROLLER_HEADER' . $this->hhh]
 						= $this->setClassHeaders(
 						'admin.views.controller',
-						$name_list_code
+						$nameListCode
 					);
 					// ADMIN_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-					$this->fileContentDynamic[$name_list_code][$this->hhh
+					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'ADMIN_VIEWS_MODEL_HEADER' . $this->hhh]
 						= $this->setClassHeaders(
-						'admin.views.model', $name_list_code
+						'admin.views.model', $nameListCode
 					);
 
 					// Trigger Event: jcb_ce_onAfterBuildAdminListViewContent
 					$this->triggerEvent(
 						'jcb_ce_onAfterBuildAdminListViewContent',
 						array(&$this->componentContext, &$view,
-						      &$name_single_code,
-						      &$name_list_code,
+						      &$nameSingleCode,
+						      &$nameListCode,
 						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$name_list_code],
+						      &$this->fileContentDynamic[$nameListCode],
 						      &$this->placeholders, &$this->hhh)
 					);
 				}
 
 				// set u fields used in batch
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'UNIQUEFIELDS' . $this->hhh]
 					= $this->setUniqueFields(
-					$name_single_code
+					$nameSingleCode
 				);
 
 				// TITLEALIASFIX <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'TITLEALIASFIX' . $this->hhh]
 					= $this->setAliasTitleFix(
-					$name_single_code
+					$nameSingleCode
 				);
 
 				// GENERATENEWTITLE <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'GENERATENEWTITLE' . $this->hhh]
 					= $this->setGenerateNewTitle(
-					$name_single_code
+					$nameSingleCode
 				);
 
 				// GENERATENEWALIAS <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'GENERATENEWALIAS' . $this->hhh]
 					= $this->setGenerateNewAlias(
-					$name_single_code
+					$nameSingleCode
 				);
 
 				// MODEL_BATCH_COPY <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'MODEL_BATCH_COPY' . $this->hhh]
-					= $this->setBatchCopy($name_single_code);
+					= $this->setBatchCopy($nameSingleCode);
 
 				// MODEL_BATCH_MOVE <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'MODEL_BATCH_MOVE' . $this->hhh]
-					= $this->setBatchMove($name_single_code);
+					= $this->setBatchMove($nameSingleCode);
 
 				// BATCH_ONCLICK_CANCEL_SCRIPT <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_list_code][$this->hhh
+				$this->fileContentDynamic[$nameListCode][$this->hhh
 				. 'BATCH_ONCLICK_CANCEL_SCRIPT' . $this->hhh]
 					= ''; // TODO <-- must still be build
 
 				// JCONTROLLERFORM_ALLOWADD <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'JCONTROLLERFORM_ALLOWADD' . $this->hhh]
 					= $this->setJcontrollerAllowAdd(
-					$name_single_code,
-					$name_list_code
+					$nameSingleCode,
+					$nameListCode
 				);
 
 				// JCONTROLLERFORM_BEFORECANCEL <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'JCONTROLLERFORM_BEFORECANCEL' . $this->hhh]
 					= $this->getCustomScriptBuilder(
-					'php_before_cancel', $name_single_code,
+					'php_before_cancel', $nameSingleCode,
 					PHP_EOL, null, null,
 					''
 				);
 
 				// JCONTROLLERFORM_AFTERCANCEL <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'JCONTROLLERFORM_AFTERCANCEL' . $this->hhh]
 					= $this->getCustomScriptBuilder(
-					'php_after_cancel', $name_single_code,
+					'php_after_cancel', $nameSingleCode,
 					PHP_EOL, null, null,
 					''
 				);
 
 				// JCONTROLLERFORM_ALLOWEDIT <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'JCONTROLLERFORM_ALLOWEDIT' . $this->hhh]
 					= $this->setJcontrollerAllowEdit(
-					$name_single_code,
-					$name_list_code
+					$nameSingleCode,
+					$nameListCode
 				);
 
 				// JMODELADMIN_GETFORM <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'JMODELADMIN_GETFORM' . $this->hhh]
 					= $this->setJmodelAdminGetForm(
-					$name_single_code,
-					$name_list_code
+					$nameSingleCode,
+					$nameListCode
 				);
 
 				// JMODELADMIN_ALLOWEDIT <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'JMODELADMIN_ALLOWEDIT' . $this->hhh]
 					= $this->setJmodelAdminAllowEdit(
-					$name_single_code,
-					$name_list_code
+					$nameSingleCode,
+					$nameListCode
 				);
 
 				// JMODELADMIN_CANDELETE <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'JMODELADMIN_CANDELETE' . $this->hhh]
 					= $this->setJmodelAdminCanDelete(
-					$name_single_code,
-					$name_list_code
+					$nameSingleCode,
+					$nameListCode
 				);
 
 				// JMODELADMIN_CANEDITSTATE <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'JMODELADMIN_CANEDITSTATE' . $this->hhh]
 					= $this->setJmodelAdminCanEditState(
-					$name_single_code,
-					$name_list_code
+					$nameSingleCode,
+					$nameListCode
 				);
 
 				// set custom admin view Toolbare buttons
 				// CUSTOM_ADMIN_DYNAMIC_BUTTONS  <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_list_code][$this->hhh
+				$this->fileContentDynamic[$nameListCode][$this->hhh
 				. 'CUSTOM_ADMIN_DYNAMIC_BUTTONS' . $this->hhh]
 					= $this->setCustomAdminDynamicButton(
-					$name_list_code
+					$nameListCode
 				);
 				// CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER  <<<DYNAMIC>>>
-				$this->fileContentDynamic[$name_list_code][$this->hhh
+				$this->fileContentDynamic[$nameListCode][$this->hhh
 				. 'CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER' . $this->hhh]
 					= $this->setCustomAdminDynamicButtonController(
-					$name_list_code
+					$nameListCode
 				);
 
 				// set helper router
@@ -1150,8 +1150,8 @@ class Infusion extends Interpretation
 				$this->fileContentStatic[$this->hhh . 'ROUTEHELPER'
 				. $this->hhh]
 					.= $this->setRouterHelp(
-					$name_single_code,
-					$name_list_code
+					$nameSingleCode,
+					$nameListCode
 				);
 
 				if (isset($view['edit_create_site_view'])
@@ -1164,12 +1164,12 @@ class Infusion extends Interpretation
 					$this->fileContentStatic[$this->hhh . 'ROUTER_PARSE_SWITCH'
 					. $this->hhh]
 						.= $this->routerParseSwitch(
-						$name_single_code, null, false
+						$nameSingleCode, null, false
 					);
 					$this->fileContentStatic[$this->hhh . 'ROUTER_BUILD_VIEWS'
 					. $this->hhh]
 						.= $this->routerBuildViews(
-						$name_single_code
+						$nameSingleCode
 					);
 				}
 
@@ -1186,8 +1186,8 @@ class Infusion extends Interpretation
 				$this->fileContentStatic[$this->hhh . 'ACCESS_SECTIONS'
 				. $this->hhh]
 					.= $this->setAccessSectionsCategory(
-					$name_single_code,
-					$name_list_code
+					$nameSingleCode,
+					$nameListCode
 				);
 				// set the Joomla Fields ACCESS section if needed
 				if (isset($view['joomla_fields'])
@@ -1202,8 +1202,8 @@ class Infusion extends Interpretation
 				$this->triggerEvent(
 					'jcb_ce_onAfterBuildAdminViewContent',
 					array(&$this->componentContext, &$view,
-					      &$name_single_code,
-					      &$name_list_code,
+					      &$nameSingleCode,
+					      &$nameListCode,
 					      &$this->fileContentStatic,
 					      &$this->fileContentDynamic, &$this->placeholders,
 					      &$this->hhh)
@@ -2314,7 +2314,7 @@ class Infusion extends Interpretation
 		if (isset($view->name_single) && $view->name_single != 'null')
 		{
 			// set main keys
-			$name_single_code            = $view->name_single_code;
+			$nameSingleCode              = $view->name_single_code;
 			$name_single_uppercase       = ComponentbuilderHelper::safeString(
 				$view->name_single, 'U'
 			);
@@ -2324,13 +2324,13 @@ class Infusion extends Interpretation
 
 			// set some place holder for the views
 			$this->placeholders[$this->hhh . 'view' . $this->hhh]
-				= $name_single_code;
+				= $nameSingleCode;
 			$this->placeholders[$this->hhh . 'View' . $this->hhh]
 				= $name_single_first_uppercase;
 			$this->placeholders[$this->hhh . 'VIEW' . $this->hhh]
 				= $name_single_uppercase;
 			$this->placeholders[$this->bbb . 'view' . $this->ddd]
-				= $name_single_code;
+				= $nameSingleCode;
 			$this->placeholders[$this->bbb . 'View' . $this->ddd]
 				= $name_single_first_uppercase;
 			$this->placeholders[$this->bbb . 'VIEW' . $this->ddd]
@@ -2340,7 +2340,7 @@ class Infusion extends Interpretation
 		// VIEWS <<<DYNAMIC>>>
 		if (isset($view->name_list) && $view->name_list != 'null')
 		{
-			$name_list_code            = $view->name_list_code;
+			$nameListCode              = $view->name_list_code;
 			$name_list_uppercase       = ComponentbuilderHelper::safeString(
 				$view->name_list, 'U'
 			);
@@ -2350,13 +2350,13 @@ class Infusion extends Interpretation
 
 			// set some place holder for the views
 			$this->placeholders[$this->hhh . 'views' . $this->hhh]
-				= $name_list_code;
+				= $nameListCode;
 			$this->placeholders[$this->hhh . 'Views' . $this->hhh]
 				= $name_list_first_uppercase;
 			$this->placeholders[$this->hhh . 'VIEWS' . $this->hhh]
 				= $name_list_uppercase;
 			$this->placeholders[$this->bbb . 'views' . $this->ddd]
-				= $name_list_code;
+				= $nameListCode;
 			$this->placeholders[$this->bbb . 'Views' . $this->ddd]
 				= $name_list_first_uppercase;
 			$this->placeholders[$this->bbb . 'VIEWS' . $this->ddd]
@@ -2364,56 +2364,56 @@ class Infusion extends Interpretation
 		}
 
 		// view <<<DYNAMIC>>>
-		if (isset($name_single_code))
+		if (isset($nameSingleCode))
 		{
-			$this->fileContentDynamic[$name_single_code][$this->hhh . 'view'
+			$this->fileContentDynamic[$nameSingleCode][$this->hhh . 'view'
 			. $this->hhh]
-				= $name_single_code;
-			$this->fileContentDynamic[$name_single_code][$this->hhh . 'VIEW'
+				= $nameSingleCode;
+			$this->fileContentDynamic[$nameSingleCode][$this->hhh . 'VIEW'
 			. $this->hhh]
 				= $name_single_uppercase;
-			$this->fileContentDynamic[$name_single_code][$this->hhh . 'View'
+			$this->fileContentDynamic[$nameSingleCode][$this->hhh . 'View'
 			. $this->hhh]
 				= $name_single_first_uppercase;
 
-			if (isset($name_list_code))
+			if (isset($nameListCode))
 			{
-				$this->fileContentDynamic[$name_list_code][$this->hhh . 'view'
+				$this->fileContentDynamic[$nameListCode][$this->hhh . 'view'
 				. $this->hhh]
-					= $name_single_code;
-				$this->fileContentDynamic[$name_list_code][$this->hhh . 'VIEW'
+					= $nameSingleCode;
+				$this->fileContentDynamic[$nameListCode][$this->hhh . 'VIEW'
 				. $this->hhh]
 					= $name_single_uppercase;
-				$this->fileContentDynamic[$name_list_code][$this->hhh . 'View'
+				$this->fileContentDynamic[$nameListCode][$this->hhh . 'View'
 				. $this->hhh]
 					= $name_single_first_uppercase;
 			}
 		}
 
 		// views <<<DYNAMIC>>>
-		if (isset($name_list_code))
+		if (isset($nameListCode))
 		{
-			$this->fileContentDynamic[$name_list_code][$this->hhh . 'views'
+			$this->fileContentDynamic[$nameListCode][$this->hhh . 'views'
 			. $this->hhh]
-				= $name_list_code;
-			$this->fileContentDynamic[$name_list_code][$this->hhh . 'VIEWS'
+				= $nameListCode;
+			$this->fileContentDynamic[$nameListCode][$this->hhh . 'VIEWS'
 			. $this->hhh]
 				= $name_list_uppercase;
-			$this->fileContentDynamic[$name_list_code][$this->hhh . 'Views'
+			$this->fileContentDynamic[$nameListCode][$this->hhh . 'Views'
 			. $this->hhh]
 				= $name_list_first_uppercase;
 
-			if (isset($name_single_code))
+			if (isset($nameSingleCode))
 			{
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'views'
 				. $this->hhh]
-					= $name_list_code;
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+					= $nameListCode;
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'VIEWS'
 				. $this->hhh]
 					= $name_list_uppercase;
-				$this->fileContentDynamic[$name_single_code][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'Views'
 				. $this->hhh]
 					= $name_list_first_uppercase;

@@ -25,11 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_modules&task=joomla_m
 		<td class="order nowrap center hidden-phone">
 		<?php if ($canDo->get('joomla_module.edit.state')): ?>
 			<?php
-				if ($this->saveOrder)
-				{
-					$iconClass = ' inactive';
-				}
-				else
+				$iconClass = '';
+				if (!$this->saveOrder)
 				{
 					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
 				}

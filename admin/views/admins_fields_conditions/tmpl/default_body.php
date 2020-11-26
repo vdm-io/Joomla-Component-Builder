@@ -25,11 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=admins_fields_conditions&tas
 		<td class="order nowrap center hidden-phone">
 		<?php if ($canDo->get('admin_fields_conditions.edit.state')): ?>
 			<?php
-				if ($this->saveOrder)
-				{
-					$iconClass = ' inactive';
-				}
-				else
+				$iconClass = '';
+				if (!$this->saveOrder)
 				{
 					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
 				}

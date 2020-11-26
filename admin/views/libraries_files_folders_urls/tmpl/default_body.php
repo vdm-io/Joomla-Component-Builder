@@ -25,11 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=libraries_files_folders_urls
 		<td class="order nowrap center hidden-phone">
 		<?php if ($canDo->get('library_files_folders_urls.edit.state')): ?>
 			<?php
-				if ($this->saveOrder)
-				{
-					$iconClass = ' inactive';
-				}
-				else
+				$iconClass = '';
+				if (!$this->saveOrder)
 				{
 					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
 				}

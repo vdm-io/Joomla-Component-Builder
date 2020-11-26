@@ -25,11 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=dynamic_gets&task=dynamic_ge
 		<td class="order nowrap center hidden-phone">
 		<?php if ($canDo->get('dynamic_get.edit.state')): ?>
 			<?php
-				if ($this->saveOrder)
-				{
-					$iconClass = ' inactive';
-				}
-				else
+				$iconClass = '';
+				if (!$this->saveOrder)
 				{
 					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
 				}

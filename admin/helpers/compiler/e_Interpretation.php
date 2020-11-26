@@ -1453,9 +1453,9 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $help);
 	}
 
-	public function checkHelp($viewName_single)
+	public function checkHelp($nameSingleCode)
 	{
-		if ($viewName_single == "help_document")
+		if ($nameSingleCode == "help_document")
 		{
 			// set help file into admin place
 			$target    = array('admin' => 'help');
@@ -2198,17 +2198,18 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setAdminViewMenu(&$viewName_single, &$view)
+	public function setAdminViewMenu(&$nameSingleCode, &$view)
 	{
 		$xml = '';
 		// build the file target values
-		$target = array('site' => $viewName_single);
+		$target = array('site' => $nameSingleCode);
 		// build the edit.xml file
 		if ($this->buildDynamique($target, 'admin_menu'))
 		{
 			// set the lang
 			$lang = ComponentbuilderHelper::safeString(
-				'com_' . $this->componentCodeName . '_menu_' . $viewName_single,
+				'com_' . $this->componentCodeName . '_menu_'
+				. $nameSingleCode,
 				'U'
 			);
 			$this->setLangContent(
@@ -2239,7 +2240,7 @@ class Interpretation extends Fields
 			$this->app->enqueueMessage(
 				JText::sprintf(
 					'<hr /><p>Site menu for <b>%s</b> was not build.</p>',
-					$viewName_single
+					$nameSingleCode
 				), 'Warning'
 			);
 		}
@@ -5092,23 +5093,49 @@ class Interpretation extends Fields
 		return $script . $getItem;
 	}
 
-	public function setAdminViewDisplayMethod($viewName_list)
+	/**
+	 * build code for the admin view display method
+	 *
+	 * @param   string  $nameListCode  The list view name
+	 *
+	 * @return  string The php to place in view.html.php
+	 *
+	 */
+	public function setAdminViewDisplayMethod($nameListCode)
 	{
 		$script = '';
-		if (isset($this->viewsDefaultOrdering[$viewName_list])
-			&& $this->viewsDefaultOrdering[$viewName_list]['add_admin_ordering']
+		// add the the new filter methods for the search toolbar above the list view
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 2)
+		{
+			$script .= PHP_EOL . $this->_t(2) . "//"
+				. $this->setLine(
+					__LINE__
+				) . " Load the filter form from xml.";
+			$script .= PHP_EOL . $this->_t(2) . "\$this->filterForm "
+				. "= \$this->get('FilterForm');";
+			$script .= PHP_EOL . $this->_t(2) . "//"
+				. $this->setLine(
+					__LINE__
+				) . " Load the active filters.";
+			$script .= PHP_EOL . $this->_t(2) . "\$this->activeFilters "
+				. "= \$this->get('ActiveFilters');";
+		}
+		// add the custom ordering if set
+		if (isset($this->viewsDefaultOrdering[$nameListCode])
+			&& $this->viewsDefaultOrdering[$nameListCode]['add_admin_ordering']
 			== 1)
 		{
 			// the first is from the state
 			$order_first = true;
 			foreach (
-				$this->viewsDefaultOrdering[$viewName_list]['admin_ordering_fields']
+				$this->viewsDefaultOrdering[$nameListCode]['admin_ordering_fields']
 				as $order_field
 			)
 			{
 				if ($order_first
 					&& ($order_field_name = $this->getFieldDatabaseName(
-						$viewName_list, $order_field['field']
+						$nameListCode, $order_field['field']
 					)) !== false)
 				{
 					// just the first field is based on state
@@ -5546,38 +5573,32 @@ class Interpretation extends Fields
 		{
 			if (1 == $type)
 			{
-				$viewName = $view['settings']->code;
+				$viewCodeName = $view['settings']->code;
 			}
 			if (2 == $type)
 			{
-				$viewName = ComponentbuilderHelper::safeString(
-					$view['settings']->name_single
-				);
+				$viewCodeName = $view['settings']->name_single_code;
 			}
 			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-			$this->fileContentDynamic[$viewName][$this->hhh . $TARGET
+			$this->fileContentDynamic[$viewCodeName][$this->hhh . $TARGET
 			. '_CUSTOM_BUTTONS_CONTROLLER' . $this->hhh]
 				= '';
 			// set the custom buttons CUSTOM_BUTTONS_METHOD
-			$this->fileContentDynamic[$viewName][$this->hhh . $TARGET
+			$this->fileContentDynamic[$viewCodeName][$this->hhh . $TARGET
 			. '_CUSTOM_BUTTONS_METHOD' . $this->hhh]
 				= '';
 		}
 		elseif (3 == $type)
 		{
 			// set the names
-			$viewName  = ComponentbuilderHelper::safeString(
-				$view['settings']->name_single
-			);
-			$viewsName = ComponentbuilderHelper::safeString(
-				$view['settings']->name_list
-			);
+			$viewCodeName  = $view['settings']->name_single_code;
+			$viewsCodeName = $view['settings']->name_list_code;
 			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER_LIST
-			$this->fileContentDynamic[$viewsName][$this->hhh . $TARGET
+			$this->fileContentDynamic[$viewsCodeName][$this->hhh . $TARGET
 			. '_CUSTOM_BUTTONS_CONTROLLER_LIST' . $this->hhh]
 				= '';
 			// set the custom buttons CUSTOM_BUTTONS_METHOD_LIST
-			$this->fileContentDynamic[$viewsName][$this->hhh . $TARGET
+			$this->fileContentDynamic[$viewsCodeName][$this->hhh . $TARGET
 			. '_CUSTOM_BUTTONS_METHOD_LIST' . $this->hhh]
 				= '';
 			// validate selection
@@ -5589,11 +5610,12 @@ class Interpretation extends Fields
 		if ($this->target === 'site')
 		{
 			// set the custom buttons SITE_TOP_BUTTON
-			$this->fileContentDynamic[$viewName][$this->hhh . 'SITE_TOP_BUTTON'
+			$this->fileContentDynamic[$viewCodeName][$this->hhh
+			. 'SITE_TOP_BUTTON'
 			. $this->hhh]
 				= '';
 			// set the custom buttons SITE_BOTTOM_BUTTON
-			$this->fileContentDynamic[$viewName][$this->hhh
+			$this->fileContentDynamic[$viewCodeName][$this->hhh
 			. 'SITE_BOTTOM_BUTTON' . $this->hhh]
 				= '';
 			// load into place
@@ -5601,25 +5623,25 @@ class Interpretation extends Fields
 			{
 				case 1:
 					// set buttons to top right of the view
-					$this->fileContentDynamic[$viewName][$this->hhh
+					$this->fileContentDynamic[$viewCodeName][$this->hhh
 					. 'SITE_TOP_BUTTON' . $this->hhh]
 						= '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
 					break;
 				case 2:
 					// set buttons to top left of the view
-					$this->fileContentDynamic[$viewName][$this->hhh
+					$this->fileContentDynamic[$viewCodeName][$this->hhh
 					. 'SITE_TOP_BUTTON' . $this->hhh]
 						= '<?php echo $this->toolbar->render(); ?>';
 					break;
 				case 3:
 					// set buttons to buttom right of the view
-					$this->fileContentDynamic[$viewName][$this->hhh
+					$this->fileContentDynamic[$viewCodeName][$this->hhh
 					. 'SITE_BOTTOM_BUTTON' . $this->hhh]
 						= '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
 					break;
 				case 4:
 					// set buttons to buttom left of the view
-					$this->fileContentDynamic[$viewName][$this->hhh
+					$this->fileContentDynamic[$viewCodeName][$this->hhh
 					. 'SITE_BOTTOM_BUTTON' . $this->hhh]
 						= '<?php echo $this->toolbar->render(); ?>';
 					break;
@@ -5637,12 +5659,12 @@ class Interpretation extends Fields
 			// add this button only if this is not the default view
 			if ($this->dynamicDashboardType !== 'custom_admin_views'
 				|| ($this->dynamicDashboardType === 'custom_admin_views'
-					&& $this->dynamicDashboard !== $viewName))
+					&& $this->dynamicDashboard !== $viewCodeName))
 			{
 				$buttons[] = $tab . $this->_t(2)
 					. "//" . $this->setLine(__LINE__) . " add cpanel button";
 				$buttons[] = $tab . $this->_t(2)
-					. "JToolBarHelper::custom('" . $viewName . "."
+					. "JToolBarHelper::custom('" . $viewCodeName . "."
 					. "dashboard', 'grid-2', '', 'COM_"
 					. $this->fileContentStatic[$this->hhh
 					. 'COMPONENT' . $this->hhh]
@@ -5683,14 +5705,16 @@ class Interpretation extends Fields
 							|| $this->target === 'site')
 						{
 							$buttons[] = $this->_t(1) . $tab . $this->_t(1)
-								. "if (\$this->user->authorise('" . $viewName
+								. "if (\$this->user->authorise('"
+								. $viewCodeName
 								. "." . $keyCode . "', 'com_"
 								. $this->componentCodeName . "'))";
 						}
 						else
 						{
 							$buttons[] = $this->_t(1) . $tab . $this->_t(1)
-								. "if (\$this->canDo->get('" . $viewName . "."
+								. "if (\$this->canDo->get('" . $viewCodeName
+								. "."
 								. $keyCode . "'))";
 						}
 						$buttons[] = $this->_t(1) . $tab . $this->_t(1) . "{";
@@ -5698,7 +5722,7 @@ class Interpretation extends Fields
 							. $this->setLine(__LINE__) . " add "
 							. $custom_button['name'] . " button.";
 						$buttons[] = $this->_t(1) . $tab . $this->_t(2)
-							. "JToolBarHelper::custom('" . $viewName . "."
+							. "JToolBarHelper::custom('" . $viewCodeName . "."
 							. $custom_button['method'] . "', '"
 							. $custom_button['icomoon'] . " custom-button-"
 							. strtolower($custom_button['method']) . "', '', '"
@@ -5713,41 +5737,49 @@ class Interpretation extends Fields
 						if (isset($custom_button['type'])
 							&& $custom_button['type'] == 2)
 						{
-							if (!isset($this->onlyFunctionButton[$viewsName]))
+							if (!isset($this->onlyFunctionButton[$viewsCodeName]))
 							{
-								$this->onlyFunctionButton[$viewsName] = array();
+								$this->onlyFunctionButton[$viewsCodeName]
+									= array();
 							}
-							$this->onlyFunctionButton[$viewsName][] = $this->_t(
+							$this->onlyFunctionButton[$viewsCodeName][]
+								= $this->_t(
 									1
 								) . $tab . "if (\$this->user->authorise('"
-								. $viewName . "." . $keyCode . "', 'com_"
+								. $viewCodeName . "." . $keyCode . "', 'com_"
 								. $this->componentCodeName . "'))";
-							$this->onlyFunctionButton[$viewsName][] = $this->_t(
+							$this->onlyFunctionButton[$viewsCodeName][]
+								= $this->_t(
 									1
 								) . $tab . "{";
-							$this->onlyFunctionButton[$viewsName][] = $this->_t(
+							$this->onlyFunctionButton[$viewsCodeName][]
+								= $this->_t(
 									1
 								) . $tab . $this->_t(1) . "//" . $this->setLine(
 									__LINE__
 								) . " add " . $custom_button['name']
 								. " button.";
-							$this->onlyFunctionButton[$viewsName][] = $this->_t(
+							$this->onlyFunctionButton[$viewsCodeName][]
+								= $this->_t(
 									1
 								) . $tab . $this->_t(1)
-								. "JToolBarHelper::custom('" . $viewsName . "."
+								. "JToolBarHelper::custom('" . $viewsCodeName
+								. "."
 								. $custom_button['method'] . "', '"
 								. $custom_button['icomoon'] . " custom-button-"
 								. strtolower($custom_button['method'])
 								. "', '', '"
 								. $keyLang . "', false);";
-							$this->onlyFunctionButton[$viewsName][] = $this->_t(
+							$this->onlyFunctionButton[$viewsCodeName][]
+								= $this->_t(
 									1
 								) . $tab . "}";
 						}
 						else
 						{
 							$buttons[] = $this->_t(1) . $tab . $this->_t(1)
-								. "if (\$this->user->authorise('" . $viewName
+								. "if (\$this->user->authorise('"
+								. $viewCodeName
 								. "." . $keyCode . "', 'com_"
 								. $this->componentCodeName . "'))";
 							$buttons[] = $this->_t(1) . $tab . $this->_t(1)
@@ -5756,7 +5788,8 @@ class Interpretation extends Fields
 								. "//" . $this->setLine(__LINE__) . " add "
 								. $custom_button['name'] . " button.";
 							$buttons[] = $this->_t(1) . $tab . $this->_t(2)
-								. "JToolBarHelper::custom('" . $viewsName . "."
+								. "JToolBarHelper::custom('" . $viewsCodeName
+								. "."
 								. $custom_button['method'] . "', '"
 								. $custom_button['icomoon'] . " custom-button-"
 								. strtolower($custom_button['method'])
@@ -5780,7 +5813,8 @@ class Interpretation extends Fields
 					&& $view['settings']->php_controller_list != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-					$this->fileContentDynamic[$viewsName][$this->hhh . $TARGET
+					$this->fileContentDynamic[$viewsCodeName][$this->hhh
+					. $TARGET
 					. '_CUSTOM_BUTTONS_CONTROLLER_LIST' . $this->hhh]
 						= PHP_EOL . PHP_EOL . $this->setPlaceholders(
 							$view['settings']->php_controller_list,
@@ -5795,7 +5829,8 @@ class Interpretation extends Fields
 					&& $view['settings']->php_model_list != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_METHOD
-					$this->fileContentDynamic[$viewsName][$this->hhh . $TARGET
+					$this->fileContentDynamic[$viewsCodeName][$this->hhh
+					. $TARGET
 					. '_CUSTOM_BUTTONS_METHOD_LIST' . $this->hhh]
 						= PHP_EOL . PHP_EOL . $this->setPlaceholders(
 							$view['settings']->php_model_list,
@@ -5812,7 +5847,8 @@ class Interpretation extends Fields
 					&& $view['settings']->php_controller != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-					$this->fileContentDynamic[$viewName][$this->hhh . $TARGET
+					$this->fileContentDynamic[$viewCodeName][$this->hhh
+					. $TARGET
 					. '_CUSTOM_BUTTONS_CONTROLLER' . $this->hhh]
 						= PHP_EOL . PHP_EOL . $this->setPlaceholders(
 							$view['settings']->php_controller,
@@ -5822,7 +5858,7 @@ class Interpretation extends Fields
 					{
 						// add the controller for this view
 						// build the file
-						$target = array($this->target => $viewName);
+						$target = array($this->target => $viewCodeName);
 						$this->buildDynamique($target, 'custom_form');
 						// GET_FORM_CUSTOM
 					}
@@ -5834,7 +5870,8 @@ class Interpretation extends Fields
 					&& $view['settings']->php_model != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_METHOD
-					$this->fileContentDynamic[$viewName][$this->hhh . $TARGET
+					$this->fileContentDynamic[$viewCodeName][$this->hhh
+					. $TARGET
 					. '_CUSTOM_BUTTONS_METHOD' . $this->hhh]
 						= PHP_EOL . PHP_EOL . $this->setPlaceholders(
 							$view['settings']->php_model, $this->placeholders
@@ -5887,16 +5924,16 @@ class Interpretation extends Fields
 		return PHP_EOL . implode(PHP_EOL, $script);
 	}
 
-	public function setFunctionOnlyButtons($viewName_list)
+	public function setFunctionOnlyButtons($nameListCode)
 	{
 		// return buttons if they were build
-		if (isset($this->onlyFunctionButton[$viewName_list])
+		if (isset($this->onlyFunctionButton[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->onlyFunctionButton[$viewName_list]
+				$this->onlyFunctionButton[$nameListCode]
 			))
 		{
 			return PHP_EOL . implode(
-					PHP_EOL, $this->onlyFunctionButton[$viewName_list]
+					PHP_EOL, $this->onlyFunctionButton[$nameListCode]
 				);
 		}
 
@@ -8091,14 +8128,16 @@ class Interpretation extends Fields
 				) . " Get The Database object";
 			$script .= PHP_EOL . $this->_t(2) . "\$db = JFactory::getDbo();";
 
-			foreach ($this->uninstallScriptBuilder as $viewName => $typeAlias)
+			foreach (
+				$this->uninstallScriptBuilder as $viewsCodeName => $typeAlias
+			)
 			{
 				// set a var value
-				$view = ComponentbuilderHelper::safeString($viewName);
+				$view = ComponentbuilderHelper::safeString($viewsCodeName);
 
 				// check if it has field relations
 				if (isset($this->uninstallScriptFields)
-					&& isset($this->uninstallScriptFields[$viewName]))
+					&& isset($this->uninstallScriptFields[$viewsCodeName]))
 				{
 					// First check if data is till in table
 					$script .= PHP_EOL . PHP_EOL . $this->_t(2) . "//"
@@ -8115,7 +8154,7 @@ class Interpretation extends Fields
 						. "\$query->from(\$db->quoteName('#__fields'));";
 					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 							__LINE__
-						) . " Where " . $viewName . " context is found";
+						) . " Where " . $viewsCodeName . " context is found";
 					$script .= PHP_EOL . $this->_t(2)
 						. "\$query->where( \$db->quoteName('context') . ' = '. \$db->quote('"
 						. $typeAlias . "') );";
@@ -8143,7 +8182,8 @@ class Interpretation extends Fields
 					// Now remove the actual type entry
 					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 							__LINE__
-						) . " Remove " . $viewName . " from the field table";
+						) . " Remove " . $viewsCodeName
+						. " from the field table";
 					$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 						. "_condition = array( \$db->quoteName('context') . ' = '. \$db->quote('"
 						. $typeAlias . "') );";
@@ -8160,7 +8200,7 @@ class Interpretation extends Fields
 						. "\$db->setQuery(\$query);";
 					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 							__LINE__
-						) . " Execute the query to remove " . $viewName
+						) . " Execute the query to remove " . $viewsCodeName
 						. " items";
 					$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 						. "_done = \$db->execute();";
@@ -8169,7 +8209,7 @@ class Interpretation extends Fields
 					$script .= PHP_EOL . $this->_t(3) . "{";
 					$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 							__LINE__
-						) . " If succesfully remove " . $viewName
+						) . " If succesfully remove " . $viewsCodeName
 						. " add queued success message.";
 					// TODO lang is not translated
 					$script .= PHP_EOL . $this->_t(4)
@@ -8179,7 +8219,7 @@ class Interpretation extends Fields
 					$script .= PHP_EOL . $this->_t(3) . "}";
 					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 							__LINE__
-						) . " Also Remove " . $viewName . " field values";
+						) . " Also Remove " . $viewsCodeName . " field values";
 					$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 						. "_condition = array( \$db->quoteName('field_id') . ' IN ('. implode(',', \$"
 						. $view . "_field_ids) .')');";
@@ -8196,7 +8236,7 @@ class Interpretation extends Fields
 						. "\$db->setQuery(\$query);";
 					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 							__LINE__
-						) . " Execute the query to remove " . $viewName
+						) . " Execute the query to remove " . $viewsCodeName
 						. " field values";
 					$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 						. "_done = \$db->execute();";
@@ -8205,12 +8245,12 @@ class Interpretation extends Fields
 					$script .= PHP_EOL . $this->_t(3) . "{";
 					$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 							__LINE__
-						) . " If succesfully remove " . $viewName
+						) . " If succesfully remove " . $viewsCodeName
 						. " add queued success message.";
 					// TODO lang is not translated
 					$script .= PHP_EOL . $this->_t(4)
 						. "\$app->enqueueMessage(JText:"
-						. ":_('The fields values for " . $viewName
+						. ":_('The fields values for " . $viewsCodeName
 						. " was removed from the <b>#__fields_values</b> table'));";
 					$script .= PHP_EOL . $this->_t(3) . "}";
 					$script .= PHP_EOL . $this->_t(2) . "}";
@@ -8230,7 +8270,7 @@ class Interpretation extends Fields
 						. "\$query->from(\$db->quoteName('#__fields_groups'));";
 					$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 							__LINE__
-						) . " Where " . $viewName . " context is found";
+						) . " Where " . $viewsCodeName . " context is found";
 					$script .= PHP_EOL . $this->_t(2)
 						. "\$query->where( \$db->quoteName('context') . ' = '. \$db->quote('"
 						. $typeAlias . "') );";
@@ -8252,7 +8292,7 @@ class Interpretation extends Fields
 					// Now remove the actual type entry
 					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 							__LINE__
-						) . " Remove " . $viewName
+						) . " Remove " . $viewsCodeName
 						. " from the field groups table";
 					$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 						. "_condition = array( \$db->quoteName('context') . ' = '. \$db->quote('"
@@ -8270,7 +8310,7 @@ class Interpretation extends Fields
 						. "\$db->setQuery(\$query);";
 					$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 							__LINE__
-						) . " Execute the query to remove " . $viewName
+						) . " Execute the query to remove " . $viewsCodeName
 						. " items";
 					$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 						. "_done = \$db->execute();";
@@ -8279,7 +8319,7 @@ class Interpretation extends Fields
 					$script .= PHP_EOL . $this->_t(3) . "{";
 					$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 							__LINE__
-						) . " If succesfully remove " . $viewName
+						) . " If succesfully remove " . $viewsCodeName
 						. " add queued success message.";
 					// TODO lang is not translated
 					$script .= PHP_EOL . $this->_t(4)
@@ -8303,7 +8343,7 @@ class Interpretation extends Fields
 					. "\$query->from(\$db->quoteName('#__content_types'));";
 				$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 						__LINE__
-					) . " Where " . $viewName . " alias is found";
+					) . " Where " . $viewsCodeName . " alias is found";
 				$script .= PHP_EOL . $this->_t(2)
 					. "\$query->where( \$db->quoteName('type_alias') . ' = '. \$db->quote('"
 					. $typeAlias . "') );";
@@ -8330,7 +8370,8 @@ class Interpretation extends Fields
 				// Now remove the actual type entry
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 						__LINE__
-					) . " Remove " . $viewName . " from the content type table";
+					) . " Remove " . $viewsCodeName
+					. " from the content type table";
 				$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 					. "_condition = array( \$db->quoteName('type_alias') . ' = '. \$db->quote('"
 					. $typeAlias . "') );";
@@ -8346,14 +8387,15 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query);";
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 						__LINE__
-					) . " Execute the query to remove " . $viewName . " items";
+					) . " Execute the query to remove " . $viewsCodeName
+					. " items";
 				$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 					. "_done = \$db->execute();";
 				$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done)";
 				$script .= PHP_EOL . $this->_t(3) . "{";
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 						__LINE__
-					) . " If succesfully remove " . $viewName
+					) . " If succesfully remove " . $viewsCodeName
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . $this->_t(4)
@@ -8363,7 +8405,7 @@ class Interpretation extends Fields
 
 				// Now remove the related items from contentitem tag map table
 				$script .= PHP_EOL . PHP_EOL . $this->_t(3) . "//"
-					. $this->setLine(__LINE__) . " Remove " . $viewName
+					. $this->setLine(__LINE__) . " Remove " . $viewsCodeName
 					. " items from the contentitem tag map table";
 				$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 					. "_condition = array( \$db->quoteName('type_alias') . ' = '. \$db->quote('"
@@ -8380,14 +8422,15 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query);";
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 						__LINE__
-					) . " Execute the query to remove " . $viewName . " items";
+					) . " Execute the query to remove " . $viewsCodeName
+					. " items";
 				$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 					. "_done = \$db->execute();";
 				$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done)";
 				$script .= PHP_EOL . $this->_t(3) . "{";
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 						__LINE__
-					) . " If succesfully remove " . $viewName
+					) . " If succesfully remove " . $viewsCodeName
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . $this->_t(4)
@@ -8397,7 +8440,7 @@ class Interpretation extends Fields
 
 				// Now remove the related items from ucm content table
 				$script .= PHP_EOL . PHP_EOL . $this->_t(3) . "//"
-					. $this->setLine(__LINE__) . " Remove " . $viewName
+					. $this->setLine(__LINE__) . " Remove " . $viewsCodeName
 					. " items from the ucm content table";
 				$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 					. "_condition = array( \$db->quoteName('core_type_alias') . ' = ' . \$db->quote('"
@@ -8414,14 +8457,15 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query);";
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 						__LINE__
-					) . " Execute the query to remove " . $viewName . " items";
+					) . " Execute the query to remove " . $viewsCodeName
+					. " items";
 				$script .= PHP_EOL . $this->_t(3) . "\$" . $view
 					. "_done = \$db->execute();";
 				$script .= PHP_EOL . $this->_t(3) . "if (\$" . $view . "_done)";
 				$script .= PHP_EOL . $this->_t(3) . "{";
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 						__LINE__
-					) . " If succesfully remove " . $viewName
+					) . " If succesfully remove " . $viewsCodeName
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . $this->_t(4)
@@ -8432,7 +8476,7 @@ class Interpretation extends Fields
 				// setup the foreach loop of ids
 				$script .= PHP_EOL . PHP_EOL . $this->_t(3) . "//"
 					. $this->setLine(__LINE__) . " Make sure that all the "
-					. $viewName . " items are cleared from DB";
+					. $viewsCodeName . " items are cleared from DB";
 				$script .= PHP_EOL . $this->_t(3) . "foreach (\$" . $view
 					. "_ids as \$" . $view . "_id)";
 				$script .= PHP_EOL . $this->_t(3) . "{";
@@ -8440,7 +8484,7 @@ class Interpretation extends Fields
 				// Now remove the related items from ucm base table
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 						__LINE__
-					) . " Remove " . $viewName
+					) . " Remove " . $viewsCodeName
 					. " items from the ucm base table";
 				$script .= PHP_EOL . $this->_t(4) . "\$" . $view
 					. "_condition = array( \$db->quoteName('ucm_type_id') . ' = ' . \$"
@@ -8457,12 +8501,13 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(4) . "\$db->setQuery(\$query);";
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 						__LINE__
-					) . " Execute the query to remove " . $viewName . " items";
+					) . " Execute the query to remove " . $viewsCodeName
+					. " items";
 				$script .= PHP_EOL . $this->_t(4) . "\$db->execute();";
 
 				// Now remove the related items from ucm history table
 				$script .= PHP_EOL . PHP_EOL . $this->_t(4) . "//"
-					. $this->setLine(__LINE__) . " Remove " . $viewName
+					. $this->setLine(__LINE__) . " Remove " . $viewsCodeName
 					. " items from the ucm history table";
 				$script .= PHP_EOL . $this->_t(4) . "\$" . $view
 					. "_condition = array( \$db->quoteName('ucm_type_id') . ' = ' . \$"
@@ -8479,7 +8524,8 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(4) . "\$db->setQuery(\$query);";
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 						__LINE__
-					) . " Execute the query to remove " . $viewName . " items";
+					) . " Execute the query to remove " . $viewsCodeName
+					. " items";
 				$script .= PHP_EOL . $this->_t(4) . "\$db->execute();";
 
 				$script .= PHP_EOL . $this->_t(3) . "}";
@@ -8779,30 +8825,30 @@ class Interpretation extends Fields
 		return $array;
 	}
 
-	public function setRouterHelp($viewName_single, $viewName_list,
+	public function setRouterHelp($nameSingleCode, $nameListCode,
 		$front = false
 	) {
 		// add if tags is added, also for all front item views
-		if (((isset($this->tagsBuilder[$viewName_single])
+		if (((isset($this->tagsBuilder[$nameSingleCode])
 					&& ComponentbuilderHelper::checkString(
-						$this->tagsBuilder[$viewName_single]
+						$this->tagsBuilder[$nameSingleCode]
 					))
 				|| $front)
-			&& (!in_array($viewName_single, $this->setRouterHelpDone)))
+			&& (!in_array($nameSingleCode, $this->setRouterHelpDone)))
 		{
 			// insure we load a view only once
-			$this->setRouterHelpDone[] = $viewName_single;
+			$this->setRouterHelpDone[] = $nameSingleCode;
 			// build view route helper
 			$View          = ComponentbuilderHelper::safeString(
-				$viewName_single, 'F'
+				$nameSingleCode, 'F'
 			);
 			$routeHelper   = array();
 			$routeHelper[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
 			$routeHelper[] = $this->_t(1) . " * @param int The route of the "
 				. $View;
 			$routeHelper[] = $this->_t(1) . " */";
-			if ('category' === $viewName_single
-				|| 'categories' === $viewName_single)
+			if ('category' === $nameSingleCode
+				|| 'categories' === $nameSingleCode)
 			{
 				$routeHelper[] = $this->_t(1) . "public static function get"
 					. $View . "Route(\$id = 0)";
@@ -8818,13 +8864,13 @@ class Interpretation extends Fields
 			$routeHelper[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Initialize the needel array.";
 			$routeHelper[] = $this->_t(3) . "\$needles = array(";
-			$routeHelper[] = $this->_t(4) . "'" . $viewName_single
+			$routeHelper[] = $this->_t(4) . "'" . $nameSingleCode
 				. "'  => array((int) \$id)";
 			$routeHelper[] = $this->_t(3) . ");";
 			$routeHelper[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Create the link";
 			$routeHelper[] = $this->_t(3) . "\$link = 'index.php?option=com_"
-				. $this->componentCodeName . "&view=" . $viewName_single
+				. $this->componentCodeName . "&view=" . $nameSingleCode
 				. "&id='. \$id;";
 			$routeHelper[] = $this->_t(2) . "}";
 			$routeHelper[] = $this->_t(2) . "else";
@@ -8832,22 +8878,23 @@ class Interpretation extends Fields
 			$routeHelper[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Initialize the needel array.";
 			$routeHelper[] = $this->_t(3) . "\$needles = array(";
-			$routeHelper[] = $this->_t(4) . "'" . $viewName_single
+			$routeHelper[] = $this->_t(4) . "'" . $nameSingleCode
 				. "'  => array()";
 			$routeHelper[] = $this->_t(3) . ");";
 			$routeHelper[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Create the link but don't add the id.";
 			$routeHelper[] = $this->_t(3) . "\$link = 'index.php?option=com_"
-				. $this->componentCodeName . "&view=" . $viewName_single . "';";
+				. $this->componentCodeName . "&view=" . $nameSingleCode
+				. "';";
 			$routeHelper[] = $this->_t(2) . "}";
-			if ('category' != $viewName_single
-				&& 'categories' != $viewName_single)
+			if ('category' != $nameSingleCode
+				&& 'categories' != $nameSingleCode)
 			{
 				$routeHelper[] = $this->_t(2) . "if (\$catid > 1)";
 				$routeHelper[] = $this->_t(2) . "{";
 				$routeHelper[] = $this->_t(3)
 					. "\$categories = JCategories::getInstance('"
-					. $this->componentCodeName . "." . $viewName_list . "');";
+					. $this->componentCodeName . "." . $nameListCode . "');";
 				$routeHelper[] = $this->_t(3)
 					. "\$category = \$categories->get(\$catid);";
 				$routeHelper[] = $this->_t(3) . "if (\$category)";
@@ -8860,11 +8907,11 @@ class Interpretation extends Fields
 				$routeHelper[] = $this->_t(3) . "}";
 				$routeHelper[] = $this->_t(2) . "}";
 			}
-			if (isset($this->hasMenuGlobal[$viewName_single]))
+			if (isset($this->hasMenuGlobal[$nameSingleCode]))
 			{
 				$routeHelper[] = PHP_EOL . $this->_t(2)
 					. "if (\$item = self::_findItem(\$needles, '"
-					. $viewName_single . "'))";
+					. $nameSingleCode . "'))";
 			}
 			else
 			{
@@ -9029,30 +9076,30 @@ class Interpretation extends Fields
 		}
 	}
 
-	public function setBatchMove($viewName_single)
+	public function setBatchMove($nameSingleCode)
 	{
 		// set needed defaults
 		$category  = false;
 		$batchmove = array();
-		$VIEW      = ComponentbuilderHelper::safeString($viewName_single, 'U');
+		$VIEW      = ComponentbuilderHelper::safeString($nameSingleCode, 'U');
 		// component helper name
 		$Helper = $this->fileContentStatic[$this->hhh . 'Component'
 			. $this->hhh] . 'Helper';
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$viewName_single]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$viewName_single];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
 		// only load category if set in this view
-		if (array_key_exists($viewName_single, $this->catCodeBuilder))
+		if (array_key_exists($nameSingleCode, $this->catCodeBuilder))
 		{
-			$category = $this->catCodeBuilder[$viewName_single]['code'];
+			$category = $this->catCodeBuilder[$nameSingleCode]['code'];
 		}
 		// prepare custom script
 		$customScript = $this->getCustomScriptBuilder(
-			'php_batchmove', $viewName_single, PHP_EOL . PHP_EOL, null, true
+			'php_batchmove', $nameSingleCode, PHP_EOL . PHP_EOL, null, true
 		);
 
 		$batchmove[] = PHP_EOL . $this->_t(1) . "/**";
@@ -9084,7 +9131,7 @@ class Interpretation extends Fields
 		$batchmove[] = $this->_t(3)
 			. "\$this->tableClassName	= get_class(\$this->table);";
 		$batchmove[] = $this->_t(3) . "\$this->canDo		= " . $Helper
-			. "::getActions('" . $viewName_single . "');";
+			. "::getActions('" . $nameSingleCode . "');";
 		$batchmove[] = $this->_t(2) . "}";
 
 		if ($coreLoad && isset($core['core.edit'])
@@ -9093,7 +9140,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder['global'][$core['core.edit']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder['global'][$core['core.edit']]
 			))
 		{
@@ -9120,7 +9167,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder['global'][$core['core.edit.state']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder['global'][$core['core.edit.state']]
 			))
 		{
@@ -9174,7 +9221,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder[$core['core.edit']]
 			)
 			&& in_array(
-				$viewName_single, $this->permissionBuilder[$core['core.edit']]
+				$nameSingleCode, $this->permissionBuilder[$core['core.edit']]
 			))
 		{
 			$batchmove[] = $this->_t(3) . "if (!\$this->user->authorise('"
@@ -9274,7 +9321,7 @@ class Interpretation extends Fields
 		return PHP_EOL . implode(PHP_EOL, $batchmove);
 	}
 
-	public function setBatchCopy($viewName_single)
+	public function setBatchCopy($nameSingleCode)
 	{
 		// set needed defaults
 		$title     = false;
@@ -9282,37 +9329,39 @@ class Interpretation extends Fields
 		$alias     = false;
 		$category  = false;
 		$batchcopy = array();
-		$VIEW      = ComponentbuilderHelper::safeString($viewName_single, 'U');
+		$VIEW      = ComponentbuilderHelper::safeString($nameSingleCode, 'U');
 		// component helper name
 		$Helper = $this->fileContentStatic[$this->hhh . 'Component'
 			. $this->hhh] . 'Helper';
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$viewName_single]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$viewName_single];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
 		// only load category if set in this view
-		if (array_key_exists($viewName_single, $this->catCodeBuilder))
+		if (array_key_exists($nameSingleCode, $this->catCodeBuilder))
 		{
-			$category = $this->catCodeBuilder[$viewName_single]['code'];
+			$category = $this->catCodeBuilder[$nameSingleCode]['code'];
 		}
 
 		// only load alias if set in this view
-		if (array_key_exists($viewName_single, $this->aliasBuilder))
+		if (array_key_exists($nameSingleCode, $this->aliasBuilder))
 		{
-			$alias = $this->aliasBuilder[$viewName_single];
+			$alias = $this->aliasBuilder[$nameSingleCode];
 		}
 		// only load title if set in this view
-		if (isset($this->customAliasBuilder[$viewName_single]))
+		if (isset($this->customAliasBuilder[$nameSingleCode]))
 		{
-			$titles = array_values($this->customAliasBuilder[$viewName_single]);
+			$titles = array_values(
+				$this->customAliasBuilder[$nameSingleCode]
+			);
 			$title  = true;
 		}
-		elseif (array_key_exists($viewName_single, $this->titleBuilder))
+		elseif (array_key_exists($nameSingleCode, $this->titleBuilder))
 		{
-			$titles = array($this->titleBuilder[$viewName_single]);
+			$titles = array($this->titleBuilder[$nameSingleCode]);
 			$title  = true;
 		}
 		// se the dynamic title
@@ -9328,7 +9377,7 @@ class Interpretation extends Fields
 		}
 		// prepare custom script
 		$customScript = $this->getCustomScriptBuilder(
-			'php_batchcopy', $viewName_single, PHP_EOL . PHP_EOL, null, true
+			'php_batchcopy', $nameSingleCode, PHP_EOL . PHP_EOL, null, true
 		);
 
 		$batchcopy[] = PHP_EOL . $this->_t(1) . "/**";
@@ -9362,7 +9411,7 @@ class Interpretation extends Fields
 		$batchcopy[] = $this->_t(3)
 			. "\$this->tableClassName	= get_class(\$this->table);";
 		$batchcopy[] = $this->_t(3) . "\$this->canDo		= " . $Helper
-			. "::getActions('" . $viewName_single . "');";
+			. "::getActions('" . $nameSingleCode . "');";
 		$batchcopy[] = $this->_t(2) . "}";
 		if ($coreLoad && isset($core['core.create'])
 			&& isset($this->permissionBuilder['global'][$core['core.create']])
@@ -9370,7 +9419,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder['global'][$core['core.create']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder['global'][$core['core.create']]
 			))
 		{
@@ -9407,7 +9456,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder['global'][$core['core.edit.state']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder['global'][$core['core.edit.state']]
 			))
 		{
@@ -9467,7 +9516,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder[$core['core.edit']]
 			)
 			&& in_array(
-				$viewName_single, $this->permissionBuilder[$core['core.edit']]
+				$nameSingleCode, $this->permissionBuilder[$core['core.edit']]
 			))
 		{
 			$batchcopy[] = $this->_t(3) . "if (!\$this->user->authorise('"
@@ -9668,39 +9717,39 @@ class Interpretation extends Fields
 		return PHP_EOL . implode(PHP_EOL, $batchcopy);
 	}
 
-	public function setAliasTitleFix($viewName_single)
+	public function setAliasTitleFix($nameSingleCode)
 	{
 		$fixUnique = array();
 		// only load this if these two items are set
-		if (array_key_exists($viewName_single, $this->aliasBuilder)
-			&& (array_key_exists($viewName_single, $this->titleBuilder)
-				|| isset($this->customAliasBuilder[$viewName_single])))
+		if (array_key_exists($nameSingleCode, $this->aliasBuilder)
+			&& (array_key_exists($nameSingleCode, $this->titleBuilder)
+				|| isset($this->customAliasBuilder[$nameSingleCode])))
 		{
 			// set needed defaults
 			$setCategory = false;
-			$alias       = $this->aliasBuilder[$viewName_single];
+			$alias       = $this->aliasBuilder[$nameSingleCode];
 			$VIEW        = ComponentbuilderHelper::safeString(
-				$viewName_single, 'U'
+				$nameSingleCode, 'U'
 			);
-			if (array_key_exists($viewName_single, $this->catCodeBuilder))
+			if (array_key_exists($nameSingleCode, $this->catCodeBuilder))
 			{
-				$category    = $this->catCodeBuilder[$viewName_single]['code'];
+				$category    = $this->catCodeBuilder[$nameSingleCode]['code'];
 				$setCategory = true;
 			}
 			// set the title stuff
-			if (isset($this->customAliasBuilder[$viewName_single]))
+			if (isset($this->customAliasBuilder[$nameSingleCode]))
 			{
 				$titles = array_values(
-					$this->customAliasBuilder[$viewName_single]
+					$this->customAliasBuilder[$nameSingleCode]
 				);
-				if (isset($this->titleBuilder[$viewName_single]))
+				if (isset($this->titleBuilder[$nameSingleCode]))
 				{
-					// $titles[] = $this->titleBuilder[$viewName_single]; // TODO this may be unexpected
+					// $titles[] = $this->titleBuilder[$nameSingleCode]; // TODO this may be unexpected
 				}
 			}
 			else
 			{
-				$titles = array($this->titleBuilder[$viewName_single]);
+				$titles = array($this->titleBuilder[$nameSingleCode]);
 			}
 			// start building the fix
 			$fixUnique[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(
@@ -9796,7 +9845,7 @@ class Interpretation extends Fields
 				) . ");";
 			$fixUnique[] = $this->_t(4) . "}";
 			$fixUnique[] = PHP_EOL . $this->_t(4)
-				. "\$table = JTable::getInstance('" . $viewName_single . "', '"
+				. "\$table = JTable::getInstance('" . $nameSingleCode . "', '"
 				. $this->componentCodeName . "Table');";
 			if ($setCategory && count($titles) == 1)
 			{
@@ -9880,12 +9929,12 @@ class Interpretation extends Fields
 		return PHP_EOL . implode(PHP_EOL, $fixUnique);
 	}
 
-	public function setGenerateNewTitle($viewName_single)
+	public function setGenerateNewTitle($nameSingleCode)
 	{
 		// if category is added to this view then do nothing
-		if (array_key_exists($viewName_single, $this->aliasBuilder)
-			&& (array_key_exists($viewName_single, $this->titleBuilder)
-				|| isset($this->customAliasBuilder[$viewName_single])))
+		if (array_key_exists($nameSingleCode, $this->aliasBuilder)
+			&& (array_key_exists($nameSingleCode, $this->titleBuilder)
+				|| isset($this->customAliasBuilder[$nameSingleCode])))
 		{
 			// get component name
 			$Component = $this->fileContentStatic[$this->hhh . 'Component'
@@ -9958,7 +10007,7 @@ class Interpretation extends Fields
 
 			return implode(PHP_EOL, $newFunction);
 		}
-		elseif (array_key_exists($viewName_single, $this->titleBuilder))
+		elseif (array_key_exists($nameSingleCode, $this->titleBuilder))
 		{
 			$newFunction   = array();
 			$newFunction[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
@@ -9993,21 +10042,21 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setGenerateNewAlias($viewName_single)
+	public function setGenerateNewAlias($nameSingleCode)
 	{
 		// make sure this view has an alias
-		if (isset($this->aliasBuilder[$viewName_single]))
+		if (isset($this->aliasBuilder[$nameSingleCode]))
 		{
 			// set the title stuff
-			if (isset($this->customAliasBuilder[$viewName_single]))
+			if (isset($this->customAliasBuilder[$nameSingleCode]))
 			{
 				$titles = array_values(
-					$this->customAliasBuilder[$viewName_single]
+					$this->customAliasBuilder[$nameSingleCode]
 				);
 			}
-			elseif (isset($this->titleBuilder[$viewName_single]))
+			elseif (isset($this->titleBuilder[$nameSingleCode]))
 			{
-				$titles = array($this->titleBuilder[$viewName_single]);
+				$titles = array($this->titleBuilder[$nameSingleCode]);
 			}
 			// reset the bucket
 			$titleData = array();
@@ -11012,7 +11061,7 @@ class Interpretation extends Fields
 		return false;
 	}
 
-	public function setCustomAdminViewListLink($view, $viewName_list)
+	public function setCustomAdminViewListLink($view, $nameListCode)
 	{
 		if (isset($this->componentData->custom_admin_views)
 			&& ComponentbuilderHelper::checkArray(
@@ -11061,7 +11110,7 @@ class Interpretation extends Fields
 							if ($setId)
 							{
 								// now load it to the global object for items list
-								$this->customAdminViewListLink[$viewName_list][]
+								$this->customAdminViewListLink[$nameListCode][]
 									= $set;
 								// add to set id for list view if needed
 								$this->customAdminViewListId[$custom_admin_view['settings']->code]
@@ -11070,7 +11119,7 @@ class Interpretation extends Fields
 							else
 							{
 								// now load it to the global object for tool bar
-								$this->customAdminDynamicButtons[$viewName_list][]
+								$this->customAdminDynamicButtons[$nameListCode][]
 									= $set;
 							}
 							// log that it has been added already
@@ -11086,16 +11135,16 @@ class Interpretation extends Fields
 	/**
 	 * set the list body
 	 *
-	 * @param   string  $viewName_single
-	 * @param   string  $viewName_list
+	 * @param   string  $nameSingleCode
+	 * @param   string  $nameListCode
 	 *
 	 * @return string
 	 */
-	public function setListBody($viewName_single, $viewName_list)
+	public function setListBody($nameSingleCode, $nameListCode)
 	{
-		if (isset($this->listBuilder[$viewName_list])
+		if (isset($this->listBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->listBuilder[$viewName_list]
+				$this->listBuilder[$nameListCode]
 			))
 		{
 			// component helper name
@@ -11104,9 +11153,9 @@ class Interpretation extends Fields
 			// setup correct core target
 			$coreLoad = false;
 			$core     = null;
-			if (isset($this->permissionCore[$viewName_single]))
+			if (isset($this->permissionCore[$nameSingleCode]))
 			{
-				$core     = $this->permissionCore[$viewName_single];
+				$core     = $this->permissionCore[$nameSingleCode];
 				$coreLoad = true;
 			}
 			// make sure the custom links are only added once
@@ -11119,13 +11168,13 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . $this->_t(2)
 				. "\$userChkOut = JFactory::getUser(\$item->checked_out);";
 			$body .= PHP_EOL . $this->_t(2) . "\$canDo = " . $Helper
-				. "::getActions('" . $viewName_single . "',\$item,'"
-				. $viewName_list . "');";
+				. "::getActions('" . $nameSingleCode . "',\$item,'"
+				. $nameListCode . "');";
 			$body .= PHP_EOL . $this->_t(1) . "?>";
 			$body .= PHP_EOL . $this->_t(1)
 				. '<tr class="row<?php echo $i % 2; ?>">';
 			// only load if not over written
-			if (!isset($this->fieldsNames[$viewName_single]['ordering']))
+			if (!isset($this->fieldsNames[$nameSingleCode]['ordering']))
 			{
 				$body .= PHP_EOL . $this->_t(2)
 					. '<td class="order nowrap center hidden-phone">';
@@ -11136,7 +11185,7 @@ class Interpretation extends Fields
 						$this->permissionBuilder['global'][$core['core.edit.state']]
 					)
 					&& in_array(
-						$viewName_single,
+						$nameSingleCode,
 						$this->permissionBuilder['global'][$core['core.edit.state']]
 					))
 				{
@@ -11149,11 +11198,8 @@ class Interpretation extends Fields
 						. "<?php if (\$canDo->get('core.edit.state')): ?>";
 				}
 				$body .= PHP_EOL . $this->_t(3) . "<?php";
-				$body .= PHP_EOL . $this->_t(4) . "if (\$this->saveOrder)";
-				$body .= PHP_EOL . $this->_t(4) . "{";
-				$body .= PHP_EOL . $this->_t(5) . "\$iconClass = ' inactive';";
-				$body .= PHP_EOL . $this->_t(4) . "}";
-				$body .= PHP_EOL . $this->_t(4) . "else";
+				$body .= PHP_EOL . $this->_t(4) . "\$iconClass = '';";
+				$body .= PHP_EOL . $this->_t(4) . "if (!\$this->saveOrder)";
 				$body .= PHP_EOL . $this->_t(4) . "{";
 				$body .= PHP_EOL . $this->_t(5)
 					. "\$iconClass = ' inactive tip-top"
@@ -11185,7 +11231,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.edit']]
 				))
 			{
@@ -11215,12 +11261,12 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . $this->_t(2) . "</td>";
 			// check if this view has fields that should not be escaped
 			$doNotEscape = false;
-			if (isset($this->doNotEscape[$viewName_list]))
+			if (isset($this->doNotEscape[$nameListCode]))
 			{
 				$doNotEscape = true;
 			}
 			// start adding the dynamic
-			foreach ($this->listBuilder[$viewName_list] as $item)
+			foreach ($this->listBuilder[$nameListCode] as $item)
 			{
 				// check if target is admin list
 				if (1 == $item['target'] || 3 == $item['target'])
@@ -11231,7 +11277,7 @@ class Interpretation extends Fields
 					$itemClass = 'hidden-phone';
 					// set the item row
 					$itemRow = $this->getListItemBuilder(
-						$item, $viewName_single, $viewName_list, $itemClass,
+						$item, $nameSingleCode, $nameListCode, $itemClass,
 						$doNotEscape, $coreLoad, $core
 					);
 					// check if buttons was aready added
@@ -11239,14 +11285,14 @@ class Interpretation extends Fields
 					{
 						// get custom admin view buttons
 						$customAdminViewButtons
-							= $this->getCustomAdminViewButtons($viewName_list);
+							= $this->getCustomAdminViewButtons($nameListCode);
 						// make sure the custom admin view buttons are only added once
 						$firstTimeBeingAdded = false;
 					}
 					// add row to body
 					$body .= PHP_EOL . $this->_t(2) . "<td class=\""
 						. $this->getListFieldClass(
-							$item['code'], $viewName_list, $itemClass
+							$item['code'], $nameListCode, $itemClass
 						) . "\">";
 					$body .= $itemRow;
 					$body .= $customAdminViewButtons;
@@ -11254,7 +11300,7 @@ class Interpretation extends Fields
 				}
 			}
 			// add the defaults
-			if (!isset($this->fieldsNames[$viewName_single]['published']))
+			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
 			{
 				$body .= PHP_EOL . $this->_t(2) . '<td class="center">';
 				// check if the item has permissions.
@@ -11264,7 +11310,7 @@ class Interpretation extends Fields
 						$this->permissionBuilder['global'][$core['core.edit.state']]
 					)
 					&& in_array(
-						$viewName_single,
+						$nameSingleCode,
 						$this->permissionBuilder['global'][$core['core.edit.state']]
 					))
 				{
@@ -11282,29 +11328,29 @@ class Interpretation extends Fields
 					. "<?php if (\$canCheckin) : ?>";
 				$body .= PHP_EOL . $this->_t(6)
 					. "<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '"
-					. $viewName_list . ".', true, 'cb'); ?>";
+					. $nameListCode . ".', true, 'cb'); ?>";
 				$body .= PHP_EOL . $this->_t(5) . "<?php else: ?>";
 				$body .= PHP_EOL . $this->_t(6)
 					. "<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '"
-					. $viewName_list . ".', false, 'cb'); ?>";
+					. $nameListCode . ".', false, 'cb'); ?>";
 				$body .= PHP_EOL . $this->_t(5) . "<?php endif; ?>";
 				$body .= PHP_EOL . $this->_t(4) . "<?php else: ?>";
 				$body .= PHP_EOL . $this->_t(5)
 					. "<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '"
-					. $viewName_list . ".', true, 'cb'); ?>";
+					. $nameListCode . ".', true, 'cb'); ?>";
 				$body .= PHP_EOL . $this->_t(4) . "<?php endif; ?>";
 				$body .= PHP_EOL . $this->_t(2) . "<?php else: ?>";
 				$body .= PHP_EOL . $this->_t(3)
 					. "<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '"
-					. $viewName_list . ".', false, 'cb'); ?>";
+					. $nameListCode . ".', false, 'cb'); ?>";
 				$body .= PHP_EOL . $this->_t(2) . "<?php endif; ?>";
 				$body .= PHP_EOL . $this->_t(2) . "</td>";
 			}
-			if (!isset($this->fieldsNames[$viewName_single]['id']))
+			if (!isset($this->fieldsNames[$nameSingleCode]['id']))
 			{
 				$body .= PHP_EOL . $this->_t(2) . '<td class="'
 					. $this->getListFieldClass(
-						$item['code'], $viewName_list,
+						$item['code'], $nameListCode,
 						'nowrap center hidden-phone'
 					) . '">';
 				$body .= PHP_EOL . $this->_t(3) . "<?php echo \$item->id; ?>";
@@ -11323,46 +11369,46 @@ class Interpretation extends Fields
 	/**
 	 * Get the list item dynamic row
 	 *
-	 * @param   array   $item             The item array
-	 * @param   string  $viewName_single  The single view code name
-	 * @param   string  $viewName_list    The list view code name
-	 * @param   string  $itemClass        The table row default class
-	 * @param   bool    $doNotEscape      The do not escape global switch
-	 * @param   bool    $coreLoad         The core permission loader switch
-	 * @param   array   $core             The core permission values
-	 * @param   bool    $class            The dive class adding switch
-	 * @param   string  $ref              The link referral string
-	 * @param   string  $escape           The escape code name
-	 * @param   string  $user             The user code name
-	 * @param   string  $refview          The override of the referral view code name
+	 * @param   array   $item            The item array
+	 * @param   string  $nameSingleCode  The single view code name
+	 * @param   string  $nameListCode    The list view code name
+	 * @param   string  $itemClass       The table row default class
+	 * @param   bool    $doNotEscape     The do not escape global switch
+	 * @param   bool    $coreLoad        The core permission loader switch
+	 * @param   array   $core            The core permission values
+	 * @param   bool    $class           The dive class adding switch
+	 * @param   string  $ref             The link referral string
+	 * @param   string  $escape          The escape code name
+	 * @param   string  $user            The user code name
+	 * @param   string  $refview         The override of the referral view code name
 	 *
 	 * @return  string of the completer item value for the table row
 	 *
 	 */
-	protected function getListItemBuilder($item, $viewName_single,
-		$viewName_list, &$itemClass, $doNotEscape, $coreLoad, $core,
+	protected function getListItemBuilder($item, $nameSingleCode,
+		$nameListCode, &$itemClass, $doNotEscape, $coreLoad, $core,
 		$class = true, $ref = null, $escape = '$this->escape',
 		$user = '$this->user', $refview = null
 	) {
 		// check if we have relation fields
-		if (isset($this->fieldRelations[$viewName_list])
-			&& isset($this->fieldRelations[$viewName_list][(int) $item['id']])
-			&& isset($this->fieldRelations[$viewName_list][(int) $item['id']][2]))
+		if (isset($this->fieldRelations[$nameListCode])
+			&& isset($this->fieldRelations[$nameListCode][(int) $item['id']])
+			&& isset($this->fieldRelations[$nameListCode][(int) $item['id']][2]))
 		{
 			// set the fields array
 			$field = array();
 			// use custom code
 			$useCustomCode
-				= (isset($this->fieldRelations[$viewName_list][(int) $item['id']][2]['join_type'])
-				&& $this->fieldRelations[$viewName_list][(int) $item['id']][2]['join_type']
+				= (isset($this->fieldRelations[$nameListCode][(int) $item['id']][2]['join_type'])
+				&& $this->fieldRelations[$nameListCode][(int) $item['id']][2]['join_type']
 				== 2
-				&& isset($this->fieldRelations[$viewName_list][(int) $item['id']][2]['set'])
+				&& isset($this->fieldRelations[$nameListCode][(int) $item['id']][2]['set'])
 				&& ComponentbuilderHelper::checkString(
-					$this->fieldRelations[$viewName_list][(int) $item['id']][2]['set']
+					$this->fieldRelations[$nameListCode][(int) $item['id']][2]['set']
 				));
 			// load the main list view field
 			$field['[field=' . (int) $item['id'] . ']'] = $this->getListItem(
-				$item, $viewName_single, $viewName_list, $itemClass,
+				$item, $nameSingleCode, $nameListCode, $itemClass,
 				$doNotEscape, $coreLoad, $core, false, $ref, $escape, $user,
 				$refview
 			);
@@ -11373,34 +11419,34 @@ class Interpretation extends Fields
 					. $item['code'];
 			}
 			// now load the relations
-			if (isset($this->fieldRelations[$viewName_list][(int) $item['id']][2]['joinfields'])
+			if (isset($this->fieldRelations[$nameListCode][(int) $item['id']][2]['joinfields'])
 				&& ComponentbuilderHelper::checkArray(
-					$this->fieldRelations[$viewName_list][(int) $item['id']][2]['joinfields']
+					$this->fieldRelations[$nameListCode][(int) $item['id']][2]['joinfields']
 				))
 			{
 				foreach (
-					$this->fieldRelations[$viewName_list][(int) $item['id']][2]['joinfields']
+					$this->fieldRelations[$nameListCode][(int) $item['id']][2]['joinfields']
 					as $join
 				)
 				{
 					$blankClass = '';
-					if (isset($this->listJoinBuilder[$viewName_list])
-						&& isset($this->listJoinBuilder[$viewName_list][(int) $join]))
+					if (isset($this->listJoinBuilder[$nameListCode])
+						&& isset($this->listJoinBuilder[$nameListCode][(int) $join]))
 					{
 						// code block
 						$field['[field=' . (int) $join . ']']
 							= $this->getListItem(
-							$this->listJoinBuilder[$viewName_list][(int) $join],
-							$viewName_single, $viewName_list, $blankClass,
+							$this->listJoinBuilder[$nameListCode][(int) $join],
+							$nameSingleCode, $nameListCode, $blankClass,
 							$doNotEscape, $coreLoad, $core, false, $ref,
 							$escape, $user, $refview
 						);
 						// code name
-						if (isset($this->listJoinBuilder[$viewName_list][(int) $join]['code'])
+						if (isset($this->listJoinBuilder[$nameListCode][(int) $join]['code'])
 							&& $useCustomCode)
 						{
 							$field['$item->{' . (int) $join . '}'] = '$item->'
-								. $this->listJoinBuilder[$viewName_list][(int) $join]['code'];
+								. $this->listJoinBuilder[$nameListCode][(int) $join]['code'];
 						}
 					}
 				}
@@ -11413,18 +11459,18 @@ class Interpretation extends Fields
 					. $this->setPlaceholders(
 						str_replace(
 							array_keys($field), array_values($field),
-							$this->fieldRelations[$viewName_list][(int) $item['id']][2]['set']
+							$this->fieldRelations[$nameListCode][(int) $item['id']][2]['set']
 						), $this->placeholders
 					) . PHP_EOL . $this->_t(3) . "</div>";
 			}
-			elseif (isset($this->fieldRelations[$viewName_list][(int) $item['id']]['set'])
+			elseif (isset($this->fieldRelations[$nameListCode][(int) $item['id']]['set'])
 				&& ComponentbuilderHelper::checkString(
-					$this->fieldRelations[$viewName_list][(int) $item['id']][2]['set']
+					$this->fieldRelations[$nameListCode][(int) $item['id']][2]['set']
 				))
 			{
 				// concatenate
 				return PHP_EOL . $this->_t(3) . "<div>" . implode(
-						$this->fieldRelations[$viewName_list][(int) $item['id']][2]['set'],
+						$this->fieldRelations[$nameListCode][(int) $item['id']][2]['set'],
 						$field
 					) . PHP_EOL . $this->_t(3) . "</div>";
 			}
@@ -11435,7 +11481,7 @@ class Interpretation extends Fields
 		}
 
 		return $this->getListItem(
-			$item, $viewName_single, $viewName_list, $itemClass, $doNotEscape,
+			$item, $nameSingleCode, $nameListCode, $itemClass, $doNotEscape,
 			$coreLoad, $core, $class, $ref, $escape, $user, $refview
 		);
 	}
@@ -11443,29 +11489,29 @@ class Interpretation extends Fields
 	/**
 	 * Get the list item row value
 	 *
-	 * @param   array   $item             The item array
-	 * @param   string  $viewName_single  The single view code name
-	 * @param   string  $viewName_list    The list view code name
-	 * @param   string  $itemClass        The table row default class
-	 * @param   bool    $doNotEscape      The do not escape global switch
-	 * @param   bool    $coreLoad         The core permission loader switch
-	 * @param   array   $core             The core permission values
-	 * @param   bool    $class            The dive class adding switch
-	 * @param   string  $ref              The link referral string
-	 * @param   string  $escape           The escape code name
-	 * @param   string  $user             The user code name
-	 * @param   string  $refview          The override of the referral view code name
+	 * @param   array   $item            The item array
+	 * @param   string  $nameSingleCode  The single view code name
+	 * @param   string  $nameListCode    The list view code name
+	 * @param   string  $itemClass       The table row default class
+	 * @param   bool    $doNotEscape     The do not escape global switch
+	 * @param   bool    $coreLoad        The core permission loader switch
+	 * @param   array   $core            The core permission values
+	 * @param   bool    $class           The dive class adding switch
+	 * @param   string  $ref             The link referral string
+	 * @param   string  $escape          The escape code name
+	 * @param   string  $user            The user code name
+	 * @param   string  $refview         The override of the referral view code name
 	 *
 	 * @return  string of the single item value for the table row
 	 *
 	 */
-	protected function getListItem($item, $viewName_single, $viewName_list,
+	protected function getListItem($item, $nameSingleCode, $nameListCode,
 		&$itemClass, $doNotEscape, $coreLoad, $core, $class = true, $ref = null,
 		$escape = '$this->escape', $user = '$this->user', $refview = null
 	) {
 		// get list item code
 		$itemCode = $this->getListItemCode(
-			$item, $viewName_list, $doNotEscape, $escape
+			$item, $nameListCode, $doNotEscape, $escape
 		);
 		// add default links
 		$defaultLink = true;
@@ -11490,16 +11536,17 @@ class Interpretation extends Fields
 			$itemClass = 'nowrap';
 			// get list item link
 			$itemLink = $this->getListItemLink(
-				$item, $checkoutTriger, $viewName_single, $viewName_list, $ref
+				$item, $checkoutTriger, $nameSingleCode, $nameListCode, $ref
 			);
 			// get list item link authority
 			$itemLinkAuthority = $this->getListItemLinkAuthority(
-				$item, $viewName_single, $viewName_list, $coreLoad, $core, $user
+				$item, $nameSingleCode, $nameListCode, $coreLoad, $core,
+				$user
 			);
 
 			// set item row
 			return $this->getListItemLinkLogic(
-				$itemCode, $itemLink, $itemLinkAuthority, $viewName_list,
+				$itemCode, $itemLink, $itemLinkAuthority, $nameListCode,
 				$checkoutTriger, $class
 			);
 		}
@@ -11514,7 +11561,7 @@ class Interpretation extends Fields
 	 * @param   string  $itemCode           The item code string
 	 * @param   string  $itemLink           The item link string
 	 * @param   string  $itemLinkAuthority  The link authority string
-	 * @param   string  $viewName_list      The list view code name
+	 * @param   string  $nameListCode       The list view code name
 	 * @param   bool    $checkoutTriger     The check out trigger
 	 * @param   bool    $class              The dive class adding switch
 	 *
@@ -11522,7 +11569,7 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getListItemLinkLogic($itemCode, $itemLink,
-		$itemLinkAuthority, $viewName_list, $checkoutTriger, $class = true
+		$itemLinkAuthority, $nameListCode, $checkoutTriger, $class = true
 	) {
 		// build link
 		$link = '';
@@ -11544,7 +11591,7 @@ class Interpretation extends Fields
 				. "<?php if (\$item->checked_out): ?>";
 			$link .= PHP_EOL . $tab . $this->_t(5)
 				. "<?php echo JHtml::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '"
-				. $viewName_list . ".', \$canCheckin); ?>";
+				. $nameListCode . ".', \$canCheckin); ?>";
 			$link .= PHP_EOL . $tab . $this->_t(4) . "<?php endif; ?>";
 		}
 		$link .= PHP_EOL . $tab . $this->_t(3) . "<?php else: ?>";
@@ -11564,26 +11611,26 @@ class Interpretation extends Fields
 	/**
 	 * Get the custom admin view buttons
 	 *
-	 * @param   string  $viewName_list  The list view code name
-	 * @param   string  $ref            The link referral string
+	 * @param   string  $nameListCode  The list view code name
+	 * @param   string  $ref           The link referral string
 	 *
 	 * @return  string of the custom admin view buttons
 	 *
 	 */
-	protected function getCustomAdminViewButtons($viewName_list, $ref = '')
+	protected function getCustomAdminViewButtons($nameListCode, $ref = '')
 	{
 		$customAdminViewButton = '';
 		// check if custom links should be added to this list views
-		if (isset($this->customAdminViewListLink[$viewName_list])
+		if (isset($this->customAdminViewListLink[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->customAdminViewListLink[$viewName_list]
+				$this->customAdminViewListLink[$nameListCode]
 			))
 		{
 			// start building the links
 			$customAdminViewButton .= PHP_EOL . $this->_t(3)
 				. '<div class="btn-group">';
 			foreach (
-				$this->customAdminViewListLink[$viewName_list] as
+				$this->customAdminViewListLink[$nameListCode] as
 				$customLinkView
 			)
 			{
@@ -11619,15 +11666,15 @@ class Interpretation extends Fields
 	/**
 	 * Get the list item code value
 	 *
-	 * @param   array   $item           The item array
-	 * @param   string  $viewName_list  The list view code name
-	 * @param   bool    $doNotEscape    The do not escape global switch
-	 * @param   string  $escape         The escape code name
+	 * @param   array   $item          The item array
+	 * @param   string  $nameListCode  The list view code name
+	 * @param   bool    $doNotEscape   The do not escape global switch
+	 * @param   string  $escape        The escape code name
 	 *
 	 * @return  string of the single item code
 	 *
 	 */
-	protected function getListItemCode(&$item, $viewName_list, $doNotEscape,
+	protected function getListItemCode(&$item, $nameListCode, $doNotEscape,
 		$escape = '$this->escape'
 	) {
 		// first update the code id needed
@@ -11666,13 +11713,13 @@ class Interpretation extends Fields
 				. ')->name';
 		}
 		// check if translated value is used
-		elseif (isset($this->selectionTranslationFixBuilder[$viewName_list])
+		elseif (isset($this->selectionTranslationFixBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->selectionTranslationFixBuilder[$viewName_list]
+				$this->selectionTranslationFixBuilder[$nameListCode]
 			)
 			&& array_key_exists(
 				$item['code'],
-				$this->selectionTranslationFixBuilder[$viewName_list]
+				$this->selectionTranslationFixBuilder[$nameListCode]
 			))
 		{
 			return 'JText:' . ':_($item->' . $item['code'] . ')';
@@ -11687,7 +11734,7 @@ class Interpretation extends Fields
 		}
 		elseif ($doNotEscape)
 		{
-			if (in_array($item['code'], $this->doNotEscape[$viewName_list]))
+			if (in_array($item['code'], $this->doNotEscape[$nameListCode]))
 			{
 				return '$item->' . $item['code'];
 			}
@@ -11700,17 +11747,17 @@ class Interpretation extends Fields
 	/**
 	 * Get the list item link
 	 *
-	 * @param   array   $item             The item array
-	 * @param   bool    $checkoutTriger   The checkout trigger switch
-	 * @param   string  $viewName_single  The single view code name
-	 * @param   string  $viewName_list    The list view code name
-	 * @param   string  $ref              The link referral string
+	 * @param   array   $item            The item array
+	 * @param   bool    $checkoutTriger  The checkout trigger switch
+	 * @param   string  $nameSingleCode  The single view code name
+	 * @param   string  $nameListCode    The list view code name
+	 * @param   string  $ref             The link referral string
 	 *
 	 * @return  string of the single item link
 	 *
 	 */
 	protected function getListItemLink($item, &$checkoutTriger,
-		$viewName_single, $viewName_list, $ref = null
+		$nameSingleCode, $nameListCode, $ref = null
 	) {
 		// set referal if not set
 		$referal = '';
@@ -11729,7 +11776,7 @@ class Interpretation extends Fields
 			// return the link to category
 			return 'index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->'
 				. $item['code'] . '; ?>&extension='
-				. $this->categoryBuilder[$viewName_list]['extension'];
+				. $this->categoryBuilder[$nameListCode]['extension'];
 		}
 		elseif ($item['type'] === 'user' && !$item['title'])
 		{
@@ -11773,24 +11820,24 @@ class Interpretation extends Fields
 	/**
 	 * Get the list item authority
 	 *
-	 * @param   array   $item             The item array
-	 * @param   string  $viewName_single  The single view code name
-	 * @param   string  $viewName_list    The list view code name
-	 * @param   bool    $coreLoad         The core permission loader switch
-	 * @param   array   $core             The core permission values
-	 * @param   string  $user             The user code name
+	 * @param   array   $item            The item array
+	 * @param   string  $nameSingleCode  The single view code name
+	 * @param   string  $nameListCode    The list view code name
+	 * @param   bool    $coreLoad        The core permission loader switch
+	 * @param   array   $core            The core permission values
+	 * @param   string  $user            The user code name
 	 *
 	 * @return  string of the single item link authority
 	 *
 	 */
-	protected function getListItemLinkAuthority($item, $viewName_single,
-		$viewName_list, $coreLoad, $core, $user = '$this->user'
+	protected function getListItemLinkAuthority($item, $nameSingleCode,
+		$nameListCode, $coreLoad, $core, $user = '$this->user'
 	) {
 		// if to be linked
 		if ($item['type'] === 'category' && !$item['title'])
 		{
 			// get the other view
-			$otherView = $this->catCodeBuilder[$viewName_single]['view'];
+			$otherView = $this->catCodeBuilder[$nameSingleCode]['view'];
 
 			// return the authority to category
 			return $user . "->authorise('core.edit', 'com_"
@@ -11858,7 +11905,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder['global'][$core['core.edit']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder['global'][$core['core.edit']]
 			))
 		{
@@ -11874,37 +11921,49 @@ class Interpretation extends Fields
 	 * Get the list field class
 	 *
 	 * @param   string  $name          The field code name
-	 * @param   string  $listViewName  The list view code name
+	 * @param   string  $nameListCode  The list view code name
 	 * @param   string  $default       The default
 	 *
 	 * @return  string  The list field class
 	 *
 	 */
-	protected function getListFieldClass($name, $listViewName, $default = '')
+	protected function getListFieldClass($name, $nameListCode, $default = '')
 	{
-		return (isset($this->listFieldClass[$listViewName])
-			&& isset($this->listFieldClass[$listViewName][$name]))
-			? $this->listFieldClass[$listViewName][$name] : $default;
+		return (isset($this->listFieldClass[$nameListCode])
+			&& isset($this->listFieldClass[$nameListCode][$name]))
+			? $this->listFieldClass[$nameListCode][$name] : $default;
 	}
 
 	/**
 	 * set the list body table head
 	 *
-	 * @param   string  $viewName_single
-	 * @param   string  $viewName_list
+	 * @param   string  $nameSingleCode
+	 * @param   string  $nameListCode
 	 *
 	 * @return string
 	 */
-	public function setListHead($viewName_single, $viewName_list)
+	public function setListHead($nameSingleCode, $nameListCode)
 	{
-		if (isset($this->listBuilder[$viewName_list])
+		if (isset($this->listBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->listBuilder[$viewName_list]
+				$this->listBuilder[$nameListCode]
 			))
 		{
+			// set the JHtml values based on filter type
+			$jhtml_sort        = "grid.sort";
+			$jhtml_sort_icon   = "<i class=\"icon-menu-2\"></i>";
+			$jhtml_sort_icon_2 = "";
+			// for the new filter
+			if (isset($this->adminFilterType[$nameListCode])
+				&& $this->adminFilterType[$nameListCode] == 2)
+			{
+				$jhtml_sort        = "searchtools.sort";
+				$jhtml_sort_icon   = "";
+				$jhtml_sort_icon_2 = ", 'icon-menu-2'";
+			}
 			// main lang prefix
 			$langView = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString($viewName_single, 'U');
+				. ComponentbuilderHelper::safeString($nameSingleCode, 'U');
 			// set status lang
 			$statusLangName = $langView . '_STATUS';
 			// set id lang
@@ -11917,14 +11976,15 @@ class Interpretation extends Fields
 			$head = '<tr>';
 			$head .= PHP_EOL . $this->_t(1)
 				. "<?php if (\$this->canEdit&& \$this->canState): ?>";
-			if (!isset($this->fieldsNames[$viewName_single]['ordering']))
+			if (!isset($this->fieldsNames[$nameSingleCode]['ordering']))
 			{
 				$head .= PHP_EOL . $this->_t(2)
 					. '<th width="1%" class="nowrap center hidden-phone">';
 				$head .= PHP_EOL . $this->_t(3)
-					. "<?php echo JHtml::_('grid.sort', '"
-					. '<i class="icon-menu-2"></i>'
-					. "', 'ordering', \$this->listDirn, \$this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>";
+					. "<?php echo JHtml::_('" . $jhtml_sort . "', '"
+					. $jhtml_sort_icon . "'"
+					. ", 'a.ordering', \$this->listDirn, \$this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'"
+					. $jhtml_sort_icon_2 . "); ?>";
 				$head .= PHP_EOL . $this->_t(2) . "</th>";
 			}
 			$head .= PHP_EOL . $this->_t(2)
@@ -11943,22 +12003,22 @@ class Interpretation extends Fields
 			$head .= PHP_EOL . $this->_t(2) . "</th>";
 			$head .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
 			// set footer Column number
-			$this->listColnrBuilder[$viewName_list] = 4;
+			$this->listColnrBuilder[$nameListCode] = 4;
 			// build the dynamic fields
-			foreach ($this->listBuilder[$viewName_list] as $item)
+			foreach ($this->listBuilder[$nameListCode] as $item)
 			{
 				// check if target is admin list
 				if (1 == $item['target'] || 3 == $item['target'])
 				{
 					// check if we have an over-ride
-					if (isset($this->listHeadOverRide[$viewName_list])
+					if (isset($this->listHeadOverRide[$nameListCode])
 						&& ComponentbuilderHelper::checkArray(
-							$this->listHeadOverRide[$viewName_list]
+							$this->listHeadOverRide[$nameListCode]
 						)
-						&& isset($this->listHeadOverRide[$viewName_list][$item['id']]))
+						&& isset($this->listHeadOverRide[$nameListCode][$item['id']]))
 					{
 						$item['lang']
-							= $this->listHeadOverRide[$viewName_list][$item['id']];
+							= $this->listHeadOverRide[$nameListCode][$item['id']];
 					}
 					$class = 'nowrap hidden-phone';
 					if ($item['link'])
@@ -11972,7 +12032,8 @@ class Interpretation extends Fields
 						if ($item['type'] === 'category')
 						{
 							// only one category per/view allowed at this point
-							$title = "<?php echo JHtml::_('grid.sort', '"
+							$title = "<?php echo JHtml::_('" . $jhtml_sort
+								. "', '"
 								. $item['lang'] . "', 'category_title"
 								. "', \$this->listDirn, \$this->listOrder); ?>";
 						}
@@ -11982,14 +12043,16 @@ class Interpretation extends Fields
 						))
 						{
 							// keep an eye on this
-							$title = "<?php echo JHtml::_('grid.sort', '"
+							$title = "<?php echo JHtml::_('" . $jhtml_sort
+								. "', '"
 								. $item['lang'] . "', '" . $item['custom']['db']
 								. "." . $item['custom']['text']
 								. "', \$this->listDirn, \$this->listOrder); ?>";
 						}
 						else
 						{
-							$title = "<?php echo JHtml::_('grid.sort', '"
+							$title = "<?php echo JHtml::_('" . $jhtml_sort
+								. "', '"
 								. $item['lang'] . "', 'a." . $item['code']
 								. "', \$this->listDirn, \$this->listOrder); ?>";
 						}
@@ -12003,18 +12066,19 @@ class Interpretation extends Fields
 						. '" >';
 					$head .= PHP_EOL . $this->_t(3) . $title;
 					$head .= PHP_EOL . $this->_t(1) . "</th>";
-					$this->listColnrBuilder[$viewName_list]++;
+					$this->listColnrBuilder[$nameListCode]++;
 				}
 			}
 			// set default
-			if (!isset($this->fieldsNames[$viewName_single]['published']))
+			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
 			{
 				$head .= PHP_EOL . $this->_t(1)
 					. "<?php if (\$this->canState): ?>";
 				$head .= PHP_EOL . $this->_t(2)
 					. '<th width="10" class="nowrap center" >';
 				$head .= PHP_EOL . $this->_t(3)
-					. "<?php echo JHtml::_('grid.sort', '" . $statusLangName
+					. "<?php echo JHtml::_('" . $jhtml_sort . "', '"
+					. $statusLangName
 					. "', 'a.published', \$this->listDirn, \$this->listOrder); ?>";
 				$head .= PHP_EOL . $this->_t(2) . "</th>";
 				$head .= PHP_EOL . $this->_t(1) . "<?php else: ?>";
@@ -12025,12 +12089,13 @@ class Interpretation extends Fields
 				$head .= PHP_EOL . $this->_t(2) . "</th>";
 				$head .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
 			}
-			if (!isset($this->fieldsNames[$viewName_single]['id']))
+			if (!isset($this->fieldsNames[$nameSingleCode]['id']))
 			{
 				$head .= PHP_EOL . $this->_t(1)
 					. '<th width="5" class="nowrap center hidden-phone" >';
 				$head .= PHP_EOL . $this->_t(3)
-					. "<?php echo JHtml::_('grid.sort', '" . $idLangName
+					. "<?php echo JHtml::_('" . $jhtml_sort . "', '"
+					. $idLangName
 					. "', 'a.id', \$this->listDirn, \$this->listOrder); ?>";
 				$head .= PHP_EOL . $this->_t(1) . "</th>";
 			}
@@ -12042,11 +12107,11 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setListColnr($viewName_list)
+	public function setListColnr($nameListCode)
 	{
-		if (isset($this->listColnrBuilder[$viewName_list]))
+		if (isset($this->listColnrBuilder[$nameListCode]))
 		{
-			return $this->listColnrBuilder[$viewName_list];
+			return $this->listColnrBuilder[$nameListCode];
 		}
 
 		return '';
@@ -12055,22 +12120,22 @@ class Interpretation extends Fields
 	/**
 	 * set Tabs Layouts Fields Array
 	 *
-	 * @param   string  $view_name_single  The single view name
+	 * @param   string  $nameSingleCode  The single view name
 	 *
 	 * @return  string   The array
 	 *
 	 */
-	public function getTabLayoutFieldsArray($view_name_single)
+	public function getTabLayoutFieldsArray($nameSingleCode)
 	{
 		// check if the load build is set for this view
-		if (isset($this->layoutBuilder[$view_name_single])
+		if (isset($this->layoutBuilder[$nameSingleCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->layoutBuilder[$view_name_single]
+				$this->layoutBuilder[$nameSingleCode]
 			))
 		{
 			$layoutArray = array();
 			foreach (
-				$this->layoutBuilder[$view_name_single] as $layout =>
+				$this->layoutBuilder[$nameSingleCode] as $layout =>
 				$alignments
 			)
 			{
@@ -12120,16 +12185,16 @@ class Interpretation extends Fields
 	public function setEditBody(&$view)
 	{
 		// set view name
-		$view_name_single = ComponentbuilderHelper::safeString(
+		$nameSingleCode = ComponentbuilderHelper::safeString(
 			$view['settings']->name_single
 		);
 		// main lang prefix
 		$langView = $this->langPrefix . '_'
-			. ComponentbuilderHelper::safeString($view_name_single, 'U');
+			. ComponentbuilderHelper::safeString($nameSingleCode, 'U');
 		// check if the load build is set for this view
-		if (isset($this->layoutBuilder[$view_name_single])
+		if (isset($this->layoutBuilder[$nameSingleCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->layoutBuilder[$view_name_single]
+				$this->layoutBuilder[$nameSingleCode]
 			))
 		{
 			// reset the linked keys
@@ -12137,7 +12202,7 @@ class Interpretation extends Fields
 			$linkedViewIdentifier = array();
 			// set the linked view tabs
 			$linkedTab = $this->getEditBodyLinkedAdminViewsTabs(
-				$view, $view_name_single, $keys, $linkedViewIdentifier
+				$view, $nameSingleCode, $keys, $linkedViewIdentifier
 			);
 			// custom tab searching array
 			$searchTabs = array();
@@ -12150,7 +12215,7 @@ class Interpretation extends Fields
 			$sidewidth = 0;
 			// get the tabs with positions
 			$tabBucket = $this->getEditBodyTabs(
-				$view_name_single, $langView, $linkedTab, $keys,
+				$nameSingleCode, $langView, $linkedTab, $keys,
 				$linkedViewIdentifier, $searchTabs, $leftside, $rightside,
 				$footer, $header, $mainwidth, $sidewidth
 			);
@@ -12184,12 +12249,12 @@ class Interpretation extends Fields
 				{
 					$body .= PHP_EOL . PHP_EOL . $this->_t(1)
 						. "<?php echo JHtml::_('bootstrap.startTabSet', '"
-						. $view_name_single . "Tab', array('active' => '"
+						. $nameSingleCode . "Tab', array('active' => '"
 						. $tabCodeName . "')); ?>";
 				}
 				// check if custom tab must be added
 				if (($_customTabHTML = $this->addCustomTabs(
-						$searchTabs[$tabCodeName], $view_name_single, 1
+						$searchTabs[$tabCodeName], $nameSingleCode, 1
 					)) !== false)
 				{
 					$body .= $_customTabHTML;
@@ -12244,7 +12309,7 @@ class Interpretation extends Fields
 				// start addtab body
 				$body .= PHP_EOL . $this->_t(1)
 					. "<?php echo JHtml::_('bootstrap.addTab', '"
-					. $view_name_single . "Tab', '" . $tabCodeName . "', JText:"
+					. $nameSingleCode . "Tab', '" . $tabCodeName . "', JText:"
 					. ":_('" . $tabLangName . "', true)); ?>";
 				// add the main
 				$body .= PHP_EOL . $this->_t(2)
@@ -12270,7 +12335,7 @@ class Interpretation extends Fields
 				}
 				// check if custom tab must be added
 				if (($_customTabHTML = $this->addCustomTabs(
-						$searchTabs[$tabCodeName], $view_name_single, 2
+						$searchTabs[$tabCodeName], $nameSingleCode, 2
 					)) !== false)
 				{
 					$body .= $_customTabHTML;
@@ -12282,19 +12347,19 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . PHP_EOL . $this->_t(1)
 				. "<?php \$this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>";
 			$body .= PHP_EOL . $this->_t(1) . "<?php \$this->tab_name = '"
-				. $view_name_single . "Tab'; ?>";
+				. $nameSingleCode . "Tab'; ?>";
 			$body .= PHP_EOL . $this->_t(1)
 				. "<?php echo JLayoutHelper::render('joomla.edit.params', \$this); ?>";
 			// add the publish and meta data tabs
 			$body .= $this->getEditBodyPublishMetaTabs(
-				$view_name_single, $langView
+				$nameSingleCode, $langView
 			);
 			// end the tab set
 			$body .= PHP_EOL . PHP_EOL . $this->_t(1)
 				. "<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
 			$body .= PHP_EOL . PHP_EOL . $this->_t(1) . "<div>";
 			$body .= PHP_EOL . $this->_t(2)
-				. '<input type="hidden" name="task" value="' . $view_name_single
+				. '<input type="hidden" name="task" value="' . $nameSingleCode
 				. '.edit" />';
 			$body .= PHP_EOL . $this->_t(2)
 				. "<?php echo JHtml::_('form.token'); ?>";
@@ -12337,7 +12402,7 @@ class Interpretation extends Fields
 	 * get Edit Body Linked Admin Views
 	 *
 	 * @param   array   $view                  The view data
-	 * @param   string  $view_name_single      The single view name
+	 * @param   string  $nameSingleCode        The single view name
 	 * @param   array   $keys                  The tabs to add in layout
 	 * @param   array   $linkedViewIdentifier  The linked view identifier
 	 *
@@ -12345,22 +12410,22 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getEditBodyLinkedAdminViewsTabs(&$view,
-		&$view_name_single, &$keys, &$linkedViewIdentifier
+		&$nameSingleCode, &$keys, &$linkedViewIdentifier
 	) {
 		// start linked tabs bucket
 		$linkedTab = array();
 		// check if the view has linked admin view
-		if (isset($this->linkedAdminViews[$view_name_single])
+		if (isset($this->linkedAdminViews[$nameSingleCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->linkedAdminViews[$view_name_single]
+				$this->linkedAdminViews[$nameSingleCode]
 			))
 		{
-			foreach ($this->linkedAdminViews[$view_name_single] as $linkedView)
+			foreach ($this->linkedAdminViews[$nameSingleCode] as $linkedView)
 			{
 				// get the tab name
 				$tabName = $view['settings']->tabs[(int) $linkedView['tab']];
 				// update the tab counter
-				$this->tabCounter[$view_name_single][$linkedView['tab']]
+				$this->tabCounter[$nameSingleCode][$linkedView['tab']]
 					= $tabName;
 				// add the linked view
 				$linkedTab[$linkedView['adminview']] = $linkedView['tab'];
@@ -12398,7 +12463,7 @@ class Interpretation extends Fields
 	/**
 	 * get Edit Body Tabs
 	 *
-	 * @param   string  $view_name_single      The single view name
+	 * @param   string  $nameSingleCode        The single view name
 	 * @param   string  $langView              The main lang prefix
 	 * @param   array   $linkedTab             The linked admin view tabs
 	 * @param   array   $keys                  The tabs to add in layout
@@ -12414,16 +12479,16 @@ class Interpretation extends Fields
 	 * @return  array   The linked tabs
 	 *
 	 */
-	protected function getEditBodyTabs(&$view_name_single, &$langView,
+	protected function getEditBodyTabs(&$nameSingleCode, &$langView,
 		&$linkedTab, &$keys, &$linkedViewIdentifier, &$searchTabs, &$leftside,
 		&$rightside, &$footer, &$header, &$mainwidth, &$sidewidth
 	) {
 		// start tabs
 		$tabs = array();
 		// sort the tabs based on key order
-		ksort($this->tabCounter[$view_name_single]);
+		ksort($this->tabCounter[$nameSingleCode]);
 		// start tab builinging loop
-		foreach ($this->tabCounter[$view_name_single] as $tabNr => $tabName)
+		foreach ($this->tabCounter[$nameSingleCode] as $tabNr => $tabName)
 		{
 			$tabWidth  = 12;
 			$lrCounter = 0;
@@ -12453,7 +12518,7 @@ class Interpretation extends Fields
 			if ($buildLayout)
 			{
 				// sort to make sure it loads left first
-				$alignments = $this->layoutBuilder[$view_name_single][$tabName];
+				$alignments = $this->layoutBuilder[$nameSingleCode][$tabName];
 				ksort($alignments);
 				foreach ($alignments as $alignment => $names)
 				{
@@ -12488,7 +12553,7 @@ class Interpretation extends Fields
 							$lrCounter++;
 							// set as items layout
 							$this->setLayout(
-								$view_name_single, $layoutCodeName, $items,
+								$nameSingleCode, $layoutCodeName, $items,
 								'layoutitems'
 							);
 							// set the lang to tab
@@ -12499,13 +12564,13 @@ class Interpretation extends Fields
 								$tabs[$tabCodeName][(int) $alignment] = '';
 							}
 							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo JLayoutHelper::render('"
-								. $view_name_single . "." . $layoutCodeName
+								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
 						case 3: // fullwidth
 							// set as items layout
 							$this->setLayout(
-								$view_name_single, $layoutCodeName, $items,
+								$nameSingleCode, $layoutCodeName, $items,
 								'layoutfull'
 							);
 							// set the lang to tab
@@ -12516,58 +12581,58 @@ class Interpretation extends Fields
 								$tabs[$tabCodeName][(int) $alignment] = '';
 							}
 							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo JLayoutHelper::render('"
-								. $view_name_single . "." . $layoutCodeName
+								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
 						case 4: // above
 							// set as title layout
 							$this->setLayout(
-								$view_name_single, $layoutCodeName, $items,
+								$nameSingleCode, $layoutCodeName, $items,
 								'layouttitle'
 							);
 							// load to header
 							$header .= PHP_EOL . $this->_t(1)
 								. "<?php echo JLayoutHelper::render('"
-								. $view_name_single . "." . $layoutCodeName
+								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
 						case 5: // under
 							// set as title layout
 							$this->setLayout(
-								$view_name_single, $layoutCodeName, $items,
+								$nameSingleCode, $layoutCodeName, $items,
 								'layouttitle'
 							);
 							// load to footer
 							$footer .= PHP_EOL . PHP_EOL
 								. "<div class=\"clearfix\"></div>" . PHP_EOL
 								. "<?php echo JLayoutHelper::render('"
-								. $view_name_single . "." . $layoutCodeName
+								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
 						case 6: // left side
 							$tabWidth = $tabWidth - 2;
 							// set as items layout
 							$this->setLayout(
-								$view_name_single, $layoutCodeName, $items,
+								$nameSingleCode, $layoutCodeName, $items,
 								'layoutitems'
 							);
 							// load the body
 							$leftside .= PHP_EOL . $this->_t(1)
 								. "<?php echo JLayoutHelper::render('"
-								. $view_name_single . "." . $layoutCodeName
+								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
 						case 7: // right side
 							$tabWidth = $tabWidth - 2;
 							// set as items layout
 							$this->setLayout(
-								$view_name_single, $layoutCodeName, $items,
+								$nameSingleCode, $layoutCodeName, $items,
 								'layoutitems'
 							);
 							// load the body
 							$rightside .= PHP_EOL . $this->_t(1)
 								. "<?php echo JLayoutHelper::render('"
-								. $view_name_single . "." . $layoutCodeName
+								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
 					}
@@ -12585,27 +12650,27 @@ class Interpretation extends Fields
 				);
 				// set as items layout
 				$this->setLayout(
-					$view_name_single, $layoutCodeName, $codeName,
+					$nameSingleCode, $layoutCodeName, $codeName,
 					'layoutlinkedview'
 				);
 				// set the lang to tab
 				$tabs[$tabCodeName]['lang'] = $tabLangName;
 				// set all the linked view stuff
 				$this->secondRunAdmin['setLinkedView'][] = array(
-					'viewId'           => $linkedViewId,
-					'view_name_single' => $view_name_single,
-					'codeName'         => $codeName,
-					'layoutCodeName'   => $layoutCodeName,
-					'key'              => $keys[$linkedViewId]['key'],
-					'parentKey'        => $keys[$linkedViewId]['parentKey'],
-					'addNewButon'      => $keys[$linkedViewId]['addNewButton']);
+					'viewId'         => $linkedViewId,
+					'nameSingleCode' => $nameSingleCode,
+					'codeName'       => $codeName,
+					'layoutCodeName' => $layoutCodeName,
+					'key'            => $keys[$linkedViewId]['key'],
+					'parentKey'      => $keys[$linkedViewId]['parentKey'],
+					'addNewButon'    => $keys[$linkedViewId]['addNewButton']);
 				// load the body
 				if (!isset($tabs[$tabCodeName][3]))
 				{
 					$tabs[$tabCodeName][3] = '';
 				}
 				$tabs[$tabCodeName][3] .= "<?php echo JLayoutHelper::render('"
-					. $view_name_single . "." . $layoutCodeName
+					. $nameSingleCode . "." . $layoutCodeName
 					. "', \$this); ?>";
 			}
 			// width calculator :)
@@ -12680,13 +12745,13 @@ class Interpretation extends Fields
 	/**
 	 * get Edit Body Publish and Meta Tab
 	 *
-	 * @param   string  $view_name_single  The single view name
-	 * @param   string  $langView          The main lang prefix
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $langView        The main lang prefix
 	 *
 	 * @return  string   The published and Meta Data Tabs
 	 *
 	 */
-	protected function getEditBodyPublishMetaTabs(&$view_name_single, &$langView
+	protected function getEditBodyPublishMetaTabs(&$nameSingleCode, &$langView
 	) {
 		// build the two tabs
 		$tabs = '';
@@ -12699,10 +12764,10 @@ class Interpretation extends Fields
 		// Setup the default (custom) fields
 		// only load (1 => 'left', 2 => 'right')
 		$fieldsAddedRight = false;
-		if (isset($this->newPublishingFields[$view_name_single]))
+		if (isset($this->newPublishingFields[$nameSingleCode]))
 		{
 			foreach (
-				$this->newPublishingFields[$view_name_single] as $df_alignment
+				$this->newPublishingFields[$nameSingleCode] as $df_alignment
 			=> $df_items
 			)
 			{
@@ -12723,7 +12788,7 @@ class Interpretation extends Fields
 								'Your <b>%s</b> field could not be added, since the <b>%s</b> alignment position is not available in the %s (publishing) tab. Please only target <b>Left or right</b> in the publishing tab.',
 								$df_name,
 								$this->alignmentOptions[$df_alignment],
-								$view_name_single
+								$nameSingleCode
 							), 'Warning'
 						);
 					}
@@ -12746,16 +12811,16 @@ class Interpretation extends Fields
 		{
 			foreach ($defaultFields as $defaultField)
 			{
-				if (!isset($this->movedPublishingFields[$view_name_single][$defaultField]))
+				if (!isset($this->movedPublishingFields[$nameSingleCode][$defaultField]))
 				{
 					if ($defaultField != 'access')
 					{
 						$items[$d_alignment][] = $defaultField;
 					}
 					elseif ($defaultField === 'access'
-						&& isset($this->accessBuilder[$view_name_single])
+						&& isset($this->accessBuilder[$nameSingleCode])
 						&& ComponentbuilderHelper::checkString(
-							$this->accessBuilder[$view_name_single]
+							$this->accessBuilder[$nameSingleCode]
 						))
 					{
 						$items[$d_alignment][] = $defaultField;
@@ -12764,9 +12829,9 @@ class Interpretation extends Fields
 			}
 		}
 		// check if metadata is added to this view
-		if (isset($this->metadataBuilder[$view_name_single])
+		if (isset($this->metadataBuilder[$nameSingleCode])
 			&& ComponentbuilderHelper::checkString(
-				$this->metadataBuilder[$view_name_single]
+				$this->metadataBuilder[$nameSingleCode]
 			))
 		{
 			// set default publishing tab code name
@@ -12813,13 +12878,13 @@ class Interpretation extends Fields
 					$this->app->enqueueMessage(
 						JText::sprintf(
 							'Your field/s added to the <b>right</b> alignment position in the %s (publishing) tab was added to the <b>left</b>. Since we have metadata fields on the right. Fields can only be loaded to the right of the publishing tab if there is no metadata fields.',
-							$view_name_single
+							$nameSingleCode
 						), 'Notice'
 					);
 				}
 				// set the publishing layout
 				$this->setLayout(
-					$view_name_single, $tabCodeNameLeft, $items_one,
+					$nameSingleCode, $tabCodeNameLeft, $items_one,
 					'layoutpublished'
 				);
 				$items_one = true;
@@ -12830,7 +12895,7 @@ class Interpretation extends Fields
 			}
 			// set the metadata layout
 			$this->setLayout(
-				$view_name_single, $tabCodeNameRight, false, 'layoutmetadata'
+				$nameSingleCode, $tabCodeNameRight, false, 'layoutmetadata'
 			);
 			$items_two = true;
 		}
@@ -12852,7 +12917,7 @@ class Interpretation extends Fields
 						) . "'";
 					// set the publishing layout
 					$this->setLayout(
-						$view_name_single, $tabCodeNameLeft, $items_one,
+						$nameSingleCode, $tabCodeNameLeft, $items_one,
 						'layoutpublished'
 					);
 					$items_one = true;
@@ -12866,7 +12931,7 @@ class Interpretation extends Fields
 						) . "'";
 					// set the publishing layout
 					$this->setLayout(
-						$view_name_single, $tabCodeNameRight, $items_two,
+						$nameSingleCode, $tabCodeNameRight, $items_two,
 						'layoutpublished'
 					);
 					$items_two = true;
@@ -12888,9 +12953,9 @@ class Interpretation extends Fields
 		}
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$view_name_single]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$view_name_single];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
 		// only load this if needed
@@ -12909,7 +12974,7 @@ class Interpretation extends Fields
 						$this->permissionBuilder['global'][$core[$core_permission]]
 					)
 					&& in_array(
-						$view_name_single,
+						$nameSingleCode,
 						$this->permissionBuilder['global'][$core[$core_permission]]
 					))
 				{
@@ -12935,7 +13000,7 @@ class Interpretation extends Fields
 						$this->permissionBuilder['global'][$core[$core_permission]]
 					)
 					&& in_array(
-						$view_name_single,
+						$nameSingleCode,
 						$this->permissionBuilder['global'][$core[$core_permission]]
 					))
 				{
@@ -12953,7 +13018,7 @@ class Interpretation extends Fields
 			}
 			// check if custom tab must be added
 			if (($_customTabHTML = $this->addCustomTabs(
-					15, $view_name_single, 1
+					15, $nameSingleCode, 1
 				)) !== false)
 			{
 				$tabs .= $_customTabHTML;
@@ -12967,7 +13032,7 @@ class Interpretation extends Fields
 			// set the default publishing tab
 			$tabs .= PHP_EOL . $this->_t(1)
 				. "<?php echo JHtml::_('bootstrap.addTab', '"
-				. $view_name_single . "Tab', '" . $tabCodeNameLeft . "', JText:"
+				. $nameSingleCode . "Tab', '" . $tabCodeNameLeft . "', JText:"
 				. ":_('" . $tabLangName . "', true)); ?>";
 			$tabs .= PHP_EOL . $this->_t(2)
 				. '<div class="row-fluid form-horizontal-desktop">';
@@ -12976,7 +13041,7 @@ class Interpretation extends Fields
 				$tabs .= PHP_EOL . $this->_t(3) . '<div class="' . $classs
 					. '">';
 				$tabs .= PHP_EOL . $this->_t(4)
-					. "<?php echo JLayoutHelper::render('" . $view_name_single
+					. "<?php echo JLayoutHelper::render('" . $nameSingleCode
 					. "." . $tabCodeNameLeft . "', \$this); ?>";
 				$tabs .= PHP_EOL . $this->_t(3) . "</div>";
 			}
@@ -12985,7 +13050,7 @@ class Interpretation extends Fields
 				$tabs .= PHP_EOL . $this->_t(3) . '<div class="' . $classs
 					. '">';
 				$tabs .= PHP_EOL . $this->_t(4)
-					. "<?php echo JLayoutHelper::render('" . $view_name_single
+					. "<?php echo JLayoutHelper::render('" . $nameSingleCode
 					. "." . $tabCodeNameRight . "', \$this); ?>";
 				$tabs .= PHP_EOL . $this->_t(3) . "</div>";
 			}
@@ -12995,7 +13060,7 @@ class Interpretation extends Fields
 			$tabs .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
 			// check if custom tab must be added
 			if (($_customTabHTML = $this->addCustomTabs(
-					15, $view_name_single, 2
+					15, $nameSingleCode, 2
 				)) !== false)
 			{
 				$tabs .= $_customTabHTML;
@@ -13003,7 +13068,7 @@ class Interpretation extends Fields
 		}
 
 		// make sure we dont load it to a view with the name component (as this will cause conflict with Joomla conventions)
-		if ($view_name_single != 'component')
+		if ($nameSingleCode != 'component')
 		{
 			// set permissions tab lang
 			$tabLangName = $langView . '_PERMISSION';
@@ -13016,7 +13081,7 @@ class Interpretation extends Fields
 				. "<?php if (\$this->canDo->get('core.admin')) : ?>";
 			$tabs .= PHP_EOL . $this->_t(1)
 				. "<?php echo JHtml::_('bootstrap.addTab', '"
-				. $view_name_single . "Tab', '" . $tabCodeName . "', JText:"
+				. $nameSingleCode . "Tab', '" . $tabCodeName . "', JText:"
 				. ":_('" . $tabLangName . "', true)); ?>";
 			$tabs .= PHP_EOL . $this->_t(2)
 				. '<div class="row-fluid form-horizontal-desktop">';
@@ -13124,33 +13189,33 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * @param $viewName_single
+	 * @param $nameSingleCode
 	 * @param $layoutName
 	 * @param $items
 	 * @param $type
 	 */
-	public function setLayout($viewName_single, $layoutName, $items, $type)
+	public function setLayout($nameSingleCode, $layoutName, $items, $type)
 	{
 		// first build the layout file
-		$target = array('admin' => $viewName_single);
+		$target = array('admin' => $nameSingleCode);
 		$this->buildDynamique($target, $type, $layoutName);
 		// add to front if needed
 		if ($this->lang === 'both')
 		{
-			$target = array('site' => $viewName_single);
+			$target = array('site' => $nameSingleCode);
 			$this->buildDynamique($target, $type, $layoutName);
 		}
 		if (ComponentbuilderHelper::checkString($items))
 		{
 			// LAYOUTITEMS <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single . '_'
+			$this->fileContentDynamic[$nameSingleCode . '_'
 			. $layoutName][$this->hhh . 'LAYOUTITEMS' . $this->hhh]
 				= $items;
 		}
 		else
 		{
 			// LAYOUTITEMS <<<DYNAMIC>>>
-			$this->fileContentDynamic[$viewName_single . '_'
+			$this->fileContentDynamic[$nameSingleCode . '_'
 			. $layoutName][$this->hhh . 'bogus' . $this->hhh]
 				= 'boom';
 		}
@@ -13163,7 +13228,7 @@ class Interpretation extends Fields
 	{
 		/**
 		 * @var $viewId
-		 * @var $view_name_single
+		 * @var $nameSingleCode
 		 * @var $codeName
 		 * @var $layoutCodeName
 		 * @var $key
@@ -13171,46 +13236,44 @@ class Interpretation extends Fields
 		 * @var $addNewButon
 		 */
 		extract($args, EXTR_PREFIX_SAME, "oops");
-		$single = '';
-		$list   = '';
+		$single         = '';
+		$name_list_code = '';
 		foreach ($this->componentData->admin_views as $array)
 		{
 			if ($array['adminview'] == $viewId)
 			{
-				$single = ComponentbuilderHelper::safeString(
-					$array['settings']->name_single
-				);
-				$list   = ComponentbuilderHelper::safeString(
-					$array['settings']->name_list
-				);
+				$name_single_code = $array['settings']->name_single_code;
+				$name_list_code   = $array['settings']->name_list_code;
 				break;
 			}
 		}
-		if (ComponentbuilderHelper::checkString($single)
-			&& ComponentbuilderHelper::checkString($list))
+		if (ComponentbuilderHelper::checkString($name_single_code)
+			&& ComponentbuilderHelper::checkString($name_list_code))
 		{
 			$head         = $this->setListHeadLinked(
-				$single, $list, $addNewButon, $view_name_single
+				$name_single_code, $name_list_code, $addNewButon,
+				$nameSingleCode
 			);
 			$body         = $this->setListBodyLinked(
-				$single, $list, $view_name_single
+				$name_single_code, $name_list_code, $nameSingleCode
 			);
 			$functionName = ComponentbuilderHelper::safeString($codeName, 'F');
 			// LAYOUTITEMSTABLE <<<DYNAMIC>>>
-			$this->fileContentDynamic[$view_name_single . '_'
+			$this->fileContentDynamic[$nameSingleCode . '_'
 			. $layoutCodeName][$this->hhh . 'LAYOUTITEMSTABLE' . $this->hhh]
 				= $head . $body;
 			// LAYOUTITEMSHEADER <<<DYNAMIC>>>
 			$headerscript = '//' . $this->setLine(__LINE__)
 				. ' set the edit URL';
 			$headerscript .= PHP_EOL . '$edit = "index.php?option=com_'
-				. $this->componentCodeName . '&view=' . $list . '&task='
-				. $single . '.edit";';
+				. $this->componentCodeName . '&view=' . $name_list_code
+				. '&task='
+				. $name_single_code . '.edit";';
 			$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__)
 				. ' set a return value';
 			$headerscript .= PHP_EOL
 				. '$return = ($id) ? "index.php?option=com_'
-				. $this->componentCodeName . '&view=' . $view_name_single
+				. $this->componentCodeName . '&view=' . $nameSingleCode
 				. '&layout=edit&id=" . $id : "";';
 			$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__)
 				. ' check for a return value';
@@ -13232,13 +13295,13 @@ class Interpretation extends Fields
 					__LINE__
 				) . ' set the referral values';
 			$headerscript .= PHP_EOL . $this->_t(1) . '$ref = ($id) ? "&ref='
-				. $view_name_single
+				. $nameSingleCode
 				. '&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));';
 			$headerscript .= PHP_EOL . '}';
 			$headerscript .= PHP_EOL . 'else';
 			$headerscript .= PHP_EOL . '{';
 			$headerscript .= PHP_EOL . $this->_t(1) . '$ref = ($id) ? "&ref='
-				. $view_name_single . '&refid=" . $id : "";';
+				. $nameSingleCode . '&refid=" . $id : "";';
 			$headerscript .= PHP_EOL . '}';
 			if ($addNewButon > 0)
 			{
@@ -13248,8 +13311,9 @@ class Interpretation extends Fields
 					$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__)
 						. ' set the create new URL';
 					$headerscript .= PHP_EOL . '$new = "index.php?option=com_'
-						. $this->componentCodeName . '&view=' . $list . '&task='
-						. $single . '.edit" . $ref;';
+						. $this->componentCodeName . '&view=' . $name_list_code
+						. '&task='
+						. $name_single_code . '.edit" . $ref;';
 				}
 				// and the link for close and new
 				if ($addNewButon == 2 || $addNewButon == 3)
@@ -13258,21 +13322,23 @@ class Interpretation extends Fields
 						. ' set the create new and close URL';
 					$headerscript .= PHP_EOL
 						. '$close_new = "index.php?option=com_'
-						. $this->componentCodeName . '&view=' . $list . '&task='
-						. $single . '.edit";';
+						. $this->componentCodeName . '&view=' . $name_list_code
+						. '&task='
+						. $name_single_code . '.edit";';
 				}
 				$headerscript .= PHP_EOL . '//' . $this->setLine(__LINE__)
 					. ' load the action object';
 				$headerscript .= PHP_EOL . '$can = '
 					. $this->fileContentStatic[$this->hhh . 'Component'
-					. $this->hhh] . 'Helper::getActions(' . "'" . $single . "'"
+					. $this->hhh] . 'Helper::getActions(' . "'"
+					. $name_single_code . "'"
 					. ');';
 			}
-			$this->fileContentDynamic[$view_name_single . '_'
+			$this->fileContentDynamic[$nameSingleCode . '_'
 			. $layoutCodeName][$this->hhh . 'LAYOUTITEMSHEADER' . $this->hhh]
 				= $headerscript;
 			// LINKEDVIEWITEMS <<<DYNAMIC>>>
-			$this->fileContentDynamic[$view_name_single][$this->hhh
+			$this->fileContentDynamic[$nameSingleCode][$this->hhh
 			. 'LINKEDVIEWITEMS' . $this->hhh]
 				.= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 					__LINE__
@@ -13280,7 +13346,7 @@ class Interpretation extends Fields
 				. "\$this->" . $codeName . " = \$this->get('" . $functionName
 				. "');";
 			// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
-			$this->fileContentDynamic[$view_name_single][$this->hhh
+			$this->fileContentDynamic[$nameSingleCode][$this->hhh
 			. 'LINKEDVIEWTABLESCRIPTS' . $this->hhh]
 				= $this->setFootableScripts();
 			if (strpos($parentKey, '-R>') !== false
@@ -13323,7 +13389,7 @@ class Interpretation extends Fields
 						= ComponentbuilderHelper::safeString(
 						$_key . $this->uniquekey(4)
 					);
-					$this->fileContentDynamic[$view_name_single][$this->hhh
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'LINKEDVIEWGLOBAL' . $this->hhh]
 						.= PHP_EOL . $this->_t(2) . "\$this->"
 						. $globalKey[$parent_key] . " = \$item->" . $parent_key
@@ -13336,25 +13402,26 @@ class Interpretation extends Fields
 				$globalKey = ComponentbuilderHelper::safeString(
 					$_key . $this->uniquekey(4)
 				);
-				$this->fileContentDynamic[$view_name_single][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'LINKEDVIEWGLOBAL' . $this->hhh]
 				           .= PHP_EOL . $this->_t(2) . "\$this->" . $globalKey
 					. " = \$item->" . $parent_key . ";";
 			}
 			// LINKEDVIEWMETHODS <<<DYNAMIC>>>
-			$this->fileContentDynamic[$view_name_single][$this->hhh
+			$this->fileContentDynamic[$nameSingleCode][$this->hhh
 			. 'LINKEDVIEWMETHODS' . $this->hhh]
 				.= $this->setListQueryLinked(
-				$single, $list, $functionName, $key, $_key, $parentKey,
+				$name_single_code, $name_list_code, $functionName, $key, $_key,
+				$parentKey,
 				$parent_key, $globalKey
 			);
 		}
 		else
 		{
-			$this->fileContentDynamic[$view_name_single . '_'
+			$this->fileContentDynamic[$nameSingleCode . '_'
 			. $layoutCodeName][$this->hhh . 'LAYOUTITEMSTABLE' . $this->hhh]
 				= 'oops! error.....';
-			$this->fileContentDynamic[$view_name_single . '_'
+			$this->fileContentDynamic[$nameSingleCode . '_'
 			. $layoutCodeName][$this->hhh . 'LAYOUTITEMSHEADER' . $this->hhh]
 				= '';
 		}
@@ -13492,17 +13559,18 @@ class Interpretation extends Fields
 	/**
 	 * set the list body of the linked admin view
 	 *
-	 * @param   string  $viewName_single
-	 * @param   string  $viewName_list
+	 * @param   string  $nameSingleCode
+	 * @param   string  $nameListCode
 	 * @param   string  $refview
 	 *
 	 * @return string
 	 */
-	public function setListBodyLinked($viewName_single, $viewName_list, $refview
+	public function setListBodyLinked($nameSingleCode, $nameListCode,
+		$refview
 	) {
-		if (isset($this->listBuilder[$viewName_list])
+		if (isset($this->listBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->listBuilder[$viewName_list]
+				$this->listBuilder[$nameListCode]
 			))
 		{
 			// component helper name
@@ -13513,9 +13581,9 @@ class Interpretation extends Fields
 			// setup correct core target
 			$coreLoad = false;
 			$core     = null;
-			if (isset($this->permissionCore[$viewName_single]))
+			if (isset($this->permissionCore[$nameSingleCode]))
 			{
-				$core     = $this->permissionCore[$viewName_single];
+				$core     = $this->permissionCore[$nameSingleCode];
 				$coreLoad = true;
 			}
 			$counter = 0;
@@ -13528,18 +13596,18 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . $this->_t(2)
 				. "\$userChkOut = JFactory::getUser(\$item->checked_out);";
 			$body .= PHP_EOL . $this->_t(2) . "\$canDo = " . $Helper
-				. "::getActions('" . $viewName_single . "',\$item,'"
-				. $viewName_list . "');";
+				. "::getActions('" . $nameSingleCode . "',\$item,'"
+				. $nameListCode . "');";
 			$body .= PHP_EOL . $this->_t(1) . "?>";
 			$body .= PHP_EOL . $this->_t(1) . '<tr>';
 			// check if this view has fields that should not be escaped
 			$doNotEscape = false;
-			if (isset($this->doNotEscape[$viewName_list]))
+			if (isset($this->doNotEscape[$nameListCode]))
 			{
 				$doNotEscape = true;
 			}
 			// start adding the dynamic
-			foreach ($this->listBuilder[$viewName_list] as $item)
+			foreach ($this->listBuilder[$nameListCode] as $item)
 			{
 				// check if target is linked list view
 				if (1 == $item['target'] || 4 == $item['target'])
@@ -13550,7 +13618,7 @@ class Interpretation extends Fields
 					$customAdminViewButtons = '';
 					// set the item row
 					$itemRow = $this->getListItemBuilder(
-						$item, $viewName_single, $viewName_list, $itemClass,
+						$item, $nameSingleCode, $nameListCode, $itemClass,
 						$doNotEscape, $coreLoad, $core, false, $ref,
 						'$displayData->escape', '$user', $refview
 					);
@@ -13560,7 +13628,7 @@ class Interpretation extends Fields
 						// get custom admin view buttons
 						$customAdminViewButtons
 							= $this->getCustomAdminViewButtons(
-							$viewName_list, $ref
+							$nameListCode, $ref
 						);
 						// make sure the custom admin view buttons are only added once
 						$firstTimeBeingAdded = false;
@@ -13578,7 +13646,7 @@ class Interpretation extends Fields
 				: 'data-value';
 
 			// add the defaults
-			if (!isset($this->fieldsNames[$viewName_single]['published']))
+			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
 			{
 				$counter++;
 				// add the defaults
@@ -13641,7 +13709,7 @@ class Interpretation extends Fields
 			}
 
 			// add the defaults
-			if (!isset($this->fieldsNames[$viewName_single]['id']))
+			if (!isset($this->fieldsNames[$nameSingleCode]['id']))
 			{
 				$counter++;
 				$body .= PHP_EOL . $this->_t(2)
@@ -13683,19 +13751,19 @@ class Interpretation extends Fields
 	/**
 	 * set the list body table head linked admin view
 	 *
-	 * @param   string  $viewName_single
-	 * @param   string  $viewName_list
+	 * @param   string  $nameSingleCode
+	 * @param   string  $nameListCode
 	 * @param   bool    $addNewButon
 	 * @param   string  $refview
 	 *
 	 * @return string
 	 */
-	public function setListHeadLinked($viewName_single, $viewName_list,
+	public function setListHeadLinked($nameSingleCode, $nameListCode,
 		$addNewButon, $refview
 	) {
-		if (isset($this->listBuilder[$viewName_list])
+		if (isset($this->listBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->listBuilder[$viewName_list]
+				$this->listBuilder[$nameListCode]
 			))
 		{
 			// component helper name
@@ -13707,9 +13775,9 @@ class Interpretation extends Fields
 			{
 				// setup correct core target
 				$coreLoad = false;
-				if (isset($this->permissionCore[$viewName_single]))
+				if (isset($this->permissionCore[$nameSingleCode]))
 				{
-					$core     = $this->permissionCore[$viewName_single];
+					$core     = $this->permissionCore[$nameSingleCode];
 					$coreLoad = true;
 				}
 				// check if the item has permissions.
@@ -13719,7 +13787,7 @@ class Interpretation extends Fields
 						$this->permissionBuilder['global'][$core['core.create']]
 					)
 					&& in_array(
-						$viewName_single,
+						$nameSingleCode,
 						$this->permissionBuilder['global'][$core['core.create']]
 					))
 				{
@@ -13777,18 +13845,18 @@ class Interpretation extends Fields
 				? ' data-show-toggle="true" data-toggle-column="first"' : '';
 			// set paging
 			$paging = (2 == $this->footableVersion)
-				? ' data-page-size="20" data-filter="#filter_' . $viewName_list
+				? ' data-page-size="20" data-filter="#filter_' . $nameListCode
 				. '"'
 				: ' data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true"';
 			// add html fix for V3
 			$htmlFix = (3 == $this->footableVersion)
 				? ' data-type="html" data-sort-use="text"' : '';
 			$head    .= PHP_EOL . '<table class="footable table data '
-				. $viewName_list . $metro_blue . '"' . $toggle . $paging . '>';
+				. $nameListCode . $metro_blue . '"' . $toggle . $paging . '>';
 			$head    .= PHP_EOL . "<thead>";
 			// main lang prefix
 			$langView = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString($viewName_single, 'U');
+				. ComponentbuilderHelper::safeString($nameSingleCode, 'U');
 			// set status lang
 			$statusLangName = $langView . '_STATUS';
 			// set id lang
@@ -13803,20 +13871,20 @@ class Interpretation extends Fields
 			// set controller for data hiding options
 			$controller = 1;
 			// build the dynamic fields
-			foreach ($this->listBuilder[$viewName_list] as $item)
+			foreach ($this->listBuilder[$nameListCode] as $item)
 			{
 				// check if target is linked list view
 				if (1 == $item['target'] || 4 == $item['target'])
 				{
 					// check if we have an over-ride
-					if (isset($this->listHeadOverRide[$viewName_list])
+					if (isset($this->listHeadOverRide[$nameListCode])
 						&& ComponentbuilderHelper::checkArray(
-							$this->listHeadOverRide[$viewName_list]
+							$this->listHeadOverRide[$nameListCode]
 						)
-						&& isset($this->listHeadOverRide[$viewName_list][$item['id']]))
+						&& isset($this->listHeadOverRide[$nameListCode][$item['id']]))
 					{
 						$item['lang']
-							= $this->listHeadOverRide[$viewName_list][$item['id']];
+							= $this->listHeadOverRide[$nameListCode][$item['id']];
 					}
 					$setin = (2 == $this->footableVersion)
 						? ' data-hide="phone"' : ' data-breakpoints="xs sm"';
@@ -13851,7 +13919,7 @@ class Interpretation extends Fields
 			$data_hide = (2 == $this->footableVersion)
 				? 'data-hide="phone,tablet"' : 'data-breakpoints="xs sm md"';
 			// add the defaults
-			if (!isset($this->fieldsNames[$viewName_single]['published']))
+			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
 			{
 				$head .= PHP_EOL . $this->_t(2) . '<th width="10" ' . $data_hide
 					. '>';
@@ -13861,7 +13929,7 @@ class Interpretation extends Fields
 			}
 
 			// add the defaults
-			if (!isset($this->fieldsNames[$viewName_single]['id']))
+			if (!isset($this->fieldsNames[$nameSingleCode]['id']))
 			{
 				$data_type = (2 == $this->footableVersion)
 					? 'data-type="numeric"'
@@ -13884,8 +13952,8 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * @param $viewName_single
-	 * @param $viewName_list
+	 * @param $nameSingleCode
+	 * @param $nameListCode
 	 * @param $functionName
 	 * @param $key
 	 * @param $_key
@@ -13895,16 +13963,16 @@ class Interpretation extends Fields
 	 *
 	 * @return string
 	 */
-	public function setListQueryLinked($viewName_single, $viewName_list,
+	public function setListQueryLinked($nameSingleCode, $nameListCode,
 		$functionName, $key, $_key, $parentKey, $parent_key, $globalKey
 	) {
 		// check if this view has category added
-		if (isset($this->categoryBuilder[$viewName_list])
+		if (isset($this->categoryBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->categoryBuilder[$viewName_list]
+				$this->categoryBuilder[$nameListCode]
 			))
 		{
-			$categoryCodeName = $this->categoryBuilder[$viewName_list]['code'];
+			$categoryCodeName = $this->categoryBuilder[$nameListCode]['code'];
 			$addCategory      = true;
 		}
 		else
@@ -13940,10 +14008,11 @@ class Interpretation extends Fields
 		}
 		$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 				__LINE__
-			) . " From the " . $this->componentCodeName . "_" . $viewName_single
+			) . " From the " . $this->componentCodeName . "_"
+			. $nameSingleCode
 			. " table";
 		$query .= PHP_EOL . $this->_t(2) . "\$query->from(\$db->quoteName('#__"
-			. $this->componentCodeName . "_" . $viewName_single . "', 'a'));";
+			. $this->componentCodeName . "_" . $nameSingleCode . "', 'a'));";
 		// add the category
 		if ($addCategory)
 		{
@@ -13954,10 +14023,10 @@ class Interpretation extends Fields
 		}
 		// add custom filtering php
 		$query .= $this->getCustomScriptBuilder(
-			'php_getlistquery', $viewName_single, PHP_EOL . PHP_EOL
+			'php_getlistquery', $nameSingleCode, PHP_EOL . PHP_EOL
 		);
 		// add the custom fields query
-		$query .= $this->setCustomQuery($viewName_list, $viewName_single);
+		$query .= $this->setCustomQuery($nameListCode, $nameSingleCode);
 		if (ComponentbuilderHelper::checkString($globalKey) && $key
 			&& strpos(
 				$key, '-R>'
@@ -14047,9 +14116,9 @@ class Interpretation extends Fields
 				$query .= PHP_EOL . $this->_t(2) . "}";
 			}
 		}
-		if (isset($this->accessBuilder[$viewName_single])
+		if (isset($this->accessBuilder[$nameSingleCode])
 			&& ComponentbuilderHelper::checkString(
-				$this->accessBuilder[$viewName_single]
+				$this->accessBuilder[$nameSingleCode]
 			))
 		{
 			$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
@@ -14080,17 +14149,17 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(2) . "}";
 		}
 		// add dynamic ordering (Linked view)
-		if (isset($this->viewsDefaultOrdering[$viewName_list])
-			&& $this->viewsDefaultOrdering[$viewName_list]['add_linked_ordering']
+		if (isset($this->viewsDefaultOrdering[$nameListCode])
+			&& $this->viewsDefaultOrdering[$nameListCode]['add_linked_ordering']
 			== 1)
 		{
 			foreach (
-				$this->viewsDefaultOrdering[$viewName_list]['linked_ordering_fields']
+				$this->viewsDefaultOrdering[$nameListCode]['linked_ordering_fields']
 				as $order_field
 			)
 			{
 				if (($order_field_name = $this->getFieldDatabaseName(
-						$viewName_list, $order_field['field']
+						$nameListCode, $order_field['field']
 					// We Removed This 'listJoinBuilder' as targetArea
 					// we will keep an eye on this
 					)) !== false)
@@ -14128,13 +14197,13 @@ class Interpretation extends Fields
 		$query .= PHP_EOL . $this->_t(3) . "\$items = \$db->loadObjectList();";
 		// add the fixing strings method
 		$query .= $this->setGetItemsMethodStringFix(
-			$viewName_single, $viewName_list,
+			$nameSingleCode, $nameListCode,
 			$this->fileContentStatic[$this->hhh . 'Component' . $this->hhh],
 			$this->_t(1)
 		);
 		// add translations
 		$query .= $this->setSelectionTranslationFix(
-			$viewName_list,
+			$nameListCode,
 			$this->fileContentStatic[$this->hhh . 'Component' . $this->hhh],
 			$this->_t(1)
 		);
@@ -14364,7 +14433,7 @@ class Interpretation extends Fields
 		}
 		// add custom php to getitems method after all
 		$query .= $this->getCustomScriptBuilder(
-			'php_getitems_after_all', $viewName_single,
+			'php_getitems_after_all', $nameSingleCode,
 			PHP_EOL . PHP_EOL . $this->_t(1)
 		);
 
@@ -14374,7 +14443,7 @@ class Interpretation extends Fields
 		$query .= PHP_EOL . $this->_t(1) . "}";
 		// SELECTIONTRANSLATIONFIXFUNC<<<DYNAMIC>>>
 		$query .= $this->setSelectionTranslationFixFunc(
-			$viewName_list,
+			$nameListCode,
 			$this->fileContentStatic[$this->hhh . 'Component' . $this->hhh]
 		);
 
@@ -14388,21 +14457,21 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * @param $viewName_list
+	 * @param $nameListCode
 	 *
 	 * @return array|string
 	 */
-	public function setCustomAdminDynamicButton($viewName_list)
+	public function setCustomAdminDynamicButton($nameListCode)
 	{
 		$buttons = '';
-		if (isset($this->customAdminDynamicButtons[$viewName_list])
+		if (isset($this->customAdminDynamicButtons[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->customAdminDynamicButtons[$viewName_list]
+				$this->customAdminDynamicButtons[$nameListCode]
 			))
 		{
 			$buttons = array();
 			foreach (
-				$this->customAdminDynamicButtons[$viewName_list] as
+				$this->customAdminDynamicButtons[$nameListCode] as
 				$custom_button
 			)
 			{
@@ -14420,7 +14489,7 @@ class Interpretation extends Fields
 				$buttons[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 					. " add " . $custom_button['name'] . " button.";
 				$buttons[] = $this->_t(3) . "JToolBarHelper::custom('"
-					. $viewName_list . ".redirectTo"
+					. $nameListCode . ".redirectTo"
 					. ComponentbuilderHelper::safeString(
 						$custom_button['link'], 'F'
 					) . "', '" . $custom_button['icon'] . "', '', '" . $keyLang
@@ -14437,21 +14506,21 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * @param $viewName_list
+	 * @param $nameListCode
 	 *
 	 * @return array|string
 	 */
-	public function setCustomAdminDynamicButtonController($viewName_list)
+	public function setCustomAdminDynamicButtonController($nameListCode)
 	{
 		$method = '';
-		if (isset($this->customAdminDynamicButtons[$viewName_list])
+		if (isset($this->customAdminDynamicButtons[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->customAdminDynamicButtons[$viewName_list]
+				$this->customAdminDynamicButtons[$nameListCode]
 			))
 		{
 			$method = array();
 			foreach (
-				$this->customAdminDynamicButtons[$viewName_list] as
+				$this->customAdminDynamicButtons[$nameListCode] as
 				$custom_button
 			)
 			{
@@ -14499,7 +14568,7 @@ class Interpretation extends Fields
 					. "_FAILED');";
 				$method[] = $this->_t(2)
 					. "\$this->setRedirect(JRoute::_('index.php?option=com_"
-					. $this->componentCodeName . "&view=" . $viewName_list
+					. $this->componentCodeName . "&view=" . $nameListCode
 					. "', false), \$message, 'error');";
 				$method[] = $this->_t(2) . "return;";
 				$method[] = $this->_t(1) . "}";
@@ -14521,13 +14590,13 @@ class Interpretation extends Fields
 	/**
 	 * A function that builds get Items Method for model
 	 *
-	 * @param   string  $viewName_single  The single view name
-	 * @param   string  $viewName_list    The list view name
-	 * @param   array   $config           The config details to adapt the method being build
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
+	 * @param   array   $config          The config details to adapt the method being build
 	 *
 	 * @return string
 	 */
-	public function setGetItemsModelMethod($viewName_single, $viewName_list,
+	public function setGetItemsModelMethod($nameSingleCode, $nameListCode,
 		$config
 		= array('functionName' => 'getExportData',
 		        'docDesc'      => 'Method to get list export data.',
@@ -14538,8 +14607,8 @@ class Interpretation extends Fields
 		// check if this is the export method
 		$isExport = ('export' === $config['type']);
 		// check if this view has export feature, and or if this is not an export method
-		if ((isset($this->eximportView[$viewName_list])
-				&& $this->eximportView[$viewName_list])
+		if ((isset($this->eximportView[$nameListCode])
+				&& $this->eximportView[$nameListCode])
 			|| !$isExport)
 		{
 			$query = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
@@ -14588,10 +14657,10 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 					__LINE__
 				) . " From the " . $this->componentCodeName . "_"
-				. $viewName_single . " table";
+				. $nameSingleCode . " table";
 			$query .= PHP_EOL . $this->_t(3)
 				. "\$query->from(\$db->quoteName('#__"
-				. $this->componentCodeName . "_" . $viewName_single
+				. $this->componentCodeName . "_" . $nameSingleCode
 				. "', 'a'));";
 			$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " The bulk export path";
@@ -14628,7 +14697,7 @@ class Interpretation extends Fields
 				. "}";
 			// add custom filtering php
 			$query .= $this->getCustomScriptBuilder(
-				'php_getlistquery', $viewName_single,
+				'php_getlistquery', $nameSingleCode,
 				PHP_EOL . PHP_EOL . $this->_t(1)
 			);
 			// first check if we export of text only is avalable
@@ -14644,7 +14713,7 @@ class Interpretation extends Fields
 					. "')->get('export_text_only', 0);";
 				// first check if we have custom queries
 				$custom_query = $this->setCustomQuery(
-					$viewName_list, $viewName_single, $this->_t(2), true
+					$nameListCode, $nameSingleCode, $this->_t(2), true
 				);
 			}
 			// if values were returned add the area
@@ -14663,9 +14732,9 @@ class Interpretation extends Fields
 				$query .= PHP_EOL . $this->_t(3) . "}";
 			}
 			// add access levels if the view has access set
-			if (isset($this->accessBuilder[$viewName_single])
+			if (isset($this->accessBuilder[$nameSingleCode])
 				&& ComponentbuilderHelper::checkString(
-					$this->accessBuilder[$viewName_single]
+					$this->accessBuilder[$nameSingleCode]
 				))
 			{
 				$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
@@ -14682,17 +14751,17 @@ class Interpretation extends Fields
 				$query .= PHP_EOL . $this->_t(3) . "}";
 			}
 			// add dynamic ordering (Exported data)
-			if (isset($this->viewsDefaultOrdering[$viewName_list])
-				&& $this->viewsDefaultOrdering[$viewName_list]['add_admin_ordering']
+			if (isset($this->viewsDefaultOrdering[$nameListCode])
+				&& $this->viewsDefaultOrdering[$nameListCode]['add_admin_ordering']
 				== 1)
 			{
 				foreach (
-					$this->viewsDefaultOrdering[$viewName_list]['admin_ordering_fields']
+					$this->viewsDefaultOrdering[$nameListCode]['admin_ordering_fields']
 					as $order_field
 				)
 				{
 					if (($order_field_name = $this->getFieldDatabaseName(
-							$viewName_list, $order_field['field']
+							$nameListCode, $order_field['field']
 						)) !== false)
 					{
 						$query .= PHP_EOL . PHP_EOL . $this->_t(3) . "//"
@@ -14726,7 +14795,7 @@ class Interpretation extends Fields
 				. "\$items = \$db->loadObjectList();";
 			// set the string fixing code
 			$query .= $this->setGetItemsMethodStringFix(
-				$viewName_single, $viewName_list,
+				$nameSingleCode, $nameListCode,
 				$this->fileContentStatic[$this->hhh . 'Component' . $this->hhh],
 				$this->_t(2), $isExport, true
 			);
@@ -14734,7 +14803,7 @@ class Interpretation extends Fields
 			if ($this->exportTextOnly)
 			{
 				$query_translations = $this->setSelectionTranslationFix(
-					$viewName_list,
+					$nameListCode,
 					$this->fileContentStatic[$this->hhh . 'Component'
 					. $this->hhh], $this->_t(3)
 				);
@@ -14753,7 +14822,7 @@ class Interpretation extends Fields
 			}
 			// add custom php to getItems method after all
 			$query .= $this->getCustomScriptBuilder(
-				'php_getitems_after_all', $viewName_single,
+				'php_getitems_after_all', $nameSingleCode,
 				PHP_EOL . PHP_EOL . $this->_t(2)
 			);
 			// in privacy export we must return array of arrays
@@ -14777,7 +14846,7 @@ class Interpretation extends Fields
 
 				// add getExImPortHeaders
 				$query .= $this->getCustomScriptBuilder(
-					'php_import_headers', 'import_' . $viewName_list,
+					'php_import_headers', 'import_' . $nameListCode,
 					PHP_EOL . PHP_EOL, null, true,
 					// set a default script for those with no custom script
 					PHP_EOL . PHP_EOL . $this->setPlaceholders(
@@ -14790,11 +14859,12 @@ class Interpretation extends Fields
 		return $query;
 	}
 
-	public function setControllerEximportMethod($viewName_single, $viewName_list
+	public function setControllerEximportMethod($nameSingleCode,
+		$nameListCode
 	) {
 		$method = '';
-		if (isset($this->eximportView[$viewName_list])
-			&& $this->eximportView[$viewName_list])
+		if (isset($this->eximportView[$nameListCode])
+			&& $this->eximportView[$nameListCode])
 		{
 			$method = array();
 
@@ -14810,7 +14880,7 @@ class Interpretation extends Fields
 				. " check if export is allowed for this user.";
 			$method[] = $this->_t(2) . "\$user = JFactory::getUser();";
 			$method[] = $this->_t(2) . "if (\$user->authorise('"
-				. $viewName_single . ".export', 'com_"
+				. $nameSingleCode . ".export', 'com_"
 				. $this->componentCodeName
 				. "') && \$user->authorise('core.export', 'com_"
 				. $this->componentCodeName . "'))";
@@ -14827,7 +14897,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Get the model";
 			$method[] = $this->_t(3) . "\$model = \$this->getModel('"
-				. ComponentbuilderHelper::safeString($viewName_list, 'F')
+				. ComponentbuilderHelper::safeString($nameListCode, 'F')
 				. "');";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " get the data to export";
@@ -14842,11 +14912,11 @@ class Interpretation extends Fields
 			$method[] = $this->_t(4) . "\$date = JFactory::getDate();";
 			$method[] = $this->_t(4) . $this->fileContentStatic[$this->hhh
 				. 'Component' . $this->hhh] . "Helper::xls(\$data,'"
-				. ComponentbuilderHelper::safeString($viewName_list, 'F')
+				. ComponentbuilderHelper::safeString($nameListCode, 'F')
 				. "_'.\$date->format('jS_F_Y'),'"
-				. ComponentbuilderHelper::safeString($viewName_list, 'Ww')
+				. ComponentbuilderHelper::safeString($nameListCode, 'Ww')
 				. " exported ('.\$date->format('jS F, Y').')','"
-				. ComponentbuilderHelper::safeString($viewName_list, 'w')
+				. ComponentbuilderHelper::safeString($nameListCode, 'w')
 				. "');";
 			$method[] = $this->_t(3) . "}";
 			$method[] = $this->_t(2) . "}";
@@ -14856,7 +14926,7 @@ class Interpretation extends Fields
 				. $this->langPrefix . "_EXPORT_FAILED');";
 			$method[] = $this->_t(2)
 				. "\$this->setRedirect(JRoute::_('index.php?option=com_"
-				. $this->componentCodeName . "&view=" . $viewName_list
+				. $this->componentCodeName . "&view=" . $nameListCode
 				. "', false), \$message, 'error');";
 			$method[] = $this->_t(2) . "return;";
 			$method[] = $this->_t(1) . "}";
@@ -14873,7 +14943,7 @@ class Interpretation extends Fields
 				. " check if import is allowed for this user.";
 			$method[] = $this->_t(2) . "\$user = JFactory::getUser();";
 			$method[] = $this->_t(2) . "if (\$user->authorise('"
-				. $viewName_single . ".import', 'com_"
+				. $nameSingleCode . ".import', 'com_"
 				. $this->componentCodeName
 				. "') && \$user->authorise('core.import', 'com_"
 				. $this->componentCodeName . "'))";
@@ -14881,7 +14951,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Get the import model";
 			$method[] = $this->_t(3) . "\$model = \$this->getModel('"
-				. ComponentbuilderHelper::safeString($viewName_list, 'F')
+				. ComponentbuilderHelper::safeString($nameListCode, 'F')
 				. "');";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " get the headers to import";
@@ -14895,33 +14965,33 @@ class Interpretation extends Fields
 				. " Load headers to session.";
 			$method[] = $this->_t(4) . "\$session = JFactory::getSession();";
 			$method[] = $this->_t(4) . "\$headers = json_encode(\$headers);";
-			$method[] = $this->_t(4) . "\$session->set('" . $viewName_single
+			$method[] = $this->_t(4) . "\$session->set('" . $nameSingleCode
 				. "_VDM_IMPORTHEADERS', \$headers);";
 			$method[] = $this->_t(4) . "\$session->set('backto_VDM_IMPORT', '"
-				. $viewName_list . "');";
+				. $nameListCode . "');";
 			$method[] = $this->_t(4)
 				. "\$session->set('dataType_VDM_IMPORTINTO', '"
-				. $viewName_single . "');";
+				. $nameSingleCode . "');";
 			$method[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
 				. " Redirect to import view.";
 			// add to lang array
 			$selectImportFileNote = $this->langPrefix
 				. "_IMPORT_SELECT_FILE_FOR_"
-				. ComponentbuilderHelper::safeString($viewName_list, 'U');
+				. ComponentbuilderHelper::safeString($nameListCode, 'U');
 			$this->setLangContent(
 				$this->lang, $selectImportFileNote,
-				'Select the file to import data to ' . $viewName_list . '.'
+				'Select the file to import data to ' . $nameListCode . '.'
 			);
 			$method[] = $this->_t(4) . "\$message = JText:" . ":_('"
 				. $selectImportFileNote . "');";
 			// if this view has custom script it must have as custom import (model, veiw, controller)
-			if (isset($this->importCustomScripts[$viewName_list])
-				&& $this->importCustomScripts[$viewName_list])
+			if (isset($this->importCustomScripts[$nameListCode])
+				&& $this->importCustomScripts[$nameListCode])
 			{
 				$method[] = $this->_t(4)
 					. "\$this->setRedirect(JRoute::_('index.php?option=com_"
 					. $this->componentCodeName . "&view=import_"
-					. $viewName_list . "', false), \$message);";
+					. $nameListCode . "', false), \$message);";
 			}
 			else
 			{
@@ -14939,7 +15009,7 @@ class Interpretation extends Fields
 				. $this->langPrefix . "_IMPORT_FAILED');";
 			$method[] = $this->_t(2)
 				. "\$this->setRedirect(JRoute::_('index.php?option=com_"
-				. $this->componentCodeName . "&view=" . $viewName_list
+				. $this->componentCodeName . "&view=" . $nameListCode
 				. "', false), \$message, 'error');";
 			$method[] = $this->_t(2) . "return;";
 			$method[] = $this->_t(1) . "}";
@@ -14950,11 +15020,11 @@ class Interpretation extends Fields
 		return $method;
 	}
 
-	public function setExportButton($viewName_single, $viewName_list)
+	public function setExportButton($nameSingleCode, $nameListCode)
 	{
 		$button = '';
-		if (isset($this->eximportView[$viewName_list])
-			&& $this->eximportView[$viewName_list])
+		if (isset($this->eximportView[$nameListCode])
+			&& $this->eximportView[$nameListCode])
 		{
 			// main lang prefix
 			$langExport = $this->langPrefix . '_'
@@ -14964,10 +15034,10 @@ class Interpretation extends Fields
 			$button   = array();
 			$button[] = PHP_EOL . PHP_EOL . $this->_t(3)
 				. "if (\$this->canDo->get('core.export') && \$this->canDo->get('"
-				. $viewName_single . ".export'))";
+				. $nameSingleCode . ".export'))";
 			$button[] = $this->_t(3) . "{";
 			$button[] = $this->_t(4) . "JToolBarHelper::custom('"
-				. $viewName_list . ".exportData', 'download', '', '"
+				. $nameListCode . ".exportData', 'download', '', '"
 				. $langExport . "', true);";
 			$button[] = $this->_t(3) . "}";
 
@@ -14977,11 +15047,11 @@ class Interpretation extends Fields
 		return $button;
 	}
 
-	public function setImportButton($viewName_single, $viewName_list)
+	public function setImportButton($nameSingleCode, $nameListCode)
 	{
 		$button = '';
-		if (isset($this->eximportView[$viewName_list])
-			&& $this->eximportView[$viewName_list])
+		if (isset($this->eximportView[$nameListCode])
+			&& $this->eximportView[$nameListCode])
 		{
 			// main lang prefix
 			$langImport = $this->langPrefix . '_'
@@ -14991,10 +15061,11 @@ class Interpretation extends Fields
 			$button   = array();
 			$button[] = PHP_EOL . PHP_EOL . $this->_t(2)
 				. "if (\$this->canDo->get('core.import') && \$this->canDo->get('"
-				. $viewName_single . ".import'))";
+				. $nameSingleCode . ".import'))";
 			$button[] = $this->_t(2) . "{";
 			$button[] = $this->_t(3) . "JToolBarHelper::custom('"
-				. $viewName_list . ".importData', 'upload', '', '" . $langImport
+				. $nameListCode . ".importData', 'upload', '', '"
+				. $langImport
 				. "', false);";
 			$button[] = $this->_t(2) . "}";
 
@@ -15004,95 +15075,95 @@ class Interpretation extends Fields
 		return $button;
 	}
 
-	public function setImportCustomScripts($viewName_list)
+	public function setImportCustomScripts($nameListCode)
 	{
 		// setup Ajax files
-		$target = array('admin' => 'import_' . $viewName_list);
+		$target = array('admin' => 'import_' . $nameListCode);
 		$this->buildDynamique($target, 'customimport');
 		// load the custom script to the files
 		// IMPORT_EXT_METHOD <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'IMPORT_EXT_METHOD' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'php_import_ext', 'import_' . $viewName_list, PHP_EOL, null,
+			'php_import_ext', 'import_' . $nameListCode, PHP_EOL, null,
 			true
 		);
 		// IMPORT_DISPLAY_METHOD_CUSTOM <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'IMPORT_DISPLAY_METHOD_CUSTOM' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'php_import_display', 'import_' . $viewName_list, PHP_EOL,
+			'php_import_display', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
 		);
 		// IMPORT_SETDATA_METHOD <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'IMPORT_SETDATA_METHOD' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'php_import_setdata', 'import_' . $viewName_list, PHP_EOL,
+			'php_import_setdata', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
 		);
 		// IMPORT_METHOD_CUSTOM <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'IMPORT_METHOD_CUSTOM' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'php_import', 'import_' . $viewName_list, PHP_EOL, null,
+			'php_import', 'import_' . $nameListCode, PHP_EOL, null,
 			true
 		);
 		// IMPORT_SAVE_METHOD <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'IMPORT_SAVE_METHOD' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'php_import_save', 'import_' . $viewName_list, PHP_EOL,
+			'php_import_save', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
 		);
 		// IMPORT_DEFAULT_VIEW_CUSTOM <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'IMPORT_DEFAULT_VIEW_CUSTOM' . $this->hhh]
 			= $this->getCustomScriptBuilder(
-			'html_import_view', 'import_' . $viewName_list, PHP_EOL,
+			'html_import_view', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
 		);
 
 		// insure we have the view placeholders setup
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'VIEW' . $this->hhh]
 			= 'IMPORT_' . $this->placeholders[$this->hhh . 'VIEWS'
 			. $this->hhh];
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'View' . $this->hhh]
 			= 'Import_' . $this->placeholders[$this->hhh . 'views'
 			. $this->hhh];
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'view' . $this->hhh]
 			= 'import_' . $this->placeholders[$this->hhh . 'views'
 			. $this->hhh];
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'VIEWS' . $this->hhh]
 			= 'IMPORT_' . $this->placeholders[$this->hhh . 'VIEWS'
 			. $this->hhh];
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'Views' . $this->hhh]
 			= 'Import_' . $this->placeholders[$this->hhh . 'views'
 			. $this->hhh];
-		$this->fileContentDynamic['import_' . $viewName_list][$this->hhh
+		$this->fileContentDynamic['import_' . $nameListCode][$this->hhh
 		. 'views' . $this->hhh]
 			= 'import_' . $this->placeholders[$this->hhh . 'views'
 			. $this->hhh];
 	}
 
-	public function setListQuery($viewName_single, $viewName_list)
+	public function setListQuery($nameSingleCode, $nameListCode)
 	{
 		// check if this view has category added
-		if (isset($this->categoryBuilder[$viewName_list])
+		if (isset($this->categoryBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->categoryBuilder[$viewName_list]
+				$this->categoryBuilder[$nameListCode]
 			))
 		{
-			$categoryCodeName = $this->categoryBuilder[$viewName_list]['code'];
+			$categoryCodeName = $this->categoryBuilder[$nameListCode]['code'];
 			$addCategory      = true;
 		}
 		else
@@ -15120,7 +15191,7 @@ class Interpretation extends Fields
 				__LINE__
 			) . " From the " . $this->componentCodeName . "_item table";
 		$query .= PHP_EOL . $this->_t(2) . "\$query->from(\$db->quoteName('#__"
-			. $this->componentCodeName . "_" . $viewName_single . "', 'a'));";
+			. $this->componentCodeName . "_" . $nameSingleCode . "', 'a'));";
 		// add the category
 		if ($addCategory)
 		{
@@ -15131,10 +15202,10 @@ class Interpretation extends Fields
 		}
 		// add custom filtering php
 		$query .= $this->getCustomScriptBuilder(
-			'php_getlistquery', $viewName_single, PHP_EOL . PHP_EOL
+			'php_getlistquery', $nameSingleCode, PHP_EOL . PHP_EOL
 		);
 		// add the custom fields query
-		$query .= $this->setCustomQuery($viewName_list, $viewName_single);
+		$query .= $this->setCustomQuery($nameListCode, $nameSingleCode);
 		$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 				__LINE__
 			) . " Filter by published state";
@@ -15150,9 +15221,9 @@ class Interpretation extends Fields
 		$query .= PHP_EOL . $this->_t(3)
 			. "\$query->where('(a.published = 0 OR a.published = 1)');";
 		$query .= PHP_EOL . $this->_t(2) . "}";
-		if (isset($this->accessBuilder[$viewName_single])
+		if (isset($this->accessBuilder[$nameSingleCode])
 			&& ComponentbuilderHelper::checkString(
-				$this->accessBuilder[$viewName_single]
+				$this->accessBuilder[$nameSingleCode]
 			))
 		{
 			$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
@@ -15183,9 +15254,9 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(2) . "}";
 		}
 		// set the search query
-		$query .= $this->setSearchQuery($viewName_list);
+		$query .= $this->setSearchQuery($nameListCode);
 		// set other filters
-		$query .= $this->setFilterQuery($viewName_list);
+		$query .= $this->setFilterQuery($nameListCode);
 		// add the category
 		if ($addCategory)
 		{
@@ -15225,19 +15296,19 @@ class Interpretation extends Fields
 		// setup values for the view ordering
 
 		// add dynamic ordering (Admin view)
-		if (isset($this->viewsDefaultOrdering[$viewName_list])
-			&& $this->viewsDefaultOrdering[$viewName_list]['add_admin_ordering']
+		if (isset($this->viewsDefaultOrdering[$nameListCode])
+			&& $this->viewsDefaultOrdering[$nameListCode]['add_admin_ordering']
 			== 1)
 		{
 			// the first is from the state
 			$order_first = true;
 			foreach (
-				$this->viewsDefaultOrdering[$viewName_list]['admin_ordering_fields']
+				$this->viewsDefaultOrdering[$nameListCode]['admin_ordering_fields']
 				as $order_field
 			)
 			{
 				if (($order_field_name = $this->getFieldDatabaseName(
-						$viewName_list, $order_field['field']
+						$nameListCode, $order_field['field']
 					)) !== false)
 				{
 					if ($order_first)
@@ -15302,10 +15373,10 @@ class Interpretation extends Fields
 	 * @return  string
 	 *
 	 */
-	protected function getFieldDatabaseName($viewName_list, int $fieldId,
+	protected function getFieldDatabaseName($nameListCode, int $fieldId,
 		$targetArea = 'listBuilder'
 	) {
-		if (isset($this->{$targetArea}[$viewName_list]))
+		if (isset($this->{$targetArea}[$nameListCode]))
 		{
 			if ($fieldId < 0)
 			{
@@ -15319,7 +15390,7 @@ class Interpretation extends Fields
 						return 'a.published';
 				}
 			}
-			foreach ($this->{$targetArea}[$viewName_list] as $field)
+			foreach ($this->{$targetArea}[$nameListCode] as $field)
 			{
 				if ($field['id'] == $fieldId)
 				{
@@ -15347,16 +15418,16 @@ class Interpretation extends Fields
 		return false;
 	}
 
-	public function setSearchQuery($viewName_list)
+	public function setSearchQuery($nameListCode)
 	{
-		if (isset($this->searchBuilder[$viewName_list])
+		if (isset($this->searchBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->searchBuilder[$viewName_list]
+				$this->searchBuilder[$nameListCode]
 			))
 		{
 			// setup the searh options
 			$search = "'(";
-			foreach ($this->searchBuilder[$viewName_list] as $nr => $array)
+			foreach ($this->searchBuilder[$nameListCode] as $nr => $array)
 			{
 				// array( 'type' => $typeName, 'code' => $name, 'custom' => $custom, 'list' => $field['list']);
 				if ($nr == 0)
@@ -15410,25 +15481,26 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setCustomQuery($viewName_list, $viewName_single, $tab = '',
+	public function setCustomQuery($nameListCode, $nameSingleCode,
+		$tab = '',
 		$just_text = false
 	) {
-		if (isset($this->customBuilder[$viewName_list])
+		if (isset($this->customBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->customBuilder[$viewName_list]
+				$this->customBuilder[$nameListCode]
 			))
 		{
 			$query = "";
-			foreach ($this->customBuilder[$viewName_list] as $filter)
+			foreach ($this->customBuilder[$nameListCode] as $filter)
 			{
 				// only load this if table is set
-				if ((isset($this->customBuilderList[$viewName_list])
+				if ((isset($this->customBuilderList[$nameListCode])
 						&& ComponentbuilderHelper::checkArray(
-							$this->customBuilderList[$viewName_list]
+							$this->customBuilderList[$nameListCode]
 						)
 						&& in_array(
 							$filter['code'],
-							$this->customBuilderList[$viewName_list]
+							$this->customBuilderList[$nameListCode]
 						)
 						&& isset($filter['custom']['table'])
 						&& ComponentbuilderHelper::checkString(
@@ -15477,7 +15549,7 @@ class Interpretation extends Fields
 				}
 				// build the field type file
 				$this->setCustomFieldTypeFile(
-					$filter, $viewName_list, $viewName_single
+					$filter, $nameListCode, $nameSingleCode
 				);
 			}
 
@@ -15488,16 +15560,16 @@ class Interpretation extends Fields
 	/**
 	 * build model filter per/field in the list view
 	 *
-	 * @param   string  $view_name_list    The list view name
+	 * @param   string  $nameListCode  The list view name
 	 *
 	 * @return  string The php to place in model to filter
 	 *
 	 */
-	public function setFilterQuery($view_name_list)
+	public function setFilterQuery($nameListCode)
 	{
-		if (isset($this->filterBuilder[$view_name_list])
+		if (isset($this->filterBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->filterBuilder[$view_name_list]
+				$this->filterBuilder[$nameListCode]
 			))
 		{
 			// component helper name
@@ -15505,7 +15577,7 @@ class Interpretation extends Fields
 				. $this->hhh] . 'Helper';
 			// start building the filter query
 			$filterQuery = "";
-			foreach ($this->filterBuilder[$view_name_list] as $filter)
+			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				// only add for none category fields
 				if ($filter['type'] != 'category')
@@ -15515,8 +15587,8 @@ class Interpretation extends Fields
 						. ucwords($filter['code']) . ".";
 					// we only add multi filter option if new filter type
 					// and we have multi filter set for this field
-					if (isset($this->adminFilterType[$view_name_list])
-						&& $this->adminFilterType[$view_name_list] == 2
+					if (isset($this->adminFilterType[$nameListCode])
+						&& $this->adminFilterType[$nameListCode] == 2
 						&& isset($filter['multi'])
 						&& $filter['multi'] == 2)
 					{
@@ -15542,8 +15614,8 @@ class Interpretation extends Fields
 	/**
 	 * build single filter query
 	 *
-	 * @param   array  $filter   The field/filter
-	 * @param   string $a        The db table target name (a)
+	 * @param   array   $filter  The field/filter
+	 * @param   string  $a       The db table target name (a)
 	 *
 	 * @return  string The php to place in model to filter this field
 	 *
@@ -15567,9 +15639,9 @@ class Interpretation extends Fields
 	/**
 	 * build multiple filter query
 	 *
-	 * @param   array  $filter   The field/filter
-	 * @param   string $Helper   The helper name of the component being build
-	 * @param   string $a        The db table target name (a)
+	 * @param   array   $filter  The field/filter
+	 * @param   string  $Helper  The helper name of the component being build
+	 * @param   string  $a       The db table target name (a)
 	 *
 	 * @return  string The php to place in model to filter this field
 	 *
@@ -15648,9 +15720,7 @@ class Interpretation extends Fields
 	public function buildTheViewScript($viewArray)
 	{
 		// set the view name
-		$viewName = ComponentbuilderHelper::safeString(
-			$viewArray['settings']->name_single
-		);
+		$nameSingleCode = $viewArray['settings']->name_single_code;
 		// add conditions to this view
 		if (isset($viewArray['settings']->conditions)
 			&& ComponentbuilderHelper::checkArray(
@@ -15686,7 +15756,7 @@ class Interpretation extends Fields
 						// chain to other items of the same target
 						$relations = $this->getTargetRelationScript(
 							$viewArray['settings']->conditions, $condition,
-							$viewName
+							$nameSingleCode
 						);
 						if (ComponentbuilderHelper::checkArray($relations))
 						{
@@ -15725,7 +15795,7 @@ class Interpretation extends Fields
 								= $this->setTargetControlsScript(
 								$toggleSwitch[$matchName],
 								$condition['target_field'], $targetBehavior,
-								$targetDefault, $uniqueVar, $viewName
+								$targetDefault, $uniqueVar, $nameSingleCode
 							);
 
 							foreach ($relations as $relation)
@@ -15800,7 +15870,7 @@ class Interpretation extends Fields
 							= $this->setTargetControlsScript(
 							$toggleSwitch[$matchName],
 							$condition['target_field'], $targetBehavior,
-							$targetDefault, $uniqueVar, $viewName
+							$targetDefault, $uniqueVar, $nameSingleCode
 						);
 					}
 				}
@@ -16061,9 +16131,9 @@ class Interpretation extends Fields
 						. PHP_EOL . $map;
 				}
 				// add the needed validation to file
-				if (isset($this->validationFixBuilder[$viewName])
+				if (isset($this->validationFixBuilder[$nameSingleCode])
 					&& ComponentbuilderHelper::checkArray(
-						$this->validationFixBuilder[$viewName]
+						$this->validationFixBuilder[$nameSingleCode]
 					))
 				{
 					$validation .= PHP_EOL . "// update fields required";
@@ -16144,16 +16214,16 @@ class Interpretation extends Fields
 			$fileScript = '';
 		}
 		$fileScript .= $this->getCustomScriptBuilder(
-			'view_file', $viewName, PHP_EOL . PHP_EOL, null, true, ''
+			'view_file', $nameSingleCode, PHP_EOL . PHP_EOL, null, true, ''
 		);
 		// add custom script to footer
-		if (isset($this->customScriptBuilder['view_footer'][$viewName])
+		if (isset($this->customScriptBuilder['view_footer'][$nameSingleCode])
 			&& ComponentbuilderHelper::checkString(
-				$this->customScriptBuilder['view_footer'][$viewName]
+				$this->customScriptBuilder['view_footer'][$nameSingleCode]
 			))
 		{
 			$customFooterScript = PHP_EOL . PHP_EOL . $this->setPlaceholders(
-					$this->customScriptBuilder['view_footer'][$viewName],
+					$this->customScriptBuilder['view_footer'][$nameSingleCode],
 					$this->placeholders
 				);
 			if (strpos($customFooterScript, '<?php') === false)
@@ -16168,12 +16238,11 @@ class Interpretation extends Fields
 			}
 		}
 		// set view listname
-		$viewName_list = ComponentbuilderHelper::safeString(
-			$viewArray['settings']->name_list
-		);
+		$nameListCode = $viewArray['settings']->name_list_code;
 		// add custom script to list view JS file
 		if (($list_fileScript = $this->getCustomScriptBuilder(
-				'views_file', $viewName, PHP_EOL . PHP_EOL, null, true, false
+				'views_file', $nameSingleCode, PHP_EOL . PHP_EOL, null, true,
+				false
 			)) !== false
 			&& ComponentbuilderHelper::checkString($list_fileScript))
 		{
@@ -16181,7 +16250,7 @@ class Interpretation extends Fields
 			$_created  = $this->getCreatedDate($viewArray);
 			$_modified = $this->getLastModifiedDate($viewArray);
 			// add file to view
-			$_target = array($this->target => $viewName_list);
+			$_target = array($this->target => $nameListCode);
 			$_config = array($this->hhh . 'CREATIONDATE'
 			                 . $this->hhh => $_created,
 			                 $this->hhh . 'BUILDDATE'
@@ -16191,9 +16260,9 @@ class Interpretation extends Fields
 			$this->buildDynamique($_target, 'javascript_file', false, $_config);
 			// set path
 			$_path = '/administrator/components/com_' . $this->componentCodeName
-				. '/assets/js/' . $viewName_list . '.js';
+				. '/assets/js/' . $nameListCode . '.js';
 			// load the file to the list view
-			$this->fileContentDynamic[$viewName_list][$this->hhh
+			$this->fileContentDynamic[$nameListCode][$this->hhh
 			. 'ADMIN_ADD_JAVASCRIPT_FILE' . $this->hhh]
 				= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 					__LINE__
@@ -16203,7 +16272,7 @@ class Interpretation extends Fields
 		else
 		{
 			$list_fileScript = '';
-			$this->fileContentDynamic[$viewName_list][$this->hhh
+			$this->fileContentDynamic[$nameListCode][$this->hhh
 			. 'ADMIN_ADD_JAVASCRIPT_FILE' . $this->hhh]
 			                 = '';
 		}
@@ -16241,7 +16310,7 @@ class Interpretation extends Fields
 			))
 		{
 			// load the script
-			$this->viewScriptBuilder[$viewName_list]['list_fileScript']
+			$this->viewScriptBuilder[$nameListCode]['list_fileScript']
 				= $list_fileScript;
 		}
 		// make sure there is script to add
@@ -16257,7 +16326,8 @@ class Interpretation extends Fields
 					. PHP_EOL . $fileScript;
 			}
 			// load the script
-			$this->viewScriptBuilder[$viewName]['fileScript'] = $fileScript;
+			$this->viewScriptBuilder[$nameSingleCode]['fileScript']
+				= $fileScript;
 		}
 		// make sure to add custom footer script if php was found in it, since we canot minfy it with php
 		if (isset($customFooterScript)
@@ -16278,10 +16348,11 @@ class Interpretation extends Fields
 			))
 		{
 			// add the needed script tags
-			$footerScript                                       = PHP_EOL
+			$footerScript = PHP_EOL
 				. PHP_EOL . '<script type="text/javascript">' . PHP_EOL
 				. $footerScript . PHP_EOL . "</script>";
-			$this->viewScriptBuilder[$viewName]['footerScript'] = $footerScript;
+			$this->viewScriptBuilder[$nameSingleCode]['footerScript']
+			              = $footerScript;
 		}
 	}
 
@@ -16414,7 +16485,7 @@ class Interpretation extends Fields
 	}
 
 	public function setTargetControlsScript($toggleSwitch, $targets,
-		$targetBehavior, $targetDefault, $uniqueVar, $viewName
+		$targetBehavior, $targetDefault, $uniqueVar, $nameSingleCode
 	) {
 		$bucket = array();
 		if (ComponentbuilderHelper::checkArray($targets)
@@ -16587,7 +16658,7 @@ class Interpretation extends Fields
 							$bucket[$target['name']]['show'] = $show;
 						}
 						// make sure that the axaj and other needed things for this view is loaded
-						$this->validationFixBuilder[$viewName][]
+						$this->validationFixBuilder[$nameSingleCode][]
 							= $target['name'];
 					}
 					else
@@ -17340,20 +17411,29 @@ class Interpretation extends Fields
 		return $methods;
 	}
 
-	public function setFilterFunctions($viewName_single, $viewName_list)
+	/**
+	 * build filter functions
+	 *
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
+	 *
+	 * @return  string The php to place in view.html.php
+	 *
+	 */
+	public function setFilterFunctions($nameSingleCode, $nameListCode)
 	{
 		// the old filter type uses these functions
-		if (isset($this->adminFilterType[$viewName_list])
-			&& $this->adminFilterType[$viewName_list] == 1
-			&& isset($this->filterBuilder[$viewName_list])
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 1
+			&& isset($this->filterBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->filterBuilder[$viewName_list]
+				$this->filterBuilder[$nameListCode]
 			))
 		{
 			$function = array();
 			// set component name
 			$component = $this->componentCodeName;
-			foreach ($this->filterBuilder[$viewName_list] as $filter)
+			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				if ($filter['type'] != 'category'
 					&& ComponentbuilderHelper::checkArray($filter['custom'])
@@ -17463,13 +17543,13 @@ class Interpretation extends Fields
 					&& !ComponentbuilderHelper::checkArray($filter['custom']))
 				{
 					$translation = false;
-					if (isset($this->selectionTranslationFixBuilder[$viewName_list])
+					if (isset($this->selectionTranslationFixBuilder[$nameListCode])
 						&& ComponentbuilderHelper::checkArray(
-							$this->selectionTranslationFixBuilder[$viewName_list]
+							$this->selectionTranslationFixBuilder[$nameListCode]
 						)
 						&& array_key_exists(
 							$filter['code'],
-							$this->selectionTranslationFixBuilder[$viewName_list]
+							$this->selectionTranslationFixBuilder[$nameListCode]
 						))
 					{
 						$translation = true;
@@ -17677,16 +17757,28 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $fields);
 	}
 
-	public function setOtherFilter(&$view)
+	/**
+	 * build other filter loading scripts
+	 *
+	 * @param   string  $nameListCode  The list view name
+	 *
+	 * @return  string The php to place in view.html.php
+	 *
+	 */
+	public function setOtherFilter(&$nameListCode)
 	{
-		if (isset($this->filterBuilder[$view])
-			&& ComponentbuilderHelper::checkArray($this->filterBuilder[$view]))
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 1
+			&& isset($this->filterBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->filterBuilder[$nameListCode]
+			))
 		{
 			// get component name
 			$Component   = $this->fileContentStatic[$this->hhh . 'Component'
 			. $this->hhh];
 			$otherFilter = array();
-			foreach ($this->filterBuilder[$view] as $filter)
+			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				if ($filter['type'] != 'category'
 					&& ComponentbuilderHelper::checkArray($filter['custom'])
@@ -17860,13 +17952,13 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setCategoryFilter($viewName_list)
+	public function setCategoryFilter($nameListCode)
 	{
-		if (isset($this->categoryBuilder[$viewName_list])
+		if (isset($this->categoryBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->categoryBuilder[$viewName_list]
+				$this->categoryBuilder[$nameListCode]
 			)
-			&& isset($this->categoryBuilder[$viewName_list]['extension']))
+			&& isset($this->categoryBuilder[$nameListCode]['extension']))
 		{
 			// set component name
 			$COPMONENT = ComponentbuilderHelper::safeString(
@@ -17882,7 +17974,7 @@ class Interpretation extends Fields
 			$filter[] = $this->_t(3) . "'filter_category_id',";
 			$filter[] = $this->_t(3)
 				. "JHtml::_('select.options', JHtml::_('category.options', '"
-				. $this->categoryBuilder[$viewName_list]['extension']
+				. $this->categoryBuilder[$nameListCode]['extension']
 				. "'), 'value', 'text', \$this->state->get('filter.category_id'))";
 			$filter[] = $this->_t(2) . ");";
 
@@ -17898,7 +17990,7 @@ class Interpretation extends Fields
 			$filter[] = $this->_t(4) . "'batch[category]',";
 			$filter[] = $this->_t(4)
 				. "JHtml::_('select.options', JHtml::_('category.options', '"
-				. $this->categoryBuilder[$viewName_list]['extension']
+				. $this->categoryBuilder[$nameListCode]['extension']
 				. "'), 'value', 'text')";
 			$filter[] = $this->_t(3) . ");";
 			$filter[] = $this->_t(2) . "}";
@@ -17910,15 +18002,15 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setRouterCategoryViews($viewName_single, $viewName_list)
+	public function setRouterCategoryViews($nameSingleCode, $nameListCode)
 	{
-		if (isset($this->categoryBuilder[$viewName_list])
+		if (isset($this->categoryBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->categoryBuilder[$viewName_list]
+				$this->categoryBuilder[$nameListCode]
 			))
 		{
 			// get the actual extention
-			$_extension = $this->categoryBuilder[$viewName_list]['extension'];
+			$_extension = $this->categoryBuilder[$nameListCode]['extension'];
 			$_extension = explode('.', $_extension);
 			// set component name
 			if (ComponentbuilderHelper::checkArray($_extension))
@@ -17930,18 +18022,18 @@ class Interpretation extends Fields
 				$component = $this->componentCodeName;
 			}
 			// check if category has another name
-			if (isset($this->catOtherName[$viewName_list])
+			if (isset($this->catOtherName[$nameListCode])
 				&& ComponentbuilderHelper::checkArray(
-					$this->catOtherName[$viewName_list]
+					$this->catOtherName[$nameListCode]
 				))
 			{
-				$otherViews = $this->catOtherName[$viewName_list]['views'];
-				$otherView  = $this->catOtherName[$viewName_list]['view'];
+				$otherViews = $this->catOtherName[$nameListCode]['views'];
+				$otherView  = $this->catOtherName[$nameListCode]['view'];
 			}
 			else
 			{
-				$otherViews = $viewName_list;
-				$otherView  = $viewName_single;
+				$otherViews = $nameListCode;
+				$otherView  = $nameSingleCode;
 			}
 			// set the OtherView value
 			$this->fileContentDynamic['category' . $otherView][$this->hhh
@@ -18000,13 +18092,13 @@ class Interpretation extends Fields
 				))
 			{
 				return "," . PHP_EOL . $this->_t(3) . '"'
-					. $this->categoryBuilder[$viewName_list]['extension']
+					. $this->categoryBuilder[$nameListCode]['extension']
 					. '" => "' . $otherView . '"';
 			}
 			else
 			{
 				return PHP_EOL . $this->_t(3) . '"'
-					. $this->categoryBuilder[$viewName_list]['extension']
+					. $this->categoryBuilder[$nameListCode]['extension']
 					. '" => "' . $otherView . '"';
 			}
 		}
@@ -18014,38 +18106,38 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setJcontrollerAllowAdd($viewName_single, $viewName_list)
+	public function setJcontrollerAllowAdd($nameSingleCode, $nameListCode)
 	{
 		$allow = array();
 		// set component name
 		$component = $this->componentCodeName;
 		// prepare custom permission script
 		$customAllow = $this->getCustomScriptBuilder(
-			'php_allowadd', $viewName_single, '', null, true
+			'php_allowadd', $nameSingleCode, '', null, true
 		);
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$viewName_single]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$viewName_single];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
 		// check if item has category
-		if (0) //isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list])) <-- remove category from check
+		if (0) //isset($this->categoryBuilder[$nameListCode]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameListCode])) <-- remove category from check
 		{
 			// check if category has another name
-			if ($coreLoad && isset($this->catOtherName[$viewName_list])
+			if ($coreLoad && isset($this->catOtherName[$nameListCode])
 				&& ComponentbuilderHelper::checkArray(
-					$this->catOtherName[$viewName_list]
+					$this->catOtherName[$nameListCode]
 				))
 			{
-				$otherViews = $this->catOtherName[$viewName_list]['views'];
-				$otherView  = $this->catOtherName[$viewName_list]['view'];
+				$otherViews = $this->catOtherName[$nameListCode]['views'];
+				$otherView  = $this->catOtherName[$nameListCode]['view'];
 			}
 			else
 			{
-				$otherViews = $viewName_list;
-				$otherView  = $viewName_single;
+				$otherViews = $nameListCode;
+				$otherView  = $nameSingleCode;
 			}
 			// setup the category script
 			$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -18092,7 +18184,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.create']]
 				))
 			{
@@ -18127,7 +18219,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.access']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.access']]
 				))
 			{
@@ -18149,7 +18241,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.create']]
 				))
 			{
@@ -18171,40 +18263,40 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $allow);
 	}
 
-	public function setJcontrollerAllowEdit($viewName_single, $viewName_list)
+	public function setJcontrollerAllowEdit($nameSingleCode, $nameListCode)
 	{
 		$allow = array();
 		// set component name
 		$component = $this->componentCodeName;
 		// prepare custom permission script
 		$customAllow = $this->getCustomScriptBuilder(
-			'php_allowedit', $viewName_single, '', null, true
+			'php_allowedit', $nameSingleCode, '', null, true
 		);
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$viewName_single]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$viewName_single];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
-		if (isset($this->categoryBuilder[$viewName_list])
+		if (isset($this->categoryBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->categoryBuilder[$viewName_list]
+				$this->categoryBuilder[$nameListCode]
 			))
 		{
 			// check if category has another name
-			if ($coreLoad && isset($this->catOtherName[$viewName_list])
+			if ($coreLoad && isset($this->catOtherName[$nameListCode])
 				&& ComponentbuilderHelper::checkArray(
-					$this->catOtherName[$viewName_list]
+					$this->catOtherName[$nameListCode]
 				))
 			{
-				$otherViews = $this->catOtherName[$viewName_list]['views'];
-				$otherView  = $this->catOtherName[$viewName_list]['view'];
+				$otherViews = $this->catOtherName[$nameListCode]['views'];
+				$otherView  = $this->catOtherName[$nameListCode]['view'];
 			}
 			else
 			{
-				$otherViews = $viewName_list;
-				$otherView  = $viewName_single;
+				$otherViews = $nameListCode;
+				$otherView  = $nameSingleCode;
 			}
 			// setup the category script
 			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -18387,7 +18479,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder[$core['core.access']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder[$core['core.access']]
 				))
 			{
@@ -18396,7 +18488,7 @@ class Interpretation extends Fields
 					) . " Access check.";
 				$allow[] = $this->_t(2) . "\$access = (\$user->authorise('"
 					. $core['core.access'] . "', 'com_" . $component . "."
-					. $viewName_single
+					. $nameSingleCode
 					. ".' . (int) \$recordId) &&  \$user->authorise('"
 					. $core['core.access'] . "', 'com_" . $component . "'));";
 				$allow[] = $this->_t(2) . "if (!\$access)";
@@ -18415,19 +18507,19 @@ class Interpretation extends Fields
 					$this->permissionBuilder[$core['core.edit']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder[$core['core.edit']]
 				))
 			{
 				$allow[] = $this->_t(3) . "\$permission = \$user->authorise('"
 					. $core['core.edit'] . "', 'com_" . $component . "."
-					. $viewName_single . ".' . (int) \$recordId);";
+					. $nameSingleCode . ".' . (int) \$recordId);";
 			}
 			else
 			{
 				$allow[] = $this->_t(3)
 					. "\$permission = \$user->authorise('core.edit', 'com_"
-					. $component . "." . $viewName_single
+					. $component . "." . $nameSingleCode
 					. ".' . (int) \$recordId);";
 			}
 			$allow[] = $this->_t(3) . "if (!\$permission)";
@@ -18439,19 +18531,20 @@ class Interpretation extends Fields
 					$this->permissionBuilder[$core['core.edit.own']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder[$core['core.edit.own']]
 				))
 			{
 				$allow[] = $this->_t(4) . "if (\$user->authorise('"
 					. $core['core.edit.own'] . "', 'com_" . $component . "."
-					. $viewName_single . ".' . \$recordId))";
+					. $nameSingleCode . ".' . \$recordId))";
 			}
 			else
 			{
 				$allow[] = $this->_t(4)
 					. "if (\$user->authorise('core.edit.own', 'com_"
-					. $component . "." . $viewName_single . ".' . \$recordId))";
+					. $component . "." . $nameSingleCode
+					. ".' . \$recordId))";
 			}
 			$allow[] = $this->_t(4) . "{";
 			$allow[] = $this->_t(5) . "//" . $this->setLine(__LINE__)
@@ -18481,7 +18574,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.edit.own']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.edit.own']]
 				))
 			{
@@ -18508,7 +18601,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.edit']]
 				))
 			{
@@ -18529,7 +18622,7 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $allow);
 	}
 
-	public function setJmodelAdminGetForm($viewName_single, $viewName_list)
+	public function setJmodelAdminGetForm($nameSingleCode, $nameListCode)
 	{
 		// set component name
 		$component = $this->componentCodeName;
@@ -18554,7 +18647,7 @@ class Interpretation extends Fields
 		$getForm[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 			. " Get the form.";
 		$getForm[] = $this->_t(2) . "\$form = \$this->loadForm('com_"
-			. $component . "." . $viewName_single . "', '" . $viewName_single
+			. $component . "." . $nameSingleCode . "', '" . $nameSingleCode
 			. "', \$options, \$clear, \$xpath);";
 		$getForm[] = PHP_EOL . $this->_t(2) . "if (empty(\$form))";
 		$getForm[] = $this->_t(2) . "{";
@@ -18564,37 +18657,37 @@ class Interpretation extends Fields
 		if ($this->componentData->add_license
 			&& $this->componentData->license_type == 3
 			&& isset(
-				$this->fileContentDynamic[$viewName_single][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'BOOLMETHOD' . $this->hhh]
 			))
 		{
 			$getForm[] = $this->checkStatmentLicenseLocked(
-				$this->fileContentDynamic[$viewName_single][$this->hhh
+				$this->fileContentDynamic[$nameSingleCode][$this->hhh
 				. 'BOOLMETHOD' . $this->hhh]
 			);
 		}
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$viewName_single]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$viewName_single];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
-		if (0) //isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list]))  <-- remove category from check
+		if (0) //isset($this->categoryBuilder[$nameListCode]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameListCode]))  <-- remove category from check
 		{
 			// check if category has another name
-			if ($coreLoad && isset($this->catOtherName[$viewName_list])
+			if ($coreLoad && isset($this->catOtherName[$nameListCode])
 				&& ComponentbuilderHelper::checkArray(
-					$this->catOtherName[$viewName_list]
+					$this->catOtherName[$nameListCode]
 				))
 			{
-				$otherViews = $this->catOtherName[$viewName_list]['views'];
-				$otherView  = $this->catOtherName[$viewName_list]['view'];
+				$otherViews = $this->catOtherName[$nameListCode]['views'];
+				$otherView  = $this->catOtherName[$nameListCode]['view'];
 			}
 			else
 			{
-				$otherViews = $viewName_list;
-				$otherView  = $viewName_single;
+				$otherViews = $nameListCode;
+				$otherView  = $nameSingleCode;
 			}
 			// setup the category script
 			$getForm[] = PHP_EOL . $this->_t(2)
@@ -18617,10 +18710,10 @@ class Interpretation extends Fields
 			$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Determine correct permissions to check.";
 			$getForm[] = $this->_t(2) . "if (\$this->getState('"
-				. $viewName_single . ".id'))";
+				. $nameSingleCode . ".id'))";
 			$getForm[] = $this->_t(2) . "{";
 			$getForm[] = $this->_t(3) . "\$id = \$this->getState('"
-				. $viewName_single . ".id');";
+				. $nameSingleCode . ".id');";
 			$getForm[] = PHP_EOL . $this->_t(3) . "\$catid = 0;";
 			$getForm[] = $this->_t(3)
 				. "if (isset(\$this->getItem(\$id)->catid))";
@@ -18657,7 +18750,7 @@ class Interpretation extends Fields
 			$getForm[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Modify the form based on Edit State access controls.";
 			// get the other view
-			$otherView = $this->catCodeBuilder[$viewName_single]['view'];
+			$otherView = $this->catCodeBuilder[$nameSingleCode]['view'];
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.state'])
 				&& isset($this->permissionBuilder[$core['core.edit.state']])
@@ -18665,14 +18758,14 @@ class Interpretation extends Fields
 					$this->permissionBuilder[$core['core.edit.state']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder[$core['core.edit.state']]
 				))
 			{
 				$getForm[] = $this->_t(2)
 					. "if (\$id != 0 && (!\$user->authorise('"
 					. $core['core.edit.state'] . "', 'com_" . $component . "."
-					. $viewName_single . ".' . (int) \$id))";
+					. $nameSingleCode . ".' . (int) \$id))";
 				$getForm[] = $this->_t(3)
 					. "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_"
 					. $component . "." . $otherView
@@ -18686,7 +18779,8 @@ class Interpretation extends Fields
 			{
 				$getForm[] = $this->_t(2)
 					. "if (\$id != 0 && (!\$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $viewName_single . ".' . (int) \$id))";
+					. $component . "." . $nameSingleCode
+					. ".' . (int) \$id))";
 				$getForm[] = $this->_t(3)
 					. "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_"
 					. $component . "." . $otherView
@@ -18744,14 +18838,14 @@ class Interpretation extends Fields
 					$this->permissionBuilder[$core['core.edit.state']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder[$core['core.edit.state']]
 				))
 			{
 				$getForm[] = $this->_t(2)
 					. "if (\$id != 0 && (!\$user->authorise('"
 					. $core['core.edit.state'] . "', 'com_" . $component . "."
-					. $viewName_single . ".' . (int) \$id))";
+					. $nameSingleCode . ".' . (int) \$id))";
 				$getForm[] = $this->_t(3)
 					. "|| (\$id == 0 && !\$user->authorise('"
 					. $core['core.edit.state'] . "', 'com_" . $component
@@ -18761,7 +18855,8 @@ class Interpretation extends Fields
 			{
 				$getForm[] = $this->_t(2)
 					. "if (\$id != 0 && (!\$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $viewName_single . ".' . (int) \$id))";
+					. $component . "." . $nameSingleCode
+					. ".' . (int) \$id))";
 				$getForm[] = $this->_t(3)
 					. "|| (\$id == 0 && !\$user->authorise('core.edit.state', 'com_"
 					. $component . "')))";
@@ -18799,13 +18894,13 @@ class Interpretation extends Fields
 				$this->permissionBuilder[$core['core.edit.created_by']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder[$core['core.edit.created_by']]
 			))
 		{
 			$getForm[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('"
 				. $core['core.edit.created_by'] . "', 'com_" . $component . "."
-				. $viewName_single . ".' . (int) \$id))";
+				. $nameSingleCode . ".' . (int) \$id))";
 			$getForm[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('"
 				. $core['core.edit.created_by'] . "', 'com_" . $component
 				. "')))";
@@ -18839,13 +18934,13 @@ class Interpretation extends Fields
 				$this->permissionBuilder[$core['core.edit.created']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder[$core['core.edit.created']]
 			))
 		{
 			$getForm[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('"
 				. $core['core.edit.created'] . "', 'com_" . $component . "."
-				. $viewName_single . ".' . (int) \$id))";
+				. $nameSingleCode . ".' . (int) \$id))";
 			$getForm[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('"
 				. $core['core.edit.created'] . "', 'com_" . $component . "')))";
 		}
@@ -18872,7 +18967,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder[$core['core.edit.access']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder[$core['core.edit.access']]
 			))
 		{
@@ -18880,7 +18975,7 @@ class Interpretation extends Fields
 				. " Modify the form based on Edit Access 'access' controls.";
 			$getForm[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('"
 				. $core['core.edit.access'] . "', 'com_" . $component . "."
-				. $viewName_single . ".' . (int) \$id))";
+				. $nameSingleCode . ".' . (int) \$id))";
 			$getForm[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('"
 				. $core['core.edit.access'] . "', 'com_" . $component . "')))";
 			$getForm[] = $this->_t(2) . "{";
@@ -18895,13 +18990,13 @@ class Interpretation extends Fields
 			$getForm[] = $this->_t(2) . "}";
 		}
 		// handel the fields permissions
-		if (isset($this->permissionFields[$viewName_single])
+		if (isset($this->permissionFields[$nameSingleCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->permissionFields[$viewName_single]
+				$this->permissionFields[$nameSingleCode]
 			))
 		{
 			foreach (
-				$this->permissionFields[$viewName_single] as $fieldName =>
+				$this->permissionFields[$nameSingleCode] as $fieldName =>
 				$permission_options
 			)
 			{
@@ -18913,19 +19008,19 @@ class Interpretation extends Fields
 					{
 						case 'edit':
 							$this->setPermissionEditFields(
-								$getForm, $viewName_single, $fieldName,
+								$getForm, $nameSingleCode, $fieldName,
 								$fieldType, $component
 							);
 							break;
 						case 'access':
 							$this->setPermissionAccessFields(
-								$getForm, $viewName_single, $fieldName,
+								$getForm, $nameSingleCode, $fieldName,
 								$fieldType, $component
 							);
 							break;
 						case 'view':
 							$this->setPermissionViewFields(
-								$getForm, $viewName_single, $fieldName,
+								$getForm, $nameSingleCode, $fieldName,
 								$fieldType, $component
 							);
 							break;
@@ -18968,7 +19063,7 @@ class Interpretation extends Fields
 		$getForm[] = $this->_t(3) . "}";
 		// load custom script if found
 		$getForm[] = $this->_t(2) . "}" . $this->getCustomScriptBuilder(
-				'php_getform', $viewName_single, PHP_EOL
+				'php_getform', $nameSingleCode, PHP_EOL
 			);
 		// setup the default script
 		$getForm[] = $this->_t(2) . "return \$form;";
@@ -18976,7 +19071,7 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $getForm);
 	}
 
-	protected function setPermissionEditFields(&$allow, $viewName_single,
+	protected function setPermissionEditFields(&$allow, $nameSingleCode,
 		$fieldName, $fieldType, $component
 	) {
 		// only for fields that can be edited
@@ -18987,10 +19082,10 @@ class Interpretation extends Fields
 				. ComponentbuilderHelper::safeString($fieldName, 'W')
 				. " access controls.";
 			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('"
-				. $viewName_single . ".edit." . $fieldName . "', 'com_"
-				. $component . "." . $viewName_single . ".' . (int) \$id))";
+				. $nameSingleCode . ".edit." . $fieldName . "', 'com_"
+				. $component . "." . $nameSingleCode . ".' . (int) \$id))";
 			$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('"
-				. $viewName_single . ".edit." . $fieldName . "', 'com_"
+				. $nameSingleCode . ".edit." . $fieldName . "', 'com_"
 				. $component . "')))";
 			$allow[] = $this->_t(2) . "{";
 			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
@@ -19029,7 +19124,7 @@ class Interpretation extends Fields
 		}
 	}
 
-	protected function setPermissionAccessFields(&$allow, $viewName_single,
+	protected function setPermissionAccessFields(&$allow, $nameSingleCode,
 		$fieldName, $fieldType, $component
 	) {
 		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -19037,10 +19132,10 @@ class Interpretation extends Fields
 			. ComponentbuilderHelper::safeString($fieldName, 'W')
 			. " access controls.";
 		$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('"
-			. $viewName_single . ".access." . $fieldName . "', 'com_"
-			. $component . "." . $viewName_single . ".' . (int) \$id))";
+			. $nameSingleCode . ".access." . $fieldName . "', 'com_"
+			. $component . "." . $nameSingleCode . ".' . (int) \$id))";
 		$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('"
-			. $viewName_single . ".access." . $fieldName . "', 'com_"
+			. $nameSingleCode . ".access." . $fieldName . "', 'com_"
 			. $component . "')))";
 		$allow[] = $this->_t(2) . "{";
 		$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
@@ -19049,7 +19144,7 @@ class Interpretation extends Fields
 		$allow[] = $this->_t(2) . "}";
 	}
 
-	protected function setPermissionViewFields(&$allow, $viewName_single,
+	protected function setPermissionViewFields(&$allow, $nameSingleCode,
 		$fieldName, $fieldType, $component
 	) {
 		if (ComponentbuilderHelper::fieldCheck($fieldType, 'spacer'))
@@ -19059,10 +19154,10 @@ class Interpretation extends Fields
 				. ComponentbuilderHelper::safeString($fieldName, 'W')
 				. " access controls.";
 			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('"
-				. $viewName_single . ".view." . $fieldName . "', 'com_"
-				. $component . "." . $viewName_single . ".' . (int) \$id))";
+				. $nameSingleCode . ".view." . $fieldName . "', 'com_"
+				. $component . "." . $nameSingleCode . ".' . (int) \$id))";
 			$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('"
-				. $viewName_single . ".view." . $fieldName . "', 'com_"
+				. $nameSingleCode . ".view." . $fieldName . "', 'com_"
 				. $component . "')))";
 			$allow[] = $this->_t(2) . "{";
 			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
@@ -19078,10 +19173,10 @@ class Interpretation extends Fields
 				. ComponentbuilderHelper::safeString($fieldName, 'W')
 				. " access controls.";
 			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('"
-				. $viewName_single . ".view." . $fieldName . "', 'com_"
-				. $component . "." . $viewName_single . ".' . (int) \$id))";
+				. $nameSingleCode . ".view." . $fieldName . "', 'com_"
+				. $component . "." . $nameSingleCode . ".' . (int) \$id))";
 			$allow[] = $this->_t(3) . "|| (\$id == 0 && !\$user->authorise('"
-				. $viewName_single . ".view." . $fieldName . "', 'com_"
+				. $nameSingleCode . ".view." . $fieldName . "', 'com_"
 				. $component . "')))";
 			$allow[] = $this->_t(2) . "{";
 			$allow[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
@@ -19122,22 +19217,22 @@ class Interpretation extends Fields
 		}
 	}
 
-	public function setJmodelAdminAllowEdit($viewName_single, $viewName_list)
+	public function setJmodelAdminAllowEdit($nameSingleCode, $nameListCode)
 	{
 		$allow = array();
 		// set component name
 		$component = $this->componentCodeName;
 		// prepare custom permission script
 		$customAllow = $this->getCustomScriptBuilder(
-			'php_allowedit', $viewName_single, $this->_t(2)
+			'php_allowedit', $nameSingleCode, $this->_t(2)
 			. "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;"
 			. PHP_EOL
 		);
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$viewName_single]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$viewName_single];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
 		// check if the item has permissions.
@@ -19147,7 +19242,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder[$core['core.edit']]
 			)
 			&& in_array(
-				$viewName_single, $this->permissionBuilder[$core['core.edit']]
+				$nameSingleCode, $this->permissionBuilder[$core['core.edit']]
 			))
 		{
 			$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -19157,7 +19252,7 @@ class Interpretation extends Fields
 			$allow[] = $customAllow;
 			$allow[] = $this->_t(2) . "return \$user->authorise('"
 				. $core['core.edit'] . "', 'com_" . $component . "."
-				. $viewName_single
+				. $nameSingleCode
 				. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or \$user->authorise('"
 				. $core['core.edit'] . "',  'com_" . $component . "');";
 		}
@@ -19173,40 +19268,40 @@ class Interpretation extends Fields
 			$allow[] = $customAllow;
 			$allow[] = $this->_t(2)
 				. "return JFactory::getUser()->authorise('core.edit', 'com_"
-				. $component . "." . $viewName_single
+				. $component . "." . $nameSingleCode
 				. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or parent::allowEdit(\$data, \$key);";
 		}
 
 		return implode(PHP_EOL, $allow);
 	}
 
-	public function setJmodelAdminCanDelete($viewName_single, $viewName_list)
+	public function setJmodelAdminCanDelete($nameSingleCode, $nameListCode)
 	{
 		$allow = array();
 		// set component name
 		$component = $this->componentCodeName;
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$viewName_single]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$viewName_single];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
-		if (0) //isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list]))  <-- remove category from check
+		if (0) //isset($this->categoryBuilder[$nameListCode]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameListCode]))  <-- remove category from check
 		{
 			// check if category has another name
-			if ($coreLoad && isset($this->catOtherName[$viewName_list])
+			if ($coreLoad && isset($this->catOtherName[$nameListCode])
 				&& ComponentbuilderHelper::checkArray(
-					$this->catOtherName[$viewName_list]
+					$this->catOtherName[$nameListCode]
 				))
 			{
-				$otherViews = $this->catOtherName[$viewName_list]['views'];
-				$otherView  = $this->catOtherName[$viewName_list]['view'];
+				$otherViews = $this->catOtherName[$nameListCode]['views'];
+				$otherView  = $this->catOtherName[$nameListCode]['view'];
 			}
 			else
 			{
-				$otherViews = $viewName_list;
-				$otherView  = $viewName_single;
+				$otherViews = $nameListCode;
+				$otherView  = $nameSingleCode;
 			}
 			// setup the category script
 			$allow[] = PHP_EOL . $this->_t(2) . "if (!empty(\$record->id))";
@@ -19272,7 +19367,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder[$core['core.delete']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder[$core['core.delete']]
 				))
 			{
@@ -19282,7 +19377,7 @@ class Interpretation extends Fields
 					. " The record has been set. Check the record permissions.";
 				$allow[] = $this->_t(3) . "return \$user->authorise('"
 					. $core['core.delete'] . "', 'com_" . $component . "."
-					. $viewName_single . ".' . (int) \$record->id);";
+					. $nameSingleCode . ".' . (int) \$record->id);";
 			}
 			else
 			{
@@ -19292,7 +19387,7 @@ class Interpretation extends Fields
 					. " The record has been set. Check the record permissions.";
 				$allow[] = $this->_t(3)
 					. "return \$user->authorise('core.delete', 'com_"
-					. $component . "." . $viewName_single
+					. $component . "." . $nameSingleCode
 					. ".' . (int) \$record->id);";
 			}
 			$allow[] = $this->_t(2) . "}";
@@ -19302,33 +19397,34 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $allow);
 	}
 
-	public function setJmodelAdminCanEditState($viewName_single, $viewName_list)
-	{
+	public function setJmodelAdminCanEditState($nameSingleCode,
+		$nameListCode
+	) {
 		$allow = array();
 		// set component name
 		$component = $this->componentCodeName;
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$viewName_single]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$viewName_single];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
-		if (0) // isset($this->categoryBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$viewName_list]))  <-- remove category from check
+		if (0) // isset($this->categoryBuilder[$nameListCode]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameListCode]))  <-- remove category from check
 		{
 			// check if category has another name
-			if (isset($this->catOtherName[$viewName_list])
+			if (isset($this->catOtherName[$nameListCode])
 				&& ComponentbuilderHelper::checkArray(
-					$this->catOtherName[$viewName_list]
+					$this->catOtherName[$nameListCode]
 				))
 			{
-				$otherViews = $this->catOtherName[$viewName_list]['views'];
-				$otherView  = $this->catOtherName[$viewName_list]['view'];
+				$otherViews = $this->catOtherName[$nameListCode]['views'];
+				$otherView  = $this->catOtherName[$nameListCode]['view'];
 			}
 			else
 			{
-				$otherViews = $viewName_list;
-				$otherView  = $viewName_single;
+				$otherViews = $nameListCode;
+				$otherView  = $nameSingleCode;
 			}
 			$allow[] = PHP_EOL . $this->_t(2) . "\$user = JFactory::getUser();";
 			$allow[] = $this->_t(2)
@@ -19344,19 +19440,19 @@ class Interpretation extends Fields
 					$this->permissionBuilder[$core['core.edit.state']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder[$core['core.edit.state']]
 				))
 			{
 				$allow[] = $this->_t(3) . "\$permission = \$user->authorise('"
 					. $core['core.edit.state'] . "', 'com_" . $component . "."
-					. $viewName_single . ".' . (int) \$recordId);";
+					. $nameSingleCode . ".' . (int) \$recordId);";
 			}
 			else
 			{
 				$allow[] = $this->_t(3)
 					. "\$permission = \$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $viewName_single
+					. $component . "." . $nameSingleCode
 					. ".' . (int) \$recordId);";
 			}
 			$allow[] = $this->_t(3)
@@ -19386,7 +19482,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder[$core['core.edit.state']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder[$core['core.edit.state']]
 				))
 			{
@@ -19421,19 +19517,19 @@ class Interpretation extends Fields
 					$this->permissionBuilder[$core['core.edit.state']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder[$core['core.edit.state']]
 				))
 			{
 				$allow[] = $this->_t(3) . "\$permission = \$user->authorise('"
 					. $core['core.edit.state'] . "', 'com_" . $component . "."
-					. $viewName_single . ".' . (int) \$recordId);";
+					. $nameSingleCode . ".' . (int) \$recordId);";
 			}
 			else
 			{
 				$allow[] = $this->_t(3)
 					. "\$permission = \$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $viewName_single
+					. $component . "." . $nameSingleCode
 					. ".' . (int) \$recordId);";
 			}
 			$allow[] = $this->_t(3)
@@ -19448,7 +19544,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.edit.state']]
 				)
 				&& in_array(
-					$viewName_single,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.edit.state']]
 				))
 			{
@@ -19470,16 +19566,16 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $allow);
 	}
 
-	public function setJviewListCanDo($viewName_single, $viewName_list)
+	public function setJviewListCanDo($nameSingleCode, $nameListCode)
 	{
 		$allow = array();
 		// set component name
 		$component = $this->componentCodeName;
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$viewName_single]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$viewName_single];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
 		// check if the item has permissions for edit.
@@ -19489,7 +19585,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder['global'][$core['core.edit']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder['global'][$core['core.edit']]
 			))
 		{
@@ -19509,7 +19605,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder['global'][$core['core.edit.state']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder['global'][$core['core.edit.state']]
 			))
 		{
@@ -19528,7 +19624,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder['global'][$core['core.create']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder['global'][$core['core.create']]
 			))
 		{
@@ -19547,7 +19643,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder['global'][$core['core.delete']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder['global'][$core['core.delete']]
 			))
 		{
@@ -19566,7 +19662,7 @@ class Interpretation extends Fields
 				$this->permissionBuilder['global']['global'][$core['core.batch']]
 			)
 			&& in_array(
-				$viewName_single,
+				$nameSingleCode,
 				$this->permissionBuilder['global']['global'][$core['core.delete']]
 			))
 		{
@@ -19630,22 +19726,24 @@ class Interpretation extends Fields
 	/**
 	 * set the filter fields
 	 *
-	 * @param   string  $name_list_code    The list view name
+	 * @param   string  $nameListCode  The list view name
 	 *
 	 * @return  string The code for the filter fields array
 	 *
 	 */
-	public function setFilterFields(&$name_list_code)
+	public function setFilterFields(&$nameListCode)
 	{
 		// keep track of all fields already added
-		$donelist = array('id' => true, 'search' => true,
-		                  'published' => true, 'access' => true,
+		$donelist = array('id'         => true, 'search' => true,
+		                  'published'  => true, 'access' => true,
 		                  'created_by' => true, 'modified_by' => true);
 		// default filter fields
 		$fields = "'a.id','id'";
 		$fields .= "," . PHP_EOL . $this->_t(4) . "'a.published','published'";
-		if (isset($this->accessBuilder[$name_list_code])
-			&& ComponentbuilderHelper::checkString($this->accessBuilder[$name_list_code]))
+		if (isset($this->accessBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkString(
+				$this->accessBuilder[$nameListCode]
+			))
 		{
 			$fields .= "," . PHP_EOL . $this->_t(4) . "'a.access','access'";
 		}
@@ -19655,27 +19753,35 @@ class Interpretation extends Fields
 			. "'a.modified_by','modified_by'";
 
 		// add the rest of the set filters
-		if (isset($this->filterBuilder[$name_list_code])
-			&& ComponentbuilderHelper::checkArray($this->filterBuilder[$name_list_code]))
+		if (isset($this->filterBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->filterBuilder[$nameListCode]
+			))
 		{
-			foreach ($this->filterBuilder[$name_list_code] as $filter)
+			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
-					$fields .= $this->getFilterFieldCode($filter);
+					$fields                    .= $this->getFilterFieldCode(
+						$filter
+					);
 					$donelist[$filter['code']] = true;
 				}
 			}
 		}
 		// add the rest of the set filters
-		if (isset($this->sortBuilder[$name_list_code])
-			&& ComponentbuilderHelper::checkArray($this->sortBuilder[$name_list_code]))
+		if (isset($this->sortBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->sortBuilder[$nameListCode]
+			))
 		{
-			foreach ($this->sortBuilder[$name_list_code] as $filter)
+			foreach ($this->sortBuilder[$nameListCode] as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
-					$fields .= $this->getFilterFieldCode($filter);
+					$fields                    .= $this->getFilterFieldCode(
+						$filter
+					);
 					$donelist[$filter['code']] = true;
 				}
 			}
@@ -19687,7 +19793,7 @@ class Interpretation extends Fields
 	/**
 	 * Add the code of the filter field array
 	 *
-	 * @param   array   $filter   The field/filter array
+	 * @param   array  $filter  The field/filter array
 	 *
 	 * @return  string    The code for the filter array
 	 *
@@ -19712,13 +19818,16 @@ class Interpretation extends Fields
 		{
 			// check if custom field is set
 			if (ComponentbuilderHelper::checkArray(
-				$filter['custom'])
+					$filter['custom']
+				)
 				&& isset($filter['custom']['db'])
 				&& ComponentbuilderHelper::checkString(
-					$filter['custom']['db'])
+					$filter['custom']['db']
+				)
 				&& isset($filter['custom']['text'])
 				&& ComponentbuilderHelper::checkString(
-					$filter['custom']['text']))
+					$filter['custom']['text']
+				))
 			{
 				$field = "," . PHP_EOL . $this->_t(4) . "'"
 					. $filter['custom']['db'] . "."
@@ -19732,22 +19841,23 @@ class Interpretation extends Fields
 					. "'";
 			}
 		}
+
 		return $field;
 	}
 
 	/**
 	 * set the sotred ids
 	 *
-	 * @param   string  $name_list_code   The list view name
+	 * @param   string  $nameListCode  The list view name
 	 *
 	 * @return  string The code for the populate state
 	 *
 	 */
-	public function setStoredId(&$name_list_code)
+	public function setStoredId(&$nameListCode)
 	{
 		// keep track of all fields already added
-		$donelist = array('id' => true, 'search' => true,
-		                  'published' => true, 'access' => true,
+		$donelist = array('id'         => true, 'search' => true,
+		                  'published'  => true, 'access' => true,
 		                  'created_by' => true, 'modified_by' => true);
 		// set the defaults first
 		$stored = "//" . $this->setLine(__LINE__) . " Compile the store id.";
@@ -19757,8 +19867,10 @@ class Interpretation extends Fields
 			. "\$id .= ':' . \$this->getState('filter.search');";
 		$stored .= PHP_EOL . $this->_t(2)
 			. "\$id .= ':' . \$this->getState('filter.published');";
-		if (isset($this->accessBuilder[$name_list_code])
-			&& ComponentbuilderHelper::checkString($this->accessBuilder[$name_list_code]))
+		if (isset($this->accessBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkString(
+				$this->accessBuilder[$nameListCode]
+			))
 		{
 			$stored .= PHP_EOL . $this->_t(2)
 				. "\$id .= ':' . \$this->getState('filter.access');";
@@ -19770,27 +19882,35 @@ class Interpretation extends Fields
 		$stored .= PHP_EOL . $this->_t(2)
 			. "\$id .= ':' . \$this->getState('filter.modified_by');";
 		// add the rest of the set filters
-		if (isset($this->filterBuilder[$name_list_code])
-			&& ComponentbuilderHelper::checkArray($this->filterBuilder[$name_list_code]))
+		if (isset($this->filterBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->filterBuilder[$nameListCode]
+			))
 		{
-			foreach ($this->filterBuilder[$name_list_code] as $filter)
+			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
-					$stored .= $this->getStoredIdCode($filter);
+					$stored                    .= $this->getStoredIdCode(
+						$filter
+					);
 					$donelist[$filter['code']] = true;
 				}
 			}
 		}
 		// add the rest of the set filters
-		if (isset($this->sortBuilder[$name_list_code])
-			&& ComponentbuilderHelper::checkArray($this->sortBuilder[$name_list_code]))
+		if (isset($this->sortBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->sortBuilder[$nameListCode]
+			))
 		{
-			foreach ($this->sortBuilder[$name_list_code] as $filter)
+			foreach ($this->sortBuilder[$nameListCode] as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
-					$stored .= $this->getStoredIdCode($filter);
+					$stored                    .= $this->getStoredIdCode(
+						$filter
+					);
 					$donelist[$filter['code']] = true;
 				}
 			}
@@ -19802,7 +19922,7 @@ class Interpretation extends Fields
 	/**
 	 * Add the code of the stored ids
 	 *
-	 * @param   array   $filter   The field/filter array
+	 * @param   array  $filter  The field/filter array
 	 *
 	 * @return  string    The code for the stored IDs
 	 *
@@ -19835,14 +19955,12 @@ class Interpretation extends Fields
 	public function setAddToolBar(&$view)
 	{
 		// set view name
-		$viewName = ComponentbuilderHelper::safeString(
-			$view['settings']->name_single
-		);
+		$nameSingleCode = $view['settings']->name_single_code;
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$viewName]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$viewName];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
 		// check type
@@ -19863,9 +19981,10 @@ class Interpretation extends Fields
 			$toolBar
 				     = "JFactory::getApplication()->input->set('hidemainmenu', true);";
 			$toolBar .= PHP_EOL . $this->_t(2) . "JToolBarHelper::title(JText:"
-				. ":_('" . $viewNameLang_readonly . "'), '" . $viewName . "');";
+				. ":_('" . $viewNameLang_readonly . "'), '" . $nameSingleCode
+				. "');";
 			$toolBar .= PHP_EOL . $this->_t(2) . "JToolBarHelper::cancel('"
-				. $viewName . ".cancel', 'JTOOLBAR_CLOSE');";
+				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
 		}
 		else
 		{
@@ -19911,7 +20030,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
-					$viewName,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.create']]
 				))
 			{
@@ -19927,7 +20046,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__)
 				. " We can create the record.";
 			$toolBar .= PHP_EOL . $this->_t(4) . "JToolBarHelper::save('"
-				. $viewName . ".save', 'JTOOLBAR_SAVE');";
+				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
 			$toolBar .= PHP_EOL . $this->_t(3) . "}";
 			if ($coreLoad && isset($core['core.edit'])
 				&& isset($this->permissionBuilder['global'][$core['core.edit']])
@@ -19935,7 +20054,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(
-					$viewName,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.edit']]
 				))
 			{
@@ -19952,21 +20071,21 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__)
 				. " We can save the record.";
 			$toolBar .= PHP_EOL . $this->_t(4) . "JToolBarHelper::save('"
-				. $viewName . ".save', 'JTOOLBAR_SAVE');";
+				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
 			$toolBar .= PHP_EOL . $this->_t(3) . "}";
 			$toolBar .= PHP_EOL . $this->_t(3) . "if (\$isNew)";
 			$toolBar .= PHP_EOL . $this->_t(3) . "{";
 			$toolBar .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__)
 				. " Do not creat but cancel.";
 			$toolBar .= PHP_EOL . $this->_t(4) . "JToolBarHelper::cancel('"
-				. $viewName . ".cancel', 'JTOOLBAR_CANCEL');";
+				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
 			$toolBar .= PHP_EOL . $this->_t(3) . "}";
 			$toolBar .= PHP_EOL . $this->_t(3) . "else";
 			$toolBar .= PHP_EOL . $this->_t(3) . "{";
 			$toolBar .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__)
 				. " We can close it.";
 			$toolBar .= PHP_EOL . $this->_t(4) . "JToolBarHelper::cancel('"
-				. $viewName . ".cancel', 'JTOOLBAR_CLOSE');";
+				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
 			$toolBar .= PHP_EOL . $this->_t(3) . "}";
 			$toolBar .= PHP_EOL . $this->_t(2) . "}";
 			$toolBar .= PHP_EOL . $this->_t(2) . "else";
@@ -19981,7 +20100,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
-					$viewName,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.create']]
 				))
 			{
@@ -19995,15 +20114,15 @@ class Interpretation extends Fields
 			}
 			$toolBar .= PHP_EOL . $this->_t(4) . "{";
 			$toolBar .= PHP_EOL . $this->_t(5) . "JToolBarHelper::apply('"
-				. $viewName . ".apply', 'JTOOLBAR_APPLY');";
+				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
 			$toolBar .= PHP_EOL . $this->_t(5) . "JToolBarHelper::save('"
-				. $viewName . ".save', 'JTOOLBAR_SAVE');";
+				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
 			$toolBar .= PHP_EOL . $this->_t(5) . "JToolBarHelper::custom('"
-				. $viewName
+				. $nameSingleCode
 				. ".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
 			$toolBar .= PHP_EOL . $this->_t(4) . "};";
 			$toolBar .= PHP_EOL . $this->_t(4) . "JToolBarHelper::cancel('"
-				. $viewName . ".cancel', 'JTOOLBAR_CANCEL');";
+				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
 			$toolBar .= PHP_EOL . $this->_t(3) . "}";
 			$toolBar .= PHP_EOL . $this->_t(3) . "else";
 			$toolBar .= PHP_EOL . $this->_t(3) . "{";
@@ -20013,7 +20132,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(
-					$viewName,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.edit']]
 				))
 			{
@@ -20029,9 +20148,9 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . $this->_t(5) . "//" . $this->setLine(__LINE__)
 				. " We can save the new record";
 			$toolBar .= PHP_EOL . $this->_t(5) . "JToolBarHelper::apply('"
-				. $viewName . ".apply', 'JTOOLBAR_APPLY');";
+				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
 			$toolBar .= PHP_EOL . $this->_t(5) . "JToolBarHelper::save('"
-				. $viewName . ".save', 'JTOOLBAR_SAVE');";
+				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
 			$toolBar .= PHP_EOL . $this->_t(5) . "//" . $this->setLine(__LINE__)
 				. " We can save this record, but check the create permission to see";
 			$toolBar .= PHP_EOL . $this->_t(5) . "//" . $this->setLine(__LINE__)
@@ -20042,7 +20161,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
-					$viewName,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.create']]
 				))
 			{
@@ -20056,7 +20175,7 @@ class Interpretation extends Fields
 			}
 			$toolBar .= PHP_EOL . $this->_t(5) . "{";
 			$toolBar .= PHP_EOL . $this->_t(6) . "JToolBarHelper::custom('"
-				. $viewName
+				. $nameSingleCode
 				. ".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
 			$toolBar .= PHP_EOL . $this->_t(5) . "}";
 			$toolBar .= PHP_EOL . $this->_t(4) . "}";
@@ -20066,13 +20185,13 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(
-					$viewName,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.edit']]
 				))
 			{
-				if ($coreLoad && isset($this->historyBuilder[$viewName])
+				if ($coreLoad && isset($this->historyBuilder[$nameSingleCode])
 					&& ComponentbuilderHelper::checkString(
-						$this->historyBuilder[$viewName]
+						$this->historyBuilder[$nameSingleCode]
 					))
 				{
 					$toolBar .= PHP_EOL . $this->_t(4)
@@ -20084,16 +20203,16 @@ class Interpretation extends Fields
 					$toolBar .= PHP_EOL . $this->_t(4) . "{";
 					$toolBar .= PHP_EOL . $this->_t(5)
 						. "JToolbarHelper::versions('com_"
-						. $this->componentCodeName . "." . $viewName
+						. $this->componentCodeName . "." . $nameSingleCode
 						. "', \$this->item->id);";
 					$toolBar .= PHP_EOL . $this->_t(4) . "}";
 				}
 			}
 			else
 			{
-				if ($coreLoad && isset($this->historyBuilder[$viewName])
+				if ($coreLoad && isset($this->historyBuilder[$nameSingleCode])
 					&& ComponentbuilderHelper::checkString(
-						$this->historyBuilder[$viewName]
+						$this->historyBuilder[$nameSingleCode]
 					))
 				{
 					$toolBar .= PHP_EOL . $this->_t(4)
@@ -20104,7 +20223,7 @@ class Interpretation extends Fields
 					$toolBar .= PHP_EOL . $this->_t(4) . "{";
 					$toolBar .= PHP_EOL . $this->_t(5)
 						. "JToolbarHelper::versions('com_"
-						. $this->componentCodeName . "." . $viewName
+						. $this->componentCodeName . "." . $nameSingleCode
 						. "', \$this->item->id);";
 					$toolBar .= PHP_EOL . $this->_t(4) . "}";
 				}
@@ -20115,7 +20234,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
-					$viewName,
+					$nameSingleCode,
 					$this->permissionBuilder['global'][$core['core.create']]
 				))
 			{
@@ -20129,13 +20248,13 @@ class Interpretation extends Fields
 			}
 			$toolBar .= PHP_EOL . $this->_t(4) . "{";
 			$toolBar .= PHP_EOL . $this->_t(5) . "JToolBarHelper::custom('"
-				. $viewName
+				. $nameSingleCode
 				. ".save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);";
 			$toolBar .= PHP_EOL . $this->_t(4) . "}";
 			// add custom buttons
 			$toolBar .= $this->setCustomButtons($view, 2, $this->_t(2));
 			$toolBar .= PHP_EOL . $this->_t(4) . "JToolBarHelper::cancel('"
-				. $viewName . ".cancel', 'JTOOLBAR_CLOSE');";
+				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
 			$toolBar .= PHP_EOL . $this->_t(3) . "}";
 			$toolBar .= PHP_EOL . $this->_t(2) . "}";
 			$toolBar .= PHP_EOL . $this->_t(2) . "JToolbarHelper::divider();";
@@ -20143,7 +20262,8 @@ class Interpretation extends Fields
 				. " set help url for this view if found";
 			$toolBar .= PHP_EOL . $this->_t(2) . "\$help_url = "
 				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh] . "Helper::getHelpUrl('" . $viewName . "');";
+				. $this->hhh] . "Helper::getHelpUrl('" . $nameSingleCode
+				. "');";
 			$toolBar .= PHP_EOL . $this->_t(2) . "if ("
 				. $this->fileContentStatic[$this->hhh . 'Component'
 				. $this->hhh] . "Helper::checkString(\$help_url))";
@@ -20159,53 +20279,61 @@ class Interpretation extends Fields
 	/**
 	 * set the populate state code
 	 *
-	 * @param   string  $name_single_code  The single view name
-	 * @param   string  $name_list_code    The list view name
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
 	 *
 	 * @return  string The code for the populate state
 	 *
 	 */
-	public function setPopulateState(&$name_single_code, &$name_list_code)
+	public function setPopulateState(&$nameSingleCode, &$nameListCode)
 	{
 		// reset bucket
 		$state = '';
 		// keep track of all fields already added
 		$donelist = array();
 		// add the default populate states (this must be added first)
-		$state .= $this->setDefaultPopulateState($name_single_code);
+		$state .= $this->setDefaultPopulateState($nameSingleCode);
 		// we must add the formSubmited code if new above filters is used
 		$new_filter = false;
-		if (isset($this->adminFilterType[$name_list_code])
-			&& $this->adminFilterType[$name_list_code] == 2)
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 2)
 		{
-			$state .= PHP_EOL . PHP_EOL . $this->_t(2) . "//"
+			$state      .= PHP_EOL . PHP_EOL . $this->_t(2) . "//"
 				. $this->setLine(__LINE__) . " Check if the form was submitted";
-			$state .= PHP_EOL . $this->_t(2) . "\$formSubmited"
+			$state      .= PHP_EOL . $this->_t(2) . "\$formSubmited"
 				. " = \$app->input->post->get('form_submited');";
 			$new_filter = true;
 		}
 		// add the filters
-		if (isset($this->filterBuilder[$name_list_code])
-			&& ComponentbuilderHelper::checkArray($this->filterBuilder[$name_list_code]))
+		if (isset($this->filterBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->filterBuilder[$nameListCode]
+			))
 		{
-			foreach ($this->filterBuilder[$name_list_code] as $filter)
+			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
-					$state .= $this->getPopulateStateFilterCode($filter, $new_filter);
+					$state                     .= $this->getPopulateStateFilterCode(
+						$filter, $new_filter
+					);
 					$donelist[$filter['code']] = true;
 				}
 			}
 		}
 		// add the rest of the set filters
-		if (isset($this->sortBuilder[$name_list_code])
-			&& ComponentbuilderHelper::checkArray($this->sortBuilder[$name_list_code]))
+		if (isset($this->sortBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->sortBuilder[$nameListCode]
+			))
 		{
-			foreach ($this->sortBuilder[$name_list_code] as $filter)
+			foreach ($this->sortBuilder[$nameListCode] as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
-					$state .= $this->getPopulateStateFilterCode($filter, $new_filter);
+					$state                     .= $this->getPopulateStateFilterCode(
+						$filter, $new_filter
+					);
 					$donelist[$filter['code']] = true;
 				}
 			}
@@ -20217,15 +20345,16 @@ class Interpretation extends Fields
 	/**
 	 * Add the code of the filter in the populate state
 	 *
-	 * @param   array  $filter       The field/filter array
-	 * @param   bool   $new_filter   The switch to use the new filter
-	 * @param   string $extra        The defaults/extra options of the filter
+	 * @param   array   $filter      The field/filter array
+	 * @param   bool    $new_filter  The switch to use the new filter
+	 * @param   string  $extra       The defaults/extra options of the filter
 	 *
 	 * @return  string    The code for the populate state
 	 *
 	 */
-	protected function getPopulateStateFilterCode(&$filter, $new_filter, $extra = '')
-	{
+	protected function getPopulateStateFilterCode(&$filter, $new_filter,
+		$extra = ''
+	) {
 		// add category stuff (may still remove these) TODO
 		if ($filter['type'] === 'category')
 		{
@@ -20263,73 +20392,94 @@ class Interpretation extends Fields
 				. "\$this->setState('filter." . $filter['code']
 				. "', \$" . $filter['code'] . ");";
 		}
+
 		return $state;
 	}
 
 	/**
 	 * set the default populate state code
 	 *
-	 * @param   string  $name_single_code  The single view name
+	 * @param   string  $nameSingleCode  The single view name
 	 *
 	 * @return  string The state code added
 	 *
 	 */
-	protected function setDefaultPopulateState(&$name_single_code)
+	protected function setDefaultPopulateState(&$nameSingleCode)
 	{
 		$state = '';
 		// start filter
 		$filter = array('type' => 'text');
 		// if access is not set add its default filter here
-		if (!isset($this->fieldsNames[$name_single_code]['access']))
+		if (!isset($this->fieldsNames[$nameSingleCode]['access']))
 		{
 			$filter['code'] = "access";
-			$state .= $this->getPopulateStateFilterCode($filter, false, ", 0, 'int'");
+			$state          .= $this->getPopulateStateFilterCode(
+				$filter, false, ", 0, 'int'"
+			);
 		}
 		// if published is not set add its default filter here
-		if (!isset($this->fieldsNames[$name_single_code]['published']))
+		if (!isset($this->fieldsNames[$nameSingleCode]['published']))
 		{
 			$filter['code'] = "published";
-			$state .= $this->getPopulateStateFilterCode($filter, false, ", ''");
+			$state          .= $this->getPopulateStateFilterCode(
+				$filter, false, ", ''"
+			);
 		}
 		// if created_by is not set add its default filter here
-		if (!isset($this->fieldsNames[$name_single_code]['created_by']))
+		if (!isset($this->fieldsNames[$nameSingleCode]['created_by']))
 		{
 			$filter['code'] = "created_by";
-			$state .= $this->getPopulateStateFilterCode($filter, false, ", ''");
+			$state          .= $this->getPopulateStateFilterCode(
+				$filter, false, ", ''"
+			);
 		}
 		// if created is not set add its default filter here
-		if (!isset($this->fieldsNames[$name_single_code]['created']))
+		if (!isset($this->fieldsNames[$nameSingleCode]['created']))
 		{
 			$filter['code'] = "created";
-			$state .= $this->getPopulateStateFilterCode($filter, false);
+			$state          .= $this->getPopulateStateFilterCode(
+				$filter, false
+			);
 		}
 
 		// the sorting defaults are always added
 		$filter['code'] = "sorting";
-		$state .= $this->getPopulateStateFilterCode($filter, false, ", 0, 'int'");
+		$state          .= $this->getPopulateStateFilterCode(
+			$filter, false, ", 0, 'int'"
+		);
 		// the search defaults are always added
 		$filter['code'] = "search";
-		$state .= $this->getPopulateStateFilterCode($filter, false);
+		$state          .= $this->getPopulateStateFilterCode($filter, false);
 
 		return $state;
 	}
 
-	public function setSortFields(&$view)
+	/**
+	 * set the sorted field array for the getSortFields method
+	 *
+	 * @param   string  $nameSingleCode  The single view name
+	 *
+	 * @return  string The array/string of fields to add to the getSortFields method
+	 *
+	 */
+	public function setSortFields(&$nameListCode)
 	{
 		// keep track of all fields already added
 		$donelist = array('ordering', 'published');
 		// set the default first
 		$fields = "return array(";
-		$fields .= PHP_EOL . $this->_t(3) . "'ordering' => JText:"
+		$fields .= PHP_EOL . $this->_t(3) . "'a.ordering' => JText:"
 			. ":_('JGRID_HEADING_ORDERING')";
 		$fields .= "," . PHP_EOL . $this->_t(3) . "'a.published' => JText:"
 			. ":_('JSTATUS')";
 
 		// add the rest of the set filters
-		if (isset($this->sortBuilder[$view])
-			&& ComponentbuilderHelper::checkArray($this->sortBuilder[$view]))
+		if (isset($this->sortBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->sortBuilder[$nameListCode]
+			))
 		{
-			foreach ($this->sortBuilder[$view] as $filter)
+			foreach ($this->sortBuilder[$nameListCode] as $filter)
 			{
 				if (!in_array($filter['code'], $donelist))
 				{
@@ -20449,7 +20599,8 @@ class Interpretation extends Fields
 		return $checkin;
 	}
 
-	public function setGetItemsMethodStringFix($viewName_single, $viewName_list,
+	public function setGetItemsMethodStringFix($nameSingleCode,
+		$nameListCode,
 		$Component, $tab = '', $export = false, $all = false
 	) {
 		// add the fix if this view has the need for it
@@ -20463,9 +20614,9 @@ class Interpretation extends Fields
 		}
 		// setup correct core target
 		$coreLoad = false;
-		if (isset($this->permissionCore[$viewName_single]))
+		if (isset($this->permissionCore[$nameSingleCode]))
 		{
-			$core     = $this->permissionCore[$viewName_single];
+			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
 		$component = ComponentbuilderHelper::safeString($Component);
@@ -20476,7 +20627,8 @@ class Interpretation extends Fields
 				$this->permissionBuilder[$core['core.access']]
 			)
 			&& in_array(
-				$viewName_single, $this->permissionBuilder[$core['core.access']]
+				$nameSingleCode,
+				$this->permissionBuilder[$core['core.access']]
 			))
 		{
 			$fix_access = PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "//"
@@ -20484,7 +20636,7 @@ class Interpretation extends Fields
 				. " Remove items the user can't access.";
 			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3)
 				. "\$access = (\$user->authorise('" . $core['core.access']
-				. "', 'com_" . $component . "." . $viewName_single
+				. "', 'com_" . $component . "." . $nameSingleCode
 				. ".' . (int) \$item->id) && \$user->authorise('"
 				. $core['core.access'] . "', 'com_" . $component . "'));";
 			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3)
@@ -20507,13 +20659,13 @@ class Interpretation extends Fields
 			$methodName = 'getItemsMethodListStringFixBuilder';
 		}
 		// load the relations before modeling
-		if (isset($this->fieldRelations[$viewName_list])
+		if (isset($this->fieldRelations[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->fieldRelations[$viewName_list]
+				$this->fieldRelations[$nameListCode]
 			))
 		{
 			foreach (
-				$this->fieldRelations[$viewName_list] as $field_id => $fields
+				$this->fieldRelations[$nameListCode] as $field_id => $fields
 			)
 			{
 				foreach ($fields as $area => $field)
@@ -20521,19 +20673,19 @@ class Interpretation extends Fields
 					if ($area == 1 && isset($field['code']))
 					{
 						$fix .= $this->setModelFieldRelation(
-							$field, $viewName_list, $tab
+							$field, $nameListCode, $tab
 						);
 					}
 				}
 			}
 		}
 		// open the values
-		if (isset($this->{$methodName}[$viewName_single])
+		if (isset($this->{$methodName}[$nameSingleCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->{$methodName}[$viewName_single]
+				$this->{$methodName}[$nameSingleCode]
 			))
 		{
-			foreach ($this->{$methodName}[$viewName_single] as $item)
+			foreach ($this->{$methodName}[$nameSingleCode] as $item)
 			{
 				switch ($item['method'])
 				{
@@ -20661,7 +20813,7 @@ class Interpretation extends Fields
 									PHP_EOL . $this->_t(1) . $tab . $this->_t(
 										3
 									),
-									$this->expertFieldModeling[$viewName_single][$item['name']]['get']
+									$this->expertFieldModeling[$nameSingleCode][$item['name']]['get']
 								), $_placeholder_for_field
 							);
 						}
@@ -20867,28 +21019,28 @@ class Interpretation extends Fields
 			}
 		}
 		/* // set translation (TODO) would be nice to cut down on double loops..
-		if (!$export && isset($this->selectionTranslationFixBuilder[$viewName_list]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$viewName_list]))
+		if (!$export && isset($this->selectionTranslationFixBuilder[$nameListCode]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$nameListCode]))
 		{
-			foreach ($this->selectionTranslationFixBuilder[$viewName_list] as $name => $values)
+			foreach ($this->selectionTranslationFixBuilder[$nameListCode] as $name => $values)
 			{
 				$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "//" . $this->setLine(__LINE__) . " convert " . $name;
 				$fix .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "\$item->" . $name . " = \$this->selectionTranslation(\$item->" . $name . ", '" . $name . "');";
 			}
 		} */
 		// load the relations after modeling
-		if (isset($this->fieldRelations[$viewName_list])
+		if (isset($this->fieldRelations[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
-				$this->fieldRelations[$viewName_list]
+				$this->fieldRelations[$nameListCode]
 			))
 		{
-			foreach ($this->fieldRelations[$viewName_list] as $fields)
+			foreach ($this->fieldRelations[$nameListCode] as $fields)
 			{
 				foreach ($fields as $area => $field)
 				{
 					if ($area == 3 && isset($field['code']))
 					{
 						$fix .= $this->setModelFieldRelation(
-							$field, $viewName_list, $tab
+							$field, $nameListCode, $tab
 						);
 					}
 				}
@@ -20929,13 +21081,13 @@ class Interpretation extends Fields
 			$hasPermissional = false;
 			// add the permissional removal of values the user has not right to view or access
 			if ($this->strictFieldExportPermissions
-				&& isset($this->permissionFields[$viewName_single])
+				&& isset($this->permissionFields[$nameSingleCode])
 				&& ComponentbuilderHelper::checkArray(
-					$this->permissionFields[$viewName_single]
+					$this->permissionFields[$nameSingleCode]
 				))
 			{
 				foreach (
-					$this->permissionFields[$viewName_single] as $fieldName =>
+					$this->permissionFields[$nameSingleCode] as $fieldName =>
 					$permission_options
 				)
 				{
@@ -20991,7 +21143,7 @@ class Interpretation extends Fields
 				$forEachStart .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3)
 					. "{";
 				foreach (
-					$this->permissionFields[$viewName_single] as $fieldName =>
+					$this->permissionFields[$nameSingleCode] as $fieldName =>
 					$permission_options
 				)
 				{
@@ -21012,14 +21164,14 @@ class Interpretation extends Fields
 								$forEachStart .= PHP_EOL . $this->_t(1) . $tab
 									. $this->_t(4) . "if (isset(\$item->"
 									. $fieldName . ") && (!\$user->authorise('"
-									. $viewName_single . "."
+									. $nameSingleCode . "."
 									. $permission_option . "." . $fieldName
 									. "', 'com_" . $component . "."
-									. $viewName_single
+									. $nameSingleCode
 									. ".' . (int) \$item->id)";
 								$forEachStart .= PHP_EOL . $this->_t(1) . $tab
 									. $this->_t(5) . "|| !\$user->authorise('"
-									. $viewName_single . "."
+									. $nameSingleCode . "."
 									. $permission_option . "." . $fieldName
 									. "', 'com_" . $component . "')))";
 								$forEachStart .= PHP_EOL . $this->_t(1) . $tab
@@ -21074,7 +21226,7 @@ class Interpretation extends Fields
 
 		// add custom php to getitems method
 		$fix .= $this->getCustomScriptBuilder(
-			'php_getitems', $viewName_single, PHP_EOL . PHP_EOL . $tab
+			'php_getitems', $nameSingleCode, PHP_EOL . PHP_EOL . $tab
 		);
 
 		// load the encryption object if needed
@@ -21100,16 +21252,16 @@ class Interpretation extends Fields
 				}
 				elseif (isset(
 						$this->{$cryptionType
-						. 'FieldModelInitiator'}[$viewName_single]
+						. 'FieldModelInitiator'}[$nameSingleCode]
 					)
 					&& isset(
 						$this->{$cryptionType
-						. 'FieldModelInitiator'}[$viewName_single]['get']
+						. 'FieldModelInitiator'}[$nameSingleCode]['get']
 					))
 				{
 					foreach (
 						$this->{$cryptionType
-						. 'FieldModelInitiator'}[$viewName_single]['get'] as
+						. 'FieldModelInitiator'}[$nameSingleCode]['get'] as
 						$block
 					)
 					{
@@ -21127,7 +21279,7 @@ class Interpretation extends Fields
 		return $script . $forEachStart . $fix;
 	}
 
-	public function setClassHeaders($context, $viewName)
+	public function setClassHeaders($context, $viewsCodeName)
 	{
 		// set the defaults
 		$headers = array();
@@ -21146,7 +21298,7 @@ class Interpretation extends Fields
 		// Trigger Event: jcb_ce_setClassHeader
 		$this->triggerEvent(
 			'jcb_ce_setClassHeader',
-			array(&$this->componentContext, &$context, &$viewName,
+			array(&$this->componentContext, &$context, &$viewsCodeName,
 			      &$headers)
 		);
 
@@ -21154,7 +21306,7 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $headers);
 	}
 
-	protected function setModelFieldRelation($item, $viewName_list, $tab)
+	protected function setModelFieldRelation($item, $nameListCode, $tab)
 	{
 		$fix = '';
 		// set fields
@@ -21171,7 +21323,7 @@ class Interpretation extends Fields
 			foreach ($item['joinfields'] as $join)
 			{
 				$field['$item->{' . (int) $join . '}'] = '$item->'
-					. $this->listJoinBuilder[$viewName_list][(int) $join]['code'];
+					. $this->listJoinBuilder[$nameListCode][(int) $join]['code'];
 			}
 		}
 		// set based on join_type
@@ -21322,15 +21474,16 @@ class Interpretation extends Fields
 		return $fix;
 	}
 
-	public function setRouterCase($viewName)
+	public function setRouterCase($viewsCodeName)
 	{
-		if (strlen($viewName) > 0)
+		if (strlen($viewsCodeName) > 0)
 		{
-			$router = PHP_EOL . $this->_t(2) . "case '" . $viewName . "':";
+			$router = PHP_EOL . $this->_t(2) . "case '" . $viewsCodeName . "':";
 			$router .= PHP_EOL . $this->_t(3)
 				. "\$id = explode(':', \$segments[\$count-1]);";
 			$router .= PHP_EOL . $this->_t(3) . "\$vars['id'] = (int) \$id[0];";
-			$router .= PHP_EOL . $this->_t(3) . "\$vars['view'] = '" . $viewName
+			$router .= PHP_EOL . $this->_t(3) . "\$vars['view'] = '"
+				. $viewsCodeName
 				. "';";
 			$router .= PHP_EOL . $this->_t(2) . "break;";
 
@@ -22687,9 +22840,9 @@ class Interpretation extends Fields
 				))
 			{
 				// set component code name
-				$component    = $this->componentCodeName;
-				$viewName     = 'config';
-				$listViewName = 'configs';
+				$component      = $this->componentCodeName;
+				$nameSingleCode = 'config';
+				$nameListCode   = 'configs';
 				// set place holders
 				$placeholders = array();
 				$placeholders[$this->hhh . 'component' . $this->hhh]
@@ -22703,9 +22856,9 @@ class Interpretation extends Fields
 					$this->componentData->name_code, 'U'
 				);
 				$placeholders[$this->hhh . 'view' . $this->hhh]
-				              = $viewName;
+				              = $nameSingleCode;
 				$placeholders[$this->hhh . 'views' . $this->hhh]
-				              = $listViewName;
+				              = $nameListCode;
 				$placeholders[$this->bbb . 'component' . $this->ddd]
 				              = $this->componentCodeName;
 				$placeholders[$this->bbb . 'Component' . $this->ddd]
@@ -22715,9 +22868,9 @@ class Interpretation extends Fields
 				              = $placeholders[$this->hhh . 'COMPONENT'
 				. $this->hhh];
 				$placeholders[$this->bbb . 'view' . $this->ddd]
-				              = $viewName;
+				              = $nameSingleCode;
 				$placeholders[$this->bbb . 'views' . $this->ddd]
-				              = $listViewName;
+				              = $nameListCode;
 				// load the global placeholders
 				if (ComponentbuilderHelper::checkArray(
 					$this->globalPlaceholders
@@ -22747,35 +22900,12 @@ class Interpretation extends Fields
 				// build the config fields
 				foreach ($this->componentData->config as $field)
 				{
-					// check the field builder type
-					if ($this->fieldBuilderType == 1)
-					{
-						// string manipulation
-						$xmlField = $this->setDynamicField(
-							$field, $view, $viewType, $lang, $viewName,
-							$listViewName, $placeholders, $dbkey, false
-						);
-					}
-					else
-					{
-						// simpleXMLElement class
-						$newxmlField = $this->setDynamicField(
-							$field, $view, $viewType, $lang, $viewName,
-							$listViewName, $placeholders, $dbkey, false
-						);
-						if (isset($newxmlField->fieldXML))
-						{
-							$xmlField = dom_import_simplexml(
-								$newxmlField->fieldXML
-							);
-							$xmlField = PHP_EOL . $this->_t(1) . "<!--"
-								. $this->setLine(__LINE__) . " "
-								. $newxmlField->comment . ' -->' . PHP_EOL
-								. $this->_t(1) . $this->xmlPrettyPrint(
-									$xmlField, 'field'
-								);
-						}
-					}
+					// get the xml string
+					$xmlField = $this->getFieldXMLString(
+						$field, $view, $viewType, $lang, $nameSingleCode,
+						$nameListCode, $placeholders, $dbkey, false
+					);
+
 					// make sure the xml is set and a string
 					if (isset($xmlField)
 						&& ComponentbuilderHelper::checkString(
@@ -25527,14 +25657,14 @@ function vdm_dkim() {
 		}
 	}
 
-	public function setAccessSectionsCategory($viewName_single, $viewName_list)
-	{
+	public function setAccessSectionsCategory($nameSingleCode, $nameListCode
+	) {
 		$component = '';
 		// check if view has category
-		if (array_key_exists($viewName_single, $this->catCodeBuilder))
+		if (array_key_exists($nameSingleCode, $this->catCodeBuilder))
 		{
-			$otherViews = $this->catCodeBuilder[$viewName_single]['views'];
-			if ($otherViews == $viewName_list)
+			$otherViews = $this->catCodeBuilder[$nameSingleCode]['views'];
+			if ($otherViews == $nameListCode)
 			{
 				$component .= PHP_EOL . $this->_t(1)
 					. '<section name="category.' . $otherViews . '">';
@@ -26030,10 +26160,10 @@ function vdm_dkim() {
 			// set the views permissions now
 			if (ComponentbuilderHelper::checkArray($this->permissionViews))
 			{
-				foreach ($this->permissionViews as $viewName => $actions)
+				foreach ($this->permissionViews as $viewsCodeName => $actions)
 				{
 					$componentViews[] = $this->_t(1) . '<section name="'
-						. $viewName . '">';
+						. $viewsCodeName . '">';
 					foreach ($actions as $action)
 					{
 						$componentViews[] = $this->_t(2) . $action;
@@ -27363,61 +27493,23 @@ function vdm_dkim() {
 		return $xml;
 	}
 
+	/**
+	 * build field set for an extention
+	 *
+	 * @param   object  $extension  The extention object
+	 * @param   array   $fields     The fields to build
+	 * @param   string  $dbkey      The database key
+	 *
+	 * @return  string The fields set in xml
+	 *
+	 */
 	public function getExtensionFieldsetXML(&$extension, &$fields, $dbkey = 'zz'
 	) {
-		// set some defaults
-		$view     = '';
-		$viewType = 0;
 		// build the fieldset
-		$fieldset = '';
-
-		if (ComponentbuilderHelper::checkArray($fields))
-		{
-			foreach ($fields as $field)
-			{
-				// check the field builder type
-				if ($this->fieldBuilderType == 1)
-				{
-					// string manipulation
-					$xmlField = $this->setDynamicField(
-						$field, $view, $viewType, $extension->lang_prefix,
-						$extension->key, $extension->key,
-						$this->globalPlaceholders, $dbkey, false
-					);
-				}
-				else
-				{
-					// simpleXMLElement class
-					$newxmlField = $this->setDynamicField(
-						$field, $view, $viewType, $extension->lang_prefix,
-						$extension->key, $extension->key,
-						$this->globalPlaceholders, $dbkey, false
-					);
-					if (isset($newxmlField->fieldXML))
-					{
-						$xmlField = dom_import_simplexml(
-							$newxmlField->fieldXML
-						);
-						$xmlField = PHP_EOL . $this->_t(2) . "<!--"
-							. $this->setLine(__LINE__) . " "
-							. $newxmlField->comment . ' -->' . PHP_EOL
-							. $this->_t(1) . $this->xmlPrettyPrint(
-								$xmlField, 'field'
-							);
-					}
-				}
-				// make sure the xml is set and a string
-				if (isset($xmlField)
-					&& ComponentbuilderHelper::checkString(
-						$xmlField
-					))
-				{
-					$fieldset .= $xmlField;
-				}
-			}
-		}
-
-		return $fieldset;
+		return $this->getFieldsetXML(
+			$fields, $extension->lang_prefix, $extension->key, $extension->key,
+			$this->globalPlaceholders, $dbkey
+		);
 	}
 
 	public function getExtensionInstallClass(&$extension)

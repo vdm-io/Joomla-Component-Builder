@@ -25,11 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=validation_rules&task=valida
 		<td class="order nowrap center hidden-phone">
 		<?php if ($canDo->get('validation_rule.edit.state')): ?>
 			<?php
-				if ($this->saveOrder)
-				{
-					$iconClass = ' inactive';
-				}
-				else
+				$iconClass = '';
+				if (!$this->saveOrder)
 				{
 					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
 				}

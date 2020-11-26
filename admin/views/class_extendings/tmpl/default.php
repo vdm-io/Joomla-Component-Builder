@@ -83,3 +83,4 @@ if ($this->saveOrder)
 <input type="hidden" name="task" value="" />
 <?php echo JHtml::_('form.token'); ?>
 </form>
+<script type="text/javascript"></script>

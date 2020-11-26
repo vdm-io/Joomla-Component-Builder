@@ -25,11 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 		<td class="order nowrap center hidden-phone">
 		<?php if ($canDo->get('language_translation.edit.state')): ?>
 			<?php
-				if ($this->saveOrder)
-				{
-					$iconClass = ' inactive';
-				}
-				else
+				$iconClass = '';
+				if (!$this->saveOrder)
 				{
 					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
 				}

@@ -25,11 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=components_mysql_tweaks&task
 		<td class="order nowrap center hidden-phone">
 		<?php if ($canDo->get('component_mysql_tweaks.edit.state')): ?>
 			<?php
-				if ($this->saveOrder)
-				{
-					$iconClass = ' inactive';
-				}
-				else
+				$iconClass = '';
+				if (!$this->saveOrder)
 				{
 					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
 				}

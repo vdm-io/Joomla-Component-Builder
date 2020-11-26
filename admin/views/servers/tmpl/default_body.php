@@ -25,11 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=servers&task=server.edit";
 		<td class="order nowrap center hidden-phone">
 		<?php if ($canDo->get('server.edit.state')): ?>
 			<?php
-				if ($this->saveOrder)
-				{
-					$iconClass = ' inactive';
-				}
-				else
+				$iconClass = '';
+				if (!$this->saveOrder)
 				{
 					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
 				}
