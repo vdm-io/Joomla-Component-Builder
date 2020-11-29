@@ -829,7 +829,8 @@ class Get
 		if (isset($config) && count($config))
 		{
 			// we do not yet have this set as an option
-			$config['remove_line_breaks'] = 2; // 2 is global (use the components value)
+			$config['remove_line_breaks']
+				= 2; // 2 is global (use the components value)
 			// load application
 			$this->app = JFactory::getApplication();
 			// Set the params
@@ -908,13 +909,15 @@ class Get
 				$this->componentContext = $this->componentCodeName . '.'
 					. $this->componentID;
 				// set if language strings line breaks should be removed
-				$global                = ((int) ComponentbuilderHelper::getVar(
+				$global                 = ((int) ComponentbuilderHelper::getVar(
 						'joomla_component', $this->componentID, 'id',
 						'remove_line_breaks'
 					) == 1) ? true : false;
-				$this->removeLineBreaks = ((int) $config['remove_line_breaks'] == 0)
+				$this->removeLineBreaks = ((int) $config['remove_line_breaks']
+					== 0)
 					? false
-					: (((int) $config['remove_line_breaks'] == 1) ? true : $global);
+					: (((int) $config['remove_line_breaks'] == 1) ? true
+						: $global);
 				// set if placeholders should be added to customcode
 				$global                = ((int) ComponentbuilderHelper::getVar(
 						'joomla_component', $this->componentID, 'id',
@@ -1510,15 +1513,18 @@ class Get
 						$array['view']
 					);
 					// set the filter option for this view
-					$this->adminFilterType[$array['settings']->name_list_code] = 1; // Side (old) [default for now]
+					$this->adminFilterType[$array['settings']->name_list_code]
+						= 1; // Side (old) [default for now]
 					if (isset($array['filter'])
 						&& is_numeric(
 							$array['filter']
 						)
 						&& $array['filter'] > 0)
 					{
-						$this->adminFilterType[$array['settings']->name_list_code] = (int) $array['filter'];
+						$this->adminFilterType[$array['settings']->name_list_code]
+							= (int) $array['filter'];
 					}
+
 					return $array;
 				}, array_values($component->addadmin_views)
 			);
@@ -2099,14 +2105,16 @@ class Get
 		}
 		elseif (!isset($this->langContent[$target][$language]))
 		{
-			$this->langContent[$target][$language] = $this->fixLangString($string);
+			$this->langContent[$target][$language] = $this->fixLangString(
+				$string
+			);
 		}
 	}
 
 	/**
 	 * We need to remove all text breaks from all language strings
 	 *
-	 * @param   string   $string     The language string
+	 * @param   string  $string  The language string
 	 *
 	 * @return  string
 	 *
@@ -2117,6 +2125,7 @@ class Get
 		{
 			return trim(str_replace(array(PHP_EOL, "\r", "\n"), '', $string));
 		}
+
 		return trim($string);
 	}
 
@@ -2248,8 +2257,9 @@ class Get
 			{
 				$this->customScriptBuilder['token'] = array();
 			}
-			$this->customScriptBuilder['token'][$view->name_single_code] = false;
-			$this->customScriptBuilder['token'][$view->name_list_code]   = false;
+			$this->customScriptBuilder['token'][$view->name_single_code]
+				                                                       = false;
+			$this->customScriptBuilder['token'][$view->name_list_code] = false;
 			// set some placeholders
 			$this->placeholders[$this->hhh . 'view' . $this->hhh]
 				= $view->name_single_code;
@@ -2302,7 +2312,8 @@ class Get
 
 			// set custom tabs
 			$this->customTabs[$view->name_single_code] = null;
-			$view->customtabs               = (isset($view->customtabs)
+			$view->customtabs
+			                                           = (isset($view->customtabs)
 				&& ComponentbuilderHelper::checkJson($view->customtabs))
 				? json_decode($view->customtabs, true) : null;
 			if (ComponentbuilderHelper::checkArray($view->customtabs))
@@ -2476,7 +2487,8 @@ class Get
 					) {
 						// set the field details
 						$this->setFieldDetails(
-							$field, $view->name_single_code, $view->name_list_code
+							$field, $view->name_single_code,
+							$view->name_list_code
 						);
 						// check if this field is a default field OR
 						// check if this is none database related field
@@ -2542,7 +2554,9 @@ class Get
 				foreach ($view->fields as $field)
 				{
 					// so first we lock the field name in
-					$field_name = $this->getFieldName($field, $view->name_list_code);
+					$field_name = $this->getFieldName(
+						$field, $view->name_list_code
+					);
 					// check if the field changed since the last compilation (default fields never change and are always added)
 					if (!isset($ignoreFields[$field['field']])
 						&& ComponentbuilderHelper::checkObject(
@@ -2567,7 +2581,8 @@ class Get
 								. $field['settings']->history->datalenght_other,
 								$field['settings']->datalenght
 								. $field['settings']->datalenght_other,
-								'field.lenght', $view->name_single_code . '.' . $field_name
+								'field.lenght',
+								$view->name_single_code . '.' . $field_name
 							);
 						}
 						// check if the name changed
@@ -2611,7 +2626,8 @@ class Get
 									$this->setUpdateSQL(
 										$old_field_name, $field_name,
 										'field.name',
-										$view->name_single_code . '.' . $field_name
+										$view->name_single_code . '.'
+										. $field_name
 									);
 								}
 								elseif ($old_field_name !== $field_name)
@@ -2624,7 +2640,8 @@ class Get
 									$this->app->enqueueMessage(
 										JText::sprintf(
 											'You have a field called <b>%s</b> that has been added multiple times to the <b>%s</b> view, the name of that field has changed to <b>%s</b>. Normaly we would automaticly add the update SQL to your component, but with multiple fields this does not work automaticly since it could be that noting changed and it just seems like it did. Therefore you will have to do this manualy if it actualy did change!',
-											$field_name, $view->name_single_code,
+											$field_name,
+											$view->name_single_code,
 											$old_field_name
 										), 'Notice'
 									);
@@ -2646,7 +2663,8 @@ class Get
 					$this->setUpdateSQL(
 						ComponentbuilderHelper::safeString(
 							$old_view->name_single
-						), $view->name_single_code, 'table_name', $view->name_single_code
+						), $view->name_single_code, 'table_name',
+						$view->name_single_code
 					);
 				}
 				// loop the mysql table settings
@@ -2877,7 +2895,7 @@ class Get
 			// set linked views
 			$this->linkedAdminViews[$view->name_single_code] = null;
 			$view->addlinked_views
-			                                      = (isset($view->addlinked_views)
+			                                                 = (isset($view->addlinked_views)
 				&& ComponentbuilderHelper::checkJson($view->addlinked_views))
 				? json_decode($view->addlinked_views, true) : null;
 			if (ComponentbuilderHelper::checkArray($view->addlinked_views))
@@ -2989,7 +3007,9 @@ class Get
 					);
 
 					// check if we have template or layouts to load
-					$this->setTemplateAndLayoutData($view->{$scripter}, $view->name_single_code);
+					$this->setTemplateAndLayoutData(
+						$view->{$scripter}, $view->name_single_code
+					);
 
 					unset($view->{$scripter});
 				}
@@ -3023,7 +3043,9 @@ class Get
 						);
 
 						// check if we have template or layouts to load
-						$this->setTemplateAndLayoutData($view->{$button_code_field}, $view->name_single_code);
+						$this->setTemplateAndLayoutData(
+							$view->{$button_code_field}, $view->name_single_code
+						);
 					}
 				}
 				// set the button array
@@ -3053,7 +3075,7 @@ class Get
 					{
 						// update GUI mapper field
 						$guiMapper['field'] = $importScripter;
-						$guiMapper['type'] = 'php';
+						$guiMapper['type']  = 'php';
 						// Make sure html gets HTML comment for placeholder
 						if ('html_import_view' === $importScripter)
 						{
@@ -3083,8 +3105,9 @@ class Get
 			if (isset($view->add_php_ajax) && $view->add_php_ajax == 1)
 			{
 				// insure the token is added to edit view atleast
-				$this->customScriptBuilder['token'][$view->name_single_code] = true;
-				$addAjaxSite                                      = false;
+				$this->customScriptBuilder['token'][$view->name_single_code]
+					         = true;
+				$addAjaxSite = false;
 				if (isset($this->siteEditView[$id]) && $this->siteEditView[$id])
 				{
 					// we should add this site ajax to front ajax
@@ -3166,9 +3189,12 @@ class Get
 				if (ComponentbuilderHelper::checkArray($alias_fields))
 				{
 					// load the field names
-					$this->customAliasBuilder[$view->name_single_code] = (array) array_map(
+					$this->customAliasBuilder[$view->name_single_code]
+						= (array) array_map(
 						function ($field) use (&$view) {
-							return $this->getFieldName($field, $view->name_list_code);
+							return $this->getFieldName(
+								$field, $view->name_list_code
+							);
 						}, $alias_fields
 					);
 				}
@@ -3182,7 +3208,9 @@ class Get
 				{
 					// build and add the SQL dump
 					$this->customScriptBuilder['sql'][$view->name_single_code]
-						= $this->buildSqlDump($view->tables, $view->name_single_code, $id);
+						= $this->buildSqlDump(
+						$view->tables, $view->name_single_code, $id
+					);
 					unset($view->tables);
 				}
 				elseif ($view->source == 2 && isset($view->sql))
@@ -6447,6 +6475,7 @@ class Get
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -8797,7 +8826,7 @@ class Get
 				$addScriptTypes             = array('install', 'update',
 				                                    'uninstall');
 				// the next are php placeholders
-				$guiMapper['type']          = 'php';
+				$guiMapper['type'] = 'php';
 				foreach ($addScriptMethods as $scriptMethod)
 				{
 					foreach ($addScriptTypes as $scriptType)
@@ -9279,7 +9308,7 @@ class Get
 					);
 					// set description
 					$this->placeholders[$this->hhh . 'DESCRIPTION' . $this->hhh]
-						= $plugin->description;
+						                 = $plugin->description;
 					$plugin->description = '<p>' . $plugin->description
 						. '</p>';
 				}
@@ -9765,13 +9794,16 @@ class Get
 				);
 				unset(
 					$this->placeholders[$this->hhh . 'VERSION'
-					. $this->hhh]);
+					. $this->hhh]
+				);
 				unset(
 					$this->placeholders[$this->hhh . 'DESCRIPTION'
-					. $this->hhh]);
+					. $this->hhh]
+				);
 				unset(
 					$this->placeholders[$this->hhh . 'PLUGIN_NAME'
-					. $this->hhh]);
+					. $this->hhh]
+				);
 
 				$this->joomlaPlugins[$id] = $plugin;
 
@@ -10432,19 +10464,26 @@ class Get
 		if (strpos($script, 'LOCKBASE64((((') !== false)
 		{
 			// get the strings
-			$values = ComponentbuilderHelper::getAllBetween($script, 'LOCKBASE64((((', '))))');
+			$values = ComponentbuilderHelper::getAllBetween(
+				$script, 'LOCKBASE64((((', '))))'
+			);
 			$locker = array();
 			// convert them
-			foreach($values as $value)
+			foreach ($values as $value)
 			{
-				$locker['LOCKBASE64((((' . $value . '))))'] = "base64_decode( preg_replace('/\s+/', ''," .
+				$locker['LOCKBASE64((((' . $value . '))))']
+					= "base64_decode( preg_replace('/\s+/', ''," .
 					PHP_EOL . $this->_t(2) . "'" .
-					wordwrap(base64_encode($value), 64, PHP_EOL . $this->_t(2), true) .
+					wordwrap(
+						base64_encode($value), 64, PHP_EOL . $this->_t(2), true
+					) .
 					"'))";
 			}
+
 			// update the script
 			return $this->setPlaceholders($script, $locker);
 		}
+
 		return $script;
 	}
 

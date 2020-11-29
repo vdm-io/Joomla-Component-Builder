@@ -12,12 +12,10 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access'); 
 
-// load tooltip behavior
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.multiselect');
 JHtml::_('dropdown.init');
 JHtml::_('formbehavior.chosen', 'select');
-
 if ($this->saveOrder)
 {
 	$saveOrderingUrl = 'index.php?option=com_componentbuilder&task=snippets.saveOrderAjax&tmpl=component';

@@ -154,36 +154,13 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
+		// Only load publish filter if state change is allowed
 		if ($this->canState)
 		{
 			JHtmlSidebar::addFilter(
 				JText::_('JOPTION_SELECT_PUBLISHED'),
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-			// only load if batch allowed
-			if ($this->canBatch)
-			{
-				JHtmlBatch_::addListSelection(
-					JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
-					'batch[published]',
-					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-				);
-			}
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		if ($this->canBatch && $this->canCreate && $this->canEdit)
-		{
-			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
-				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
 		}
 
@@ -205,16 +182,6 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 				'filter_type',
 				JHtml::_('select.options', $this->typeOptions, 'value', 'text', $this->state->get('filter.type'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Type Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_TYPE_LABEL').' -',
-					'batch[type]',
-					JHtml::_('select.options', $this->typeOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Location Selection
@@ -235,16 +202,6 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 				'filter_location',
 				JHtml::_('select.options', $this->locationOptions, 'value', 'text', $this->state->get('filter.location'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Location Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_LOCATION_LABEL').' -',
-					'batch[location]',
-					JHtml::_('select.options', $this->locationOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Admin View Selection
@@ -265,16 +222,6 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 				'filter_admin_view',
 				JHtml::_('select.options', $this->admin_viewOptions, 'value', 'text', $this->state->get('filter.admin_view'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Admin View Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_ADMIN_VIEW_LABEL').' -',
-					'batch[admin_view]',
-					JHtml::_('select.options', $this->admin_viewOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Site View Selection
@@ -295,16 +242,60 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 				'filter_site_view',
 				JHtml::_('select.options', $this->site_viewOptions, 'value', 'text', $this->state->get('filter.site_view'))
 			);
+		}
 
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Site View Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_SITE_VIEW_LABEL').' -',
-					'batch[site_view]',
-					JHtml::_('select.options', $this->site_viewOptions, 'value', 'text')
-				);
-			}
+		// Only load published batch if state and batch is allowed
+		if ($this->canState && $this->canBatch)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
+				'batch[published]',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+			);
+		}
+
+		// Only load Type batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Type Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_TYPE_LABEL').' -',
+				'batch[type]',
+				JHtml::_('select.options', $this->typeOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Location batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Location Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_LOCATION_LABEL').' -',
+				'batch[location]',
+				JHtml::_('select.options', $this->locationOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Admin View batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Admin View Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_ADMIN_VIEW_LABEL').' -',
+				'batch[admin_view]',
+				JHtml::_('select.options', $this->admin_viewOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Site View batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Site View Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_SITE_VIEW_LABEL').' -',
+				'batch[site_view]',
+				JHtml::_('select.options', $this->site_viewOptions, 'value', 'text')
+			);
 		}
 	}
 

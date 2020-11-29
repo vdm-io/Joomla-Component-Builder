@@ -149,6 +149,7 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
+		// Only load publish filter if state change is allowed
 		if ($this->canState)
 		{
 			JHtmlSidebar::addFilter(
@@ -156,15 +157,6 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
 			);
-			// only load if batch allowed
-			if ($this->canBatch)
-			{
-				JHtmlBatch_::addListSelection(
-					JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
-					'batch[published]',
-					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-				);
-			}
 		}
 
 		JHtmlSidebar::addFilter(
@@ -172,15 +164,6 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 			'filter_access',
 			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
 		);
-
-		if ($this->canBatch && $this->canCreate && $this->canEdit)
-		{
-			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
-				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
-			);
-		}
 
 		// Set Target Selection
 		$this->targetOptions = $this->getTheTargetSelections();
@@ -200,16 +183,6 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 				'filter_target',
 				JHtml::_('select.options', $this->targetOptions, 'value', 'text', $this->state->get('filter.target'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Target Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LIBRARY_TARGET_LABEL').' -',
-					'batch[target]',
-					JHtml::_('select.options', $this->targetOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set How Selection
@@ -230,16 +203,6 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 				'filter_how',
 				JHtml::_('select.options', $this->howOptions, 'value', 'text', $this->state->get('filter.how'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// How Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LIBRARY_HOW_LABEL').' -',
-					'batch[how]',
-					JHtml::_('select.options', $this->howOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Type Selection
@@ -260,16 +223,59 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 				'filter_type',
 				JHtml::_('select.options', $this->typeOptions, 'value', 'text', $this->state->get('filter.type'))
 			);
+		}
 
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Type Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LIBRARY_TYPE_LABEL').' -',
-					'batch[type]',
-					JHtml::_('select.options', $this->typeOptions, 'value', 'text')
-				);
-			}
+		// Only load published batch if state and batch is allowed
+		if ($this->canState && $this->canBatch)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
+				'batch[published]',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+			);
+		}
+
+		// Only load access batch if create, edit and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
+				'batch[access]',
+				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+			);
+		}
+
+		// Only load Target batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Target Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LIBRARY_TARGET_LABEL').' -',
+				'batch[target]',
+				JHtml::_('select.options', $this->targetOptions, 'value', 'text')
+			);
+		}
+
+		// Only load How batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// How Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LIBRARY_HOW_LABEL').' -',
+				'batch[how]',
+				JHtml::_('select.options', $this->howOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Type batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Type Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LIBRARY_TYPE_LABEL').' -',
+				'batch[type]',
+				JHtml::_('select.options', $this->typeOptions, 'value', 'text')
+			);
 		}
 	}
 

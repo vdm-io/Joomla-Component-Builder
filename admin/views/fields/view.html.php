@@ -159,6 +159,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
+		// Only load publish filter if state change is allowed
 		if ($this->canState)
 		{
 			JHtmlSidebar::addFilter(
@@ -166,15 +167,6 @@ class ComponentbuilderViewFields extends JViewLegacy
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
 			);
-			// only load if batch allowed
-			if ($this->canBatch)
-			{
-				JHtmlBatch_::addListSelection(
-					JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
-					'batch[published]',
-					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-				);
-			}
 		}
 
 		JHtmlSidebar::addFilter(
@@ -183,31 +175,12 @@ class ComponentbuilderViewFields extends JViewLegacy
 			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
 		);
 
-		if ($this->canBatch && $this->canCreate && $this->canEdit)
-		{
-			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
-				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
-			);
-		}
-
 		// Category Filter.
 		JHtmlSidebar::addFilter(
 			JText::_('JOPTION_SELECT_CATEGORY'),
 			'filter_category_id',
 			JHtml::_('select.options', JHtml::_('category.options', 'com_componentbuilder.field'), 'value', 'text', $this->state->get('filter.category_id'))
 		);
-
-		if ($this->canBatch && $this->canCreate && $this->canEdit)
-		{
-			// Category Batch selection.
-			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_CATEGORY'),
-				'batch[category]',
-				JHtml::_('select.options', JHtml::_('category.options', 'com_componentbuilder.field'), 'value', 'text')
-			);
-		}
 
 		// Set Fieldtype Name Selection
 		$this->fieldtypeNameOptions = JFormHelper::loadFieldType('Fieldtypes')->options;
@@ -227,16 +200,6 @@ class ComponentbuilderViewFields extends JViewLegacy
 				'filter_fieldtype',
 				JHtml::_('select.options', $this->fieldtypeNameOptions, 'value', 'text', $this->state->get('filter.fieldtype'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Fieldtype Name Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL').' -',
-					'batch[fieldtype]',
-					JHtml::_('select.options', $this->fieldtypeNameOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Datatype Selection
@@ -257,16 +220,6 @@ class ComponentbuilderViewFields extends JViewLegacy
 				'filter_datatype',
 				JHtml::_('select.options', $this->datatypeOptions, 'value', 'text', $this->state->get('filter.datatype'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Datatype Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL').' -',
-					'batch[datatype]',
-					JHtml::_('select.options', $this->datatypeOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Indexes Selection
@@ -287,16 +240,6 @@ class ComponentbuilderViewFields extends JViewLegacy
 				'filter_indexes',
 				JHtml::_('select.options', $this->indexesOptions, 'value', 'text', $this->state->get('filter.indexes'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Indexes Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL').' -',
-					'batch[indexes]',
-					JHtml::_('select.options', $this->indexesOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Null Switch Selection
@@ -317,16 +260,6 @@ class ComponentbuilderViewFields extends JViewLegacy
 				'filter_null_switch',
 				JHtml::_('select.options', $this->null_switchOptions, 'value', 'text', $this->state->get('filter.null_switch'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Null Switch Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL').' -',
-					'batch[null_switch]',
-					JHtml::_('select.options', $this->null_switchOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Store Selection
@@ -347,16 +280,91 @@ class ComponentbuilderViewFields extends JViewLegacy
 				'filter_store',
 				JHtml::_('select.options', $this->storeOptions, 'value', 'text', $this->state->get('filter.store'))
 			);
+		}
 
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Store Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL').' -',
-					'batch[store]',
-					JHtml::_('select.options', $this->storeOptions, 'value', 'text')
-				);
-			}
+		// Only load published batch if state and batch is allowed
+		if ($this->canState && $this->canBatch)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
+				'batch[published]',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+			);
+		}
+
+		// Only load access batch if create, edit and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
+				'batch[access]',
+				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+			);
+		}
+
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Category Batch selection.
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_CATEGORY'),
+				'batch[category]',
+				JHtml::_('select.options', JHtml::_('category.options', 'com_componentbuilder.field'), 'value', 'text')
+			);
+		}
+
+		// Only load Fieldtype Name batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Fieldtype Name Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL').' -',
+				'batch[fieldtype]',
+				JHtml::_('select.options', $this->fieldtypeNameOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Datatype batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Datatype Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL').' -',
+				'batch[datatype]',
+				JHtml::_('select.options', $this->datatypeOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Indexes batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Indexes Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL').' -',
+				'batch[indexes]',
+				JHtml::_('select.options', $this->indexesOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Null Switch batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Null Switch Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL').' -',
+				'batch[null_switch]',
+				JHtml::_('select.options', $this->null_switchOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Store batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Store Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL').' -',
+				'batch[store]',
+				JHtml::_('select.options', $this->storeOptions, 'value', 'text')
+			);
 		}
 	}
 

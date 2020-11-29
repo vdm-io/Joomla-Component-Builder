@@ -159,6 +159,7 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
+		// Only load publish filter if state change is allowed
 		if ($this->canState)
 		{
 			JHtmlSidebar::addFilter(
@@ -166,15 +167,6 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
 			);
-			// only load if batch allowed
-			if ($this->canBatch)
-			{
-				JHtmlBatch_::addListSelection(
-					JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
-					'batch[published]',
-					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-				);
-			}
 		}
 
 		JHtmlSidebar::addFilter(
@@ -182,15 +174,6 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 			'filter_access',
 			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
 		);
-
-		if ($this->canBatch && $this->canCreate && $this->canEdit)
-		{
-			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
-				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
-			);
-		}
 
 		// Set Main Get Name Selection
 		$this->main_getNameOptions = JFormHelper::loadFieldType('Maingets')->options;
@@ -210,16 +193,6 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 				'filter_main_get',
 				JHtml::_('select.options', $this->main_getNameOptions, 'value', 'text', $this->state->get('filter.main_get'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Main Get Name Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_LABEL').' -',
-					'batch[main_get]',
-					JHtml::_('select.options', $this->main_getNameOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Add Php Ajax Selection
@@ -240,16 +213,6 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 				'filter_add_php_ajax',
 				JHtml::_('select.options', $this->add_php_ajaxOptions, 'value', 'text', $this->state->get('filter.add_php_ajax'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Add Php Ajax Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_AJAX_LABEL').' -',
-					'batch[add_php_ajax]',
-					JHtml::_('select.options', $this->add_php_ajaxOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Add Custom Button Selection
@@ -270,16 +233,59 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 				'filter_add_custom_button',
 				JHtml::_('select.options', $this->add_custom_buttonOptions, 'value', 'text', $this->state->get('filter.add_custom_button'))
 			);
+		}
 
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Add Custom Button Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL').' -',
-					'batch[add_custom_button]',
-					JHtml::_('select.options', $this->add_custom_buttonOptions, 'value', 'text')
-				);
-			}
+		// Only load published batch if state and batch is allowed
+		if ($this->canState && $this->canBatch)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
+				'batch[published]',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+			);
+		}
+
+		// Only load access batch if create, edit and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
+				'batch[access]',
+				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+			);
+		}
+
+		// Only load Main Get Name batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Main Get Name Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_LABEL').' -',
+				'batch[main_get]',
+				JHtml::_('select.options', $this->main_getNameOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Add Php Ajax batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Add Php Ajax Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_PHP_AJAX_LABEL').' -',
+				'batch[add_php_ajax]',
+				JHtml::_('select.options', $this->add_php_ajaxOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Add Custom Button batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Add Custom Button Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL').' -',
+				'batch[add_custom_button]',
+				JHtml::_('select.options', $this->add_custom_buttonOptions, 'value', 'text')
+			);
 		}
 	}
 

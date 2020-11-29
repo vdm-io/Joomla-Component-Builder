@@ -82,64 +82,29 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
-		// Check if the form was submitted
-		$formSubmited = $app->input->post->get('form_submited');
-
 		$add_fadein = $this->getUserStateFromRequest($this->context . '.filter.add_fadein', 'filter_add_fadein');
-		if ($formSubmited)
-		{
-			$add_fadein = $app->input->post->get('add_fadein');
-			$this->setState('filter.add_fadein', $add_fadein);
-		}
+		$this->setState('filter.add_fadein', $add_fadein);
 
 		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
-		if ($formSubmited)
-		{
-			$type = $app->input->post->get('type');
-			$this->setState('filter.type', $type);
-		}
+		$this->setState('filter.type', $type);
 
 		$add_custom_button = $this->getUserStateFromRequest($this->context . '.filter.add_custom_button', 'filter_add_custom_button');
-		if ($formSubmited)
-		{
-			$add_custom_button = $app->input->post->get('add_custom_button');
-			$this->setState('filter.add_custom_button', $add_custom_button);
-		}
+		$this->setState('filter.add_custom_button', $add_custom_button);
 
 		$add_php_ajax = $this->getUserStateFromRequest($this->context . '.filter.add_php_ajax', 'filter_add_php_ajax');
-		if ($formSubmited)
-		{
-			$add_php_ajax = $app->input->post->get('add_php_ajax');
-			$this->setState('filter.add_php_ajax', $add_php_ajax);
-		}
+		$this->setState('filter.add_php_ajax', $add_php_ajax);
 
 		$add_custom_import = $this->getUserStateFromRequest($this->context . '.filter.add_custom_import', 'filter_add_custom_import');
-		if ($formSubmited)
-		{
-			$add_custom_import = $app->input->post->get('add_custom_import');
-			$this->setState('filter.add_custom_import', $add_custom_import);
-		}
+		$this->setState('filter.add_custom_import', $add_custom_import);
 
 		$system_name = $this->getUserStateFromRequest($this->context . '.filter.system_name', 'filter_system_name');
-		if ($formSubmited)
-		{
-			$system_name = $app->input->post->get('system_name');
-			$this->setState('filter.system_name', $system_name);
-		}
+		$this->setState('filter.system_name', $system_name);
 
 		$name_single = $this->getUserStateFromRequest($this->context . '.filter.name_single', 'filter_name_single');
-		if ($formSubmited)
-		{
-			$name_single = $app->input->post->get('name_single');
-			$this->setState('filter.name_single', $name_single);
-		}
+		$this->setState('filter.name_single', $name_single);
 
 		$short_description = $this->getUserStateFromRequest($this->context . '.filter.short_description', 'filter_short_description');
-		if ($formSubmited)
-		{
-			$short_description = $app->input->post->get('short_description');
-			$this->setState('filter.short_description', $short_description);
-		}
+		$this->setState('filter.short_description', $short_description);
 
 		// List state information.
 		parent::populateState($ordering, $direction);
@@ -342,44 +307,9 @@ class ComponentbuilderModelAdmin_views extends JModelList
 			$query->where('a.add_fadein = ' . $db->quote($db->escape($add_fadein)));
 		}
 		// Filter by Type.
-		$_type = $this->getState('filter.type');
-		if (is_numeric($_type))
+		if ($type = $this->getState('filter.type'))
 		{
-			if (is_float($_type))
-			{
-				$query->where('a.type = ' . (float) $_type);
-			}
-			else
-			{
-				$query->where('a.type = ' . (int) $_type);
-			}
-		}
-		elseif (ComponentbuilderHelper::checkString($_type))
-		{
-			$query->where('a.type = ' . $db->quote($db->escape($_type)));
-		}
-		elseif (ComponentbuilderHelper::checkArray($_type))
-		{
-			// Secure the array for the query
-			$_type = array_map( function ($val) use(&$db) {
-				if (is_numeric($val))
-				{
-					if (is_float($val))
-					{
-						return (float) $val;
-					}
-					else
-					{
-						return (int) $val;
-					}
-				}
-				elseif (ComponentbuilderHelper::checkString($val))
-				{
-					return $db->quote($db->escape($val));
-				}
-			}, $_type);
-			// Filter by the Type Array.
-			$query->where('a.type IN (' . implode(',', $_type) . ')');
+			$query->where('a.type = ' . $db->quote($db->escape($type)));
 		}
 		// Filter by Add_custom_button.
 		if ($add_custom_button = $this->getState('filter.add_custom_button'))

@@ -2634,11 +2634,13 @@ class Structure extends Get
 	{
 		// get the fields ids
 		$ids = array_map(
-			'trim', explode(
-			',', ComponentbuilderHelper::getBetween(
-			$multi_field['settings']->xml, 'fields="', '"'
-		)
-		)
+			'trim',
+			explode(
+				',',
+				ComponentbuilderHelper::getBetween(
+					$multi_field['settings']->xml, 'fields="', '"'
+				)
+			)
 		);
 		if (ComponentbuilderHelper::checkArray($ids))
 		{

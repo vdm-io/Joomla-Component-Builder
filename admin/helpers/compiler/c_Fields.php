@@ -5003,16 +5003,28 @@ class Fields extends Structure
 				&& $typeName != 'repeatable'
 				&& $typeName != 'subform'))
 		{
-			$this->filterBuilder[$nameListCode][] = array('type'     => $typeName,
-			                                              'multi'    => $field['filter'],
-			                                              'code'     => $name,
-			                                              'lang'     => $listLangName,
-			                                              'database' => $nameSingleCode,
-			                                              'function' => ComponentbuilderHelper::safeString(
-				                                              $name, 'F'
-			                                              ),
-			                                              'custom'   => $custom,
-			                                              'options'  => $options);
+			// this pains me... but to avoid collusion
+			$filter_type_code     = ComponentbuilderHelper::safeString(
+				$name . $field['filter'] . $typeName
+			);
+			$filter_type_code     = preg_replace('/_+/', '', $filter_type_code);
+			$filter_function_name = ComponentbuilderHelper::safeString(
+				$name, 'F'
+			);
+			// add the filter details
+			$this->filterBuilder[$nameListCode][] = array(
+				'id'          => (int) $field['field'],
+				'type'        => $typeName,
+				'multi'       => $field['filter'],
+				'code'        => $name,
+				'label'       => $langLabel,
+				'lang'        => $listLangName,
+				'database'    => $nameSingleCode,
+				'function'    => $filter_function_name,
+				'custom'      => $custom,
+				'options'     => $options,
+				'filter_type' => $filter_type_code
+			);
 		}
 
 		// build the layout
@@ -5148,7 +5160,7 @@ class Fields extends Structure
 			}
 			// start loading the field type
 			$this->fileContentDynamic['customfield_' . $data['type']] = array();
-			// JPREFIX <<DYNAMIC>>>
+			// JPREFIX <<<DYNAMIC>>>
 			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh
 			. 'JPREFIX' . $this->hhh]
 				= $jprefix;
@@ -5411,6 +5423,275 @@ class Fields extends Structure
 		{
 			$this->extentionCustomfields[$data['type']]
 				= $data['custom']['type'];
+		}
+	}
+
+	/**
+	 * This is just to get the code.
+	 * Don't use this to build the field
+	 *
+	 * @param   array  $custom  The field complete data set
+	 *
+	 * @return  array with the code
+	 *
+	 */
+	public function getCustomFieldCode($custom)
+	{
+		// the code bucket
+		$code_bucket = array(
+			'JFORM_TYPE_HEADER' => '',
+			'JFORM_TYPE_PHP'    => ''
+		);
+		// set tab and break replacements
+		$tabBreak = array(
+			'\t' => $this->_t(1),
+			'\n' => PHP_EOL
+		);
+		// load the other PHP options
+		foreach (ComponentbuilderHelper::$phpFieldArray as $x)
+		{
+			// reset the php bucket
+			$phpBucket = '';
+			// only set if available
+			if (isset($custom['php' . $x])
+				&& ComponentbuilderHelper::checkArray(
+					$custom['php' . $x]
+				))
+			{
+				foreach ($custom['php' . $x] as $line => $code)
+				{
+					if (ComponentbuilderHelper::checkString($code))
+					{
+						$phpBucket .= PHP_EOL . $this->setPlaceholders(
+								$code, $tabBreak
+							);
+					}
+				}
+				// check if this is header text
+				if ('HEADER' === $x)
+				{
+					$code_bucket['JFORM_TYPE_HEADER']
+						.= PHP_EOL . $phpBucket;
+				}
+				else
+				{
+					// JFORM_TYPE_PHP <<<DYNAMIC>>>
+					$code_bucket['JFORM_TYPE_PHP']
+						.= PHP_EOL . $phpBucket;
+				}
+			}
+		}
+
+		return $code_bucket;
+	}
+
+	/**
+	 * set the Filter Field set of a view
+	 *
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
+	 *
+	 * @return  string The fields set in xml
+	 *
+	 */
+	public function setFieldFilterSet(&$nameSingleCode, &$nameListCode)
+	{
+		// check if this is the above/new filter option
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 2
+			&& isset($this->filterBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->filterBuilder[$nameListCode]
+			))
+		{
+			// we first create the file
+			$target = array('admin' => 'filter_' . $nameListCode);
+			$this->buildDynamique(
+				$target, 'filter'
+			);
+			// now build the XML
+			$field_filter_sets   = array();
+			$field_filter_sets[] = $this->_t(1) . '<fields name="filter">';
+			// we first add the search
+			$field_filter_sets[] = $this->_t(2) . '<field';
+			$field_filter_sets[] = $this->_t(3) . 'type="text"';
+			$field_filter_sets[] = $this->_t(3) . 'name="search"';
+			$field_filter_sets[] = $this->_t(3) . 'inputmode="search"';
+			$field_filter_sets[] = $this->_t(3)
+				. 'label="COM_CONTENT_FILTER_SEARCH_LABEL"';
+			$field_filter_sets[] = $this->_t(3)
+				. 'description="COM_CONTENT_FILTER_SEARCH_DESC"';
+			$field_filter_sets[] = $this->_t(3) . 'hint="JSEARCH_FILTER"';
+			$field_filter_sets[] = $this->_t(2) . '/>';
+			// add the published filter if published is not set
+			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+			{
+				$field_filter_sets[] = $this->_t(2) . '<field';
+				$field_filter_sets[] = $this->_t(3) . 'type="status"';
+				$field_filter_sets[] = $this->_t(3) . 'name="published"';
+				$field_filter_sets[] = $this->_t(3)
+					. 'label="COM_CONTENT_FILTER_PUBLISHED"';
+				$field_filter_sets[] = $this->_t(3)
+					. 'description="COM_CONTENT_FILTER_PUBLISHED_DESC"';
+				$field_filter_sets[] = $this->_t(3)
+					. 'onchange="this.form.submit();"';
+				$field_filter_sets[] = $this->_t(2) . '>';
+				$field_filter_sets[] = $this->_t(3)
+					. '<option value="">JOPTION_SELECT_PUBLISHED</option>';
+				$field_filter_sets[] = $this->_t(2) . '</field>';
+			}
+			// add the access filter if this view has access
+			// and if access manually is not set
+			if (isset($this->accessBuilder[$nameSingleCode])
+				&& ComponentbuilderHelper::checkString(
+					$this->accessBuilder[$nameSingleCode]
+				)
+				&& !isset($this->fieldsNames[$nameSingleCode]['access']))
+			{
+				$field_filter_sets[] = $this->_t(2) . '<field';
+				$field_filter_sets[] = $this->_t(3) . 'type="accesslevel"';
+				$field_filter_sets[] = $this->_t(3) . 'name="access"';
+				$field_filter_sets[] = $this->_t(3)
+					. 'label="JOPTION_FILTER_ACCESS"';
+				$field_filter_sets[] = $this->_t(3)
+					. 'description="JOPTION_FILTER_ACCESS_DESC"';
+				$field_filter_sets[] = $this->_t(3) . 'multiple="true"';
+				$field_filter_sets[] = $this->_t(3)
+					. 'class="multipleAccessLevels"';
+				$field_filter_sets[] = $this->_t(3)
+					. 'onchange="this.form.submit();"';
+				$field_filter_sets[] = $this->_t(2) . '/>';
+			}
+			// now add the dynamic fields
+			foreach ($this->filterBuilder[$nameListCode] as $r => &$filter)
+			{
+				if ($filter['type'] != 'category')
+				{
+					$field_filter_sets[] = $this->_t(2) . '<field';
+					// if this is a custom field
+					if (ComponentbuilderHelper::checkArray(
+						$filter['custom']
+					))
+					{
+						// we use the field type from the custom field
+						$field_filter_sets[] = $this->_t(3) . 'type="'
+							. $filter['type'] . '"';
+						// set css classname of this field
+						$filter['class'] = ucfirst($filter['type']);
+					}
+					else
+					{
+						// we use the filter field type that was build
+						$field_filter_sets[] = $this->_t(3) . 'type="'
+							. $filter['filter_type'] . '"';
+						// set css classname of this field
+						$filter['class'] = ucfirst($filter['filter_type']);
+					}
+					$field_filter_sets[] = $this->_t(3) . 'name="'
+						. $filter['code'] . '"';
+					$field_filter_sets[] = $this->_t(3) . 'label="'
+						. $filter['label'] . '"';
+					// if this is a multi field
+					if ($filter['multi'] == 2)
+					{
+						$field_filter_sets[] = $this->_t(3) . 'class="multiple'
+							. $filter['class'] . '"';
+						$field_filter_sets[] = $this->_t(3) . 'multiple="true"';
+					}
+					else
+					{
+						$field_filter_sets[] = $this->_t(3)
+							. 'multiple="false"';
+					}
+					$field_filter_sets[] = $this->_t(3)
+						. 'onchange="this.form.submit();"';
+					$field_filter_sets[] = $this->_t(2) . '/>';
+				}
+			}
+			$field_filter_sets[] = $this->_t(2)
+				. '<input type="hidden" name="form_submited" value="1"/>';
+			$field_filter_sets[] = $this->_t(1) . '</fields>';
+
+			// now update the file
+			return implode(PHP_EOL, $field_filter_sets);
+		}
+
+		return '';
+	}
+
+	/**
+	 * set the Filter List set of a view
+	 *
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
+	 *
+	 * @return  string The fields set in xml
+	 *
+	 */
+	public function setFieldFilterListSet(&$nameSingleCode, &$nameListCode)
+	{
+		// soon we will add this TODO
+		return '';
+	}
+
+	/**
+	 * set Custom Field for Filter
+	 *
+	 * @param   string  $getOptions  The get options php string/code
+	 * @param   array   $filter      The filter details
+	 *
+	 * @return  void
+	 *
+	 */
+	public function setFilterFieldFile($getOptions, $filter)
+	{
+		// make sure it is not already been build
+		if (!isset(
+				$this->fileContentDynamic['customfilterfield_'
+				. $filter['filter_type']]
+			)
+			|| !ComponentbuilderHelper::checkArray(
+				$this->fileContentDynamic['customfilterfield_'
+				. $filter['filter_type']]
+			)
+		)
+		{
+			// start loading the field type
+			$this->fileContentDynamic['customfilterfield_'
+			. $filter['filter_type']]
+				= array();
+			// JPREFIX <<DYNAMIC>>>
+			$this->fileContentDynamic['customfilterfield_'
+			. $filter['filter_type']][$this->hhh
+			. 'JPREFIX' . $this->hhh]
+				= 'J';
+			// Type <<<DYNAMIC>>>
+			$this->fileContentDynamic['customfilterfield_'
+			. $filter['filter_type']][$this->hhh
+			. 'Type' . $this->hhh]
+				= ComponentbuilderHelper::safeString(
+				$filter['filter_type'], 'F'
+			);
+			// type <<<DYNAMIC>>>
+			$this->fileContentDynamic['customfilterfield_'
+			. $filter['filter_type']][$this->hhh
+			. 'type' . $this->hhh]
+				= ComponentbuilderHelper::safeString($filter['filter_type']);
+			// JFORM_GETOPTIONS_PHP <<<DYNAMIC>>>
+			$this->fileContentDynamic['customfilterfield_'
+			. $filter['filter_type']][$this->hhh . 'JFORM_GETOPTIONS_PHP'
+			. $this->hhh]
+				= $getOptions;
+			// ADD_BUTTON <<<DYNAMIC>>>
+			$this->fileContentDynamic['customfilterfield_'
+			. $filter['filter_type']][$this->hhh . 'ADD_BUTTON' . $this->hhh]
+				= '';
+			// now build the custom filter field type file
+			$target = array('admin' => 'customfilterfield');
+			$this->buildDynamique(
+				$target, 'fieldlist',
+				$filter['filter_type']
+			);
 		}
 	}
 

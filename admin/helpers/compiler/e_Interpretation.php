@@ -14596,7 +14596,7 @@ class Interpretation extends Fields
 	 *
 	 * @return string
 	 */
-	public function setGetItemsModelMethod($nameSingleCode, $nameListCode,
+	public function setGetItemsModelMethod(&$nameSingleCode, &$nameListCode,
 		$config
 		= array('functionName' => 'getExportData',
 		        'docDesc'      => 'Method to get list export data.',
@@ -15155,7 +15155,7 @@ class Interpretation extends Fields
 			. $this->hhh];
 	}
 
-	public function setListQuery($nameSingleCode, $nameListCode)
+	public function setListQuery(&$nameSingleCode, &$nameListCode)
 	{
 		// check if this view has category added
 		if (isset($this->categoryBuilder[$nameListCode])
@@ -17420,31 +17420,41 @@ class Interpretation extends Fields
 	 * @return  string The php to place in view.html.php
 	 *
 	 */
-	public function setFilterFunctions($nameSingleCode, $nameListCode)
+	public function setFilterFieldHelper(&$nameSingleCode, &$nameListCode)
 	{
 		// the old filter type uses these functions
-		if (isset($this->adminFilterType[$nameListCode])
-			&& $this->adminFilterType[$nameListCode] == 1
-			&& isset($this->filterBuilder[$nameListCode])
+		if (isset($this->filterBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
 				$this->filterBuilder[$nameListCode]
 			))
 		{
+			// set the function or file path
+			$funtion_path = true;
+			if (isset($this->adminFilterType[$nameListCode])
+				&& $this->adminFilterType[$nameListCode] == 2)
+			{
+				$funtion_path = false;
+			}
 			$function = array();
 			// set component name
 			$component = $this->componentCodeName;
+			$Component = ucfirst($component);
 			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				if ($filter['type'] != 'category'
 					&& ComponentbuilderHelper::checkArray($filter['custom'])
 					&& $filter['custom']['extends'] === 'user')
 				{
-					$function[] = PHP_EOL . $this->_t(1)
-						. "protected function getThe" . $filter['function']
-						. ComponentbuilderHelper::safeString(
-							$filter['custom']['text'], 'F'
-						) . "Selections()";
-					$function[] = $this->_t(1) . "{";
+					// add if this is a function path
+					if ($funtion_path)
+					{
+						$function[] = PHP_EOL . $this->_t(1)
+							. "protected function getThe" . $filter['function']
+							. ComponentbuilderHelper::safeString(
+								$filter['custom']['text'], 'F'
+							) . "Selections()";
+						$function[] = $this->_t(1) . "{";
+					}
 					$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 						. " Get a db connection.";
 					$function[] = $this->_t(2) . "\$db = JFactory::getDbo();";
@@ -17498,7 +17508,11 @@ class Interpretation extends Fields
 					$function[] = $this->_t(3) . "return  \$filter;";
 					$function[] = $this->_t(2) . "}";
 					$function[] = $this->_t(2) . "return false;";
-					$function[] = $this->_t(1) . "}";
+					// add if this is a function path
+					if ($funtion_path)
+					{
+						$function[] = $this->_t(1) . "}";
+					}
 
 					/* else
 					  {
@@ -17554,10 +17568,14 @@ class Interpretation extends Fields
 					{
 						$translation = true;
 					}
-					$function[] = PHP_EOL . $this->_t(1)
-						. "protected function getThe" . $filter['function']
-						. "Selections()";
-					$function[] = $this->_t(1) . "{";
+					// add if this is a function path
+					if ($funtion_path)
+					{
+						$function[] = PHP_EOL . $this->_t(1)
+							. "protected function getThe" . $filter['function']
+							. "Selections()";
+						$function[] = $this->_t(1) . "{";
+					}
 					$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 						. " Get a db connection.";
 					$function[] = $this->_t(2) . "\$db = JFactory::getDbo();";
@@ -17620,13 +17638,22 @@ class Interpretation extends Fields
 					$function[] = $this->_t(2) . "{";
 
 					// check if translated value is used
-					if ($translation)
+					if ($funtion_path && $translation)
 					{
 						$function[] = $this->_t(3) . "//" . $this->setLine(
 								__LINE__
 							) . " get model";
 						$function[] = $this->_t(3)
 							. "\$model = \$this->getModel();";
+					}
+					elseif ($translation)
+					{
+						$function[] = $this->_t(3) . "//" . $this->setLine(
+								__LINE__
+							) . " get " . $nameListCode . "model";
+						$function[] = $this->_t(3)
+							. "\$model = " . $Component . "Helper::getModel('"
+							. $nameListCode . "');";
 					}
 					// check if usergroup as we change to an object query
 					if ($filter['type'] !== 'usergroup')
@@ -17698,10 +17725,70 @@ class Interpretation extends Fields
 					$function[] = $this->_t(3) . "return \$_filter;";
 					$function[] = $this->_t(2) . "}";
 					$function[] = $this->_t(2) . "return false;";
-					$function[] = $this->_t(1) . "}";
+					// add if this is a function path
+					if ($funtion_path)
+					{
+						$function[] = $this->_t(1) . "}";
+					}
+				}
+				// we check if this is a multi field
+				// and if there is a blank option
+				// and give a notice that this will cause an issue
+				elseif (!$funtion_path && $filter['type'] != 'category'
+					&& $filter['multi'] == 2
+					&& ComponentbuilderHelper::checkArray($filter['custom']))
+				{
+					//var_dump($filter);
+					//jexit();
+					// get the field code
+					$field_code = $this->getCustomFieldCode(
+						$filter['custom']
+					)['JFORM_TYPE_PHP'];
+					// check for the [JHtml::_('select.option', '',] code
+					if (strpos($field_code, "JHtml::_('select.option', '',")
+						!== false
+						&& strpos($field_code, '($this->multiple === false)')
+						=== false)
+					{
+						// for now we just give an error message (don't fix it)
+						$this->app->enqueueMessage(
+							JText::_('<hr /><h3>Multi Filter Error</h3>'),
+							'Error'
+						);
+						$field_url
+							       = "index.php?option=com_componentbuilder&view=fields&task=field.edit&id="
+							. $filter['id'];
+						$field_fix
+							       = "<pre>if (\$this->multiple === false) { // <-- this if statement is needed";
+						$field_fix .= PHP_EOL . $this->_t(1)
+							. "\$options[] = JHtml::_('select.option', '', 'Select an option'); // <-- the empty option";
+						$field_fix .= PHP_EOL . "}</pre>";
+						$this->app->enqueueMessage(
+							JText::sprintf(
+								'We detected that you have an empty option in a <a href="%s" target="_blank">custom field (%s)</a> that is used in a multi filter.<br />This will cause a problem, you will need to add the following code to it.<br />%s',
+								$field_url,
+								$filter['code'],
+								$field_fix
+							), 'Error'
+						);
+					}
+				}
+				// divert the code to a file if this is not a funtion path
+				if (!$funtion_path
+					&& ComponentbuilderHelper::checkArray(
+						$function
+					))
+				{
+					// set the filter file
+					$this->setFilterFieldFile(
+						implode(PHP_EOL, $function), $filter
+					);
+					// clear the filter out
+					$function = array();
 				}
 			}
-			if (ComponentbuilderHelper::checkArray($function))
+			// if this is a function path, return the function if set
+			if ($funtion_path && ComponentbuilderHelper::checkArray($function))
 			{
 				// return the function
 				return PHP_EOL . implode(PHP_EOL, $function);
@@ -17758,15 +17845,26 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * build other filter loading scripts
+	 * build sidebar filter loading scripts
 	 *
-	 * @param   string  $nameListCode  The list view name
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
 	 *
 	 * @return  string The php to place in view.html.php
 	 *
 	 */
-	public function setOtherFilter(&$nameListCode)
-	{
+	public function setFilterFieldSidebarDisplayHelper(&$nameSingleCode,
+		&$nameListCode
+	) {
+		// start the filter bucket
+		$fieldFilters = array();
+		// add the default filter
+		$this->setDefaultSidebarFilterHelper(
+			$fieldFilters, $nameSingleCode, $nameListCode
+		);
+		// add the category filter stuff
+		$this->setCategorySidebarFilterHelper($fieldFilters, $nameListCode);
+		// check if filter fields are added
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 1
 			&& isset($this->filterBuilder[$nameListCode])
@@ -17775,88 +17873,72 @@ class Interpretation extends Fields
 			))
 		{
 			// get component name
-			$Component   = $this->fileContentStatic[$this->hhh . 'Component'
+			$Component = $this->fileContentStatic[$this->hhh . 'Component'
 			. $this->hhh];
-			$otherFilter = array();
+			// load the rest of the filters
 			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				if ($filter['type'] != 'category'
 					&& ComponentbuilderHelper::checkArray($filter['custom'])
 					&& $filter['custom']['extends'] !== 'user')
 				{
-					$CodeName      = ComponentbuilderHelper::safeString(
+					$CodeName       = ComponentbuilderHelper::safeString(
 						$filter['code'] . ' ' . $filter['custom']['text'], 'W'
 					);
-					$codeName      = $filter['code']
+					$codeName       = $filter['code']
 						. ComponentbuilderHelper::safeString(
 							$filter['custom']['text'], 'F'
 						);
-					$type          = ComponentbuilderHelper::safeString(
+					$type           = ComponentbuilderHelper::safeString(
 						$filter['custom']['type'], 'F'
 					);
-					$otherFilter[] = PHP_EOL . $this->_t(2) . "//"
+					$fieldFilters[] = PHP_EOL . $this->_t(2) . "//"
 						. $this->setLine(__LINE__) . " Set " . $CodeName
 						. " Selection";
-					$otherFilter[] = $this->_t(2) . "\$this->" . $codeName
+					$fieldFilters[] = $this->_t(2) . "\$this->" . $codeName
 						. "Options = JFormHelper::loadFieldType('" . $type
 						. "')->options;";
-					$otherFilter[] = $this->_t(2) . "//" . $this->setLine(
+					$fieldFilters[] = $this->_t(2) . "//" . $this->setLine(
 							__LINE__
 						) . " We do some sanitation for " . $CodeName
 						. " filter";
-					$otherFilter[] = $this->_t(2) . "if (" . $Component
+					$fieldFilters[] = $this->_t(2) . "if (" . $Component
 						. "Helper::checkArray(\$this->" . $codeName
 						. "Options) &&";
-					$otherFilter[] = $this->_t(3) . "isset(\$this->" . $codeName
+					$fieldFilters[] = $this->_t(3) . "isset(\$this->"
+						. $codeName
 						. "Options[0]->value) &&";
-					$otherFilter[] = $this->_t(3) . "!" . $Component
+					$fieldFilters[] = $this->_t(3) . "!" . $Component
 						. "Helper::checkString(\$this->" . $codeName
 						. "Options[0]->value))";
-					$otherFilter[] = $this->_t(2) . "{";
-					$otherFilter[] = $this->_t(3) . "unset(\$this->" . $codeName
+					$fieldFilters[] = $this->_t(2) . "{";
+					$fieldFilters[] = $this->_t(3) . "unset(\$this->"
+						. $codeName
 						. "Options[0]);";
-					$otherFilter[] = $this->_t(2) . "}";
-					$otherFilter[] = $this->_t(2) . "//" . $this->setLine(
+					$fieldFilters[] = $this->_t(2) . "}";
+					$fieldFilters[] = $this->_t(2) . "//" . $this->setLine(
 							__LINE__
 						) . " Only load " . $CodeName
 						. " filter if it has values";
-					$otherFilter[] = $this->_t(2) . "if (" . $Component
+					$fieldFilters[] = $this->_t(2) . "if (" . $Component
 						. "Helper::checkArray(\$this->" . $codeName
 						. "Options))";
-					$otherFilter[] = $this->_t(2) . "{";
-					$otherFilter[] = $this->_t(3) . "//" . $this->setLine(
+					$fieldFilters[] = $this->_t(2) . "{";
+					$fieldFilters[] = $this->_t(3) . "//" . $this->setLine(
 							__LINE__
 						) . " " . $CodeName . " Filter";
-					$otherFilter[] = $this->_t(3) . "JHtmlSidebar::addFilter(";
-					$otherFilter[] = $this->_t(4) . "'- Select '.JText:"
+					$fieldFilters[] = $this->_t(3) . "JHtmlSidebar::addFilter(";
+					$fieldFilters[] = $this->_t(4) . "'- Select '.JText:"
 						. ":_('" . $filter['lang'] . "').' -',";
-					$otherFilter[] = $this->_t(4) . "'filter_" . $filter['code']
+					$fieldFilters[] = $this->_t(4) . "'filter_"
+						. $filter['code']
 						. "',";
-					$otherFilter[] = $this->_t(4)
+					$fieldFilters[] = $this->_t(4)
 						. "JHtml::_('select.options', \$this->" . $codeName
 						. "Options, 'value', 'text', \$this->state->get('filter."
 						. $filter['code'] . "'))";
-					$otherFilter[] = $this->_t(3) . ");";
-
-					$otherFilter[] = PHP_EOL . $this->_t(3)
-						. "if (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
-					$otherFilter[] = $this->_t(3) . "{";
-					$otherFilter[] = $this->_t(4) . "//" . $this->setLine(
-							__LINE__
-						) . " " . $CodeName . " Batch Selection";
-					$otherFilter[] = $this->_t(4)
-						. "JHtmlBatch_::addListSelection(";
-					$otherFilter[] = $this->_t(5) . "'- Keep Original '.JText:"
-						. ":_('" . $filter['lang'] . "').' -',";
-					$otherFilter[] = $this->_t(5) . "'batch[" . $filter['code']
-						. "]',";
-					$otherFilter[] = $this->_t(5)
-						. "JHtml::_('select.options', \$this->" . $codeName
-						. "Options, 'value', 'text')";
-					$otherFilter[] = $this->_t(4) . ");";
-					$otherFilter[] = $this->_t(3) . "}";
-
-					$otherFilter[] = $this->_t(2) . "}";
+					$fieldFilters[] = $this->_t(3) . ");";
+					$fieldFilters[] = $this->_t(2) . "}";
 				}
 				elseif ($filter['type'] != 'category')
 				{
@@ -17877,82 +17959,384 @@ class Interpretation extends Fields
 						$functionName = "\$this->getThe" . $filter['function']
 							. "Selections();";
 					}
-					$otherFilter[] = PHP_EOL . $this->_t(2) . "//"
+					$fieldFilters[] = PHP_EOL . $this->_t(2) . "//"
 						. $this->setLine(__LINE__) . " Set " . $Codename
 						. " Selection";
-					$otherFilter[] = $this->_t(2) . "\$this->" . $filter['code']
+					$fieldFilters[] = $this->_t(2) . "\$this->"
+						. $filter['code']
 						. "Options = " . $functionName;
-					$otherFilter[] = $this->_t(2) . "//" . $this->setLine(
+					$fieldFilters[] = $this->_t(2) . "//" . $this->setLine(
 							__LINE__
 						) . " We do some sanitation for " . $Codename
 						. " filter";
-					$otherFilter[] = $this->_t(2) . "if (" . $Component
+					$fieldFilters[] = $this->_t(2) . "if (" . $Component
 						. "Helper::checkArray(\$this->" . $filter['code']
 						. "Options) &&";
-					$otherFilter[] = $this->_t(3) . "isset(\$this->"
+					$fieldFilters[] = $this->_t(3) . "isset(\$this->"
 						. $filter['code'] . "Options[0]->value) &&";
-					$otherFilter[] = $this->_t(3) . "!" . $Component
+					$fieldFilters[] = $this->_t(3) . "!" . $Component
 						. "Helper::checkString(\$this->" . $filter['code']
 						. "Options[0]->value))";
-					$otherFilter[] = $this->_t(2) . "{";
-					$otherFilter[] = $this->_t(3) . "unset(\$this->"
+					$fieldFilters[] = $this->_t(2) . "{";
+					$fieldFilters[] = $this->_t(3) . "unset(\$this->"
 						. $filter['code'] . "Options[0]);";
-					$otherFilter[] = $this->_t(2) . "}";
-					$otherFilter[] = $this->_t(2) . "//" . $this->setLine(
+					$fieldFilters[] = $this->_t(2) . "}";
+					$fieldFilters[] = $this->_t(2) . "//" . $this->setLine(
 							__LINE__
 						) . " Only load " . $Codename
 						. " filter if it has values";
-					$otherFilter[] = $this->_t(2) . "if (" . $Component
+					$fieldFilters[] = $this->_t(2) . "if (" . $Component
 						. "Helper::checkArray(\$this->" . $filter['code']
 						. "Options))";
-					$otherFilter[] = $this->_t(2) . "{";
-					$otherFilter[] = $this->_t(3) . "//" . $this->setLine(
+					$fieldFilters[] = $this->_t(2) . "{";
+					$fieldFilters[] = $this->_t(3) . "//" . $this->setLine(
 							__LINE__
 						) . " " . $Codename . " Filter";
-					$otherFilter[] = $this->_t(3) . "JHtmlSidebar::addFilter(";
-					$otherFilter[] = $this->_t(4) . "'- Select '.JText:"
+					$fieldFilters[] = $this->_t(3) . "JHtmlSidebar::addFilter(";
+					$fieldFilters[] = $this->_t(4) . "'- Select '.JText:"
 						. ":_('" . $filter['lang'] . "').' -',";
-					$otherFilter[] = $this->_t(4) . "'filter_" . $filter['code']
+					$fieldFilters[] = $this->_t(4) . "'filter_"
+						. $filter['code']
 						. "',";
-					$otherFilter[] = $this->_t(4)
+					$fieldFilters[] = $this->_t(4)
 						. "JHtml::_('select.options', \$this->"
 						. $filter['code']
 						. "Options, 'value', 'text', \$this->state->get('filter."
 						. $filter['code'] . "'))";
-					$otherFilter[] = $this->_t(3) . ");";
+					$fieldFilters[] = $this->_t(3) . ");";
 
-					$otherFilter[] = PHP_EOL . $this->_t(3)
-						. "if (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
-					$otherFilter[] = $this->_t(3) . "{";
-					$otherFilter[] = $this->_t(4) . "//" . $this->setLine(
-							__LINE__
-						) . " " . $Codename . " Batch Selection";
-					$otherFilter[] = $this->_t(4)
-						. "JHtmlBatch_::addListSelection(";
-					$otherFilter[] = $this->_t(5) . "'- Keep Original '.JText:"
-						. ":_('" . $filter['lang'] . "').' -',";
-					$otherFilter[] = $this->_t(5) . "'batch[" . $filter['code']
-						. "]',";
-					$otherFilter[] = $this->_t(5)
-						. "JHtml::_('select.options', \$this->"
-						. $filter['code'] . "Options, 'value', 'text')";
-					$otherFilter[] = $this->_t(4) . ");";
-					$otherFilter[] = $this->_t(3) . "}";
-
-					$otherFilter[] = $this->_t(2) . "}";
+					$fieldFilters[] = $this->_t(2) . "}";
 				}
 			}
-			if (ComponentbuilderHelper::checkArray($otherFilter))
-			{
-				// return the filter
-				return PHP_EOL . implode(PHP_EOL, $otherFilter);
-			}
+		}
+		// did we find filters
+		if (ComponentbuilderHelper::checkArray($fieldFilters))
+		{
+			// return the filter
+			return PHP_EOL . implode(PHP_EOL, $fieldFilters);
 		}
 
 		return '';
 	}
 
-	public function setCategoryFilter($nameListCode)
+	/**
+	 * add default filter helper
+	 *
+	 * @param   array   $filter          The batch code array
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
+	 *
+	 * @return  void
+	 *
+	 */
+	protected function setDefaultSidebarFilterHelper(&$filter, &$nameSingleCode,
+		&$nameListCode
+	) {
+		// add the default filters if we are on the old filter paths
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 1)
+		{
+			// set batch
+			$filter[] = PHP_EOL . $this->_t(2)
+				. "//" . $this->setLine(__LINE__)
+				. " Only load publish filter if state change is allowed";
+			$filter[] = $this->_t(2)
+				. "if (\$this->canState)";
+			$filter[] = $this->_t(2) . "{";
+			$filter[] = $this->_t(3) . "JHtmlSidebar::addFilter(";
+			$filter[] = $this->_t(4) . "JText:"
+				. ":_('JOPTION_SELECT_PUBLISHED'),";
+			$filter[] = $this->_t(4) . "'filter_published',";
+			$filter[] = $this->_t(4)
+				. "JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', \$this->state->get('filter.published'), true)";
+			$filter[] = $this->_t(3) . ");";
+			$filter[] = $this->_t(2) . "}";
+			// check if view has access
+			if (isset($this->accessBuilder[$nameSingleCode])
+				&& ComponentbuilderHelper::checkString(
+					$this->accessBuilder[$nameSingleCode]
+				)
+				&& !isset($this->fieldsNames[$nameSingleCode]['access']))
+			{
+				$filter[] = PHP_EOL . $this->_t(2) . "JHtmlSidebar::addFilter(";
+				$filter[] = $this->_t(3) . "JText:"
+					. ":_('JOPTION_SELECT_ACCESS'),";
+				$filter[] = $this->_t(3) . "'filter_access',";
+				$filter[] = $this->_t(3)
+					. "JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', \$this->state->get('filter.access'))";
+				$filter[] = $this->_t(2) . ");";
+			}
+		}
+	}
+
+	/**
+	 * build category sidebar display filter helper
+	 *
+	 * @param   array   $filter        The filter code array
+	 * @param   string  $nameListCode  The list view name
+	 *
+	 * @return  void
+	 *
+	 */
+	protected function setCategorySidebarFilterHelper(&$filter, &$nameListCode)
+	{
+		// add the category filter if we are on the old filter paths
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 1
+			&& isset($this->categoryBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->categoryBuilder[$nameListCode]
+			)
+			&& isset($this->categoryBuilder[$nameListCode]['extension']))
+		{
+			// set filter
+			$filter[] = PHP_EOL . $this->_t(2) . "//"
+				. $this->setLine(__LINE__) . " Category Filter.";
+			$filter[] = $this->_t(2) . "JHtmlSidebar::addFilter(";
+			$filter[] = $this->_t(3) . "JText:"
+				. ":_('JOPTION_SELECT_CATEGORY'),";
+			$filter[] = $this->_t(3) . "'filter_category_id',";
+			$filter[] = $this->_t(3)
+				. "JHtml::_('select.options', JHtml::_('category.options', '"
+				. $this->categoryBuilder[$nameListCode]['extension']
+				. "'), 'value', 'text', \$this->state->get('filter.category_id'))";
+			$filter[] = $this->_t(2) . ");";
+		}
+	}
+
+	/**
+	 * build batch loading helper scripts
+	 *
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
+	 *
+	 * @return  string The php to place in view.html.php
+	 *
+	 */
+	public function setBatchDisplayHelper(&$nameSingleCode, &$nameListCode)
+	{
+		// start the batch bucket
+		$fieldBatch = array();
+		// add the default batch
+		$this->setDefaultBatchHelper($fieldBatch, $nameSingleCode);
+		// add the category filter stuff
+		$this->setCategoryBatchHelper($fieldBatch, $nameListCode);
+		// check if we have other batch options to add
+		if (isset($this->filterBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->filterBuilder[$nameListCode]
+			))
+		{
+			// check if we should add some help to get the values
+			$get_values = false;
+			if (isset($this->adminFilterType[$nameListCode])
+				&& $this->adminFilterType[$nameListCode] == 2)
+			{
+				// since the old path is not used, we need to add those values here
+				$get_values = true;
+			}
+			// get component name
+			$Component = $this->fileContentStatic[$this->hhh . 'Component'
+			. $this->hhh];
+			// load the rest of the batch options
+			foreach ($this->filterBuilder[$nameListCode] as $filter)
+			{
+				if ($filter['type'] != 'category'
+					&& ComponentbuilderHelper::checkArray($filter['custom'])
+					&& $filter['custom']['extends'] !== 'user')
+				{
+					$CodeName     = ComponentbuilderHelper::safeString(
+						$filter['code'] . ' ' . $filter['custom']['text'], 'W'
+					);
+					$codeName     = $filter['code']
+						. ComponentbuilderHelper::safeString(
+							$filter['custom']['text'], 'F'
+						);
+					$fieldBatch[] = PHP_EOL . $this->_t(2)
+						. "//" . $this->setLine(__LINE__)
+						. " Only load " . $CodeName
+						. " batch if create, edit, and batch is allowed";
+					$fieldBatch[] = $this->_t(2)
+						. "if (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
+					$fieldBatch[] = $this->_t(2) . "{";
+					// add the get values here
+					if ($get_values)
+					{
+						$type         = ComponentbuilderHelper::safeString(
+							$filter['custom']['type'], 'F'
+						);
+						$fieldBatch[] = $this->_t(3) . "//"
+							. $this->setLine(__LINE__) . " Set " . $CodeName
+							. " Selection";
+						$fieldBatch[] = $this->_t(3) . "\$this->" . $codeName
+							. "Options = JFormHelper::loadFieldType('" . $type
+							. "')->options;";
+						$fieldBatch[] = $this->_t(3) . "//" . $this->setLine(
+								__LINE__
+							) . " We do some sanitation for " . $CodeName
+							. " filter";
+						$fieldBatch[] = $this->_t(3) . "if (" . $Component
+							. "Helper::checkArray(\$this->" . $codeName
+							. "Options) &&";
+						$fieldBatch[] = $this->_t(4) . "isset(\$this->"
+							. $codeName
+							. "Options[0]->value) &&";
+						$fieldBatch[] = $this->_t(4) . "!" . $Component
+							. "Helper::checkString(\$this->" . $codeName
+							. "Options[0]->value))";
+						$fieldBatch[] = $this->_t(3) . "{";
+						$fieldBatch[] = $this->_t(4) . "unset(\$this->"
+							. $codeName
+							. "Options[0]);";
+						$fieldBatch[] = $this->_t(3) . "}";
+					}
+					$fieldBatch[] = $this->_t(3) . "//" . $this->setLine(
+							__LINE__
+						) . " " . $CodeName . " Batch Selection";
+					$fieldBatch[] = $this->_t(3)
+						. "JHtmlBatch_::addListSelection(";
+					$fieldBatch[] = $this->_t(4) . "'- Keep Original '.JText:"
+						. ":_('" . $filter['lang'] . "').' -',";
+					$fieldBatch[] = $this->_t(4) . "'batch[" . $filter['code']
+						. "]',";
+					$fieldBatch[] = $this->_t(4)
+						. "JHtml::_('select.options', \$this->" . $codeName
+						. "Options, 'value', 'text')";
+					$fieldBatch[] = $this->_t(3) . ");";
+					$fieldBatch[] = $this->_t(2) . "}";
+				}
+				elseif ($filter['type'] != 'category')
+				{
+					$CodeName = ComponentbuilderHelper::safeString(
+						$filter['code'], 'W'
+					);
+
+					$fieldBatch[] = PHP_EOL . $this->_t(2)
+						. "//" . $this->setLine(__LINE__)
+						. " Only load " . $CodeName
+						. " batch if create, edit, and batch is allowed";
+					$fieldBatch[] = $this->_t(2)
+						. "if (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
+					$fieldBatch[] = $this->_t(2) . "{";
+					// add the get values here
+					if ($get_values)
+					{
+						$fieldBatch[] = $this->_t(3) . "//"
+							. $this->setLine(__LINE__) . " Set " . $CodeName
+							. " Selection";
+						$fieldBatch[] = $this->_t(3) . "\$this->"
+							. $filter['code']
+							. "Options = JFormHelper::loadFieldType('"
+							. $filter['filter_type']
+							. "')->options;";
+						$fieldBatch[] = $this->_t(3) . "//" . $this->setLine(
+								__LINE__
+							) . " We do some sanitation for " . $CodeName
+							. " filter";
+						$fieldBatch[] = $this->_t(3) . "if (" . $Component
+							. "Helper::checkArray(\$this->" . $filter['code']
+							. "Options) &&";
+						$fieldBatch[] = $this->_t(4) . "isset(\$this->"
+							. $filter['code'] . "Options[0]->value) &&";
+						$fieldBatch[] = $this->_t(4) . "!" . $Component
+							. "Helper::checkString(\$this->" . $filter['code']
+							. "Options[0]->value))";
+						$fieldBatch[] = $this->_t(3) . "{";
+						$fieldBatch[] = $this->_t(4) . "unset(\$this->"
+							. $filter['code'] . "Options[0]);";
+						$fieldBatch[] = $this->_t(3) . "}";
+					}
+					$fieldBatch[] = $this->_t(3) . "//" . $this->setLine(
+							__LINE__
+						) . " " . $CodeName . " Batch Selection";
+					$fieldBatch[] = $this->_t(3)
+						. "JHtmlBatch_::addListSelection(";
+					$fieldBatch[] = $this->_t(4) . "'- Keep Original '.JText:"
+						. ":_('" . $filter['lang'] . "').' -',";
+					$fieldBatch[] = $this->_t(4) . "'batch[" . $filter['code']
+						. "]',";
+					$fieldBatch[] = $this->_t(4)
+						. "JHtml::_('select.options', \$this->"
+						. $filter['code'] . "Options, 'value', 'text')";
+					$fieldBatch[] = $this->_t(3) . ");";
+					$fieldBatch[] = $this->_t(2) . "}";
+				}
+			}
+		}
+		// did we find batch options
+		if (ComponentbuilderHelper::checkArray($fieldBatch))
+		{
+			// return the batch
+			return PHP_EOL . implode(PHP_EOL, $fieldBatch);
+		}
+
+		return '';
+	}
+
+	/**
+	 * add default batch helper
+	 *
+	 * @param   array   $batch           The batch code array
+	 * @param   string  $nameSingleCode  The single view name
+	 *
+	 * @return  void
+	 *
+	 */
+	protected function setDefaultBatchHelper(&$batch, &$nameSingleCode)
+	{
+		// set component name
+		$COPMONENT = ComponentbuilderHelper::safeString(
+			$this->componentData->name_code, 'U'
+		);
+		// set batch
+		$batch[] = PHP_EOL . $this->_t(2)
+			. "//" . $this->setLine(__LINE__)
+			. " Only load published batch if state and batch is allowed";
+		$batch[] = $this->_t(2)
+			. "if (\$this->canState && \$this->canBatch)";
+		$batch[] = $this->_t(2) . "{";
+		$batch[] = $this->_t(3) . "JHtmlBatch_::addListSelection(";
+		$batch[] = $this->_t(4) . "JText:" . ":_('COM_" . $COPMONENT
+			. "_KEEP_ORIGINAL_STATE'),";
+		$batch[] = $this->_t(4) . "'batch[published]',";
+		$batch[] = $this->_t(4)
+			. "JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)";
+		$batch[] = $this->_t(3) . ");";
+		$batch[] = $this->_t(2) . "}";
+		// check if view has access
+		if (isset($this->accessBuilder[$nameSingleCode])
+			&& ComponentbuilderHelper::checkString(
+				$this->accessBuilder[$nameSingleCode]
+			)
+			&& !isset($this->fieldsNames[$nameSingleCode]['access']))
+		{
+			$batch[] = PHP_EOL . $this->_t(2)
+				. "//" . $this->setLine(__LINE__)
+				. " Only load access batch if create, edit and batch is allowed";
+			$batch[] = $this->_t(2)
+				. "if (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
+			$batch[] = $this->_t(2) . "{";
+			$batch[] = $this->_t(3) . "JHtmlBatch_::addListSelection(";
+			$batch[] = $this->_t(4) . "JText:" . ":_('COM_" . $COPMONENT
+				. "_KEEP_ORIGINAL_ACCESS'),";
+			$batch[] = $this->_t(4) . "'batch[access]',";
+			$batch[] = $this->_t(4)
+				. "JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')";
+			$batch[] = $this->_t(3) . ");";
+			$batch[] = $this->_t(2) . "}";
+		}
+	}
+
+	/**
+	 * build category batch helper
+	 *
+	 * @param   array   $batch         The batch code array
+	 * @param   string  $nameListCode  The list view name
+	 *
+	 * @return  mixed The php to place in view.html.php
+	 *
+	 */
+	protected function setCategoryBatchHelper(&$batch, &$nameListCode)
 	{
 		if (isset($this->categoryBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
@@ -17965,41 +18349,22 @@ class Interpretation extends Fields
 				$this->componentData->name_code, 'U'
 			);
 			// set filter
-			$filter   = array();
-			$filter[] = PHP_EOL . PHP_EOL . $this->_t(2) . "//"
-				. $this->setLine(__LINE__) . " Category Filter.";
-			$filter[] = $this->_t(2) . "JHtmlSidebar::addFilter(";
-			$filter[] = $this->_t(3) . "JText:"
-				. ":_('JOPTION_SELECT_CATEGORY'),";
-			$filter[] = $this->_t(3) . "'filter_category_id',";
-			$filter[] = $this->_t(3)
-				. "JHtml::_('select.options', JHtml::_('category.options', '"
-				. $this->categoryBuilder[$nameListCode]['extension']
-				. "'), 'value', 'text', \$this->state->get('filter.category_id'))";
-			$filter[] = $this->_t(2) . ");";
-
-
-			$filter[] = PHP_EOL . $this->_t(2)
+			$batch[] = PHP_EOL . $this->_t(2)
 				. "if (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
-			$filter[] = $this->_t(2) . "{";
-			$filter[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+			$batch[] = $this->_t(2) . "{";
+			$batch[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Category Batch selection.";
-			$filter[] = $this->_t(3) . "JHtmlBatch_::addListSelection(";
-			$filter[] = $this->_t(4) . "JText:" . ":_('COM_" . $COPMONENT
+			$batch[] = $this->_t(3) . "JHtmlBatch_::addListSelection(";
+			$batch[] = $this->_t(4) . "JText:" . ":_('COM_" . $COPMONENT
 				. "_KEEP_ORIGINAL_CATEGORY'),";
-			$filter[] = $this->_t(4) . "'batch[category]',";
-			$filter[] = $this->_t(4)
+			$batch[] = $this->_t(4) . "'batch[category]',";
+			$batch[] = $this->_t(4)
 				. "JHtml::_('select.options', JHtml::_('category.options', '"
 				. $this->categoryBuilder[$nameListCode]['extension']
 				. "'), 'value', 'text')";
-			$filter[] = $this->_t(3) . ");";
-			$filter[] = $this->_t(2) . "}";
-
-			// return the filter
-			return implode(PHP_EOL, $filter);
+			$batch[] = $this->_t(3) . ");";
+			$batch[] = $this->_t(2) . "}";
 		}
-
-		return '';
 	}
 
 	public function setRouterCategoryViews($nameSingleCode, $nameListCode)
@@ -19731,7 +20096,7 @@ class Interpretation extends Fields
 	 * @return  string The code for the filter fields array
 	 *
 	 */
-	public function setFilterFields(&$nameListCode)
+	public function setFilterFieldsArray(&$nameListCode)
 	{
 		// keep track of all fields already added
 		$donelist = array('id'         => true, 'search' => true,
@@ -20355,8 +20720,9 @@ class Interpretation extends Fields
 	protected function getPopulateStateFilterCode(&$filter, $new_filter,
 		$extra = ''
 	) {
+		$state = '';
 		// add category stuff (may still remove these) TODO
-		if ($filter['type'] === 'category')
+		if (isset($filter['type']) && $filter['type'] === 'category')
 		{
 			$state .= PHP_EOL . PHP_EOL . $this->_t(2)
 				. "\$category = \$app->getUserStateFromRequest(\$this->context . '.filter.category', 'filter_category');";
@@ -20368,7 +20734,7 @@ class Interpretation extends Fields
 				. "\$this->setState('filter.category_id', \$categoryId);";
 		}
 		// always add the default filter
-		$state = PHP_EOL . PHP_EOL . $this->_t(2) . "\$" . $filter['code']
+		$state .= PHP_EOL . PHP_EOL . $this->_t(2) . "\$" . $filter['code']
 			. " = \$this->getUserStateFromRequest(\$this->context . '.filter."
 			. $filter['code'] . "', 'filter_" . $filter['code']
 			. "'" . $extra . ");";
@@ -21279,6 +21645,15 @@ class Interpretation extends Fields
 		return $script . $forEachStart . $fix;
 	}
 
+	/**
+	 * Build headers for the model/view/controller headers
+	 *
+	 * @param   string  $context        The name of the context
+	 * @param   string  $viewsCodeName  The view or views name
+	 *
+	 * @return  string The php to place in the header
+	 *
+	 */
 	public function setClassHeaders($context, $viewsCodeName)
 	{
 		// set the defaults
@@ -21291,6 +21666,34 @@ class Interpretation extends Fields
 				$headers[] = 'use Joomla\String\StringHelper;';
 				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
 				break;
+			case 'admin.view':
+			case 'custom.admin.view':
+			case 'custom.admin.views':
+			case 'site.admin.view':
+				$headers[]
+					       = 'JHtml::addIncludePath(JPATH_COMPONENT.\'/helpers/html\');';
+				$headers[] = 'JHtml::_(\'behavior.tooltip\');';
+				$headers[] = 'JHtml::_(\'behavior.formvalidation\');';
+				$headers[] = 'JHtml::_(\'formbehavior.chosen\', \'select\');';
+				$headers[] = 'JHtml::_(\'behavior.keepalive\');';
+				if ($context === 'site.admin.view')
+				{
+					$headers[] = 'JHtml::_(\'behavior.tabstate\');';
+					$headers[] = 'JHtml::_(\'behavior.calendar\');';
+				}
+				break;
+			case 'admin.views':
+				$headers[] = 'JHtml::_(\'behavior.tooltip\');';
+				$headers[] = 'JHtml::_(\'behavior.multiselect\');';
+				$headers[] = 'JHtml::_(\'dropdown.init\');';
+				// add more headers if the new filter option is used
+				$this->setChosenMultiSelectionHeaders($headers, $viewsCodeName);
+				$headers[] = 'JHtml::_(\'formbehavior.chosen\', \'select\');';
+				break;
+			case 'site.view':
+			case 'site.views':
+				$headers = array();
+				break;
 			default:
 				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
 				break;
@@ -21301,9 +21704,62 @@ class Interpretation extends Fields
 			array(&$this->componentContext, &$context, &$viewsCodeName,
 			      &$headers)
 		);
+		// check if headers were added
+		if (ComponentbuilderHelper::checkArray($headers))
+		{
+			// return the headers
+			return implode(PHP_EOL, $headers);
+		}
 
-		// return the headers
-		return implode(PHP_EOL, $headers);
+		return '';
+	}
+
+	/**
+	 * Build chosen multi selection headers for the view
+	 *
+	 * @param   array   $headers       The headers array
+	 * @param   string  $nameListCode  The list view name
+	 *
+	 * @return  void
+	 *
+	 */
+	protected function setChosenMultiSelectionHeaders(&$headers, $nameListCode)
+	{
+		// check that the filter type is the new filter option
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 2
+			&& isset($this->filterBuilder[$nameListCode])
+			&& ComponentbuilderHelper::checkArray(
+				$this->filterBuilder[$nameListCode]
+			))
+		{
+			// main lang prefix
+			$lang_ = $this->langPrefix . '_FILTER_';
+			foreach ($this->filterBuilder[$nameListCode] as $filter)
+			{
+				// we need this only for filters that are multi
+				if (isset($filter['multi'])
+					&& $filter['multi'] == 2)
+				{
+					// set the selection string (not ideal)
+					$select_name = "Select " . strip_tags($filter['name']);
+					// set the language
+					$select_lang = $lang_ . ComponentbuilderHelper::safeString(
+							$select_name, 'U'
+						);
+					// set selection lang
+					$this->setLangContent(
+						$this->lang, $select_lang, $select_name
+					);
+					// add the header
+					$headers[]
+						= 'JHtml::_(\'formbehavior.chosen\', \'.multiple'
+						. $filter['class']
+						. '\', null, array(\'placeholder_text_multiple\' => JText::_(\''
+						. $select_lang . '\')));';
+				}
+			}
+		}
 	}
 
 	protected function setModelFieldRelation($item, $nameListCode, $tab)

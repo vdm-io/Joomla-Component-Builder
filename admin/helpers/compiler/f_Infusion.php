@@ -631,7 +631,7 @@ class Infusion extends Interpretation
 								$nameSingleCode, $view
 							);
 						}
-						// SITE_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+						// SITE_ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
 						$this->fileContentDynamic[$nameSingleCode][$this->hhh
 						. 'SITE_ADMIN_VIEW_CONTROLLER_HEADER' . $this->hhh]
 							= $this->setClassHeaders(
@@ -645,6 +645,13 @@ class Infusion extends Interpretation
 							'site.admin.view.model',
 							$nameSingleCode
 						);
+						// SITE_ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
+						$this->fileContentDynamic[$nameSingleCode][$this->hhh
+						. 'SITE_ADMIN_VIEW_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'site.admin.view',
+							$nameSingleCode
+						);
 					}
 
 					// TABLAYOUTFIELDSARRAY <<<DYNAMIC>>> add the tab layout fields array to the model
@@ -654,7 +661,7 @@ class Infusion extends Interpretation
 						$nameSingleCode
 					);
 
-					// ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+					// ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
 					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'ADMIN_VIEW_CONTROLLER_HEADER' . $this->hhh]
 						= $this->setClassHeaders(
@@ -666,6 +673,12 @@ class Infusion extends Interpretation
 					. 'ADMIN_VIEW_MODEL_HEADER' . $this->hhh]
 						= $this->setClassHeaders(
 						'admin.view.model', $nameSingleCode
+					);
+					// ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
+					. 'ADMIN_VIEW_HEADER' . $this->hhh]
+						= $this->setClassHeaders(
+						'admin.view', $nameSingleCode
 					);
 
 					// Trigger Event: jcb_ce_onAfterBuildAdminEditViewContent
@@ -805,7 +818,7 @@ class Infusion extends Interpretation
 					// FILTER_FIELDS <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'FILTER_FIELDS' . $this->hhh]
-						= $this->setFilterFields(
+						= $this->setFilterFieldsArray(
 						$nameListCode
 					);
 
@@ -828,13 +841,6 @@ class Infusion extends Interpretation
 						$nameListCode
 					);
 
-					// CATEGORYFILTER <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][$this->hhh
-					. 'CATEGORYFILTER' . $this->hhh]
-						= $this->setCategoryFilter(
-						$nameListCode
-					);
-
 					// CATEGORY_VIEWS
 					if (!isset(
 						$this->fileContentStatic[$this->hhh
@@ -852,17 +858,44 @@ class Infusion extends Interpretation
 						$nameListCode
 					);
 
-					// OTHERFILTERS <<<DYNAMIC>>>
+					// FILTERFIELDDISPLAYHELPER <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameListCode][$this->hhh
-					. 'OTHERFILTERS' . $this->hhh]
-						= $this->setOtherFilter(
+					. 'FILTERFIELDDISPLAYHELPER' . $this->hhh]
+						= $this->setFilterFieldSidebarDisplayHelper(
+						$nameSingleCode,
+						$nameListCode
+					);
+
+					// BATCHDISPLAYHELPER <<<DYNAMIC>>>
+					$this->fileContentDynamic[$nameListCode][$this->hhh
+					. 'BATCHDISPLAYHELPER' . $this->hhh]
+						= $this->setBatchDisplayHelper(
+						$nameSingleCode,
 						$nameListCode
 					);
 
 					// FILTERFUNCTIONS <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'FILTERFUNCTIONS' . $this->hhh]
-						= $this->setFilterFunctions(
+						= $this->setFilterFieldHelper(
+						$nameSingleCode,
+						$nameListCode
+					);
+
+					// FIELDFILTERSETS <<<DYNAMIC>>>
+					$this->fileContentDynamic['filter_'
+					. $nameListCode][$this->hhh
+					. 'FIELDFILTERSETS' . $this->hhh]
+						= $this->setFieldFilterSet(
+						$nameSingleCode,
+						$nameListCode
+					);
+
+					// FIELDLISTSETS <<<DYNAMIC>>>
+					$this->fileContentDynamic['filter_'
+					. $nameListCode][$this->hhh
+					. 'FIELDLISTSETS' . $this->hhh]
+						= $this->setFieldFilterListSet(
 						$nameSingleCode,
 						$nameListCode
 					);
@@ -988,7 +1021,7 @@ class Infusion extends Interpretation
 							= '';
 					}
 
-					// ADMIN_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+					// ADMIN_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
 					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'ADMIN_VIEWS_CONTROLLER_HEADER' . $this->hhh]
 						= $this->setClassHeaders(
@@ -1000,6 +1033,12 @@ class Infusion extends Interpretation
 					. 'ADMIN_VIEWS_MODEL_HEADER' . $this->hhh]
 						= $this->setClassHeaders(
 						'admin.views.model', $nameListCode
+					);
+					// ADMIN_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the views
+					$this->fileContentDynamic[$nameListCode][$this->hhh
+					. 'ADMIN_VIEWS_HEADER' . $this->hhh]
+						= $this->setClassHeaders(
+						'admin.views', $nameListCode
 					);
 
 					// Trigger Event: jcb_ce_onAfterBuildAdminListViewContent
@@ -1459,7 +1498,7 @@ class Infusion extends Interpretation
 					// set headers based on the main get type
 					if ($view['settings']->main_get->gettype == 1)
 					{
-						// CUSTOM_ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+						// CUSTOM_ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh
 						. 'CUSTOM_ADMIN_VIEW_CONTROLLER_HEADER' . $this->hhh]
 							= $this->setClassHeaders(
@@ -1472,10 +1511,16 @@ class Infusion extends Interpretation
 							= $this->setClassHeaders(
 							'custom.admin.view.model', $view['settings']->code
 						);
+						// CUSTOM_ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'CUSTOM_ADMIN_VIEW_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'custom.admin.view', $view['settings']->code
+						);
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
-						// CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
+						// CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh
 						. 'CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER' . $this->hhh]
 							= $this->setClassHeaders(
@@ -1487,6 +1532,12 @@ class Infusion extends Interpretation
 						. 'CUSTOM_ADMIN_VIEWS_MODEL_HEADER' . $this->hhh]
 							= $this->setClassHeaders(
 							'custom.admin.views.model', $view['settings']->code
+						);
+						// CUSTOM_ADMIN_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the view
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'CUSTOM_ADMIN_VIEWS_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'custom.admin.views', $view['settings']->code
 						);
 					}
 
@@ -1943,6 +1994,12 @@ class Infusion extends Interpretation
 							= $this->setClassHeaders(
 							'site.view.model', $view['settings']->code
 						);
+						// SITE_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'SITE_VIEW_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'site.view', $view['settings']->code
+						);
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
@@ -1964,6 +2021,12 @@ class Infusion extends Interpretation
 						. 'SITE_VIEWS_MODEL_HEADER' . $this->hhh]
 							= $this->setClassHeaders(
 							'site.views.model', $view['settings']->code
+						);
+						// SITE_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the view
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'SITE_VIEWS_HEADER' . $this->hhh]
+							= $this->setClassHeaders(
+							'site.views', $view['settings']->code
 						);
 					}
 

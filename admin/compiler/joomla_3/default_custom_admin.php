@@ -15,13 +15,9 @@ defined('_JEXEC') or die('Restricted access');
 ###BOM###
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access');###LICENSE_LOCKED_DEFINED######CUSTOM_ADMIN_CODE_BODY###
+defined('_JEXEC') or die('Restricted access');###LICENSE_LOCKED_DEFINED###
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHtml::_('behavior.tooltip');
-JHtml::_('behavior.formvalidation');
-JHtml::_('formbehavior.chosen', 'select');
-JHtml::_('behavior.keepalive');
+###CUSTOM_ADMIN_VIEW_HEADER######CUSTOM_ADMIN_CODE_BODY###
 ?>
 <?php if ($this->canDo->get('###sview###.access')): ?>###CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT###
 <?php $urlId = (isset($this->item->id)) ? '&id='. (int) $this->item->id : ''; ?>

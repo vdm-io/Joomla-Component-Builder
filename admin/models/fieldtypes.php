@@ -79,6 +79,12 @@ class ComponentbuilderModelFieldtypes extends JModelList
 		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
+		$category = $app->getUserStateFromRequest($this->context . '.filter.category', 'filter_category');
+		$this->setState('filter.category', $category);
+
+		$categoryId = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id');
+		$this->setState('filter.category_id', $categoryId);
+
 		$catid = $this->getUserStateFromRequest($this->context . '.filter.catid', 'filter_catid');
 		$this->setState('filter.catid', $catid);
 

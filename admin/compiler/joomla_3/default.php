@@ -17,12 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access'); ###LICENSE_LOCKED_DEFINED###
 
-// load tooltip behavior
-JHtml::_('behavior.tooltip');
-JHtml::_('behavior.multiselect');
-JHtml::_('dropdown.init');
-JHtml::_('formbehavior.chosen', 'select');
-
+###ADMIN_VIEWS_HEADER###
 if ($this->saveOrder)
 {
 	$saveOrderingUrl = 'index.php?option=com_###component###&task=###views###.saveOrderAjax&tmpl=component';

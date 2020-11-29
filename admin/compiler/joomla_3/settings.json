@@ -269,6 +269,11 @@
 					"rename": false,
 					"type": "dashboard"
 				},
+				"filter_forms.xml": {
+					"path": "c0mp0n3nt/admin/models/forms",
+					"rename": "filter_forms",
+					"type": "filter"
+				},
 				"module_forms.xml": {
 					"path": "c0mp0n3nt/admin/models/forms",
 					"rename": "module_forms",

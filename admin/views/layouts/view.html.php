@@ -159,6 +159,7 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
+		// Only load publish filter if state change is allowed
 		if ($this->canState)
 		{
 			JHtmlSidebar::addFilter(
@@ -166,15 +167,6 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
 			);
-			// only load if batch allowed
-			if ($this->canBatch)
-			{
-				JHtmlBatch_::addListSelection(
-					JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
-					'batch[published]',
-					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-				);
-			}
 		}
 
 		JHtmlSidebar::addFilter(
@@ -182,15 +174,6 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 			'filter_access',
 			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
 		);
-
-		if ($this->canBatch && $this->canCreate && $this->canEdit)
-		{
-			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
-				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
-			);
-		}
 
 		// Set Dynamic Get Name Selection
 		$this->dynamic_getNameOptions = JFormHelper::loadFieldType('Dynamicget')->options;
@@ -210,16 +193,6 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 				'filter_dynamic_get',
 				JHtml::_('select.options', $this->dynamic_getNameOptions, 'value', 'text', $this->state->get('filter.dynamic_get'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Dynamic Get Name Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_GET_LABEL').' -',
-					'batch[dynamic_get]',
-					JHtml::_('select.options', $this->dynamic_getNameOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Add Php View Selection
@@ -240,16 +213,48 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 				'filter_add_php_view',
 				JHtml::_('select.options', $this->add_php_viewOptions, 'value', 'text', $this->state->get('filter.add_php_view'))
 			);
+		}
 
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Add Php View Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LAYOUT_ADD_PHP_VIEW_LABEL').' -',
-					'batch[add_php_view]',
-					JHtml::_('select.options', $this->add_php_viewOptions, 'value', 'text')
-				);
-			}
+		// Only load published batch if state and batch is allowed
+		if ($this->canState && $this->canBatch)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
+				'batch[published]',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+			);
+		}
+
+		// Only load access batch if create, edit and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
+				'batch[access]',
+				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+			);
+		}
+
+		// Only load Dynamic Get Name batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Dynamic Get Name Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_GET_LABEL').' -',
+				'batch[dynamic_get]',
+				JHtml::_('select.options', $this->dynamic_getNameOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Add Php View batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Add Php View Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_LAYOUT_ADD_PHP_VIEW_LABEL').' -',
+				'batch[add_php_view]',
+				JHtml::_('select.options', $this->add_php_viewOptions, 'value', 'text')
+			);
 		}
 	}
 

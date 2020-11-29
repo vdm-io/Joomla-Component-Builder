@@ -154,6 +154,7 @@ class ComponentbuilderViewClass_methods extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
+		// Only load publish filter if state change is allowed
 		if ($this->canState)
 		{
 			JHtmlSidebar::addFilter(
@@ -161,15 +162,6 @@ class ComponentbuilderViewClass_methods extends JViewLegacy
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
 			);
-			// only load if batch allowed
-			if ($this->canBatch)
-			{
-				JHtmlBatch_::addListSelection(
-					JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
-					'batch[published]',
-					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-				);
-			}
 		}
 
 		JHtmlSidebar::addFilter(
@@ -177,15 +169,6 @@ class ComponentbuilderViewClass_methods extends JViewLegacy
 			'filter_access',
 			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
 		);
-
-		if ($this->canBatch && $this->canCreate && $this->canEdit)
-		{
-			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
-				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
-			);
-		}
 
 		// Set Visibility Selection
 		$this->visibilityOptions = $this->getTheVisibilitySelections();
@@ -205,16 +188,6 @@ class ComponentbuilderViewClass_methods extends JViewLegacy
 				'filter_visibility',
 				JHtml::_('select.options', $this->visibilityOptions, 'value', 'text', $this->state->get('filter.visibility'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Visibility Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_VISIBILITY_LABEL').' -',
-					'batch[visibility]',
-					JHtml::_('select.options', $this->visibilityOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Extension Type Selection
@@ -235,16 +208,48 @@ class ComponentbuilderViewClass_methods extends JViewLegacy
 				'filter_extension_type',
 				JHtml::_('select.options', $this->extension_typeOptions, 'value', 'text', $this->state->get('filter.extension_type'))
 			);
+		}
 
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Extension Type Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_EXTENSION_TYPE_LABEL').' -',
-					'batch[extension_type]',
-					JHtml::_('select.options', $this->extension_typeOptions, 'value', 'text')
-				);
-			}
+		// Only load published batch if state and batch is allowed
+		if ($this->canState && $this->canBatch)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
+				'batch[published]',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+			);
+		}
+
+		// Only load access batch if create, edit and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
+				'batch[access]',
+				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+			);
+		}
+
+		// Only load Visibility batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Visibility Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_VISIBILITY_LABEL').' -',
+				'batch[visibility]',
+				JHtml::_('select.options', $this->visibilityOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Extension Type batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Extension Type Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_EXTENSION_TYPE_LABEL').' -',
+				'batch[extension_type]',
+				JHtml::_('select.options', $this->extension_typeOptions, 'value', 'text')
+			);
 		}
 	}
 

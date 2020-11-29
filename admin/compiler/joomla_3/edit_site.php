@@ -17,13 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHtml::_('behavior.tooltip');
-JHtml::_('behavior.formvalidation');
-JHtml::_('formbehavior.chosen', 'select');
-JHtml::_('behavior.keepalive');
-JHtml::_('behavior.tabstate');
-JHtml::_('behavior.calendar');
+###SITE_ADMIN__VIEW_HEADER###
 ?>
 <div class="###component###-###view###">
 <?php echo $this->toolbar->render(); ?>

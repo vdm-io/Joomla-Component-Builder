@@ -12,15 +12,15 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-$this->app->input->set('hidemainmenu', false);
-$selectNotice = '<h3>' . JText::_('COM_COMPONENTBUILDER_HI') . ' ' . $this->user->name . '</h3>';
-$selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_PLEASE_SELECT_A_COMPONENT_THAT_YOU_WOULD_LIKE_TO_COMPILE') . '</p>';
-
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
+
+$this->app->input->set('hidemainmenu', false);
+$selectNotice = '<h3>' . JText::_('COM_COMPONENTBUILDER_HI') . ' ' . $this->user->name . '</h3>';
+$selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_PLEASE_SELECT_A_COMPONENT_THAT_YOU_WOULD_LIKE_TO_COMPILE') . '</p>';
 ?>
 <?php if ($this->canDo->get('compiler.access')): ?>
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=compiler'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
