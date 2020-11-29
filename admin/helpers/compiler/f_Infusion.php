@@ -510,7 +510,7 @@ class Infusion extends Interpretation
 					. 'EDITBODY' . $this->hhh]
 						= $this->setEditBody($view);
 
-					// EDITBODY <<<DYNAMIC>>>
+					// EDITBODYFADEIN <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'EDITBODYFADEIN' . $this->hhh]
 						= $this->setFadeInEfect($view);
@@ -940,6 +940,14 @@ class Infusion extends Interpretation
 						$nameListCode
 					);
 
+					// VIEWS_DEFAULT_BODY <<<DYNAMIC>>>
+					$this->fileContentDynamic[$nameListCode][$this->hhh
+					. 'VIEWS_DEFAULT_BODY' . $this->hhh]
+						= $this->setDefaultViewsBody(
+						$nameSingleCode,
+						$nameListCode
+					);
+
 					// LISTHEAD <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'LISTHEAD' . $this->hhh]
@@ -994,7 +1002,8 @@ class Infusion extends Interpretation
 							'views_footer', $nameSingleCode, '',
 							$scriptNote, true,
 							false, PHP_EOL
-						)) !== false)
+						)) !== false
+						&& ComponentbuilderHelper::checkString($footerScript))
 					{
 						// only minfy if no php is added to the footer script
 						if ($this->minify

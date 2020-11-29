@@ -11935,6 +11935,146 @@ class Interpretation extends Fields
 	}
 
 	/**
+	 * set the default views body
+	 *
+	 * @param   string  $nameSingleCode
+	 * @param   string  $nameListCode
+	 *
+	 * @return string
+	 */
+	public function setDefaultViewsBody($nameSingleCode, $nameListCode)
+	{
+		// set component name
+		$component = $this->componentCodeName;
+		$Component = ucfirst($component);
+		$COMPONENT = strtoupper($component);
+		// set uppercase view
+		$VIEWS = strtoupper($nameListCode);
+
+		// build the body
+		$body = array();
+		// check if the filter type is sidebar
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 1)
+		{
+			$body[] = "<script type=\"text/javascript\">";
+			$body[] = $this->_t(1) . "Joomla.orderTable = function()";
+			$body[] = $this->_t(1) . "{";
+			$body[] = $this->_t(2)
+				. "table = document.getElementById(\"sortTable\");";
+			$body[] = $this->_t(2)
+				. "direction = document.getElementById(\"directionTable\");";
+			$body[] = $this->_t(2)
+				. "order = table.options[table.selectedIndex].value;";
+			$body[] = $this->_t(2)
+				. "if (order != '<?php echo \$this->listOrder; ?>')";
+			$body[] = $this->_t(2) . "{";
+			$body[] = $this->_t(3) . "dirn = 'asc';";
+			$body[] = $this->_t(2) . "}";
+			$body[] = $this->_t(2) . "else";
+			$body[] = $this->_t(2) . "{";
+			$body[] = $this->_t(3)
+				. "dirn = direction.options[direction.selectedIndex].value;";
+			$body[] = $this->_t(2) . "}";
+			$body[] = $this->_t(2) . "Joomla.tableOrdering(order, dirn, '');";
+			$body[] = $this->_t(1) . "}";
+			$body[] = "</script>";
+		}
+		$body[] = "<form action=\"<?php echo JRoute::_('index.php?option=com_"
+			. $component . "&view=" . $nameListCode
+			. "'); ?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\">";
+		$body[] = "<?php if(!empty( \$this->sidebar)): ?>";
+		$body[] = $this->_t(1)
+			. "<div id=\"j-sidebar-container\" class=\"span2\">";
+		$body[] = $this->_t(2) . "<?php echo \$this->sidebar; ?>";
+		$body[] = $this->_t(1) . "</div>";
+		$body[] = $this->_t(1)
+			. "<div id=\"j-main-container\" class=\"span10\">";
+		$body[] = "<?php else : ?>";
+		$body[] = $this->_t(1) . "<div id=\"j-main-container\">";
+		$body[] = "<?php endif; ?>";
+		// check if the filter type is sidebar
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 2)
+		{
+			$body[] = "<?php";
+			$body[] = $this->_t(1) . "//" . $this->setLine(
+					__LINE__
+				) . " Add the searchtools";
+			$body[] = $this->_t(1)
+				. "echo JLayoutHelper::render('joomla.searchtools.default', array('view' => \$this));";
+			$body[] = "?>";
+		}
+		$body[] = "<?php if (empty(\$this->items)): ?>";
+		// check if the filter type is sidebar
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 1)
+		{
+			$body[] = $this->_t(1)
+				. "<?php echo \$this->loadTemplate('toolbar');?>";
+		}
+		$body[] = $this->_t(1)
+			. "<div class=\"alert alert-no-items\">";
+		$body[] = $this->_t(2)
+			. "<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>";
+		$body[] = $this->_t(1) . "</div>";
+		$body[] = "<?php else : ?>";
+		// check if the filter type is sidebar
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 1)
+		{
+			$body[] = $this->_t(1)
+				. "<?php echo \$this->loadTemplate('toolbar');?>";
+		}
+		$body[] = $this->_t(1) . "<table class=\"table table-striped\" id=\""
+			. $nameSingleCode . "List\">";
+		$body[] = $this->_t(2)
+			. "<thead><?php echo \$this->loadTemplate('head');?></thead>";
+		$body[] = $this->_t(2)
+			. "<tfoot><?php echo \$this->loadTemplate('foot');?></tfoot>";
+		$body[] = $this->_t(2)
+			. "<tbody><?php echo \$this->loadTemplate('body');?></tbody>";
+		$body[] = $this->_t(1) . "</table>";
+		$body[] = $this->_t(1) . "<?php //" . $this->setLine(
+				__LINE__
+			) . " Load the batch processing form. ?>";
+		$body[] = $this->_t(1)
+			. "<?php if (\$this->canCreate && \$this->canEdit) : ?>";
+		$body[] = $this->_t(2) . "<?php echo JHtml::_(";
+		$body[] = $this->_t(3) . "'bootstrap.renderModal',";
+		$body[] = $this->_t(3) . "'collapseModal',";
+		$body[] = $this->_t(3) . "array(";
+		$body[] = $this->_t(4) . "'title' => JText::_('COM_" . $COMPONENT . "_"
+			. $VIEWS
+			. "_BATCH_OPTIONS'),";
+		$body[] = $this->_t(4)
+			. "'footer' => \$this->loadTemplate('batch_footer')";
+		$body[] = $this->_t(3) . "),";
+		$body[] = $this->_t(3) . "\$this->loadTemplate('batch_body')";
+		$body[] = $this->_t(2) . "); ?>";
+		$body[] = $this->_t(1) . "<?php endif; ?>";
+		// check if the filter type is sidebar
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 1)
+		{
+			$body[] = $this->_t(1)
+				. "<input type=\"hidden\" name=\"filter_order\" value=\"<?php echo \$this->listOrder; ?>\" />";
+			$body[] = $this->_t(1)
+				. "<input type=\"hidden\" name=\"filter_order_Dir\" value=\"<?php echo \$this->listDirn; ?>\" />";
+		}
+		$body[] = $this->_t(1)
+			. "<input type=\"hidden\" name=\"boxchecked\" value=\"0\" />";
+		$body[] = $this->_t(1) . "</div>";
+		$body[] = "<?php endif; ?>";
+		$body[] = $this->_t(1)
+			. "<input type=\"hidden\" name=\"task\" value=\"\" />";
+		$body[] = $this->_t(1) . "<?php echo JHtml::_('form.token'); ?>";
+		$body[] = "</form>";
+
+		return implode(PHP_EOL, $body);
+	}
+
+	/**
 	 * set the list body table head
 	 *
 	 * @param   string  $nameSingleCode
