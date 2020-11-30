@@ -4984,7 +4984,7 @@ class Fields extends Structure
 				&& $typeName != 'subform'))
 		{
 			// add the language only for new filter option
-			$filter_name_asc_lang = '';
+			$filter_name_asc_lang  = '';
 			$filter_name_desc_lang = '';
 			if (isset($this->adminFilterType[$nameListCode])
 				&& $this->adminFilterType[$nameListCode] == 2)
@@ -5616,6 +5616,31 @@ class Fields extends Structure
 				$field_filter_sets[] = $this->_t(3)
 					. '<option value="">JOPTION_SELECT_PUBLISHED</option>';
 				$field_filter_sets[] = $this->_t(2) . '</field>';
+			}
+			// add the category if found
+			if (isset($this->categoryBuilder[$nameListCode])
+				&& ComponentbuilderHelper::checkArray(
+					$this->categoryBuilder[$nameListCode]
+				)
+				&& isset($this->categoryBuilder[$nameListCode]['extension']))
+			{
+				$field_filter_sets[] = $this->_t(2) . '<field';
+				$field_filter_sets[] = $this->_t(3) . 'type="category"';
+				$field_filter_sets[] = $this->_t(3) . 'name="category_id"';
+				$field_filter_sets[] = $this->_t(3)
+					. 'label="JOPTION_FILTER_CATEGORY"';
+				$field_filter_sets[] = $this->_t(3)
+					. 'description="JOPTION_FILTER_CATEGORY_DESC"';
+				$field_filter_sets[] = $this->_t(3) . 'multiple="true"';
+				$field_filter_sets[] = $this->_t(3)
+					. 'class="multipleCategories"';
+				$field_filter_sets[] = $this->_t(3) . 'extension="'
+					. $this->categoryBuilder[$nameListCode]['extension'] . '"';
+				$field_filter_sets[] = $this->_t(3)
+					. 'onchange="this.form.submit();"';
+				// TODO NOT SURE IF THIS SHOULD BE STATIC
+				$field_filter_sets[] = $this->_t(3) . 'published="0,1,2"';
+				$field_filter_sets[] = $this->_t(2) . '/>';
 			}
 			// add the access filter if this view has access
 			// and if access manually is not set

@@ -15404,7 +15404,6 @@ class Interpretation extends Fields
 			$query .= PHP_EOL;
 		}
 		// setup values for the view ordering
-
 		// add dynamic ordering (Admin view)
 		if (isset($this->viewsDefaultOrdering[$nameListCode])
 			&& $this->viewsDefaultOrdering[$nameListCode]['add_admin_ordering']
@@ -15464,7 +15463,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(2)
 				. "\$orderCol = \$this->state->get('list.ordering', 'a.id');";
 			$query .= PHP_EOL . $this->_t(2)
-				. "\$orderDirn = \$this->state->get('list.direction', 'asc');";
+				. "\$orderDirn = \$this->state->get('list.direction', 'desc');";
 			$query .= PHP_EOL . $this->_t(2) . "if (\$orderCol != '')";
 			$query .= PHP_EOL . $this->_t(2) . "{";
 			$query .= PHP_EOL . $this->_t(3)
