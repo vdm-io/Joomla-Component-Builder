@@ -17660,9 +17660,14 @@ class Interpretation extends Fields
 							. "protected function getThe" . $filter['function']
 							. "Selections()";
 						$function[] = $this->_t(1) . "{";
+						$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+							. " Get a db connection.";
 					}
-					$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-						. " Get a db connection.";
+					else
+					{
+						$function[] = "//" . $this->setLine(__LINE__)
+							. " Get a db connection.";
+					}
 					$function[] = $this->_t(2) . "\$db = JFactory::getDbo();";
 					$function[] = PHP_EOL . $this->_t(2) . "//"
 						. $this->setLine(__LINE__)
@@ -17751,8 +17756,8 @@ class Interpretation extends Fields
 					if (!$funtion_path && $filter['multi'] == 1)
 					{
 						$function[] = $this->_t(3)
-							. "\$_filter[] = JHtml::_('select.option', '', '- Select ' . JText:"
-							. ":_('" . $filter['lang'] . "') . ' -');";
+							. "\$_filter[] = JHtml::_('select.option', '', '- ' . JText:"
+							. ":_('" . $filter['lang_select'] . "') . ' -');";
 					}
 					$function[] = $this->_t(3) . "foreach (\$results as \$"
 						. $filter['code'] . ")";

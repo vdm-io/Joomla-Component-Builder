@@ -16,7 +16,7 @@
 	@author			###AUTHOR### <###AUTHORWEBSITE###>###CONTRIBUTORS###	
 	@copyright		###COPYRIGHT###
 	@license		###LICENSE### 
-	
+
 	###SHORT_DESCRIPTION### 
-                                                             
+
 /----------------------------------------------------------------------------------------------------------------------------------*/

@@ -5038,7 +5038,7 @@ class Fields extends Structure
 		{
 			// this pains me... but to avoid collusion
 			$filter_type_code     = ComponentbuilderHelper::safeString(
-				$name . $field['filter'] . $typeName
+				 $nameListCode . 'filter' . $name
 			);
 			$filter_type_code     = preg_replace('/_+/', '', $filter_type_code);
 			$filter_function_name = ComponentbuilderHelper::safeString(
