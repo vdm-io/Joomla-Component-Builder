@@ -2232,14 +2232,38 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		}
 
 		// Filter by Companyname.
-		if ($companyname = $this->getState('filter.companyname'))
+		$_companyname = $this->getState('filter.companyname');
+		if (is_numeric($_companyname))
 		{
-			$query->where('a.companyname = ' . $db->quote($db->escape($companyname)));
+			if (is_float($_companyname))
+			{
+				$query->where('a.companyname = ' . (float) $_companyname);
+			}
+			else
+			{
+				$query->where('a.companyname = ' . (int) $_companyname);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_companyname))
+		{
+			$query->where('a.companyname = ' . $db->quote($db->escape($_companyname)));
 		}
 		// Filter by Author.
-		if ($author = $this->getState('filter.author'))
+		$_author = $this->getState('filter.author');
+		if (is_numeric($_author))
 		{
-			$query->where('a.author = ' . $db->quote($db->escape($author)));
+			if (is_float($_author))
+			{
+				$query->where('a.author = ' . (float) $_author);
+			}
+			else
+			{
+				$query->where('a.author = ' . (int) $_author);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_author))
+		{
+			$query->where('a.author = ' . $db->quote($db->escape($_author)));
 		}
 
 		// Add the list ordering clause.

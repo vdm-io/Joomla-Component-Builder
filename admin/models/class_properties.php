@@ -244,14 +244,38 @@ class ComponentbuilderModelClass_properties extends JModelList
 		}
 
 		// Filter by Visibility.
-		if ($visibility = $this->getState('filter.visibility'))
+		$_visibility = $this->getState('filter.visibility');
+		if (is_numeric($_visibility))
 		{
-			$query->where('a.visibility = ' . $db->quote($db->escape($visibility)));
+			if (is_float($_visibility))
+			{
+				$query->where('a.visibility = ' . (float) $_visibility);
+			}
+			else
+			{
+				$query->where('a.visibility = ' . (int) $_visibility);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_visibility))
+		{
+			$query->where('a.visibility = ' . $db->quote($db->escape($_visibility)));
 		}
 		// Filter by Extension_type.
-		if ($extension_type = $this->getState('filter.extension_type'))
+		$_extension_type = $this->getState('filter.extension_type');
+		if (is_numeric($_extension_type))
 		{
-			$query->where('a.extension_type = ' . $db->quote($db->escape($extension_type)));
+			if (is_float($_extension_type))
+			{
+				$query->where('a.extension_type = ' . (float) $_extension_type);
+			}
+			else
+			{
+				$query->where('a.extension_type = ' . (int) $_extension_type);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_extension_type))
+		{
+			$query->where('a.extension_type = ' . $db->quote($db->escape($_extension_type)));
 		}
 
 		// Add the list ordering clause.

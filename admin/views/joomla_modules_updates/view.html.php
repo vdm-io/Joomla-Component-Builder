@@ -36,7 +36,7 @@ class ComponentbuilderViewJoomla_modules_updates extends JViewLegacy
 		$this->user = JFactory::getUser();
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
-		$this->listDirn = $this->escape($this->state->get('list.direction', 'asc'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));

@@ -318,14 +318,38 @@ class ComponentbuilderModelSnippets extends JModelList
 		}
 
 		// Filter by Type.
-		if ($type = $this->getState('filter.type'))
+		$_type = $this->getState('filter.type');
+		if (is_numeric($_type))
 		{
-			$query->where('a.type = ' . $db->quote($db->escape($type)));
+			if (is_float($_type))
+			{
+				$query->where('a.type = ' . (float) $_type);
+			}
+			else
+			{
+				$query->where('a.type = ' . (int) $_type);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_type))
+		{
+			$query->where('a.type = ' . $db->quote($db->escape($_type)));
 		}
 		// Filter by Library.
-		if ($library = $this->getState('filter.library'))
+		$_library = $this->getState('filter.library');
+		if (is_numeric($_library))
 		{
-			$query->where('a.library = ' . $db->quote($db->escape($library)));
+			if (is_float($_library))
+			{
+				$query->where('a.library = ' . (float) $_library);
+			}
+			else
+			{
+				$query->where('a.library = ' . (int) $_library);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_library))
+		{
+			$query->where('a.library = ' . $db->quote($db->escape($_library)));
 		}
 
 		// Add the list ordering clause.

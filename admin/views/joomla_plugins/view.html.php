@@ -194,7 +194,7 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 		{
 			// Class Extends Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CLASS_EXTENDS_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CLASS_EXTENDS_LABEL') . ' -',
 				'filter_class_extends',
 				JHtml::_('select.options', $this->class_extendsNameOptions, 'value', 'text', $this->state->get('filter.class_extends'))
 			);
@@ -214,7 +214,7 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 		{
 			// Joomla Plugin Group Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_JOOMLA_PLUGIN_GROUP_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_JOOMLA_PLUGIN_GROUP_LABEL') . ' -',
 				'filter_joomla_plugin_group',
 				JHtml::_('select.options', $this->joomla_plugin_groupNameOptions, 'value', 'text', $this->state->get('filter.joomla_plugin_group'))
 			);

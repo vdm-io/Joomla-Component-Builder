@@ -189,7 +189,7 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		{
 			// Component System Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL') . ' -',
 				'filter_component',
 				JHtml::_('select.options', $this->componentSystem_nameOptions, 'value', 'text', $this->state->get('filter.component'))
 			);

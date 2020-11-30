@@ -194,7 +194,7 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		{
 			// Type Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL') . ' -',
 				'filter_type',
 				JHtml::_('select.options', $this->typeNameOptions, 'value', 'text', $this->state->get('filter.type'))
 			);
@@ -214,7 +214,7 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		{
 			// Library Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL') . ' -',
 				'filter_library',
 				JHtml::_('select.options', $this->libraryNameOptions, 'value', 'text', $this->state->get('filter.library'))
 			);

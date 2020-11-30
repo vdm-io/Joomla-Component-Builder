@@ -281,24 +281,72 @@ class ComponentbuilderModelCustom_codes extends JModelList
 		}
 
 		// Filter by Component.
-		if ($component = $this->getState('filter.component'))
+		$_component = $this->getState('filter.component');
+		if (is_numeric($_component))
 		{
-			$query->where('a.component = ' . $db->quote($db->escape($component)));
+			if (is_float($_component))
+			{
+				$query->where('a.component = ' . (float) $_component);
+			}
+			else
+			{
+				$query->where('a.component = ' . (int) $_component);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_component))
+		{
+			$query->where('a.component = ' . $db->quote($db->escape($_component)));
 		}
 		// Filter by Target.
-		if ($target = $this->getState('filter.target'))
+		$_target = $this->getState('filter.target');
+		if (is_numeric($_target))
 		{
-			$query->where('a.target = ' . $db->quote($db->escape($target)));
+			if (is_float($_target))
+			{
+				$query->where('a.target = ' . (float) $_target);
+			}
+			else
+			{
+				$query->where('a.target = ' . (int) $_target);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_target))
+		{
+			$query->where('a.target = ' . $db->quote($db->escape($_target)));
 		}
 		// Filter by Type.
-		if ($type = $this->getState('filter.type'))
+		$_type = $this->getState('filter.type');
+		if (is_numeric($_type))
 		{
-			$query->where('a.type = ' . $db->quote($db->escape($type)));
+			if (is_float($_type))
+			{
+				$query->where('a.type = ' . (float) $_type);
+			}
+			else
+			{
+				$query->where('a.type = ' . (int) $_type);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_type))
+		{
+			$query->where('a.type = ' . $db->quote($db->escape($_type)));
 		}
 		// Filter by Comment_type.
-		if ($comment_type = $this->getState('filter.comment_type'))
+		$_comment_type = $this->getState('filter.comment_type');
+		if (is_numeric($_comment_type))
 		{
-			$query->where('a.comment_type = ' . $db->quote($db->escape($comment_type)));
+			if (is_float($_comment_type))
+			{
+				$query->where('a.comment_type = ' . (float) $_comment_type);
+			}
+			else
+			{
+				$query->where('a.comment_type = ' . (int) $_comment_type);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_comment_type))
+		{
+			$query->where('a.comment_type = ' . $db->quote($db->escape($_comment_type)));
 		}
 
 		// Add the list ordering clause.

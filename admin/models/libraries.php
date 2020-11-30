@@ -267,19 +267,55 @@ class ComponentbuilderModelLibraries extends JModelList
 		}
 
 		// Filter by Target.
-		if ($target = $this->getState('filter.target'))
+		$_target = $this->getState('filter.target');
+		if (is_numeric($_target))
 		{
-			$query->where('a.target = ' . $db->quote($db->escape($target)));
+			if (is_float($_target))
+			{
+				$query->where('a.target = ' . (float) $_target);
+			}
+			else
+			{
+				$query->where('a.target = ' . (int) $_target);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_target))
+		{
+			$query->where('a.target = ' . $db->quote($db->escape($_target)));
 		}
 		// Filter by How.
-		if ($how = $this->getState('filter.how'))
+		$_how = $this->getState('filter.how');
+		if (is_numeric($_how))
 		{
-			$query->where('a.how = ' . $db->quote($db->escape($how)));
+			if (is_float($_how))
+			{
+				$query->where('a.how = ' . (float) $_how);
+			}
+			else
+			{
+				$query->where('a.how = ' . (int) $_how);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_how))
+		{
+			$query->where('a.how = ' . $db->quote($db->escape($_how)));
 		}
 		// Filter by Type.
-		if ($type = $this->getState('filter.type'))
+		$_type = $this->getState('filter.type');
+		if (is_numeric($_type))
 		{
-			$query->where('a.type = ' . $db->quote($db->escape($type)));
+			if (is_float($_type))
+			{
+				$query->where('a.type = ' . (float) $_type);
+			}
+			else
+			{
+				$query->where('a.type = ' . (int) $_type);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_type))
+		{
+			$query->where('a.type = ' . $db->quote($db->escape($_type)));
 		}
 
 		// Add the list ordering clause.

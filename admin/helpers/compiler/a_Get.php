@@ -4144,6 +4144,98 @@ class Get
 	}
 
 	/**
+	 * get the list default ordering values
+	 *
+	 * @param   string  $nameListCode  The list view name
+	 *
+	 * @return  array
+	 *
+	 */
+	public function getListViewDefaultOrdering(&$nameListCode)
+	{
+		if (isset($this->viewsDefaultOrdering[$nameListCode])
+			&& $this->viewsDefaultOrdering[$nameListCode]['add_admin_ordering'] == 1)
+		{
+			foreach (
+				$this->viewsDefaultOrdering[$nameListCode]['admin_ordering_fields']
+				as $order_field
+			)
+			{
+				if (($order_field_name = $this->getFieldDatabaseName(
+						$nameListCode, $order_field['field']
+					)) !== false)
+				{
+					// just the first field is the based ordering state
+					return array(
+						'name' => $order_field_name,
+						'direction' => $order_field['direction']
+					);
+				}
+			}
+		}
+		// the default
+		return array(
+			'name' => 'a.id',
+			'direction' => 'DESC'
+		);
+	}
+
+	/**
+	 * get the field database name and AS prefix
+	 *
+	 * @param   string  $nameListCode  The list view name
+	 * @param   int     $fieldId       The field ID
+	 * @param   string  $targetArea    The area being targeted
+	 *
+	 * @return  string
+	 *
+	 */
+	public function getFieldDatabaseName($nameListCode, int $fieldId,
+		$targetArea = 'listBuilder'
+	) {
+		if (isset($this->{$targetArea}[$nameListCode]))
+		{
+			if ($fieldId < 0)
+			{
+				switch ($fieldId)
+				{
+					case -1:
+						return 'a.id';
+					case -2:
+						return 'a.ordering';
+					case -3:
+						return 'a.published';
+				}
+			}
+			foreach ($this->{$targetArea}[$nameListCode] as $field)
+			{
+				if ($field['id'] == $fieldId)
+				{
+					// now check if this is a category
+					if ($field['type'] === 'category')
+					{
+						return 'c.title';
+					}
+					// set the custom code
+					elseif (ComponentbuilderHelper::checkArray(
+						$field['custom']
+					))
+					{
+						return $field['custom']['db'] . "."
+							. $field['custom']['text'];
+					}
+					else
+					{
+						return 'a.' . $field['code'];
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get the field's actual type
 	 *
 	 * @param   object  $field  The field object

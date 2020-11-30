@@ -189,7 +189,7 @@ class ComponentbuilderViewLayouts extends JViewLegacy
 		{
 			// Dynamic Get Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_GET_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_LAYOUT_DYNAMIC_GET_LABEL') . ' -',
 				'filter_dynamic_get',
 				JHtml::_('select.options', $this->dynamic_getNameOptions, 'value', 'text', $this->state->get('filter.dynamic_get'))
 			);

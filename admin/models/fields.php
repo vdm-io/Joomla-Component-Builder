@@ -320,29 +320,89 @@ class ComponentbuilderModelFields extends JModelList
 		}
 
 		// Filter by Fieldtype.
-		if ($fieldtype = $this->getState('filter.fieldtype'))
+		$_fieldtype = $this->getState('filter.fieldtype');
+		if (is_numeric($_fieldtype))
 		{
-			$query->where('a.fieldtype = ' . $db->quote($db->escape($fieldtype)));
+			if (is_float($_fieldtype))
+			{
+				$query->where('a.fieldtype = ' . (float) $_fieldtype);
+			}
+			else
+			{
+				$query->where('a.fieldtype = ' . (int) $_fieldtype);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_fieldtype))
+		{
+			$query->where('a.fieldtype = ' . $db->quote($db->escape($_fieldtype)));
 		}
 		// Filter by Datatype.
-		if ($datatype = $this->getState('filter.datatype'))
+		$_datatype = $this->getState('filter.datatype');
+		if (is_numeric($_datatype))
 		{
-			$query->where('a.datatype = ' . $db->quote($db->escape($datatype)));
+			if (is_float($_datatype))
+			{
+				$query->where('a.datatype = ' . (float) $_datatype);
+			}
+			else
+			{
+				$query->where('a.datatype = ' . (int) $_datatype);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_datatype))
+		{
+			$query->where('a.datatype = ' . $db->quote($db->escape($_datatype)));
 		}
 		// Filter by Indexes.
-		if ($indexes = $this->getState('filter.indexes'))
+		$_indexes = $this->getState('filter.indexes');
+		if (is_numeric($_indexes))
 		{
-			$query->where('a.indexes = ' . $db->quote($db->escape($indexes)));
+			if (is_float($_indexes))
+			{
+				$query->where('a.indexes = ' . (float) $_indexes);
+			}
+			else
+			{
+				$query->where('a.indexes = ' . (int) $_indexes);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_indexes))
+		{
+			$query->where('a.indexes = ' . $db->quote($db->escape($_indexes)));
 		}
 		// Filter by Null_switch.
-		if ($null_switch = $this->getState('filter.null_switch'))
+		$_null_switch = $this->getState('filter.null_switch');
+		if (is_numeric($_null_switch))
 		{
-			$query->where('a.null_switch = ' . $db->quote($db->escape($null_switch)));
+			if (is_float($_null_switch))
+			{
+				$query->where('a.null_switch = ' . (float) $_null_switch);
+			}
+			else
+			{
+				$query->where('a.null_switch = ' . (int) $_null_switch);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_null_switch))
+		{
+			$query->where('a.null_switch = ' . $db->quote($db->escape($_null_switch)));
 		}
 		// Filter by Store.
-		if ($store = $this->getState('filter.store'))
+		$_store = $this->getState('filter.store');
+		if (is_numeric($_store))
 		{
-			$query->where('a.store = ' . $db->quote($db->escape($store)));
+			if (is_float($_store))
+			{
+				$query->where('a.store = ' . (float) $_store);
+			}
+			else
+			{
+				$query->where('a.store = ' . (int) $_store);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_store))
+		{
+			$query->where('a.store = ' . $db->quote($db->escape($_store)));
 		}
 
 		// Filter by a single or group of categories.

@@ -1486,7 +1486,6 @@ class Infusion extends Interpretation
 					. 'CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT' . $this->hhh]
 						= $this->setCustomViewSubmitButtonScript($view);
 
-
 					// setup the templates
 					$this->setCustomViewTemplateBody($view);
 

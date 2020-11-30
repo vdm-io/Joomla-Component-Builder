@@ -4559,10 +4559,11 @@ class Fields extends Structure
 			// set lang
 			$listLangName = $langView . '_'
 				. ComponentbuilderHelper::safeFieldName($tempName, true);
+			// set field name
+			$listFieldName = ComponentbuilderHelper::safeString($tempName, 'W');
 			// add to lang array
 			$this->setLangContent(
-				$this->lang, $listLangName,
-				ComponentbuilderHelper::safeString($tempName, 'W')
+				$this->lang, $listLangName, $listFieldName
 			);
 		}
 		else
@@ -4570,10 +4571,11 @@ class Fields extends Structure
 			// set lang (just in case)
 			$listLangName = $langView . '_'
 				. ComponentbuilderHelper::safeFieldName($name, true);
+			// set field name
+			$listFieldName = ComponentbuilderHelper::safeString($name, 'W');
 			// add to lang array
 			$this->setLangContent(
-				$this->lang, $listLangName,
-				ComponentbuilderHelper::safeString($name, 'W')
+				$this->lang, $listLangName, $listFieldName
 			);
 			// if label was set use instead
 			if (ComponentbuilderHelper::checkString($langLabel))
@@ -4971,6 +4973,8 @@ class Fields extends Structure
 			$this->selectionTranslationFixBuilder[$nameListCode][$name]
 				= $options;
 		}
+		// main lang filter prefix
+		$lang_filter_ = $this->langPrefix . '_FILTER_';
 		// build the sort values
 		if ($dbSwitch && (isset($field['sort']) && $field['sort'] == 1)
 			&& ($listSwitch || $listJoin)
@@ -4979,11 +4983,40 @@ class Fields extends Structure
 				&& $typeName != 'repeatable'
 				&& $typeName != 'subform'))
 		{
-			$this->sortBuilder[$nameListCode][] = array('type'    => $typeName,
-			                                            'code'    => $name,
-			                                            'lang'    => $listLangName,
-			                                            'custom'  => $custom,
-			                                            'options' => $options);
+			// add the language only for new filter option
+			$filter_name_asc_lang = '';
+			$filter_name_desc_lang = '';
+			if (isset($this->adminFilterType[$nameListCode])
+				&& $this->adminFilterType[$nameListCode] == 2)
+			{
+				// set the language strings for ascending
+				$filter_name_asc      = $listFieldName . ' ascending';
+				$filter_name_asc_lang = $lang_filter_
+					. ComponentbuilderHelper::safeString(
+						$filter_name_asc, 'U'
+					);
+				// and to translation
+				$this->setLangContent(
+					$this->lang, $filter_name_asc_lang, $filter_name_asc
+				);
+				// set the language strings for descending
+				$filter_name_desc      = $listFieldName . ' descending';
+				$filter_name_desc_lang = $lang_filter_
+					. ComponentbuilderHelper::safeString(
+						$filter_name_desc, 'U'
+					);
+				// and to translation
+				$this->setLangContent(
+					$this->lang, $filter_name_desc_lang, $filter_name_desc
+				);
+			}
+			$this->sortBuilder[$nameListCode][] = array('type'      => $typeName,
+			                                            'code'      => $name,
+			                                            'lang'      => $listLangName,
+			                                            'lang_asc'  => $filter_name_asc_lang,
+			                                            'lang_desc' => $filter_name_desc_lang,
+			                                            'custom'    => $custom,
+			                                            'options'   => $options);
 		}
 		// build the search values
 		if ($dbSwitch && isset($field['search']) && $field['search'] == 1)
@@ -5011,6 +5044,23 @@ class Fields extends Structure
 			$filter_function_name = ComponentbuilderHelper::safeString(
 				$name, 'F'
 			);
+			// add the language only for new filter option
+			$filter_name_select_lang = '';
+			if (isset($this->adminFilterType[$nameListCode])
+				&& $this->adminFilterType[$nameListCode] == 2)
+			{
+				// set the language strings for selection
+				$filter_name_select      = 'Select ' . $listFieldName;
+				$filter_name_select_lang = $lang_filter_
+					. ComponentbuilderHelper::safeString(
+						$filter_name_select, 'U'
+					);
+				// and to translation
+				$this->setLangContent(
+					$this->lang, $filter_name_select_lang, $filter_name_select
+				);
+			}
+
 			// add the filter details
 			$this->filterBuilder[$nameListCode][] = array(
 				'id'          => (int) $field['field'],
@@ -5019,6 +5069,7 @@ class Fields extends Structure
 				'code'        => $name,
 				'label'       => $langLabel,
 				'lang'        => $listLangName,
+				'lang_select' => $filter_name_select_lang,
 				'database'    => $nameSingleCode,
 				'function'    => $filter_function_name,
 				'custom'      => $custom,
@@ -5498,16 +5549,28 @@ class Fields extends Structure
 	{
 		// check if this is the above/new filter option
 		if (isset($this->adminFilterType[$nameListCode])
-			&& $this->adminFilterType[$nameListCode] == 2
-			&& isset($this->filterBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
-				$this->filterBuilder[$nameListCode]
-			))
+			&& $this->adminFilterType[$nameListCode] == 2)
 		{
 			// we first create the file
 			$target = array('admin' => 'filter_' . $nameListCode);
 			$this->buildDynamique(
 				$target, 'filter'
+			);
+			// the search language string
+			$lang_search = $this->langPrefix . '_FILTER_SEARCH';
+			// and to translation
+			$this->setLangContent(
+				$this->lang, $lang_search, 'Search'
+				. ComponentbuilderHelper::safeString($nameListCode, 'w')
+			);
+			// the search description language string
+			$lang_search_desc = $this->langPrefix . '_FILTER_SEARCH_'
+				. strtoupper($nameListCode);
+			// and to translation
+			$this->setLangContent(
+				$this->lang, $lang_search_desc, 'Search the '
+				. ComponentbuilderHelper::safeString($nameSingleCode, 'w')
+				. ' items. Prefix with ID: to search for an item by ID.'
 			);
 			// now build the XML
 			$field_filter_sets   = array();
@@ -5518,21 +5581,35 @@ class Fields extends Structure
 			$field_filter_sets[] = $this->_t(3) . 'name="search"';
 			$field_filter_sets[] = $this->_t(3) . 'inputmode="search"';
 			$field_filter_sets[] = $this->_t(3)
-				. 'label="COM_CONTENT_FILTER_SEARCH_LABEL"';
+				. 'label="' . $lang_search . '"';
 			$field_filter_sets[] = $this->_t(3)
-				. 'description="COM_CONTENT_FILTER_SEARCH_DESC"';
+				. 'description="' . $lang_search_desc . '"';
 			$field_filter_sets[] = $this->_t(3) . 'hint="JSEARCH_FILTER"';
 			$field_filter_sets[] = $this->_t(2) . '/>';
 			// add the published filter if published is not set
 			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
 			{
+				// the published language string
+				$lang_published = $this->langPrefix . '_FILTER_PUBLISHED';
+				// and to translation
+				$this->setLangContent(
+					$this->lang, $lang_published, 'Status'
+				);
+				// the published description language string
+				$lang_published_desc = $this->langPrefix . '_FILTER_PUBLISHED_'
+					. strtoupper($nameListCode);
+				// and to translation
+				$this->setLangContent(
+					$this->lang, $lang_published_desc, 'Status options for '
+					. ComponentbuilderHelper::safeString($nameListCode, 'w')
+				);
 				$field_filter_sets[] = $this->_t(2) . '<field';
 				$field_filter_sets[] = $this->_t(3) . 'type="status"';
 				$field_filter_sets[] = $this->_t(3) . 'name="published"';
 				$field_filter_sets[] = $this->_t(3)
-					. 'label="COM_CONTENT_FILTER_PUBLISHED"';
+					. 'label="' . $lang_published . '"';
 				$field_filter_sets[] = $this->_t(3)
-					. 'description="COM_CONTENT_FILTER_PUBLISHED_DESC"';
+					. 'description="' . $lang_published_desc . '"';
 				$field_filter_sets[] = $this->_t(3)
 					. 'onchange="this.form.submit();"';
 				$field_filter_sets[] = $this->_t(2) . '>';
@@ -5563,49 +5640,57 @@ class Fields extends Structure
 				$field_filter_sets[] = $this->_t(2) . '/>';
 			}
 			// now add the dynamic fields
-			foreach ($this->filterBuilder[$nameListCode] as $r => &$filter)
+			if (isset($this->filterBuilder[$nameListCode])
+				&& ComponentbuilderHelper::checkArray(
+					$this->filterBuilder[$nameListCode]
+				))
 			{
-				if ($filter['type'] != 'category')
+				foreach ($this->filterBuilder[$nameListCode] as $r => &$filter)
 				{
-					$field_filter_sets[] = $this->_t(2) . '<field';
-					// if this is a custom field
-					if (ComponentbuilderHelper::checkArray(
-						$filter['custom']
-					))
+					if ($filter['type'] != 'category')
 					{
-						// we use the field type from the custom field
-						$field_filter_sets[] = $this->_t(3) . 'type="'
-							. $filter['type'] . '"';
-						// set css classname of this field
-						$filter['class'] = ucfirst($filter['type']);
-					}
-					else
-					{
-						// we use the filter field type that was build
-						$field_filter_sets[] = $this->_t(3) . 'type="'
-							. $filter['filter_type'] . '"';
-						// set css classname of this field
-						$filter['class'] = ucfirst($filter['filter_type']);
-					}
-					$field_filter_sets[] = $this->_t(3) . 'name="'
-						. $filter['code'] . '"';
-					$field_filter_sets[] = $this->_t(3) . 'label="'
-						. $filter['label'] . '"';
-					// if this is a multi field
-					if ($filter['multi'] == 2)
-					{
-						$field_filter_sets[] = $this->_t(3) . 'class="multiple'
-							. $filter['class'] . '"';
-						$field_filter_sets[] = $this->_t(3) . 'multiple="true"';
-					}
-					else
-					{
+						$field_filter_sets[] = $this->_t(2) . '<field';
+						// if this is a custom field
+						if (ComponentbuilderHelper::checkArray(
+							$filter['custom']
+						))
+						{
+							// we use the field type from the custom field
+							$field_filter_sets[] = $this->_t(3) . 'type="'
+								. $filter['type'] . '"';
+							// set css classname of this field
+							$filter['class'] = ucfirst($filter['type']);
+						}
+						else
+						{
+							// we use the filter field type that was build
+							$field_filter_sets[] = $this->_t(3) . 'type="'
+								. $filter['filter_type'] . '"';
+							// set css classname of this field
+							$filter['class'] = ucfirst($filter['filter_type']);
+						}
+						$field_filter_sets[] = $this->_t(3) . 'name="'
+							. $filter['code'] . '"';
+						$field_filter_sets[] = $this->_t(3) . 'label="'
+							. $filter['label'] . '"';
+						// if this is a multi field
+						if ($filter['multi'] == 2)
+						{
+							$field_filter_sets[] = $this->_t(3)
+								. 'class="multiple'
+								. $filter['class'] . '"';
+							$field_filter_sets[] = $this->_t(3)
+								. 'multiple="true"';
+						}
+						else
+						{
+							$field_filter_sets[] = $this->_t(3)
+								. 'multiple="false"';
+						}
 						$field_filter_sets[] = $this->_t(3)
-							. 'multiple="false"';
+							. 'onchange="this.form.submit();"';
+						$field_filter_sets[] = $this->_t(2) . '/>';
 					}
-					$field_filter_sets[] = $this->_t(3)
-						. 'onchange="this.form.submit();"';
-					$field_filter_sets[] = $this->_t(2) . '/>';
 				}
 			}
 			$field_filter_sets[] = $this->_t(2)
@@ -5630,7 +5715,119 @@ class Fields extends Structure
 	 */
 	public function setFieldFilterListSet(&$nameSingleCode, &$nameListCode)
 	{
-		// soon we will add this TODO
+		// check if this is the above/new filter option
+		if (isset($this->adminFilterType[$nameListCode])
+			&& $this->adminFilterType[$nameListCode] == 2)
+		{
+			// keep track of all fields already added
+			$donelist = array('ordering' => true, 'id' => true);
+			// now build the XML
+			$list_sets   = array();
+			$list_sets[] = $this->_t(1) . '<fields name="list">';
+			$list_sets[] = $this->_t(2) . '<field';
+			$list_sets[] = $this->_t(3) . 'name="fullordering"';
+			$list_sets[] = $this->_t(3) . 'type="list"';
+			$list_sets[] = $this->_t(3)
+				. 'label="COM_CONTENT_LIST_FULL_ORDERING"';
+			$list_sets[] = $this->_t(3)
+				. 'description="COM_CONTENT_LIST_FULL_ORDERING_DESC"';
+			$list_sets[] = $this->_t(3) . 'onchange="this.form.submit();"';
+			// add dynamic ordering (Admin view)
+			$default_ordering = $this->getListViewDefaultOrdering(
+				$nameListCode
+			);
+			// set the default ordering
+			$list_sets[] = $this->_t(3) . 'default="'
+				. $default_ordering['name'] . ' '
+				. $default_ordering['direction'] . '"';
+			$list_sets[] = $this->_t(3) . 'validate="options"';
+			$list_sets[] = $this->_t(2) . '>';
+			$list_sets[] = $this->_t(3)
+				. '<option value="">JGLOBAL_SORT_BY</option>';
+			$list_sets[] = $this->_t(3)
+				. '<option value="a.ordering ASC">JGRID_HEADING_ORDERING_ASC</option>';
+			$list_sets[] = $this->_t(3)
+				. '<option value="a.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>';
+			// add the published filter if published is not set
+			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+			{
+				// add to done list
+				$donelist['published'] = true;
+				// add to xml :)
+				$list_sets[] = $this->_t(3)
+					. '<option value="a.published ASC">JSTATUS_ASC</option>';
+				$list_sets[] = $this->_t(3)
+					. '<option value="a.published DESC">JSTATUS_DESC</option>';
+			}
+
+			// add the rest of the set filters
+			if (isset($this->sortBuilder[$nameListCode])
+				&& ComponentbuilderHelper::checkArray(
+					$this->sortBuilder[$nameListCode]
+				))
+			{
+				foreach ($this->sortBuilder[$nameListCode] as $filter)
+				{
+					if (!isset($donelist[$filter['code']]))
+					{
+						if ($filter['type'] === 'category')
+						{
+							$list_sets[] = $this->_t(3)
+								. '<option value="category_title ASC">'
+								. $filter['lang_asc'] . '</option>';
+							$list_sets[] = $this->_t(3)
+								. '<option value="category_title DESC">'
+								. $filter['lang_desc'] . '</option>';
+						}
+						elseif (ComponentbuilderHelper::checkArray(
+							$filter['custom']
+						))
+						{
+							$list_sets[] = $this->_t(3) . '<option value="'
+								. $filter['custom']['db'] . '.'
+								. $filter['custom']['text'] . ' ASC">'
+								. $filter['lang_asc'] . '</option>';
+							$list_sets[] = $this->_t(3) . '<option value="'
+								. $filter['custom']['db'] . '.'
+								. $filter['custom']['text'] . ' DESC">'
+								. $filter['lang_desc'] . '</option>';
+						}
+						else
+						{
+							$list_sets[] = $this->_t(3) . '<option value="a.'
+								. $filter['code'] . ' ASC">'
+								. $filter['lang_asc'] . '</option>';
+							$list_sets[] = $this->_t(3) . '<option value="a.'
+								. $filter['code'] . ' DESC">'
+								. $filter['lang_desc'] . '</option>';
+						}
+						// do not add again
+						$donelist[$filter['code']] = true;
+					}
+				}
+			}
+
+			$list_sets[] = $this->_t(3)
+				. '<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>';
+			$list_sets[] = $this->_t(3)
+				. '<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>';
+			$list_sets[] = $this->_t(2) . '</field>' . PHP_EOL;
+
+			$list_sets[] = $this->_t(2) . '<field';
+			$list_sets[] = $this->_t(3) . 'name="limit"';
+			$list_sets[] = $this->_t(3) . 'type="limitbox"';
+			$list_sets[] = $this->_t(3) . 'label="COM_CONTENT_LIST_LIMIT"';
+			$list_sets[] = $this->_t(3)
+				. 'description="COM_CONTENT_LIST_LIMIT_DESC"';
+			$list_sets[] = $this->_t(3) . 'class="input-mini"';
+			$list_sets[] = $this->_t(3) . 'default="25"';
+			$list_sets[] = $this->_t(3) . 'onchange="this.form.submit();"';
+			$list_sets[] = $this->_t(2) . '/>';
+			$list_sets[] = $this->_t(1) . '</fields>';
+
+			return implode(PHP_EOL, $list_sets);
+		}
+
 		return '';
 	}
 

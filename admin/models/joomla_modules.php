@@ -222,9 +222,21 @@ class ComponentbuilderModelJoomla_modules extends JModelList
 		}
 
 		// Filter by Target.
-		if ($target = $this->getState('filter.target'))
+		$_target = $this->getState('filter.target');
+		if (is_numeric($_target))
 		{
-			$query->where('a.target = ' . $db->quote($db->escape($target)));
+			if (is_float($_target))
+			{
+				$query->where('a.target = ' . (float) $_target);
+			}
+			else
+			{
+				$query->where('a.target = ' . (int) $_target);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_target))
+		{
+			$query->where('a.target = ' . $db->quote($db->escape($_target)));
 		}
 
 		// Add the list ordering clause.

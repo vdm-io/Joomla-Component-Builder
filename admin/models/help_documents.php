@@ -243,24 +243,72 @@ class ComponentbuilderModelHelp_documents extends JModelList
 		}
 
 		// Filter by Type.
-		if ($type = $this->getState('filter.type'))
+		$_type = $this->getState('filter.type');
+		if (is_numeric($_type))
 		{
-			$query->where('a.type = ' . $db->quote($db->escape($type)));
+			if (is_float($_type))
+			{
+				$query->where('a.type = ' . (float) $_type);
+			}
+			else
+			{
+				$query->where('a.type = ' . (int) $_type);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_type))
+		{
+			$query->where('a.type = ' . $db->quote($db->escape($_type)));
 		}
 		// Filter by Location.
-		if ($location = $this->getState('filter.location'))
+		$_location = $this->getState('filter.location');
+		if (is_numeric($_location))
 		{
-			$query->where('a.location = ' . $db->quote($db->escape($location)));
+			if (is_float($_location))
+			{
+				$query->where('a.location = ' . (float) $_location);
+			}
+			else
+			{
+				$query->where('a.location = ' . (int) $_location);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_location))
+		{
+			$query->where('a.location = ' . $db->quote($db->escape($_location)));
 		}
 		// Filter by Admin_view.
-		if ($admin_view = $this->getState('filter.admin_view'))
+		$_admin_view = $this->getState('filter.admin_view');
+		if (is_numeric($_admin_view))
 		{
-			$query->where('a.admin_view = ' . $db->quote($db->escape($admin_view)));
+			if (is_float($_admin_view))
+			{
+				$query->where('a.admin_view = ' . (float) $_admin_view);
+			}
+			else
+			{
+				$query->where('a.admin_view = ' . (int) $_admin_view);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_admin_view))
+		{
+			$query->where('a.admin_view = ' . $db->quote($db->escape($_admin_view)));
 		}
 		// Filter by Site_view.
-		if ($site_view = $this->getState('filter.site_view'))
+		$_site_view = $this->getState('filter.site_view');
+		if (is_numeric($_site_view))
 		{
-			$query->where('a.site_view = ' . $db->quote($db->escape($site_view)));
+			if (is_float($_site_view))
+			{
+				$query->where('a.site_view = ' . (float) $_site_view);
+			}
+			else
+			{
+				$query->where('a.site_view = ' . (int) $_site_view);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_site_view))
+		{
+			$query->where('a.site_view = ' . $db->quote($db->escape($_site_view)));
 		}
 
 		// Add the list ordering clause.

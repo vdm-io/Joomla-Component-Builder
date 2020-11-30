@@ -36,7 +36,7 @@ class ComponentbuilderViewJoomla_plugin_groups extends JViewLegacy
 		$this->user = JFactory::getUser();
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
-		$this->listDirn = $this->escape($this->state->get('list.direction', 'asc'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -174,7 +174,7 @@ class ComponentbuilderViewJoomla_plugin_groups extends JViewLegacy
 		{
 			// Class Extends Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_GROUP_CLASS_EXTENDS_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_GROUP_CLASS_EXTENDS_LABEL') . ' -',
 				'filter_class_extends',
 				JHtml::_('select.options', $this->class_extendsNameOptions, 'value', 'text', $this->state->get('filter.class_extends'))
 			);

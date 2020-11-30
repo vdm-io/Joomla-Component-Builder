@@ -219,14 +219,38 @@ class ComponentbuilderModelServers extends JModelList
 		}
 
 		// Filter by Name.
-		if ($name = $this->getState('filter.name'))
+		$_name = $this->getState('filter.name');
+		if (is_numeric($_name))
 		{
-			$query->where('a.name = ' . $db->quote($db->escape($name)));
+			if (is_float($_name))
+			{
+				$query->where('a.name = ' . (float) $_name);
+			}
+			else
+			{
+				$query->where('a.name = ' . (int) $_name);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_name))
+		{
+			$query->where('a.name = ' . $db->quote($db->escape($_name)));
 		}
 		// Filter by Protocol.
-		if ($protocol = $this->getState('filter.protocol'))
+		$_protocol = $this->getState('filter.protocol');
+		if (is_numeric($_protocol))
 		{
-			$query->where('a.protocol = ' . $db->quote($db->escape($protocol)));
+			if (is_float($_protocol))
+			{
+				$query->where('a.protocol = ' . (float) $_protocol);
+			}
+			else
+			{
+				$query->where('a.protocol = ' . (int) $_protocol);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_protocol))
+		{
+			$query->where('a.protocol = ' . $db->quote($db->escape($_protocol)));
 		}
 
 		// Add the list ordering clause.

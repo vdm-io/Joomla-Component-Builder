@@ -220,9 +220,21 @@ class ComponentbuilderModelClass_extendings extends JModelList
 		}
 
 		// Filter by Extension_type.
-		if ($extension_type = $this->getState('filter.extension_type'))
+		$_extension_type = $this->getState('filter.extension_type');
+		if (is_numeric($_extension_type))
 		{
-			$query->where('a.extension_type = ' . $db->quote($db->escape($extension_type)));
+			if (is_float($_extension_type))
+			{
+				$query->where('a.extension_type = ' . (float) $_extension_type);
+			}
+			else
+			{
+				$query->where('a.extension_type = ' . (int) $_extension_type);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_extension_type))
+		{
+			$query->where('a.extension_type = ' . $db->quote($db->escape($_extension_type)));
 		}
 
 		// Add the list ordering clause.

@@ -189,7 +189,7 @@ class ComponentbuilderViewSite_views extends JViewLegacy
 		{
 			// Main Get Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_SITE_VIEW_MAIN_GET_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_SITE_VIEW_MAIN_GET_LABEL') . ' -',
 				'filter_main_get',
 				JHtml::_('select.options', $this->main_getNameOptions, 'value', 'text', $this->state->get('filter.main_get'))
 			);

@@ -253,19 +253,55 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 		}
 
 		// Filter by Main_get.
-		if ($main_get = $this->getState('filter.main_get'))
+		$_main_get = $this->getState('filter.main_get');
+		if (is_numeric($_main_get))
 		{
-			$query->where('a.main_get = ' . $db->quote($db->escape($main_get)));
+			if (is_float($_main_get))
+			{
+				$query->where('a.main_get = ' . (float) $_main_get);
+			}
+			else
+			{
+				$query->where('a.main_get = ' . (int) $_main_get);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_main_get))
+		{
+			$query->where('a.main_get = ' . $db->quote($db->escape($_main_get)));
 		}
 		// Filter by Add_php_ajax.
-		if ($add_php_ajax = $this->getState('filter.add_php_ajax'))
+		$_add_php_ajax = $this->getState('filter.add_php_ajax');
+		if (is_numeric($_add_php_ajax))
 		{
-			$query->where('a.add_php_ajax = ' . $db->quote($db->escape($add_php_ajax)));
+			if (is_float($_add_php_ajax))
+			{
+				$query->where('a.add_php_ajax = ' . (float) $_add_php_ajax);
+			}
+			else
+			{
+				$query->where('a.add_php_ajax = ' . (int) $_add_php_ajax);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_add_php_ajax))
+		{
+			$query->where('a.add_php_ajax = ' . $db->quote($db->escape($_add_php_ajax)));
 		}
 		// Filter by Add_custom_button.
-		if ($add_custom_button = $this->getState('filter.add_custom_button'))
+		$_add_custom_button = $this->getState('filter.add_custom_button');
+		if (is_numeric($_add_custom_button))
 		{
-			$query->where('a.add_custom_button = ' . $db->quote($db->escape($add_custom_button)));
+			if (is_float($_add_custom_button))
+			{
+				$query->where('a.add_custom_button = ' . (float) $_add_custom_button);
+			}
+			else
+			{
+				$query->where('a.add_custom_button = ' . (int) $_add_custom_button);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_add_custom_button))
+		{
+			$query->where('a.add_custom_button = ' . $db->quote($db->escape($_add_custom_button)));
 		}
 
 		// Add the list ordering clause.

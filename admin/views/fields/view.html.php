@@ -196,7 +196,7 @@ class ComponentbuilderViewFields extends JViewLegacy
 		{
 			// Fieldtype Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL') . ' -',
 				'filter_fieldtype',
 				JHtml::_('select.options', $this->fieldtypeNameOptions, 'value', 'text', $this->state->get('filter.fieldtype'))
 			);

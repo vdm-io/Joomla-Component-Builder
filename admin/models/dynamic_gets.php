@@ -241,14 +241,38 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 		}
 
 		// Filter by Main_source.
-		if ($main_source = $this->getState('filter.main_source'))
+		$_main_source = $this->getState('filter.main_source');
+		if (is_numeric($_main_source))
 		{
-			$query->where('a.main_source = ' . $db->quote($db->escape($main_source)));
+			if (is_float($_main_source))
+			{
+				$query->where('a.main_source = ' . (float) $_main_source);
+			}
+			else
+			{
+				$query->where('a.main_source = ' . (int) $_main_source);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_main_source))
+		{
+			$query->where('a.main_source = ' . $db->quote($db->escape($_main_source)));
 		}
 		// Filter by Gettype.
-		if ($gettype = $this->getState('filter.gettype'))
+		$_gettype = $this->getState('filter.gettype');
+		if (is_numeric($_gettype))
 		{
-			$query->where('a.gettype = ' . $db->quote($db->escape($gettype)));
+			if (is_float($_gettype))
+			{
+				$query->where('a.gettype = ' . (float) $_gettype);
+			}
+			else
+			{
+				$query->where('a.gettype = ' . (int) $_gettype);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_gettype))
+		{
+			$query->where('a.gettype = ' . $db->quote($db->escape($_gettype)));
 		}
 
 		// Add the list ordering clause.

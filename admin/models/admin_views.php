@@ -302,29 +302,89 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		}
 
 		// Filter by Add_fadein.
-		if ($add_fadein = $this->getState('filter.add_fadein'))
+		$_add_fadein = $this->getState('filter.add_fadein');
+		if (is_numeric($_add_fadein))
 		{
-			$query->where('a.add_fadein = ' . $db->quote($db->escape($add_fadein)));
+			if (is_float($_add_fadein))
+			{
+				$query->where('a.add_fadein = ' . (float) $_add_fadein);
+			}
+			else
+			{
+				$query->where('a.add_fadein = ' . (int) $_add_fadein);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_add_fadein))
+		{
+			$query->where('a.add_fadein = ' . $db->quote($db->escape($_add_fadein)));
 		}
 		// Filter by Type.
-		if ($type = $this->getState('filter.type'))
+		$_type = $this->getState('filter.type');
+		if (is_numeric($_type))
 		{
-			$query->where('a.type = ' . $db->quote($db->escape($type)));
+			if (is_float($_type))
+			{
+				$query->where('a.type = ' . (float) $_type);
+			}
+			else
+			{
+				$query->where('a.type = ' . (int) $_type);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_type))
+		{
+			$query->where('a.type = ' . $db->quote($db->escape($_type)));
 		}
 		// Filter by Add_custom_button.
-		if ($add_custom_button = $this->getState('filter.add_custom_button'))
+		$_add_custom_button = $this->getState('filter.add_custom_button');
+		if (is_numeric($_add_custom_button))
 		{
-			$query->where('a.add_custom_button = ' . $db->quote($db->escape($add_custom_button)));
+			if (is_float($_add_custom_button))
+			{
+				$query->where('a.add_custom_button = ' . (float) $_add_custom_button);
+			}
+			else
+			{
+				$query->where('a.add_custom_button = ' . (int) $_add_custom_button);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_add_custom_button))
+		{
+			$query->where('a.add_custom_button = ' . $db->quote($db->escape($_add_custom_button)));
 		}
 		// Filter by Add_php_ajax.
-		if ($add_php_ajax = $this->getState('filter.add_php_ajax'))
+		$_add_php_ajax = $this->getState('filter.add_php_ajax');
+		if (is_numeric($_add_php_ajax))
 		{
-			$query->where('a.add_php_ajax = ' . $db->quote($db->escape($add_php_ajax)));
+			if (is_float($_add_php_ajax))
+			{
+				$query->where('a.add_php_ajax = ' . (float) $_add_php_ajax);
+			}
+			else
+			{
+				$query->where('a.add_php_ajax = ' . (int) $_add_php_ajax);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_add_php_ajax))
+		{
+			$query->where('a.add_php_ajax = ' . $db->quote($db->escape($_add_php_ajax)));
 		}
 		// Filter by Add_custom_import.
-		if ($add_custom_import = $this->getState('filter.add_custom_import'))
+		$_add_custom_import = $this->getState('filter.add_custom_import');
+		if (is_numeric($_add_custom_import))
 		{
-			$query->where('a.add_custom_import = ' . $db->quote($db->escape($add_custom_import)));
+			if (is_float($_add_custom_import))
+			{
+				$query->where('a.add_custom_import = ' . (float) $_add_custom_import);
+			}
+			else
+			{
+				$query->where('a.add_custom_import = ' . (int) $_add_custom_import);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_add_custom_import))
+		{
+			$query->where('a.add_custom_import = ' . $db->quote($db->escape($_add_custom_import)));
 		}
 
 		// Add the list ordering clause.

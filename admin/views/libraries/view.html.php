@@ -199,7 +199,7 @@ class ComponentbuilderViewLibraries extends JViewLegacy
 		{
 			// How Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_LIBRARY_HOW_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_LIBRARY_HOW_LABEL') . ' -',
 				'filter_how',
 				JHtml::_('select.options', $this->howOptions, 'value', 'text', $this->state->get('filter.how'))
 			);

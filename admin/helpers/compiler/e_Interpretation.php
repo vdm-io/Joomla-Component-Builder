@@ -5121,49 +5121,19 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . $this->_t(2) . "\$this->activeFilters "
 				. "= \$this->get('ActiveFilters');";
 		}
-		// add the custom ordering if set
-		if (isset($this->viewsDefaultOrdering[$nameListCode])
-			&& $this->viewsDefaultOrdering[$nameListCode]['add_admin_ordering']
-			== 1)
-		{
-			// the first is from the state
-			$order_first = true;
-			foreach (
-				$this->viewsDefaultOrdering[$nameListCode]['admin_ordering_fields']
-				as $order_field
-			)
-			{
-				if ($order_first
-					&& ($order_field_name = $this->getFieldDatabaseName(
-						$nameListCode, $order_field['field']
-					)) !== false)
-				{
-					// just the first field is based on state
-					$order_first = false;
-					$script      .= PHP_EOL . $this->_t(2) . "//"
-						. $this->setLine(
-							__LINE__
-						) . " Add the list ordering clause.";
-					$script      .= PHP_EOL . $this->_t(2)
-						. "\$this->listOrder = \$this->escape(\$this->state->get('list.ordering', '"
-						. $order_field_name . "'));";
-					$script      .= PHP_EOL . $this->_t(2)
-						. "\$this->listDirn = \$this->escape(\$this->state->get('list.direction', '"
-						. $order_field['direction'] . "'));";
-				}
-			}
-		}
-		// if no ordering is added we must add default
-		if (!ComponentbuilderHelper::checkString($script))
-		{
-			$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(
-					__LINE__
-				) . " Add the list ordering clause.";
-			$script .= PHP_EOL . $this->_t(2)
-				. "\$this->listOrder = \$this->escape(\$this->state->get('list.ordering', 'a.id'));";
-			$script .= PHP_EOL . $this->_t(2)
-				. "\$this->listDirn = \$this->escape(\$this->state->get('list.direction', 'asc'));";
-		}
+		// get the default ordering values
+		$default_ordering = $this->getListViewDefaultOrdering($nameListCode);
+		// now add the default ordering
+		$script .= PHP_EOL . $this->_t(2) . "//"
+			. $this->setLine(
+				__LINE__
+			) . " Add the list ordering clause.";
+		$script .= PHP_EOL . $this->_t(2)
+			. "\$this->listOrder = \$this->escape(\$this->state->get('list.ordering', '"
+			. $default_ordering['name'] . "'));";
+		$script .= PHP_EOL . $this->_t(2)
+			. "\$this->listDirn = \$this->escape(\$this->state->get('list.direction', '"
+			. $default_ordering['direction'] . "'));";
 
 		return $script;
 	}
@@ -15507,57 +15477,6 @@ class Interpretation extends Fields
 		return $query;
 	}
 
-	/**
-	 * get the field database name and AS prefix
-	 *
-	 * @return  string
-	 *
-	 */
-	protected function getFieldDatabaseName($nameListCode, int $fieldId,
-		$targetArea = 'listBuilder'
-	) {
-		if (isset($this->{$targetArea}[$nameListCode]))
-		{
-			if ($fieldId < 0)
-			{
-				switch ($fieldId)
-				{
-					case -1:
-						return 'a.id';
-					case -2:
-						return 'a.ordering';
-					case -3:
-						return 'a.published';
-				}
-			}
-			foreach ($this->{$targetArea}[$nameListCode] as $field)
-			{
-				if ($field['id'] == $fieldId)
-				{
-					// now check if this is a category
-					if ($field['type'] === 'category')
-					{
-						return 'c.title';
-					}
-					// set the custom code
-					elseif (ComponentbuilderHelper::checkArray(
-						$field['custom']
-					))
-					{
-						return $field['custom']['db'] . "."
-							. $field['custom']['text'];
-					}
-					else
-					{
-						return 'a.' . $field['code'];
-					}
-				}
-			}
-		}
-
-		return false;
-	}
-
 	public function setSearchQuery($nameListCode)
 	{
 		if (isset($this->searchBuilder[$nameListCode])
@@ -15739,7 +15658,7 @@ class Interpretation extends Fields
 					else
 					{
 						$filterQuery .= $this->setSingleFilterQuery(
-							$filter
+							$filter, $Helper
 						);
 					}
 				}
@@ -15755,21 +15674,40 @@ class Interpretation extends Fields
 	 * build single filter query
 	 *
 	 * @param   array   $filter  The field/filter
+	 * @param   string  $Helper  The helper name of the component being build
 	 * @param   string  $a       The db table target name (a)
 	 *
 	 * @return  string The php to place in model to filter this field
 	 *
 	 */
-	protected function setSingleFilterQuery($filter, $a = "a")
+	protected function setSingleFilterQuery($filter, $Helper, $a = "a")
 	{
-		$filterQuery = PHP_EOL . $this->_t(2) . "if (\$"
+		$filterQuery = PHP_EOL . $this->_t(2) . "\$_"
 			. $filter['code'] . " = \$this->getState('filter."
-			. $filter['code'] . "'))";
+			. $filter['code'] . "');";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "if (is_numeric(\$_"
+			. $filter['code'] . "))";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "if (is_float(\$_"
+			. $filter['code'] . "))";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(4)
+			. "\$query->where('" . $a . "." . $filter['code']
+			. " = ' . (float) \$_" . $filter['code'] . ");";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "}";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "else";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "{";
+		$filterQuery .= PHP_EOL . $this->_t(4)
+			. "\$query->where('" . $a . "." . $filter['code']
+			. " = ' . (int) \$_" . $filter['code'] . ");";
+		$filterQuery .= PHP_EOL . $this->_t(3) . "}";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "}";
+		$filterQuery .= PHP_EOL . $this->_t(2) . "elseif ("
+			. $Helper . "::checkString(\$_" . $filter['code'] . "))";
 		$filterQuery .= PHP_EOL . $this->_t(2) . "{";
 		$filterQuery .= PHP_EOL . $this->_t(3)
 			. "\$query->where('" . $a . "." . $filter['code']
-			. " = ' . \$db->quote(\$db->escape(\$"
-			. $filter['code']
+			. " = ' . \$db->quote(\$db->escape(\$_" . $filter['code']
 			. ")));";
 		$filterQuery .= PHP_EOL . $this->_t(2) . "}";
 
@@ -17637,6 +17575,13 @@ class Interpretation extends Fields
 					$function[] = $this->_t(2) . "{";
 					$function[] = $this->_t(3) . "\$filter = array();";
 					$function[] = $this->_t(3) . "\$batch = array();";
+					// if this is not a multi field
+					if (!$funtion_path && $filter['multi'] == 1)
+					{
+						$function[] = $this->_t(4)
+							. "\$filter[] = JHtml::_('select.option', '', '- Select ' . JText:"
+							. ":_('" . $filter['lang'] . "') . ' -');";
+					}
 					$function[] = $this->_t(3)
 						. "foreach (\$results as \$result)";
 					$function[] = $this->_t(3) . "{";
@@ -17802,6 +17747,13 @@ class Interpretation extends Fields
 							. "\$results = array_unique(\$results);";
 					}
 					$function[] = $this->_t(3) . "\$_filter = array();";
+					// if this is not a multi field
+					if (!$funtion_path && $filter['multi'] == 1)
+					{
+						$function[] = $this->_t(3)
+							. "\$_filter[] = JHtml::_('select.option', '', '- Select ' . JText:"
+							. ":_('" . $filter['lang'] . "') . ' -');";
+					}
 					$function[] = $this->_t(3) . "foreach (\$results as \$"
 						. $filter['code'] . ")";
 					$function[] = $this->_t(3) . "{";
@@ -17878,8 +17830,6 @@ class Interpretation extends Fields
 					&& $filter['multi'] == 2
 					&& ComponentbuilderHelper::checkArray($filter['custom']))
 				{
-					//var_dump($filter);
-					//jexit();
 					// get the field code
 					$field_code = $this->getCustomFieldCode(
 						$filter['custom']
@@ -18068,8 +18018,8 @@ class Interpretation extends Fields
 							__LINE__
 						) . " " . $CodeName . " Filter";
 					$fieldFilters[] = $this->_t(3) . "JHtmlSidebar::addFilter(";
-					$fieldFilters[] = $this->_t(4) . "'- Select '.JText:"
-						. ":_('" . $filter['lang'] . "').' -',";
+					$fieldFilters[] = $this->_t(4) . "'- Select ' . JText:"
+						. ":_('" . $filter['lang'] . "') . ' -',";
 					$fieldFilters[] = $this->_t(4) . "'filter_"
 						. $filter['code']
 						. "',";
@@ -21873,30 +21823,18 @@ class Interpretation extends Fields
 				$this->filterBuilder[$nameListCode]
 			))
 		{
-			// main lang prefix
-			$lang_ = $this->langPrefix . '_FILTER_';
 			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				// we need this only for filters that are multi
 				if (isset($filter['multi'])
 					&& $filter['multi'] == 2)
 				{
-					// set the selection string (not ideal)
-					$select_name = "Select " . strip_tags($filter['name']);
-					// set the language
-					$select_lang = $lang_ . ComponentbuilderHelper::safeString(
-							$select_name, 'U'
-						);
-					// set selection lang
-					$this->setLangContent(
-						$this->lang, $select_lang, $select_name
-					);
 					// add the header
 					$headers[]
 						= 'JHtml::_(\'formbehavior.chosen\', \'.multiple'
 						. $filter['class']
-						. '\', null, array(\'placeholder_text_multiple\' => JText::_(\''
-						. $select_lang . '\')));';
+						. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
+						. $filter['lang_select'] . '\') . \' -\'));';
 				}
 			}
 		}

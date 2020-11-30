@@ -230,14 +230,38 @@ class ComponentbuilderModelTemplates extends JModelList
 		}
 
 		// Filter by Dynamic_get.
-		if ($dynamic_get = $this->getState('filter.dynamic_get'))
+		$_dynamic_get = $this->getState('filter.dynamic_get');
+		if (is_numeric($_dynamic_get))
 		{
-			$query->where('a.dynamic_get = ' . $db->quote($db->escape($dynamic_get)));
+			if (is_float($_dynamic_get))
+			{
+				$query->where('a.dynamic_get = ' . (float) $_dynamic_get);
+			}
+			else
+			{
+				$query->where('a.dynamic_get = ' . (int) $_dynamic_get);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_dynamic_get))
+		{
+			$query->where('a.dynamic_get = ' . $db->quote($db->escape($_dynamic_get)));
 		}
 		// Filter by Add_php_view.
-		if ($add_php_view = $this->getState('filter.add_php_view'))
+		$_add_php_view = $this->getState('filter.add_php_view');
+		if (is_numeric($_add_php_view))
 		{
-			$query->where('a.add_php_view = ' . $db->quote($db->escape($add_php_view)));
+			if (is_float($_add_php_view))
+			{
+				$query->where('a.add_php_view = ' . (float) $_add_php_view);
+			}
+			else
+			{
+				$query->where('a.add_php_view = ' . (int) $_add_php_view);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_add_php_view))
+		{
+			$query->where('a.add_php_view = ' . $db->quote($db->escape($_add_php_view)));
 		}
 
 		// Add the list ordering clause.

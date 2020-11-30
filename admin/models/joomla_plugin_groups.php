@@ -167,9 +167,21 @@ class ComponentbuilderModelJoomla_plugin_groups extends JModelList
 		}
 
 		// Filter by Class_extends.
-		if ($class_extends = $this->getState('filter.class_extends'))
+		$_class_extends = $this->getState('filter.class_extends');
+		if (is_numeric($_class_extends))
 		{
-			$query->where('a.class_extends = ' . $db->quote($db->escape($class_extends)));
+			if (is_float($_class_extends))
+			{
+				$query->where('a.class_extends = ' . (float) $_class_extends);
+			}
+			else
+			{
+				$query->where('a.class_extends = ' . (int) $_class_extends);
+			}
+		}
+		elseif (ComponentbuilderHelper::checkString($_class_extends))
+		{
+			$query->where('a.class_extends = ' . $db->quote($db->escape($_class_extends)));
 		}
 
 		// Add the list ordering clause.

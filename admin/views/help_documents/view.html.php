@@ -36,7 +36,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		$this->user = JFactory::getUser();
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
-		$this->listDirn = $this->escape($this->state->get('list.direction', 'asc'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -218,7 +218,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		{
 			// Admin View Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_ADMIN_VIEW_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_ADMIN_VIEW_LABEL') . ' -',
 				'filter_admin_view',
 				JHtml::_('select.options', $this->admin_viewOptions, 'value', 'text', $this->state->get('filter.admin_view'))
 			);
@@ -238,7 +238,7 @@ class ComponentbuilderViewHelp_documents extends JViewLegacy
 		{
 			// Site View Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_SITE_VIEW_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_HELP_DOCUMENT_SITE_VIEW_LABEL') . ' -',
 				'filter_site_view',
 				JHtml::_('select.options', $this->site_viewOptions, 'value', 'text', $this->state->get('filter.site_view'))
 			);

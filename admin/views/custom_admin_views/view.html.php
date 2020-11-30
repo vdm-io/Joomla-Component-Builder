@@ -189,7 +189,7 @@ class ComponentbuilderViewCustom_admin_views extends JViewLegacy
 		{
 			// Main Get Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_LABEL').' -',
+				'- Select ' . JText::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_LABEL') . ' -',
 				'filter_main_get',
 				JHtml::_('select.options', $this->main_getNameOptions, 'value', 'text', $this->state->get('filter.main_get'))
 			);
