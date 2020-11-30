@@ -216,7 +216,7 @@ class ComponentbuilderModelFieldtypes extends JModelList
 		{
 			ArrayHelper::toInteger($categoryId);
 			$categoryId = implode(',', $categoryId);
-			$query->where('a.category IN (' . $categoryId . ')');
+			$query->where('a.catid IN (' . $categoryId . ')');
 		}
 
 

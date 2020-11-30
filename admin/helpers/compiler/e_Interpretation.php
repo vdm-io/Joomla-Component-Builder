@@ -15399,7 +15399,8 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(3)
 				. "\$categoryId = implode(',', \$categoryId);";
 			$query .= PHP_EOL . $this->_t(3)
-				. "\$query->where('a.category IN (' . \$categoryId . ')');";
+				. "\$query->where('a." . $categoryCodeName
+				. " IN (' . \$categoryId . ')');";
 			$query .= PHP_EOL . $this->_t(2) . "}";
 			$query .= PHP_EOL;
 		}
