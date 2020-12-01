@@ -10509,6 +10509,40 @@ class Interpretation extends Fields
 				unset($this->customScriptBuilder['sql']);
 			}
 
+			// check if this component needs larger rules
+			// also check if the developer will allow this
+			// TODO still adding to GUI the needed switches and code
+			if (1)
+			{
+				$db .= PHP_EOL;
+				$db .= PHP_EOL . '--';
+				$db .= PHP_EOL
+					. '--' . $this->setLine(
+						__LINE__
+					)
+					. ' Always insure this column rules is large enough for all the access control values.';
+				$db .= PHP_EOL . '--';
+				$db .= PHP_EOL
+					. "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control.';";
+			}
+
+			// check if this component needs larger names
+			// also check if the developer will allow this
+			// TODO still adding to GUI the needed switches and code
+			if (1)
+			{
+				$db .= PHP_EOL;
+				$db .= PHP_EOL . '--';
+				$db .= PHP_EOL
+					. '--' . $this->setLine(
+						__LINE__
+					)
+					. ' Always insure this column name is large enough for long component and view names.';
+				$db .= PHP_EOL . '--';
+				$db .= PHP_EOL
+					. "ALTER TABLE `#__assets` CHANGE `name` `name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'The unique name for the asset.';";
+			}
+
 			return $db;
 		}
 
@@ -10539,6 +10573,44 @@ class Interpretation extends Fields
 					$this->placeholders
 				) . PHP_EOL;
 			unset($this->customScriptBuilder['sql_uninstall']);
+		}
+
+		// check if this component used larger rules
+		// now revert them back on uninstall
+		// TODO still adding to GUI the needed switches and code
+		if (1)
+		{
+			// https://github.com/joomla/joomla-cms/blob/3.10.0-alpha3/installation/sql/mysql/joomla.sql#L22
+			// Checked 1st December 2020
+			$db .= PHP_EOL;
+			$db .= PHP_EOL . '--';
+			$db .= PHP_EOL
+				. '--' . $this->setLine(
+					__LINE__
+				)
+				. ' Always insure this column rules is reversed to Joomla defaults on uninstall. (as on 1st Dec 2020)';
+			$db .= PHP_EOL . '--';
+			$db .= PHP_EOL
+				. "ALTER TABLE `#__assets` CHANGE `rules` `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.';";
+		}
+
+		// check if this component used larger rules
+		// now revert them back on uninstall
+		// TODO still adding to GUI the needed switches and code
+		if (1)
+		{
+			// https://github.com/joomla/joomla-cms/blob/3.10.0-alpha3/installation/sql/mysql/joomla.sql#L20
+			// Checked 1st December 2020
+			$db .= PHP_EOL;
+			$db .= PHP_EOL . '--';
+			$db .= PHP_EOL
+				. '--' . $this->setLine(
+					__LINE__
+				)
+				. ' Always insure this column name is reversed to Joomla defaults on uninstall. (as on 1st Dec 2020).';
+			$db .= PHP_EOL . '--';
+			$db .= PHP_EOL
+				. "ALTER TABLE `#__assets` CHANGE `name` `name` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'The unique name for the asset.';";
 		}
 
 		return $db;
@@ -17660,7 +17732,9 @@ class Interpretation extends Fields
 							. "protected function getThe" . $filter['function']
 							. "Selections()";
 						$function[] = $this->_t(1) . "{";
-						$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+						$function[] = $this->_t(2) . "//" . $this->setLine(
+								__LINE__
+							)
 							. " Get a db connection.";
 					}
 					else
@@ -17762,7 +17836,6 @@ class Interpretation extends Fields
 					$function[] = $this->_t(3) . "foreach (\$results as \$"
 						. $filter['code'] . ")";
 					$function[] = $this->_t(3) . "{";
-
 
 					// check if translated value is used
 					if ($translation)

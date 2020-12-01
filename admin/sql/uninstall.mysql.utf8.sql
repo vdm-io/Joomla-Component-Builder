@@ -47,3 +47,14 @@ DROP TABLE IF EXISTS `#__componentbuilder_joomla_plugin_updates`;
 DROP TABLE IF EXISTS `#__componentbuilder_joomla_plugin_files_folders_urls`;
 
 DROP TABLE IF EXISTS `#__componentbuilder_external_code`;
+
+
+--
+-- Always insure this column rules is reversed to Joomla defaults on uninstall. (as on 1st Dec 2020)
+--
+ALTER TABLE `#__assets` CHANGE `rules` `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.';
+
+--
+-- Always insure this column name is reversed to Joomla defaults on uninstall. (as on 1st Dec 2020).
+--
+ALTER TABLE `#__assets` CHANGE `name` `name` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'The unique name for the asset.';
