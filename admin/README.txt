@@ -144,11 +144,11 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 1st December, 2020
++ *Last Build*: 3rd December, 2020
 + *Version*: 2.11.7
 + *Copyright*: Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **284731**
++ *Line count*: **285207**
 + *Field count*: **1537**
 + *File count*: **1799**
 + *Folder count*: **304**

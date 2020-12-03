@@ -393,12 +393,12 @@ class Fields extends Structure
 			// add metadata to the view
 			if (isset($view['metadata']) && $view['metadata'])
 			{
-				$this->metadataBuilder[$nameSingleCode] = $nameSingleCode;
+				$this->metadataBuilder[$nameSingleCode] = $nameListCode;
 			}
 			// add access to the view
 			if (isset($view['access']) && $view['access'])
 			{
-				$this->accessBuilder[$nameSingleCode] = $nameSingleCode;
+				$this->accessBuilder[$nameSingleCode] = $nameListCode;
 			}
 			// main lang prefix
 			$langView  = $this->langPrefix . '_'
@@ -5628,7 +5628,7 @@ class Fields extends Structure
 				$field_filter_sets[] = $this->_t(3) . 'type="category"';
 				$field_filter_sets[] = $this->_t(3) . 'name="category_id"';
 				$field_filter_sets[] = $this->_t(3)
-					. 'label="JOPTION_FILTER_CATEGORY"';
+					. 'label="' . $this->categoryBuilder[$nameListCode]['name'] . '"';
 				$field_filter_sets[] = $this->_t(3)
 					. 'description="JOPTION_FILTER_CATEGORY_DESC"';
 				$field_filter_sets[] = $this->_t(3) . 'multiple="true"';
@@ -5654,9 +5654,9 @@ class Fields extends Structure
 				$field_filter_sets[] = $this->_t(3) . 'type="accesslevel"';
 				$field_filter_sets[] = $this->_t(3) . 'name="access"';
 				$field_filter_sets[] = $this->_t(3)
-					. 'label="JOPTION_FILTER_ACCESS"';
+					. 'label="JFIELD_ACCESS_LABEL"';
 				$field_filter_sets[] = $this->_t(3)
-					. 'description="JOPTION_FILTER_ACCESS_DESC"';
+					. 'description="JFIELD_ACCESS_DESC"';
 				$field_filter_sets[] = $this->_t(3) . 'multiple="true"';
 				$field_filter_sets[] = $this->_t(3)
 					. 'class="multipleAccessLevels"';

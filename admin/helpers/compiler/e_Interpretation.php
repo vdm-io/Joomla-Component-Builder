@@ -10581,7 +10581,7 @@ class Interpretation extends Fields
 		if (1)
 		{
 			// https://github.com/joomla/joomla-cms/blob/3.10.0-alpha3/installation/sql/mysql/joomla.sql#L22
-			// Checked 1st December 2020
+			// Checked 1st December 2020 (let us know if this changes)
 			$db .= PHP_EOL;
 			$db .= PHP_EOL . '--';
 			$db .= PHP_EOL
@@ -10594,13 +10594,13 @@ class Interpretation extends Fields
 				. "ALTER TABLE `#__assets` CHANGE `rules` `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.';";
 		}
 
-		// check if this component used larger rules
+		// check if this component used larger names
 		// now revert them back on uninstall
 		// TODO still adding to GUI the needed switches and code
 		if (1)
 		{
 			// https://github.com/joomla/joomla-cms/blob/3.10.0-alpha3/installation/sql/mysql/joomla.sql#L20
-			// Checked 1st December 2020
+			// Checked 1st December 2020 (let us know if this changes)
 			$db .= PHP_EOL;
 			$db .= PHP_EOL . '--';
 			$db .= PHP_EOL
@@ -14310,14 +14310,35 @@ class Interpretation extends Fields
 				. "\$query->select('ag.title AS access_level');";
 			$query .= PHP_EOL . $this->_t(2)
 				. "\$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');";
-			$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " Filter by access level.";
-			$query .= PHP_EOL . $this->_t(2)
-				. "if (\$access = \$this->getState('filter.access'))";
-			$query .= PHP_EOL . $this->_t(2) . "{";
-			$query .= PHP_EOL . $this->_t(3)
-				. "\$query->where('a.access = ' . (int) \$access);";
-			$query .= PHP_EOL . $this->_t(2) . "}";
+			// check if the access field was over ridden
+			if (!isset($this->fieldsNames[$nameSingleCode]['access']))
+			{
+				// component helper name
+				$Helper = $this->fileContentStatic[$this->hhh . 'Component'
+					. $this->hhh] . 'Helper';
+				// load the access filter query code
+				$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
+					. " Filter by access level.";
+				$query .= PHP_EOL . $this->_t(2)
+					. "\$_access = \$this->getState('filter.access');";
+				$query .= PHP_EOL . $this->_t(2) . "if (\$_access && is_numeric(\$_access))";
+				$query .= PHP_EOL . $this->_t(2) . "{";
+				$query .= PHP_EOL . $this->_t(3)
+					. "\$query->where('a.access = ' . (int) \$_access);";
+				$query .= PHP_EOL . $this->_t(2) . "}";
+				$query .= PHP_EOL . $this->_t(2) . "elseif ("
+					. $Helper . "::checkArray(\$_access))";
+				$query .= PHP_EOL . $this->_t(2) . "{";
+				$query .= PHP_EOL . $this->_t(3) . "//"
+					. $this->setLine(__LINE__) . " Secure the array for the query";
+				$query .= PHP_EOL . $this->_t(3) . "\$_access = ArrayHelper::toInteger(\$_access);";
+				$query .= PHP_EOL . $this->_t(3) . "//"
+					. $this->setLine(__LINE__) . " Filter by the Access Array.";
+				$query .= PHP_EOL . $this->_t(3)
+					. "\$query->where('a.access IN (' . implode(',', \$_access) . ')');";
+				$query .= PHP_EOL . $this->_t(2) . "}";
+			}
+			// TODO the following will fight against the above access filter
 			$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Implement View Level Access";
 			$query .= PHP_EOL . $this->_t(2)
@@ -14733,7 +14754,7 @@ class Interpretation extends Fields
 					. "\$pks = \$input->post->get('cid', array(), 'array');";
 				$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 					. " Sanitize the input";
-				$method[] = $this->_t(3) . "ArrayHelper::toInteger(\$pks);";
+				$method[] = $this->_t(3) . "\$pks = ArrayHelper::toInteger(\$pks);";
 				$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 					. " convert to string";
 				$method[] = $this->_t(3) . "\$ids = implode('_', \$pks);";
@@ -15075,7 +15096,7 @@ class Interpretation extends Fields
 				. "\$pks = \$input->post->get('cid', array(), 'array');";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Sanitize the input";
-			$method[] = $this->_t(3) . "ArrayHelper::toInteger(\$pks);";
+			$method[] = $this->_t(3) . "\$pks = ArrayHelper::toInteger(\$pks);";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Get the model";
 			$method[] = $this->_t(3) . "\$model = \$this->getModel('"
@@ -15415,14 +15436,35 @@ class Interpretation extends Fields
 				. "\$query->select('ag.title AS access_level');";
 			$query .= PHP_EOL . $this->_t(2)
 				. "\$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');";
-			$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " Filter by access level.";
-			$query .= PHP_EOL . $this->_t(2)
-				. "if (\$access = \$this->getState('filter.access'))";
-			$query .= PHP_EOL . $this->_t(2) . "{";
-			$query .= PHP_EOL . $this->_t(3)
-				. "\$query->where('a.access = ' . (int) \$access);";
-			$query .= PHP_EOL . $this->_t(2) . "}";
+			// check if the access field was over ridden
+			if (!isset($this->fieldsNames[$nameSingleCode]['access']))
+			{
+				// component helper name
+				$Helper = $this->fileContentStatic[$this->hhh . 'Component'
+					. $this->hhh] . 'Helper';
+				// load the access filter query code
+				$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
+					. " Filter by access level.";
+				$query .= PHP_EOL . $this->_t(2)
+					. "\$_access = \$this->getState('filter.access');";
+				$query .= PHP_EOL . $this->_t(2) . "if (\$_access && is_numeric(\$_access))";
+				$query .= PHP_EOL . $this->_t(2) . "{";
+				$query .= PHP_EOL . $this->_t(3)
+					. "\$query->where('a.access = ' . (int) \$_access);";
+				$query .= PHP_EOL . $this->_t(2) . "}";
+				$query .= PHP_EOL . $this->_t(2) . "elseif ("
+					. $Helper . "::checkArray(\$_access))";
+				$query .= PHP_EOL . $this->_t(2) . "{";
+				$query .= PHP_EOL . $this->_t(3) . "//"
+					. $this->setLine(__LINE__) . " Secure the array for the query";
+				$query .= PHP_EOL . $this->_t(3) . "\$_access = ArrayHelper::toInteger(\$_access);";
+				$query .= PHP_EOL . $this->_t(3) . "//"
+					. $this->setLine(__LINE__) . " Filter by the Access Array.";
+				$query .= PHP_EOL . $this->_t(3)
+					. "\$query->where('a.access IN (' . implode(',', \$_access) . ')');";
+				$query .= PHP_EOL . $this->_t(2) . "}";
+			}
+			// TODO the following will fight against the above access filter
 			$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Implement View Level Access";
 			$query .= PHP_EOL . $this->_t(2)
@@ -15467,7 +15509,7 @@ class Interpretation extends Fields
 				. "elseif (is_array(\$categoryId))";
 			$query .= PHP_EOL . $this->_t(2) . "{";
 			$query .= PHP_EOL . $this->_t(3)
-				. "ArrayHelper::toInteger(\$categoryId);";
+				. "\$categoryId = ArrayHelper::toInteger(\$categoryId);";
 			$query .= PHP_EOL . $this->_t(3)
 				. "\$categoryId = implode(',', \$categoryId);";
 			$query .= PHP_EOL . $this->_t(3)
@@ -20259,12 +20301,13 @@ class Interpretation extends Fields
 	/**
 	 * set the filter fields
 	 *
-	 * @param   string  $nameListCode  The list view name
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
 	 *
 	 * @return  string The code for the filter fields array
 	 *
 	 */
-	public function setFilterFieldsArray(&$nameListCode)
+	public function setFilterFieldsArray(&$nameSingleCode, &$nameListCode)
 	{
 		// keep track of all fields already added
 		$donelist = array('id'         => true, 'search' => true,
@@ -20273,9 +20316,9 @@ class Interpretation extends Fields
 		// default filter fields
 		$fields = "'a.id','id'";
 		$fields .= "," . PHP_EOL . $this->_t(4) . "'a.published','published'";
-		if (isset($this->accessBuilder[$nameListCode])
+		if (isset($this->accessBuilder[$nameSingleCode])
 			&& ComponentbuilderHelper::checkString(
-				$this->accessBuilder[$nameListCode]
+				$this->accessBuilder[$nameSingleCode]
 			))
 		{
 			$fields .= "," . PHP_EOL . $this->_t(4) . "'a.access','access'";
@@ -20381,12 +20424,13 @@ class Interpretation extends Fields
 	/**
 	 * set the sotred ids
 	 *
-	 * @param   string  $nameListCode  The list view name
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
 	 *
 	 * @return  string The code for the populate state
 	 *
 	 */
-	public function setStoredId(&$nameListCode)
+	public function setStoredId(&$nameSingleCode, &$nameListCode)
 	{
 		// keep track of all fields already added
 		$donelist = array('id'         => true, 'search' => true,
@@ -20400,9 +20444,9 @@ class Interpretation extends Fields
 			. "\$id .= ':' . \$this->getState('filter.search');";
 		$stored .= PHP_EOL . $this->_t(2)
 			. "\$id .= ':' . \$this->getState('filter.published');";
-		if (isset($this->accessBuilder[$nameListCode])
+		if (isset($this->accessBuilder[$nameSingleCode])
 			&& ComponentbuilderHelper::checkString(
-				$this->accessBuilder[$nameListCode]
+				$this->accessBuilder[$nameSingleCode]
 			))
 		{
 			$stored .= PHP_EOL . $this->_t(2)
@@ -21895,25 +21939,91 @@ class Interpretation extends Fields
 	{
 		// check that the filter type is the new filter option
 		if (isset($this->adminFilterType[$nameListCode])
-			&& $this->adminFilterType[$nameListCode] == 2
-			&& isset($this->filterBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
-				$this->filterBuilder[$nameListCode]
-			))
+			&& $this->adminFilterType[$nameListCode] == 2)
 		{
-			foreach ($this->filterBuilder[$nameListCode] as $filter)
+			// add category switch
+			$add_category = false;
+			if (isset($this->categoryBuilder[$nameListCode])
+				&& ComponentbuilderHelper::checkArray(
+					$this->categoryBuilder[$nameListCode]
+				)
+				&& isset($this->categoryBuilder[$nameListCode]['extension']))
 			{
-				// we need this only for filters that are multi
-				if (isset($filter['multi'])
-					&& $filter['multi'] == 2)
+				// is found so add it
+				$add_category = true;
+			}
+			// add accessLevels switch
+			$add_access_levels = false;
+			if (in_array($nameListCode, $this->accessBuilder))
+			{
+				// is found so add it
+				$add_access_levels = true;
+			}
+			// check if this view have filters
+			if (isset($this->filterBuilder[$nameListCode])
+				&& ComponentbuilderHelper::checkArray(
+					$this->filterBuilder[$nameListCode]
+				))
+			{
+				foreach ($this->filterBuilder[$nameListCode] as $filter)
 				{
-					// add the header
-					$headers[]
-						= 'JHtml::_(\'formbehavior.chosen\', \'.multiple'
-						. $filter['class']
-						. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
-						. $filter['lang_select'] . '\') . \' -\'));';
+					// we need this only for filters that are multi
+					if (isset($filter['multi'])
+						&& $filter['multi'] == 2)
+					{
+						// add the header
+						$headers[]
+							= 'JHtml::_(\'formbehavior.chosen\', \'.multiple'
+							. $filter['class']
+							. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
+							. $filter['lang_select'] . '\') . \' -\'));';
+						// check if this was an access field
+						if ($filter['type'] === 'accesslevel')
+						{
+							// already added here so no need to add again
+							$add_access_levels = false;
+						}
+					}
+					elseif ($add_category && $filter['type'] === 'category')
+					{
+						// add the header
+						$headers[]
+							= 'JHtml::_(\'formbehavior.chosen\', \'.multipleCategories'
+							. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
+							. $filter['lang_select'] . '\') . \' -\'));';
+						// already added here so no need to add again
+						$add_category = false;
+					}
 				}
+			}
+			// add category if not already added
+			if ($add_category)
+			{
+				// add the header
+				$headers[]
+					= 'JHtml::_(\'formbehavior.chosen\', \'.multipleCategories'
+					. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
+					. $this->categoryBuilder[$nameListCode]['name']
+					. '\') . \' -\'));';
+			}
+			// add accessLevels if not already added
+			if ($add_access_levels)
+			{
+				// set the language strings for selection
+				$filter_name_select      = 'Select Access';
+				$filter_name_select_lang = $this->langPrefix . '_FILTER_'
+					. ComponentbuilderHelper::safeString(
+						$filter_name_select, 'U'
+					);
+				// and to translation
+				$this->setLangContent(
+					$this->lang, $filter_name_select_lang, $filter_name_select
+				);
+				// add the header
+				$headers[]
+					= 'JHtml::_(\'formbehavior.chosen\', \'.multipleAccessLevels'
+					. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
+					. $filter_name_select_lang . '\') . \' -\'));';
 			}
 		}
 	}

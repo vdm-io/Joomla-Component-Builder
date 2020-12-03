@@ -819,13 +819,16 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'FILTER_FIELDS' . $this->hhh]
 						= $this->setFilterFieldsArray(
+						$nameSingleCode,
 						$nameListCode
 					);
 
 					// STOREDID <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameListCode][$this->hhh
 					. 'STOREDID' . $this->hhh]
-						= $this->setStoredId($nameListCode);
+						= $this->setStoredId(
+						$nameSingleCode, $nameListCode
+					);
 
 					// POPULATESTATE <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameListCode][$this->hhh

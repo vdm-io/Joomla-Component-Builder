@@ -2929,7 +2929,7 @@ class Structure extends Get
 	/**
 	 * set the Joomla Version Data
 	 *
-	 * @return  oject The version data
+	 * @return  object The version data
 	 *
 	 */
 	private function setJoomlaVersionData()
