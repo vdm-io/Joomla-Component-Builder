@@ -46,9 +46,7 @@ class ###Component###View###SView### extends JViewLegacy
 	 * Setting the toolbar
 	 */
 	protected function addToolBar()
-	{
-		// adding the joomla toolbar to the front
-		JLoader::register('JToolbarHelper', JPATH_ADMINISTRATOR.'/includes/toolbar.php');###SITE_CUSTOM_BUTTONS###
+	{###SITE_CUSTOM_BUTTONS###
 
 		// set help url for this view if found
 		$help_url = ###Component###Helper::getHelpUrl('###sview###');

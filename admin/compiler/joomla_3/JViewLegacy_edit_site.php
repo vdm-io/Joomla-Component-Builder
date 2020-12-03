@@ -82,10 +82,7 @@ class ###Component###View###View### extends JViewLegacy
 	 * Setting the toolbar
 	 */
 	protected function addToolBar()
-	{
-		// adding the joomla edit toolbar to the front
-		JLoader::register('JToolbarHelper', JPATH_ADMINISTRATOR.'/includes/toolbar.php');
-		###ADDTOOLBAR###
+	{###ADDTOOLBAR###
 		// now initiate the toolbar
 		$this->toolbar = JToolbar::getInstance();
 	}
