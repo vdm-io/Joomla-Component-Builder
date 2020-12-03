@@ -34,6 +34,10 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
@@ -184,62 +188,6 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Companyname Selection
-		$this->companynameOptions = $this->getTheCompanynameSelections();
-		// We do some sanitation for Companyname filter
-		if (ComponentbuilderHelper::checkArray($this->companynameOptions) &&
-			isset($this->companynameOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->companynameOptions[0]->value))
-		{
-			unset($this->companynameOptions[0]);
-		}
-		// Only load Companyname filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->companynameOptions))
-		{
-			// Companyname Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_LABEL').' -',
-				'filter_companyname',
-				JHtml::_('select.options', $this->companynameOptions, 'value', 'text', $this->state->get('filter.companyname'))
-			);
-		}
-
-		// Set Author Selection
-		$this->authorOptions = $this->getTheAuthorSelections();
-		// We do some sanitation for Author filter
-		if (ComponentbuilderHelper::checkArray($this->authorOptions) &&
-			isset($this->authorOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->authorOptions[0]->value))
-		{
-			unset($this->authorOptions[0]);
-		}
-		// Only load Author filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->authorOptions))
-		{
-			// Author Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_LABEL').' -',
-				'filter_author',
-				JHtml::_('select.options', $this->authorOptions, 'value', 'text', $this->state->get('filter.author'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -263,6 +211,15 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 		// Only load Companyname batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Companyname Selection
+			$this->companynameOptions = JFormHelper::loadFieldType('joomlacomponentsfiltercompanyname')->options;
+			// We do some sanitation for Companyname filter
+			if (ComponentbuilderHelper::checkArray($this->companynameOptions) &&
+				isset($this->companynameOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->companynameOptions[0]->value))
+			{
+				unset($this->companynameOptions[0]);
+			}
 			// Companyname Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_LABEL').' -',
@@ -274,6 +231,15 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 		// Only load Author batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Author Selection
+			$this->authorOptions = JFormHelper::loadFieldType('joomlacomponentsfilterauthor')->options;
+			// We do some sanitation for Author filter
+			if (ComponentbuilderHelper::checkArray($this->authorOptions) &&
+				isset($this->authorOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->authorOptions[0]->value))
+			{
+				unset($this->authorOptions[0]);
+			}
 			// Author Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_LABEL').' -',
@@ -332,69 +298,5 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 			'a.companyname' => JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	}
-
-	protected function getTheCompanynameSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('companyname'));
-		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
-		$query->order($db->quoteName('companyname') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $companyname)
-			{
-				// Now add the companyname and its text to the options array
-				$_filter[] = JHtml::_('select.option', $companyname, $companyname);
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
-	protected function getTheAuthorSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('author'));
-		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
-		$query->order($db->quoteName('author') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $author)
-			{
-				// Now add the author and its text to the options array
-				$_filter[] = JHtml::_('select.option', $author, $author);
-			}
-			return $_filter;
-		}
-		return false;
 	}
 }

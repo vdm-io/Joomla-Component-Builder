@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addrulepath="/administrator/components/com_componentbuilder/models/rules"
+	addfieldpath="/administrator/components/com_componentbuilder/models/fields"
+>
+	<fields name="filter">
+		<field
+			type="text"
+			name="search"
+			inputmode="search"
+			label="COM_COMPONENTBUILDER_FILTER_SEARCH"
+			description="COM_COMPONENTBUILDER_FILTER_SEARCH_ADMIN_VIEWS"
+			hint="JSEARCH_FILTER"
+		/>
+		<field
+			type="status"
+			name="published"
+			label="COM_COMPONENTBUILDER_FILTER_PUBLISHED"
+			description="COM_COMPONENTBUILDER_FILTER_PUBLISHED_ADMIN_VIEWS"
+			onchange="this.form.submit();"
+		>
+			<option value="">JOPTION_SELECT_PUBLISHED</option>
+		</field>
+		<field
+			type="accesslevel"
+			name="access"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			multiple="true"
+			class="multipleAccessLevels"
+			onchange="this.form.submit();"
+		/>
+		<field
+			type="adminviewsfilteraddfadein"
+			name="add_fadein"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_FADEIN_LABEL"
+			multiple="false"
+			onchange="this.form.submit();"
+		/>
+		<field
+			type="adminviewsfiltertype"
+			name="type"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_TYPE_LABEL"
+			class="multipleAdminviewsfiltertype"
+			multiple="true"
+			onchange="this.form.submit();"
+		/>
+		<field
+			type="adminviewsfilteraddcustombutton"
+			name="add_custom_button"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL"
+			multiple="false"
+			onchange="this.form.submit();"
+		/>
+		<field
+			type="adminviewsfilteraddphpajax"
+			name="add_php_ajax"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AJAX_LABEL"
+			multiple="false"
+			onchange="this.form.submit();"
+		/>
+		<field
+			type="adminviewsfilteraddcustomimport"
+			name="add_custom_import"
+			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL"
+			multiple="false"
+			onchange="this.form.submit();"
+		/>
+		<input type="hidden" name="form_submited" value="1"/>
+	</fields>
+
+	<fields name="list">
+		<field
+			name="fullordering"
+			type="list"
+			label="COM_CONTENT_LIST_FULL_ORDERING"
+			description="COM_CONTENT_LIST_FULL_ORDERING_DESC"
+			onchange="this.form.submit();"
+			default="a.id desc"
+			validate="options"
+		>
+			<option value="">JGLOBAL_SORT_BY</option>
+			<option value="a.ordering ASC">JGRID_HEADING_ORDERING_ASC</option>
+			<option value="a.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>
+			<option value="a.published ASC">JSTATUS_ASC</option>
+			<option value="a.published DESC">JSTATUS_DESC</option>
+			<option value="a.system_name ASC">COM_COMPONENTBUILDER_FILTER_SYSTEM_NAME_ASCENDING</option>
+			<option value="a.system_name DESC">COM_COMPONENTBUILDER_FILTER_SYSTEM_NAME_DESCENDING</option>
+			<option value="a.name_single ASC">COM_COMPONENTBUILDER_FILTER_NAME_SINGLE_ASCENDING</option>
+			<option value="a.name_single DESC">COM_COMPONENTBUILDER_FILTER_NAME_SINGLE_DESCENDING</option>
+			<option value="a.short_description ASC">COM_COMPONENTBUILDER_FILTER_SHORT_DESCRIPTION_ASCENDING</option>
+			<option value="a.short_description DESC">COM_COMPONENTBUILDER_FILTER_SHORT_DESCRIPTION_DESCENDING</option>
+			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
+			<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
+		</field>
+
+		<field
+			name="limit"
+			type="limitbox"
+			label="COM_CONTENT_LIST_LIMIT"
+			description="COM_CONTENT_LIST_LIMIT_DESC"
+			class="input-mini"
+			default="25"
+			onchange="this.form.submit();"
+		/>
+	</fields>
+</form>

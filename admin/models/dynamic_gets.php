@@ -60,8 +60,15 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 			$this->context .= '.' . $layout;
 		}
 
+		// Check if the form was submitted
+		$formSubmited = $app->input->post->get('form_submited');
+
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
+		if ($formSubmited)
+		{
+			$access = $app->input->post->get('access');
+			$this->setState('filter.access', $access);
+		}
 
 		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
@@ -79,13 +86,25 @@ class ComponentbuilderModelDynamic_gets extends JModelList
 		$this->setState('filter.search', $search);
 
 		$main_source = $this->getUserStateFromRequest($this->context . '.filter.main_source', 'filter_main_source');
-		$this->setState('filter.main_source', $main_source);
+		if ($formSubmited)
+		{
+			$main_source = $app->input->post->get('main_source');
+			$this->setState('filter.main_source', $main_source);
+		}
 
 		$gettype = $this->getUserStateFromRequest($this->context . '.filter.gettype', 'filter_gettype');
-		$this->setState('filter.gettype', $gettype);
+		if ($formSubmited)
+		{
+			$gettype = $app->input->post->get('gettype');
+			$this->setState('filter.gettype', $gettype);
+		}
 
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
-		$this->setState('filter.name', $name);
+		if ($formSubmited)
+		{
+			$name = $app->input->post->get('name');
+			$this->setState('filter.name', $name);
+		}
 
 		// List state information.
 		parent::populateState($ordering, $direction);

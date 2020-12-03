@@ -34,6 +34,10 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
@@ -159,122 +163,6 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Add Fadein Selection
-		$this->add_fadeinOptions = $this->getTheAdd_fadeinSelections();
-		// We do some sanitation for Add Fadein filter
-		if (ComponentbuilderHelper::checkArray($this->add_fadeinOptions) &&
-			isset($this->add_fadeinOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->add_fadeinOptions[0]->value))
-		{
-			unset($this->add_fadeinOptions[0]);
-		}
-		// Only load Add Fadein filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->add_fadeinOptions))
-		{
-			// Add Fadein Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_FADEIN_LABEL').' -',
-				'filter_add_fadein',
-				JHtml::_('select.options', $this->add_fadeinOptions, 'value', 'text', $this->state->get('filter.add_fadein'))
-			);
-		}
-
-		// Set Type Selection
-		$this->typeOptions = $this->getTheTypeSelections();
-		// We do some sanitation for Type filter
-		if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
-			isset($this->typeOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
-		{
-			unset($this->typeOptions[0]);
-		}
-		// Only load Type filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->typeOptions))
-		{
-			// Type Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_TYPE_LABEL').' -',
-				'filter_type',
-				JHtml::_('select.options', $this->typeOptions, 'value', 'text', $this->state->get('filter.type'))
-			);
-		}
-
-		// Set Add Custom Button Selection
-		$this->add_custom_buttonOptions = $this->getTheAdd_custom_buttonSelections();
-		// We do some sanitation for Add Custom Button filter
-		if (ComponentbuilderHelper::checkArray($this->add_custom_buttonOptions) &&
-			isset($this->add_custom_buttonOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->add_custom_buttonOptions[0]->value))
-		{
-			unset($this->add_custom_buttonOptions[0]);
-		}
-		// Only load Add Custom Button filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->add_custom_buttonOptions))
-		{
-			// Add Custom Button Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL').' -',
-				'filter_add_custom_button',
-				JHtml::_('select.options', $this->add_custom_buttonOptions, 'value', 'text', $this->state->get('filter.add_custom_button'))
-			);
-		}
-
-		// Set Add Php Ajax Selection
-		$this->add_php_ajaxOptions = $this->getTheAdd_php_ajaxSelections();
-		// We do some sanitation for Add Php Ajax filter
-		if (ComponentbuilderHelper::checkArray($this->add_php_ajaxOptions) &&
-			isset($this->add_php_ajaxOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->add_php_ajaxOptions[0]->value))
-		{
-			unset($this->add_php_ajaxOptions[0]);
-		}
-		// Only load Add Php Ajax filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->add_php_ajaxOptions))
-		{
-			// Add Php Ajax Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AJAX_LABEL').' -',
-				'filter_add_php_ajax',
-				JHtml::_('select.options', $this->add_php_ajaxOptions, 'value', 'text', $this->state->get('filter.add_php_ajax'))
-			);
-		}
-
-		// Set Add Custom Import Selection
-		$this->add_custom_importOptions = $this->getTheAdd_custom_importSelections();
-		// We do some sanitation for Add Custom Import filter
-		if (ComponentbuilderHelper::checkArray($this->add_custom_importOptions) &&
-			isset($this->add_custom_importOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->add_custom_importOptions[0]->value))
-		{
-			unset($this->add_custom_importOptions[0]);
-		}
-		// Only load Add Custom Import filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->add_custom_importOptions))
-		{
-			// Add Custom Import Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL').' -',
-				'filter_add_custom_import',
-				JHtml::_('select.options', $this->add_custom_importOptions, 'value', 'text', $this->state->get('filter.add_custom_import'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -298,6 +186,15 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 		// Only load Add Fadein batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Add Fadein Selection
+			$this->add_fadeinOptions = JFormHelper::loadFieldType('adminviewsfilteraddfadein')->options;
+			// We do some sanitation for Add Fadein filter
+			if (ComponentbuilderHelper::checkArray($this->add_fadeinOptions) &&
+				isset($this->add_fadeinOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->add_fadeinOptions[0]->value))
+			{
+				unset($this->add_fadeinOptions[0]);
+			}
 			// Add Fadein Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_FADEIN_LABEL').' -',
@@ -309,6 +206,15 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 		// Only load Type batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Type Selection
+			$this->typeOptions = JFormHelper::loadFieldType('adminviewsfiltertype')->options;
+			// We do some sanitation for Type filter
+			if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
+				isset($this->typeOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
+			{
+				unset($this->typeOptions[0]);
+			}
 			// Type Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_TYPE_LABEL').' -',
@@ -320,6 +226,15 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 		// Only load Add Custom Button batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Add Custom Button Selection
+			$this->add_custom_buttonOptions = JFormHelper::loadFieldType('adminviewsfilteraddcustombutton')->options;
+			// We do some sanitation for Add Custom Button filter
+			if (ComponentbuilderHelper::checkArray($this->add_custom_buttonOptions) &&
+				isset($this->add_custom_buttonOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->add_custom_buttonOptions[0]->value))
+			{
+				unset($this->add_custom_buttonOptions[0]);
+			}
 			// Add Custom Button Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL').' -',
@@ -331,6 +246,15 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 		// Only load Add Php Ajax batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Add Php Ajax Selection
+			$this->add_php_ajaxOptions = JFormHelper::loadFieldType('adminviewsfilteraddphpajax')->options;
+			// We do some sanitation for Add Php Ajax filter
+			if (ComponentbuilderHelper::checkArray($this->add_php_ajaxOptions) &&
+				isset($this->add_php_ajaxOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->add_php_ajaxOptions[0]->value))
+			{
+				unset($this->add_php_ajaxOptions[0]);
+			}
 			// Add Php Ajax Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AJAX_LABEL').' -',
@@ -342,6 +266,15 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 		// Only load Add Custom Import batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Add Custom Import Selection
+			$this->add_custom_importOptions = JFormHelper::loadFieldType('adminviewsfilteraddcustomimport')->options;
+			// We do some sanitation for Add Custom Import filter
+			if (ComponentbuilderHelper::checkArray($this->add_custom_importOptions) &&
+				isset($this->add_custom_importOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->add_custom_importOptions[0]->value))
+			{
+				unset($this->add_custom_importOptions[0]);
+			}
 			// Add Custom Import Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL').' -',
@@ -399,185 +332,5 @@ class ComponentbuilderViewAdmin_views extends JViewLegacy
 			'a.short_description' => JText::_('COM_COMPONENTBUILDER_ADMIN_VIEW_SHORT_DESCRIPTION_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	}
-
-	protected function getTheAdd_fadeinSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('add_fadein'));
-		$query->from($db->quoteName('#__componentbuilder_admin_view'));
-		$query->order($db->quoteName('add_fadein') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $add_fadein)
-			{
-				// Translate the add_fadein selection
-				$text = $model->selectionTranslation($add_fadein,'add_fadein');
-				// Now add the add_fadein and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_fadein, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
-	protected function getTheTypeSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('type'));
-		$query->from($db->quoteName('#__componentbuilder_admin_view'));
-		$query->order($db->quoteName('type') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $type)
-			{
-				// Translate the type selection
-				$text = $model->selectionTranslation($type,'type');
-				// Now add the type and its text to the options array
-				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
-	protected function getTheAdd_custom_buttonSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('add_custom_button'));
-		$query->from($db->quoteName('#__componentbuilder_admin_view'));
-		$query->order($db->quoteName('add_custom_button') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $add_custom_button)
-			{
-				// Translate the add_custom_button selection
-				$text = $model->selectionTranslation($add_custom_button,'add_custom_button');
-				// Now add the add_custom_button and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_custom_button, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
-	protected function getTheAdd_php_ajaxSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('add_php_ajax'));
-		$query->from($db->quoteName('#__componentbuilder_admin_view'));
-		$query->order($db->quoteName('add_php_ajax') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $add_php_ajax)
-			{
-				// Translate the add_php_ajax selection
-				$text = $model->selectionTranslation($add_php_ajax,'add_php_ajax');
-				// Now add the add_php_ajax and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_php_ajax, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
-	protected function getTheAdd_custom_importSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('add_custom_import'));
-		$query->from($db->quoteName('#__componentbuilder_admin_view'));
-		$query->order($db->quoteName('add_custom_import') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $add_custom_import)
-			{
-				// Translate the add_custom_import selection
-				$text = $model->selectionTranslation($add_custom_import,'add_custom_import');
-				// Now add the add_custom_import and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_custom_import, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
 	}
 }

@@ -66,8 +66,15 @@ class ComponentbuilderModelFields extends JModelList
 			$this->context .= '.' . $layout;
 		}
 
+		// Check if the form was submitted
+		$formSubmited = $app->input->post->get('form_submited');
+
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
+		if ($formSubmited)
+		{
+			$access = $app->input->post->get('access');
+			$this->setState('filter.access', $access);
+		}
 
 		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
@@ -85,19 +92,39 @@ class ComponentbuilderModelFields extends JModelList
 		$this->setState('filter.search', $search);
 
 		$fieldtype = $this->getUserStateFromRequest($this->context . '.filter.fieldtype', 'filter_fieldtype');
-		$this->setState('filter.fieldtype', $fieldtype);
+		if ($formSubmited)
+		{
+			$fieldtype = $app->input->post->get('fieldtype');
+			$this->setState('filter.fieldtype', $fieldtype);
+		}
 
 		$datatype = $this->getUserStateFromRequest($this->context . '.filter.datatype', 'filter_datatype');
-		$this->setState('filter.datatype', $datatype);
+		if ($formSubmited)
+		{
+			$datatype = $app->input->post->get('datatype');
+			$this->setState('filter.datatype', $datatype);
+		}
 
 		$indexes = $this->getUserStateFromRequest($this->context . '.filter.indexes', 'filter_indexes');
-		$this->setState('filter.indexes', $indexes);
+		if ($formSubmited)
+		{
+			$indexes = $app->input->post->get('indexes');
+			$this->setState('filter.indexes', $indexes);
+		}
 
 		$null_switch = $this->getUserStateFromRequest($this->context . '.filter.null_switch', 'filter_null_switch');
-		$this->setState('filter.null_switch', $null_switch);
+		if ($formSubmited)
+		{
+			$null_switch = $app->input->post->get('null_switch');
+			$this->setState('filter.null_switch', $null_switch);
+		}
 
 		$store = $this->getUserStateFromRequest($this->context . '.filter.store', 'filter_store');
-		$this->setState('filter.store', $store);
+		if ($formSubmited)
+		{
+			$store = $app->input->post->get('store');
+			$this->setState('filter.store', $store);
+		}
 
 		$category = $app->getUserStateFromRequest($this->context . '.filter.category', 'filter_category');
 		$this->setState('filter.category', $category);
@@ -106,10 +133,18 @@ class ComponentbuilderModelFields extends JModelList
 		$this->setState('filter.category_id', $categoryId);
 
 		$catid = $this->getUserStateFromRequest($this->context . '.filter.catid', 'filter_catid');
-		$this->setState('filter.catid', $catid);
+		if ($formSubmited)
+		{
+			$catid = $app->input->post->get('catid');
+			$this->setState('filter.catid', $catid);
+		}
 
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
-		$this->setState('filter.name', $name);
+		if ($formSubmited)
+		{
+			$name = $app->input->post->get('name');
+			$this->setState('filter.name', $name);
+		}
 
 		// List state information.
 		parent::populateState($ordering, $direction);

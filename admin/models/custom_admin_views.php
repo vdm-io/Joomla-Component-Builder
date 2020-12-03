@@ -63,8 +63,15 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 			$this->context .= '.' . $layout;
 		}
 
+		// Check if the form was submitted
+		$formSubmited = $app->input->post->get('form_submited');
+
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
+		if ($formSubmited)
+		{
+			$access = $app->input->post->get('access');
+			$this->setState('filter.access', $access);
+		}
 
 		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
@@ -82,22 +89,46 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 		$this->setState('filter.search', $search);
 
 		$main_get = $this->getUserStateFromRequest($this->context . '.filter.main_get', 'filter_main_get');
-		$this->setState('filter.main_get', $main_get);
+		if ($formSubmited)
+		{
+			$main_get = $app->input->post->get('main_get');
+			$this->setState('filter.main_get', $main_get);
+		}
 
 		$add_php_ajax = $this->getUserStateFromRequest($this->context . '.filter.add_php_ajax', 'filter_add_php_ajax');
-		$this->setState('filter.add_php_ajax', $add_php_ajax);
+		if ($formSubmited)
+		{
+			$add_php_ajax = $app->input->post->get('add_php_ajax');
+			$this->setState('filter.add_php_ajax', $add_php_ajax);
+		}
 
 		$add_custom_button = $this->getUserStateFromRequest($this->context . '.filter.add_custom_button', 'filter_add_custom_button');
-		$this->setState('filter.add_custom_button', $add_custom_button);
+		if ($formSubmited)
+		{
+			$add_custom_button = $app->input->post->get('add_custom_button');
+			$this->setState('filter.add_custom_button', $add_custom_button);
+		}
 
 		$system_name = $this->getUserStateFromRequest($this->context . '.filter.system_name', 'filter_system_name');
-		$this->setState('filter.system_name', $system_name);
+		if ($formSubmited)
+		{
+			$system_name = $app->input->post->get('system_name');
+			$this->setState('filter.system_name', $system_name);
+		}
 
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
-		$this->setState('filter.name', $name);
+		if ($formSubmited)
+		{
+			$name = $app->input->post->get('name');
+			$this->setState('filter.name', $name);
+		}
 
 		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
-		$this->setState('filter.description', $description);
+		if ($formSubmited)
+		{
+			$description = $app->input->post->get('description');
+			$this->setState('filter.description', $description);
+		}
 
 		// List state information.
 		parent::populateState($ordering, $direction);

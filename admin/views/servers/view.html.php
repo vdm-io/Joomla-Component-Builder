@@ -34,6 +34,10 @@ class ComponentbuilderViewServers extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
@@ -154,62 +158,6 @@ class ComponentbuilderViewServers extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Name Selection
-		$this->nameOptions = $this->getTheNameSelections();
-		// We do some sanitation for Name filter
-		if (ComponentbuilderHelper::checkArray($this->nameOptions) &&
-			isset($this->nameOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->nameOptions[0]->value))
-		{
-			unset($this->nameOptions[0]);
-		}
-		// Only load Name filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->nameOptions))
-		{
-			// Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_SERVER_NAME_LABEL').' -',
-				'filter_name',
-				JHtml::_('select.options', $this->nameOptions, 'value', 'text', $this->state->get('filter.name'))
-			);
-		}
-
-		// Set Protocol Selection
-		$this->protocolOptions = $this->getTheProtocolSelections();
-		// We do some sanitation for Protocol filter
-		if (ComponentbuilderHelper::checkArray($this->protocolOptions) &&
-			isset($this->protocolOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->protocolOptions[0]->value))
-		{
-			unset($this->protocolOptions[0]);
-		}
-		// Only load Protocol filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->protocolOptions))
-		{
-			// Protocol Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_SERVER_PROTOCOL_LABEL').' -',
-				'filter_protocol',
-				JHtml::_('select.options', $this->protocolOptions, 'value', 'text', $this->state->get('filter.protocol'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -233,6 +181,15 @@ class ComponentbuilderViewServers extends JViewLegacy
 		// Only load Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Name Selection
+			$this->nameOptions = JFormHelper::loadFieldType('serversfiltername')->options;
+			// We do some sanitation for Name filter
+			if (ComponentbuilderHelper::checkArray($this->nameOptions) &&
+				isset($this->nameOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->nameOptions[0]->value))
+			{
+				unset($this->nameOptions[0]);
+			}
 			// Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_SERVER_NAME_LABEL').' -',
@@ -244,6 +201,15 @@ class ComponentbuilderViewServers extends JViewLegacy
 		// Only load Protocol batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Protocol Selection
+			$this->protocolOptions = JFormHelper::loadFieldType('serversfilterprotocol')->options;
+			// We do some sanitation for Protocol filter
+			if (ComponentbuilderHelper::checkArray($this->protocolOptions) &&
+				isset($this->protocolOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->protocolOptions[0]->value))
+			{
+				unset($this->protocolOptions[0]);
+			}
 			// Protocol Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_SERVER_PROTOCOL_LABEL').' -',
@@ -300,73 +266,5 @@ class ComponentbuilderViewServers extends JViewLegacy
 			'a.protocol' => JText::_('COM_COMPONENTBUILDER_SERVER_PROTOCOL_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	}
-
-	protected function getTheNameSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('name'));
-		$query->from($db->quoteName('#__componentbuilder_server'));
-		$query->order($db->quoteName('name') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $name)
-			{
-				// Now add the name and its text to the options array
-				$_filter[] = JHtml::_('select.option', $name, $name);
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
-	protected function getTheProtocolSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('protocol'));
-		$query->from($db->quoteName('#__componentbuilder_server'));
-		$query->order($db->quoteName('protocol') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $protocol)
-			{
-				// Translate the protocol selection
-				$text = $model->selectionTranslation($protocol,'protocol');
-				// Now add the protocol and its text to the options array
-				$_filter[] = JHtml::_('select.option', $protocol, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
 	}
 }

@@ -34,6 +34,10 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
@@ -164,62 +168,6 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Class Extends Name Selection
-		$this->class_extendsNameOptions = JFormHelper::loadFieldType('Classextends')->options;
-		// We do some sanitation for Class Extends Name filter
-		if (ComponentbuilderHelper::checkArray($this->class_extendsNameOptions) &&
-			isset($this->class_extendsNameOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->class_extendsNameOptions[0]->value))
-		{
-			unset($this->class_extendsNameOptions[0]);
-		}
-		// Only load Class Extends Name filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->class_extendsNameOptions))
-		{
-			// Class Extends Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select ' . JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CLASS_EXTENDS_LABEL') . ' -',
-				'filter_class_extends',
-				JHtml::_('select.options', $this->class_extendsNameOptions, 'value', 'text', $this->state->get('filter.class_extends'))
-			);
-		}
-
-		// Set Joomla Plugin Group Name Selection
-		$this->joomla_plugin_groupNameOptions = JFormHelper::loadFieldType('Joomlaplugingroups')->options;
-		// We do some sanitation for Joomla Plugin Group Name filter
-		if (ComponentbuilderHelper::checkArray($this->joomla_plugin_groupNameOptions) &&
-			isset($this->joomla_plugin_groupNameOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->joomla_plugin_groupNameOptions[0]->value))
-		{
-			unset($this->joomla_plugin_groupNameOptions[0]);
-		}
-		// Only load Joomla Plugin Group Name filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->joomla_plugin_groupNameOptions))
-		{
-			// Joomla Plugin Group Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select ' . JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_JOOMLA_PLUGIN_GROUP_LABEL') . ' -',
-				'filter_joomla_plugin_group',
-				JHtml::_('select.options', $this->joomla_plugin_groupNameOptions, 'value', 'text', $this->state->get('filter.joomla_plugin_group'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -243,6 +191,15 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 		// Only load Class Extends Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Class Extends Name Selection
+			$this->class_extendsNameOptions = JFormHelper::loadFieldType('Classextends')->options;
+			// We do some sanitation for Class Extends Name filter
+			if (ComponentbuilderHelper::checkArray($this->class_extendsNameOptions) &&
+				isset($this->class_extendsNameOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->class_extendsNameOptions[0]->value))
+			{
+				unset($this->class_extendsNameOptions[0]);
+			}
 			// Class Extends Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_CLASS_EXTENDS_LABEL').' -',
@@ -254,6 +211,15 @@ class ComponentbuilderViewJoomla_plugins extends JViewLegacy
 		// Only load Joomla Plugin Group Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Joomla Plugin Group Name Selection
+			$this->joomla_plugin_groupNameOptions = JFormHelper::loadFieldType('Joomlaplugingroups')->options;
+			// We do some sanitation for Joomla Plugin Group Name filter
+			if (ComponentbuilderHelper::checkArray($this->joomla_plugin_groupNameOptions) &&
+				isset($this->joomla_plugin_groupNameOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->joomla_plugin_groupNameOptions[0]->value))
+			{
+				unset($this->joomla_plugin_groupNameOptions[0]);
+			}
 			// Joomla Plugin Group Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_JOOMLA_PLUGIN_JOOMLA_PLUGIN_GROUP_LABEL').' -',

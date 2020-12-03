@@ -62,8 +62,15 @@ class ComponentbuilderModelLibraries extends JModelList
 			$this->context .= '.' . $layout;
 		}
 
+		// Check if the form was submitted
+		$formSubmited = $app->input->post->get('form_submited');
+
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
+		if ($formSubmited)
+		{
+			$access = $app->input->post->get('access');
+			$this->setState('filter.access', $access);
+		}
 
 		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
@@ -81,19 +88,39 @@ class ComponentbuilderModelLibraries extends JModelList
 		$this->setState('filter.search', $search);
 
 		$target = $this->getUserStateFromRequest($this->context . '.filter.target', 'filter_target');
-		$this->setState('filter.target', $target);
+		if ($formSubmited)
+		{
+			$target = $app->input->post->get('target');
+			$this->setState('filter.target', $target);
+		}
 
 		$how = $this->getUserStateFromRequest($this->context . '.filter.how', 'filter_how');
-		$this->setState('filter.how', $how);
+		if ($formSubmited)
+		{
+			$how = $app->input->post->get('how');
+			$this->setState('filter.how', $how);
+		}
 
 		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
-		$this->setState('filter.type', $type);
+		if ($formSubmited)
+		{
+			$type = $app->input->post->get('type');
+			$this->setState('filter.type', $type);
+		}
 
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
-		$this->setState('filter.name', $name);
+		if ($formSubmited)
+		{
+			$name = $app->input->post->get('name');
+			$this->setState('filter.name', $name);
+		}
 
 		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
-		$this->setState('filter.description', $description);
+		if ($formSubmited)
+		{
+			$description = $app->input->post->get('description');
+			$this->setState('filter.description', $description);
+		}
 
 		// List state information.
 		parent::populateState($ordering, $direction);

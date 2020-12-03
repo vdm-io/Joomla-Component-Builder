@@ -20868,8 +20868,6 @@ class Interpretation extends Fields
 		$state = '';
 		// keep track of all fields already added
 		$donelist = array();
-		// add the default populate states (this must be added first)
-		$state .= $this->setDefaultPopulateState($nameSingleCode);
 		// we must add the formSubmited code if new above filters is used
 		$new_filter = false;
 		if (isset($this->adminFilterType[$nameListCode])
@@ -20881,6 +20879,8 @@ class Interpretation extends Fields
 				. " = \$app->input->post->get('form_submited');";
 			$new_filter = true;
 		}
+		// add the default populate states (this must be added first)
+		$state .= $this->setDefaultPopulateState($nameSingleCode, $new_filter);
 		// add the filters
 		if (isset($this->filterBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
@@ -20923,13 +20923,13 @@ class Interpretation extends Fields
 	 * Add the code of the filter in the populate state
 	 *
 	 * @param   array   $filter      The field/filter array
-	 * @param   bool    $new_filter  The switch to use the new filter
+	 * @param   bool    $newFilter  The switch to use the new filter
 	 * @param   string  $extra       The defaults/extra options of the filter
 	 *
 	 * @return  string    The code for the populate state
 	 *
 	 */
-	protected function getPopulateStateFilterCode(&$filter, $new_filter,
+	protected function getPopulateStateFilterCode(&$filter, $newFilter,
 		$extra = ''
 	) {
 		$state = '';
@@ -20950,7 +20950,7 @@ class Interpretation extends Fields
 			. " = \$this->getUserStateFromRequest(\$this->context . '.filter."
 			. $filter['code'] . "', 'filter_" . $filter['code']
 			. "'" . $extra . ");";
-		if ($new_filter)
+		if ($newFilter)
 		{
 			// add the new filter option
 			$state .= PHP_EOL . $this->_t(2)
@@ -20978,11 +20978,12 @@ class Interpretation extends Fields
 	 * set the default populate state code
 	 *
 	 * @param   string  $nameSingleCode  The single view name
+	 * @param   bool    $newFilter      The switch to use the new filter
 	 *
 	 * @return  string The state code added
 	 *
 	 */
-	protected function setDefaultPopulateState(&$nameSingleCode)
+	protected function setDefaultPopulateState(&$nameSingleCode, $newFilter)
 	{
 		$state = '';
 		// start filter
@@ -20992,7 +20993,7 @@ class Interpretation extends Fields
 		{
 			$filter['code'] = "access";
 			$state          .= $this->getPopulateStateFilterCode(
-				$filter, false, ", 0, 'int'"
+				$filter, $newFilter, ", 0, 'int'"
 			);
 		}
 		// if published is not set add its default filter here

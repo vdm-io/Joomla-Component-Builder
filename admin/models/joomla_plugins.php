@@ -230,8 +230,15 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 			$this->context .= '.' . $layout;
 		}
 
+		// Check if the form was submitted
+		$formSubmited = $app->input->post->get('form_submited');
+
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
+		if ($formSubmited)
+		{
+			$access = $app->input->post->get('access');
+			$this->setState('filter.access', $access);
+		}
 
 		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
@@ -249,13 +256,25 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 		$this->setState('filter.search', $search);
 
 		$class_extends = $this->getUserStateFromRequest($this->context . '.filter.class_extends', 'filter_class_extends');
-		$this->setState('filter.class_extends', $class_extends);
+		if ($formSubmited)
+		{
+			$class_extends = $app->input->post->get('class_extends');
+			$this->setState('filter.class_extends', $class_extends);
+		}
 
 		$joomla_plugin_group = $this->getUserStateFromRequest($this->context . '.filter.joomla_plugin_group', 'filter_joomla_plugin_group');
-		$this->setState('filter.joomla_plugin_group', $joomla_plugin_group);
+		if ($formSubmited)
+		{
+			$joomla_plugin_group = $app->input->post->get('joomla_plugin_group');
+			$this->setState('filter.joomla_plugin_group', $joomla_plugin_group);
+		}
 
 		$system_name = $this->getUserStateFromRequest($this->context . '.filter.system_name', 'filter_system_name');
-		$this->setState('filter.system_name', $system_name);
+		if ($formSubmited)
+		{
+			$system_name = $app->input->post->get('system_name');
+			$this->setState('filter.system_name', $system_name);
+		}
 
 		// List state information.
 		parent::populateState($ordering, $direction);

@@ -61,8 +61,15 @@ class ComponentbuilderModelTemplates extends JModelList
 			$this->context .= '.' . $layout;
 		}
 
+		// Check if the form was submitted
+		$formSubmited = $app->input->post->get('form_submited');
+
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
+		if ($formSubmited)
+		{
+			$access = $app->input->post->get('access');
+			$this->setState('filter.access', $access);
+		}
 
 		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
@@ -80,16 +87,32 @@ class ComponentbuilderModelTemplates extends JModelList
 		$this->setState('filter.search', $search);
 
 		$dynamic_get = $this->getUserStateFromRequest($this->context . '.filter.dynamic_get', 'filter_dynamic_get');
-		$this->setState('filter.dynamic_get', $dynamic_get);
+		if ($formSubmited)
+		{
+			$dynamic_get = $app->input->post->get('dynamic_get');
+			$this->setState('filter.dynamic_get', $dynamic_get);
+		}
 
 		$add_php_view = $this->getUserStateFromRequest($this->context . '.filter.add_php_view', 'filter_add_php_view');
-		$this->setState('filter.add_php_view', $add_php_view);
+		if ($formSubmited)
+		{
+			$add_php_view = $app->input->post->get('add_php_view');
+			$this->setState('filter.add_php_view', $add_php_view);
+		}
 
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
-		$this->setState('filter.name', $name);
+		if ($formSubmited)
+		{
+			$name = $app->input->post->get('name');
+			$this->setState('filter.name', $name);
+		}
 
 		$description = $this->getUserStateFromRequest($this->context . '.filter.description', 'filter_description');
-		$this->setState('filter.description', $description);
+		if ($formSubmited)
+		{
+			$description = $app->input->post->get('description');
+			$this->setState('filter.description', $description);
+		}
 
 		// List state information.
 		parent::populateState($ordering, $direction);

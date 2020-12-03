@@ -34,6 +34,10 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
@@ -159,62 +163,6 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Main Source Selection
-		$this->main_sourceOptions = $this->getTheMain_sourceSelections();
-		// We do some sanitation for Main Source filter
-		if (ComponentbuilderHelper::checkArray($this->main_sourceOptions) &&
-			isset($this->main_sourceOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->main_sourceOptions[0]->value))
-		{
-			unset($this->main_sourceOptions[0]);
-		}
-		// Only load Main Source filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->main_sourceOptions))
-		{
-			// Main Source Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_MAIN_SOURCE_LABEL').' -',
-				'filter_main_source',
-				JHtml::_('select.options', $this->main_sourceOptions, 'value', 'text', $this->state->get('filter.main_source'))
-			);
-		}
-
-		// Set Gettype Selection
-		$this->gettypeOptions = $this->getTheGettypeSelections();
-		// We do some sanitation for Gettype filter
-		if (ComponentbuilderHelper::checkArray($this->gettypeOptions) &&
-			isset($this->gettypeOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->gettypeOptions[0]->value))
-		{
-			unset($this->gettypeOptions[0]);
-		}
-		// Only load Gettype filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->gettypeOptions))
-		{
-			// Gettype Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_GETTYPE_LABEL').' -',
-				'filter_gettype',
-				JHtml::_('select.options', $this->gettypeOptions, 'value', 'text', $this->state->get('filter.gettype'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -238,6 +186,15 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		// Only load Main Source batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Main Source Selection
+			$this->main_sourceOptions = JFormHelper::loadFieldType('dynamicgetsfiltermainsource')->options;
+			// We do some sanitation for Main Source filter
+			if (ComponentbuilderHelper::checkArray($this->main_sourceOptions) &&
+				isset($this->main_sourceOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->main_sourceOptions[0]->value))
+			{
+				unset($this->main_sourceOptions[0]);
+			}
 			// Main Source Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_MAIN_SOURCE_LABEL').' -',
@@ -249,6 +206,15 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 		// Only load Gettype batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Gettype Selection
+			$this->gettypeOptions = JFormHelper::loadFieldType('dynamicgetsfiltergettype')->options;
+			// We do some sanitation for Gettype filter
+			if (ComponentbuilderHelper::checkArray($this->gettypeOptions) &&
+				isset($this->gettypeOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->gettypeOptions[0]->value))
+			{
+				unset($this->gettypeOptions[0]);
+			}
 			// Gettype Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_GETTYPE_LABEL').' -',
@@ -306,77 +272,5 @@ class ComponentbuilderViewDynamic_gets extends JViewLegacy
 			'a.gettype' => JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_GETTYPE_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	}
-
-	protected function getTheMain_sourceSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('main_source'));
-		$query->from($db->quoteName('#__componentbuilder_dynamic_get'));
-		$query->order($db->quoteName('main_source') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $main_source)
-			{
-				// Translate the main_source selection
-				$text = $model->selectionTranslation($main_source,'main_source');
-				// Now add the main_source and its text to the options array
-				$_filter[] = JHtml::_('select.option', $main_source, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
-	protected function getTheGettypeSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('gettype'));
-		$query->from($db->quoteName('#__componentbuilder_dynamic_get'));
-		$query->order($db->quoteName('gettype') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $gettype)
-			{
-				// Translate the gettype selection
-				$text = $model->selectionTranslation($gettype,'gettype');
-				// Now add the gettype and its text to the options array
-				$_filter[] = JHtml::_('select.option', $gettype, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
 	}
 }

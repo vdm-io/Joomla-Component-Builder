@@ -34,6 +34,10 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
@@ -164,62 +168,6 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Type Name Selection
-		$this->typeNameOptions = JFormHelper::loadFieldType('Snippettype')->options;
-		// We do some sanitation for Type Name filter
-		if (ComponentbuilderHelper::checkArray($this->typeNameOptions) &&
-			isset($this->typeNameOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->typeNameOptions[0]->value))
-		{
-			unset($this->typeNameOptions[0]);
-		}
-		// Only load Type Name filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->typeNameOptions))
-		{
-			// Type Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select ' . JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL') . ' -',
-				'filter_type',
-				JHtml::_('select.options', $this->typeNameOptions, 'value', 'text', $this->state->get('filter.type'))
-			);
-		}
-
-		// Set Library Name Selection
-		$this->libraryNameOptions = JFormHelper::loadFieldType('Library')->options;
-		// We do some sanitation for Library Name filter
-		if (ComponentbuilderHelper::checkArray($this->libraryNameOptions) &&
-			isset($this->libraryNameOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->libraryNameOptions[0]->value))
-		{
-			unset($this->libraryNameOptions[0]);
-		}
-		// Only load Library Name filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->libraryNameOptions))
-		{
-			// Library Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select ' . JText::_('COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL') . ' -',
-				'filter_library',
-				JHtml::_('select.options', $this->libraryNameOptions, 'value', 'text', $this->state->get('filter.library'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -243,6 +191,15 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		// Only load Type Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Type Name Selection
+			$this->typeNameOptions = JFormHelper::loadFieldType('Snippettype')->options;
+			// We do some sanitation for Type Name filter
+			if (ComponentbuilderHelper::checkArray($this->typeNameOptions) &&
+				isset($this->typeNameOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->typeNameOptions[0]->value))
+			{
+				unset($this->typeNameOptions[0]);
+			}
 			// Type Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_SNIPPET_TYPE_LABEL').' -',
@@ -254,6 +211,15 @@ class ComponentbuilderViewSnippets extends JViewLegacy
 		// Only load Library Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Library Name Selection
+			$this->libraryNameOptions = JFormHelper::loadFieldType('Library')->options;
+			// We do some sanitation for Library Name filter
+			if (ComponentbuilderHelper::checkArray($this->libraryNameOptions) &&
+				isset($this->libraryNameOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->libraryNameOptions[0]->value))
+			{
+				unset($this->libraryNameOptions[0]);
+			}
 			// Library Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_SNIPPET_LIBRARY_LABEL').' -',

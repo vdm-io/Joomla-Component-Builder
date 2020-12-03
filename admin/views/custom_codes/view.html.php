@@ -34,6 +34,10 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
@@ -159,102 +163,6 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Component System Name Selection
-		$this->componentSystem_nameOptions = JFormHelper::loadFieldType('Component')->options;
-		// We do some sanitation for Component System Name filter
-		if (ComponentbuilderHelper::checkArray($this->componentSystem_nameOptions) &&
-			isset($this->componentSystem_nameOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->componentSystem_nameOptions[0]->value))
-		{
-			unset($this->componentSystem_nameOptions[0]);
-		}
-		// Only load Component System Name filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->componentSystem_nameOptions))
-		{
-			// Component System Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select ' . JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL') . ' -',
-				'filter_component',
-				JHtml::_('select.options', $this->componentSystem_nameOptions, 'value', 'text', $this->state->get('filter.component'))
-			);
-		}
-
-		// Set Target Selection
-		$this->targetOptions = $this->getTheTargetSelections();
-		// We do some sanitation for Target filter
-		if (ComponentbuilderHelper::checkArray($this->targetOptions) &&
-			isset($this->targetOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->targetOptions[0]->value))
-		{
-			unset($this->targetOptions[0]);
-		}
-		// Only load Target filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->targetOptions))
-		{
-			// Target Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TARGET_LABEL').' -',
-				'filter_target',
-				JHtml::_('select.options', $this->targetOptions, 'value', 'text', $this->state->get('filter.target'))
-			);
-		}
-
-		// Set Type Selection
-		$this->typeOptions = $this->getTheTypeSelections();
-		// We do some sanitation for Type filter
-		if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
-			isset($this->typeOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
-		{
-			unset($this->typeOptions[0]);
-		}
-		// Only load Type filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->typeOptions))
-		{
-			// Type Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_LABEL').' -',
-				'filter_type',
-				JHtml::_('select.options', $this->typeOptions, 'value', 'text', $this->state->get('filter.type'))
-			);
-		}
-
-		// Set Comment Type Selection
-		$this->comment_typeOptions = $this->getTheComment_typeSelections();
-		// We do some sanitation for Comment Type filter
-		if (ComponentbuilderHelper::checkArray($this->comment_typeOptions) &&
-			isset($this->comment_typeOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->comment_typeOptions[0]->value))
-		{
-			unset($this->comment_typeOptions[0]);
-		}
-		// Only load Comment Type filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->comment_typeOptions))
-		{
-			// Comment Type Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_LABEL').' -',
-				'filter_comment_type',
-				JHtml::_('select.options', $this->comment_typeOptions, 'value', 'text', $this->state->get('filter.comment_type'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -278,6 +186,15 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		// Only load Component System Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Component System Name Selection
+			$this->componentSystem_nameOptions = JFormHelper::loadFieldType('Component')->options;
+			// We do some sanitation for Component System Name filter
+			if (ComponentbuilderHelper::checkArray($this->componentSystem_nameOptions) &&
+				isset($this->componentSystem_nameOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->componentSystem_nameOptions[0]->value))
+			{
+				unset($this->componentSystem_nameOptions[0]);
+			}
 			// Component System Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL').' -',
@@ -289,6 +206,15 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		// Only load Target batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Target Selection
+			$this->targetOptions = JFormHelper::loadFieldType('customcodesfiltertarget')->options;
+			// We do some sanitation for Target filter
+			if (ComponentbuilderHelper::checkArray($this->targetOptions) &&
+				isset($this->targetOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->targetOptions[0]->value))
+			{
+				unset($this->targetOptions[0]);
+			}
 			// Target Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TARGET_LABEL').' -',
@@ -300,6 +226,15 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		// Only load Type batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Type Selection
+			$this->typeOptions = JFormHelper::loadFieldType('customcodesfiltertype')->options;
+			// We do some sanitation for Type filter
+			if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
+				isset($this->typeOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
+			{
+				unset($this->typeOptions[0]);
+			}
 			// Type Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_LABEL').' -',
@@ -311,6 +246,15 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 		// Only load Comment Type batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Comment Type Selection
+			$this->comment_typeOptions = JFormHelper::loadFieldType('customcodesfiltercommenttype')->options;
+			// We do some sanitation for Comment Type filter
+			if (ComponentbuilderHelper::checkArray($this->comment_typeOptions) &&
+				isset($this->comment_typeOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->comment_typeOptions[0]->value))
+			{
+				unset($this->comment_typeOptions[0]);
+			}
 			// Comment Type Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_LABEL').' -',
@@ -370,113 +314,5 @@ class ComponentbuilderViewCustom_codes extends JViewLegacy
 			'a.comment_type' => JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	}
-
-	protected function getTheTargetSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('target'));
-		$query->from($db->quoteName('#__componentbuilder_custom_code'));
-		$query->order($db->quoteName('target') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $target)
-			{
-				// Translate the target selection
-				$text = $model->selectionTranslation($target,'target');
-				// Now add the target and its text to the options array
-				$_filter[] = JHtml::_('select.option', $target, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
-	protected function getTheTypeSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('type'));
-		$query->from($db->quoteName('#__componentbuilder_custom_code'));
-		$query->order($db->quoteName('type') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $type)
-			{
-				// Translate the type selection
-				$text = $model->selectionTranslation($type,'type');
-				// Now add the type and its text to the options array
-				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
-	protected function getTheComment_typeSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('comment_type'));
-		$query->from($db->quoteName('#__componentbuilder_custom_code'));
-		$query->order($db->quoteName('comment_type') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $comment_type)
-			{
-				// Translate the comment_type selection
-				$text = $model->selectionTranslation($comment_type,'comment_type');
-				// Now add the comment_type and its text to the options array
-				$_filter[] = JHtml::_('select.option', $comment_type, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
 	}
 }

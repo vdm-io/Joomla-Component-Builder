@@ -34,6 +34,10 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
@@ -159,62 +163,6 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Dynamic Get Name Selection
-		$this->dynamic_getNameOptions = JFormHelper::loadFieldType('Dynamicget')->options;
-		// We do some sanitation for Dynamic Get Name filter
-		if (ComponentbuilderHelper::checkArray($this->dynamic_getNameOptions) &&
-			isset($this->dynamic_getNameOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->dynamic_getNameOptions[0]->value))
-		{
-			unset($this->dynamic_getNameOptions[0]);
-		}
-		// Only load Dynamic Get Name filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->dynamic_getNameOptions))
-		{
-			// Dynamic Get Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select ' . JText::_('COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_LABEL') . ' -',
-				'filter_dynamic_get',
-				JHtml::_('select.options', $this->dynamic_getNameOptions, 'value', 'text', $this->state->get('filter.dynamic_get'))
-			);
-		}
-
-		// Set Add Php View Selection
-		$this->add_php_viewOptions = $this->getTheAdd_php_viewSelections();
-		// We do some sanitation for Add Php View filter
-		if (ComponentbuilderHelper::checkArray($this->add_php_viewOptions) &&
-			isset($this->add_php_viewOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->add_php_viewOptions[0]->value))
-		{
-			unset($this->add_php_viewOptions[0]);
-		}
-		// Only load Add Php View filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->add_php_viewOptions))
-		{
-			// Add Php View Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_TEMPLATE_ADD_PHP_VIEW_LABEL').' -',
-				'filter_add_php_view',
-				JHtml::_('select.options', $this->add_php_viewOptions, 'value', 'text', $this->state->get('filter.add_php_view'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -238,6 +186,15 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 		// Only load Dynamic Get Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Dynamic Get Name Selection
+			$this->dynamic_getNameOptions = JFormHelper::loadFieldType('Dynamicget')->options;
+			// We do some sanitation for Dynamic Get Name filter
+			if (ComponentbuilderHelper::checkArray($this->dynamic_getNameOptions) &&
+				isset($this->dynamic_getNameOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->dynamic_getNameOptions[0]->value))
+			{
+				unset($this->dynamic_getNameOptions[0]);
+			}
 			// Dynamic Get Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_LABEL').' -',
@@ -249,6 +206,15 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 		// Only load Add Php View batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Add Php View Selection
+			$this->add_php_viewOptions = JFormHelper::loadFieldType('templatesfilteraddphpview')->options;
+			// We do some sanitation for Add Php View filter
+			if (ComponentbuilderHelper::checkArray($this->add_php_viewOptions) &&
+				isset($this->add_php_viewOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->add_php_viewOptions[0]->value))
+			{
+				unset($this->add_php_viewOptions[0]);
+			}
 			// Add Php View Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_TEMPLATE_ADD_PHP_VIEW_LABEL').' -',
@@ -306,41 +272,5 @@ class ComponentbuilderViewTemplates extends JViewLegacy
 			'g.name' => JText::_('COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	}
-
-	protected function getTheAdd_php_viewSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('add_php_view'));
-		$query->from($db->quoteName('#__componentbuilder_template'));
-		$query->order($db->quoteName('add_php_view') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $add_php_view)
-			{
-				// Translate the add_php_view selection
-				$text = $model->selectionTranslation($add_php_view,'add_php_view');
-				// Now add the add_php_view and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_php_view, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
 	}
 }

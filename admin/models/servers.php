@@ -59,8 +59,15 @@ class ComponentbuilderModelServers extends JModelList
 			$this->context .= '.' . $layout;
 		}
 
+		// Check if the form was submitted
+		$formSubmited = $app->input->post->get('form_submited');
+
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
+		if ($formSubmited)
+		{
+			$access = $app->input->post->get('access');
+			$this->setState('filter.access', $access);
+		}
 
 		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
@@ -78,10 +85,18 @@ class ComponentbuilderModelServers extends JModelList
 		$this->setState('filter.search', $search);
 
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
-		$this->setState('filter.name', $name);
+		if ($formSubmited)
+		{
+			$name = $app->input->post->get('name');
+			$this->setState('filter.name', $name);
+		}
 
 		$protocol = $this->getUserStateFromRequest($this->context . '.filter.protocol', 'filter_protocol');
-		$this->setState('filter.protocol', $protocol);
+		if ($formSubmited)
+		{
+			$protocol = $app->input->post->get('protocol');
+			$this->setState('filter.protocol', $protocol);
+		}
 
 		// List state information.
 		parent::populateState($ordering, $direction);

@@ -59,8 +59,15 @@ class ComponentbuilderModelPlaceholders extends JModelList
 			$this->context .= '.' . $layout;
 		}
 
+		// Check if the form was submitted
+		$formSubmited = $app->input->post->get('form_submited');
+
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
+		if ($formSubmited)
+		{
+			$access = $app->input->post->get('access');
+			$this->setState('filter.access', $access);
+		}
 
 		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
@@ -78,10 +85,18 @@ class ComponentbuilderModelPlaceholders extends JModelList
 		$this->setState('filter.search', $search);
 
 		$target = $this->getUserStateFromRequest($this->context . '.filter.target', 'filter_target');
-		$this->setState('filter.target', $target);
+		if ($formSubmited)
+		{
+			$target = $app->input->post->get('target');
+			$this->setState('filter.target', $target);
+		}
 
 		$value = $this->getUserStateFromRequest($this->context . '.filter.value', 'filter_value');
-		$this->setState('filter.value', $value);
+		if ($formSubmited)
+		{
+			$value = $app->input->post->get('value');
+			$this->setState('filter.value', $value);
+		}
 
 		// List state information.
 		parent::populateState($ordering, $direction);

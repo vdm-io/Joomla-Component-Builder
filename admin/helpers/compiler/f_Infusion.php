@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * Interpretation class
+ * Infusion class
  */
 class Infusion extends Interpretation
 {

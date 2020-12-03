@@ -34,6 +34,10 @@ class ComponentbuilderViewClass_methods extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
@@ -154,62 +158,6 @@ class ComponentbuilderViewClass_methods extends JViewLegacy
 			JToolBarHelper::preferences('com_componentbuilder');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Visibility Selection
-		$this->visibilityOptions = $this->getTheVisibilitySelections();
-		// We do some sanitation for Visibility filter
-		if (ComponentbuilderHelper::checkArray($this->visibilityOptions) &&
-			isset($this->visibilityOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->visibilityOptions[0]->value))
-		{
-			unset($this->visibilityOptions[0]);
-		}
-		// Only load Visibility filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->visibilityOptions))
-		{
-			// Visibility Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_VISIBILITY_LABEL').' -',
-				'filter_visibility',
-				JHtml::_('select.options', $this->visibilityOptions, 'value', 'text', $this->state->get('filter.visibility'))
-			);
-		}
-
-		// Set Extension Type Selection
-		$this->extension_typeOptions = $this->getTheExtension_typeSelections();
-		// We do some sanitation for Extension Type filter
-		if (ComponentbuilderHelper::checkArray($this->extension_typeOptions) &&
-			isset($this->extension_typeOptions[0]->value) &&
-			!ComponentbuilderHelper::checkString($this->extension_typeOptions[0]->value))
-		{
-			unset($this->extension_typeOptions[0]);
-		}
-		// Only load Extension Type filter if it has values
-		if (ComponentbuilderHelper::checkArray($this->extension_typeOptions))
-		{
-			// Extension Type Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_EXTENSION_TYPE_LABEL').' -',
-				'filter_extension_type',
-				JHtml::_('select.options', $this->extension_typeOptions, 'value', 'text', $this->state->get('filter.extension_type'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -233,6 +181,15 @@ class ComponentbuilderViewClass_methods extends JViewLegacy
 		// Only load Visibility batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Visibility Selection
+			$this->visibilityOptions = JFormHelper::loadFieldType('classmethodsfiltervisibility')->options;
+			// We do some sanitation for Visibility filter
+			if (ComponentbuilderHelper::checkArray($this->visibilityOptions) &&
+				isset($this->visibilityOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->visibilityOptions[0]->value))
+			{
+				unset($this->visibilityOptions[0]);
+			}
 			// Visibility Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_VISIBILITY_LABEL').' -',
@@ -244,6 +201,15 @@ class ComponentbuilderViewClass_methods extends JViewLegacy
 		// Only load Extension Type batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Extension Type Selection
+			$this->extension_typeOptions = JFormHelper::loadFieldType('classmethodsfilterextensiontype')->options;
+			// We do some sanitation for Extension Type filter
+			if (ComponentbuilderHelper::checkArray($this->extension_typeOptions) &&
+				isset($this->extension_typeOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->extension_typeOptions[0]->value))
+			{
+				unset($this->extension_typeOptions[0]);
+			}
 			// Extension Type Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_EXTENSION_TYPE_LABEL').' -',
@@ -301,77 +267,5 @@ class ComponentbuilderViewClass_methods extends JViewLegacy
 			'a.extension_type' => JText::_('COM_COMPONENTBUILDER_CLASS_METHOD_EXTENSION_TYPE_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	}
-
-	protected function getTheVisibilitySelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('visibility'));
-		$query->from($db->quoteName('#__componentbuilder_class_method'));
-		$query->order($db->quoteName('visibility') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $visibility)
-			{
-				// Translate the visibility selection
-				$text = $model->selectionTranslation($visibility,'visibility');
-				// Now add the visibility and its text to the options array
-				$_filter[] = JHtml::_('select.option', $visibility, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
-	}
-
-	protected function getTheExtension_typeSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('extension_type'));
-		$query->from($db->quoteName('#__componentbuilder_class_method'));
-		$query->order($db->quoteName('extension_type') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			$_filter = array();
-			foreach ($results as $extension_type)
-			{
-				// Translate the extension_type selection
-				$text = $model->selectionTranslation($extension_type,'extension_type');
-				// Now add the extension_type and its text to the options array
-				$_filter[] = JHtml::_('select.option', $extension_type, JText::_($text));
-			}
-			return $_filter;
-		}
-		return false;
 	}
 }
