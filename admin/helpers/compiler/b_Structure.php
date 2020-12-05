@@ -501,16 +501,8 @@ class Structure extends Get
 					$this->dynamicPaths[$module->key] = $module->folder_path;
 					// make sure there is no old build
 					$this->removeFolder($module->folder_path);
-					// creat the main component folder
-					if (!JFolder::exists($module->folder_path))
-					{
-						JFolder::create($module->folder_path);
-						// count the folder created
-						$this->folderCount++;
-						$this->indexHTML(
-							$module->folder_name, $this->compilerPath
-						);
-					}
+					// creat the main module folder
+					$this->createFolder($module->folder_path);
 					// set main mod file
 					$fileDetails = array('path' => $module->folder_path . '/'
 						. $module->file_name . '.php',
@@ -592,15 +584,7 @@ class Structure extends Get
 					// count the file created
 					$this->fileCount++;
 					// set tmpl folder
-					if (!JFolder::exists($module->folder_path . '/tmpl'))
-					{
-						JFolder::create($module->folder_path . '/tmpl');
-						// count the folder created
-						$this->folderCount++;
-						$this->indexHTML(
-							$module->folder_name . '/tmpl', $this->compilerPath
-						);
-					}
+					$this->createFolder($module->folder_path . '/tmpl');
 					// set default file
 					$fileDetails = array('path' => $module->folder_path
 						. '/tmpl/default.php',
@@ -652,32 +636,116 @@ class Structure extends Get
 						// count the file created
 						$this->fileCount++;
 					}
-					// set fields & rules folders if needed
+					// set the folders target path
+					$target_path = '';
+					if ($module->target_client === 'administrator')
+					{
+						$target_path = '/administrator';
+					}
+					// check if we have custom fields needed for scripts
+					$module->add_scripts_field = false;
+					$field_script_bucket       = array();
+					// add any css from the fields
+					if (($css = $this->getCustomScriptBuilder(
+							'css_view', $module->key
+						)) !== null
+						&& ComponentbuilderHelper::checkString($css))
+					{
+						// make sure this script does not have PHP
+						if (strpos($css, '<?php') === false)
+						{
+							// make sure the field is added
+							$module->add_scripts_field = true;
+							// create the css folder
+							$this->createFolder($module->folder_path . '/css');
+							// add the CSS file
+							$fileDetails = array('path' => $module->folder_path
+								. '/css/mod_admin.css',
+							                     'name' => 'mod_admin.css',
+							                     'zip'  => 'mod_admin.css');
+							$this->writeFile(
+								$fileDetails['path'],
+								$this->hhh . 'BOM' . $this->hhh . PHP_EOL
+								. PHP_EOL . $css
+							);
+							$this->newFiles[$module->key][] = $fileDetails;
+							// count the file created
+							$this->fileCount++;
+							// add the field script
+							$field_script_bucket[] = $this->_t(2) . "//"
+								. $this->setLine(__LINE__) . " Custom CSS";
+							$field_script_bucket[] = $this->_t(2)
+								. "\$document->addStyleSheet('" . $target_path
+								. "/modules/" . $module->folder_name
+								. "/css/mod_admin.css', ['version' => 'auto', 'relative' => true]);";
+						}
+					}
+					// add any JavaScript from the fields
+					if (($javascript = $this->getCustomScriptBuilder(
+							'view_footer', $module->key
+						)) !== null
+						&& ComponentbuilderHelper::checkString($javascript))
+					{
+						// make sure this script does not have PHP
+						if (strpos($javascript, '<?php') === false)
+						{
+							// make sure the field is added
+							$module->add_scripts_field = true;
+							// add the JavaScript file
+							$this->createFolder($module->folder_path . '/js');
+							// add the CSS file
+							$fileDetails = array('path' => $module->folder_path
+								. '/js/mod_admin.js',
+							                     'name' => 'mod_admin.js',
+							                     'zip'  => 'mod_admin.js');
+							$this->writeFile(
+								$fileDetails['path'],
+								$this->hhh . 'BOM' . $this->hhh . PHP_EOL
+								. PHP_EOL . $javascript
+							);
+							$this->newFiles[$module->key][] = $fileDetails;
+							// count the file created
+							$this->fileCount++;
+							// add the field script
+							$field_script_bucket[] = $this->_t(2) . "//"
+								. $this->setLine(__LINE__) . " Custom JS";
+							$field_script_bucket[] = $this->_t(2)
+								. "\$document->addScript('" . $target_path
+								. "/modules/" . $module->folder_name
+								. "/js/mod_admin.js', ['version' => 'auto', 'relative' => true]);";
+						}
+					}
+					// set fields folders if needed
+					if ($module->add_scripts_field
+						|| (isset($module->fields_rules_paths)
+							&& $module->fields_rules_paths == 2))
+					{
+						// create fields folder
+						$this->createFolder($module->folder_path . '/fields');
+						// add the custom script field
+						if ($module->add_scripts_field)
+						{
+							$fileDetails = array('path' => $module->folder_path
+								. '/fields/modadminvvvvvvvdm.php',
+							                     'name' => 'modadminvvvvvvvdm.php',
+							                     'zip'  => 'modadminvvvvvvvdm.php');
+							$this->writeFile(
+								$fileDetails['path'],
+								$this->getModAdminVvvvvvvdm(
+									$field_script_bucket
+								)
+							);
+							$this->newFiles[$module->key][] = $fileDetails;
+							// count the file created
+							$this->fileCount++;
+						}
+					}
+					// set rules folders if needed
 					if (isset($module->fields_rules_paths)
 						&& $module->fields_rules_paths == 2)
 					{
-						// create fields folder
-						if (!JFolder::exists($module->folder_path . '/fields'))
-						{
-							JFolder::create($module->folder_path . '/fields');
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML(
-								$module->folder_name . '/fields',
-								$this->compilerPath
-							);
-						}
 						// create rules folder
-						if (!JFolder::exists($module->folder_path . '/rules'))
-						{
-							JFolder::create($module->folder_path . '/rules');
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML(
-								$module->folder_name . '/rules',
-								$this->compilerPath
-							);
-						}
+						$this->createFolder($module->folder_path . '/rules');
 					}
 					// set forms folder if needed
 					if (isset($module->form_files)
@@ -686,16 +754,7 @@ class Structure extends Get
 						))
 					{
 						// create forms folder
-						if (!JFolder::exists($module->folder_path . '/forms'))
-						{
-							JFolder::create($module->folder_path . '/forms');
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML(
-								$module->folder_name . '/forms',
-								$this->compilerPath
-							);
-						}
+						$this->createFolder($module->folder_path . '/forms');
 						// set the template files
 						foreach ($module->form_files as $file => $fields)
 						{
@@ -705,7 +764,7 @@ class Structure extends Get
 							                     'name' => $file . '.xml',
 							                     'zip'  => 'forms/' . $file
 								                     . '.xml');
-							// biuld basic XML
+							// build basic XML
 							$xml = '<?xml version="1.0" encoding="utf-8"?>';
 							$xml .= PHP_EOL . '<!--' . $this->setLine(__LINE__)
 								. ' default paths of ' . $file
@@ -848,31 +907,11 @@ class Structure extends Get
 					if ($module->add_sql || $module->add_sql_uninstall)
 					{
 						// create SQL folder
-						if (!JFolder::exists($module->folder_path . '/sql'))
-						{
-							JFolder::create($module->folder_path . '/sql');
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML(
-								$module->folder_name . '/sql',
-								$this->compilerPath
-							);
-						}
+						$this->createFolder($module->folder_path . '/sql');
 						// create mysql folder
-						if (!JFolder::exists(
+						$this->createFolder(
 							$module->folder_path . '/sql/mysql'
-						))
-						{
-							JFolder::create(
-								$module->folder_path . '/sql/mysql'
-							);
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML(
-								$module->folder_name . '/sql/mysql',
-								$this->compilerPath
-							);
-						}
+						);
 						// now set the install file
 						if ($module->add_sql)
 						{
@@ -896,24 +935,11 @@ class Structure extends Get
 						}
 					}
 					// creat the language folder
-					if (!JFolder::exists($module->folder_path . '/language'))
-					{
-						JFolder::create($module->folder_path . '/language');
-						// count the folder created
-						$this->folderCount++;
-						// also the lang tag
-						if (!JFolder::exists(
-							$module->folder_path . '/language/' . $this->langTag
-						))
-						{
-							JFolder::create(
-								$module->folder_path . '/language/'
-								. $this->langTag
-							);
-							// count the folder created
-							$this->folderCount++;
-						}
-					}
+					$this->createFolder($module->folder_path . '/language');
+					// also create the lang tag folder
+					$this->createFolder(
+						$module->folder_path . '/language/' . $this->langTag
+					);
 					// check if this lib has files
 					if (isset($module->files)
 						&& ComponentbuilderHelper::checkArray($module->files))
@@ -974,20 +1000,9 @@ class Structure extends Get
 									$path = '';
 								}
 								// create sub media path if not set
-								if (!JFolder::exists(
+								$this->createFolder(
 									$module->folder_path . $path
-								))
-								{
-									JFolder::create(
-										$module->folder_path . $path
-									);
-									// count the folder created
-									$this->folderCount++;
-									$this->indexHTML(
-										$module->folder_name . $path,
-										$this->compilerPath
-									);
-								}
+								);
 								// set the path to module file
 								$url['path'] = $module->folder_path . $path
 									. '/' . $fileName; // we need this for later
@@ -1034,15 +1049,7 @@ class Structure extends Get
 					// make sure there is no old build
 					$this->removeFolder($plugin->folder_path);
 					// creat the main component folder
-					if (!JFolder::exists($plugin->folder_path))
-					{
-						JFolder::create($plugin->folder_path);
-						// count the folder created
-						$this->folderCount++;
-						$this->indexHTML(
-							$plugin->folder_name, $this->compilerPath
-						);
-					}
+					$this->createFolder($plugin->folder_path);
 					// set main class file
 					$fileDetails = array('path' => $plugin->folder_path . '/'
 						. $plugin->file_name . '.php',
@@ -1111,27 +1118,9 @@ class Structure extends Get
 						&& $plugin->fields_rules_paths == 2)
 					{
 						// create fields folder
-						if (!JFolder::exists($plugin->folder_path . '/fields'))
-						{
-							JFolder::create($plugin->folder_path . '/fields');
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML(
-								$plugin->folder_name . '/fields',
-								$this->compilerPath
-							);
-						}
+						$this->createFolder($plugin->folder_path . '/fields');
 						// create rules folder
-						if (!JFolder::exists($plugin->folder_path . '/rules'))
-						{
-							JFolder::create($plugin->folder_path . '/rules');
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML(
-								$plugin->folder_name . '/rules',
-								$this->compilerPath
-							);
-						}
+						$this->createFolder($plugin->folder_path . '/rules');
 					}
 					// set forms folder if needed
 					if (isset($plugin->form_files)
@@ -1140,16 +1129,7 @@ class Structure extends Get
 						))
 					{
 						// create forms folder
-						if (!JFolder::exists($plugin->folder_path . '/forms'))
-						{
-							JFolder::create($plugin->folder_path . '/forms');
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML(
-								$plugin->folder_name . '/forms',
-								$this->compilerPath
-							);
-						}
+						$this->createFolder($plugin->folder_path . '/forms');
 						// set the template files
 						foreach ($plugin->form_files as $file => $fields)
 						{
@@ -1304,31 +1284,11 @@ class Structure extends Get
 					if ($plugin->add_sql || $plugin->add_sql_uninstall)
 					{
 						// create SQL folder
-						if (!JFolder::exists($plugin->folder_path . '/sql'))
-						{
-							JFolder::create($plugin->folder_path . '/sql');
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML(
-								$plugin->folder_name . '/sql',
-								$this->compilerPath
-							);
-						}
+						$this->createFolder($plugin->folder_path . '/sql');
 						// create mysql folder
-						if (!JFolder::exists(
+						$this->createFolder(
 							$plugin->folder_path . '/sql/mysql'
-						))
-						{
-							JFolder::create(
-								$plugin->folder_path . '/sql/mysql'
-							);
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML(
-								$plugin->folder_name . '/sql/mysql',
-								$this->compilerPath
-							);
-						}
+						);
 						// now set the install file
 						if ($plugin->add_sql)
 						{
@@ -1351,25 +1311,12 @@ class Structure extends Get
 							$this->fileCount++;
 						}
 					}
-					// creat the language folder
-					if (!JFolder::exists($plugin->folder_path . '/language'))
-					{
-						JFolder::create($plugin->folder_path . '/language');
-						// count the folder created
-						$this->folderCount++;
-						// also the lang tag
-						if (!JFolder::exists(
-							$plugin->folder_path . '/language/' . $this->langTag
-						))
-						{
-							JFolder::create(
-								$plugin->folder_path . '/language/'
-								. $this->langTag
-							);
-							// count the folder created
-							$this->folderCount++;
-						}
-					}
+					// creat the language folder path
+					$this->createFolder($plugin->folder_path . '/language');
+					// also creat the lang tag folder path
+					$this->createFolder(
+						$plugin->folder_path . '/language/' . $this->langTag
+					);
 					// check if this lib has files
 					if (isset($plugin->files)
 						&& ComponentbuilderHelper::checkArray($plugin->files))
@@ -1429,21 +1376,10 @@ class Structure extends Get
 								{
 									$path = '';
 								}
-								// create sub media path if not set
-								if (!JFolder::exists(
+								// create sub media media folder path if not set
+								$this->createFolder(
 									$plugin->folder_path . $path
-								))
-								{
-									JFolder::create(
-										$plugin->folder_path . $path
-									);
-									// count the folder created
-									$this->folderCount++;
-									$this->indexHTML(
-										$plugin->folder_name . $path,
-										$this->compilerPath
-									);
-								}
+								);
 								// set the path to plugin file
 								$url['path'] = $plugin->folder_path . $path
 									. '/' . $fileName; // we need this for later
@@ -1456,6 +1392,31 @@ class Structure extends Get
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Create Path if not exist
+	 *
+	 * @return void
+	 */
+	private function createFolder($path)
+	{
+		// check if the path exist
+		if (!JFolder::exists(
+			$path
+		))
+		{
+			// create the path
+			JFolder::create(
+				$path
+			);
+			// count the folder created
+			$this->folderCount++;
+			// add index.html (boring I know)
+			$this->indexHTML(
+				$path, ''
+			);
 		}
 	}
 
@@ -1483,13 +1444,7 @@ class Structure extends Get
 				$this->indexHTML('');
 			}
 			// create media path if not set
-			if (!JFolder::exists($this->componentPath . '/media'))
-			{
-				JFolder::create($this->componentPath . '/media');
-				// count the folder created
-				$this->folderCount++;
-				$this->indexHTML('/media');
-			}
+			$this->createFolder($this->componentPath . '/media');
 			foreach ($this->libraries as $id => &$library)
 			{
 				if (ComponentbuilderHelper::checkObject($library))
@@ -1542,17 +1497,9 @@ class Structure extends Get
 								))
 							{
 								// create media/lib path if not set
-								if (!JFolder::exists(
+								$this->createFolder(
 									$this->componentPath . $mediaPath
-								))
-								{
-									JFolder::create(
-										$this->componentPath . $mediaPath
-									);
-									// count the folder created
-									$this->folderCount++;
-									$this->indexHTML($mediaPath);
-								}
+								);
 								// add local folder
 								$addLocalFolder = true;
 								// set file name
@@ -1575,18 +1522,9 @@ class Structure extends Get
 									$path = '';
 								}
 								// create sub media path if not set
-								if (!JFolder::exists(
+								$this->createFolder(
 									$this->componentPath . $mediaPath . $path
-								))
-								{
-									JFolder::create(
-										$this->componentPath . $mediaPath
-										. $path
-									);
-									// count the folder created
-									$this->folderCount++;
-									$this->indexHTML($mediaPath . $path);
-								}
+								);
 								// set the path to library file
 								$url['path'] = $mediaPath . $path . '/'
 									. $fileName; // we need this for later
@@ -1808,47 +1746,22 @@ class Structure extends Get
 			// now build all folders needed for this component
 			foreach ($this->joomlaVersionData->create as $main => $folders)
 			{
-				if (!JFolder::exists($this->componentPath . '/' . $main))
-				{
-					JFolder::create($this->componentPath . '/' . $main);
-					// count the folder created
-					$this->folderCount++;
-					$this->indexHTML($main);
-				}
+				$this->createFolder($this->componentPath . '/' . $main);
 				if (ComponentbuilderHelper::checkObject($folders))
 				{
 					foreach ($folders as $sub => $subFolders)
 					{
-						if (!JFolder::exists(
+						$this->createFolder(
 							$this->componentPath . '/' . $main . '/' . $sub
-						))
-						{
-							JFolder::create(
-								$this->componentPath . '/' . $main . '/' . $sub
-							);
-							// count the folder created
-							$this->folderCount++;
-							$this->indexHTML($main . '/' . $sub);
-						}
+						);
 						if (ComponentbuilderHelper::checkObject($subFolders))
 						{
 							foreach ($subFolders as $sub_2 => $subFolders_2)
 							{
-								if (!JFolder::exists(
+								$this->createFolder(
 									$this->componentPath . '/' . $main . '/'
 									. $sub . '/' . $sub_2
-								))
-								{
-									JFolder::create(
-										$this->componentPath . '/' . $main . '/'
-										. $sub . '/' . $sub_2
-									);
-									// count the folder created
-									$this->folderCount++;
-									$this->indexHTML(
-										$main . '/' . $sub . '/' . $sub_2
-									);
-								}
+								);
 								if (ComponentbuilderHelper::checkObject(
 									$subFolders_2
 								))
@@ -1857,25 +1770,11 @@ class Structure extends Get
 										$subFolders_2 as $sub_3 => $subFolders_3
 									)
 									{
-
-										if (!JFolder::exists(
+										$this->createFolder(
 											$this->componentPath . '/' . $main
 											. '/' . $sub . '/' . $sub_2 . '/'
 											. $sub_3
-										))
-										{
-											JFolder::create(
-												$this->componentPath . '/'
-												. $main . '/' . $sub . '/'
-												. $sub_2 . '/' . $sub_3
-											);
-											// count the folder created
-											$this->folderCount++;
-											$this->indexHTML(
-												$main . '/' . $sub . '/'
-												. $sub_2 . '/' . $sub_3
-											);
-										}
+										);
 										if (ComponentbuilderHelper::checkObject(
 											$subFolders_3
 										))
@@ -1885,28 +1784,12 @@ class Structure extends Get
 												$subFolders_4
 											)
 											{
-												if (!JFolder::exists(
+												$this->createFolder(
 													$this->componentPath . '/'
 													. $main . '/' . $sub . '/'
 													. $sub_2 . '/' . $sub_3
 													. '/' . $sub_4
-												))
-												{
-													JFolder::create(
-														$this->componentPath
-														. '/' . $main . '/'
-														. $sub . '/' . $sub_2
-														. '/' . $sub_3 . '/'
-														. $sub_4
-													);
-													// count the folder created
-													$this->folderCount++;
-													$this->indexHTML(
-														$main . '/' . $sub . '/'
-														. $sub_2 . '/' . $sub_3
-														. '/' . $sub_4
-													);
-												}
+												);
 												if (ComponentbuilderHelper::checkObject(
 													$subFolders_4
 												))
@@ -1916,7 +1799,7 @@ class Structure extends Get
 													=> $subFolders_5
 													)
 													{
-														if (!JFolder::exists(
+														$this->createFolder(
 															$this->componentPath
 															. '/' . $main . '/'
 															. $sub . '/'
@@ -1924,28 +1807,7 @@ class Structure extends Get
 															. $sub_3 . '/'
 															. $sub_4 . '/'
 															. $sub_5
-														))
-														{
-															JFolder::create(
-																$this->componentPath
-																. '/' . $main
-																. '/' . $sub
-																. '/' . $sub_2
-																. '/' . $sub_3
-																. '/' . $sub_4
-																. '/' . $sub_5
-															);
-															// count the folder created
-															$this->folderCount++;
-															$this->indexHTML(
-																$main . '/'
-																. $sub . '/'
-																. $sub_2 . '/'
-																. $sub_3 . '/'
-																. $sub_4 . '/'
-																. $sub_5
-															);
-														}
+														);
 														if (ComponentbuilderHelper::checkObject(
 															$subFolders_5
 														))
@@ -1956,11 +1818,12 @@ class Structure extends Get
 																$subFolders_6
 															)
 															{
-																if (!JFolder::exists(
+																$this->createFolder(
 																	$this->componentPath
 																	. '/'
 																	. $main
-																	. '/' . $sub
+																	. '/'
+																	. $sub
 																	. '/'
 																	. $sub_2
 																	. '/'
@@ -1971,43 +1834,7 @@ class Structure extends Get
 																	. $sub_5
 																	. '/'
 																	. $sub_6
-																))
-																{
-																	JFolder::create(
-																		$this->componentPath
-																		. '/'
-																		. $main
-																		. '/'
-																		. $sub
-																		. '/'
-																		. $sub_2
-																		. '/'
-																		. $sub_3
-																		. '/'
-																		. $sub_4
-																		. '/'
-																		. $sub_5
-																		. '/'
-																		. $sub_6
-																	);
-																	// count the folder created
-																	$this->folderCount++;
-																	$this->indexHTML(
-																		$main
-																		. '/'
-																		. $sub
-																		. '/'
-																		. $sub_2
-																		. '/'
-																		. $sub_3
-																		. '/'
-																		. $sub_4
-																		. '/'
-																		. $sub_5
-																		. '/'
-																		. $sub_6
-																	);
-																}
+																);
 																if (ComponentbuilderHelper::checkObject(
 																	$subFolders_6
 																))
@@ -2020,7 +1847,7 @@ class Structure extends Get
 																		$subFolders_7
 																	)
 																	{
-																		if (!JFolder::exists(
+																		$this->createFolder(
 																			$this->componentPath
 																			. '/'
 																			. $main
@@ -2038,47 +1865,7 @@ class Structure extends Get
 																			. $sub_6
 																			. '/'
 																			. $sub_7
-																		))
-																		{
-																			JFolder::create(
-																				$this->componentPath
-																				. '/'
-																				. $main
-																				. '/'
-																				. $sub
-																				. '/'
-																				. $sub_2
-																				. '/'
-																				. $sub_3
-																				. '/'
-																				. $sub_4
-																				. '/'
-																				. $sub_5
-																				. '/'
-																				. $sub_6
-																				. '/'
-																				. $sub_7
-																			);
-																			// count the folder created
-																			$this->folderCount++;
-																			$this->indexHTML(
-																				$main
-																				. '/'
-																				. $sub
-																				. '/'
-																				. $sub_2
-																				. '/'
-																				. $sub_3
-																				. '/'
-																				. $sub_4
-																				. '/'
-																				. $sub_5
-																				. '/'
-																				. $sub_6
-																				. '/'
-																				. $sub_7
-																			);
-																		}
+																		);
 																	}
 																}
 															}
@@ -3251,14 +3038,14 @@ class Structure extends Get
 	{
 		if ('component' === $root)
 		{
-			$root = $this->componentPath;
+			$root = $this->componentPath . '/';
 		}
 		// use path if exist
 		if (strlen($path) > 0)
 		{
 			JFile::copy(
 				$this->templatePath . '/index.html',
-				$root . '/' . $path . '/index.html'
+				$root . $path . '/index.html'
 			);
 			// count the file created
 			$this->fileCount++;

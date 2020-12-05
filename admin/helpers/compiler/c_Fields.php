@@ -5038,7 +5038,7 @@ class Fields extends Structure
 		{
 			// this pains me... but to avoid collusion
 			$filter_type_code     = ComponentbuilderHelper::safeString(
-				 $nameListCode . 'filter' . $name
+				$nameListCode . 'filter' . $name
 			);
 			$filter_type_code     = preg_replace('/_+/', '', $filter_type_code);
 			$filter_function_name = ComponentbuilderHelper::safeString(
@@ -5628,7 +5628,8 @@ class Fields extends Structure
 				$field_filter_sets[] = $this->_t(3) . 'type="category"';
 				$field_filter_sets[] = $this->_t(3) . 'name="category_id"';
 				$field_filter_sets[] = $this->_t(3)
-					. 'label="' . $this->categoryBuilder[$nameListCode]['name'] . '"';
+					. 'label="' . $this->categoryBuilder[$nameListCode]['name']
+					. '"';
 				$field_filter_sets[] = $this->_t(3)
 					. 'description="JOPTION_FILTER_CATEGORY_DESC"';
 				$field_filter_sets[] = $this->_t(3) . 'multiple="true"';

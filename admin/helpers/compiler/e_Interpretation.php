@@ -4777,57 +4777,6 @@ class Interpretation extends Fields
 		return false;
 	}
 
-	/**
-	 * get the a script from the custom script builder
-	 *
-	 * @param   string  $first    The first key
-	 * @param   string  $second   The second key
-	 * @param   string  $prefix   The prefix to add in front of the script if found
-	 * @param   string  $note     The switch/note to add to the script
-	 * @param   bool    $unset    The switch to unset the value if found
-	 * @param   string  $default  The switch/string to use as default return if script not found
-	 * @param   string  $sufix    The sufix  to add after the script if found
-	 *
-	 * @return  mix    The string/script if found or the default value if not found
-	 *
-	 */
-	public function getCustomScriptBuilder($first, $second, $prefix = '',
-		$note = null, $unset = null, $default = null, $sufix = ''
-	) {
-		// default is to return an empty string
-		$script = '';
-		// check if there is any custom script
-		if (isset($this->customScriptBuilder[$first][$second])
-			&& ComponentbuilderHelper::checkString(
-				$this->customScriptBuilder[$first][$second]
-			))
-		{
-			// add not if set
-			if ($note)
-			{
-				$script .= $note;
-			}
-			// load the actual script
-			$script .= $prefix . str_replace(
-					array_keys($this->placeholders),
-					array_values($this->placeholders),
-					$this->customScriptBuilder[$first][$second]
-				) . $sufix;
-			// clear some memory
-			if ($unset)
-			{
-				unset($this->customScriptBuilder[$first][$second]);
-			}
-		}
-		// if not found return default
-		if (!ComponentbuilderHelper::checkString($script) && $default)
-		{
-			return $default;
-		}
-
-		return $script;
-	}
-
 	public function setCustomViewListQuery(&$get, $code, $return = true)
 	{
 		if (ComponentbuilderHelper::checkObject($get))
@@ -14317,11 +14266,14 @@ class Interpretation extends Fields
 				$Helper = $this->fileContentStatic[$this->hhh . 'Component'
 					. $this->hhh] . 'Helper';
 				// load the access filter query code
-				$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
+				$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(
+						__LINE__
+					)
 					. " Filter by access level.";
 				$query .= PHP_EOL . $this->_t(2)
 					. "\$_access = \$this->getState('filter.access');";
-				$query .= PHP_EOL . $this->_t(2) . "if (\$_access && is_numeric(\$_access))";
+				$query .= PHP_EOL . $this->_t(2)
+					. "if (\$_access && is_numeric(\$_access))";
 				$query .= PHP_EOL . $this->_t(2) . "{";
 				$query .= PHP_EOL . $this->_t(3)
 					. "\$query->where('a.access = ' . (int) \$_access);";
@@ -14330,8 +14282,10 @@ class Interpretation extends Fields
 					. $Helper . "::checkArray(\$_access))";
 				$query .= PHP_EOL . $this->_t(2) . "{";
 				$query .= PHP_EOL . $this->_t(3) . "//"
-					. $this->setLine(__LINE__) . " Secure the array for the query";
-				$query .= PHP_EOL . $this->_t(3) . "\$_access = ArrayHelper::toInteger(\$_access);";
+					. $this->setLine(__LINE__)
+					. " Secure the array for the query";
+				$query .= PHP_EOL . $this->_t(3)
+					. "\$_access = ArrayHelper::toInteger(\$_access);";
 				$query .= PHP_EOL . $this->_t(3) . "//"
 					. $this->setLine(__LINE__) . " Filter by the Access Array.";
 				$query .= PHP_EOL . $this->_t(3)
@@ -14754,7 +14708,8 @@ class Interpretation extends Fields
 					. "\$pks = \$input->post->get('cid', array(), 'array');";
 				$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 					. " Sanitize the input";
-				$method[] = $this->_t(3) . "\$pks = ArrayHelper::toInteger(\$pks);";
+				$method[] = $this->_t(3)
+					. "\$pks = ArrayHelper::toInteger(\$pks);";
 				$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 					. " convert to string";
 				$method[] = $this->_t(3) . "\$ids = implode('_', \$pks);";
@@ -15443,11 +15398,14 @@ class Interpretation extends Fields
 				$Helper = $this->fileContentStatic[$this->hhh . 'Component'
 					. $this->hhh] . 'Helper';
 				// load the access filter query code
-				$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
+				$query .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(
+						__LINE__
+					)
 					. " Filter by access level.";
 				$query .= PHP_EOL . $this->_t(2)
 					. "\$_access = \$this->getState('filter.access');";
-				$query .= PHP_EOL . $this->_t(2) . "if (\$_access && is_numeric(\$_access))";
+				$query .= PHP_EOL . $this->_t(2)
+					. "if (\$_access && is_numeric(\$_access))";
 				$query .= PHP_EOL . $this->_t(2) . "{";
 				$query .= PHP_EOL . $this->_t(3)
 					. "\$query->where('a.access = ' . (int) \$_access);";
@@ -15456,8 +15414,10 @@ class Interpretation extends Fields
 					. $Helper . "::checkArray(\$_access))";
 				$query .= PHP_EOL . $this->_t(2) . "{";
 				$query .= PHP_EOL . $this->_t(3) . "//"
-					. $this->setLine(__LINE__) . " Secure the array for the query";
-				$query .= PHP_EOL . $this->_t(3) . "\$_access = ArrayHelper::toInteger(\$_access);";
+					. $this->setLine(__LINE__)
+					. " Secure the array for the query";
+				$query .= PHP_EOL . $this->_t(3)
+					. "\$_access = ArrayHelper::toInteger(\$_access);";
 				$query .= PHP_EOL . $this->_t(3) . "//"
 					. $this->setLine(__LINE__) . " Filter by the Access Array.";
 				$query .= PHP_EOL . $this->_t(3)
@@ -20922,9 +20882,9 @@ class Interpretation extends Fields
 	/**
 	 * Add the code of the filter in the populate state
 	 *
-	 * @param   array   $filter      The field/filter array
+	 * @param   array   $filter     The field/filter array
 	 * @param   bool    $newFilter  The switch to use the new filter
-	 * @param   string  $extra       The defaults/extra options of the filter
+	 * @param   string  $extra      The defaults/extra options of the filter
 	 *
 	 * @return  string    The code for the populate state
 	 *
@@ -20978,7 +20938,7 @@ class Interpretation extends Fields
 	 * set the default populate state code
 	 *
 	 * @param   string  $nameSingleCode  The single view name
-	 * @param   bool    $newFilter      The switch to use the new filter
+	 * @param   bool    $newFilter       The switch to use the new filter
 	 *
 	 * @return  string The state code added
 	 *
@@ -27433,7 +27393,7 @@ function vdm_dkim() {
 		$default = PHP_EOL . $module->default_header . PHP_EOL . '?>';
 		// add any css from the fields
 		$default .= $this->getCustomScriptBuilder(
-			'css_views', $key, PHP_EOL . '<style>' . PHP_EOL, '', true, null,
+			'css_views', $key, PHP_EOL . '<style>', '', true, null,
 			PHP_EOL . '</style>' . PHP_EOL
 		);
 		// now add the body
@@ -27441,7 +27401,7 @@ function vdm_dkim() {
 		// add any JavaScript from the fields
 		$default .= $this->getCustomScriptBuilder(
 			'views_footer', $key,
-			PHP_EOL . '<script type="text/javascript">' . PHP_EOL, '', true,
+			PHP_EOL . '<script type="text/javascript">', '', true,
 			null, PHP_EOL . '</script>' . PHP_EOL
 		);
 
@@ -27532,6 +27492,7 @@ function vdm_dkim() {
 				$module->config_fields
 			))
 		{
+			$add_scripts_field = true;
 			foreach ($module->config_fields as $field_name => $fieldsets)
 			{
 				foreach ($fieldsets as $fieldset => $fields)
@@ -27540,6 +27501,15 @@ function vdm_dkim() {
 					$xmlFields = $this->getExtensionFieldsetXML(
 						$module, $fields, $dbkey
 					);
+					// check if the custom script field must be set
+					if ($add_scripts_field && $module->add_scripts_field)
+					{
+						// get the custom script field
+						$xmlFields .= PHP_EOL . $this->_t(2)
+							. "<field type=\"modadminvvvvvvvdm\" />";
+						// don't add it again
+						$add_scripts_field = false;
+					}
 					// make sure the xml is set and a string
 					if (isset($xmlFields)
 						&& ComponentbuilderHelper::checkString($xmlFields))
