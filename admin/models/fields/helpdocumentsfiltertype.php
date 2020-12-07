@@ -50,14 +50,14 @@ class JFormFieldHelpdocumentsfiltertype extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_TYPE') . ' -');
 
 		if ($results)
 		{
 			// get help_documentsmodel
 			$model = ComponentbuilderHelper::getModel('help_documents');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_TYPE') . ' -');
 			foreach ($results as $type)
 			{
 				// Translate the type selection
@@ -65,8 +65,7 @@ class JFormFieldHelpdocumentsfiltertype extends JFormFieldList
 				// Now add the type and its text to the options array
 				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

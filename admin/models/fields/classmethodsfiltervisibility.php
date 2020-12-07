@@ -50,14 +50,14 @@ class JFormFieldClassmethodsfiltervisibility extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_VISIBILITY') . ' -');
 
 		if ($results)
 		{
 			// get class_methodsmodel
 			$model = ComponentbuilderHelper::getModel('class_methods');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_VISIBILITY') . ' -');
 			foreach ($results as $visibility)
 			{
 				// Translate the visibility selection
@@ -65,8 +65,7 @@ class JFormFieldClassmethodsfiltervisibility extends JFormFieldList
 				// Now add the visibility and its text to the options array
 				$_filter[] = JHtml::_('select.option', $visibility, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

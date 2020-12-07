@@ -50,14 +50,14 @@ class JFormFieldLayoutsfilteraddphpview extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_PHP_VIEW') . ' -');
 
 		if ($results)
 		{
 			// get layoutsmodel
 			$model = ComponentbuilderHelper::getModel('layouts');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_PHP_VIEW') . ' -');
 			foreach ($results as $add_php_view)
 			{
 				// Translate the add_php_view selection
@@ -65,8 +65,7 @@ class JFormFieldLayoutsfilteraddphpview extends JFormFieldList
 				// Now add the add_php_view and its text to the options array
 				$_filter[] = JHtml::_('select.option', $add_php_view, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

@@ -50,14 +50,14 @@ class JFormFieldAdminviewsfilteraddcustomimport extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_CUSTOM_IMPORT') . ' -');
 
 		if ($results)
 		{
 			// get admin_viewsmodel
 			$model = ComponentbuilderHelper::getModel('admin_views');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_CUSTOM_IMPORT') . ' -');
 			foreach ($results as $add_custom_import)
 			{
 				// Translate the add_custom_import selection
@@ -65,8 +65,7 @@ class JFormFieldAdminviewsfilteraddcustomimport extends JFormFieldList
 				// Now add the add_custom_import and its text to the options array
 				$_filter[] = JHtml::_('select.option', $add_custom_import, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

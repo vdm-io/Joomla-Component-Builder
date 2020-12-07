@@ -50,19 +50,18 @@ class JFormFieldServersfiltername extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_NAME') . ' -');
 
 		if ($results)
 		{
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_NAME') . ' -');
 			foreach ($results as $name)
 			{
 				// Now add the name and its text to the options array
 				$_filter[] = JHtml::_('select.option', $name, $name);
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

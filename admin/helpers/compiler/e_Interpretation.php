@@ -17645,28 +17645,26 @@ class Interpretation extends Fields
 					$function[] = $this->_t(2) . "\$db->setQuery(\$query);";
 					$function[] = PHP_EOL . $this->_t(2)
 						. "\$results = \$db->loadObjectList();";
-					$function[] = $this->_t(2) . "if (\$results)";
-					$function[] = $this->_t(2) . "{";
-					$function[] = $this->_t(3) . "\$filter = array();";
-					$function[] = $this->_t(3) . "\$batch = array();";
+					$function[] = $this->_t(2) . "\$_filter = array();";
 					// if this is not a multi field
 					if (!$funtion_path && $filter['multi'] == 1)
 					{
-						$function[] = $this->_t(4)
-							. "\$filter[] = JHtml::_('select.option', '', '- Select ' . JText:"
+						$function[] = $this->_t(2)
+							. "\$_filter[] = JHtml::_('select.option', '', '- Select ' . JText:"
 							. ":_('" . $filter['lang'] . "') . ' -');";
 					}
+					$function[] = $this->_t(2) . "if (\$results)";
+					$function[] = $this->_t(2) . "{";
 					$function[] = $this->_t(3)
 						. "foreach (\$results as \$result)";
 					$function[] = $this->_t(3) . "{";
 					$function[] = $this->_t(4)
-						. "\$filter[] = JHtml::_('select.option', \$result->"
+						. "\$_filter[] = JHtml::_('select.option', \$result->"
 						. $filter['custom']['id'] . ", \$result->"
 						. $filter['custom']['text'] . ");";
 					$function[] = $this->_t(3) . "}";
-					$function[] = $this->_t(3) . "return  \$filter;";
 					$function[] = $this->_t(2) . "}";
-					$function[] = $this->_t(2) . "return false;";
+					$function[] = $this->_t(2) . "return  \$_filter;";
 					// add if this is a function path
 					if ($funtion_path)
 					{
@@ -17799,7 +17797,14 @@ class Interpretation extends Fields
 						$function[] = PHP_EOL . $this->_t(2)
 							. "\$results = \$db->loadColumn();";
 					}
-
+					$function[] = $this->_t(2) . "\$_filter = array();";
+					// if this is not a multi field
+					if (!$funtion_path && $filter['multi'] == 1)
+					{
+						$function[] = $this->_t(2)
+							. "\$_filter[] = JHtml::_('select.option', '', '- ' . JText:"
+							. ":_('" . $filter['lang_select'] . "') . ' -');";
+					}
 					$function[] = PHP_EOL . $this->_t(2) . "if (\$results)";
 					$function[] = $this->_t(2) . "{";
 
@@ -17826,14 +17831,6 @@ class Interpretation extends Fields
 					{
 						$function[] = $this->_t(3)
 							. "\$results = array_unique(\$results);";
-					}
-					$function[] = $this->_t(3) . "\$_filter = array();";
-					// if this is not a multi field
-					if (!$funtion_path && $filter['multi'] == 1)
-					{
-						$function[] = $this->_t(3)
-							. "\$_filter[] = JHtml::_('select.option', '', '- ' . JText:"
-							. ":_('" . $filter['lang_select'] . "') . ' -');";
 					}
 					$function[] = $this->_t(3) . "foreach (\$results as \$"
 						. $filter['code'] . ")";
@@ -17894,9 +17891,8 @@ class Interpretation extends Fields
 						}
 					}
 					$function[] = $this->_t(3) . "}";
-					$function[] = $this->_t(3) . "return \$_filter;";
 					$function[] = $this->_t(2) . "}";
-					$function[] = $this->_t(2) . "return false;";
+					$function[] = $this->_t(2) . "return \$_filter;";
 					// add if this is a function path
 					if ($funtion_path)
 					{

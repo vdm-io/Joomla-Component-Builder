@@ -50,14 +50,14 @@ class JFormFieldFieldsfilterindexes extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_INDEXES') . ' -');
 
 		if ($results)
 		{
 			// get fieldsmodel
 			$model = ComponentbuilderHelper::getModel('fields');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_INDEXES') . ' -');
 			foreach ($results as $indexes)
 			{
 				// Translate the indexes selection
@@ -65,8 +65,7 @@ class JFormFieldFieldsfilterindexes extends JFormFieldList
 				// Now add the indexes and its text to the options array
 				$_filter[] = JHtml::_('select.option', $indexes, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

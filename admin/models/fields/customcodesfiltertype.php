@@ -50,14 +50,14 @@ class JFormFieldCustomcodesfiltertype extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_TYPE') . ' -');
 
 		if ($results)
 		{
 			// get custom_codesmodel
 			$model = ComponentbuilderHelper::getModel('custom_codes');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_TYPE') . ' -');
 			foreach ($results as $type)
 			{
 				// Translate the type selection
@@ -65,8 +65,7 @@ class JFormFieldCustomcodesfiltertype extends JFormFieldList
 				// Now add the type and its text to the options array
 				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

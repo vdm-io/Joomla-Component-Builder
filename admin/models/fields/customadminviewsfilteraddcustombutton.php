@@ -50,14 +50,14 @@ class JFormFieldCustomadminviewsfilteraddcustombutton extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_CUSTOM_BUTTON') . ' -');
 
 		if ($results)
 		{
 			// get custom_admin_viewsmodel
 			$model = ComponentbuilderHelper::getModel('custom_admin_views');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_CUSTOM_BUTTON') . ' -');
 			foreach ($results as $add_custom_button)
 			{
 				// Translate the add_custom_button selection
@@ -65,8 +65,7 @@ class JFormFieldCustomadminviewsfilteraddcustombutton extends JFormFieldList
 				// Now add the add_custom_button and its text to the options array
 				$_filter[] = JHtml::_('select.option', $add_custom_button, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

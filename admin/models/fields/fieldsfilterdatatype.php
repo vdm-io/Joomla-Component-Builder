@@ -50,14 +50,14 @@ class JFormFieldFieldsfilterdatatype extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_DATATYPE') . ' -');
 
 		if ($results)
 		{
 			// get fieldsmodel
 			$model = ComponentbuilderHelper::getModel('fields');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_DATATYPE') . ' -');
 			foreach ($results as $datatype)
 			{
 				// Translate the datatype selection
@@ -65,8 +65,7 @@ class JFormFieldFieldsfilterdatatype extends JFormFieldList
 				// Now add the datatype and its text to the options array
 				$_filter[] = JHtml::_('select.option', $datatype, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

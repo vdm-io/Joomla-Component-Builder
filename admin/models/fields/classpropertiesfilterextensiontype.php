@@ -50,14 +50,14 @@ class JFormFieldClasspropertiesfilterextensiontype extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_EXTENSION_TYPE') . ' -');
 
 		if ($results)
 		{
 			// get class_propertiesmodel
 			$model = ComponentbuilderHelper::getModel('class_properties');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_EXTENSION_TYPE') . ' -');
 			foreach ($results as $extension_type)
 			{
 				// Translate the extension_type selection
@@ -65,8 +65,7 @@ class JFormFieldClasspropertiesfilterextensiontype extends JFormFieldList
 				// Now add the extension_type and its text to the options array
 				$_filter[] = JHtml::_('select.option', $extension_type, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

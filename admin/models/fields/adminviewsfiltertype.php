@@ -50,13 +50,13 @@ class JFormFieldAdminviewsfiltertype extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
 
 		if ($results)
 		{
 			// get admin_viewsmodel
 			$model = ComponentbuilderHelper::getModel('admin_views');
 			$results = array_unique($results);
-			$_filter = array();
 			foreach ($results as $type)
 			{
 				// Translate the type selection
@@ -64,8 +64,7 @@ class JFormFieldAdminviewsfiltertype extends JFormFieldList
 				// Now add the type and its text to the options array
 				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

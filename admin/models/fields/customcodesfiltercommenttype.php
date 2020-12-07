@@ -50,14 +50,14 @@ class JFormFieldCustomcodesfiltercommenttype extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_COMMENT_TYPE') . ' -');
 
 		if ($results)
 		{
 			// get custom_codesmodel
 			$model = ComponentbuilderHelper::getModel('custom_codes');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_COMMENT_TYPE') . ' -');
 			foreach ($results as $comment_type)
 			{
 				// Translate the comment_type selection
@@ -65,8 +65,7 @@ class JFormFieldCustomcodesfiltercommenttype extends JFormFieldList
 				// Now add the comment_type and its text to the options array
 				$_filter[] = JHtml::_('select.option', $comment_type, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

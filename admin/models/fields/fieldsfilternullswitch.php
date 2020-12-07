@@ -50,14 +50,14 @@ class JFormFieldFieldsfilternullswitch extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_NULL_SWITCH') . ' -');
 
 		if ($results)
 		{
 			// get fieldsmodel
 			$model = ComponentbuilderHelper::getModel('fields');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_NULL_SWITCH') . ' -');
 			foreach ($results as $null_switch)
 			{
 				// Translate the null_switch selection
@@ -65,8 +65,7 @@ class JFormFieldFieldsfilternullswitch extends JFormFieldList
 				// Now add the null_switch and its text to the options array
 				$_filter[] = JHtml::_('select.option', $null_switch, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

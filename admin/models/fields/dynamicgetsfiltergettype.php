@@ -50,14 +50,14 @@ class JFormFieldDynamicgetsfiltergettype extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_GETTYPE') . ' -');
 
 		if ($results)
 		{
 			// get dynamic_getsmodel
 			$model = ComponentbuilderHelper::getModel('dynamic_gets');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_GETTYPE') . ' -');
 			foreach ($results as $gettype)
 			{
 				// Translate the gettype selection
@@ -65,8 +65,7 @@ class JFormFieldDynamicgetsfiltergettype extends JFormFieldList
 				// Now add the gettype and its text to the options array
 				$_filter[] = JHtml::_('select.option', $gettype, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

@@ -50,14 +50,14 @@ class JFormFieldFieldsfilterstore extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_STORE') . ' -');
 
 		if ($results)
 		{
 			// get fieldsmodel
 			$model = ComponentbuilderHelper::getModel('fields');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_STORE') . ' -');
 			foreach ($results as $store)
 			{
 				// Translate the store selection
@@ -65,8 +65,7 @@ class JFormFieldFieldsfilterstore extends JFormFieldList
 				// Now add the store and its text to the options array
 				$_filter[] = JHtml::_('select.option', $store, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

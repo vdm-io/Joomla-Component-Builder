@@ -50,14 +50,14 @@ class JFormFieldSiteviewsfilteraddphpajax extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_PHP_AJAX') . ' -');
 
 		if ($results)
 		{
 			// get site_viewsmodel
 			$model = ComponentbuilderHelper::getModel('site_views');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_PHP_AJAX') . ' -');
 			foreach ($results as $add_php_ajax)
 			{
 				// Translate the add_php_ajax selection
@@ -65,8 +65,7 @@ class JFormFieldSiteviewsfilteraddphpajax extends JFormFieldList
 				// Now add the add_php_ajax and its text to the options array
 				$_filter[] = JHtml::_('select.option', $add_php_ajax, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

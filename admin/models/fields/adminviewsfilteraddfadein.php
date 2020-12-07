@@ -50,14 +50,14 @@ class JFormFieldAdminviewsfilteraddfadein extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_FADEIN') . ' -');
 
 		if ($results)
 		{
 			// get admin_viewsmodel
 			$model = ComponentbuilderHelper::getModel('admin_views');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_FADEIN') . ' -');
 			foreach ($results as $add_fadein)
 			{
 				// Translate the add_fadein selection
@@ -65,8 +65,7 @@ class JFormFieldAdminviewsfilteraddfadein extends JFormFieldList
 				// Now add the add_fadein and its text to the options array
 				$_filter[] = JHtml::_('select.option', $add_fadein, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

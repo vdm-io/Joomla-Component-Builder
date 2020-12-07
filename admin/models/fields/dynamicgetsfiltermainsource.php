@@ -50,14 +50,14 @@ class JFormFieldDynamicgetsfiltermainsource extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_MAIN_SOURCE') . ' -');
 
 		if ($results)
 		{
 			// get dynamic_getsmodel
 			$model = ComponentbuilderHelper::getModel('dynamic_gets');
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_MAIN_SOURCE') . ' -');
 			foreach ($results as $main_source)
 			{
 				// Translate the main_source selection
@@ -65,8 +65,7 @@ class JFormFieldDynamicgetsfiltermainsource extends JFormFieldList
 				// Now add the main_source and its text to the options array
 				$_filter[] = JHtml::_('select.option', $main_source, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

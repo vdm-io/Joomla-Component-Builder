@@ -50,19 +50,18 @@ class JFormFieldJoomlacomponentsfilterauthor extends JFormFieldList
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_AUTHOR') . ' -');
 
 		if ($results)
 		{
 			$results = array_unique($results);
-			$_filter = array();
-			$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_AUTHOR') . ' -');
 			foreach ($results as $author)
 			{
 				// Now add the author and its text to the options array
 				$_filter[] = JHtml::_('select.option', $author, $author);
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }
