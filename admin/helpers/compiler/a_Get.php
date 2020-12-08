@@ -3309,7 +3309,12 @@ class Get
 
 		// Load the results as a list of stdClass objects (see later for more options on retrieving data).
 		$view = $this->db->loadObject();
-
+		// fix alias to use in code
+		$view->code = $this->uniqueCode(
+			ComponentbuilderHelper::safeString($view->codename)
+		);
+		$view->Code = ComponentbuilderHelper::safeString($view->code, 'F');
+		$view->CODE = ComponentbuilderHelper::safeString($view->code, 'U');
 		// Trigger Event: jcb_ce_onBeforeModelCustomViewData
 		$this->triggerEvent(
 			'jcb_ce_onBeforeModelCustomViewData',
@@ -3355,12 +3360,6 @@ class Get
 			$this->setDynamicValues(base64_decode($view->default)),
 			$guiMapper
 		);
-		// fix alias to use in code
-		$view->code = $this->uniqueCode(
-			ComponentbuilderHelper::safeString($view->codename)
-		);
-		$view->Code = ComponentbuilderHelper::safeString($view->code, 'F');
-		$view->CODE = ComponentbuilderHelper::safeString($view->code, 'U');
 		// load context if not set
 		if (!isset($view->context)
 			|| !ComponentbuilderHelper::checkString(
