@@ -680,15 +680,16 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		$id .= ':' . $this->getState('filter.search');
 		$id .= ':' . $this->getState('filter.published');
 		// Check if the value is an array
-		$_filter = $this->getState('filter.access');
-		if (ComponentbuilderHelper::checkArray($_filter))
+		$_access = $this->getState('filter.access');
+		if (ComponentbuilderHelper::checkArray($_access))
 		{
-			$id .= ':' . implode(':', $_filter);
+			$id .= ':' . implode(':', $_access);
 		}
-		// This should not happen, but we try
-		elseif (is_numeric($_filter))
+		// Check if this is only an int or string
+		elseif (is_numeric($_access)
+		 || ComponentbuilderHelper::checkString($_access))
 		{
-			$id .= ':' . $_filter;
+			$id .= ':' . $_access;
 		}
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
@@ -700,8 +701,9 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		{
 			$id .= ':' . implode(':', $_type);
 		}
-		// This should not happen, but we try
-		elseif (is_numeric($_type))
+		// Check if this is only an int or string
+		elseif (is_numeric($_type)
+		 || ComponentbuilderHelper::checkString($_type))
 		{
 			$id .= ':' . $_type;
 		}

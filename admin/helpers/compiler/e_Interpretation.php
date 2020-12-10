@@ -20515,30 +20515,7 @@ class Interpretation extends Fields
 			{
 				// top bar selection can result in
 				// an array due to multi selection
-				$stored .= PHP_EOL . $this->_t(2)
-					. "//" . $this->setLine(__LINE__)
-					. " Check if the value is an array";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "\$_filter = \$this->getState('filter.access');";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "if (" . $Component . "Helper::checkArray(\$_filter))";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "{";
-				$stored .= PHP_EOL . $this->_t(3)
-					. "\$id .= ':' . implode(':', \$_filter);";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "}";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "//" . $this->setLine(__LINE__)
-					. " This should not happen, but we try";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "elseif (is_numeric(\$_filter))";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "{";
-				$stored .= PHP_EOL . $this->_t(3)
-					. "\$id .= ':' . \$_filter;";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "}";
+				$stored .= $this->getStoredIdCodeMulti('access', $Component);
 			}
 		}
 		$stored .= PHP_EOL . $this->_t(2)
@@ -20566,7 +20543,7 @@ class Interpretation extends Fields
 				if (!isset($donelist[$filter['code']]))
 				{
 					$stored                    .= $this->getStoredIdCode(
-						$filter, $Component
+						$filter, $nameListCode, $Component
 					);
 					$donelist[$filter['code']] = true;
 				}
@@ -20583,7 +20560,7 @@ class Interpretation extends Fields
 				if (!isset($donelist[$filter['code']]))
 				{
 					$stored                    .= $this->getStoredIdCode(
-						$filter, $Component
+						$filter, $nameListCode, $Component
 					);
 					$donelist[$filter['code']] = true;
 				}
@@ -20596,59 +20573,52 @@ class Interpretation extends Fields
 	/**
 	 * Add the code of the stored ids
 	 *
-	 * @param   array   $filter     The field/filter array
-	 * @param   string  $Component  The Component name
+	 * @param   array   $filter          The field/filter array
+	 * @param   string  $nameListCode    The list view name
+	 * @param   string  $Component       The Component name
 	 *
 	 * @return  string    The code for the stored IDs
 	 *
 	 */
-	protected function getStoredIdCode(&$filter, &$Component)
+	protected function getStoredIdCode(&$filter, &$nameListCode, &$Component)
 	{
 		if ($filter['type'] === 'category')
 		{
-			$stored = PHP_EOL . $this->_t(2)
-				. "\$id .= ':' . \$this->getState('filter.category');";
-			$stored .= PHP_EOL . $this->_t(2)
-				. "\$id .= ':' . \$this->getState('filter.category_id');";
-			if ($filter['code'] != 'category')
+			// the side bar option is single (1 = sidebar)
+			if (isset($this->adminFilterType[$nameListCode])
+				&& $this->adminFilterType[$nameListCode] == 1)
 			{
+				$stored = PHP_EOL . $this->_t(2)
+					. "\$id .= ':' . \$this->getState('filter.category');";
 				$stored .= PHP_EOL . $this->_t(2)
-					. "\$id .= ':' . \$this->getState('filter."
-					. $filter['code'] . "');";
+					. "\$id .= ':' . \$this->getState('filter.category_id');";
+				if ($filter['code'] != 'category')
+				{
+					$stored .= PHP_EOL . $this->_t(2)
+						. "\$id .= ':' . \$this->getState('filter."
+						. $filter['code'] . "');";
+				}
+			}
+			else
+			{
+				$stored = $this->getStoredIdCodeMulti('category', $Component);
+				$stored .= $this->getStoredIdCodeMulti('category_id', $Component);
+				if ($filter['code'] != 'category')
+				{
+					$stored .= $this->getStoredIdCodeMulti($filter['code'], $Component);
+				}
 			}
 		}
 		else
 		{
-			if ($filter['multi'] == 2)
+			// check if this is the topbar filter, and multi option (2 = topbar)
+			if ($filter['multi'] == 2
+				&& isset($this->adminFilterType[$nameListCode])
+				&& $this->adminFilterType[$nameListCode] == 2)
 			{
 				// top bar selection can result in
 				// an array due to multi selection
-				$stored .= PHP_EOL . $this->_t(2)
-					. "//" . $this->setLine(__LINE__)
-					. " Check if the value is an array";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "\$_" . $filter['code'] . " = \$this->getState('filter."
-					. $filter['code'] . "');";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "if (" . $Component . "Helper::checkArray(\$_"
-					. $filter['code'] . "))";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "{";
-				$stored .= PHP_EOL . $this->_t(3)
-					. "\$id .= ':' . implode(':', \$_" . $filter['code'] . ");";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "}";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "//" . $this->setLine(__LINE__)
-					. " This should not happen, but we try";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "elseif (is_numeric(\$_" . $filter['code'] . "))";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "{";
-				$stored .= PHP_EOL . $this->_t(3)
-					. "\$id .= ':' . \$_" . $filter['code'] . ";";
-				$stored .= PHP_EOL . $this->_t(2)
-					. "}";
+				$stored = $this->getStoredIdCodeMulti($filter['code'], $Component);
 			}
 			else
 			{
@@ -20657,6 +20627,51 @@ class Interpretation extends Fields
 					. $filter['code'] . "');";
 			}
 		}
+
+		return $stored;
+	}
+
+	/**
+	 * Add the code of the stored multi ids
+	 *
+	 * @param   string  $key           The key field name
+	 * @param   string  $Component     The Component name
+	 *
+	 * @return  string    The code for the stored IDs
+	 *
+	 */
+	protected function getStoredIdCodeMulti($key, &$Component)
+	{
+		// top bar selection can result in
+		// an array due to multi selection
+		$stored = PHP_EOL . $this->_t(2)
+			. "//" . $this->setLine(__LINE__)
+			. " Check if the value is an array";
+		$stored .= PHP_EOL . $this->_t(2)
+			. "\$_" . $key . " = \$this->getState('filter."
+			. $key . "');";
+		$stored .= PHP_EOL . $this->_t(2)
+			. "if (" . $Component . "Helper::checkArray(\$_"
+			. $key . "))";
+		$stored .= PHP_EOL . $this->_t(2)
+			. "{";
+		$stored .= PHP_EOL . $this->_t(3)
+			. "\$id .= ':' . implode(':', \$_" . $key . ");";
+		$stored .= PHP_EOL . $this->_t(2)
+			. "}";
+		$stored .= PHP_EOL . $this->_t(2)
+			. "//" . $this->setLine(__LINE__)
+			. " Check if this is only an int or string";
+		$stored .= PHP_EOL . $this->_t(2)
+			. "elseif (is_numeric(\$_" . $key . ")";
+		$stored .= PHP_EOL . $this->_t(2)
+			. " || " . $Component . "Helper::checkString(\$_" . $key . "))";
+		$stored .= PHP_EOL . $this->_t(2)
+			. "{";
+		$stored .= PHP_EOL . $this->_t(3)
+			. "\$id .= ':' . \$_" . $key . ";";
+		$stored .= PHP_EOL . $this->_t(2)
+			. "}";
 
 		return $stored;
 	}
