@@ -27759,7 +27759,7 @@ function vdm_dkim() {
 			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
 			$xml .= PHP_EOL . $this->_t(3)
 				. '<file driver="mysql" charset="utf8">sql/mysql/install.sql</file>';
-			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(2) . '</sql>';
 			$xml .= PHP_EOL . $this->_t(1) . '</install>';
 		}
 		// should the sql uninstall be added
@@ -27772,7 +27772,7 @@ function vdm_dkim() {
 			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
 			$xml .= PHP_EOL . $this->_t(3)
 				. '<file driver="mysql" charset="utf8">sql/mysql/uninstall.sql</file>';
-			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(2) . '</sql>';
 			$xml .= PHP_EOL . $this->_t(1) . '</uninstall>';
 		}
 		// should the language xml be added
@@ -28120,7 +28120,7 @@ function vdm_dkim() {
 			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
 			$xml .= PHP_EOL . $this->_t(3)
 				. '<file driver="mysql" charset="utf8">sql/mysql/install.sql</file>';
-			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(2) . '</sql>';
 			$xml .= PHP_EOL . $this->_t(1) . '</install>';
 		}
 		// should the sql uninstall be added
@@ -28133,7 +28133,7 @@ function vdm_dkim() {
 			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
 			$xml .= PHP_EOL . $this->_t(3)
 				. '<file driver="mysql" charset="utf8">sql/mysql/uninstall.sql</file>';
-			$xml .= PHP_EOL . $this->_t(2) . '<sql>';
+			$xml .= PHP_EOL . $this->_t(2) . '</sql>';
 			$xml .= PHP_EOL . $this->_t(1) . '</uninstall>';
 		}
 		// should the language xml be added
