@@ -29,7 +29,8 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'add_sql',
 	'sql',
 	'add_sql_uninstall',
-	'sql_uninstall'
+	'sql_uninstall',
+	'assets_table_fix'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

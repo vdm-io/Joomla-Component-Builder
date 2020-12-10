@@ -122,16 +122,6 @@
 			folder="editors"
 			filter="cmd"
 		/>
-		<!-- Compiler_plugin Field. Type: Plugins. (joomla) -->
-		<field
-			type="plugins"
-			name="compiler_plugin"
-			label="COM_COMPONENTBUILDER_CONFIG_COMPILER_PLUGIN_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_COMPILER_PLUGIN_DESCRIPTION"
-			multiple="true"
-			folder="extension"
-			filter="cmd"
-		/>
 		<!-- Github_access_token Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -184,54 +174,6 @@
 		</field>
 		<!-- Spacer_hr_two Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_two" hr="true" class="spacer_hr_two" />
-		<!-- Add_menu_prefix Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_menu_prefix"
-			label="COM_COMPONENTBUILDER_CONFIG_ADD_MENU_PREFIX_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_ADD_MENU_PREFIX_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_CONFIG_NO</option>
-		</field>
-		<!-- Menu_prefix Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="menu_prefix"
-			label="COM_COMPONENTBUILDER_CONFIG_MENU_PREFIX_LABEL"
-			size="30"
-			maxlength="30"
-			default=""
-			description="COM_COMPONENTBUILDER_CONFIG_MENU_PREFIX_DESCRIPTION"
-			class="text_area"
-			filter="SAFEHTML"
-			message="COM_COMPONENTBUILDER_CONFIG_MENU_PREFIX_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_MENU_PREFIX_HINT"
-			autocomplete="on"
-			showon="add_menu_prefix:1"
-		/>
-		<!-- Spacer_hr_three Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_three" hr="true" class="spacer_hr_three" />
-		<!-- Minify Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="minify"
-			label="COM_COMPONENTBUILDER_CONFIG_MINIFY_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_MINIFY_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="0">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_CONFIG_NO</option>
-		</field>
-		<!-- Spacer_hr_four Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_four" hr="true" class="spacer_hr_four" />
 		<!-- Set_browser_storage Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -283,96 +225,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_NEVER_UPDATE</option>
 		</field>
-		<!-- Spacer_hr_five Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_five" hr="true" class="spacer_hr_five" />
-		<!-- Note_language_global Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_language_global" label="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_DESCRIPTION" heading="h4" class="alert alert-info note_language_global" />
-		<!-- Language Field. Type: Lang. (custom) -->
-		<field
-			type="lang"
-			name="language"
-			label="COM_COMPONENTBUILDER_CONFIG_LANGUAGE_LABEL"
-			class="list_class"
-			multiple="false"
-			default="en-GB"
-			required="true"
-			button="true"
-		/>
-		<!-- Percentagelanguageadd Field. Type: Number. (joomla) -->
-		<field
-			type="number"
-			name="percentagelanguageadd"
-			label="COM_COMPONENTBUILDER_CONFIG_PERCENTAGELANGUAGEADD_LABEL"
-			default="50"
-			description="COM_COMPONENTBUILDER_CONFIG_PERCENTAGELANGUAGEADD_DESCRIPTION"
-			class="text_area"
-			required="true"
-			min="10"
-			max="100"
-			step="10"
-		/>
-		<!-- Export_language_strings Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="export_language_strings"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_CONFIG_NO</option>
-		</field>
-		<!-- Spacer_hr_six Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_six" hr="true" class="spacer_hr_six" />
-		<!-- Compiler_field_builder_type Field. Type: List. (joomla) -->
-		<field
-			type="list"
-			name="compiler_field_builder_type"
-			label="COM_COMPONENTBUILDER_CONFIG_COMPILER_FIELD_BUILDER_TYPE_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_COMPILER_FIELD_BUILDER_TYPE_DESCRIPTION"
-			class="list_class"
-			filter="INT"
-			required="true"
-			default="2">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_STRING_MANIPULATION</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_CONFIG_SIMPLEXMLELEMENT_CLASS</option>
-		</field>
-		<!-- Field_name_builder Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="field_name_builder"
-			label="COM_COMPONENTBUILDER_CONFIG_FIELD_NAME_BUILDER_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_FIELD_NAME_BUILDER_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_CONFIG_ALPHANUMERIC</option>
-		</field>
-		<!-- Type_name_builder Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="type_name_builder"
-			label="COM_COMPONENTBUILDER_CONFIG_TYPE_NAME_BUILDER_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_TYPE_NAME_BUILDER_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_CONFIG_ALPHANUMERICDOT</option>
-		</field>
-		<!-- Spacer_hr_seven Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_seven" hr="true" class="spacer_hr_seven" />
+		<!-- Spacer_hr_three Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_three" hr="true" class="spacer_hr_three" />
 		<!-- Api Field. Type: User. (joomla) -->
 		<field
 			type="user"
@@ -380,8 +234,8 @@
 			label="COM_COMPONENTBUILDER_CONFIG_API_LABEL"
 			description="COM_COMPONENTBUILDER_CONFIG_API_DESCRIPTION"
 		/>
-		<!-- Spacer_hr_eight Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_eight" hr="true" class="spacer_hr_eight" />
+		<!-- Spacer_hr_four Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_four" hr="true" class="spacer_hr_four" />
 		<field name="autorTitle"
 			type="spacer"
 			label="COM_COMPONENTBUILDER_CONFIG_AUTHOR"
@@ -798,6 +652,174 @@
 			size="60"
 			default=""
 		/>
+	</fieldset>
+	<fieldset
+		name="compiler_custom_config"
+		label="COM_COMPONENTBUILDER_CONFIG_COMPILER">
+
+		<!-- Compiler_plugin Field. Type: Plugins. (joomla) -->
+		<field
+			type="plugins"
+			name="compiler_plugin"
+			label="COM_COMPONENTBUILDER_CONFIG_COMPILER_PLUGIN_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_COMPILER_PLUGIN_DESCRIPTION"
+			multiple="true"
+			folder="extension"
+			filter="cmd"
+		/>
+		<!-- Spacer_hr_five Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_five" hr="true" class="spacer_hr_five" />
+		<!-- Add_menu_prefix Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_menu_prefix"
+			label="COM_COMPONENTBUILDER_CONFIG_ADD_MENU_PREFIX_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_ADD_MENU_PREFIX_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_NO</option>
+		</field>
+		<!-- Menu_prefix Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="menu_prefix"
+			label="COM_COMPONENTBUILDER_CONFIG_MENU_PREFIX_LABEL"
+			size="30"
+			maxlength="30"
+			default=""
+			description="COM_COMPONENTBUILDER_CONFIG_MENU_PREFIX_DESCRIPTION"
+			class="text_area"
+			filter="SAFEHTML"
+			message="COM_COMPONENTBUILDER_CONFIG_MENU_PREFIX_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CONFIG_MENU_PREFIX_HINT"
+			autocomplete="on"
+			showon="add_menu_prefix:1"
+		/>
+		<!-- Spacer_hr_six Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_six" hr="true" class="spacer_hr_six" />
+		<!-- Minify Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="minify"
+			label="COM_COMPONENTBUILDER_CONFIG_MINIFY_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_MINIFY_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_NO</option>
+		</field>
+		<!-- Spacer_hr_seven Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_seven" hr="true" class="spacer_hr_seven" />
+		<!-- Note_language_global Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_language_global" label="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_DESCRIPTION" heading="h4" class="alert alert-info note_language_global" />
+		<!-- Language Field. Type: Lang. (custom) -->
+		<field
+			type="lang"
+			name="language"
+			label="COM_COMPONENTBUILDER_CONFIG_LANGUAGE_LABEL"
+			class="list_class"
+			multiple="false"
+			default="en-GB"
+			required="true"
+			button="true"
+		/>
+		<!-- Percentagelanguageadd Field. Type: Number. (joomla) -->
+		<field
+			type="number"
+			name="percentagelanguageadd"
+			label="COM_COMPONENTBUILDER_CONFIG_PERCENTAGELANGUAGEADD_LABEL"
+			default="50"
+			description="COM_COMPONENTBUILDER_CONFIG_PERCENTAGELANGUAGEADD_DESCRIPTION"
+			class="text_area"
+			required="true"
+			min="10"
+			max="100"
+			step="10"
+		/>
+		<!-- Export_language_strings Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="export_language_strings"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_NO</option>
+		</field>
+		<!-- Spacer_hr_eight Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_eight" hr="true" class="spacer_hr_eight" />
+		<!-- Assets_table_fix Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="assets_table_fix"
+			label="COM_COMPONENTBUILDER_CONFIG_ASSETS_TABLE_FIX_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_ASSETS_TABLE_FIX_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			default="1">
+			<!-- Option Set. -->
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_DO_NOT_ADD_FIX_EVER</option>
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_SQL_ADDREMOVE</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_CONFIG_INTELLIGENT_ADDREMOVEIF</option>
+		</field>
+		<!-- Compiler_field_builder_type Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="compiler_field_builder_type"
+			label="COM_COMPONENTBUILDER_CONFIG_COMPILER_FIELD_BUILDER_TYPE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_COMPILER_FIELD_BUILDER_TYPE_DESCRIPTION"
+			class="list_class"
+			filter="INT"
+			required="true"
+			default="2">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_STRING_MANIPULATION</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_CONFIG_SIMPLEXMLELEMENT_CLASS</option>
+		</field>
+		<!-- Field_name_builder Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="field_name_builder"
+			label="COM_COMPONENTBUILDER_CONFIG_FIELD_NAME_BUILDER_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_FIELD_NAME_BUILDER_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_CONFIG_ALPHANUMERIC</option>
+		</field>
+		<!-- Type_name_builder Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="type_name_builder"
+			label="COM_COMPONENTBUILDER_CONFIG_TYPE_NAME_BUILDER_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_TYPE_NAME_BUILDER_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_CONFIG_ALPHANUMERICDOT</option>
+		</field>
 	</fieldset>
 	<fieldset
 		name="development_method_custom_config"

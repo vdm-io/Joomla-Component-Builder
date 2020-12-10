@@ -7968,6 +7968,8 @@ class Interpretation extends Fields
 		$script .= $this->getCustomScriptBuilder(
 			'php_postflight', 'install', PHP_EOL . PHP_EOL, null, true
 		);
+		// add the Intelligent Fix script if needed
+		$script .= $this->getAssetsTableIntelligentFix();
 		// add the component install notice
 		if (ComponentbuilderHelper::checkString($script))
 		{
@@ -8128,7 +8130,7 @@ class Interpretation extends Fields
 					$script .= PHP_EOL . $this->_t(3) . "{";
 					$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 							__LINE__
-						) . " If succesfully remove " . $viewsCodeName
+						) . " If successfully remove " . $viewsCodeName
 						. " add queued success message.";
 					// TODO lang is not translated
 					$script .= PHP_EOL . $this->_t(4)
@@ -8164,7 +8166,7 @@ class Interpretation extends Fields
 					$script .= PHP_EOL . $this->_t(3) . "{";
 					$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 							__LINE__
-						) . " If succesfully remove " . $viewsCodeName
+						) . " If successfully remove " . $viewsCodeName
 						. " add queued success message.";
 					// TODO lang is not translated
 					$script .= PHP_EOL . $this->_t(4)
@@ -8238,7 +8240,7 @@ class Interpretation extends Fields
 					$script .= PHP_EOL . $this->_t(3) . "{";
 					$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 							__LINE__
-						) . " If succesfully remove " . $viewsCodeName
+						) . " If successfully remove " . $viewsCodeName
 						. " add queued success message.";
 					// TODO lang is not translated
 					$script .= PHP_EOL . $this->_t(4)
@@ -8314,7 +8316,7 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(3) . "{";
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 						__LINE__
-					) . " If succesfully remove " . $viewsCodeName
+					) . " If successfully remove " . $viewsCodeName
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . $this->_t(4)
@@ -8349,7 +8351,7 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(3) . "{";
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 						__LINE__
-					) . " If succesfully remove " . $viewsCodeName
+					) . " If successfully remove " . $viewsCodeName
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . $this->_t(4)
@@ -8384,7 +8386,7 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(3) . "{";
 				$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 						__LINE__
-					) . " If succesfully remove " . $viewsCodeName
+					) . " If successfully removed " . $viewsCodeName
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . $this->_t(4)
@@ -8482,7 +8484,7 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . $this->_t(2) . "if (\$" . $view . "_done)";
 			$script .= PHP_EOL . $this->_t(2) . "{";
 			$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
-				. " If succesfully remove " . $component
+				. " If successfully removed " . $component
 				. " add queued success message.";
 			// TODO lang is not translated
 			$script .= PHP_EOL . $this->_t(3) . "\$app->enqueueMessage(JText:"
@@ -8491,12 +8493,60 @@ class Interpretation extends Fields
 			// done
 			$script .= PHP_EOL;
 		}
+		// add the Intelligent Reversal script if needed
+		$script .= $this->getAssetsTableIntelligentReversal();
 		// add the custom uninstall script
 		$script .= $this->getCustomScriptBuilder(
 			'php_method', 'uninstall', "", null, true, null, PHP_EOL
 		);
 
 		return $script;
+	}
+
+	/**
+	 * build code for the assets table script intelligent fix
+	 *
+	 * @return  string The php to place in script.php
+	 *
+	 */
+	protected function getAssetsTableIntelligentFix()
+	{
+		// check if we should add the intelligent fix treatment for the assets table
+		if ($this->addAssetsTableFix == 2 && $this->accessSize <= 400)
+		{
+			// reset script
+			$script   = array();
+			$script[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " Check what size the rules column is now";
+
+			// done
+			return PHP_EOL . implode(PHP_EOL, $script);
+		}
+
+		return '';
+	}
+
+	/**
+	 * build code for the assets table script intelligent reversal
+	 *
+	 * @return  string The php to place in script.php
+	 *
+	 */
+	protected function getAssetsTableIntelligentReversal()
+	{
+		// check if we should add the intelligent uninstall treatment for the assets table
+		if ($this->addAssetsTableFix == 2)
+		{
+			// reset script
+			$script   = array();
+			$script[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+				. " Check for the biggest rules item in the database at this point";
+
+			// done
+			return PHP_EOL . implode(PHP_EOL, $script);
+		}
+
+		return '';
 	}
 
 	public function setMoveFolderScript()
@@ -10458,27 +10508,68 @@ class Interpretation extends Fields
 				unset($this->customScriptBuilder['sql']);
 			}
 
+			// WHY DO WE NEED AN ASSET TABLE FIX?
+			// https://www.mysqltutorial.org/mysql-varchar/
+			// https://stackoverflow.com/a/15227917/1429677
+			// https://forums.mysql.com/read.php?24,105964,105964
+			// https://github.com/vdm-io/Joomla-Component-Builder/issues/616#issuecomment-741502980
+			// 30 actions each +-20 characters with 8 groups
+			// that makes 4800 characters and the current Joomla
+			// column size is varchar(5120)
+
+			// just a little event tracking in classes
+			// count actions = setAccessSections
+			//                 around line206 (infusion call)
+			//                 around line26454 (interpretation function)
+			// first fix = setInstall
+			//                 around line1600 (infusion call)
+			//                 around line10063 (interpretation function)
+			// second fix = setUninstallScript
+			//                 around line2161 (infusion call)
+			//                 around line8030 (interpretation function)
+
 			// check if this component needs larger rules
 			// also check if the developer will allow this
-			// TODO still adding to GUI the needed switches and code
-			if (1)
+			// any value above 0 allows for the change to be added
+			// the access actions length must be checked before this
+			if ($this->addAssetsTableFix)
 			{
-				$db .= PHP_EOL;
-				$db .= PHP_EOL . '--';
-				$db .= PHP_EOL
-					. '--' . $this->setLine(
-						__LINE__
-					)
-					. ' Always insure this column rules is large enough for all the access control values.';
-				$db .= PHP_EOL . '--';
-				$db .= PHP_EOL
-					. "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control.';";
+				// 400 actions worse case is larger the 65535 characters
+				if ($this->accessSize > 400)
+				{
+					$db .= PHP_EOL;
+					$db .= PHP_EOL . '--';
+					$db .= PHP_EOL
+						. '--' . $this->setLine(
+							__LINE__
+						)
+						. ' Always insure this column rules is large enough for all the access control values.';
+					$db .= PHP_EOL . '--';
+					$db .= PHP_EOL
+						. "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control.';";
+				}
+				// smaller then 400 makes TEXT large enough
+				// only add this option if set to SQL fix
+				elseif ($this->addAssetsTableFix == 1)
+				{
+					$db .= PHP_EOL;
+					$db .= PHP_EOL . '--';
+					$db .= PHP_EOL
+						. '--' . $this->setLine(
+							__LINE__
+						)
+						. ' Always insure this column rules is large enough for all the access control values.';
+					$db .= PHP_EOL . '--';
+					$db .= PHP_EOL
+						. "ALTER TABLE `#__assets` CHANGE `rules` `rules` TEXT NOT NULL COMMENT 'JSON encoded access control.';";
+				}
 			}
 
 			// check if this component needs larger names
 			// also check if the developer will allow this
-			// TODO still adding to GUI the needed switches and code
-			if (1)
+			// any value above 0 allows for the change to be added
+			// the config length must be checked before this
+			if ($this->addAssetsTableFix && $this->addAssetsTableNameFix)
 			{
 				$db .= PHP_EOL;
 				$db .= PHP_EOL . '--';
@@ -10526,8 +10617,8 @@ class Interpretation extends Fields
 
 		// check if this component used larger rules
 		// now revert them back on uninstall
-		// TODO still adding to GUI the needed switches and code
-		if (1)
+		// number 1 allows for the change to be reversed
+		if ($this->addAssetsTableFix == 1)
 		{
 			// https://github.com/joomla/joomla-cms/blob/3.10.0-alpha3/installation/sql/mysql/joomla.sql#L22
 			// Checked 1st December 2020 (let us know if this changes)
@@ -10545,8 +10636,8 @@ class Interpretation extends Fields
 
 		// check if this component used larger names
 		// now revert them back on uninstall
-		// TODO still adding to GUI the needed switches and code
-		if (1)
+		// number 1 allows for the change to be reversed
+		if ($this->addAssetsTableFix == 1 && $this->addAssetsTableNameFix)
 		{
 			// https://github.com/joomla/joomla-cms/blob/3.10.0-alpha3/installation/sql/mysql/joomla.sql#L20
 			// Checked 1st December 2020 (let us know if this changes)
@@ -26398,6 +26489,8 @@ function vdm_dkim() {
 
 	public function setAccessSections()
 	{
+		// access size counter
+		$this->accessSize = 12; // ;)
 		// set the default component access values
 		$this->componentHead   = array();
 		$this->componentGlobal = array();
@@ -26432,7 +26525,8 @@ function vdm_dkim() {
 			$this->componentHead[] = $this->_t(2)
 				. '<action name="core.export" title="' . $exportTitle
 				. '" description="' . $exportDesc . '" />';
-
+			// the size needs increase
+			$this->accessSize++;
 			$importTitle = $this->langPrefix . '_'
 				. ComponentbuilderHelper::safeString('Import Data', 'U');
 			$importDesc  = $this->langPrefix . '_'
@@ -26446,6 +26540,8 @@ function vdm_dkim() {
 			$this->componentHead[] = $this->_t(2)
 				. '<action name="core.import" title="' . $importTitle
 				. '" description="' . $importDesc . '" />';
+			// the size needs increase
+			$this->accessSize++;
 		}
 		// version permission
 		$batchTitle = $this->langPrefix . '_'
@@ -26490,6 +26586,8 @@ function vdm_dkim() {
 		{
 			$this->componentHead[] = $this->_t(2)
 				. '    <action name="core.edit.value" title="JACTION_EDITVALUE" description="JACTION_EDITVALUE_COMPONENT_DESC" />';
+			// the size needs increase
+			$this->accessSize++;
 		}
 		// new custom created by permissions
 		$created_byTitle = $this->langPrefix . '_'
@@ -26560,6 +26658,8 @@ function vdm_dkim() {
 					. '<action name="' . $customAdminCode . '.access" title="'
 					. $customAdminTitle . '" description="' . $customAdminDesc
 					. '" />';
+				// the size needs increase
+				$this->accessSize++;
 				// add the custom permissions to use the buttons of this view
 				$this->addCustomButtonPermissions(
 					$custom_admin_view['settings'], $customAdminName,
@@ -26643,7 +26743,8 @@ function vdm_dkim() {
 					$this->componentGlobal[$sortKey] = $this->_t(2)
 						. '<action name="site.' . $siteCode . '.access" title="'
 						. $siteTitle . '" description="' . $siteDesc . '" />';
-
+					// the size needs increase
+					$this->accessSize++;
 					// check if this site view requires access rule to default to public
 					if (isset($site_view['public_access'])
 						&& $site_view['public_access'] == 1)
@@ -26691,6 +26792,8 @@ function vdm_dkim() {
 								. $_customTab['lang_permission']
 								. '" description="'
 								. $_customTab['lang_permission_desc'] . '" />';
+							// the size needs increase
+							$this->accessSize++;
 						}
 					}
 				}
@@ -26857,12 +26960,20 @@ function vdm_dkim() {
 			// add global to the compnent section
 			$component .= PHP_EOL . implode(PHP_EOL, $this->componentGlobal)
 				. PHP_EOL . $this->_t(1) . "</section>";
-			// add views to the compnent section
+			// add views to the component section
 			$component .= PHP_EOL . implode(PHP_EOL, $componentViews);
 			// be sure to reset again. (memory)
 			$this->componentHead   = null;
 			$this->componentGlobal = null;
 			$this->permissionViews = null;
+
+			// remove the fix in not needed
+			if ($this->accessSize < 30)
+			{
+				// since we have less than 30 actions
+				// we do not need the fix for this component
+				$this->addAssetsTableFix = 0;
+			}
 
 			// return the build
 			return $component;
@@ -26910,6 +27021,8 @@ function vdm_dkim() {
 					. '<action name="' . $code . '.' . $customButtonCode
 					. '" title="' . $customButtonTitle . '" description="'
 					. $customButtonDesc . '" />';
+				// the size needs increase
+				$this->accessSize++;
 			}
 		}
 	}
@@ -27248,6 +27361,8 @@ function vdm_dkim() {
 					$this->componentGlobal[$sortKey] = $this->_t(2)
 						. '<action name="' . $action . '" title="' . $title
 						. '" description="' . $title . '_DESC" />';
+					// the size needs increase
+					$this->accessSize++;
 					// build permission switch
 					$this->permissionBuilder['global'][$action][$nameView]
 						= $nameView;
@@ -27296,6 +27411,8 @@ function vdm_dkim() {
 					$this->componentGlobal[$sortKey] = $this->_t(2)
 						. '<action name="' . $action . '" title="' . $title
 						. '" description="' . $title . '_DESC" />';
+					// the size needs increase
+					$this->accessSize++;
 					// build permission switch
 					$this->permissionBuilder['global'][$action][$nameView]
 						= $nameView;

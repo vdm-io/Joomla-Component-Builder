@@ -75,7 +75,7 @@ class com_componentbuilderInstallerScript
 			$joomla_component_done = $db->execute();
 			if ($joomla_component_done)
 			{
-				// If succesfully remove Joomla_component add queued success message.
+				// If successfully remove Joomla_component add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_component) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -90,7 +90,7 @@ class com_componentbuilderInstallerScript
 			$joomla_component_done = $db->execute();
 			if ($joomla_component_done)
 			{
-				// If succesfully remove Joomla_component add queued success message.
+				// If successfully remove Joomla_component add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_component) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -105,7 +105,7 @@ class com_componentbuilderInstallerScript
 			$joomla_component_done = $db->execute();
 			if ($joomla_component_done)
 			{
-				// If succesfully remove Joomla_component add queued success message.
+				// If successfully removed Joomla_component add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_component) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -161,7 +161,7 @@ class com_componentbuilderInstallerScript
 			$joomla_module_done = $db->execute();
 			if ($joomla_module_done)
 			{
-				// If succesfully remove Joomla_module add queued success message.
+				// If successfully remove Joomla_module add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -176,7 +176,7 @@ class com_componentbuilderInstallerScript
 			$joomla_module_done = $db->execute();
 			if ($joomla_module_done)
 			{
-				// If succesfully remove Joomla_module add queued success message.
+				// If successfully remove Joomla_module add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -191,7 +191,7 @@ class com_componentbuilderInstallerScript
 			$joomla_module_done = $db->execute();
 			if ($joomla_module_done)
 			{
-				// If succesfully remove Joomla_module add queued success message.
+				// If successfully removed Joomla_module add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -247,7 +247,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_done = $db->execute();
 			if ($joomla_plugin_done)
 			{
-				// If succesfully remove Joomla_plugin add queued success message.
+				// If successfully remove Joomla_plugin add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -262,7 +262,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_done = $db->execute();
 			if ($joomla_plugin_done)
 			{
-				// If succesfully remove Joomla_plugin add queued success message.
+				// If successfully remove Joomla_plugin add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -277,7 +277,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_done = $db->execute();
 			if ($joomla_plugin_done)
 			{
-				// If succesfully remove Joomla_plugin add queued success message.
+				// If successfully removed Joomla_plugin add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -333,7 +333,7 @@ class com_componentbuilderInstallerScript
 			$admin_view_done = $db->execute();
 			if ($admin_view_done)
 			{
-				// If succesfully remove Admin_view add queued success message.
+				// If successfully remove Admin_view add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_view) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -348,7 +348,7 @@ class com_componentbuilderInstallerScript
 			$admin_view_done = $db->execute();
 			if ($admin_view_done)
 			{
-				// If succesfully remove Admin_view add queued success message.
+				// If successfully remove Admin_view add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_view) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -363,7 +363,7 @@ class com_componentbuilderInstallerScript
 			$admin_view_done = $db->execute();
 			if ($admin_view_done)
 			{
-				// If succesfully remove Admin_view add queued success message.
+				// If successfully removed Admin_view add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_view) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -419,7 +419,7 @@ class com_componentbuilderInstallerScript
 			$custom_admin_view_done = $db->execute();
 			if ($custom_admin_view_done)
 			{
-				// If succesfully remove Custom_admin_view add queued success message.
+				// If successfully remove Custom_admin_view add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_admin_view) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -434,7 +434,7 @@ class com_componentbuilderInstallerScript
 			$custom_admin_view_done = $db->execute();
 			if ($custom_admin_view_done)
 			{
-				// If succesfully remove Custom_admin_view add queued success message.
+				// If successfully remove Custom_admin_view add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_admin_view) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -449,7 +449,7 @@ class com_componentbuilderInstallerScript
 			$custom_admin_view_done = $db->execute();
 			if ($custom_admin_view_done)
 			{
-				// If succesfully remove Custom_admin_view add queued success message.
+				// If successfully removed Custom_admin_view add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_admin_view) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -505,7 +505,7 @@ class com_componentbuilderInstallerScript
 			$site_view_done = $db->execute();
 			if ($site_view_done)
 			{
-				// If succesfully remove Site_view add queued success message.
+				// If successfully remove Site_view add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.site_view) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -520,7 +520,7 @@ class com_componentbuilderInstallerScript
 			$site_view_done = $db->execute();
 			if ($site_view_done)
 			{
-				// If succesfully remove Site_view add queued success message.
+				// If successfully remove Site_view add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.site_view) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -535,7 +535,7 @@ class com_componentbuilderInstallerScript
 			$site_view_done = $db->execute();
 			if ($site_view_done)
 			{
-				// If succesfully remove Site_view add queued success message.
+				// If successfully removed Site_view add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.site_view) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -591,7 +591,7 @@ class com_componentbuilderInstallerScript
 			$template_done = $db->execute();
 			if ($template_done)
 			{
-				// If succesfully remove Template add queued success message.
+				// If successfully remove Template add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.template) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -606,7 +606,7 @@ class com_componentbuilderInstallerScript
 			$template_done = $db->execute();
 			if ($template_done)
 			{
-				// If succesfully remove Template add queued success message.
+				// If successfully remove Template add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.template) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -621,7 +621,7 @@ class com_componentbuilderInstallerScript
 			$template_done = $db->execute();
 			if ($template_done)
 			{
-				// If succesfully remove Template add queued success message.
+				// If successfully removed Template add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.template) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -677,7 +677,7 @@ class com_componentbuilderInstallerScript
 			$layout_done = $db->execute();
 			if ($layout_done)
 			{
-				// If succesfully remove Layout add queued success message.
+				// If successfully remove Layout add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.layout) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -692,7 +692,7 @@ class com_componentbuilderInstallerScript
 			$layout_done = $db->execute();
 			if ($layout_done)
 			{
-				// If succesfully remove Layout add queued success message.
+				// If successfully remove Layout add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.layout) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -707,7 +707,7 @@ class com_componentbuilderInstallerScript
 			$layout_done = $db->execute();
 			if ($layout_done)
 			{
-				// If succesfully remove Layout add queued success message.
+				// If successfully removed Layout add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.layout) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -763,7 +763,7 @@ class com_componentbuilderInstallerScript
 			$dynamic_get_done = $db->execute();
 			if ($dynamic_get_done)
 			{
-				// If succesfully remove Dynamic_get add queued success message.
+				// If successfully remove Dynamic_get add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.dynamic_get) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -778,7 +778,7 @@ class com_componentbuilderInstallerScript
 			$dynamic_get_done = $db->execute();
 			if ($dynamic_get_done)
 			{
-				// If succesfully remove Dynamic_get add queued success message.
+				// If successfully remove Dynamic_get add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.dynamic_get) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -793,7 +793,7 @@ class com_componentbuilderInstallerScript
 			$dynamic_get_done = $db->execute();
 			if ($dynamic_get_done)
 			{
-				// If succesfully remove Dynamic_get add queued success message.
+				// If successfully removed Dynamic_get add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.dynamic_get) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -849,7 +849,7 @@ class com_componentbuilderInstallerScript
 			$custom_code_done = $db->execute();
 			if ($custom_code_done)
 			{
-				// If succesfully remove Custom_code add queued success message.
+				// If successfully remove Custom_code add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -864,7 +864,7 @@ class com_componentbuilderInstallerScript
 			$custom_code_done = $db->execute();
 			if ($custom_code_done)
 			{
-				// If succesfully remove Custom_code add queued success message.
+				// If successfully remove Custom_code add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -879,7 +879,7 @@ class com_componentbuilderInstallerScript
 			$custom_code_done = $db->execute();
 			if ($custom_code_done)
 			{
-				// If succesfully remove Custom_code add queued success message.
+				// If successfully removed Custom_code add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -935,7 +935,7 @@ class com_componentbuilderInstallerScript
 			$class_property_done = $db->execute();
 			if ($class_property_done)
 			{
-				// If succesfully remove Class_property add queued success message.
+				// If successfully remove Class_property add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_property) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -950,7 +950,7 @@ class com_componentbuilderInstallerScript
 			$class_property_done = $db->execute();
 			if ($class_property_done)
 			{
-				// If succesfully remove Class_property add queued success message.
+				// If successfully remove Class_property add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_property) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -965,7 +965,7 @@ class com_componentbuilderInstallerScript
 			$class_property_done = $db->execute();
 			if ($class_property_done)
 			{
-				// If succesfully remove Class_property add queued success message.
+				// If successfully removed Class_property add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_property) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1021,7 +1021,7 @@ class com_componentbuilderInstallerScript
 			$class_method_done = $db->execute();
 			if ($class_method_done)
 			{
-				// If succesfully remove Class_method add queued success message.
+				// If successfully remove Class_method add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_method) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1036,7 +1036,7 @@ class com_componentbuilderInstallerScript
 			$class_method_done = $db->execute();
 			if ($class_method_done)
 			{
-				// If succesfully remove Class_method add queued success message.
+				// If successfully remove Class_method add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_method) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1051,7 +1051,7 @@ class com_componentbuilderInstallerScript
 			$class_method_done = $db->execute();
 			if ($class_method_done)
 			{
-				// If succesfully remove Class_method add queued success message.
+				// If successfully removed Class_method add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_method) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1107,7 +1107,7 @@ class com_componentbuilderInstallerScript
 			$placeholder_done = $db->execute();
 			if ($placeholder_done)
 			{
-				// If succesfully remove Placeholder add queued success message.
+				// If successfully remove Placeholder add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1122,7 +1122,7 @@ class com_componentbuilderInstallerScript
 			$placeholder_done = $db->execute();
 			if ($placeholder_done)
 			{
-				// If succesfully remove Placeholder add queued success message.
+				// If successfully remove Placeholder add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1137,7 +1137,7 @@ class com_componentbuilderInstallerScript
 			$placeholder_done = $db->execute();
 			if ($placeholder_done)
 			{
-				// If succesfully remove Placeholder add queued success message.
+				// If successfully removed Placeholder add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1193,7 +1193,7 @@ class com_componentbuilderInstallerScript
 			$library_done = $db->execute();
 			if ($library_done)
 			{
-				// If succesfully remove Library add queued success message.
+				// If successfully remove Library add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.library) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1208,7 +1208,7 @@ class com_componentbuilderInstallerScript
 			$library_done = $db->execute();
 			if ($library_done)
 			{
-				// If succesfully remove Library add queued success message.
+				// If successfully remove Library add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.library) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1223,7 +1223,7 @@ class com_componentbuilderInstallerScript
 			$library_done = $db->execute();
 			if ($library_done)
 			{
-				// If succesfully remove Library add queued success message.
+				// If successfully removed Library add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.library) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1279,7 +1279,7 @@ class com_componentbuilderInstallerScript
 			$snippet_done = $db->execute();
 			if ($snippet_done)
 			{
-				// If succesfully remove Snippet add queued success message.
+				// If successfully remove Snippet add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1294,7 +1294,7 @@ class com_componentbuilderInstallerScript
 			$snippet_done = $db->execute();
 			if ($snippet_done)
 			{
-				// If succesfully remove Snippet add queued success message.
+				// If successfully remove Snippet add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1309,7 +1309,7 @@ class com_componentbuilderInstallerScript
 			$snippet_done = $db->execute();
 			if ($snippet_done)
 			{
-				// If succesfully remove Snippet add queued success message.
+				// If successfully removed Snippet add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1365,7 +1365,7 @@ class com_componentbuilderInstallerScript
 			$validation_rule_done = $db->execute();
 			if ($validation_rule_done)
 			{
-				// If succesfully remove Validation_rule add queued success message.
+				// If successfully remove Validation_rule add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1380,7 +1380,7 @@ class com_componentbuilderInstallerScript
 			$validation_rule_done = $db->execute();
 			if ($validation_rule_done)
 			{
-				// If succesfully remove Validation_rule add queued success message.
+				// If successfully remove Validation_rule add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1395,7 +1395,7 @@ class com_componentbuilderInstallerScript
 			$validation_rule_done = $db->execute();
 			if ($validation_rule_done)
 			{
-				// If succesfully remove Validation_rule add queued success message.
+				// If successfully removed Validation_rule add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1451,7 +1451,7 @@ class com_componentbuilderInstallerScript
 			$field_done = $db->execute();
 			if ($field_done)
 			{
-				// If succesfully remove Field add queued success message.
+				// If successfully remove Field add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.field) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1466,7 +1466,7 @@ class com_componentbuilderInstallerScript
 			$field_done = $db->execute();
 			if ($field_done)
 			{
-				// If succesfully remove Field add queued success message.
+				// If successfully remove Field add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.field) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1481,7 +1481,7 @@ class com_componentbuilderInstallerScript
 			$field_done = $db->execute();
 			if ($field_done)
 			{
-				// If succesfully remove Field add queued success message.
+				// If successfully removed Field add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.field) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1537,7 +1537,7 @@ class com_componentbuilderInstallerScript
 			$field_catid_done = $db->execute();
 			if ($field_catid_done)
 			{
-				// If succesfully remove Field catid add queued success message.
+				// If successfully remove Field catid add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1552,7 +1552,7 @@ class com_componentbuilderInstallerScript
 			$field_catid_done = $db->execute();
 			if ($field_catid_done)
 			{
-				// If succesfully remove Field catid add queued success message.
+				// If successfully remove Field catid add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1567,7 +1567,7 @@ class com_componentbuilderInstallerScript
 			$field_catid_done = $db->execute();
 			if ($field_catid_done)
 			{
-				// If succesfully remove Field catid add queued success message.
+				// If successfully removed Field catid add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1623,7 +1623,7 @@ class com_componentbuilderInstallerScript
 			$fieldtype_done = $db->execute();
 			if ($fieldtype_done)
 			{
-				// If succesfully remove Fieldtype add queued success message.
+				// If successfully remove Fieldtype add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1638,7 +1638,7 @@ class com_componentbuilderInstallerScript
 			$fieldtype_done = $db->execute();
 			if ($fieldtype_done)
 			{
-				// If succesfully remove Fieldtype add queued success message.
+				// If successfully remove Fieldtype add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1653,7 +1653,7 @@ class com_componentbuilderInstallerScript
 			$fieldtype_done = $db->execute();
 			if ($fieldtype_done)
 			{
-				// If succesfully remove Fieldtype add queued success message.
+				// If successfully removed Fieldtype add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1709,7 +1709,7 @@ class com_componentbuilderInstallerScript
 			$fieldtype_catid_done = $db->execute();
 			if ($fieldtype_catid_done)
 			{
-				// If succesfully remove Fieldtype catid add queued success message.
+				// If successfully remove Fieldtype catid add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1724,7 +1724,7 @@ class com_componentbuilderInstallerScript
 			$fieldtype_catid_done = $db->execute();
 			if ($fieldtype_catid_done)
 			{
-				// If succesfully remove Fieldtype catid add queued success message.
+				// If successfully remove Fieldtype catid add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1739,7 +1739,7 @@ class com_componentbuilderInstallerScript
 			$fieldtype_catid_done = $db->execute();
 			if ($fieldtype_catid_done)
 			{
-				// If succesfully remove Fieldtype catid add queued success message.
+				// If successfully removed Fieldtype catid add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1795,7 +1795,7 @@ class com_componentbuilderInstallerScript
 			$language_translation_done = $db->execute();
 			if ($language_translation_done)
 			{
-				// If succesfully remove Language_translation add queued success message.
+				// If successfully remove Language_translation add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.language_translation) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1810,7 +1810,7 @@ class com_componentbuilderInstallerScript
 			$language_translation_done = $db->execute();
 			if ($language_translation_done)
 			{
-				// If succesfully remove Language_translation add queued success message.
+				// If successfully remove Language_translation add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.language_translation) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1825,7 +1825,7 @@ class com_componentbuilderInstallerScript
 			$language_translation_done = $db->execute();
 			if ($language_translation_done)
 			{
-				// If succesfully remove Language_translation add queued success message.
+				// If successfully removed Language_translation add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.language_translation) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1881,7 +1881,7 @@ class com_componentbuilderInstallerScript
 			$language_done = $db->execute();
 			if ($language_done)
 			{
-				// If succesfully remove Language add queued success message.
+				// If successfully remove Language add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.language) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1896,7 +1896,7 @@ class com_componentbuilderInstallerScript
 			$language_done = $db->execute();
 			if ($language_done)
 			{
-				// If succesfully remove Language add queued success message.
+				// If successfully remove Language add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.language) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1911,7 +1911,7 @@ class com_componentbuilderInstallerScript
 			$language_done = $db->execute();
 			if ($language_done)
 			{
-				// If succesfully remove Language add queued success message.
+				// If successfully removed Language add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.language) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -1967,7 +1967,7 @@ class com_componentbuilderInstallerScript
 			$server_done = $db->execute();
 			if ($server_done)
 			{
-				// If succesfully remove Server add queued success message.
+				// If successfully remove Server add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.server) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -1982,7 +1982,7 @@ class com_componentbuilderInstallerScript
 			$server_done = $db->execute();
 			if ($server_done)
 			{
-				// If succesfully remove Server add queued success message.
+				// If successfully remove Server add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.server) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -1997,7 +1997,7 @@ class com_componentbuilderInstallerScript
 			$server_done = $db->execute();
 			if ($server_done)
 			{
-				// If succesfully remove Server add queued success message.
+				// If successfully removed Server add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.server) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2053,7 +2053,7 @@ class com_componentbuilderInstallerScript
 			$help_document_done = $db->execute();
 			if ($help_document_done)
 			{
-				// If succesfully remove Help_document add queued success message.
+				// If successfully remove Help_document add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.help_document) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -2068,7 +2068,7 @@ class com_componentbuilderInstallerScript
 			$help_document_done = $db->execute();
 			if ($help_document_done)
 			{
-				// If succesfully remove Help_document add queued success message.
+				// If successfully remove Help_document add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.help_document) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -2083,7 +2083,7 @@ class com_componentbuilderInstallerScript
 			$help_document_done = $db->execute();
 			if ($help_document_done)
 			{
-				// If succesfully remove Help_document add queued success message.
+				// If successfully removed Help_document add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.help_document) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2139,7 +2139,7 @@ class com_componentbuilderInstallerScript
 			$admin_fields_done = $db->execute();
 			if ($admin_fields_done)
 			{
-				// If succesfully remove Admin_fields add queued success message.
+				// If successfully remove Admin_fields add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -2154,7 +2154,7 @@ class com_componentbuilderInstallerScript
 			$admin_fields_done = $db->execute();
 			if ($admin_fields_done)
 			{
-				// If succesfully remove Admin_fields add queued success message.
+				// If successfully remove Admin_fields add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -2169,7 +2169,7 @@ class com_componentbuilderInstallerScript
 			$admin_fields_done = $db->execute();
 			if ($admin_fields_done)
 			{
-				// If succesfully remove Admin_fields add queued success message.
+				// If successfully removed Admin_fields add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2225,7 +2225,7 @@ class com_componentbuilderInstallerScript
 			$admin_fields_conditions_done = $db->execute();
 			if ($admin_fields_conditions_done)
 			{
-				// If succesfully remove Admin_fields_conditions add queued success message.
+				// If successfully remove Admin_fields_conditions add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_conditions) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -2240,7 +2240,7 @@ class com_componentbuilderInstallerScript
 			$admin_fields_conditions_done = $db->execute();
 			if ($admin_fields_conditions_done)
 			{
-				// If succesfully remove Admin_fields_conditions add queued success message.
+				// If successfully remove Admin_fields_conditions add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_conditions) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -2255,7 +2255,7 @@ class com_componentbuilderInstallerScript
 			$admin_fields_conditions_done = $db->execute();
 			if ($admin_fields_conditions_done)
 			{
-				// If succesfully remove Admin_fields_conditions add queued success message.
+				// If successfully removed Admin_fields_conditions add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_conditions) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2311,7 +2311,7 @@ class com_componentbuilderInstallerScript
 			$admin_fields_relations_done = $db->execute();
 			if ($admin_fields_relations_done)
 			{
-				// If succesfully remove Admin_fields_relations add queued success message.
+				// If successfully remove Admin_fields_relations add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -2326,7 +2326,7 @@ class com_componentbuilderInstallerScript
 			$admin_fields_relations_done = $db->execute();
 			if ($admin_fields_relations_done)
 			{
-				// If succesfully remove Admin_fields_relations add queued success message.
+				// If successfully remove Admin_fields_relations add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -2341,7 +2341,7 @@ class com_componentbuilderInstallerScript
 			$admin_fields_relations_done = $db->execute();
 			if ($admin_fields_relations_done)
 			{
-				// If succesfully remove Admin_fields_relations add queued success message.
+				// If successfully removed Admin_fields_relations add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2397,7 +2397,7 @@ class com_componentbuilderInstallerScript
 			$admin_custom_tabs_done = $db->execute();
 			if ($admin_custom_tabs_done)
 			{
-				// If succesfully remove Admin_custom_tabs add queued success message.
+				// If successfully remove Admin_custom_tabs add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -2412,7 +2412,7 @@ class com_componentbuilderInstallerScript
 			$admin_custom_tabs_done = $db->execute();
 			if ($admin_custom_tabs_done)
 			{
-				// If succesfully remove Admin_custom_tabs add queued success message.
+				// If successfully remove Admin_custom_tabs add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -2427,7 +2427,7 @@ class com_componentbuilderInstallerScript
 			$admin_custom_tabs_done = $db->execute();
 			if ($admin_custom_tabs_done)
 			{
-				// If succesfully remove Admin_custom_tabs add queued success message.
+				// If successfully removed Admin_custom_tabs add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2483,7 +2483,7 @@ class com_componentbuilderInstallerScript
 			$component_admin_views_done = $db->execute();
 			if ($component_admin_views_done)
 			{
-				// If succesfully remove Component_admin_views add queued success message.
+				// If successfully remove Component_admin_views add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_admin_views) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -2498,7 +2498,7 @@ class com_componentbuilderInstallerScript
 			$component_admin_views_done = $db->execute();
 			if ($component_admin_views_done)
 			{
-				// If succesfully remove Component_admin_views add queued success message.
+				// If successfully remove Component_admin_views add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_admin_views) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -2513,7 +2513,7 @@ class com_componentbuilderInstallerScript
 			$component_admin_views_done = $db->execute();
 			if ($component_admin_views_done)
 			{
-				// If succesfully remove Component_admin_views add queued success message.
+				// If successfully removed Component_admin_views add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_admin_views) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2569,7 +2569,7 @@ class com_componentbuilderInstallerScript
 			$component_site_views_done = $db->execute();
 			if ($component_site_views_done)
 			{
-				// If succesfully remove Component_site_views add queued success message.
+				// If successfully remove Component_site_views add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_site_views) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -2584,7 +2584,7 @@ class com_componentbuilderInstallerScript
 			$component_site_views_done = $db->execute();
 			if ($component_site_views_done)
 			{
-				// If succesfully remove Component_site_views add queued success message.
+				// If successfully remove Component_site_views add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_site_views) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -2599,7 +2599,7 @@ class com_componentbuilderInstallerScript
 			$component_site_views_done = $db->execute();
 			if ($component_site_views_done)
 			{
-				// If succesfully remove Component_site_views add queued success message.
+				// If successfully removed Component_site_views add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_site_views) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2655,7 +2655,7 @@ class com_componentbuilderInstallerScript
 			$component_custom_admin_views_done = $db->execute();
 			if ($component_custom_admin_views_done)
 			{
-				// If succesfully remove Component_custom_admin_views add queued success message.
+				// If successfully remove Component_custom_admin_views add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_views) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -2670,7 +2670,7 @@ class com_componentbuilderInstallerScript
 			$component_custom_admin_views_done = $db->execute();
 			if ($component_custom_admin_views_done)
 			{
-				// If succesfully remove Component_custom_admin_views add queued success message.
+				// If successfully remove Component_custom_admin_views add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_views) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -2685,7 +2685,7 @@ class com_componentbuilderInstallerScript
 			$component_custom_admin_views_done = $db->execute();
 			if ($component_custom_admin_views_done)
 			{
-				// If succesfully remove Component_custom_admin_views add queued success message.
+				// If successfully removed Component_custom_admin_views add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_views) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2741,7 +2741,7 @@ class com_componentbuilderInstallerScript
 			$component_updates_done = $db->execute();
 			if ($component_updates_done)
 			{
-				// If succesfully remove Component_updates add queued success message.
+				// If successfully remove Component_updates add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_updates) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -2756,7 +2756,7 @@ class com_componentbuilderInstallerScript
 			$component_updates_done = $db->execute();
 			if ($component_updates_done)
 			{
-				// If succesfully remove Component_updates add queued success message.
+				// If successfully remove Component_updates add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_updates) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -2771,7 +2771,7 @@ class com_componentbuilderInstallerScript
 			$component_updates_done = $db->execute();
 			if ($component_updates_done)
 			{
-				// If succesfully remove Component_updates add queued success message.
+				// If successfully removed Component_updates add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_updates) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2827,7 +2827,7 @@ class com_componentbuilderInstallerScript
 			$component_mysql_tweaks_done = $db->execute();
 			if ($component_mysql_tweaks_done)
 			{
-				// If succesfully remove Component_mysql_tweaks add queued success message.
+				// If successfully remove Component_mysql_tweaks add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_mysql_tweaks) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -2842,7 +2842,7 @@ class com_componentbuilderInstallerScript
 			$component_mysql_tweaks_done = $db->execute();
 			if ($component_mysql_tweaks_done)
 			{
-				// If succesfully remove Component_mysql_tweaks add queued success message.
+				// If successfully remove Component_mysql_tweaks add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_mysql_tweaks) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -2857,7 +2857,7 @@ class com_componentbuilderInstallerScript
 			$component_mysql_tweaks_done = $db->execute();
 			if ($component_mysql_tweaks_done)
 			{
-				// If succesfully remove Component_mysql_tweaks add queued success message.
+				// If successfully removed Component_mysql_tweaks add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_mysql_tweaks) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2913,7 +2913,7 @@ class com_componentbuilderInstallerScript
 			$component_custom_admin_menus_done = $db->execute();
 			if ($component_custom_admin_menus_done)
 			{
-				// If succesfully remove Component_custom_admin_menus add queued success message.
+				// If successfully remove Component_custom_admin_menus add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_menus) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -2928,7 +2928,7 @@ class com_componentbuilderInstallerScript
 			$component_custom_admin_menus_done = $db->execute();
 			if ($component_custom_admin_menus_done)
 			{
-				// If succesfully remove Component_custom_admin_menus add queued success message.
+				// If successfully remove Component_custom_admin_menus add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_menus) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -2943,7 +2943,7 @@ class com_componentbuilderInstallerScript
 			$component_custom_admin_menus_done = $db->execute();
 			if ($component_custom_admin_menus_done)
 			{
-				// If succesfully remove Component_custom_admin_menus add queued success message.
+				// If successfully removed Component_custom_admin_menus add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_menus) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -2999,7 +2999,7 @@ class com_componentbuilderInstallerScript
 			$component_config_done = $db->execute();
 			if ($component_config_done)
 			{
-				// If succesfully remove Component_config add queued success message.
+				// If successfully remove Component_config add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_config) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3014,7 +3014,7 @@ class com_componentbuilderInstallerScript
 			$component_config_done = $db->execute();
 			if ($component_config_done)
 			{
-				// If succesfully remove Component_config add queued success message.
+				// If successfully remove Component_config add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_config) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3029,7 +3029,7 @@ class com_componentbuilderInstallerScript
 			$component_config_done = $db->execute();
 			if ($component_config_done)
 			{
-				// If succesfully remove Component_config add queued success message.
+				// If successfully removed Component_config add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_config) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -3085,7 +3085,7 @@ class com_componentbuilderInstallerScript
 			$component_dashboard_done = $db->execute();
 			if ($component_dashboard_done)
 			{
-				// If succesfully remove Component_dashboard add queued success message.
+				// If successfully remove Component_dashboard add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_dashboard) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3100,7 +3100,7 @@ class com_componentbuilderInstallerScript
 			$component_dashboard_done = $db->execute();
 			if ($component_dashboard_done)
 			{
-				// If succesfully remove Component_dashboard add queued success message.
+				// If successfully remove Component_dashboard add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_dashboard) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3115,7 +3115,7 @@ class com_componentbuilderInstallerScript
 			$component_dashboard_done = $db->execute();
 			if ($component_dashboard_done)
 			{
-				// If succesfully remove Component_dashboard add queued success message.
+				// If successfully removed Component_dashboard add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_dashboard) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -3171,7 +3171,7 @@ class com_componentbuilderInstallerScript
 			$component_files_folders_done = $db->execute();
 			if ($component_files_folders_done)
 			{
-				// If succesfully remove Component_files_folders add queued success message.
+				// If successfully remove Component_files_folders add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_files_folders) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3186,7 +3186,7 @@ class com_componentbuilderInstallerScript
 			$component_files_folders_done = $db->execute();
 			if ($component_files_folders_done)
 			{
-				// If succesfully remove Component_files_folders add queued success message.
+				// If successfully remove Component_files_folders add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_files_folders) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3201,7 +3201,7 @@ class com_componentbuilderInstallerScript
 			$component_files_folders_done = $db->execute();
 			if ($component_files_folders_done)
 			{
-				// If succesfully remove Component_files_folders add queued success message.
+				// If successfully removed Component_files_folders add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_files_folders) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -3257,7 +3257,7 @@ class com_componentbuilderInstallerScript
 			$component_placeholders_done = $db->execute();
 			if ($component_placeholders_done)
 			{
-				// If succesfully remove Component_placeholders add queued success message.
+				// If successfully remove Component_placeholders add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3272,7 +3272,7 @@ class com_componentbuilderInstallerScript
 			$component_placeholders_done = $db->execute();
 			if ($component_placeholders_done)
 			{
-				// If succesfully remove Component_placeholders add queued success message.
+				// If successfully remove Component_placeholders add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3287,7 +3287,7 @@ class com_componentbuilderInstallerScript
 			$component_placeholders_done = $db->execute();
 			if ($component_placeholders_done)
 			{
-				// If succesfully remove Component_placeholders add queued success message.
+				// If successfully removed Component_placeholders add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -3343,7 +3343,7 @@ class com_componentbuilderInstallerScript
 			$component_plugins_done = $db->execute();
 			if ($component_plugins_done)
 			{
-				// If succesfully remove Component_plugins add queued success message.
+				// If successfully remove Component_plugins add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3358,7 +3358,7 @@ class com_componentbuilderInstallerScript
 			$component_plugins_done = $db->execute();
 			if ($component_plugins_done)
 			{
-				// If succesfully remove Component_plugins add queued success message.
+				// If successfully remove Component_plugins add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3373,7 +3373,7 @@ class com_componentbuilderInstallerScript
 			$component_plugins_done = $db->execute();
 			if ($component_plugins_done)
 			{
-				// If succesfully remove Component_plugins add queued success message.
+				// If successfully removed Component_plugins add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -3429,7 +3429,7 @@ class com_componentbuilderInstallerScript
 			$component_modules_done = $db->execute();
 			if ($component_modules_done)
 			{
-				// If succesfully remove Component_modules add queued success message.
+				// If successfully remove Component_modules add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_modules) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3444,7 +3444,7 @@ class com_componentbuilderInstallerScript
 			$component_modules_done = $db->execute();
 			if ($component_modules_done)
 			{
-				// If succesfully remove Component_modules add queued success message.
+				// If successfully remove Component_modules add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_modules) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3459,7 +3459,7 @@ class com_componentbuilderInstallerScript
 			$component_modules_done = $db->execute();
 			if ($component_modules_done)
 			{
-				// If succesfully remove Component_modules add queued success message.
+				// If successfully removed Component_modules add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_modules) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -3515,7 +3515,7 @@ class com_componentbuilderInstallerScript
 			$snippet_type_done = $db->execute();
 			if ($snippet_type_done)
 			{
-				// If succesfully remove Snippet_type add queued success message.
+				// If successfully remove Snippet_type add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3530,7 +3530,7 @@ class com_componentbuilderInstallerScript
 			$snippet_type_done = $db->execute();
 			if ($snippet_type_done)
 			{
-				// If succesfully remove Snippet_type add queued success message.
+				// If successfully remove Snippet_type add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3545,7 +3545,7 @@ class com_componentbuilderInstallerScript
 			$snippet_type_done = $db->execute();
 			if ($snippet_type_done)
 			{
-				// If succesfully remove Snippet_type add queued success message.
+				// If successfully removed Snippet_type add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -3601,7 +3601,7 @@ class com_componentbuilderInstallerScript
 			$library_config_done = $db->execute();
 			if ($library_config_done)
 			{
-				// If succesfully remove Library_config add queued success message.
+				// If successfully remove Library_config add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_config) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3616,7 +3616,7 @@ class com_componentbuilderInstallerScript
 			$library_config_done = $db->execute();
 			if ($library_config_done)
 			{
-				// If succesfully remove Library_config add queued success message.
+				// If successfully remove Library_config add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_config) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3631,7 +3631,7 @@ class com_componentbuilderInstallerScript
 			$library_config_done = $db->execute();
 			if ($library_config_done)
 			{
-				// If succesfully remove Library_config add queued success message.
+				// If successfully removed Library_config add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_config) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -3687,7 +3687,7 @@ class com_componentbuilderInstallerScript
 			$library_files_folders_urls_done = $db->execute();
 			if ($library_files_folders_urls_done)
 			{
-				// If succesfully remove Library_files_folders_urls add queued success message.
+				// If successfully remove Library_files_folders_urls add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_files_folders_urls) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3702,7 +3702,7 @@ class com_componentbuilderInstallerScript
 			$library_files_folders_urls_done = $db->execute();
 			if ($library_files_folders_urls_done)
 			{
-				// If succesfully remove Library_files_folders_urls add queued success message.
+				// If successfully remove Library_files_folders_urls add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_files_folders_urls) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3717,7 +3717,7 @@ class com_componentbuilderInstallerScript
 			$library_files_folders_urls_done = $db->execute();
 			if ($library_files_folders_urls_done)
 			{
-				// If succesfully remove Library_files_folders_urls add queued success message.
+				// If successfully removed Library_files_folders_urls add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_files_folders_urls) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -3773,7 +3773,7 @@ class com_componentbuilderInstallerScript
 			$class_extends_done = $db->execute();
 			if ($class_extends_done)
 			{
-				// If succesfully remove Class_extends add queued success message.
+				// If successfully remove Class_extends add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_extends) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3788,7 +3788,7 @@ class com_componentbuilderInstallerScript
 			$class_extends_done = $db->execute();
 			if ($class_extends_done)
 			{
-				// If succesfully remove Class_extends add queued success message.
+				// If successfully remove Class_extends add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_extends) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3803,7 +3803,7 @@ class com_componentbuilderInstallerScript
 			$class_extends_done = $db->execute();
 			if ($class_extends_done)
 			{
-				// If succesfully remove Class_extends add queued success message.
+				// If successfully removed Class_extends add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_extends) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -3859,7 +3859,7 @@ class com_componentbuilderInstallerScript
 			$joomla_module_updates_done = $db->execute();
 			if ($joomla_module_updates_done)
 			{
-				// If succesfully remove Joomla_module_updates add queued success message.
+				// If successfully remove Joomla_module_updates add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3874,7 +3874,7 @@ class com_componentbuilderInstallerScript
 			$joomla_module_updates_done = $db->execute();
 			if ($joomla_module_updates_done)
 			{
-				// If succesfully remove Joomla_module_updates add queued success message.
+				// If successfully remove Joomla_module_updates add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3889,7 +3889,7 @@ class com_componentbuilderInstallerScript
 			$joomla_module_updates_done = $db->execute();
 			if ($joomla_module_updates_done)
 			{
-				// If succesfully remove Joomla_module_updates add queued success message.
+				// If successfully removed Joomla_module_updates add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -3945,7 +3945,7 @@ class com_componentbuilderInstallerScript
 			$joomla_module_files_folders_urls_done = $db->execute();
 			if ($joomla_module_files_folders_urls_done)
 			{
-				// If succesfully remove Joomla_module_files_folders_urls add queued success message.
+				// If successfully remove Joomla_module_files_folders_urls add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -3960,7 +3960,7 @@ class com_componentbuilderInstallerScript
 			$joomla_module_files_folders_urls_done = $db->execute();
 			if ($joomla_module_files_folders_urls_done)
 			{
-				// If succesfully remove Joomla_module_files_folders_urls add queued success message.
+				// If successfully remove Joomla_module_files_folders_urls add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -3975,7 +3975,7 @@ class com_componentbuilderInstallerScript
 			$joomla_module_files_folders_urls_done = $db->execute();
 			if ($joomla_module_files_folders_urls_done)
 			{
-				// If succesfully remove Joomla_module_files_folders_urls add queued success message.
+				// If successfully removed Joomla_module_files_folders_urls add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -4031,7 +4031,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_group_done = $db->execute();
 			if ($joomla_plugin_group_done)
 			{
-				// If succesfully remove Joomla_plugin_group add queued success message.
+				// If successfully remove Joomla_plugin_group add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_group) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -4046,7 +4046,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_group_done = $db->execute();
 			if ($joomla_plugin_group_done)
 			{
-				// If succesfully remove Joomla_plugin_group add queued success message.
+				// If successfully remove Joomla_plugin_group add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_group) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -4061,7 +4061,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_group_done = $db->execute();
 			if ($joomla_plugin_group_done)
 			{
-				// If succesfully remove Joomla_plugin_group add queued success message.
+				// If successfully removed Joomla_plugin_group add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_group) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -4117,7 +4117,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_updates_done = $db->execute();
 			if ($joomla_plugin_updates_done)
 			{
-				// If succesfully remove Joomla_plugin_updates add queued success message.
+				// If successfully remove Joomla_plugin_updates add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_updates) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -4132,7 +4132,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_updates_done = $db->execute();
 			if ($joomla_plugin_updates_done)
 			{
-				// If succesfully remove Joomla_plugin_updates add queued success message.
+				// If successfully remove Joomla_plugin_updates add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_updates) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -4147,7 +4147,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_updates_done = $db->execute();
 			if ($joomla_plugin_updates_done)
 			{
-				// If succesfully remove Joomla_plugin_updates add queued success message.
+				// If successfully removed Joomla_plugin_updates add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_updates) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -4203,7 +4203,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_files_folders_urls_done = $db->execute();
 			if ($joomla_plugin_files_folders_urls_done)
 			{
-				// If succesfully remove Joomla_plugin_files_folders_urls add queued success message.
+				// If successfully remove Joomla_plugin_files_folders_urls add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
@@ -4218,7 +4218,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_files_folders_urls_done = $db->execute();
 			if ($joomla_plugin_files_folders_urls_done)
 			{
-				// If succesfully remove Joomla_plugin_files_folders_urls add queued success message.
+				// If successfully remove Joomla_plugin_files_folders_urls add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
@@ -4233,7 +4233,7 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_files_folders_urls_done = $db->execute();
 			if ($joomla_plugin_files_folders_urls_done)
 			{
-				// If succesfully remove Joomla_plugin_files_folders_urls add queued success message.
+				// If successfully removed Joomla_plugin_files_folders_urls add queued success message.
 				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
@@ -4277,10 +4277,11 @@ class com_componentbuilderInstallerScript
 		$joomla_plugin_files_folders_urls_done = $db->execute();
 		if ($joomla_plugin_files_folders_urls_done)
 		{
-			// If succesfully remove componentbuilder add queued success message.
+			// If successfully removed componentbuilder add queued success message.
 			$app->enqueueMessage(JText::_('All related items was removed from the <b>#__assets</b> table'));
 		}
 
+		// Check for the biggest rules item in the database at this point
 
 		// Set db if not set already.
 		if (!isset($db))
@@ -6003,9 +6004,9 @@ class com_componentbuilderInstallerScript
 			$joomla_component->type_title = 'Componentbuilder Joomla_component';
 			$joomla_component->type_alias = 'com_componentbuilder.joomla_component';
 			$joomla_component->table = '{"special": {"dbtable": "#__componentbuilder_joomla_component","key": "id","type": "Joomla_component","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$joomla_component->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_helper_both","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","add_php_helper_admin":"add_php_helper_admin","addfootable":"addfootable","crowdin_username":"crowdin_username","update_server_url":"update_server_url","add_sql":"add_sql","add_php_preflight_update":"add_php_preflight_update","add_css_site":"add_css_site","mvc_versiondate":"mvc_versiondate","remove_line_breaks":"remove_line_breaks","add_placeholders":"add_placeholders","add_php_helper_site":"add_php_helper_site","add_javascript":"add_javascript","description":"description","dashboard":"dashboard","author":"author","add_php_postflight_update":"add_php_postflight_update","email":"email","addreadme":"addreadme","website":"website","debug_linenr":"debug_linenr","add_license":"add_license","buildcompsql":"buildcompsql","license_type":"license_type","add_php_helper_both":"add_php_helper_both","add_admin_event":"add_admin_event","whmcs_key":"whmcs_key","add_site_event":"add_site_event","whmcs_url":"whmcs_url","add_css_admin":"add_css_admin","whmcs_buy_link":"whmcs_buy_link","dashboard_type":"dashboard_type","license":"license","add_php_preflight_install":"add_php_preflight_install","bom":"bom","add_php_postflight_install":"add_php_postflight_install","image":"image","add_php_method_uninstall":"add_php_method_uninstall","copyright":"copyright","add_sql_uninstall":"add_sql_uninstall","translation_tool":"translation_tool","component_version":"component_version","add_sales_server":"add_sales_server","not_required":"not_required","crowdin_project_identifier":"crowdin_project_identifier","add_email_helper":"add_email_helper","php_helper_both":"php_helper_both","php_helper_admin":"php_helper_admin","php_admin_event":"php_admin_event","php_helper_site":"php_helper_site","php_site_event":"php_site_event","add_menu_prefix":"add_menu_prefix","javascript":"javascript","menu_prefix":"menu_prefix","css_admin":"css_admin","css_site":"css_site","toignore":"toignore","php_preflight_install":"php_preflight_install","php_preflight_update":"php_preflight_update","export_key":"export_key","php_postflight_install":"php_postflight_install","joomla_source_link":"joomla_source_link","php_postflight_update":"php_postflight_update","export_buy_link":"export_buy_link","php_method_uninstall":"php_method_uninstall","sql":"sql","sql_uninstall":"sql_uninstall","readme":"readme","emptycontributors":"emptycontributors","add_update_server":"add_update_server","number":"number","update_server_target":"update_server_target","update_server":"update_server","sales_server":"sales_server","crowdin_project_api_key":"crowdin_project_api_key","crowdin_account_api_key":"crowdin_account_api_key","creatuserhelper":"creatuserhelper","buildcomp":"buildcomp","adduikit":"adduikit","guid":"guid","name":"name"}}';
+			$joomla_component->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_site_event","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","php_site_event":"php_site_event","css_admin":"css_admin","php_helper_both":"php_helper_both","php_admin_event":"php_admin_event","sql_uninstall":"sql_uninstall","remove_line_breaks":"remove_line_breaks","description":"description","php_postflight_install":"php_postflight_install","debug_linenr":"debug_linenr","mvc_versiondate":"mvc_versiondate","php_preflight_install":"php_preflight_install","crowdin_project_identifier":"crowdin_project_identifier","php_method_uninstall":"php_method_uninstall","component_version":"component_version","add_placeholders":"add_placeholders","add_sales_server":"add_sales_server","author":"author","email":"email","add_email_helper":"add_email_helper","website":"website","php_helper_admin":"php_helper_admin","add_license":"add_license","php_helper_site":"php_helper_site","license_type":"license_type","javascript":"javascript","css_site":"css_site","whmcs_key":"whmcs_key","whmcs_url":"whmcs_url","php_preflight_update":"php_preflight_update","whmcs_buy_link":"whmcs_buy_link","php_postflight_update":"php_postflight_update","license":"license","sql":"sql","bom":"bom","addreadme":"addreadme","image":"image","update_server_url":"update_server_url","copyright":"copyright","not_required":"not_required","translation_tool":"translation_tool","crowdin_username":"crowdin_username","buildcompsql":"buildcompsql","addfootable":"addfootable","add_php_helper_both":"add_php_helper_both","add_php_helper_admin":"add_php_helper_admin","add_admin_event":"add_admin_event","add_php_helper_site":"add_php_helper_site","add_site_event":"add_site_event","add_javascript":"add_javascript","add_menu_prefix":"add_menu_prefix","add_css_admin":"add_css_admin","menu_prefix":"menu_prefix","add_css_site":"add_css_site","dashboard_type":"dashboard_type","dashboard":"dashboard","toignore":"toignore","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","add_php_postflight_install":"add_php_postflight_install","export_key":"export_key","add_php_postflight_update":"add_php_postflight_update","joomla_source_link":"joomla_source_link","add_php_method_uninstall":"add_php_method_uninstall","export_buy_link":"export_buy_link","add_sql":"add_sql","add_sql_uninstall":"add_sql_uninstall","assets_table_fix":"assets_table_fix","readme":"readme","emptycontributors":"emptycontributors","add_update_server":"add_update_server","number":"number","update_server_target":"update_server_target","update_server":"update_server","sales_server":"sales_server","crowdin_project_api_key":"crowdin_project_api_key","crowdin_account_api_key":"crowdin_account_api_key","creatuserhelper":"creatuserhelper","buildcomp":"buildcomp","adduikit":"adduikit","guid":"guid","name":"name"}}';
 			$joomla_component->router = 'ComponentbuilderHelperRoute::getJoomla_componentRoute';
-			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_php_helper_admin","addfootable","add_sql","add_php_preflight_update","add_css_site","mvc_versiondate","remove_line_breaks","add_placeholders","add_php_helper_site","add_javascript","add_php_postflight_update","addreadme","debug_linenr","add_license","license_type","add_php_helper_both","add_admin_event","add_site_event","add_css_admin","dashboard_type","add_php_preflight_install","add_php_postflight_install","add_php_method_uninstall","add_sql_uninstall","translation_tool","add_sales_server","add_email_helper","emptycontributors","add_update_server","number","update_server_target","update_server","sales_server","creatuserhelper","buildcomp","adduikit"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","remove_line_breaks","debug_linenr","mvc_versiondate","add_placeholders","add_sales_server","add_email_helper","add_license","license_type","addreadme","translation_tool","addfootable","add_php_helper_both","add_php_helper_admin","add_admin_event","add_php_helper_site","add_site_event","add_javascript","add_css_admin","add_css_site","dashboard_type","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_sql","add_sql_uninstall","assets_table_fix","emptycontributors","add_update_server","number","update_server_target","update_server","sales_server","creatuserhelper","buildcomp","adduikit"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$joomla_component_Inserted = $db->insertObject('#__content_types', $joomla_component);
@@ -6591,7 +6592,7 @@ class com_componentbuilderInstallerScript
 			$query = $db->getQuery(true);
 			// Field to update.
 			$fields = array(
-				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"llewellyn@joomlacomponentbuilder.com","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","add_menu_prefix":"1","menu_prefix":"»","minify":"0","set_browser_storage":"1","storage_time_to_live":"global","language":"en-GB","percentagelanguageadd":"50","export_language_strings":"1","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
+				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"llewellyn@joomlacomponentbuilder.com","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","add_menu_prefix":"1","menu_prefix":"»","minify":"0","language":"en-GB","percentagelanguageadd":"50","export_language_strings":"1","assets_table_fix":"1","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
 			);
 			// Condition.
 			$conditions = array(
@@ -7428,9 +7429,9 @@ class com_componentbuilderInstallerScript
 			$joomla_component->type_title = 'Componentbuilder Joomla_component';
 			$joomla_component->type_alias = 'com_componentbuilder.joomla_component';
 			$joomla_component->table = '{"special": {"dbtable": "#__componentbuilder_joomla_component","key": "id","type": "Joomla_component","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$joomla_component->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_helper_both","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","add_php_helper_admin":"add_php_helper_admin","addfootable":"addfootable","crowdin_username":"crowdin_username","update_server_url":"update_server_url","add_sql":"add_sql","add_php_preflight_update":"add_php_preflight_update","add_css_site":"add_css_site","mvc_versiondate":"mvc_versiondate","remove_line_breaks":"remove_line_breaks","add_placeholders":"add_placeholders","add_php_helper_site":"add_php_helper_site","add_javascript":"add_javascript","description":"description","dashboard":"dashboard","author":"author","add_php_postflight_update":"add_php_postflight_update","email":"email","addreadme":"addreadme","website":"website","debug_linenr":"debug_linenr","add_license":"add_license","buildcompsql":"buildcompsql","license_type":"license_type","add_php_helper_both":"add_php_helper_both","add_admin_event":"add_admin_event","whmcs_key":"whmcs_key","add_site_event":"add_site_event","whmcs_url":"whmcs_url","add_css_admin":"add_css_admin","whmcs_buy_link":"whmcs_buy_link","dashboard_type":"dashboard_type","license":"license","add_php_preflight_install":"add_php_preflight_install","bom":"bom","add_php_postflight_install":"add_php_postflight_install","image":"image","add_php_method_uninstall":"add_php_method_uninstall","copyright":"copyright","add_sql_uninstall":"add_sql_uninstall","translation_tool":"translation_tool","component_version":"component_version","add_sales_server":"add_sales_server","not_required":"not_required","crowdin_project_identifier":"crowdin_project_identifier","add_email_helper":"add_email_helper","php_helper_both":"php_helper_both","php_helper_admin":"php_helper_admin","php_admin_event":"php_admin_event","php_helper_site":"php_helper_site","php_site_event":"php_site_event","add_menu_prefix":"add_menu_prefix","javascript":"javascript","menu_prefix":"menu_prefix","css_admin":"css_admin","css_site":"css_site","toignore":"toignore","php_preflight_install":"php_preflight_install","php_preflight_update":"php_preflight_update","export_key":"export_key","php_postflight_install":"php_postflight_install","joomla_source_link":"joomla_source_link","php_postflight_update":"php_postflight_update","export_buy_link":"export_buy_link","php_method_uninstall":"php_method_uninstall","sql":"sql","sql_uninstall":"sql_uninstall","readme":"readme","emptycontributors":"emptycontributors","add_update_server":"add_update_server","number":"number","update_server_target":"update_server_target","update_server":"update_server","sales_server":"sales_server","crowdin_project_api_key":"crowdin_project_api_key","crowdin_account_api_key":"crowdin_account_api_key","creatuserhelper":"creatuserhelper","buildcomp":"buildcomp","adduikit":"adduikit","guid":"guid","name":"name"}}';
+			$joomla_component->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_site_event","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","php_site_event":"php_site_event","css_admin":"css_admin","php_helper_both":"php_helper_both","php_admin_event":"php_admin_event","sql_uninstall":"sql_uninstall","remove_line_breaks":"remove_line_breaks","description":"description","php_postflight_install":"php_postflight_install","debug_linenr":"debug_linenr","mvc_versiondate":"mvc_versiondate","php_preflight_install":"php_preflight_install","crowdin_project_identifier":"crowdin_project_identifier","php_method_uninstall":"php_method_uninstall","component_version":"component_version","add_placeholders":"add_placeholders","add_sales_server":"add_sales_server","author":"author","email":"email","add_email_helper":"add_email_helper","website":"website","php_helper_admin":"php_helper_admin","add_license":"add_license","php_helper_site":"php_helper_site","license_type":"license_type","javascript":"javascript","css_site":"css_site","whmcs_key":"whmcs_key","whmcs_url":"whmcs_url","php_preflight_update":"php_preflight_update","whmcs_buy_link":"whmcs_buy_link","php_postflight_update":"php_postflight_update","license":"license","sql":"sql","bom":"bom","addreadme":"addreadme","image":"image","update_server_url":"update_server_url","copyright":"copyright","not_required":"not_required","translation_tool":"translation_tool","crowdin_username":"crowdin_username","buildcompsql":"buildcompsql","addfootable":"addfootable","add_php_helper_both":"add_php_helper_both","add_php_helper_admin":"add_php_helper_admin","add_admin_event":"add_admin_event","add_php_helper_site":"add_php_helper_site","add_site_event":"add_site_event","add_javascript":"add_javascript","add_menu_prefix":"add_menu_prefix","add_css_admin":"add_css_admin","menu_prefix":"menu_prefix","add_css_site":"add_css_site","dashboard_type":"dashboard_type","dashboard":"dashboard","toignore":"toignore","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","add_php_postflight_install":"add_php_postflight_install","export_key":"export_key","add_php_postflight_update":"add_php_postflight_update","joomla_source_link":"joomla_source_link","add_php_method_uninstall":"add_php_method_uninstall","export_buy_link":"export_buy_link","add_sql":"add_sql","add_sql_uninstall":"add_sql_uninstall","assets_table_fix":"assets_table_fix","readme":"readme","emptycontributors":"emptycontributors","add_update_server":"add_update_server","number":"number","update_server_target":"update_server_target","update_server":"update_server","sales_server":"sales_server","crowdin_project_api_key":"crowdin_project_api_key","crowdin_account_api_key":"crowdin_account_api_key","creatuserhelper":"creatuserhelper","buildcomp":"buildcomp","adduikit":"adduikit","guid":"guid","name":"name"}}';
 			$joomla_component->router = 'ComponentbuilderHelperRoute::getJoomla_componentRoute';
-			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_php_helper_admin","addfootable","add_sql","add_php_preflight_update","add_css_site","mvc_versiondate","remove_line_breaks","add_placeholders","add_php_helper_site","add_javascript","add_php_postflight_update","addreadme","debug_linenr","add_license","license_type","add_php_helper_both","add_admin_event","add_site_event","add_css_admin","dashboard_type","add_php_preflight_install","add_php_postflight_install","add_php_method_uninstall","add_sql_uninstall","translation_tool","add_sales_server","add_email_helper","emptycontributors","add_update_server","number","update_server_target","update_server","sales_server","creatuserhelper","buildcomp","adduikit"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","remove_line_breaks","debug_linenr","mvc_versiondate","add_placeholders","add_sales_server","add_email_helper","add_license","license_type","addreadme","translation_tool","addfootable","add_php_helper_both","add_php_helper_admin","add_admin_event","add_php_helper_site","add_site_event","add_javascript","add_css_admin","add_css_site","dashboard_type","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_sql","add_sql_uninstall","assets_table_fix","emptycontributors","add_update_server","number","update_server_target","update_server","sales_server","creatuserhelper","buildcomp","adduikit"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if joomla_component type is already in content_type DB.
 			$joomla_component_id = null;
@@ -9213,7 +9214,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.12.1 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 2.12.2 Was Successful! Let us know if anything is not working as expected.</h3>';
 
 			// Set db if not set already.
 			if (!isset($db))

@@ -96,6 +96,20 @@ class Get
 	public $compilerPath;
 
 	/**
+	 * Switch to add assets table fix
+	 *
+	 * @var     int
+	 */
+	public $addAssetsTableFix = 1;
+
+	/**
+	 * Switch to add assets table name fix
+	 *
+	 * @var     bool
+	 */
+	public $addAssetsTableNameFix = false;
+
+	/**
 	 * Switch to add custom code placeholders
 	 *
 	 * @var     bool
@@ -340,6 +354,13 @@ class Get
 	 * @var      string
 	 */
 	public $componentCodeName;
+
+	/**
+	 * The Component Code Name Length
+	 *
+	 * @var      int
+	 */
+	public $componentCodeNameLength;
 
 	/**
 	 * The Component ID
@@ -908,6 +929,19 @@ class Get
 				// set component context
 				$this->componentContext = $this->componentCodeName . '.'
 					. $this->componentID;
+				// set the component name length
+				$this->componentCodeNameLength = strlen(
+					$this->componentCodeName
+				);
+				// add assets table fix
+				$global                  = (int) $this->params->get(
+					'assets_table_fix', 1
+				);
+				$this->addAssetsTableFix = (($add_assets_table_fix
+						= (int) ComponentbuilderHelper::getVar(
+						'joomla_component', $this->componentID, 'id',
+						'assets_table_fix'
+					)) == 3) ? $global : $add_assets_table_fix;
 				// set if language strings line breaks should be removed
 				$global                 = ((int) ComponentbuilderHelper::getVar(
 						'joomla_component', $this->componentID, 'id',
@@ -2219,6 +2253,16 @@ class Get
 				$view->name_list_code = ComponentbuilderHelper::safeString(
 					$view->name_list
 				);
+			}
+
+			// check the length of the view name (+5 for com_ and _)
+			$name_length = $this->componentCodeNameLength + strlen(
+					$view->name_single_code
+				) + 5;
+			// when the name is larger then 49 we need to add the assets table name fix
+			if ($name_length > 49)
+			{
+				$this->addAssetsTableNameFix = true;
 			}
 
 			// set updater
@@ -4152,7 +4196,8 @@ class Get
 	public function getListViewDefaultOrdering(&$nameListCode)
 	{
 		if (isset($this->viewsDefaultOrdering[$nameListCode])
-			&& $this->viewsDefaultOrdering[$nameListCode]['add_admin_ordering'] == 1)
+			&& $this->viewsDefaultOrdering[$nameListCode]['add_admin_ordering']
+			== 1)
 		{
 			foreach (
 				$this->viewsDefaultOrdering[$nameListCode]['admin_ordering_fields']
@@ -4165,15 +4210,16 @@ class Get
 				{
 					// just the first field is the based ordering state
 					return array(
-						'name' => $order_field_name,
+						'name'      => $order_field_name,
 						'direction' => $order_field['direction']
 					);
 				}
 			}
 		}
+
 		// the default
 		return array(
-			'name' => 'a.id',
+			'name'      => 'a.id',
 			'direction' => 'DESC'
 		);
 	}
@@ -9152,23 +9198,30 @@ class Get
 	 */
 	public function getModAdminVvvvvvvdm($fieldScriptBucket)
 	{
-		$form_field_class = array();
+		$form_field_class   = array();
 		$form_field_class[] = $this->hhh . 'BOM' . $this->hhh . PHP_EOL;
-		$form_field_class[] = "//" . $this->setLine(__LINE__) . " No direct access to this file";
+		$form_field_class[] = "//" . $this->setLine(__LINE__)
+			. " No direct access to this file";
 		$form_field_class[] = "defined('_JEXEC') or die('Restricted access');";
 		$form_field_class[] = PHP_EOL . "use Joomla\CMS\Form\FormField;";
 		$form_field_class[] = "use Joomla\CMS\Factory;";
-		$form_field_class[] = PHP_EOL . "class JFormFieldModadminvvvvvvvdm extends FormField";
+		$form_field_class[] = PHP_EOL
+			. "class JFormFieldModadminvvvvvvvdm extends FormField";
 		$form_field_class[] = "{";
-		$form_field_class[] = $this->_t(1) . "protected \$type = 'modadminvvvvvvvdm';";
-		$form_field_class[] = PHP_EOL . $this->_t(1) . "protected function getLabel()";
+		$form_field_class[] = $this->_t(1)
+			. "protected \$type = 'modadminvvvvvvvdm';";
+		$form_field_class[] = PHP_EOL . $this->_t(1)
+			. "protected function getLabel()";
 		$form_field_class[] = $this->_t(1) . "{";
 		$form_field_class[] = $this->_t(2) . "return;";
 		$form_field_class[] = $this->_t(1) . "}";
-		$form_field_class[] = PHP_EOL .  $this->_t(1) . "protected function getInput()";
+		$form_field_class[] = PHP_EOL . $this->_t(1)
+			. "protected function getInput()";
 		$form_field_class[] = $this->_t(1) . "{";
-		$form_field_class[] = $this->_t(2) . "//" . $this->setLine(__LINE__) . " Get the document";
-		$form_field_class[] = $this->_t(2) . "\$document = Factory::getDocument();";
+		$form_field_class[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+			. " Get the document";
+		$form_field_class[] = $this->_t(2)
+			. "\$document = Factory::getDocument();";
 		$form_field_class[] = implode(PHP_EOL, $fieldScriptBucket);
 		$form_field_class[] = $this->_t(2) . "return; // noting for now :)";
 		$form_field_class[] = $this->_t(1) . "}";
