@@ -5053,7 +5053,7 @@ class Interpretation extends Fields
 	public function setAdminViewDisplayMethod($nameListCode)
 	{
 		$script = '';
-		// add the the new filter methods for the search toolbar above the list view
+		// add the the new filter methods for the search toolbar above the list view (2 = topbar)
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 2)
 		{
@@ -12035,7 +12035,7 @@ class Interpretation extends Fields
 
 		// build the body
 		$body = array();
-		// check if the filter type is sidebar
+		// check if the filter type is sidebar (1 = sidebar)
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 1)
 		{
@@ -12075,7 +12075,7 @@ class Interpretation extends Fields
 		$body[] = "<?php else : ?>";
 		$body[] = $this->_t(1) . "<div id=\"j-main-container\">";
 		$body[] = "<?php endif; ?>";
-		// check if the filter type is sidebar
+		// check if the filter type is sidebar (2 = topbar)
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 2)
 		{
@@ -12088,7 +12088,7 @@ class Interpretation extends Fields
 			$body[] = "?>";
 		}
 		$body[] = "<?php if (empty(\$this->items)): ?>";
-		// check if the filter type is sidebar
+		// check if the filter type is sidebar (1 = sidebar)
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 1)
 		{
@@ -12101,7 +12101,7 @@ class Interpretation extends Fields
 			. "<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>";
 		$body[] = $this->_t(1) . "</div>";
 		$body[] = "<?php else : ?>";
-		// check if the filter type is sidebar
+		// check if the filter type is sidebar (1 = sidebar)
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 1)
 		{
@@ -12135,7 +12135,7 @@ class Interpretation extends Fields
 		$body[] = $this->_t(3) . "\$this->loadTemplate('batch_body')";
 		$body[] = $this->_t(2) . "); ?>";
 		$body[] = $this->_t(1) . "<?php endif; ?>";
-		// check if the filter type is sidebar
+		// check if the filter type is sidebar (1 = sidebar)
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 1)
 		{
@@ -12175,7 +12175,7 @@ class Interpretation extends Fields
 			$jhtml_sort        = "grid.sort";
 			$jhtml_sort_icon   = "<i class=\"icon-menu-2\"></i>";
 			$jhtml_sort_icon_2 = "";
-			// for the new filter
+			// for the new filter (2 = topbar)
 			if (isset($this->adminFilterType[$nameListCode])
 				&& $this->adminFilterType[$nameListCode] == 2)
 			{
@@ -15810,7 +15810,7 @@ class Interpretation extends Fields
 						. $this->setLine(__LINE__) . " Filter by "
 						. ucwords($filter['code']) . ".";
 					// we only add multi filter option if new filter type
-					// and we have multi filter set for this field
+					// and we have multi filter set for this field (2 = topbar)
 					if (isset($this->adminFilterType[$nameListCode])
 						&& $this->adminFilterType[$nameListCode] == 2
 						&& isset($filter['multi'])
@@ -17671,7 +17671,7 @@ class Interpretation extends Fields
 				$this->filterBuilder[$nameListCode]
 			))
 		{
-			// set the function or file path
+			// set the function or file path (2 = topbar)
 			$funtion_path = true;
 			if (isset($this->adminFilterType[$nameListCode])
 				&& $this->adminFilterType[$nameListCode] == 2)
@@ -18121,7 +18121,7 @@ class Interpretation extends Fields
 		);
 		// add the category filter stuff
 		$this->setCategorySidebarFilterHelper($fieldFilters, $nameListCode);
-		// check if filter fields are added
+		// check if filter fields are added (1 = sidebar)
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 1
 			&& isset($this->filterBuilder[$nameListCode])
@@ -18289,7 +18289,7 @@ class Interpretation extends Fields
 	protected function setDefaultSidebarFilterHelper(&$filter, &$nameSingleCode,
 		&$nameListCode
 	) {
-		// add the default filters if we are on the old filter paths
+		// add the default filters if we are on the old filter paths (1 = sidebar)
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 1)
 		{
@@ -18337,7 +18337,7 @@ class Interpretation extends Fields
 	 */
 	protected function setCategorySidebarFilterHelper(&$filter, &$nameListCode)
 	{
-		// add the category filter if we are on the old filter paths
+		// add the category filter if we are on the old filter paths (1 = sidebar)
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 1
 			&& isset($this->categoryBuilder[$nameListCode])
@@ -18384,7 +18384,7 @@ class Interpretation extends Fields
 				$this->filterBuilder[$nameListCode]
 			))
 		{
-			// check if we should add some help to get the values
+			// check if we should add some help to get the values (2 = topbar)
 			$get_values = false;
 			if (isset($this->adminFilterType[$nameListCode])
 				&& $this->adminFilterType[$nameListCode] == 2)
@@ -20479,6 +20479,8 @@ class Interpretation extends Fields
 	 */
 	public function setStoredId(&$nameSingleCode, &$nameListCode)
 	{
+		// set component name
+		$Component = ucwords($this->componentCodeName);
 		// keep track of all fields already added
 		$donelist = array('id'         => true, 'search' => true,
 		                  'published'  => true, 'access' => true,
@@ -20489,22 +20491,70 @@ class Interpretation extends Fields
 			. "\$id .= ':' . \$this->getState('filter.id');";
 		$stored .= PHP_EOL . $this->_t(2)
 			. "\$id .= ':' . \$this->getState('filter.search');";
-		$stored .= PHP_EOL . $this->_t(2)
-			. "\$id .= ':' . \$this->getState('filter.published');";
+		// add this if not already added
+		if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+		{
+			$stored .= PHP_EOL . $this->_t(2)
+				. "\$id .= ':' . \$this->getState('filter.published');";
+		}
+		// add if view calls for it, and not already added
 		if (isset($this->accessBuilder[$nameSingleCode])
 			&& ComponentbuilderHelper::checkString(
 				$this->accessBuilder[$nameSingleCode]
-			))
+			)
+			&& !isset($this->fieldsNames[$nameSingleCode]['access']))
 		{
-			$stored .= PHP_EOL . $this->_t(2)
-				. "\$id .= ':' . \$this->getState('filter.access');";
+			// the side bar option is single
+			if (isset($this->adminFilterType[$nameListCode])
+				&& $this->adminFilterType[$nameListCode] == 1)
+			{
+				$stored .= PHP_EOL . $this->_t(2)
+					. "\$id .= ':' . \$this->getState('filter.access');";
+			}
+			else
+			{
+				// top bar selection can result in
+				// an array due to multi selection
+				$stored .= PHP_EOL . $this->_t(2)
+					. "//" . $this->setLine(__LINE__)
+					. " Check if the value is an array";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "\$_filter = \$this->getState('filter.access');";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "if (" . $Component . "Helper::checkArray(\$_filter))";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "{";
+				$stored .= PHP_EOL . $this->_t(3)
+					. "\$id .= ':' . implode(':', \$_filter);";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "}";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "//" . $this->setLine(__LINE__)
+					. " This should not happen, but we try";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "elseif (is_numeric(\$_filter))";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "{";
+				$stored .= PHP_EOL . $this->_t(3)
+					. "\$id .= ':' . \$_filter;";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "}";
+			}
 		}
 		$stored .= PHP_EOL . $this->_t(2)
 			. "\$id .= ':' . \$this->getState('filter.ordering');";
-		$stored .= PHP_EOL . $this->_t(2)
-			. "\$id .= ':' . \$this->getState('filter.created_by');";
-		$stored .= PHP_EOL . $this->_t(2)
-			. "\$id .= ':' . \$this->getState('filter.modified_by');";
+		// add this if not already added
+		if (!isset($this->fieldsNames[$nameSingleCode]['created_by']))
+		{
+			$stored .= PHP_EOL . $this->_t(2)
+				. "\$id .= ':' . \$this->getState('filter.created_by');";
+		}
+		// add this if not already added
+		if (!isset($this->fieldsNames[$nameSingleCode]['modified_by']))
+		{
+			$stored .= PHP_EOL . $this->_t(2)
+				. "\$id .= ':' . \$this->getState('filter.modified_by');";
+		}
 		// add the rest of the set filters
 		if (isset($this->filterBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
@@ -20516,7 +20566,7 @@ class Interpretation extends Fields
 				if (!isset($donelist[$filter['code']]))
 				{
 					$stored                    .= $this->getStoredIdCode(
-						$filter
+						$filter, $Component
 					);
 					$donelist[$filter['code']] = true;
 				}
@@ -20533,7 +20583,7 @@ class Interpretation extends Fields
 				if (!isset($donelist[$filter['code']]))
 				{
 					$stored                    .= $this->getStoredIdCode(
-						$filter
+						$filter, $Component
 					);
 					$donelist[$filter['code']] = true;
 				}
@@ -20546,12 +20596,13 @@ class Interpretation extends Fields
 	/**
 	 * Add the code of the stored ids
 	 *
-	 * @param   array  $filter  The field/filter array
+	 * @param   array   $filter     The field/filter array
+	 * @param   string  $Component  The Component name
 	 *
 	 * @return  string    The code for the stored IDs
 	 *
 	 */
-	protected function getStoredIdCode(&$filter)
+	protected function getStoredIdCode(&$filter, &$Component)
 	{
 		if ($filter['type'] === 'category')
 		{
@@ -20568,9 +20619,43 @@ class Interpretation extends Fields
 		}
 		else
 		{
-			$stored = PHP_EOL . $this->_t(2)
-				. "\$id .= ':' . \$this->getState('filter."
-				. $filter['code'] . "');";
+			if ($filter['multi'] == 2)
+			{
+				// top bar selection can result in
+				// an array due to multi selection
+				$stored .= PHP_EOL . $this->_t(2)
+					. "//" . $this->setLine(__LINE__)
+					. " Check if the value is an array";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "\$_" . $filter['code'] . " = \$this->getState('filter."
+					. $filter['code'] . "');";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "if (" . $Component . "Helper::checkArray(\$_"
+					. $filter['code'] . "))";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "{";
+				$stored .= PHP_EOL . $this->_t(3)
+					. "\$id .= ':' . implode(':', \$_" . $filter['code'] . ");";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "}";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "//" . $this->setLine(__LINE__)
+					. " This should not happen, but we try";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "elseif (is_numeric(\$_" . $filter['code'] . "))";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "{";
+				$stored .= PHP_EOL . $this->_t(3)
+					. "\$id .= ':' . \$_" . $filter['code'] . ";";
+				$stored .= PHP_EOL . $this->_t(2)
+					. "}";
+			}
+			else
+			{
+				$stored = PHP_EOL . $this->_t(2)
+					. "\$id .= ':' . \$this->getState('filter."
+					. $filter['code'] . "');";
+			}
 		}
 
 		return $stored;
@@ -20915,7 +21000,7 @@ class Interpretation extends Fields
 		$state = '';
 		// keep track of all fields already added
 		$donelist = array();
-		// we must add the formSubmited code if new above filters is used
+		// we must add the formSubmited code if new above filters is used (2 = topbar)
 		$new_filter = false;
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 2)
@@ -21985,7 +22070,7 @@ class Interpretation extends Fields
 	 */
 	protected function setChosenMultiSelectionHeaders(&$headers, $nameListCode)
 	{
-		// check that the filter type is the new filter option
+		// check that the filter type is the new filter option (2 = topbar)
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 2)
 		{

@@ -355,7 +355,17 @@ class ComponentbuilderModelValidation_rules extends JModelList
 		$id .= ':' . $this->getState('filter.id');
 		$id .= ':' . $this->getState('filter.search');
 		$id .= ':' . $this->getState('filter.published');
-		$id .= ':' . $this->getState('filter.access');
+		// Check if the value is an array
+		$_filter = $this->getState('filter.access');
+		if (ComponentbuilderHelper::checkArray($_filter))
+		{
+			$id .= ':' . implode(':', $_filter);
+		}
+		// This should not happen, but we try
+		elseif (is_numeric($_filter))
+		{
+			$id .= ':' . $_filter;
+		}
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');

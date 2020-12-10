@@ -679,12 +679,32 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		$id .= ':' . $this->getState('filter.id');
 		$id .= ':' . $this->getState('filter.search');
 		$id .= ':' . $this->getState('filter.published');
-		$id .= ':' . $this->getState('filter.access');
+		// Check if the value is an array
+		$_filter = $this->getState('filter.access');
+		if (ComponentbuilderHelper::checkArray($_filter))
+		{
+			$id .= ':' . implode(':', $_filter);
+		}
+		// This should not happen, but we try
+		elseif (is_numeric($_filter))
+		{
+			$id .= ':' . $_filter;
+		}
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.add_fadein');
-		$id .= ':' . $this->getState('filter.type');
+		// Check if the value is an array
+		$_type = $this->getState('filter.type');
+		if (ComponentbuilderHelper::checkArray($_type))
+		{
+			$id .= ':' . implode(':', $_type);
+		}
+		// This should not happen, but we try
+		elseif (is_numeric($_type))
+		{
+			$id .= ':' . $_type;
+		}
 		$id .= ':' . $this->getState('filter.add_custom_button');
 		$id .= ':' . $this->getState('filter.add_php_ajax');
 		$id .= ':' . $this->getState('filter.add_custom_import');
