@@ -210,7 +210,7 @@ class ComponentbuilderModelAdmins_fields_relations extends JModelList
 		{
 			$id .= ':' . implode(':', $_access);
 		}
-		// Check if this is only an int or string
+		// Check if this is only an number or string
 		elseif (is_numeric($_access)
 		 || ComponentbuilderHelper::checkString($_access))
 		{

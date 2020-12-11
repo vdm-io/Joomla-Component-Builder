@@ -685,7 +685,7 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		{
 			$id .= ':' . implode(':', $_access);
 		}
-		// Check if this is only an int or string
+		// Check if this is only an number or string
 		elseif (is_numeric($_access)
 		 || ComponentbuilderHelper::checkString($_access))
 		{
@@ -701,7 +701,7 @@ class ComponentbuilderModelAdmin_views extends JModelList
 		{
 			$id .= ':' . implode(':', $_type);
 		}
-		// Check if this is only an int or string
+		// Check if this is only an number or string
 		elseif (is_numeric($_type)
 		 || ComponentbuilderHelper::checkString($_type))
 		{

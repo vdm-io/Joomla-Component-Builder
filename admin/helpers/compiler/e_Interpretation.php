@@ -7969,7 +7969,7 @@ class Interpretation extends Fields
 			'php_postflight', 'install', PHP_EOL . PHP_EOL, null, true
 		);
 		// add the Intelligent Fix script if needed
-		$script .= $this->getAssetsTableIntelligentFix();
+		$script .= $this->getAssetsTableIntelligentInstall();
 		// add the component install notice
 		if (ComponentbuilderHelper::checkString($script))
 		{
@@ -8494,7 +8494,7 @@ class Interpretation extends Fields
 			$script .= PHP_EOL;
 		}
 		// add the Intelligent Reversal script if needed
-		$script .= $this->getAssetsTableIntelligentReversal();
+		$script .= $this->getAssetsTableIntelligentUninstall();
 		// add the custom uninstall script
 		$script .= $this->getCustomScriptBuilder(
 			'php_method', 'uninstall', "", null, true, null, PHP_EOL
@@ -8509,18 +8509,57 @@ class Interpretation extends Fields
 	 * @return  string The php to place in script.php
 	 *
 	 */
-	protected function getAssetsTableIntelligentFix()
+	protected function getAssetsTableIntelligentInstall()
 	{
+		// WHY DO WE NEED AN ASSET TABLE FIX?
+		// https://www.mysqltutorial.org/mysql-varchar/
+		// https://stackoverflow.com/a/15227917/1429677
+		// https://forums.mysql.com/read.php?24,105964,105964
+		// https://github.com/vdm-io/Joomla-Component-Builder/issues/616#issuecomment-741502980
+		// 30 actions each +-20 characters with 8 groups
+		// that makes 4800 characters and the current Joomla
+		// column size is varchar(5120)
+
 		// check if we should add the intelligent fix treatment for the assets table
-		if ($this->addAssetsTableFix == 2 && $this->accessSize <= 400)
+		if ($this->addAssetsTableFix == 2)
 		{
-			// reset script
+			// get the worse case column size required (can be worse I know)
+			// access/action size x 20 characters x 8 groups
+			$character_length = (int) ComponentbuilderHelper::bcmath(
+				'mul', $this->accessSize, 20, 0
+			);
+			$character_length = (int) ComponentbuilderHelper::bcmath(
+				'mul', $character_length, 8, 0
+			);
+			// get the type we will convert to
+			$data_type = ($character_length > 64000) ? "MEDIUMTEXT" : "TEXT";
+			// the if statement about $rule_length
+			$codeIF = "\$rule_length <= " . $character_length;
+			// fix column size
 			$script   = array();
-			$script[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " Check what size the rules column is now";
+			$script[] = $this->_t(5) . "//" . $this->setLine(__LINE__)
+				. " Fix the assets table rules column size";
+			$script[] = $this->_t(5)
+				. '$fix_rules_size = "ALTER TABLE `#__assets` CHANGE `rules` `rules` '
+				. $data_type
+				. ' NOT NULL COMMENT \'JSON encoded access control. Enlarged to ' . $data_type . ' by JCB\';";';
+			$script[] = $this->_t(5) . "\$db->setQuery(\$fix_rules_size);";
+			$script[] = $this->_t(5) . "\$db->execute();";
+			$codeA    = implode(PHP_EOL, $script);
+			// fixed message
+			$messageA = $this->_t(5)
+				. "\$app->enqueueMessage(JText::_('The <b>#__assets</b> table rules column was resized to the "
+				. $data_type
+				. " datatype for the components possible large permission rules.'));";
+			// do nothing
+			$codeB = "";
+			// fix not needed so ignore
+			$messageB = "";
 
 			// done
-			return PHP_EOL . implode(PHP_EOL, $script);
+			return $this->getAssetsTableIntelligentCode(
+				$codeIF, $codeA, $codeB, $messageA, $messageB, 2
+			);
 		}
 
 		return '';
@@ -8532,21 +8571,94 @@ class Interpretation extends Fields
 	 * @return  string The php to place in script.php
 	 *
 	 */
-	protected function getAssetsTableIntelligentReversal()
+	protected function getAssetsTableIntelligentUninstall()
 	{
 		// check if we should add the intelligent uninstall treatment for the assets table
 		if ($this->addAssetsTableFix == 2)
 		{
-			// reset script
+			// the if statement about $rule_length
+			$codeIF = "\$rule_length < 5120";
+			// reverse column size
 			$script   = array();
-			$script[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " Check for the biggest rules item in the database at this point";
+			$script[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+				. " Revert the assets table rules column back to the default";
+			$script[] = $this->_t(4)
+				. '$revert_rule = "ALTER TABLE `#__assets` CHANGE `rules` `rules` varchar(5120) NOT NULL COMMENT \'JSON encoded access control.\';";';
+			$script[] = $this->_t(4) . "\$db->setQuery(\$revert_rule);";
+			$script[] = $this->_t(4) . "\$db->execute();";
+			$codeA    = implode(PHP_EOL, $script);
+			// reverted message
+			$messageA = $this->_t(4)
+				. "\$app->enqueueMessage(JText::_('Reverted the <b>#__assets</b> table rules column back to its default size of varchar(5120)'));";
+			// do nothing
+			$codeB = "";
+			// not reverted message
+			$messageB = $this->_t(4)
+				. "\$app->enqueueMessage(JText::_('Could not revert the <b>#__assets</b> table rules column back to its default size of varchar(5120), since there is still one or more components that still requires the column to be larger.'));";
 
 			// done
-			return PHP_EOL . implode(PHP_EOL, $script);
+			return $this->getAssetsTableIntelligentCode(
+				$codeIF, $codeA, $codeB, $messageA, $messageB
+			);
 		}
 
 		return '';
+	}
+
+	/**
+	 * set code for both install, update and uninstall
+	 *
+	 * @param   string  $codeIF    The IF code to fix this issue
+	 * @param   string  $codeA     The a code to fix this issue
+	 * @param   string  $codeB     The b code to fix this issue
+	 * @param   string  $messageA  The fix a message
+	 * @param   string  $messageB  The fix b message
+	 *
+	 * @return  string
+	 *
+	 */
+	protected function getAssetsTableIntelligentCode($codeIF, $codeA, $codeB,
+		$messageA, $messageB, $tab = 1
+	) {
+		// reset script
+		$script   = array();
+		$script[] = $this->_t($tab) . $this->_t(1) . "//" . $this->setLine(
+				__LINE__
+			)
+			. " Get the biggest rule column in the assets table at this point.";
+		$script[] = $this->_t($tab) . $this->_t(1)
+			. '$get_rule_length = "SELECT CHAR_LENGTH(`rules`) as rule_size FROM #__assets ORDER BY rule_size DESC LIMIT 1";';
+		$script[] = $this->_t($tab) . $this->_t(1)
+			. "\$db->setQuery(\$get_rule_length);";
+		$script[] = $this->_t($tab) . $this->_t(1) . "if (\$db->execute())";
+		$script[] = $this->_t($tab) . $this->_t(1) . "{";
+		$script[] = $this->_t($tab) . $this->_t(2)
+			. "\$rule_length = \$db->loadResult();";
+		// https://github.com/joomla/joomla-cms/blob/3.10.0-alpha3/installation/sql/mysql/joomla.sql#L22
+		// Checked 1st December 2020 (let us know if this changes)
+		$script[] = $this->_t($tab) . $this->_t(2) . "//" . $this->setLine(
+				__LINE__
+			)
+			. " Check the size of the rules column";
+		$script[] = $this->_t($tab) . $this->_t(2) . "if (" . $codeIF . ")";
+		$script[] = $this->_t($tab) . $this->_t(2) . "{";
+		$script[] = $codeA;
+		$script[] = $messageA;
+		$script[] = $this->_t($tab) . $this->_t(2) . "}";
+		// only ad this if there is a B part
+		if (ComponentbuilderHelper::checkString($codeB)
+			|| ComponentbuilderHelper::checkString($messageB))
+		{
+			$script[] = $this->_t($tab) . $this->_t(2) . "else";
+			$script[] = $this->_t($tab) . $this->_t(2) . "{";
+			$script[] = $codeB;
+			$script[] = $messageB;
+			$script[] = $this->_t($tab) . $this->_t(2) . "}";
+		}
+		$script[] = $this->_t($tab) . $this->_t(1) . "}";
+
+		// done
+		return PHP_EOL . implode(PHP_EOL, $script);
 	}
 
 	public function setMoveFolderScript()
@@ -10530,9 +10642,9 @@ class Interpretation extends Fields
 
 			// check if this component needs larger rules
 			// also check if the developer will allow this
-			// any value above 0 allows for the change to be added
 			// the access actions length must be checked before this
-			if ($this->addAssetsTableFix)
+			// only add this option if set to SQL fix
+			if ($this->addAssetsTableFix == 1)
 			{
 				// 400 actions worse case is larger the 65535 characters
 				if ($this->accessSize > 400)
@@ -10549,7 +10661,6 @@ class Interpretation extends Fields
 						. "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control.';";
 				}
 				// smaller then 400 makes TEXT large enough
-				// only add this option if set to SQL fix
 				elseif ($this->addAssetsTableFix == 1)
 				{
 					$db .= PHP_EOL;
@@ -10567,8 +10678,8 @@ class Interpretation extends Fields
 
 			// check if this component needs larger names
 			// also check if the developer will allow this
-			// any value above 0 allows for the change to be added
 			// the config length must be checked before this
+			// only add this option if set to SQL fix
 			if ($this->addAssetsTableFix && $this->addAssetsTableNameFix)
 			{
 				$db .= PHP_EOL;
@@ -10617,7 +10728,7 @@ class Interpretation extends Fields
 
 		// check if this component used larger rules
 		// now revert them back on uninstall
-		// number 1 allows for the change to be reversed
+		// only add this option if set to SQL fix
 		if ($this->addAssetsTableFix == 1)
 		{
 			// https://github.com/joomla/joomla-cms/blob/3.10.0-alpha3/installation/sql/mysql/joomla.sql#L22
@@ -10636,7 +10747,7 @@ class Interpretation extends Fields
 
 		// check if this component used larger names
 		// now revert them back on uninstall
-		// number 1 allows for the change to be reversed
+		// only add this option if set to SQL fix
 		if ($this->addAssetsTableFix == 1 && $this->addAssetsTableNameFix)
 		{
 			// https://github.com/joomla/joomla-cms/blob/3.10.0-alpha3/installation/sql/mysql/joomla.sql#L20
@@ -20573,9 +20684,9 @@ class Interpretation extends Fields
 	/**
 	 * Add the code of the stored ids
 	 *
-	 * @param   array   $filter          The field/filter array
-	 * @param   string  $nameListCode    The list view name
-	 * @param   string  $Component       The Component name
+	 * @param   array   $filter        The field/filter array
+	 * @param   string  $nameListCode  The list view name
+	 * @param   string  $Component     The Component name
 	 *
 	 * @return  string    The code for the stored IDs
 	 *
@@ -20602,10 +20713,14 @@ class Interpretation extends Fields
 			else
 			{
 				$stored = $this->getStoredIdCodeMulti('category', $Component);
-				$stored .= $this->getStoredIdCodeMulti('category_id', $Component);
+				$stored .= $this->getStoredIdCodeMulti(
+					'category_id', $Component
+				);
 				if ($filter['code'] != 'category')
 				{
-					$stored .= $this->getStoredIdCodeMulti($filter['code'], $Component);
+					$stored .= $this->getStoredIdCodeMulti(
+						$filter['code'], $Component
+					);
 				}
 			}
 		}
@@ -20618,7 +20733,9 @@ class Interpretation extends Fields
 			{
 				// top bar selection can result in
 				// an array due to multi selection
-				$stored = $this->getStoredIdCodeMulti($filter['code'], $Component);
+				$stored = $this->getStoredIdCodeMulti(
+					$filter['code'], $Component
+				);
 			}
 			else
 			{
@@ -20634,8 +20751,8 @@ class Interpretation extends Fields
 	/**
 	 * Add the code of the stored multi ids
 	 *
-	 * @param   string  $key           The key field name
-	 * @param   string  $Component     The Component name
+	 * @param   string  $key        The key field name
+	 * @param   string  $Component  The Component name
 	 *
 	 * @return  string    The code for the stored IDs
 	 *
@@ -20661,7 +20778,7 @@ class Interpretation extends Fields
 			. "}";
 		$stored .= PHP_EOL . $this->_t(2)
 			. "//" . $this->setLine(__LINE__)
-			. " Check if this is only an int or string";
+			. " Check if this is only an number or string";
 		$stored .= PHP_EOL . $this->_t(2)
 			. "elseif (is_numeric(\$_" . $key . ")";
 		$stored .= PHP_EOL . $this->_t(2)
@@ -27067,7 +27184,7 @@ function vdm_dkim() {
 			$this->componentGlobal = null;
 			$this->permissionViews = null;
 
-			// remove the fix in not needed
+			// remove the fix, is not needed
 			if ($this->accessSize < 30)
 			{
 				// since we have less than 30 actions

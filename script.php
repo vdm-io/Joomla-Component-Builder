@@ -4281,7 +4281,27 @@ class com_componentbuilderInstallerScript
 			$app->enqueueMessage(JText::_('All related items was removed from the <b>#__assets</b> table'));
 		}
 
-		// Check for the biggest rules item in the database at this point
+		// Get the biggest rule column in the assets table at this point.
+		$get_rule_length = "SELECT CHAR_LENGTH(`rules`) as rule_size FROM #__assets ORDER BY rule_size DESC LIMIT 1";
+		$db->setQuery($get_rule_length);
+		if ($db->execute())
+		{
+			$rule_length = $db->loadResult();
+			// Check the size of the rules column
+			if ($rule_length < 5120)
+			{
+				// Revert the assets table rules column back to the default
+				$revert_rule = "ALTER TABLE `#__assets` CHANGE `rules` `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.';";
+				$db->setQuery($revert_rule);
+				$db->execute();
+				$app->enqueueMessage(JText::_('Reverted the <b>#__assets</b> table rules column back to its default size of varchar(5120)'));
+			}
+			else
+			{
+
+				$app->enqueueMessage(JText::_('Could not revert the <b>#__assets</b> table rules column back to its default size of varchar(5120), since there is still one or more components that still requires the column to be larger.'));
+			}
+		}
 
 		// Set db if not set already.
 		if (!isset($db))
@@ -6602,6 +6622,22 @@ class com_componentbuilderInstallerScript
 			$db->setQuery($query);
 			$allDone = $db->execute();
 
+			// Get the biggest rule column in the assets table at this point.
+			$get_rule_length = "SELECT CHAR_LENGTH(`rules`) as rule_size FROM #__assets ORDER BY rule_size DESC LIMIT 1";
+			$db->setQuery($get_rule_length);
+			if ($db->execute())
+			{
+				$rule_length = $db->loadResult();
+				// Check the size of the rules column
+				if ($rule_length <= 94240)
+				{
+					// Fix the assets table rules column size
+					$fix_rules_size = "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control. Enlarged to MEDIUMTEXT by JCB';";
+					$db->setQuery($fix_rules_size);
+					$db->execute();
+					$app->enqueueMessage(JText::_('The <b>#__assets</b> table rules column was resized to the MEDIUMTEXT datatype for the components possible large permission rules.'));
+				}
+			}
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>';

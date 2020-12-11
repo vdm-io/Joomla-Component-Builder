@@ -767,7 +767,7 @@
 			description="COM_COMPONENTBUILDER_CONFIG_ASSETS_TABLE_FIX_DESCRIPTION"
 			class="list_class"
 			multiple="false"
-			default="1">
+			default="2">
 			<!-- Option Set. -->
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_DO_NOT_ADD_FIX_EVER</option>

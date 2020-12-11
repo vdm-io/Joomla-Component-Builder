@@ -399,7 +399,7 @@ class ComponentbuilderModelFieldtypes extends JModelList
 		{
 			$id .= ':' . implode(':', $_access);
 		}
-		// Check if this is only an int or string
+		// Check if this is only an number or string
 		elseif (is_numeric($_access)
 		 || ComponentbuilderHelper::checkString($_access))
 		{
@@ -414,7 +414,7 @@ class ComponentbuilderModelFieldtypes extends JModelList
 		{
 			$id .= ':' . implode(':', $_category);
 		}
-		// Check if this is only an int or string
+		// Check if this is only an number or string
 		elseif (is_numeric($_category)
 		 || ComponentbuilderHelper::checkString($_category))
 		{
@@ -426,7 +426,7 @@ class ComponentbuilderModelFieldtypes extends JModelList
 		{
 			$id .= ':' . implode(':', $_category_id);
 		}
-		// Check if this is only an int or string
+		// Check if this is only an number or string
 		elseif (is_numeric($_category_id)
 		 || ComponentbuilderHelper::checkString($_category_id))
 		{
@@ -438,7 +438,7 @@ class ComponentbuilderModelFieldtypes extends JModelList
 		{
 			$id .= ':' . implode(':', $_catid);
 		}
-		// Check if this is only an int or string
+		// Check if this is only an number or string
 		elseif (is_numeric($_catid)
 		 || ComponentbuilderHelper::checkString($_catid))
 		{
