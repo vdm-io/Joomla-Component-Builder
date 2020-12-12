@@ -190,12 +190,68 @@ class Compiler extends Infusion
 					{
 						$this->app->enqueueMessage(
 							JText::sprintf(
-								'The <b>%s</b> language has %s&#37; translated. Was addeded %s',
+								'The <b>%s</b> language has %s&#37; translated. Was added %s',
 								$tag, $percentage, $whyAddedLang
 							), 'Notice'
 						);
 					}
 				}
+			}
+			// set assets table column fix type messages
+			$message_fix['intelligent'] = JText::_(
+				'The <b>intelligent</b> fix only updates the #__assets table\'s column when it detects that it is too small for the worse case. The intelligent fix also only reverse the #__assets table\'s update on uninstall of the component if it detects that no other component needs the rules column to be larger any longer. This options also shows a notice to the end user of all that it does to the #__assets table on installation and uninstalling of the component.'
+			);
+			$message_fix['sql']         = JText::_(
+				'The <b>SQL</b> fix updates the #__assets table\'s column size on installation of the component and reverses it back to the Joomla default on uninstall of the component.'
+			);
+			// set assets table rules column notice
+			if ($this->addAssetsTableFix)
+			{
+				$this->app->enqueueMessage(
+					JText::_('<hr /><h3>Assets Table Notice</h3>'), 'Notice'
+				);
+				$asset_table_fix_type = ($this->addAssetsTableFix == 2)
+					? 'intelligent' : 'sql';
+				$this->app->enqueueMessage(
+					JText::sprintf(
+						'The #__assets table <b>%s</b> fix has been added to this component. %s',
+						$asset_table_fix_type,
+						$message_fix[$asset_table_fix_type]
+					), 'Notice'
+				);
+			}
+			// set assets table rules column Warning
+			elseif ($this->accessSize >= 30)
+			{
+				$this->app->enqueueMessage(
+					JText::_('<hr /><h3>Assets Table Warning</h3>'), 'Warning'
+				);
+				$this->app->enqueueMessage(
+					JText::sprintf(
+						'The Joomla #__assets table\'s rules column has to be fixed for this component to work coherently. JCB has detected that in worse case the rules column in the #__assets table may require <b>%s</b> characters, and yet the Joomla default is only <b>varchar(5120)</b>. JCB has three option to resolve this issue, first <b>use less permissions</b> in your component, second use the <b>SQL</b> fix, or the <b>intelligent</b> fix. %s %s',
+						$this->accessWorseCase, $message_fix['intelligent'],
+						$message_fix['sql']
+					), 'Warning'
+				);
+			}
+			// set assets table name column warning if not set
+			if (!$this->addAssetsTableFix && $this->addAssetsTableNameFix)
+			{
+				// only add if not already added
+				if ($this->accessSize < 30)
+				{
+					$this->app->enqueueMessage(
+						JText::_('<hr /><h3>Assets Table Warning</h3>'),
+						'Warning'
+					);
+				}
+				$this->app->enqueueMessage(
+					JText::sprintf(
+						'The Joomla #__assets table\'s name column has to be fixed for this component to work correctly. JCB has detected that the #__assets table name column will need to be enlarged because this component\'s own naming convention is larger than varchar(50) which is the Joomla default. JCB has three option to resolve this issue, first <b>shorter names</b> for your component and/or its admin views, second use the <b>SQL</b> fix, or the <b>intelligent</b> fix. %s %s',
+						$message_fix['intelligent'],
+						$message_fix['sql']
+					), 'Warning'
+				);
 			}
 			// move the update server into place
 			$this->setUpdateServer();

@@ -103,6 +103,13 @@ class Get
 	public $addAssetsTableFix = 1;
 
 	/**
+	 * Assets table worse case
+	 *
+	 * @var     int
+	 */
+	public $accessWorseCase;
+
+	/**
 	 * Switch to add assets table name fix
 	 *
 	 * @var     bool

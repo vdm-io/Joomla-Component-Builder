@@ -133,7 +133,6 @@ Get involved on the forums, and the GitHub issues, and you can even help us deve
 TODO
 ======
 
-- Add automatic (REST) API ability for all components build with [JCB](http://joomlacomponentbuilder.com). So we can link any component build with JCB to an Android/Apple APP.
 - Add automatic unit testing. To nurture pipeline integration for all components build with [JCB](http://joomlacomponentbuilder.com).
 - Team collaborative development across [JCB](http://joomlacomponentbuilder.com) installations offline and online.
 - Documentation (maintained by the community) for [JCB](http://joomlacomponentbuilder.com). (help us select the best system for this)
@@ -144,11 +143,11 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 11th December, 2020
++ *Last Build*: 12th December, 2020
 + *Version*: 2.12.2
 + *Copyright*: Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **290481**
++ *Line count*: **290479**
 + *Field count*: **1555**
 + *File count*: **1923**
 + *Folder count*: **316**

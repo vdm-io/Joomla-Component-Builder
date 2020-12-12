@@ -8523,18 +8523,10 @@ class Interpretation extends Fields
 		// check if we should add the intelligent fix treatment for the assets table
 		if ($this->addAssetsTableFix == 2)
 		{
-			// get the worse case column size required (can be worse I know)
-			// access/action size x 20 characters x 8 groups
-			$character_length = (int) ComponentbuilderHelper::bcmath(
-				'mul', $this->accessSize, 20, 0
-			);
-			$character_length = (int) ComponentbuilderHelper::bcmath(
-				'mul', $character_length, 8, 0
-			);
 			// get the type we will convert to
-			$data_type = ($character_length > 64000) ? "MEDIUMTEXT" : "TEXT";
+			$data_type = ($this->accessWorseCase > 64000) ? "MEDIUMTEXT" : "TEXT";
 			// the if statement about $rule_length
-			$codeIF = "\$rule_length <= " . $character_length;
+			$codeIF = "\$rule_length <= " . $this->accessWorseCase;
 			// fix column size
 			$script   = array();
 			$script[] = $this->_t(5) . "//" . $this->setLine(__LINE__)
@@ -10658,7 +10650,7 @@ class Interpretation extends Fields
 						. ' Always insure this column rules is large enough for all the access control values.';
 					$db .= PHP_EOL . '--';
 					$db .= PHP_EOL
-						. "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control.';";
+						. "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control. Enlarged to MEDIUMTEXT by JCB';";
 				}
 				// smaller then 400 makes TEXT large enough
 				elseif ($this->addAssetsTableFix == 1)
@@ -10672,7 +10664,7 @@ class Interpretation extends Fields
 						. ' Always insure this column rules is large enough for all the access control values.';
 					$db .= PHP_EOL . '--';
 					$db .= PHP_EOL
-						. "ALTER TABLE `#__assets` CHANGE `rules` `rules` TEXT NOT NULL COMMENT 'JSON encoded access control.';";
+						. "ALTER TABLE `#__assets` CHANGE `rules` `rules` TEXT NOT NULL COMMENT 'JSON encoded access control. Enlarged to TEXT by JCB';";
 				}
 			}
 
@@ -27190,6 +27182,17 @@ function vdm_dkim() {
 				// since we have less than 30 actions
 				// we do not need the fix for this component
 				$this->addAssetsTableFix = 0;
+			}
+			else
+			{
+				// get the worse case column size required (can be worse I know)
+				// access/action size x 20 characters x 8 groups
+				$character_length = (int) ComponentbuilderHelper::bcmath(
+					'mul', $this->accessSize, 20, 0
+				);
+				$this->accessWorseCase = (int) ComponentbuilderHelper::bcmath(
+					'mul', $character_length, 8, 0
+				);
 			}
 
 			// return the build
