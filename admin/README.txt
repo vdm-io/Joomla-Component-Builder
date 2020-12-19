@@ -106,7 +106,7 @@ Where can you get support and help?
 + [German Basic Introduction](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wu0tDFxJtZFwW7AxA4JHQV7)
 + [Hello World Tutorial](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 + [The JCB! Wiki](https://github.com/vdm-io/Joomla-Component-Builder/wiki)
-+ [Google Group](https://vdm.bz/jcb-forum)
++ [Forum](https://vdm.bz/jcb-forum)
 + [Report a Security Issue](http://joomlacomponentbuilder.com/report-security-issues)
 + [Community Complaint](http://joomlacomponentbuilder.com/community-complaint)
 + [Open Issue On Github](https://github.com/vdm-io/Joomla-Component-Builder/issues) ^^
@@ -143,7 +143,7 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 + *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 13th December, 2020
++ *Last Build*: 19th December, 2020
 + *Version*: 2.12.3
 + *Copyright*: Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt

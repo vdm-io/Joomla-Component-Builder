@@ -4,7 +4,7 @@ Where can you get support and help?
 + [The JCB Tutorials][Tutorials]
 + [Hello World Tutorial][HelloWorld]
 + [The JCB! Wiki][Wiki]
-+ [JCB Google Group/forum][forum]
++ [JCB Forum][forum]
 + [Report a Security Issue][Security]
 + [Community Complaint][Complaint]
 + [Open Issue On Github][Issue] ^^
@@ -18,7 +18,7 @@ We have started a [**JCB forum**][forum] where you can post questions, about how
 [Tutorials]: https://www.youtube.com/playlist?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE
 [HelloWorld]: https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45
 [Wiki]: https://github.com/vdm-io/Joomla-Component-Builder/wiki
-[forum]: https://groups.google.com/a/vdm.io/d/forum/jcb
+[forum]: https://vdm.bz/jcb-forum
 [Security]: http://joomlacomponentbuilder.com/report-security-issues
 [Complaint]: http://joomlacomponentbuilder.com/community-complaint
 [Issue]: https://github.com/vdm-io/Joomla-Component-Builder/issues
