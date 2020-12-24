@@ -863,6 +863,40 @@ class Fields extends Structure
 				$this->fieldCount++;
 			}
 		}
+		// fix the permissions field "title" issue gh-629
+		// check if the the title is not already set
+		if (!isset($this->fieldsNames[$nameSingleCode]['title']))
+		{
+			// set the field/tab name
+			$field_name = "title";
+			$tab_name   = "publishing";
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+				. " Was added due to Permissions JS needing a Title field -->";
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+				. " Let us know at gh-629 should this change -->";
+			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+				. " https://github.com/vdm-io/Joomla-Component-Builder/issues/629#issuecomment-750117235 -->";
+			// at this point we know that we must add a hidden title field
+			// and make sure it does not get stored to the database
+			$fieldSet[] = $this->_t(2) . "<field";
+			$fieldSet[] = $this->_t(3) . "name=" . '"' . $field_name . '"';
+			$fieldSet[] = $this->_t(3)
+				. 'type="hidden"';
+			$fieldSet[] = $this->_t(3) . 'default="' . $component . ' '
+				. $nameSingleCode . '"';
+			$fieldSet[] = $this->_t(2) . "/>";
+			// count the static field created
+			$this->fieldCount++;
+			// setup needed field values for layout
+			$field_array               = array();
+			$field_array['order_edit'] = 0;
+			$field_array['tab']        = 15;
+			$field_array['alignment']  = 1;
+			// make sure it gets added to view
+			$this->setLayoutBuilder(
+				$nameSingleCode, $tab_name, $field_name, $field_array
+			);
+		}
 		// load the dynamic fields now
 		if (ComponentbuilderHelper::checkString($dynamicFields))
 		{
@@ -1262,6 +1296,45 @@ class Fields extends Structure
 				// count the static field created
 				$this->fieldCount++;
 			}
+		}
+		// fix the permissions field "title" issue gh-629
+		// check if the the title is not already set
+		if (!isset($this->fieldsNames[$nameSingleCode]['title']))
+		{
+			// set the field/tab name
+			$field_name = "title";
+			$tab_name   = "publishing";
+
+			$attributes = array(
+				'name'        => $field_name,
+				'type'        => 'hidden',
+				'default'      => $component . ' ' . $nameSingleCode
+			);
+			ComponentbuilderHelper::xmlComment(
+				$fieldSetXML,
+				$this->setLine(__LINE__) . " Was added due to Permissions JS needing a Title field"
+			);
+			ComponentbuilderHelper::xmlComment(
+				$fieldSetXML,
+				$this->setLine(__LINE__) . " Let us know at gh-629 should this change"
+			);
+			ComponentbuilderHelper::xmlComment(
+				$fieldSetXML,
+				$this->setLine(__LINE__) . " https://github.com/vdm-io/Joomla-Component-Builder/issues/629#issuecomment-750117235"
+			);
+			$fieldXML = $fieldSetXML->addChild('field');
+			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
+			// count the static field created
+			$this->fieldCount++;
+			// setup needed field values for layout
+			$field_array               = array();
+			$field_array['order_edit'] = 0;
+			$field_array['tab']        = 15;
+			$field_array['alignment']  = 1;
+			// make sure it gets added to view
+			$this->setLayoutBuilder(
+				$nameSingleCode, $tab_name, $field_name, $field_array
+			);
 		}
 		// load the dynamic fields now
 		if (count((array) $dynamicFieldsXML))
@@ -4652,7 +4725,7 @@ class Fields extends Structure
 			}
 		}
 		// set the hidden field of this view
-		if ($typeName === 'hidden')
+		if ($dbSwitch && $typeName === 'hidden')
 		{
 			if (!isset($this->hiddenFieldsBuilder[$nameSingleCode]))
 			{
@@ -4673,7 +4746,7 @@ class Fields extends Structure
 			$this->intFieldsBuilder[$nameSingleCode] .= ',"' . $name . '"';
 		}
 		// set all dynamic field of this view
-		if ($typeName != 'category' && $typeName != 'repeatable'
+		if ($dbSwitch && $typeName != 'category' && $typeName != 'repeatable'
 			&& $typeName != 'subform'
 			&& !in_array($name, $this->defaultFields))
 		{
