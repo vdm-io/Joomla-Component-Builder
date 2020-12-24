@@ -147,7 +147,7 @@ TODO
 + *Version*: 2.12.3
 + *Copyright*: Copyright (C) 2015 - 2020 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **290895**
++ *Line count*: **290875**
 + *Field count*: **1601**
 + *File count*: **1923**
 + *Folder count*: **316**

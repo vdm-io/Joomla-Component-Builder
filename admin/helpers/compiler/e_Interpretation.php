@@ -13393,7 +13393,9 @@ class Interpretation extends Fields
 		}
 
 		// make sure we dont load it to a view with the name component (as this will cause conflict with Joomla conventions)
-		if ($nameSingleCode != 'component')
+		if ($nameSingleCode != 'component'
+			&& isset($this->hasPermissions[$nameSingleCode])
+			&& $this->hasPermissions[$nameSingleCode])
 		{
 			// set permissions tab lang
 			$tabLangName = $langView . '_PERMISSION';

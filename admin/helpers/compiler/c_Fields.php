@@ -47,6 +47,13 @@ class Fields extends Structure
 	public $layoutBuilder = array();
 
 	/**
+	 * permissions builder
+	 *
+	 * @var    array
+	 */
+	public $hasPermissions = array();
+
+	/**
 	 * used to fix the zero order
 	 *
 	 * @var    array
@@ -865,7 +872,8 @@ class Fields extends Structure
 		}
 		// fix the permissions field "title" issue gh-629
 		// check if the the title is not already set
-		if (!isset($this->fieldsNames[$nameSingleCode]['title']))
+		if (!isset($this->fieldsNames[$nameSingleCode]['title'])
+			&& $this->hasPermissionsSet($view, $nameSingleCode))
 		{
 			// set the field/tab name
 			$field_name = "title";
@@ -1299,7 +1307,8 @@ class Fields extends Structure
 		}
 		// fix the permissions field "title" issue gh-629
 		// check if the the title is not already set
-		if (!isset($this->fieldsNames[$nameSingleCode]['title']))
+		if (!isset($this->fieldsNames[$nameSingleCode]['title'])
+			&& $this->hasPermissionsSet($view, $nameSingleCode))
 		{
 			// set the field/tab name
 			$field_name = "title";
@@ -1453,6 +1462,81 @@ class Fields extends Structure
 
 		// return the set
 		return $this->xmlPrettyPrint($XML, 'fieldset');
+	}
+
+	/**
+	 * Check to see if a view has permissions
+	 *
+	 * @param   array   $view            View details
+	 * @param   string  $nameSingleCode  View Single Code Name
+	 *
+	 * @return  boolean true if it has permisssions
+	 *
+	 */
+	protected function hasPermissionsSet(&$view, &$nameSingleCode)
+	{
+		// first check if we have checked this already
+		if (!isset($this->hasPermissions[$nameSingleCode]))
+		{
+			// default is false
+			$this->hasPermissions[$nameSingleCode] = false;
+			// when a view has history, it has permissions
+			// since it tracks the version access
+			if (isset($view['history']) && $view['history'] == 1)
+			{
+				// set the permission for later
+				$this->hasPermissions[$nameSingleCode] = true;
+				// break out here
+				return true;
+			}
+			// check if the view has permissions
+			if (isset($view['settings'])
+				&& ComponentbuilderHelper::checkArray(
+					$view['settings']->permissions
+				))
+			{
+				foreach ($view['settings']->permissions as $per)
+				{
+					// check if the permission targets the view
+					// 1 = view
+					// 3 = both view & component
+					if (isset($per['implementation'])
+						&& (
+							$per['implementation'] == 1
+							|| $per['implementation'] == 3
+						))
+					{
+						// set the permission for later
+						$this->hasPermissions[$nameSingleCode] = true;
+						// break out here
+						return true;
+					}
+				}
+			}
+			// check if the fields has permissions
+			if (isset($view['settings'])
+				&& ComponentbuilderHelper::checkArray(
+					$view['settings']->fields
+				))
+			{
+				foreach ($view['settings']->fields as $field)
+				{
+					// if a field has any permissions
+					// the a view has permissions
+					if (isset($field['permission'])
+						&& ComponentbuilderHelper::checkArray(
+							$field['permission']
+						))
+					{
+						// set the permission for later
+						$this->hasPermissions[$nameSingleCode] = true;
+						// break out here
+						return true;
+					}
+				}
+			}
+		}
+		return $this->hasPermissions[$nameSingleCode];
 	}
 
 	/**
