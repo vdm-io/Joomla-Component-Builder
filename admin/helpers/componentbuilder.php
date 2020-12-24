@@ -3677,7 +3677,7 @@ abstract class ComponentbuilderHelper
 		),
 		'plain' => array(
 			'cachehandler', 'calendar', 'checkbox', 'chromestyle', 'color', 'componentlayout', 'contenttype', 'editor', 'editors', 'captcha',
-			'email', 'file', 'headertag', 'helpsite', 'hidden', 'integer', 'language', 'media', 'menu', 'menuitem', 'meter', 'modulelayout',
+			'email', 'file', 'headertag', 'helpsite', 'hidden', 'integer', 'language', 'media', 'menu', 'menuitem', 'meter', 'modulelayout', 'templatestyle',
 			'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules', 'tag', 'tel', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
 		),
 		'option' => array(
@@ -3697,7 +3697,7 @@ abstract class ComponentbuilderHelper
 			'note', 'spacer'
 		),
 		'special' => array(
-			'contentlanguage', 'moduleposition', 'plugin', 'repeatable', 'subform', 'templatestyle'
+			'contentlanguage', 'moduleposition', 'plugin', 'repeatable', 'subform'
 		)
 	);
 
