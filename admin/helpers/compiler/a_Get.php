@@ -6496,7 +6496,7 @@ class Get
 	public function setLang($string)
 	{
 		// this is there to insure we dont break already added Language strings
-		if (ComponentbuilderHelper::safeString($string, 'U') === $string)
+		if (ComponentbuilderHelper::safeString($string, 'U', '_', false, false) === $string)
 		{
 			return false;
 		}
