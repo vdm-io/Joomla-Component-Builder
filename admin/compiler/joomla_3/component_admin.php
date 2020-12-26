@@ -16,7 +16,8 @@ defined('_JEXEC') or die('Restricted access');
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
-JHtml::_('behavior.tabstate');
+
+###ADMIN_COMPONENT_HEADER###
 
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_###component###'))

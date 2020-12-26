@@ -17,10 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\CMS\Language\Language;
-use Joomla\Registry\Registry;
-use Joomla\String\StringHelper;
-use Joomla\Utilities\ArrayHelper;###SITE_HELPER_CLASS_HEADER###
+###SITE_HELPER_CLASS_HEADER###
 
 /**
  * ###Component### component helper

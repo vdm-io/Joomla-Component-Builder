@@ -467,27 +467,6 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * set Helper Dynamic Headers
-	 *
-	 * @param   string  $target_client
-	 *
-	 * @return string
-	 */
-	public function setHelperClassHeader($target_client)
-	{
-		$header = '';
-		// add only to admin client
-		if ('admin' === $target_client && $this->addEximport)
-		{
-			$header .= PHP_EOL . 'use PhpOffice\PhpSpreadsheet\IOFactory;';
-			$header .= PHP_EOL . 'use PhpOffice\PhpSpreadsheet\Spreadsheet;';
-			$header .= PHP_EOL . 'use PhpOffice\PhpSpreadsheet\Writer\Xlsx;';
-		}
-
-		return $header;
-	}
-
-	/**
 	 * set Helper License Lock
 	 *
 	 * @param   type  $_WHMCS
@@ -8524,7 +8503,8 @@ class Interpretation extends Fields
 		if ($this->addAssetsTableFix == 2)
 		{
 			// get the type we will convert to
-			$data_type = ($this->accessWorseCase > 64000) ? "MEDIUMTEXT" : "TEXT";
+			$data_type = ($this->accessWorseCase > 64000) ? "MEDIUMTEXT"
+				: "TEXT";
 			// the if statement about $rule_length
 			$codeIF = "\$rule_length <= " . $this->accessWorseCase;
 			// fix column size
@@ -8534,7 +8514,8 @@ class Interpretation extends Fields
 			$script[] = $this->_t(5)
 				. '$fix_rules_size = "ALTER TABLE `#__assets` CHANGE `rules` `rules` '
 				. $data_type
-				. ' NOT NULL COMMENT \'JSON encoded access control. Enlarged to ' . $data_type . ' by JCB\';";';
+				. ' NOT NULL COMMENT \'JSON encoded access control. Enlarged to '
+				. $data_type . ' by JCB\';";';
 			$script[] = $this->_t(5) . "\$db->setQuery(\$fix_rules_size);";
 			$script[] = $this->_t(5) . "\$db->execute();";
 			$codeA    = implode(PHP_EOL, $script);
@@ -22117,7 +22098,7 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * Build headers for the model/view/controller headers
+	 * Build headers for the various files
 	 *
 	 * @param   string  $context        The name of the context
 	 * @param   string  $viewsCodeName  The view or views name
@@ -22125,12 +22106,25 @@ class Interpretation extends Fields
 	 * @return  string The php to place in the header
 	 *
 	 */
-	public function setClassHeaders($context, $viewsCodeName)
+	public function setFileHeader($context, $viewsCodeName)
 	{
 		// set the defaults
 		$headers = array();
 		switch ($context)
 		{
+			case 'admin.component':
+			case 'site.component':
+				$headers[] = 'JHtml::_(\'behavior.tabstate\');';
+				break;
+			case 'admin.helper':
+			case 'site.helper':
+				$headers[] = 'use Joomla\CMS\Language\Language;';
+				$headers[] = 'use Joomla\Registry\Registry;';
+				$headers[] = 'use Joomla\String\StringHelper;';
+				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
+				// load the internal custom headers
+				$this->setHelperClassHeader($headers, $viewsCodeName);
+				break;
 			case 'admin.view.model':
 			case 'site.admin.view.model':
 				$headers[] = 'use Joomla\Registry\Registry;';
@@ -22183,6 +22177,25 @@ class Interpretation extends Fields
 		}
 
 		return '';
+	}
+
+	/**
+	 * set Helper Dynamic Headers
+	 *
+	 * @param   array   $headers  The headers array
+	 * @param   string  $target_client
+	 *
+	 * @return void
+	 */
+	protected function setHelperClassHeader(&$headers, $target_client)
+	{
+		// add only to admin client
+		if ('admin' === $target_client && $this->addEximport)
+		{
+			$headers[] = 'use PhpOffice\PhpSpreadsheet\IOFactory;';
+			$headers[] = 'use PhpOffice\PhpSpreadsheet\Spreadsheet;';
+			$headers[] = 'use PhpOffice\PhpSpreadsheet\Writer\Xlsx;';
+		}
 	}
 
 	/**
@@ -27189,7 +27202,7 @@ function vdm_dkim() {
 			{
 				// get the worse case column size required (can be worse I know)
 				// access/action size x 20 characters x 8 groups
-				$character_length = (int) ComponentbuilderHelper::bcmath(
+				$character_length      = (int) ComponentbuilderHelper::bcmath(
 					'mul', $this->accessSize, 20, 0
 				);
 				$this->accessWorseCase = (int) ComponentbuilderHelper::bcmath(
