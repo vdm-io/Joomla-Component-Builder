@@ -10,7 +10,7 @@
  */
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access'); 
+defined('_JEXEC') or die('Restricted access');
 
 $edit = "index.php?option=com_componentbuilder&view=custom_admin_views&task=custom_admin_view.edit";
 

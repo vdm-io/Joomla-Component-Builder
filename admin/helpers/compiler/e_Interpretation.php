@@ -12164,6 +12164,18 @@ class Interpretation extends Fields
 			&& $this->adminFilterType[$nameListCode] == 2)
 		{
 			$body[] = "<?php";
+			// build code to add the trash helper layout
+			$addTrashHelper = $this->_t(1)
+				. "echo JLayoutHelper::render('trashhelper', \$this);";
+			// add the trash helper layout if found in JCB
+			if ($this->setTemplateAndLayoutData($addTrashHelper, $nameListCode))
+			{
+				$body[] = $this->_t(1) . "//" . $this->setLine(
+						__LINE__
+					) . " Add the trash helper layout";
+				$body[] = $addTrashHelper;
+			}
+			// add the new search toolbar ;)
 			$body[] = $this->_t(1) . "//" . $this->setLine(
 					__LINE__
 				) . " Add the searchtools";

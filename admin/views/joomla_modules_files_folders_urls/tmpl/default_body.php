@@ -10,7 +10,7 @@
  */
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access'); 
+defined('_JEXEC') or die('Restricted access');
 
 $edit = "index.php?option=com_componentbuilder&view=joomla_modules_files_folders_urls&task=joomla_module_files_folders_urls.edit";
 

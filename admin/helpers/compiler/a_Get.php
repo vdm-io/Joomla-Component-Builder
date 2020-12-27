@@ -5788,15 +5788,16 @@ class Get
 	/**
 	 * Set Template and Layout Data
 	 *
-	 * @param   string  $default  The content to check
-	 * @param   string  $view     The view code name
+	 * @param   string   $default   The content to check
+	 * @param   string   $view      The view code name
+	 * @param   boolean  $found     The proof that something was found
 	 *
-	 * @return  void
+	 * @return  boolean if something was found true
 	 *
 	 */
-	public function setTemplateAndLayoutData($default, $view)
+	public function setTemplateAndLayoutData($default, $view, $found = false)
 	{
-		// set the Tempale date
+		// set the Template data
 		$temp1     = ComponentbuilderHelper::getAllBetween(
 			$default, "\$this->loadTemplate('", "')"
 		);
@@ -5835,6 +5836,7 @@ class Get
 					);
 					if (ComponentbuilderHelper::checkArray($data))
 					{
+						// load it to the template data array
 						$this->templateData[$this->target][$view][$template]
 							= $data;
 						// call self to get child data
@@ -5842,9 +5844,15 @@ class Get
 						$again[] = array($data['php_view'], $view);
 					}
 				}
+				// check if we have the template set (and nothing yet found)
+				if (!$found && isset($this->templateData[$this->target][$view][$template]))
+				{
+					// something was found
+					$found = true;
+				}
 			}
 		}
-		// set  the layout data
+		// set the Layout data
 		$lay1 = ComponentbuilderHelper::getAllBetween(
 			$default, "JLayoutHelper::render('", "',"
 		);
@@ -5882,11 +5890,18 @@ class Get
 					$data = $this->getDataWithAlias($layout, 'layout', $view);
 					if (ComponentbuilderHelper::checkArray($data))
 					{
+						// load it to the layout data array
 						$this->layoutData[$this->target][$layout] = $data;
 						// call self to get child data
 						$again[] = array($data['html'], $view);
 						$again[] = array($data['php_view'], $view);
 					}
+				}
+				// check if we have the layout set (and nothing yet found)
+				if (!$found && isset($this->layoutData[$this->target][$layout]))
+				{
+					// something was found
+					$found = true;
 				}
 			}
 		}
@@ -5894,9 +5909,11 @@ class Get
 		{
 			foreach ($again as $go)
 			{
-				$this->setTemplateAndLayoutData($go[0], $go[1]);
+				$found = $this->setTemplateAndLayoutData($go[0], $go[1], $found);
 			}
 		}
+		// return the proof that something was found
+		return $found;
 	}
 
 	/**
@@ -5909,7 +5926,7 @@ class Get
 	 * @return  array The data found with the alias
 	 *
 	 */
-	public function getDataWithAlias($n_ame, $table, $view)
+	protected function getDataWithAlias($n_ame, $table, $view)
 	{
 		// Create a new query object.
 		$query = $this->db->getQuery(true);
