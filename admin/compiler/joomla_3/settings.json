@@ -386,6 +386,11 @@
 					"rename": "layout_admin",
 					"type": "layout"
 				},
+				"layoutoverride.php": {
+					"path": "c0mp0n3nt/admin/layouts/VIEW",
+					"rename": "layoutoverride",
+					"type": "layoutoverride"
+				},
 				"layoutitems.php": {
 					"path": "c0mp0n3nt/admin/layouts/VIEW",
 					"rename": "layoutitems",
@@ -575,6 +580,11 @@
 					"path": "c0mp0n3nt/site/layouts",
 					"rename": "layout_site",
 					"type": "layout"
+				},
+				"layoutoverride.php": {
+					"path": "c0mp0n3nt/site/layouts/VIEW",
+					"rename": "layoutoverride",
+					"type": "layoutoverride"
 				},
 				"layoutitems.php": {
 					"path": "c0mp0n3nt/site/layouts/VIEW",
