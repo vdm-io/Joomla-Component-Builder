@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.2" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>31st December, 2020</creationDate>
+	<creationDate>3rd January, 2021</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>llewellyn@joomlacomponentbuilder.com</authorEmail>
 	<authorUrl>http://www.joomlacomponentbuilder.com</authorUrl>
-	<copyright>Copyright (C) 2015 - 2021 Vast Development Method. All rights reserved.</copyright>
+	<copyright>Copyright (C) 2015 Vast Development Method. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<version>2.12.4</version>
 	<description><![CDATA[
