@@ -396,6 +396,37 @@ class ComponentbuilderModelAjax extends JModelList
 		return false;
 	}
 
+	public function checkCategoryField($type)
+	{
+		// get the view name & id
+		$values = $this->getViewID();
+		if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && in_array($values['a_view'], $this->allowedViewsArray))
+		{
+			// get the fields
+			if ($fields = ComponentbuilderHelper::getVar('admin_fields', $values['a_id'], 'admin_view', 'addfields'))
+			{
+				// open the fields
+				if (ComponentbuilderHelper::checkJson($fields))
+				{
+					$fields = json_decode($fields, true);
+					if (ComponentbuilderHelper::checkArray($fields))
+					{
+						foreach($fields as $field)
+						{
+							if (isset($field['field']) &&
+								($field_values = ComponentbuilderHelper::getFieldNameAndType($field['field'])) !== false && 
+								$field_values['type'] === 'category' )
+							{
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	public function getDynamicScripts($type)
 	{
 		// get from global helper

@@ -45,6 +45,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		$this->registerTask('getAjaxDisplay', 'ajax');
 		$this->registerTask('getLinked', 'ajax');
 		$this->registerTask('checkAliasField', 'ajax');
+		$this->registerTask('checkCategoryField', 'ajax');
 		$this->registerTask('templateDetails', 'ajax');
 		$this->registerTask('getLayoutDetails', 'ajax');
 		$this->registerTask('dbTableColumns', 'ajax');
@@ -738,6 +739,44 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						if($typeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->checkAliasField($typeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback = $jinput->get('callback', null, 'CMD'))
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'checkCategoryField':
+					try
+					{
+						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
+						$typeValue = $jinput->get('type', NULL, 'ALNUM');
+						if($typeValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->checkCategoryField($typeValue);
 						}
 						else
 						{

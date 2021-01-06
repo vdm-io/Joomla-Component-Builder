@@ -811,6 +811,8 @@ jQuery(document).ready(function()
 {
 	// check if this view has alias field
 	checkAliasField();
+	// check if this view has category field
+	checkCategoryField();
 	// get the linked details
 	getLinked();
 	// set button
@@ -848,17 +850,16 @@ function checkAliasField() {
 	});
 }
 
-function checkAliasField_server(type){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.checkAliasField&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && type > 0){
-		var request = token+'=1&type=' + type;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
+function checkCategoryField() {
+	getCodeFrom_server(1, 'type', 'type', 'checkCategoryField').done(function(result) {
+		if(result){
+			// remove the notice
+			jQuery('.note_create_edit_notice_p').remove();
+		} else {
+			// hide everything about category management
+			jQuery('#jform_add_category_submenu').closest('.control-group').remove();
+			jQuery('.note_category_menu_switch').closest('.control-group').remove();
+		}
 	});
 }
 

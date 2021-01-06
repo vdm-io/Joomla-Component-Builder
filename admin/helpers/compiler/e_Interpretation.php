@@ -23390,27 +23390,27 @@ class Interpretation extends Fields
 				);
 			}
 			$catArray = array();
+			// loop over all the admin views
 			foreach ($this->componentData->admin_views as $view)
 			{
 				// set custom menu
-				$menus      .= $this->addCustomSubMenu($view, $codeName, $lang);
-				$nameSingle = ComponentbuilderHelper::safeString(
-					$view['settings']->name_single
+				$menus          .= $this->addCustomSubMenu(
+					$view, $codeName, $lang
 				);
-				$nameList   = ComponentbuilderHelper::safeString(
-					$view['settings']->name_list
-				);
-				$nameUpper  = ComponentbuilderHelper::safeString(
+				$nameSingleCode = $view['settings']->name_single_code;
+				$nameListCode   = $view['settings']->name_list_code;
+				$nameUpper      = ComponentbuilderHelper::safeString(
 					$view['settings']->name_list, 'U'
 				);
+				// check if view is set to be in the sub-menu
 				if (isset($view['submenu']) && $view['submenu'] == 1)
 				{
 					// setup access defaults
 					$tab      = "";
 					$coreLoad = false;
-					if (isset($this->permissionCore[$nameSingle]))
+					if (isset($this->permissionCore[$nameSingleCode]))
 					{
-						$core     = $this->permissionCore[$nameSingle];
+						$core     = $this->permissionCore[$nameSingleCode];
 						$coreLoad = true;
 					}
 					// check if the item has permissions.
@@ -23420,14 +23420,14 @@ class Interpretation extends Fields
 							$this->permissionBuilder['global'][$core['core.access']]
 						)
 						&& in_array(
-							$nameSingle,
+							$nameSingleCode,
 							$this->permissionBuilder['global'][$core['core.access']]
 						))
 					{
 						$menus .= PHP_EOL . $this->_t(2)
 							. "if (\$user->authorise('" . $core['core.access']
 							. "', 'com_" . $codeName
-							. "') && \$user->authorise('" . $nameSingle
+							. "') && \$user->authorise('" . $nameSingleCode
 							. ".submenu', 'com_" . $codeName . "'))";
 						$menus .= PHP_EOL . $this->_t(2) . "{";
 						// add tab to lines to follow
@@ -23436,33 +23436,38 @@ class Interpretation extends Fields
 					$menus .= PHP_EOL . $this->_t(2) . $tab
 						. "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_"
 						. $nameUpper . "'), 'index.php?option=com_" . $codeName
-						. "&view=" . $nameList . "', \$submenu === '"
-						. $nameList . "');";
+						. "&view=" . $nameListCode . "', \$submenu === '"
+						. $nameListCode . "');";
 					$this->setLangContent(
 						$this->lang, $lang . "_" . $nameUpper,
 						$view['settings']->name_list
 					);
 					// check if category has another name
-					if (isset($this->catOtherName[$nameList])
+					if (isset($this->catOtherName[$nameListCode])
 						&& ComponentbuilderHelper::checkArray(
-							$this->catOtherName[$nameList]
+							$this->catOtherName[$nameListCode]
 						))
 					{
-						$otherViews = $this->catOtherName[$nameList]['views'];
+						$otherViews
+							= $this->catOtherName[$nameListCode]['views'];
 					}
 					else
 					{
-						$otherViews = $nameList;
+						$otherViews = $nameListCode;
 					}
-					if (isset($this->categoryBuilder[$nameList])
+					// first check if category sub-menu should be added
+					// then check if view has category, if true add sub-menu for it
+					if ($view['settings']->add_category_submenu == 1
+						&& isset($this->categoryBuilder[$nameListCode])
 						&& ComponentbuilderHelper::checkArray(
-							$this->categoryBuilder[$nameList]
+							$this->categoryBuilder[$nameListCode]
 						)
 						&& !in_array($otherViews, $catArray))
 					{
 						// get the extension array
 						$_extension_array = (array) explode(
-							'.', $this->categoryBuilder[$nameList]['extension']
+							'.',
+							$this->categoryBuilder[$nameListCode]['extension']
 						);
 						// set the menu selection
 						if (isset($_extension_array[1]))
@@ -23476,9 +23481,9 @@ class Interpretation extends Fields
 						// now load the menus
 						$menus .= PHP_EOL . $this->_t(2) . $tab
 							. "JHtmlSidebar::addEntry(JText:" . ":_('"
-							. $this->categoryBuilder[$nameList]['name']
+							. $this->categoryBuilder[$nameListCode]['name']
 							. "'), 'index.php?option=com_categories&view=categories&extension="
-							. $this->categoryBuilder[$nameList]['extension']
+							. $this->categoryBuilder[$nameListCode]['extension']
 							. "', \$submenu === '" . $_menu . "');";
 						// make sure we add a category only once
 						$catArray[] = $otherViews;
@@ -23490,7 +23495,7 @@ class Interpretation extends Fields
 							$this->permissionBuilder['global'][$core['core.access']]
 						)
 						&& in_array(
-							$nameSingle,
+							$nameSingleCode,
 							$this->permissionBuilder['global'][$core['core.access']]
 						))
 					{
@@ -23508,13 +23513,13 @@ class Interpretation extends Fields
 						. "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_"
 						. $nameUpper
 						. "_FIELDS'), 'index.php?option=com_fields&context=com_"
-						. $codeName . "." . $nameSingle
+						. $codeName . "." . $nameSingleCode
 						. "', \$submenu === 'fields.fields');";
 					$menus .= PHP_EOL . $this->_t(3)
 						. "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_"
 						. $nameUpper
 						. "_FIELDS_GROUPS'), 'index.php?option=com_fields&view=groups&context=com_"
-						. $codeName . "." . $nameSingle
+						. $codeName . "." . $nameSingleCode
 						. "', \$submenu === 'fields.groups');";
 					$menus .= PHP_EOL . $this->_t(2) . "}";
 					$this->setLangContent(
@@ -23527,9 +23532,10 @@ class Interpretation extends Fields
 						$view['settings']->name_list . ' Field Groups'
 					);
 					// build uninstall script for fields
-					$this->uninstallScriptBuilder[$nameSingle] = 'com_'
-						. $codeName . '.' . $nameSingle;
-					$this->uninstallScriptFields[$nameSingle]  = $nameSingle;
+					$this->uninstallScriptBuilder[$nameSingleCode] = 'com_'
+						. $codeName . '.' . $nameSingleCode;
+					$this->uninstallScriptFields[$nameSingleCode]
+					                                               = $nameSingleCode;
 				}
 			}
 			if (isset($this->lastCustomSubMenu)
