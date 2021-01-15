@@ -31,7 +31,7 @@
 			onchange="this.form.submit();"
 		/>
 		<field
-			type="component"
+			type="joomlacomponent"
 			name="component"
 			label="COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL"
 			multiple="false"

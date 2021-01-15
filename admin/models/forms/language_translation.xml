@@ -127,9 +127,9 @@
 			default="0"
 			button="true"
 		/>
-		<!-- Components Field. Type: Components. (custom) -->
+		<!-- Components Field. Type: Joomlacomponents. (custom) -->
 		<field
-			type="components"
+			type="joomlacomponents"
 			name="components"
 			label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_COMPONENTS_LABEL"
 			class="list_class span12"

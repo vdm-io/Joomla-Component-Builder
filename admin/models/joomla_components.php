@@ -2284,6 +2284,29 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			$query->where('a.companyname = ' . $db->quote($db->escape($_companyname)));
 		}
+		elseif (ComponentbuilderHelper::checkArray($_companyname))
+		{
+			// Secure the array for the query
+			$_companyname = array_map( function ($val) use(&$db) {
+				if (is_numeric($val))
+				{
+					if (is_float($val))
+					{
+						return (float) $val;
+					}
+					else
+					{
+						return (int) $val;
+					}
+				}
+				elseif (ComponentbuilderHelper::checkString($val))
+				{
+					return $db->quote($db->escape($val));
+				}
+			}, $_companyname);
+			// Filter by the Companyname Array.
+			$query->where('a.companyname IN (' . implode(',', $_companyname) . ')');
+		}
 		// Filter by Author.
 		$_author = $this->getState('filter.author');
 		if (is_numeric($_author))
@@ -2300,6 +2323,29 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		elseif (ComponentbuilderHelper::checkString($_author))
 		{
 			$query->where('a.author = ' . $db->quote($db->escape($_author)));
+		}
+		elseif (ComponentbuilderHelper::checkArray($_author))
+		{
+			// Secure the array for the query
+			$_author = array_map( function ($val) use(&$db) {
+				if (is_numeric($val))
+				{
+					if (is_float($val))
+					{
+						return (float) $val;
+					}
+					else
+					{
+						return (int) $val;
+					}
+				}
+				elseif (ComponentbuilderHelper::checkString($val))
+				{
+					return $db->quote($db->escape($val));
+				}
+			}, $_author);
+			// Filter by the Author Array.
+			$query->where('a.author IN (' . implode(',', $_author) . ')');
 		}
 
 		// Add the list ordering clause.
@@ -2526,8 +2572,30 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.companyname');
-		$id .= ':' . $this->getState('filter.author');
+		// Check if the value is an array
+		$_companyname = $this->getState('filter.companyname');
+		if (ComponentbuilderHelper::checkArray($_companyname))
+		{
+			$id .= ':' . implode(':', $_companyname);
+		}
+		// Check if this is only an number or string
+		elseif (is_numeric($_companyname)
+		 || ComponentbuilderHelper::checkString($_companyname))
+		{
+			$id .= ':' . $_companyname;
+		}
+		// Check if the value is an array
+		$_author = $this->getState('filter.author');
+		if (ComponentbuilderHelper::checkArray($_author))
+		{
+			$id .= ':' . implode(':', $_author);
+		}
+		// Check if this is only an number or string
+		elseif (is_numeric($_author)
+		 || ComponentbuilderHelper::checkString($_author))
+		{
+			$id .= ':' . $_author;
+		}
 		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.name_code');
 		$id .= ':' . $this->getState('filter.short_description');

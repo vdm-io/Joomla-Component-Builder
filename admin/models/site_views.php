@@ -317,6 +317,29 @@ class ComponentbuilderModelSite_views extends JModelList
 		{
 			$query->where('a.main_get = ' . $db->quote($db->escape($_main_get)));
 		}
+		elseif (ComponentbuilderHelper::checkArray($_main_get))
+		{
+			// Secure the array for the query
+			$_main_get = array_map( function ($val) use(&$db) {
+				if (is_numeric($val))
+				{
+					if (is_float($val))
+					{
+						return (float) $val;
+					}
+					else
+					{
+						return (int) $val;
+					}
+				}
+				elseif (ComponentbuilderHelper::checkString($val))
+				{
+					return $db->quote($db->escape($val));
+				}
+			}, $_main_get);
+			// Filter by the Main_get Array.
+			$query->where('a.main_get IN (' . implode(',', $_main_get) . ')');
+		}
 		// Filter by Add_php_ajax.
 		$_add_php_ajax = $this->getState('filter.add_php_ajax');
 		if (is_numeric($_add_php_ajax))
@@ -536,7 +559,18 @@ class ComponentbuilderModelSite_views extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.main_get');
+		// Check if the value is an array
+		$_main_get = $this->getState('filter.main_get');
+		if (ComponentbuilderHelper::checkArray($_main_get))
+		{
+			$id .= ':' . implode(':', $_main_get);
+		}
+		// Check if this is only an number or string
+		elseif (is_numeric($_main_get)
+		 || ComponentbuilderHelper::checkString($_main_get))
+		{
+			$id .= ':' . $_main_get;
+		}
 		$id .= ':' . $this->getState('filter.add_php_ajax');
 		$id .= ':' . $this->getState('filter.add_custom_button');
 		$id .= ':' . $this->getState('filter.system_name');

@@ -17,16 +17,16 @@ jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 /**
- * Component Form Field class for the Componentbuilder component
+ * Joomlacomponent Form Field class for the Componentbuilder component
  */
-class JFormFieldComponent extends JFormFieldList
+class JFormFieldJoomlacomponent extends JFormFieldList
 {
 	/**
-	 * The component field type.
+	 * The joomlacomponent field type.
 	 *
 	 * @var		string
 	 */
-	public $type = 'component';
+	public $type = 'joomlacomponent';
 
 	/**
 	 * Override to add new button

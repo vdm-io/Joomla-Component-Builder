@@ -15,6 +15,8 @@ defined('_JEXEC') or die('Restricted access');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.multiselect');
 JHtml::_('dropdown.init');
+JHtml::_('formbehavior.chosen', '.multipleJoomlacomponentsfiltercompanyname', null, array('placeholder_text_multiple' => '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_COMPANYNAME') . ' -'));
+JHtml::_('formbehavior.chosen', '.multipleJoomlacomponentsfilterauthor', null, array('placeholder_text_multiple' => '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_AUTHOR') . ' -'));
 JHtml::_('formbehavior.chosen', '.multipleAccessLevels', null, array('placeholder_text_multiple' => '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ACCESS') . ' -'));
 JHtml::_('formbehavior.chosen', 'select');
 if ($this->saveOrder)

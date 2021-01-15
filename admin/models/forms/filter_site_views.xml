@@ -34,7 +34,8 @@
 			type="maingets"
 			name="main_get"
 			label="COM_COMPONENTBUILDER_SITE_VIEW_MAIN_GET_LABEL"
-			multiple="false"
+			class="multipleMaingets"
+			multiple="true"
 			onchange="this.form.submit();"
 		/>
 		<field

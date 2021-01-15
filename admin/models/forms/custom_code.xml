@@ -93,9 +93,9 @@
 			default="componentbuilder custom_code"
 		/>
 		<!-- Dynamic Fields. -->
-		<!-- Component Field. Type: Component. (custom) -->
+		<!-- Component Field. Type: Joomlacomponent. (custom) -->
 		<field
-			type="component"
+			type="joomlacomponent"
 			name="component"
 			label="COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL"
 			class="list_class"

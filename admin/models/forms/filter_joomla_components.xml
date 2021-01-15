@@ -34,14 +34,16 @@
 			type="joomlacomponentsfiltercompanyname"
 			name="companyname"
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_LABEL"
-			multiple="false"
+			class="multipleJoomlacomponentsfiltercompanyname"
+			multiple="true"
 			onchange="this.form.submit();"
 		/>
 		<field
 			type="joomlacomponentsfilterauthor"
 			name="author"
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_LABEL"
-			multiple="false"
+			class="multipleJoomlacomponentsfilterauthor"
+			multiple="true"
 			onchange="this.form.submit();"
 		/>
 		<input type="hidden" name="form_submited" value="1"/>

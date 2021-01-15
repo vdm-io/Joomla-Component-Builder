@@ -3666,7 +3666,7 @@ abstract class ComponentbuilderHelper
 	protected static $fieldGroups = array(
 		'default' => array(
 			'accesslevel', 'cachehandler', 'calendar', 'captcha', 'category', 'checkbox', 'checkboxes', 'chromestyle',
-			'color', 'combo', 'componentlayout', 'contentlanguage', 'contenttype', 'databaseconnection', //  'components', (TODO) must be added but still in use as a custom field in JCB
+			'color', 'combo', 'componentlayout', 'contentlanguage', 'contenttype', 'databaseconnection', 'components',
 			'editor', 'editors', 'email', 'file', 'file', 'filelist', 'folderlist', 'groupedlist', 'headertag', 'helpsite', 'hidden', 'imagelist',
 			'integer', 'language', 'list', 'media', 'menu', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition',
 			'moduletag', 'note', 'number', 'password', 'plugins', 'predefinedlist', 'radio', 'range', 'repeatable', 'rules',
@@ -3678,14 +3678,14 @@ abstract class ComponentbuilderHelper
 			'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules', 'tag', 'tel', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
 		),
 		'option' => array(
-			'accesslevel', 'category', 'checkboxes', 'combo', 'contentlanguage', 'databaseconnection', // 'components',  (TODO) must be added but still in use as a custom field in JCB
+			'accesslevel', 'category', 'checkboxes', 'combo', 'contentlanguage', 'databaseconnection', 'components',
 			'filelist', 'folderlist', 'imagelist', 'list', 'plugins', 'predefinedlist', 'radio', 'sessionhandler', 'sql', 'groupedlist'
 		),
 		'text' => array(
 			'calendar', 'color', 'editor', 'email', 'number', 'password', 'range', 'tel', 'text', 'textarea', 'url'
 		),
 		'list' => array(
-			'checkbox', 'checkboxes', 'list', 'radio', 'groupedlist'
+			'checkbox', 'checkboxes', 'list', 'radio', 'groupedlist', 'combo'
 		),
 		'dynamic' => array(
 			'category', 'file', 'filelist', 'folderlist', 'headertag', 'imagelist', 'integer', 'media', 'meter', 'rules', 'tag', 'timezone', 'user'

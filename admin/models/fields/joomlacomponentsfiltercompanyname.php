@@ -51,7 +51,6 @@ class JFormFieldJoomlacomponentsfiltercompanyname extends JFormFieldList
 
 		$results = $db->loadColumn();
 		$_filter = array();
-		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_COMPANYNAME') . ' -');
 
 		if ($results)
 		{
