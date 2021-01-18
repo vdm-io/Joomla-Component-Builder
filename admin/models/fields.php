@@ -81,7 +81,7 @@ class ComponentbuilderModelFields extends JModelList
 			'' => '-  ' . JText::_('COM_COMPONENTBUILDER_NO_ADMIN_VIEWS_FOUND') . '  -'
 		);
 		// check if we have admin views (and limit to an extension if it is set)
-		if (($admin_views = ComponentbuilderHelper::getExtensionTypeIdSystemName('admin_view', $this->state->get("filter.extension"))) !== false)
+		if (($admin_views = ComponentbuilderHelper::getByTypeTheIdsSystemNames('admin_view', $this->state->get("filter.extension"))) !== false)
 		{
 			$options = array(
 				'' => '-  ' . JText::_('COM_COMPONENTBUILDER_SELECT_ADMIN_VIEW') . '  -'
@@ -378,7 +378,7 @@ class ComponentbuilderModelFields extends JModelList
 			{
 				// column name, and id
 				$type_extension = explode('__', $filter_extension);
-				if (($ids = ComponentbuilderHelper::getExtensionFieldIDs($type_extension[1], $type_extension[0])) !== false)
+				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($type_extension[1], $type_extension[0])) !== false)
 				{
 					$field_ids = $ids;
 				}
@@ -394,7 +394,7 @@ class ComponentbuilderModelFields extends JModelList
 			$filter_admin_view = $this->state->get("filter.admin_view");
 			if ($get_ids && $filter_admin_view !== null && !empty($filter_admin_view))
 			{
-				if (($ids = ComponentbuilderHelper::getExtensionFieldIDs($filter_admin_view, 'admin_view')) !== false)
+				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($filter_admin_view, 'admin_view')) !== false)
 				{
 					// view will return less fields, so we ignore the component
 					$field_ids = $ids;
@@ -643,7 +643,7 @@ class ComponentbuilderModelFields extends JModelList
 			{
 				// column name, and id
 				$type_extension = explode('__', $filter_extension);
-				if (($ids = ComponentbuilderHelper::getExtensionFieldIDs($type_extension[1], $type_extension[0])) !== false)
+				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($type_extension[1], $type_extension[0])) !== false)
 				{
 					$field_ids = $ids;
 				}
@@ -659,7 +659,7 @@ class ComponentbuilderModelFields extends JModelList
 			$filter_admin_view = $this->state->get("filter.admin_view");
 			if ($get_ids && $filter_admin_view !== null && !empty($filter_admin_view))
 			{
-				if (($ids = ComponentbuilderHelper::getExtensionFieldIDs($filter_admin_view, 'admin_view')) !== false)
+				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($filter_admin_view, 'admin_view')) !== false)
 				{
 					// view will return less fields, so we ignore the component
 					$field_ids = $ids;

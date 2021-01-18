@@ -43,6 +43,51 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 	}
 
 	/**
+	 * Get the filter form - Override the parent method
+	 *
+	 * @param   array    $data      data
+	 * @param   boolean  $loadData  load current data
+	 *
+	 * @return  \JForm|boolean  The \JForm object or false on error
+	 *
+	 * @since   JCB 2.12.5
+	 */
+	public function getFilterForm($data = array(), $loadData = true)
+	{
+		// load form from the parent class
+		$form = parent::getFilterForm($data, $loadData);
+
+		// Create the "joomla_component" filter
+		$attributes = array(
+			'name' => 'joomla_component',
+			'type' => 'list',
+			'onchange' => 'this.form.submit();',
+		);
+		$options = array(
+			'' => '-  ' . JText::_('COM_COMPONENTBUILDER_NO_COMPONENTS_FOUND') . '  -'
+		);
+		// check if we have joomla components
+		if (($joomla_components = ComponentbuilderHelper::getByTypeTheIdsSystemNames('joomla_component')) !== false)
+		{
+			$options = array(
+				'' => '-  ' . JText::_('COM_COMPONENTBUILDER_SELECT_COMPONENT') . '  -'
+			);
+			// make sure we do not lose the key values in normal merge
+			$options = $options + $joomla_components;
+		}
+
+		$form->setField(ComponentbuilderHelper::getFieldXML($attributes, $options),'filter');
+		$form->setValue(
+			'joomla_component',
+			'filter',
+			$this->state->get("filter.joomla_component")
+		);
+		array_push($this->filter_fields, 'joomla_component');
+
+		return $form;
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
@@ -240,6 +285,25 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_custom_admin_view', 'a'));
 
+		// do not use these filters in the export method
+		if (!isset($_export) || !$_export)
+		{
+			// Filtering "joomla components"
+			$filter_joomla_component = $this->state->get("filter.joomla_component");
+			if ($filter_joomla_component !== null && !empty($filter_joomla_component))
+			{
+				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($filter_joomla_component, 'joomla_component_custom_admin_views')) !== false)
+				{
+					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
+				}
+				else
+				{
+					// there is none
+					$query->where($db->quoteName('a.id') . ' = ' . 0);
+				}
+			}
+		}
+
 		// From the componentbuilder_dynamic_get table.
 		$query->select($db->quoteName('g.name','main_get_name'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_dynamic_get', 'g') . ' ON (' . $db->quoteName('a.main_get') . ' = ' . $db->quoteName('g.id') . ')');
@@ -308,6 +372,29 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 		elseif (ComponentbuilderHelper::checkString($_main_get))
 		{
 			$query->where('a.main_get = ' . $db->quote($db->escape($_main_get)));
+		}
+		elseif (ComponentbuilderHelper::checkArray($_main_get))
+		{
+			// Secure the array for the query
+			$_main_get = array_map( function ($val) use(&$db) {
+				if (is_numeric($val))
+				{
+					if (is_float($val))
+					{
+						return (float) $val;
+					}
+					else
+					{
+						return (int) $val;
+					}
+				}
+				elseif (ComponentbuilderHelper::checkString($val))
+				{
+					return $db->quote($db->escape($val));
+				}
+			}, $_main_get);
+			// Filter by the Main_get Array.
+			$query->where('a.main_get IN (' . implode(',', $_main_get) . ')');
 		}
 		// Filter by Add_php_ajax.
 		$_add_php_ajax = $this->getState('filter.add_php_ajax');
@@ -402,6 +489,25 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 			{
 				$query->where('a.id IN (' . implode(',',$pks) . ')');
 			}
+
+			// do not use these filters in the export method
+		if (!isset($_export) || !$_export)
+		{
+			// Filtering "joomla components"
+			$filter_joomla_component = $this->state->get("filter.joomla_component");
+			if ($filter_joomla_component !== null && !empty($filter_joomla_component))
+			{
+				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($filter_joomla_component, 'joomla_component_custom_admin_views')) !== false)
+				{
+					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
+				}
+				else
+				{
+					// there is none
+					$query->where($db->quoteName('a.id') . ' = ' . 0);
+				}
+			}
+		}
 			// Implement View Level Access
 			if (!$user->authorise('core.options', 'com_componentbuilder'))
 			{
@@ -528,7 +634,18 @@ class ComponentbuilderModelCustom_admin_views extends JModelList
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.main_get');
+		// Check if the value is an array
+		$_main_get = $this->getState('filter.main_get');
+		if (ComponentbuilderHelper::checkArray($_main_get))
+		{
+			$id .= ':' . implode(':', $_main_get);
+		}
+		// Check if this is only an number or string
+		elseif (is_numeric($_main_get)
+		 || ComponentbuilderHelper::checkString($_main_get))
+		{
+			$id .= ':' . $_main_get;
+		}
 		$id .= ':' . $this->getState('filter.add_php_ajax');
 		$id .= ':' . $this->getState('filter.add_custom_button');
 		$id .= ':' . $this->getState('filter.system_name');

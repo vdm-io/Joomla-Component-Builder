@@ -2110,7 +2110,7 @@ abstract class ComponentbuilderHelper
 		// get the extension values
 		foreach ($extensions as $extension => $label)
 		{
-			${$extension} = self::getExtensionTypeIdSystemName($extension);
+			${$extension} = self::getByTypeTheIdsSystemNames($extension);
 		}
 
 		$xml = new DOMDocument();
@@ -2151,9 +2151,9 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* get extentions ids and system names
+	* get by type the ids and system names
 	**/
-	public static function getExtensionTypeIdSystemName($type, $limiter = null)
+	public static function getByTypeTheIdsSystemNames($type, $limiter = null)
 	{
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
@@ -2212,13 +2212,22 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 * get any extension field IDs
+	 * get any area linked IDs
 	 */
-	public static function getExtensionFieldIDs($extension, $type)
+	public static function getAreaLinkedIDs($extension, $type)
 	{
 		// yes we use switches
 		switch ($type)
 		{
+			case 'joomla_component_admin_views':
+				return self::getComponentAdminViewsIDs($extension);
+			break;
+			case 'joomla_component_custom_admin_views':
+				return self::getComponentCustomAdminViewsIDs($extension);
+			break;
+			case 'joomla_component_site_views':
+				return self::getComponentSiteViewsIDs($extension);
+			break;
 			case 'joomla_component':
 				return self::getComponentFieldsIDs($extension);
 			break;
@@ -2235,6 +2244,105 @@ abstract class ComponentbuilderHelper
 				return false;
 			break;
 		}
+	}
+
+	/**
+	 * get a component admin views IDs
+	 */
+	public static function getComponentAdminViewsIDs($id)
+	{
+		// get all this components views
+		$adminviewIds = array();
+		// get the views of this component
+		if ($addViews = self::getVar('component_admin_views', (int) $id, 'joomla_component', 'addadmin_views'))
+		{
+			if (self::checkJson($addViews))
+			{
+				$addViews = json_decode($addViews, true);
+				if (self::checkArray($addViews))
+				{
+					foreach($addViews as $addView)
+					{
+						if (isset($addView['adminview']))
+						{
+							$adminviewIds[(int) $addView['adminview']] = (int) $addView['adminview'];
+						}
+					}
+				}
+			}
+		}
+		// check that we have fields
+		if (self::checkArray($adminviewIds))
+		{
+			return array_values($adminviewIds);
+		}
+		return false;
+	}
+
+	/**
+	 * get a component custom admin views IDs
+	 */
+	public static function getComponentCustomAdminViewsIDs($id)
+	{
+		// get all this components views
+		$adminviewIds = array();
+		// get the views of this component
+		if ($addViews = self::getVar('component_custom_admin_views', (int) $id, 'joomla_component', 'addcustom_admin_views'))
+		{
+			if (self::checkJson($addViews))
+			{
+				$addViews = json_decode($addViews, true);
+				if (self::checkArray($addViews))
+				{
+					foreach($addViews as $addView)
+					{
+						if (isset($addView['customadminview']))
+						{
+							$adminviewIds[(int) $addView['customadminview']] = (int) $addView['customadminview'];
+						}
+					}
+				}
+			}
+		}
+		// check that we have fields
+		if (self::checkArray($adminviewIds))
+		{
+			return array_values($adminviewIds);
+		}
+		return false;
+	}
+
+	/**
+	 * get a component site views IDs
+	 */
+	public static function getComponentSiteViewsIDs($id)
+	{
+		// get all this components views
+		$adminviewIds = array();
+		// get the views of this component
+		if ($addViews = self::getVar('component_site_views', (int) $id, 'joomla_component', 'addsite_views'))
+		{
+			if (self::checkJson($addViews))
+			{
+				$addViews = json_decode($addViews, true);
+				if (self::checkArray($addViews))
+				{
+					foreach($addViews as $addView)
+					{
+						if (isset($addView['siteview']))
+						{
+							$adminviewIds[(int) $addView['siteview']] = (int) $addView['siteview'];
+						}
+					}
+				}
+			}
+		}
+		// check that we have fields
+		if (self::checkArray($adminviewIds))
+		{
+			return array_values($adminviewIds);
+		}
+		return false;
 	}
 
 	/**
