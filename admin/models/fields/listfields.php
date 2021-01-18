@@ -53,6 +53,7 @@ class JFormFieldListfields extends JFormFieldList
 			// get the admin view ID
 			$adminView = $jinput->getInt('refid', 0);
 		}
+		// make sure we have the admin view ID
 		if (is_numeric($adminView) && $adminView >= 1)
 		{
 			// get all the fields linked to the admin view
