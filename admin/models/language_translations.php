@@ -69,11 +69,20 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 			'type' => 'list',
 			'onchange' => 'this.form.submit();',
 		);
+		// no languages found notice
 		$options = array(
-			'' => '-  ' . JText::_('COM_COMPONENTBUILDER_TRANSLATED_IN') . '  -',
-			'all' => JText::_('COM_COMPONENTBUILDER_EVERY_LANGUAGE')
+			'' => '-  ' . JText::_('COM_COMPONENTBUILDER_NO_LANGUAGES_FOUND') . '  -'
 		);
-		$options = array_merge($options, ComponentbuilderHelper::getAvailableLanguages());
+		// check if we have languages set
+		if (($languages = ComponentbuilderHelper::getAvailableLanguages()) !== false)
+		{
+			$options = array(
+				'' => '-  ' . JText::_('COM_COMPONENTBUILDER_TRANSLATED_IN') . '  -',
+				'all' => JText::_('COM_COMPONENTBUILDER_EVERY_LANGUAGE')
+			);
+
+			$options = array_merge($options, $languages);
+		}
 
 		$form->setField(ComponentbuilderHelper::getFieldXML($attributes, $options),'filter');
 		$form->setValue(
@@ -89,11 +98,20 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 			'type' => 'list',
 			'onchange' => 'this.form.submit();',
 		);
+		// no languages found notice
 		$options = array(
-			'' => '- ' . JText::_('COM_COMPONENTBUILDER_NOT_TRANSLATED_IN') . ' -',
-			'none' => JText::_('COM_COMPONENTBUILDER_ANY_LANGUAGE')
+			'' => '-  ' . JText::_('COM_COMPONENTBUILDER_NO_LANGUAGES_FOUND') . '  -'
 		);
-		$options = array_merge($options, ComponentbuilderHelper::getAvailableLanguages());
+		// check if we have languages set
+		if ($languages)
+		{
+			$options = array(
+				'' => '- ' . JText::_('COM_COMPONENTBUILDER_NOT_TRANSLATED_IN') . ' -',
+				'none' => JText::_('COM_COMPONENTBUILDER_ANY_LANGUAGE')
+			);
+
+			$options = array_merge($options, $languages);
+		}
 
 		$form->setField(ComponentbuilderHelper::getFieldXML($attributes, $options),'filter');
 		$form->setValue(
