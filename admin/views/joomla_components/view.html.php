@@ -40,7 +40,7 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
-		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -296,6 +296,8 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 			'a.name_code' => JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_CODE_LABEL'),
 			'a.short_description' => JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SHORT_DESCRIPTION_LABEL'),
 			'a.companyname' => JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_LABEL'),
+			'a.created' => JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CREATED_LABEL'),
+			'a.modified' => JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_MODIFIED_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	}

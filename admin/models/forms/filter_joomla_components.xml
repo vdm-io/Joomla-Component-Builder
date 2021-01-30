@@ -56,7 +56,7 @@
 			label="COM_CONTENT_LIST_FULL_ORDERING"
 			description="COM_CONTENT_LIST_FULL_ORDERING_DESC"
 			onchange="this.form.submit();"
-			default="a.id desc"
+			default="a.id DESC"
 			validate="options"
 		>
 			<option value="">JGLOBAL_SORT_BY</option>
@@ -66,12 +66,16 @@
 			<option value="a.published DESC">JSTATUS_DESC</option>
 			<option value="a.system_name ASC">COM_COMPONENTBUILDER_FILTER_SYSTEM_NAME_ASCENDING</option>
 			<option value="a.system_name DESC">COM_COMPONENTBUILDER_FILTER_SYSTEM_NAME_DESCENDING</option>
-			<option value="a.name_code ASC">COM_COMPONENTBUILDER_FILTER_NAME_CODE_ASCENDING</option>
-			<option value="a.name_code DESC">COM_COMPONENTBUILDER_FILTER_NAME_CODE_DESCENDING</option>
+			<option value="a.name_code ASC">COM_COMPONENTBUILDER_FILTER_NAME_IN_CODE_ASCENDING</option>
+			<option value="a.name_code DESC">COM_COMPONENTBUILDER_FILTER_NAME_IN_CODE_DESCENDING</option>
 			<option value="a.short_description ASC">COM_COMPONENTBUILDER_FILTER_SHORT_DESCRIPTION_ASCENDING</option>
 			<option value="a.short_description DESC">COM_COMPONENTBUILDER_FILTER_SHORT_DESCRIPTION_DESCENDING</option>
-			<option value="a.companyname ASC">COM_COMPONENTBUILDER_FILTER_COMPANYNAME_ASCENDING</option>
-			<option value="a.companyname DESC">COM_COMPONENTBUILDER_FILTER_COMPANYNAME_DESCENDING</option>
+			<option value="a.companyname ASC">COM_COMPONENTBUILDER_FILTER_COMPANY_NAME_ASCENDING</option>
+			<option value="a.companyname DESC">COM_COMPONENTBUILDER_FILTER_COMPANY_NAME_DESCENDING</option>
+			<option value="a.created ASC">COM_COMPONENTBUILDER_FILTER_CREATED_DATE_ASCENDING</option>
+			<option value="a.created DESC">COM_COMPONENTBUILDER_FILTER_CREATED_DATE_DESCENDING</option>
+			<option value="a.modified ASC">COM_COMPONENTBUILDER_FILTER_MODIFIED_DATE_ASCENDING</option>
+			<option value="a.modified DESC">COM_COMPONENTBUILDER_FILTER_MODIFIED_DATE_DESCENDING</option>
 			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
 			<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
 		</field>

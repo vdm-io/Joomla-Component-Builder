@@ -51,7 +51,7 @@ class JFormFieldCustomadminviewsfilteraddcustombutton extends JFormFieldList
 
 		$results = $db->loadColumn();
 		$_filter = array();
-		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_CUSTOM_BUTTON') . ' -');
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_CUSTOM_BUTTONS') . ' -');
 
 		if ($results)
 		{

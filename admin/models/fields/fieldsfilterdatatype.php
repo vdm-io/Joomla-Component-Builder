@@ -51,7 +51,7 @@ class JFormFieldFieldsfilterdatatype extends JFormFieldList
 
 		$results = $db->loadColumn();
 		$_filter = array();
-		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_DATATYPE') . ' -');
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_DATA_TYPE') . ' -');
 
 		if ($results)
 		{

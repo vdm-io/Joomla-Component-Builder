@@ -51,7 +51,7 @@ class JFormFieldCustomcodesfiltercommenttype extends JFormFieldList
 
 		$results = $db->loadColumn();
 		$_filter = array();
-		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_COMMENT_TYPE') . ' -');
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_COMMENT_TYPE_USED_IN_PLACEHOLDER') . ' -');
 
 		if ($results)
 		{

@@ -51,7 +51,7 @@ class JFormFieldLibrariesfiltertarget extends JFormFieldList
 
 		$results = $db->loadColumn();
 		$_filter = array();
-		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_TARGET') . ' -');
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_TARGET_FOLDER') . ' -');
 
 		if ($results)
 		{

@@ -4725,19 +4725,40 @@ class Fields extends Structure
 		}
 		else
 		{
-			// set lang (just in case)
-			$listLangName = $langView . '_'
-				. ComponentbuilderHelper::safeFieldName($name, true);
-			// set field name
-			$listFieldName = ComponentbuilderHelper::safeString($name, 'W');
-			// add to lang array
-			$this->setLangContent(
-				$this->lang, $listLangName, $listFieldName
-			);
 			// if label was set use instead
 			if (ComponentbuilderHelper::checkString($langLabel))
 			{
 				$listLangName = $langLabel;
+				// get field label from the lang label
+				if (isset($this->langContent[$this->lang][$langLabel]))
+				{
+					$listFieldName
+						= $this->langContent[$this->lang][$langLabel];
+				}
+				else
+				{
+					// get it from the field xml string
+					$listFieldName = (string) $this->setPlaceholders(
+						ComponentbuilderHelper::getBetween(
+							$field['settings']->xml, 'label="',
+							'"'
+						), $this->placeholders
+					);
+				}
+				// make sure there is no html in the list field name
+				$listFieldName = strip_tags($listFieldName);
+			}
+			else
+			{
+				// set lang (just in case)
+				$listLangName = $langView . '_'
+					. ComponentbuilderHelper::safeFieldName($name, true);
+				// set field name
+				$listFieldName = ComponentbuilderHelper::safeString($name, 'W');
+				// add to lang array
+				$this->setLangContent(
+					$this->lang, $listLangName, $listFieldName
+				);
 			}
 		}
 		// build the list values

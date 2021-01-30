@@ -41,6 +41,9 @@ class JFormFieldAdminlistvieworderfields extends JFormFieldList
 		$jinput = JFactory::getApplication()->input;
 		// get the id
 		$adminView = $jinput->getInt('id', 0);
+		// set the field trackers
+		$fieldIds = array();
+		$sortIds = array();
 		// check if we have an admin view
 		if (is_numeric($adminView) && $adminView >= 1)
 		{
@@ -58,7 +61,37 @@ class JFormFieldAdminlistvieworderfields extends JFormFieldList
 							if (isset($addField['field']) && isset($addField['list']) && ($addField['list'] == 1 || $addField['list'] == 3)
 								&& isset($addField['sort']) && $addField['sort'])
 							{
-								$fieldIds[] = (int) $addField['field'];
+								$fieldIds[(int) $addField['field']] = (int) $addField['field'];
+							}
+							// do track all fields set as sorted
+							if (isset($addField['field']) && isset($addField['sort']) && $addField['sort'])
+							{
+								$sortIds[(int) $addField['field']] = (int) $addField['field'];
+							}
+						}
+					}
+				}
+			}
+			// get all the fields that are also having a relationship on the list view as sorted
+			if ($addFields = ComponentbuilderHelper::getVar('admin_fields_relations', (int) $adminView, 'admin_view', 'addrelations'))
+			{
+				if (ComponentbuilderHelper::checkJson($addFields))
+				{
+					$addFields = json_decode($addFields, true);
+					if (ComponentbuilderHelper::checkArray($addFields))
+					{
+						foreach($addFields as $addField)
+						{
+							// admin list view and ordering
+							if (isset($addField['joinfields']) && ComponentbuilderHelper::checkArray($addField['joinfields']))
+							{
+								foreach($addField['joinfields'] as $joinfield)
+								{
+									if (isset($sortIds[$joinfield]))
+									{
+										$fieldIds[(int) $joinfield] = (int) $joinfield;
+									}
+								}
 							}
 						}
 					}

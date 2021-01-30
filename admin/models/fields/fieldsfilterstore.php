@@ -51,7 +51,7 @@ class JFormFieldFieldsfilterstore extends JFormFieldList
 
 		$results = $db->loadColumn();
 		$_filter = array();
-		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_STORE') . ' -');
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_MODELING_METHOD') . ' -');
 
 		if ($results)
 		{

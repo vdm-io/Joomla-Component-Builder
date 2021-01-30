@@ -51,7 +51,7 @@ class JFormFieldLayoutsfilteraddphpview extends JFormFieldList
 
 		$results = $db->loadColumn();
 		$_filter = array();
-		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_PHP_VIEW') . ' -');
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_PHP_CUSTOM_VIEW_SCRIPT') . ' -');
 
 		if ($results)
 		{

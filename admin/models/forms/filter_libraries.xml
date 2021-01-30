@@ -71,10 +71,10 @@
 			<option value="a.published DESC">JSTATUS_DESC</option>
 			<option value="a.name ASC">COM_COMPONENTBUILDER_FILTER_NAME_ASCENDING</option>
 			<option value="a.name DESC">COM_COMPONENTBUILDER_FILTER_NAME_DESCENDING</option>
-			<option value="a.target ASC">COM_COMPONENTBUILDER_FILTER_TARGET_ASCENDING</option>
-			<option value="a.target DESC">COM_COMPONENTBUILDER_FILTER_TARGET_DESCENDING</option>
-			<option value="a.type ASC">COM_COMPONENTBUILDER_FILTER_TYPE_ASCENDING</option>
-			<option value="a.type DESC">COM_COMPONENTBUILDER_FILTER_TYPE_DESCENDING</option>
+			<option value="a.target ASC">COM_COMPONENTBUILDER_FILTER_TARGET_FOLDER_ASCENDING</option>
+			<option value="a.target DESC">COM_COMPONENTBUILDER_FILTER_TARGET_FOLDER_DESCENDING</option>
+			<option value="a.type ASC">COM_COMPONENTBUILDER_FILTER_TYPE_BEHAVIOR_ASCENDING</option>
+			<option value="a.type DESC">COM_COMPONENTBUILDER_FILTER_TYPE_BEHAVIOR_DESCENDING</option>
 			<option value="a.description ASC">COM_COMPONENTBUILDER_FILTER_DESCRIPTION_ASCENDING</option>
 			<option value="a.description DESC">COM_COMPONENTBUILDER_FILTER_DESCRIPTION_DESCENDING</option>
 			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>

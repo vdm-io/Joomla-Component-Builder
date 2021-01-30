@@ -44,6 +44,10 @@ class JFormFieldSiteviewfolderlist extends JFormFieldList
 		// now check if there are files in the folder
 		if (JFolder::exists($localfolder) && $folders = JFolder::folders($localfolder))
 		{
+			if ($this->multiple === false)
+			{
+				$options[] = JHtml::_('select.option', '', JText::_('COM_COMPONENTBUILDER_SELECT_A_SITE_VIEW'));
+			}
 			foreach ($folders as $folder)
 			{
 				$options[] = JHtml::_('select.option', $folder, ComponentbuilderHelper::safeString($folder, 'W'));

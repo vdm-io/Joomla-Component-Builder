@@ -34,7 +34,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				'a.author','author',
 				'a.system_name','system_name',
 				'a.name_code','name_code',
-				'a.short_description','short_description'
+				'a.short_description','short_description',
+				'a.created','created',
+				'a.modified','modified'
 			);
 		}
 
@@ -2114,9 +2116,6 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$created_by = $this->getUserStateFromRequest($this->context . '.filter.created_by', 'filter_created_by', '');
 		$this->setState('filter.created_by', $created_by);
 
-		$created = $this->getUserStateFromRequest($this->context . '.filter.created', 'filter_created');
-		$this->setState('filter.created', $created);
-
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
 
@@ -2156,6 +2155,20 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		{
 			$short_description = $app->input->post->get('short_description');
 			$this->setState('filter.short_description', $short_description);
+		}
+
+		$created = $this->getUserStateFromRequest($this->context . '.filter.created', 'filter_created');
+		if ($formSubmited)
+		{
+			$created = $app->input->post->get('created');
+			$this->setState('filter.created', $created);
+		}
+
+		$modified = $this->getUserStateFromRequest($this->context . '.filter.modified', 'filter_modified');
+		if ($formSubmited)
+		{
+			$modified = $app->input->post->get('modified');
+			$this->setState('filter.modified', $modified);
 		}
 
 		// List state information.
@@ -2348,14 +2361,6 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$query->where('a.author IN (' . implode(',', $_author) . ')');
 		}
 
-		// Add the list ordering clause.
-		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'desc');
-		if ($orderCol != '')
-		{
-			$query->order($db->escape($orderCol . ' ' . $orderDirn));
-		}
-
 		return $query;
 	}
 
@@ -2413,9 +2418,6 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				$query->where('a.access IN (' . $groups . ')');
 			}
 
-			// Order the results by ordering
-			$query->order('a.id desc');
-
 			// Load the items
 			$db->setQuery($query);
 			$db->execute();
@@ -2441,35 +2443,35 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							continue;
 						}
 
-						// decode php_site_event
-						$item->php_site_event = base64_decode($item->php_site_event);
-						// decode css_admin
-						$item->css_admin = base64_decode($item->css_admin);
-						// decode php_helper_both
-						$item->php_helper_both = base64_decode($item->php_helper_both);
 						// decode php_admin_event
 						$item->php_admin_event = base64_decode($item->php_admin_event);
-						// decode sql_uninstall
-						$item->sql_uninstall = base64_decode($item->sql_uninstall);
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode php_site_event
+						$item->php_site_event = base64_decode($item->php_site_event);
+						// decode php_helper_both
+						$item->php_helper_both = base64_decode($item->php_helper_both);
 						// decode php_preflight_install
 						$item->php_preflight_install = base64_decode($item->php_preflight_install);
 						// decode php_method_uninstall
 						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						// decode css_admin
+						$item->css_admin = base64_decode($item->css_admin);
+						// decode php_postflight_install
+						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode sql_uninstall
+						$item->sql_uninstall = base64_decode($item->sql_uninstall);
 						// decode php_helper_admin
 						$item->php_helper_admin = base64_decode($item->php_helper_admin);
 						// decode php_helper_site
 						$item->php_helper_site = base64_decode($item->php_helper_site);
-						// decode javascript
-						$item->javascript = base64_decode($item->javascript);
-						// decode css_site
-						$item->css_site = base64_decode($item->css_site);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 						{
 							// decrypt whmcs_key
 							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
 						}
+						// decode javascript
+						$item->javascript = base64_decode($item->javascript);
+						// decode css_site
+						$item->css_site = base64_decode($item->css_site);
 						// decode php_preflight_update
 						$item->php_preflight_update = base64_decode($item->php_preflight_update);
 						// decode php_postflight_update
@@ -2599,6 +2601,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.name_code');
 		$id .= ':' . $this->getState('filter.short_description');
+		$id .= ':' . $this->getState('filter.created');
+		$id .= ':' . $this->getState('filter.modified');
 
 		return parent::getStoreId($id);
 	}

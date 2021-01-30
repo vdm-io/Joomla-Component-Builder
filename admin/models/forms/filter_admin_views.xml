@@ -86,8 +86,8 @@
 			<option value="a.published DESC">JSTATUS_DESC</option>
 			<option value="a.system_name ASC">COM_COMPONENTBUILDER_FILTER_SYSTEM_NAME_ASCENDING</option>
 			<option value="a.system_name DESC">COM_COMPONENTBUILDER_FILTER_SYSTEM_NAME_DESCENDING</option>
-			<option value="a.name_single ASC">COM_COMPONENTBUILDER_FILTER_NAME_SINGLE_ASCENDING</option>
-			<option value="a.name_single DESC">COM_COMPONENTBUILDER_FILTER_NAME_SINGLE_DESCENDING</option>
+			<option value="a.name_single ASC">COM_COMPONENTBUILDER_FILTER_NAME_SINGLE_RECORD_ASCENDING</option>
+			<option value="a.name_single DESC">COM_COMPONENTBUILDER_FILTER_NAME_SINGLE_RECORD_DESCENDING</option>
 			<option value="a.short_description ASC">COM_COMPONENTBUILDER_FILTER_SHORT_DESCRIPTION_ASCENDING</option>
 			<option value="a.short_description DESC">COM_COMPONENTBUILDER_FILTER_SHORT_DESCRIPTION_DESCENDING</option>
 			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>

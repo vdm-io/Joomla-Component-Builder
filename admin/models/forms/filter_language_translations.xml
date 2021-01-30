@@ -48,8 +48,8 @@
 			<option value="a.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>
 			<option value="a.published ASC">JSTATUS_ASC</option>
 			<option value="a.published DESC">JSTATUS_DESC</option>
-			<option value="a.source ASC">COM_COMPONENTBUILDER_FILTER_SOURCE_ASCENDING</option>
-			<option value="a.source DESC">COM_COMPONENTBUILDER_FILTER_SOURCE_DESCENDING</option>
+			<option value="a.source ASC">COM_COMPONENTBUILDER_FILTER_SOURCE_STRING_ASCENDING</option>
+			<option value="a.source DESC">COM_COMPONENTBUILDER_FILTER_SOURCE_STRING_DESCENDING</option>
 			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
 			<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
 		</field>

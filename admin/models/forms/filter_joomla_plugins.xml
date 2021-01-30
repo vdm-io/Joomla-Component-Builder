@@ -64,8 +64,8 @@
 			<option value="a.published DESC">JSTATUS_DESC</option>
 			<option value="a.system_name ASC">COM_COMPONENTBUILDER_FILTER_SYSTEM_NAME_ASCENDING</option>
 			<option value="a.system_name DESC">COM_COMPONENTBUILDER_FILTER_SYSTEM_NAME_DESCENDING</option>
-			<option value="g.name ASC">COM_COMPONENTBUILDER_FILTER_CLASS_EXTENDS_ASCENDING</option>
-			<option value="g.name DESC">COM_COMPONENTBUILDER_FILTER_CLASS_EXTENDS_DESCENDING</option>
+			<option value="g.name ASC">COM_COMPONENTBUILDER_FILTER_EXTENDS_ASCENDING</option>
+			<option value="g.name DESC">COM_COMPONENTBUILDER_FILTER_EXTENDS_DESCENDING</option>
 			<option value="h.name ASC">COM_COMPONENTBUILDER_FILTER_JOOMLA_PLUGIN_GROUP_ASCENDING</option>
 			<option value="h.name DESC">COM_COMPONENTBUILDER_FILTER_JOOMLA_PLUGIN_GROUP_DESCENDING</option>
 			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
