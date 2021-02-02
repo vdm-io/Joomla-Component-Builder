@@ -2361,6 +2361,14 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			$query->where('a.author IN (' . implode(',', $_author) . ')');
 		}
 
+		// Add the list ordering clause.
+		$orderCol = $this->state->get('list.ordering', 'a.id');
+		$orderDirn = $this->state->get('list.direction', 'desc');
+		if ($orderCol != '')
+		{
+			$query->order($db->escape($orderCol . ' ' . $orderDirn));
+		}
+
 		return $query;
 	}
 
@@ -2417,6 +2425,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				$groups = implode(',', $user->getAuthorisedViewLevels());
 				$query->where('a.access IN (' . $groups . ')');
 			}
+
+			// Order the results by ordering
+			$query->order('a.id desc');
 
 			// Load the items
 			$db->setQuery($query);

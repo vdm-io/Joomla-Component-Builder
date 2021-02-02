@@ -40,7 +40,7 @@ class ComponentbuilderViewJoomla_components extends JViewLegacy
 		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
-		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
