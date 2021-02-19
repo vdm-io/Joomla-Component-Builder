@@ -60,8 +60,8 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 	}
 
 	// These are subform layouts used in JCB
-	// JLayoutHelper::render('sectionjcb', [?]); // added to ensure the layout is loaded
-	// JLayoutHelper::render('repeatablejcb', [?]); // added to ensure the layout is loaded
+	// JLayoutHelper::render('sectionjcb', [?]); // added to ensure the layout are loaded
+	// JLayoutHelper::render('repeatablejcb', [?]); // added to ensure the layout are loaded
 
 	public function setForm()
 	{		
@@ -277,30 +277,30 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 				jQuery.get(noticeboard)
 				.success(function(board) { 
 					if (board.length > 5) {
-						jQuery(\"#noticeboard-md\").html(marked(board));
+						jQuery(\".noticeboard-md\").html(marked(board));
 						getIS(1,board).done(function(result) {
 							if (result){
-								jQuery(\"#vdm-new-notice\").show();
+								jQuery(\".vdm-new-notice\").show();
 								getIS(2,board);
 							}
 						});
 					} else {
-						jQuery(\"#noticeboard-md\").html(all_is_good);
+						jQuery(\".noticeboard-md\").html(all_is_good);
 					}
 				})
 				.error(function(jqXHR, textStatus, errorThrown) { 
-					jQuery(\"#noticeboard-md\").html(all_is_good);
+					jQuery(\".noticeboard-md\").html(all_is_good);
 				});
 				jQuery.get(proboard)
 				.success(function(board) { 
 					if (board.length > 5) {
-						jQuery(\"#proboard-md\").html(marked(board));
+						jQuery(\".proboard-md\").html(marked(board));
 					} else {
-						jQuery(\"#proboard-md\").html(all_is_good);
+						jQuery(\".proboard-md\").html(all_is_good);
 					}
 				})
 				.error(function(jqXHR, textStatus, errorThrown) { 
-					jQuery(\"#proboard-md\").html(all_is_good);
+					jQuery(\".proboard-md\").html(all_is_good);
 				});
 			});
 			// to check is READ/NEW

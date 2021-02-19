@@ -33,7 +33,7 @@ class ComponentbuilderModelJoomla_module extends JModelAdmin
 				'description',
 				'libraries',
 				'note_libraries_options',
-				'note_add_language_string'
+				'note_add_php_language_string'
 			),
 			'right' => array(
 				'snippet',

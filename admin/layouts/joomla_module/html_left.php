@@ -30,7 +30,7 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'description',
 	'libraries',
 	'note_libraries_options',
-	'note_add_language_string'
+	'note_add_php_language_string'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

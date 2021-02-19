@@ -5245,6 +5245,8 @@ class Get
 			{
 				$script = $this->setGuiCodePlaceholder($script, $config);
 			}
+			// add Dynamic HASHING option of a file/string
+			$script = $this->setDynamicHASHING($script);
 			// add base64 locking option of a string
 			$script = $this->setBase64LOCK($script);
 			// load the script
@@ -10794,6 +10796,67 @@ class Get
 					. $this->db->quote($hashendtarget);
 			}
 		}
+	}
+
+	/**
+	 * Set a hash of a file and/or string
+	 *
+	 * @param   string  $string  The code string
+	 *
+	 * @return  string
+	 *
+	 */
+	protected function setDynamicHASHING($script)
+	{
+		// check if we should hash a string
+		if (strpos($script, 'HASHSTRING((((') !== false)
+		{
+			// get the strings
+			$values = ComponentbuilderHelper::getAllBetween(
+				$script, 'HASHSTRING((((', '))))'
+			);
+			$locker = array();
+			// convert them
+			foreach ($values as $value)
+			{
+				$locker['HASHSTRING((((' . $value . '))))']
+					= md5($value);
+			}
+
+			// update the script
+			return $this->setPlaceholders($script, $locker);
+		}
+		// check if we should hash a file
+		if (strpos($script, 'HASHFILE((((') !== false)
+		{
+			// get the strings
+			$values = ComponentbuilderHelper::getAllBetween(
+				$script, 'HASHFILE((((', '))))'
+			);
+			$locker = array();
+			// convert them
+			foreach ($values as $path)
+			{
+				// we first get the file
+				if ($value = ComponentbuilderHelper::getFileContents($path))
+				{
+					// now we hash the file content
+					$locker['HASHFILE((((' . $path . '))))']
+						= md5($value);
+				}
+				else
+				{
+					// could not retrieve the file so we show error
+					$locker['HASHFILE((((' . $path . '))))']
+						= 'ERROR';
+				}
+			}
+
+			// update the script
+			return $this->setPlaceholders($script, $locker);
+		}
+
+		return $script;
 	}
 
 	/**

@@ -150,8 +150,8 @@
 			required="true"
 			button="true"
 		/>
-		<!-- Note_add_language_string Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_add_language_string" label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_ADD_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_ADD_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_language_string" />
+		<!-- Note_add_php_language_string Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_php_language_string" label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_ADD_PHP_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NOTE_ADD_PHP_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_php_language_string" />
 		<!-- Add_php_jview_display Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"

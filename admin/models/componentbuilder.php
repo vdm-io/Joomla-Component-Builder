@@ -560,7 +560,7 @@ class ComponentbuilderModelComponentbuilder extends JModelList
 				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isRead&format=json&raw=true";
 			}	
 			if(token.length > 0 && notice.length){
-				var request = "token="+token+"&notice="+notice;
+				var request = token+"=1&notice="+notice;
 			}
 			return jQuery.ajax({
 				type: "POST",

@@ -205,8 +205,8 @@
 		<field type="note" name="note_snippet_usage" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_SNIPPET_USAGE_LABEL" heading="h4" class="snippet-usage note_snippet_usage" />
 		<!-- Note_uikit_snippet Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_uikit_snippet" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_UIKIT_SNIPPET_LABEL" heading="h4" class="snippet-code note_uikit_snippet" />
-		<!-- Note_add_language_string Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_add_language_string" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_ADD_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_LAYOUT_NOTE_ADD_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_language_string" />
+		<!-- Note_add_php_language_string Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_php_language_string" label="COM_COMPONENTBUILDER_LAYOUT_NOTE_ADD_PHP_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_LAYOUT_NOTE_ADD_PHP_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_php_language_string" />
 		<!-- Libraries Field. Type: Libraries. (custom) -->
 		<field
 			type="libraries"

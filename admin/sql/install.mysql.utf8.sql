@@ -2299,7 +2299,7 @@ INSERT INTO `#__componentbuilder_admin_fields_conditions` (`id`, `addconditions`
 --
 
 INSERT INTO `#__componentbuilder_component_admin_views` (`id`, `addadmin_views`, `joomla_component`, `published`, `created`, `modified`, `version`, `hits`, `ordering`) VALUES
-(27, '{\"addadmin_views0\":{\"adminview\":\"109\",\"icomoon\":\"eye-open\",\"mainmenu\":\"1\",\"dashboard_add\":\"1\",\"dashboard_list\":\"1\",\"submenu\":\"1\",\"checkin\":\"1\",\"history\":\"1\",\"joomla_fields\":\"1\",\"metadata\":\"1\",\"access\":\"1\",\"port\":\"1\",\"edit_create_site_view\":\"1\",\"order\":\"1\"}}', 25, 1, '2017-10-28 03:56:26', '2018-08-22 19:18:19', 6, '', '');
+(27, '{\"addadmin_views0\":{\"adminview\":\"109\",\"icomoon\":\"eye-open\",\"mainmenu\":\"1\",\"dashboard_add\":\"1\",\"dashboard_list\":\"1\",\"submenu\":\"1\",\"checkin\":\"1\",\"history\":\"1\",\"joomla_fields\":\"1\",\"metadata\":\"1\",\"access\":\"1\",\"port\":\"1\",\"filter\":\"2\",\"edit_create_site_view\":\"1\",\"order\":\"1\"}}', 25, 1, '2017-10-28 03:56:26', '2021-02-08 10:32:04', 7, '', '');
 
 --
 -- Dumping data for table `#__componentbuilder_component_site_views`

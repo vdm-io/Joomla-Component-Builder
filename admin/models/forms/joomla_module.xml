@@ -245,8 +245,8 @@
 			required="false"
 			button="true"
 		/>
-		<!-- Note_add_language_string Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_add_language_string" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_ADD_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_ADD_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_language_string" />
+		<!-- Note_add_php_language_string Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_php_language_string" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_ADD_PHP_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_ADD_PHP_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_php_language_string" />
 		<!-- Add_sql Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"

@@ -1056,7 +1056,6 @@ class Compiler extends Infusion
 					. '.zip'
 				);
 			}
-
 			// move to sales server host
 			if ($this->componentData->add_sales_server == 1
 				&& $this->dynamicIntegration)

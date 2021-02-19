@@ -10,4 +10,10 @@
 
 /* CSS Document */
 
-
+html, body {
+	background-color: #fefcfe !important;
+}
+.jcb-sponsor-banner {
+	-webkit-box-shadow: 0 0 7px 1px #f0f0f0;
+	box-shadow: 0 0 7px 1px #f0f0f0;
+}
