@@ -15,15 +15,15 @@ defined('JPATH_BASE') or die('Restricted access');
 
 
 ?>
-<div id="<?= $displayData ?>">
-	<?= JHtml::_('bootstrap.startTabSet', $displayData . '_tab', array('active' => 'vdm-noticeboard')) ?>
-		<?= JHtml::_('bootstrap.addTab', $displayData . '_tab', 'vdm-noticeboard', JText::_('COM_COMPONENTBUILDER_VDM_BOARD', true)) ?>
+<div id="<?= $displayData['id'] ?>">
+	<?= JHtml::_('bootstrap.startTabSet', $displayData['id'] . '_tab', array('active' => $displayData['active'] . '-noticeboard')) ?>
+		<?= JHtml::_('bootstrap.addTab', $displayData['id'] . '_tab', 'vdm-noticeboard', JText::_('COM_COMPONENTBUILDER_VDM_BOARD', true)) ?>
 			<?= JLayoutHelper::render('jcbnoticeboardvdm', null) ?>
-			<div class="jcb-sponsor-banner"><?php echo ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
+			<div><?php echo ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
 		<?= JHtml::_('bootstrap.endTab'); ?>
-		<?= JHtml::_('bootstrap.addTab', $displayData . '_tab', 'proboard', JText::_('COM_COMPONENTBUILDER_JCB_PRO_BOARD', true)) ?>
+		<?= JHtml::_('bootstrap.addTab', $displayData['id'] . '_tab', 'pro-noticeboard', JText::_('COM_COMPONENTBUILDER_JCB_PRO_BOARD', true)) ?>
 			<?= JLayoutHelper::render('jcbnoticeboardpro', null) ?>
-			<div class="jcb-sponsor-banner"><?= ComponentbuilderHelper::getDynamicContent('banner', '728-90') ?></div>
+			<div><?= ComponentbuilderHelper::getDynamicContent('banner', '728-90') ?></div>
 		<?= JHtml::_('bootstrap.endTab') ?>
 	<?= JHtml::_('bootstrap.endTabSet') ?>
 </div>

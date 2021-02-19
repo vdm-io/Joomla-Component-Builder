@@ -21,6 +21,9 @@ JHtml::_('behavior.keepalive');
 $this->app->input->set('hidemainmenu', false);
 $selectNotice = '<h3>' . JText::_('COM_COMPONENTBUILDER_HI') . ' ' . $this->user->name . '</h3>';
 $selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_PLEASE_SELECT_A_COMPONENT_THAT_YOU_WOULD_LIKE_TO_COMPILE') . '</p>';
+
+// set the noticeboard options
+$noticeboardOptions = array('vdm', 'pro');
 ?>
 <?php if ($this->canDo->get('compiler.access')): ?>
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=compiler'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
@@ -66,6 +69,9 @@ Joomla.submitbutton = function(task, key)
 				}, 100);
 			} else if (task == 'compiler.clearTmp'){
 				jQuery('#clear').show();
+				jQuery('#loading').css('display', 'block');
+			} else if (task == 'compiler.getCompilerAnimations'){
+				jQuery('#get-compiler-animations').show();
 				jQuery('#loading').css('display', 'block');
 			} else {
 				jQuery('#loading').css('display', 'block');
@@ -144,24 +150,30 @@ jQuery('<div id="compiling"></div>')
 		</div>
 		<div class="span7">
 			<div id="component-details"><?= $selectNotice ?></div>
-			<?= JLayoutHelper::render('jcbnoticeboardtabs', 'noticeboard') ?>
+			<?= JLayoutHelper::render('jcbnoticeboardtabs', array('id' => 'noticeboard' , 'active' => $noticeboardOptions[array_rand($noticeboardOptions)])) ?>
 		</div>
 	</div>
+	<div id="get-compiler-animations" style="display:none;">
+		<h1><?= JText::_('COM_COMPONENTBUILDER_PLEASE_WAIT') ?></h1>
+		<h4><?= JText::_('COM_COMPONENTBUILDER_WHILE_WE_DOWNLOAD_ALL_TWENTY_SIX_COMPILER_GIF_ANIMATIONS_RANDOMLY_USED_IN_THE_COMPILER_GUI_DURING_COMPILATION') ?> <span class="loading-dots">.</span></h4>
+		<div class="clearfix"></div>
+	</div>
 	<div id="clear" style="display:none;">
-		<h1><?= JText::_('COM_COMPONENTBUILDER_PLEASE_WAIT_CLEARING_THE_TMP_FOLDER') ?> <span class="loading-dots">.</span></h1>
+		<h1><?= JText::_('COM_COMPONENTBUILDER_PLEASE_WAIT') ?></h1>
+		<h4><?= JText::_('COM_COMPONENTBUILDER_REMOVING_ALL_ZIP_PACKAGES_FROM_THE_TEMPORARY_FOLDER_OF_THE_JOOMLA_INSTALL') ?> <span class="loading-dots">.</span></h4>
 		<div class="clearfix"></div>
 	</div>
 	<div id="compiler" style="display:none;">
 		<div id="compiler-spinner" class="span4" style="display:none;">
 			<h3><?= JText::sprintf('COM_COMPONENTBUILDER_S_PLEASE_WAIT', $this->user->name) ?></h3>
-			<div style="font-size: smaller;"><?= JText::_('COM_COMPONENTBUILDER_THIS_MAY_TAKE_A_WHILE_DEPENDING_ON_THE_SIZE_OF_YOUR_PROJECT') ?></div>
-			<h4><b><span class="component-name"><?= JText::_('COM_COMPONENTBUILDER_THE_COMPONENT') ?></span></b> <?= JText::_('COM_COMPONENTBUILDER_IS_BEING_COMPILED') ?><span class="loading-dots">.</span></h4>
-			<div style="text-align: center;"><?= ComponentbuilderHelper::getDynamicContent('builder-gif', '480-540') ?></div>
+			<p style="font-size: smaller;"><?= JText::_('COM_COMPONENTBUILDER_THIS_MAY_TAKE_A_WHILE_DEPENDING_ON_THE_SIZE_OF_YOUR_PROJECT') ?></p>
+			<p><b><span class="component-name"><?= JText::_('COM_COMPONENTBUILDER_THE_COMPONENT') ?></span></b> <?= JText::_('COM_COMPONENTBUILDER_IS_BEING_COMPILED') ?> <span class="loading-dots">.</span></p>
+			<div style="text-align: center;"><?= ComponentbuilderHelper::getDynamicContent('builder-gif', $this->builder_gif_size) ?></div>
 			<div class="clearfix"></div>
 		</div>
 		<div id="compiler-notice" class="span7" style="display:none;">
-			<?= JLayoutHelper::render('jcbnoticeboardvdm', null) ?>
-			<div class="jcb-sponsor-banner"><?= ComponentbuilderHelper::getDynamicContent('banner', '728-90') ?></div>
+			<?= JLayoutHelper::render('jcbnoticeboard' . $noticeboardOptions[array_rand($noticeboardOptions)], null) ?>
+			<div><?= ComponentbuilderHelper::getDynamicContent('banner', '728-90') ?></div>
 		</div>
 	</div>
 </div>

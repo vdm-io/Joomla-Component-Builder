@@ -10339,7 +10339,7 @@ class Get
 
 		foreach ($paths as $target => $path)
 		{
-			// we are changing the working directory to the componet path
+			// we are changing the working directory to the component path
 			chdir($path);
 			foreach ($fileTypes as $type)
 			{
@@ -10837,7 +10837,7 @@ class Get
 			// convert them
 			foreach ($values as $path)
 			{
-				// we first get the file
+				// we first get the file if it exist
 				if ($value = ComponentbuilderHelper::getFileContents($path))
 				{
 					// now we hash the file content

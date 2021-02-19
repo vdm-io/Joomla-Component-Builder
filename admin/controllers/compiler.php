@@ -38,6 +38,36 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 	}
 
 	/**
+	 * get all the animations used in the compiler
+	 *
+	 * @return  true on success
+	 */
+	public function getCompilerAnimations()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		// check if user has the right
+		$user = JFactory::getUser();
+		// set page redirect
+		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
+		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_DOWNLOAD_THE_COMPILER_ANIMATIONS');
+		// currently only administrators can compile a component
+		if($user->authorise('compiler.compiler_animations', 'com_componentbuilder'))
+		{
+			// get the model
+			$model = $this->getModel('compiler');
+			if ($model->getCompilerAnimations($message))
+			{
+				$message = JText::_('COM_COMPONENTBUILDER_BALL_THE_COMPILER_ANIMATIONS_WERE_SUCCESSFULLY_DOWNLOADED_TO_THIS_JOOMLA_INSTALLB');
+				$this->setRedirect($redirect_url, $message, 'message');
+				return true;
+			}
+		}
+		$this->setRedirect($redirect_url, $message, 'error');
+		return false;
+	}
+
+	/**
 	 * Run the Compiler
 	 *
 	 * @return  true on success

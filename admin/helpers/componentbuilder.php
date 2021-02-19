@@ -1983,23 +1983,23 @@ abstract class ComponentbuilderHelper
 				array(
 					'url' => 'https://cdn.joomla.org/volunteers/joomla-heart-wide.gif',
 					'hash' => 'f857e3a38facaeac9eba3cffa912b620',
-					'html' => '<a href="https://vdm.bz/joomla-volunteers" target="_blank" title="Joomla! Volunteers Portal"><img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/joomla-heart-wide.gif" alt="Joomla! Volunteers Portal" width="728" height="90" border="0"></a>'),
+					'html' => '<a href="https://vdm.bz/joomla-volunteers" target="_blank" title="Joomla! Volunteers Portal"><img class="jcb-sponsor-banner" src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/joomla-heart-wide.gif" alt="Joomla! Volunteers Portal" width="728" height="90" border="0"></a>'),
 				array(
 					'url' => 'https://magazine.joomla.org/images/banners/JCM_2010_728x90.png',
 					'hash' => '4083c66f996279fd5a76adffc3a7d194',
-					'html' => '<a href="https://vdm.bz/joomla-magazine" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img alt="Joomla! Community Magazine | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/JCM_2010_728x90.png" width="728" height="90" border="0" /></a>'),
+					'html' => '<a href="https://vdm.bz/joomla-magazine" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img class="jcb-sponsor-banner" alt="Joomla! Community Magazine | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/JCM_2010_728x90.png" width="728" height="90" border="0" /></a>'),
 				array(
 					'url' => 'https://www.joomlacomponentbuilder.com/images/banners/tlwebdesign_jcb_sponsor_728_90.png',
 					'hash' => 'd19be1f9f5b2049ff901096aafc246be',
-					'html' => '<a href="https://vdm.bz/jcb-sponsor-tlwebdesign" target="_blank" title="tlwebdesign a JCB sponsor | Because community matters..."><img alt="tlwebdesign a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/tlwebdesign_jcb_sponsor_728_90.png" width="728" height="90" border="0" /></a>'),
+					'html' => '<a href="https://vdm.bz/jcb-sponsor-tlwebdesign" target="_blank" title="tlwebdesign a JCB sponsor | Because community matters..."><img class="jcb-sponsor-banner" alt="tlwebdesign a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/tlwebdesign_jcb_sponsor_728_90.png" width="728" height="90" border="0" /></a>'),
 				array(
 					'url' => 'https://www.joomlacomponentbuilder.com/images/banners/vdm_jcb_sponsor_728_90.gif',
 					'hash' => '84478dfa0cd880395815e0ee026812a4',
-					'html' => '<a href="https://vdm.bz/jcb-sponsor-vdm" target="_blank" title="VDM a JCB sponsor | Because community matters..."><img alt="VDM a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/vdm_jcb_sponsor_728_90.gif" width="728" height="90" border="0" /></a>'),
+					'html' => '<a href="https://vdm.bz/jcb-sponsor-vdm" target="_blank" title="VDM a JCB sponsor | Because community matters..."><img class="jcb-sponsor-banner" alt="VDM a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/vdm_jcb_sponsor_728_90.gif" width="728" height="90" border="0" /></a>'),
 				array(
 					'url' => 'https://allmycms.com/images/banners/agerix/agerix-loves-jcb-728-90.gif',
 					'hash' => 'b24c0726aa809cdcc04bcffe7e1e1529',
-					'html' => '<a href="https://vdm.bz/jcb-sponsor-agerix" target="_blank" title="Agerix a JCB sponsor | Because community matters..."><img alt="Agerix a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/agerix-loves-jcb-728-90.gif" width="728" height="90" border="0" /></a>')
+					'html' => '<a href="https://vdm.bz/jcb-sponsor-agerix" target="_blank" title="Agerix a JCB sponsor | Because community matters..."><img class="jcb-sponsor-banner" alt="Agerix a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/agerix-loves-jcb-728-90.gif" width="728" height="90" border="0" /></a>')
 			),
 			'160-600' => array(
 				array(
@@ -2014,6 +2014,15 @@ abstract class ComponentbuilderHelper
 		),
 		// The build-gif by size (width - height)
 		'builder-gif' => array(
+			// original gif ;)
+			'480-272' => array(
+				array(
+					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/original.gif',
+					'hash' => '676e37a949add8f4573381195cd1061c',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/original.gif" />'
+				)
+			),
+			// new gif artwork since 2021
 			'480-540' => array(
 				array(
 					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/1.gif',
@@ -2116,54 +2125,89 @@ abstract class ComponentbuilderHelper
 	);
 
 	/**
+	 * get the dynamic content array size
+	 * 
+	 * @param   string   $type      The type of content
+	 * @param   string   $size      The size of the content
+	 *
+	 * @return  int   on success number of items in array type,size
+	 * 
+	 */
+	public static function getDynamicContentSize($type, $size)
+	{
+		if (isset(self::$dynamicContent[$type]) && isset(self::$dynamicContent[$type][$size])
+			&& ($nr = self::checkArray(self::$dynamicContent[$type][$size])))
+		{
+			return $nr;
+		}
+		return 0;
+	}
+
+	/**
 	 * get the dynamic content
 	 * 
 	 * @param   string   $type      The type of content
 	 * @param   string   $size      The size of the content
 	 * @param   mix      $default   The default to return
+	 * @param   int      $try       Retry tracker (when bigger then array size it stops)
+	 * @param   mix      $getter    The specific getter number (not zero based)
 	 *
 	 * @return  string   on success html string
 	 * 
 	 */
-	public static function getDynamicContent($type, $size, $default = '', $try = 0)
+	public static function getDynamicContent($type, $size, $default = '', $try = 1, $getter = null)
 	{
-		if (isset(self::$dynamicContent[$type]) && isset(self::$dynamicContent[$type][$size])
-			&& ($nr = self::checkArray(self::$dynamicContent[$type][$size])))
+		if (($nr = self::getDynamicContentSize($type, $size)) !== 0)
 		{
-			// get the random item number
-			$get = (int) rand(0, --$nr);
-			// get the current target
-			$target = self::$dynamicContent[$type][$size][$get];
-			// set file name
-			$file_name = basename($target['url']);
-			// set the local path (in admin area so when the component uninstall these images get removed as well)
-			$path = JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type/$file_name";
-			// check if file exist or if it changed
-			if (($image_data = self::getFileContents($path, false)) === false ||
-				md5($image_data) !== $target['hash'])
+			// use specific getter
+			if ($getter)
 			{
-				// since the file does not exist or has changed (so we have a new hash)
-				// therefore we download it to validate
-				if (($image_data = self::getFileContents($target['url'], false)) !== false &&
-					md5($image_data) === $target['hash'])
-				{
-					// create the JCB type path if it does not exist
-					if (!JFolder::exists(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type"))
-					{
-						JFolder::create(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type");
-					}
-					// only set the image if the data match the hash
-					self::writeFile($path, $image_data);
-				}
-				// we retry 26 times
-				elseif ($try < 26)
-				{
-					// the time around failed so we try again
-					return self::getDynamicContent($type, $size, $default, ++$try);
-				}
+				$get = --$getter;
 			}
-			// return found content
-			return str_replace('[[[ROOT-URL]]]', JURI::root(), $target['html']);
+			// get the random getter number
+			elseif ($nr > 1)
+			{
+				$get = (int) rand(0, --$nr);
+			}
+			else
+			{
+				$get = 0;
+			}
+			// get the current target if found
+			if (isset(self::$dynamicContent[$type][$size][$get]))
+			{
+				$target = self::$dynamicContent[$type][$size][$get];
+				// set file name
+				$file_name = basename($target['url']);
+				// set the local path (in admin area so when the component uninstall these images get removed as well)
+				$path = JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type/$file_name";
+				// check if file exist or if it changed
+				if (($image_data = self::getFileContents($path, false)) === false ||
+					md5($image_data) !== $target['hash'])
+				{
+					// since the file does not exist or has changed (so we have a new hash)
+					// therefore we download it to validate
+					if (($image_data = self::getFileContents($target['url'], false)) !== false &&
+						md5($image_data) === $target['hash'])
+					{
+						// create the JCB type path if it does not exist
+						if (!JFolder::exists(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type"))
+						{
+							JFolder::create(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type");
+						}
+						// only set the image if the data match the hash
+						self::writeFile($path, $image_data);
+					}
+					// we retry array size times (unless specific getter is used)
+					elseif ($try <= $nr && !$getter)
+					{
+						// the first time around failed so we try again (the size of the array times)
+						return self::getDynamicContent($type, $size, $default, ++$try);
+					}
+				}
+				// return found content
+				return str_replace('[[[ROOT-URL]]]', JURI::root(), $target['html']);
+			}
 		}
 		return $default;
 	}

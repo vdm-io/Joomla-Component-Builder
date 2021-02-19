@@ -657,6 +657,24 @@
 		name="compiler_custom_config"
 		label="COM_COMPONENTBUILDER_CONFIG_COMPILER">
 
+		<!-- Builder_gif_size Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="builder_gif_size"
+			label="COM_COMPONENTBUILDER_CONFIG_BUILDER_GIF_SIZE_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_BUILDER_GIF_SIZE_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			required="true"
+			default="480-272">
+			<!-- Option Set. -->
+			<option value="480-272">
+				COM_COMPONENTBUILDER_CONFIG_ORIGINAL_VDM</option>
+			<option value="480-540">
+				COM_COMPONENTBUILDER_CONFIG_THREED_PARTICLE_EXPLORATIONS</option>
+		</field>
+		<!-- Spacer_hr_five Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_five" hr="true" class="spacer_hr_five" />
 		<!-- Compiler_plugin Field. Type: Plugins. (joomla) -->
 		<field
 			type="plugins"
@@ -667,8 +685,8 @@
 			folder="extension"
 			filter="cmd"
 		/>
-		<!-- Spacer_hr_five Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_five" hr="true" class="spacer_hr_five" />
+		<!-- Spacer_hr_six Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_six" hr="true" class="spacer_hr_six" />
 		<!-- Add_menu_prefix Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -699,8 +717,8 @@
 			autocomplete="on"
 			showon="add_menu_prefix:1"
 		/>
-		<!-- Spacer_hr_six Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_six" hr="true" class="spacer_hr_six" />
+		<!-- Spacer_hr_seven Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_seven" hr="true" class="spacer_hr_seven" />
 		<!-- Minify Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -715,8 +733,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_NO</option>
 		</field>
-		<!-- Spacer_hr_seven Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_seven" hr="true" class="spacer_hr_seven" />
+		<!-- Spacer_hr_eight Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_eight" hr="true" class="spacer_hr_eight" />
 		<!-- Note_language_global Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_language_global" label="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_DESCRIPTION" heading="h4" class="alert alert-info note_language_global" />
 		<!-- Language Field. Type: Lang. (custom) -->
@@ -757,8 +775,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_NO</option>
 		</field>
-		<!-- Spacer_hr_eight Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_eight" hr="true" class="spacer_hr_eight" />
+		<!-- Spacer_hr_nine Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_nine" hr="true" class="spacer_hr_nine" />
 		<!-- Assets_table_fix Field. Type: List. (joomla) -->
 		<field
 			type="list"

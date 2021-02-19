@@ -156,6 +156,51 @@ class ComponentbuilderModelCompiler extends JModelList
 		return $db->loadObjectList();
 	}
 
+	public function getCompilerAnimations(&$errorMessage) 
+	{
+		// convert error message to array
+		$errorMessage = array();
+		$searchArray = array(
+			// add banners (width - height)
+			'banner' => array(
+					'728-90',
+					'160-600'
+				),
+			// The build-gif by size (width - height)
+			'builder-gif' => array(
+					'480-540'
+				)
+			);
+		// start search, and get
+		foreach ($searchArray as $type => $sizes)
+		{
+			// per size
+			foreach ($sizes as $size)
+			{
+				// get size
+				if (($set_size = ComponentbuilderHelper::getDynamicContentSize($type, $size)) !== 0)
+				{
+					// we loop over all type size artwork
+					for ($target = 1; $target <= $set_size; $target++)
+					{
+    						if (!ComponentbuilderHelper::getDynamicContent($type, $size, false, 0, $target))
+    						{
+    							$errorMessage[] = JText::sprintf('COM_COMPONENTBUILDER_S_S_NUMBER_BSB_COULD_NOT_BE_DOWNLOADED_SUCCESSFULLY_TO_THIS_JOOMLA_INSTALL', $type, $size, $target);
+    						}
+					}
+				}
+			}
+		}
+		// check if we had any errors
+		if (ComponentbuilderHelper::checkArray($errorMessage))
+		{
+			// flatten the error message array
+			$errorMessage = implode('<br />', $errorMessage);
+			return false;
+		}
+		return true;
+	}
+
 	public function builder($version, $id, $backup, $repo, $addPlaceholders, $debugLinenr, $minify) 
 	{
 		$set['version'] = $version;
