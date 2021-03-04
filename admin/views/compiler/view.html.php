@@ -37,6 +37,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=compiler');
 			$this->sidebar = JHtmlSidebar::render();
 		}
+		$this->SuccessMessage = $this->app->getUserState('com_componentbuilder.success_message', false);
 		$this->Components = $this->get('Components');
 		$this->form = $this->setForm();
 		// set the compiler artwork from global settings

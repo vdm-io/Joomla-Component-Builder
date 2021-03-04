@@ -50,7 +50,10 @@ Joomla.submitbutton = function(task, key)
 			}
 			// set the task value
 			form.task.value = task;
-			form.submit();
+			// seems we need a little delay here
+			setTimeout(function() {
+				form.submit();
+			}, 100);
 			// some ui movements
 			if (task == 'compiler.compiler'){
 				// get the component name
@@ -124,6 +127,12 @@ jQuery('<div id="compiling"></div>')
 <?php else : ?>
 <div id="j-main-container">
 <?php endif; ?>
+	<?php if (ComponentbuilderHelper::checkString($this->SuccessMessage)): ?>
+	<div class="alert alert-success">
+	<button type="button" class="close" data-dismiss="alert">×</button>
+		<?= $this->SuccessMessage; ?>
+	</div>
+	<?php endif; ?>
 	<div id="form">
 		<div class="span4">
 			<h3><?= JText::_('COM_COMPONENTBUILDER_READY_TO_COMPILE_A_COMPONENT') ?></h3>

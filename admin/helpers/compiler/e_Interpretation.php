@@ -15723,10 +15723,13 @@ class Interpretation extends Fields
 		{
 			$categoryCodeName = $this->categoryBuilder[$nameListCode]['code'];
 			$addCategory      = true;
+			$addCategoryFilter
+			                  = $this->categoryBuilder[$nameListCode]['filter'];
 		}
 		else
 		{
-			$addCategory = false;
+			$addCategory       = false;
+			$addCategoryFilter = 0;
 		}
 		// setup the query
 		$query = "//" . $this->setLine(__LINE__) . " Get the user object.";
@@ -15842,7 +15845,7 @@ class Interpretation extends Fields
 		// set other filters
 		$query .= $this->setFilterQuery($nameListCode);
 		// add the category
-		if ($addCategory)
+		if ($addCategory && $addCategoryFilter >= 1)
 		{
 			$query .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 					__LINE__
@@ -18653,7 +18656,9 @@ class Interpretation extends Fields
 			&& ComponentbuilderHelper::checkArray(
 				$this->categoryBuilder[$nameListCode]
 			)
-			&& isset($this->categoryBuilder[$nameListCode]['extension']))
+			&& isset($this->categoryBuilder[$nameListCode]['extension'])
+			&& isset($this->categoryBuilder[$nameListCode]['filter'])
+			&& $this->categoryBuilder[$nameListCode]['filter'] >= 1)
 		{
 			// set filter
 			$filter[] = PHP_EOL . $this->_t(2) . "//"
@@ -22442,7 +22447,9 @@ class Interpretation extends Fields
 				&& ComponentbuilderHelper::checkArray(
 					$this->categoryBuilder[$nameListCode]
 				)
-				&& isset($this->categoryBuilder[$nameListCode]['extension']))
+				&& isset($this->categoryBuilder[$nameListCode]['extension'])
+				&& isset($this->categoryBuilder[$nameListCode]['filter'])
+				&& $this->categoryBuilder[$nameListCode]['filter'] >= 1)
 			{
 				// is found so add it
 				$add_category = true;
@@ -22466,18 +22473,28 @@ class Interpretation extends Fields
 					if (isset($filter['multi'])
 						&& $filter['multi'] == 2)
 					{
+						// if this is a category we should make sure it must be added
+						if (!$add_category && $filter['type'] === 'category')
+						{
+							continue;
+						}
+						elseif ($add_category && $filter['type'] === 'category')
+						{
+							// already added here so no need to add again
+							$add_category = false;
+						}
+						// check if this was an access field
+						elseif ($filter['type'] === 'accesslevel')
+						{
+							// already added here so no need to add again
+							$add_access_levels = false;
+						}
 						// add the header
 						$headers[]
 							= 'JHtml::_(\'formbehavior.chosen\', \'.multiple'
 							. $filter['class']
 							. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
 							. $filter['lang_select'] . '\') . \' -\'));';
-						// check if this was an access field
-						if ($filter['type'] === 'accesslevel')
-						{
-							// already added here so no need to add again
-							$add_access_levels = false;
-						}
 					}
 					elseif ($add_category && $filter['type'] === 'category')
 					{

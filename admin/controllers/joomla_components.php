@@ -172,6 +172,14 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 			{
 				$message = JText::_('COM_COMPONENTBUILDER_BTHE_TMP_FOLDER_HAS_BEEN_CLEAR_SUCCESSFULLYB');
 				$this->setRedirect($redirect_url, $message, 'message');
+				// get application
+				$app = JFactory::getApplication();
+				// wipe out the user c-m-p since we are done with them all
+				$app->setUserState('com_componentbuilder.component_folder_name', '');
+				$app->setUserState('com_componentbuilder.modules_folder_name', '');
+				$app->setUserState('com_componentbuilder.plugins_folder_name', '');
+				$app->setUserState('com_componentbuilder.success_message', '');
+
 				return true;
 			}
 		}

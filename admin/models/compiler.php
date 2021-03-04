@@ -154,7 +154,7 @@ class ComponentbuilderModelCompiler extends JModelList
 		$db->setQuery($query);
 		// return the result
 		return $db->loadObjectList();
-	}
+	}	
 
 	public function getCompilerAnimations(&$errorMessage) 
 	{

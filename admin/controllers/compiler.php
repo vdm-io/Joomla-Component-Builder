@@ -255,8 +255,10 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 					$message[] = '<p><small><b>Remember!</b> This zip file is in your tmp folder and therefore publicly accessible until you click [Clear tmp]!</small> </p>';
 				}
 				$message[] = '<p><small>Compilation took <b>'.$model->compiler->secondsCompiled.'</b> seconds to complete.</small> </p>';
+				// pass the message via the user state... wow this is painful
+				$app->setUserState('com_componentbuilder.success_message', implode(PHP_EOL, $message));
 				// set redirect
-				$this->setRedirect($redirect_url, implode(PHP_EOL, $message), 'message');
+				$this->setRedirect($redirect_url, '<h2>Successful Build!</h2>', 'message');
 				$app->setUserState('com_componentbuilder.component_folder_name', $model->compiler->filepath['component-folder']);
 				// check if we have modules
 				if ($add_module_install)
@@ -278,6 +280,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 				$app->setUserState('com_componentbuilder.component_folder_name', '');
 				$app->setUserState('com_componentbuilder.modules_folder_name', '');
 				$app->setUserState('com_componentbuilder.plugins_folder_name', '');
+				$app->setUserState('com_componentbuilder.success_message', '');
 				// set redirect
 				$this->setRedirect($redirect_url, $message);
 			}
@@ -318,6 +321,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			$app->setUserState('com_componentbuilder.component_folder_name', '');
 			$app->setUserState('com_componentbuilder.modules_folder_name', '');
 			$app->setUserState('com_componentbuilder.plugins_folder_name', '');
+			$app->setUserState('com_componentbuilder.success_message', '');
 
 			// loop and install all extensions found
 			foreach ($fileNames as $fileName)
@@ -372,6 +376,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			$app->setUserState('com_componentbuilder.component_folder_name', '');
 			$app->setUserState('com_componentbuilder.modules_folder_name', '');
 			$app->setUserState('com_componentbuilder.plugins_folder_name', '');
+			$app->setUserState('com_componentbuilder.success_message', '');
 
 			if ($this->installExtension($fileName))
 			{
@@ -409,6 +414,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			$app->setUserState('com_componentbuilder.component_folder_name', '');
 			$app->setUserState('com_componentbuilder.modules_folder_name', '');
 			$app->setUserState('com_componentbuilder.plugins_folder_name', '');
+			$app->setUserState('com_componentbuilder.success_message', '');
 
 			if (ComponentbuilderHelper::checkArray($fileNames))
 			{
@@ -451,6 +457,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			$app->setUserState('com_componentbuilder.component_folder_name', '');
 			$app->setUserState('com_componentbuilder.modules_folder_name', '');
 			$app->setUserState('com_componentbuilder.plugins_folder_name', '');
+			$app->setUserState('com_componentbuilder.success_message', '');
 
 			if (ComponentbuilderHelper::checkArray($fileNames))
 			{
@@ -564,6 +571,14 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			{
 				$message = JText::_('COM_COMPONENTBUILDER_BTHE_TMP_FOLDER_HAS_BEEN_CLEAR_SUCCESSFULLYB');
 				$this->setRedirect($redirect_url, $message, 'message');
+				// get application
+				$app = JFactory::getApplication();
+				// wipe out the user c-m-p since we are done with them all
+				$app->setUserState('com_componentbuilder.component_folder_name', '');
+				$app->setUserState('com_componentbuilder.modules_folder_name', '');
+				$app->setUserState('com_componentbuilder.plugins_folder_name', '');
+				$app->setUserState('com_componentbuilder.success_message', '');
+
 				return true;
 			}
 		}
