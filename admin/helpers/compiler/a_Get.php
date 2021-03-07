@@ -12,6 +12,9 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+
 /**
  * Get class as the main compilers class
  */
@@ -7248,7 +7251,7 @@ class Get
 						if ((!filter_var($target, FILTER_VALIDATE_URL) === false
 								&& ComponentbuilderHelper::urlExists($target))
 							|| (JPath::clean($target) === $target
-								&& JFile::exists($target)))
+								&& File::exists($target)))
 						{
 							$this->getExternalCodeString($target, $bucket);
 						}
@@ -10344,7 +10347,7 @@ class Get
 			foreach ($fileTypes as $type)
 			{
 				// get a list of files in the current directory tree (only PHP, JS and XML for now)
-				$files = JFolder::files('.', $type, true, true);
+				$files = Folder::files('.', $type, true, true);
 				// check if files found
 				if (ComponentbuilderHelper::checkArray($files))
 				{
@@ -11540,7 +11543,7 @@ class Get
 		// check if the local install is found
 		foreach ($localPaths as $key => $localPath)
 		{
-			if (!JFolder::exists($localPath))
+			if (!Folder::exists($localPath))
 			{
 				unset($localPaths[$key]);
 			}

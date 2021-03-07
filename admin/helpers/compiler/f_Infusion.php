@@ -12,6 +12,9 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+
 /**
  * Infusion class
  */
@@ -2620,14 +2623,14 @@ class Infusion extends Interpretation
 						// build the path to place the lang file
 						$path = $this->componentPath . '/' . $p . '/language/'
 							. $tag . '/';
-						if (!JFolder::exists($path))
+						if (!Folder::exists($path))
 						{
-							JFolder::create($path);
+							Folder::create($path);
 							// count the folder created
 							$this->folderCount++;
 						}
 						// move the file to its place
-						JFile::copy($getPAth, $path . $file_name);
+						File::copy($getPAth, $path . $file_name);
 						// count the file created
 						$this->fileCount++;
 						// add content to it
