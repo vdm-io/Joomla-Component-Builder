@@ -17,6 +17,8 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 JHTML::_('behavior.modal');
 
 /**
@@ -97,12 +99,12 @@ class com_###component###InstallerScript
 		{###PREINSTALLSCRIPT###
 		}
 		// check if the PHPExcel stuff is still around
-		if (JFile::exists(JPATH_ADMINISTRATOR . '/components/com_###component###/helpers/PHPExcel.php'))
+		if (File::exists(JPATH_ADMINISTRATOR . '/components/com_###component###/helpers/PHPExcel.php'))
 		{
 			// We need to remove this old PHPExcel folder
 			$this->removeFolder(JPATH_ADMINISTRATOR . '/components/com_###component###/helpers/PHPExcel');
 			// We need to remove this old PHPExcel file
-			JFile::delete(JPATH_ADMINISTRATOR . '/components/com_###component###/helpers/PHPExcel.php');
+			File::delete(JPATH_ADMINISTRATOR . '/components/com_###component###/helpers/PHPExcel.php');
 		}
 		return true;
 	}
@@ -141,7 +143,7 @@ class com_###component###InstallerScript
 	 */
 	protected function removeFolder($dir, $ignore = false)
 	{
-		if (JFolder::exists($dir))
+		if (Folder::exists($dir))
 		{
 			$it = new RecursiveDirectoryIterator($dir);
 			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
@@ -171,7 +173,7 @@ class com_###component###InstallerScript
 					{
 						continue;
 					}
-					JFolder::delete($file_dir);
+					Folder::delete($file_dir);
 				}
 				else
 				{
@@ -190,13 +192,13 @@ class com_###component###InstallerScript
 					{
 						continue;
 					}
-					JFile::delete($file_dir);
+					File::delete($file_dir);
 				}
 			}
 			// delete the root folder if not ignore found
 			if (!$this->checkArray($ignore))
 			{
-				return JFolder::delete($dir);
+				return Folder::delete($dir);
 			}
 			return true;
 		}

@@ -17,6 +17,8 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 use Joomla\Utilities\ArrayHelper;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -227,7 +229,7 @@ class ###Component###ModelImport extends JModelLegacy
 
 		// Move uploaded file
 		jimport('joomla.filesystem.file');
-		$p_file = JFile::upload($tmp_src, $tmp_dest, $this->use_streams, $this->allow_unsafe, $this->safeFileOptions);
+		$p_file = File::upload($tmp_src, $tmp_dest, $this->use_streams, $this->allow_unsafe, $this->safeFileOptions);
 
 		// Was the package downloaded?
 		if (!$p_file)
@@ -383,12 +385,12 @@ class ###Component###ModelImport extends JModelLegacy
 		// Is the package file a valid file?
 		if (is_file($package))
 		{
-			JFile::delete($package);
+			File::delete($package);
 		}
 		elseif (is_file(JPath::clean($package)))
 		{
 			// It might also be just a base filename
-			JFile::delete(JPath::clean($package));
+			File::delete(JPath::clean($package));
 		}
 	}###IMPORT_SETDATA_METHOD######IMPORT_SAVE_METHOD###
 

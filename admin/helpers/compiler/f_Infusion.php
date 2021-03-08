@@ -648,6 +648,13 @@ class Infusion extends Interpretation
 							'site.admin.view.model',
 							$nameSingleCode
 						);
+						// SITE_ADMIN_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
+						$this->fileContentDynamic[$nameSingleCode][$this->hhh
+						. 'SITE_ADMIN_VIEW_HTML_HEADER' . $this->hhh]
+							= $this->setFileHeader(
+							'site.admin.view.html',
+							$nameSingleCode
+						);
 						// SITE_ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
 						$this->fileContentDynamic[$nameSingleCode][$this->hhh
 						. 'SITE_ADMIN_VIEW_HEADER' . $this->hhh]
@@ -676,6 +683,12 @@ class Infusion extends Interpretation
 					. 'ADMIN_VIEW_MODEL_HEADER' . $this->hhh]
 						= $this->setFileHeader(
 						'admin.view.model', $nameSingleCode
+					);
+					// ADMIN_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
+					$this->fileContentDynamic[$nameSingleCode][$this->hhh
+					. 'ADMIN_VIEW_HTML_HEADER' . $this->hhh]
+						= $this->setFileHeader(
+						'admin.view.html', $nameSingleCode
 					);
 					// ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
 					$this->fileContentDynamic[$nameSingleCode][$this->hhh
@@ -1048,6 +1061,12 @@ class Infusion extends Interpretation
 					. 'ADMIN_VIEWS_MODEL_HEADER' . $this->hhh]
 						= $this->setFileHeader(
 						'admin.views.model', $nameListCode
+					);
+					// ADMIN_VIEWS_HTML_HEADER <<<DYNAMIC>>> add the header details for the views
+					$this->fileContentDynamic[$nameListCode][$this->hhh
+					. 'ADMIN_VIEWS_HTML_HEADER' . $this->hhh]
+						= $this->setFileHeader(
+						'admin.views.html', $nameListCode
 					);
 					// ADMIN_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the views
 					$this->fileContentDynamic[$nameListCode][$this->hhh
@@ -1510,6 +1529,12 @@ class Infusion extends Interpretation
 							= $this->setFileHeader(
 							'custom.admin.view.model', $view['settings']->code
 						);
+						// CUSTOM_ADMIN_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'CUSTOM_ADMIN_VIEW_HTML_HEADER' . $this->hhh]
+							= $this->setFileHeader(
+							'custom.admin.view.html', $view['settings']->code
+						);
 						// CUSTOM_ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh
 						. 'CUSTOM_ADMIN_VIEW_HEADER' . $this->hhh]
@@ -1531,6 +1556,12 @@ class Infusion extends Interpretation
 						. 'CUSTOM_ADMIN_VIEWS_MODEL_HEADER' . $this->hhh]
 							= $this->setFileHeader(
 							'custom.admin.views.model', $view['settings']->code
+						);
+						// CUSTOM_ADMIN_VIEWS_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'CUSTOM_ADMIN_VIEWS_HTML_HEADER' . $this->hhh]
+							= $this->setFileHeader(
+							'custom.admin.views.html', $view['settings']->code
 						);
 						// CUSTOM_ADMIN_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the view
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh
@@ -2026,6 +2057,12 @@ class Infusion extends Interpretation
 							= $this->setFileHeader(
 							'site.view.model', $view['settings']->code
 						);
+						// SITE_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'SITE_VIEW_HTML_HEADER' . $this->hhh]
+							= $this->setFileHeader(
+							'site.view.html', $view['settings']->code
+						);
 						// SITE_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh
 						. 'SITE_VIEW_HEADER' . $this->hhh]
@@ -2053,6 +2090,12 @@ class Infusion extends Interpretation
 						. 'SITE_VIEWS_MODEL_HEADER' . $this->hhh]
 							= $this->setFileHeader(
 							'site.views.model', $view['settings']->code
+						);
+						// SITE_VIEWS_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
+						$this->fileContentDynamic[$view['settings']->code][$this->hhh
+						. 'SITE_VIEWS_HTML_HEADER' . $this->hhh]
+							= $this->setFileHeader(
+							'site.views.html', $view['settings']->code
 						);
 						// SITE_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the view
 						$this->fileContentDynamic[$view['settings']->code][$this->hhh

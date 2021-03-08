@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');###LICENSE_LOCKED_DEFINED###
-
+###SITE_ADMIN_VIEW_HTML_HEADER###
 /**
  * ###View### View class
  */

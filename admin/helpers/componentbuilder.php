@@ -1184,9 +1184,6 @@ abstract class ComponentbuilderHelper
 		if ('compiler' === $type)
 		{
 			// import the Joomla librarys
-			jimport('joomla.filesystem.file');
-			jimport('joomla.filesystem.folder');
-			jimport('joomla.filesystem.archive');
 			jimport('joomla.application.component.modellist');
 			// include class to minify js
 			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/js.php';
@@ -1195,9 +1192,6 @@ abstract class ComponentbuilderHelper
 		if ('smart' === $type)
 		{
 			// import the Joomla libraries
-			jimport('joomla.filesystem.file');
-			jimport('joomla.filesystem.folder');
-			jimport('joomla.filesystem.archive');
 			jimport('joomla.application.component.modellist');
 		}
 		// load this for all

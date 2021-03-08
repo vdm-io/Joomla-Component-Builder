@@ -12,6 +12,9 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+
 /**
  * Compiler class
  */
@@ -1010,11 +1013,9 @@ class Interpretation extends Fields
 					. " Prep the path a little";
 				$function[] = $this->_t(2)
 					. "\$path = '/'. trim(str_replace('//', '/', \$path), '/');";
-				$function[] = $this->_t(2)
-					. "jimport('joomla.filesystem.folder');";
-				$function[] = $this->_t(2) . "///" . $this->setLine(__LINE__)
+				$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 					. " Check if folder exist";
-				$function[] = $this->_t(2) . "if (!JFolder::exists(\$path))";
+				$function[] = $this->_t(2) . "if (!Folder::exists(\$path))";
 				$function[] = $this->_t(2) . "{";
 				$function[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 					. " Lock key.";
@@ -6660,7 +6661,7 @@ class Interpretation extends Fields
 					__LINE__
 				) . " check if the CSS file exists.";
 			$setter .= PHP_EOL . $tabV . $this->_t(5)
-				. "if (JFile::exists(JPATH_ROOT.'/media/com_"
+				. "if (File::exists(JPATH_ROOT.'/media/com_"
 				. $this->componentCodeName
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "{";
@@ -6679,7 +6680,7 @@ class Interpretation extends Fields
 					__LINE__
 				) . " check if the JavaScript file exists.";
 			$setter .= PHP_EOL . $tabV . $this->_t(5)
-				. "if (JFile::exists(JPATH_ROOT.'/media/com_"
+				. "if (File::exists(JPATH_ROOT.'/media/com_"
 				. $this->componentCodeName
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "{";
@@ -6719,11 +6720,6 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3) . "//" . $this->setLine(
 					__LINE__
-				) . " load just in case.";
-			$setter .= PHP_EOL . $tabV . $this->_t(3)
-				. "jimport('joomla.filesystem.file');";
-			$setter .= PHP_EOL . $tabV . $this->_t(3) . "//" . $this->setLine(
-					__LINE__
 				) . " loading...";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
 				. "foreach (\$uikitComp as \$class)";
@@ -6736,7 +6732,7 @@ class Interpretation extends Fields
 					__LINE__
 				) . " check if the CSS file exists.";
 			$setter .= PHP_EOL . $tabV . $this->_t(5)
-				. "if (JFile::exists(JPATH_ROOT.'/media/com_"
+				. "if (File::exists(JPATH_ROOT.'/media/com_"
 				. $this->componentCodeName
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "{";
@@ -6755,7 +6751,7 @@ class Interpretation extends Fields
 					__LINE__
 				) . " check if the JavaScript file exists.";
 			$setter .= PHP_EOL . $tabV . $this->_t(5)
-				. "if (JFile::exists(JPATH_ROOT.'/media/com_"
+				. "if (File::exists(JPATH_ROOT.'/media/com_"
 				. $this->componentCodeName
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "{";
@@ -7225,7 +7221,7 @@ class Interpretation extends Fields
 						$file
 					))
 				{
-					if (JFile::exists($file['path']))
+					if (File::exists($file['path']))
 					{
 						$string            = ComponentbuilderHelper::getFileContents(
 							$file['path']
@@ -7241,7 +7237,7 @@ class Interpretation extends Fields
 					{
 						if (ComponentbuilderHelper::checkArray($doc))
 						{
-							if (JFile::exists($doc['path']))
+							if (File::exists($doc['path']))
 							{
 								$string
 									            = ComponentbuilderHelper::getFileContents(
@@ -8675,7 +8671,7 @@ class Interpretation extends Fields
 			$script[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " get all the folders";
 			$script[] = $this->_t(2)
-				. "\$folders = JFolder::folders(\$installPath);";
+				. "\$folders = Folder::folders(\$installPath);";
 			$script[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " check if we have folders we may want to copy";
 			$script[] = $this->_t(2)
@@ -8697,7 +8693,7 @@ class Interpretation extends Fields
 			$script[] = $this->_t(5) . "//" . $this->setLine(__LINE__)
 				. " now try to copy the folder";
 			$script[] = $this->_t(5)
-				. "if (!JFolder::copy(\$src, \$dest, '', true))";
+				. "if (!Folder::copy(\$src, \$dest, '', true))";
 			$script[] = $this->_t(5) . "{";
 			$script[] = $this->_t(6)
 				. "\$app->enqueueMessage('Could not copy '.\$folder.' folder into place, please make sure destination is writable!', 'error');";
@@ -22388,6 +22384,26 @@ class Interpretation extends Fields
 			case 'site.views':
 				$headers = array();
 				break;
+			case 'admin.view.html':
+			case 'admin.views.html':
+			case 'site.admin.view.html':
+			case 'site.view.html':
+			case 'site.views.html':
+			case 'custom.admin.view.html':
+			case 'custom.admin.views.html':
+				// add a space
+				$headers = array('');
+				// load the file class if uikit is being loaded
+				if ((2 == $this->uikit || 1 == $this->uikit)
+					&& isset($this->uikitComp[$viewsCodeName])
+					&& ComponentbuilderHelper::checkArray(
+						$this->uikitComp[$viewsCodeName]
+					))
+				{
+					$headers[] = 'use Joomla\CMS\Filesystem\File;';
+					$headers[] = '';
+				}
+				break;
 			default:
 				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
 				break;
@@ -22735,7 +22751,7 @@ class Interpretation extends Fields
 		{
 			$imagePath = $this->componentPath . '/admin/assets/images';
 			// move the image to its place
-			JFile::copy(
+			File::copy(
 				JPATH_SITE . '/' . $path,
 				$imagePath . '/vdm-component.' . $type
 			);
@@ -22984,7 +23000,7 @@ class Interpretation extends Fields
 						$imageName = $name . '.' . $type;
 					}
 					// move the image to its place
-					JFile::copy(
+					File::copy(
 						JPATH_SITE . '/' . $path, $imagePath . '/' . $imageName
 					);
 				}
@@ -28187,9 +28203,9 @@ function vdm_dkim() {
 							$path = $module->folder_path . '/language/' . $tag
 								. '/';
 							// create path if not exist
-							if (!JFolder::exists($path))
+							if (!Folder::exists($path))
 							{
-								JFolder::create($path);
+								Folder::create($path);
 								// count the folder created
 								$this->folderCount++;
 							}
@@ -28216,8 +28232,8 @@ function vdm_dkim() {
 			}
 		}
 		// get all files and folders in module folder
-		$files   = JFolder::files($module->folder_path);
-		$folders = JFolder::folders($module->folder_path);
+		$files   = Folder::files($module->folder_path);
+		$folders = Folder::folders($module->folder_path);
 		// the files/folders to ignore
 		$ignore = array('sql', 'language', 'script.php',
 		                $module->file_name . '.xml',
@@ -28545,9 +28561,9 @@ function vdm_dkim() {
 							$path = $plugin->folder_path . '/language/' . $tag
 								. '/';
 							// create path if not exist
-							if (!JFolder::exists($path))
+							if (!Folder::exists($path))
 							{
-								JFolder::create($path);
+								Folder::create($path);
 								// count the folder created
 								$this->folderCount++;
 							}
@@ -28577,8 +28593,8 @@ function vdm_dkim() {
 			}
 		}
 		// get all files and folders in plugin folder
-		$files   = JFolder::files($plugin->folder_path);
-		$folders = JFolder::folders($plugin->folder_path);
+		$files   = Folder::files($plugin->folder_path);
+		$folders = Folder::folders($plugin->folder_path);
 		// the files/folders to ignore
 		$ignore = array('sql', 'language', 'script.php',
 		                $plugin->file_name . '.xml',
