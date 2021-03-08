@@ -19,6 +19,10 @@ use Joomla\Utilities\ArrayHelper;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Joomla\Archive\Archive;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Filesystem\Path;
 
 /**
  * Componentbuilder component helper.
@@ -796,7 +800,7 @@ abstract class ComponentbuilderHelper
 			// set the path to the form validation rules
 			$path = JPATH_LIBRARIES . '/src/Form/Rule';
 			// check if the path exist
-			if (!JFolder::exists($path))
+			if (!Folder::exists($path))
 			{
 				return false;
 			}
@@ -805,7 +809,7 @@ abstract class ComponentbuilderHelper
 			// go to that folder
 			chdir($path);
 			// load all the files in this path
-			$items = JFolder::files('.', '\.php', true, true);
+			$items = Folder::files('.', '\.php', true, true);
 			// change back to Joomla working directory
 			chdir($joomla);
 			// make sure we have an array
@@ -1108,7 +1112,7 @@ abstract class ComponentbuilderHelper
 	 */
 	public static function getAllFilePaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'), $recurse = true, $full = true)
 	{
-		if (JFolder::exists($folder))
+		if (Folder::exists($folder))
 		{
 			// we must first store the current woking directory
 			$joomla = getcwd();
@@ -1121,18 +1125,18 @@ abstract class ComponentbuilderHelper
 				foreach ($fileTypes as $type)
 				{
 					// get a list of files in the current directory tree
-					$files[] = JFolder::files('.', $type, $recurse, $full);
+					$files[] = Folder::files('.', $type, $recurse, $full);
 				}
 			}
 			elseif (self::checkString($fileTypes))
 			{
 				// get a list of files in the current directory tree
-				$files[] = JFolder::files('.', $fileTypes, $recurse, $full);
+				$files[] = Folder::files('.', $fileTypes, $recurse, $full);
 			}
 			else
 			{
 				// get a list of files in the current directory tree
-				$files[] = JFolder::files('.', '.', $recurse, $full);
+				$files[] = Folder::files('.', '.', $recurse, $full);
 			}
 			// change back to Joomla working directory
 			chdir($joomla);
@@ -2191,9 +2195,9 @@ abstract class ComponentbuilderHelper
 						md5($image_data) === $target['hash'])
 					{
 						// create the JCB type path if it does not exist
-						if (!JFolder::exists(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type"))
+						if (!Folder::exists(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type"))
 						{
-							JFolder::create(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type");
+							Folder::create(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type");
 						}
 						// only set the image if the data match the hash
 						self::writeFile($path, $image_data);
@@ -2697,29 +2701,30 @@ abstract class ComponentbuilderHelper
 		chdir($workingDIR);
 
 		// the full file path of the zip file
-		$filepath = JPath::clean($filepath);
+		$filepath = Path::clean($filepath);
 
-		// delete an existing zip file (or use an exclusion parameter in JFolder::files()
-		JFile::delete($filepath);
+		// delete an existing zip file (or use an exclusion parameter in Folder::files()
+		File::delete($filepath);
 
 		// get a list of files in the current directory tree
-		$files = JFolder::files('.', '', true, true);
+		$files = Folder::files('.', '', true, true);
 		$zipArray = array();
 		// setup the zip array
 		foreach ($files as $file)
 		{
-		   $tmp = array();
-		   $tmp['name'] = str_replace('./', '', $file);
-		   $tmp['data'] = JFile::read($file);
-		   $tmp['time'] = filemtime($file);
-		   $zipArray[] = $tmp;
+			$tmp = array();
+			$tmp['name'] = str_replace('./', '', $file);
+			$tmp['data'] = self::getFileContents($file);
+			$tmp['time'] = filemtime($file);
+			$zipArray[] = $tmp;
 		}
 
 		// change back to joomla working directory
 		chdir($joomla);
 
 		// get the zip adapter
-		$zip = JArchive::getAdapter('zip');
+		$adapter = new Archive();
+		$zip = $adapter->getAdapter('zip');
 
 		//create the zip file
 		if ($zip->create($filepath, $zipArray))
@@ -2774,7 +2779,7 @@ abstract class ComponentbuilderHelper
 	 */
 	public static function removeFolder($dir, $ignore = false)
 	{
-		if (JFolder::exists($dir))
+		if (Folder::exists($dir))
 		{
 			$it = new RecursiveDirectoryIterator($dir);
 			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
@@ -2804,7 +2809,7 @@ abstract class ComponentbuilderHelper
 					{
 						continue;
 					}
-					JFolder::delete($file_dir);
+					Folder::delete($file_dir);
 				}
 				else
 				{
@@ -2823,13 +2828,13 @@ abstract class ComponentbuilderHelper
 					{
 						continue;
 					}
-					JFile::delete($file_dir);
+					File::delete($file_dir);
 				}
 			}
 			// delete the root folder if not ignore found
 			if (!self::checkArray($ignore))
 			{
-				return JFolder::delete($dir);
+				return Folder::delete($dir);
 			}
 			return true;
 		}
@@ -4118,11 +4123,10 @@ abstract class ComponentbuilderHelper
 		{
 			$filePath = $default;
 		}
-		jimport('joomla.filesystem.folder');
 		// create the folder if it does not exist
-		if ($createIfNotSet && !JFolder::exists($filePath))
+		if ($createIfNotSet && !Folder::exists($filePath))
 		{
-			JFolder::create($filePath);
+			Folder::create($filePath);
 		}
 		// setup the file name
 		$fileName = '';
@@ -4187,11 +4191,10 @@ abstract class ComponentbuilderHelper
 			self::$params = JComponentHelper::getParams('com_componentbuilder');
 		}
 		$folderPath = self::$params->get($target, $default);
-		jimport('joomla.filesystem.folder');
 		// create the folder if it does not exist
-		if ($createIfNotSet && !JFolder::exists($folderPath))
+		if ($createIfNotSet && !Folder::exists($folderPath))
 		{
-			JFolder::create($folderPath);
+			Folder::create($folderPath);
 		}
 		// return the url
 		if ('url' === $type)
@@ -7680,12 +7683,12 @@ abstract class ComponentbuilderHelper
 			$filePath = $path . '/' . $name . '.php';
 			$fullPathModel = $fullPathModels . '/' . $name . '.php';
 			// check if it exists
-			if (JFile::exists($filePath))
+			if (File::exists($filePath))
 			{
 				// get the file
 				require_once $filePath;
 			}
-			elseif (JFile::exists($fullPathModel))
+			elseif (File::exists($fullPathModel))
 			{
 				// get the file
 				require_once $fullPathModel;

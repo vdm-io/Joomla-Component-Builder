@@ -22346,6 +22346,7 @@ class Interpretation extends Fields
 				break;
 			case 'admin.helper':
 			case 'site.helper':
+				$headers[] = 'use Joomla\CMS\Filesystem\File;';
 				$headers[] = 'use Joomla\CMS\Language\Language;';
 				$headers[] = 'use Joomla\Registry\Registry;';
 				$headers[] = 'use Joomla\String\StringHelper;';
