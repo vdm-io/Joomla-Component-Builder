@@ -1566,12 +1566,15 @@ class Interpretation extends Fields
 	{
 		if ($this->addEximport)
 		{
+			// we use the company name set in the GUI
+			$company_name = $this->fileContentStatic[$this->hhh . 'COMPANYNAME' . $this->hhh];
+			// start building the xml function
 			$exel   = array();
 			$exel[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
 			$exel[] = $this->_t(1) . "* Prepares the xml document";
 			$exel[] = $this->_t(1) . "*/";
 			$exel[] = $this->_t(1)
-				. "public static function xls(\$rows, \$fileName = null, \$title = null, \$subjectTab = null, \$creator = 'Joomla Component Builder', \$description = null, \$category = null,\$keywords = null, \$modified = null)";
+				. "public static function xls(\$rows, \$fileName = null, \$title = null, \$subjectTab = null, \$creator = '$company_name', \$description = null, \$category = null,\$keywords = null, \$modified = null)";
 			$exel[] = $this->_t(1) . "{";
 			$exel[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " set the user";
@@ -1612,7 +1615,7 @@ class Interpretation extends Fields
 				. " Set document properties";
 			$exel[] = $this->_t(2) . "\$spreadsheet->getProperties()";
 			$exel[] = $this->_t(3) . "->setCreator(\$creator)";
-			$exel[] = $this->_t(3) . "->setCompany('Joomla Component Builder')";
+			$exel[] = $this->_t(3) . "->setCompany('$company_name')";
 			$exel[] = $this->_t(3) . "->setLastModifiedBy(\$modified)";
 			$exel[] = $this->_t(3) . "->setTitle(\$title)";
 			$exel[] = $this->_t(3) . "->setSubject(\$subjectTab);";
