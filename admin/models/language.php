@@ -225,7 +225,7 @@ class ComponentbuilderModelLanguage extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/language.js';
+		return 'media/com_componentbuilder/js/language.js';
 	}
     
 	/**

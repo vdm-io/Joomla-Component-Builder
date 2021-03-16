@@ -281,7 +281,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/joomla_plugin_files_folders_urls.js';
+		return 'media/com_componentbuilder/js/joomla_plugin_files_folders_urls.js';
 	}
     
 	/**

@@ -614,7 +614,7 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/fieldtype.js';
+		return 'media/com_componentbuilder/js/fieldtype.js';
 	}
     
 	/**

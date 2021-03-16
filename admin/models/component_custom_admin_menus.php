@@ -266,7 +266,7 @@ class ComponentbuilderModelComponent_custom_admin_menus extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/component_custom_admin_menus.js';
+		return 'media/com_componentbuilder/js/component_custom_admin_menus.js';
 	}
     
 	/**

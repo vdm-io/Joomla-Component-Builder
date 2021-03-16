@@ -247,7 +247,7 @@ class ComponentbuilderModelHelp_document extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/help_document.js';
+		return 'media/com_componentbuilder/js/help_document.js';
 	}
     
 	/**

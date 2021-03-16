@@ -351,7 +351,7 @@ class ComponentbuilderModelCustom_code extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/custom_code.js';
+		return 'media/com_componentbuilder/js/custom_code.js';
 	}
     
 	/**

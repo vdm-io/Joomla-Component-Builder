@@ -266,7 +266,7 @@ class ComponentbuilderModelComponent_updates extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/component_updates.js';
+		return 'media/com_componentbuilder/js/component_updates.js';
 	}
     
 	/**

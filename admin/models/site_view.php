@@ -543,7 +543,7 @@ class ComponentbuilderModelSite_view extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/site_view.js';
+		return 'media/com_componentbuilder/js/site_view.js';
 	}
     
 	/**

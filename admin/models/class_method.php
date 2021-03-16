@@ -358,7 +358,7 @@ class ComponentbuilderModelClass_method extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/class_method.js';
+		return 'media/com_componentbuilder/js/class_method.js';
 	}
     
 	/**

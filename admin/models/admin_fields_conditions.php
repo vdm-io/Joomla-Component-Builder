@@ -259,7 +259,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/admin_fields_conditions.js';
+		return 'media/com_componentbuilder/js/admin_fields_conditions.js';
 	}
     
 	/**

@@ -127,7 +127,7 @@ class ###Component###Model###View### extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_###component###/models/forms/###view###.js';
+		return 'media/com_###component###/js/###view###.js';
 	}
     
 	/**

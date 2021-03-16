@@ -319,7 +319,7 @@ class ComponentbuilderModelValidation_rule extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/validation_rule.js';
+		return 'media/com_componentbuilder/js/validation_rule.js';
 	}
     
 	/**

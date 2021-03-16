@@ -374,7 +374,7 @@ class ComponentbuilderModelLibrary extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/library.js';
+		return 'media/com_componentbuilder/js/library.js';
 	}
     
 	/**

@@ -322,7 +322,7 @@ class ComponentbuilderModelLanguage_translation extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/language_translation.js';
+		return 'media/com_componentbuilder/js/language_translation.js';
 	}
     
 	/**

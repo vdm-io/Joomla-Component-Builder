@@ -316,7 +316,7 @@ class ComponentbuilderModelPlaceholder extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/placeholder.js';
+		return 'media/com_componentbuilder/js/placeholder.js';
 	}
     
 	/**

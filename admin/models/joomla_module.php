@@ -530,7 +530,7 @@ class ComponentbuilderModelJoomla_module extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/joomla_module.js';
+		return 'media/com_componentbuilder/js/joomla_module.js';
 	}
     
 	/**

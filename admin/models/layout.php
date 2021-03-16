@@ -367,7 +367,7 @@ class ComponentbuilderModelLayout extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/layout.js';
+		return 'media/com_componentbuilder/js/layout.js';
 	}
     
 	/**

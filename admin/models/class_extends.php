@@ -342,7 +342,7 @@ class ComponentbuilderModelClass_extends extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/class_extends.js';
+		return 'media/com_componentbuilder/js/class_extends.js';
 	}
     
 	/**

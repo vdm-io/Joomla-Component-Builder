@@ -280,7 +280,7 @@
 					"type": "single"
 				},
 				"module_forms.js": {
-					"path": "c0mp0n3nt/admin/models/forms",
+					"path": "c0mp0n3nt/media/js",
 					"rename": "module_forms",
 					"type": "single"
 				},

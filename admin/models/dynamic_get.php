@@ -542,7 +542,7 @@ class ComponentbuilderModelDynamic_get extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/dynamic_get.js';
+		return 'media/com_componentbuilder/js/dynamic_get.js';
 	}
     
 	/**

@@ -522,7 +522,7 @@ class ComponentbuilderModelCustom_admin_view extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/custom_admin_view.js';
+		return 'media/com_componentbuilder/js/custom_admin_view.js';
 	}
     
 	/**

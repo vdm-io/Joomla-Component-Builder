@@ -303,7 +303,7 @@ class ComponentbuilderModelComponent_files_folders extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_componentbuilder/models/forms/component_files_folders.js';
+		return 'media/com_componentbuilder/js/component_files_folders.js';
 	}
     
 	/**
