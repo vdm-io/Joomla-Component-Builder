@@ -1003,7 +1003,7 @@
 			name="toignore"
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TOIGNORE_LABEL"
 			size="10"
-			maxlength="50"
+			maxlength="550"
 			default=".git"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TOIGNORE_DESCRIPTION"
 			class="text_area"
