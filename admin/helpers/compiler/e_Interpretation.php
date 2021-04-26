@@ -1567,7 +1567,8 @@ class Interpretation extends Fields
 		if ($this->addEximport)
 		{
 			// we use the company name set in the GUI
-			$company_name = $this->fileContentStatic[$this->hhh . 'COMPANYNAME' . $this->hhh];
+			$company_name = $this->fileContentStatic[$this->hhh . 'COMPANYNAME'
+			. $this->hhh];
 			// start building the xml function
 			$exel   = array();
 			$exel[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
@@ -5786,10 +5787,20 @@ class Interpretation extends Fields
 		{
 			// just to check if the submission script is manually added
 			if (!isset($view['settings']->php_document)
-				|| strpos(
-					implode(' ', $view['settings']->php_document),
-					'/submitbutton.js'
-				) === false)
+				|| (ComponentbuilderHelper::checkArray(
+						$view['settings']->php_document
+					)
+					&& strpos(
+						implode(' ', $view['settings']->php_document),
+						'/submitbutton.js'
+					) === false)
+				|| (ComponentbuilderHelper::checkString(
+						$view['settings']->php_document
+					)
+					&& strpos(
+						$view['settings']->php_document,
+						'/submitbutton.js'
+					) === false))
 			{
 				// set the custom get form method  JAVASCRIPT_FOR_BUTTONS
 				$this->fileContentDynamic[$view['settings']->code][$this->hhh

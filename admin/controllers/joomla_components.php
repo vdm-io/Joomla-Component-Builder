@@ -161,7 +161,7 @@ class ComponentbuilderControllerJoomla_components extends JControllerAdmin
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false);
 		$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_CLEAR_THE_TMP_FOLDER');
-		if($user->authorise('joomla_components.clear_tmp', 'com_componentbuilder') && $user->authorise('core.options', 'com_componentbuilder'))
+		if($user->authorise('joomla_components.clear_tmp', 'com_componentbuilder') && $user->authorise('core.manage', 'com_componentbuilder'))
 		{
 			// get the model
 			$model = $this->getModel('compiler');

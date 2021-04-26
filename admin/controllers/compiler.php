@@ -51,7 +51,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
 		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_DOWNLOAD_THE_COMPILER_ANIMATIONS');
-		// currently only administrators can compile a component
+		// currently only those with permissions can get these images
 		if($user->authorise('compiler.compiler_animations', 'com_componentbuilder'))
 		{
 			// get the model
@@ -78,8 +78,8 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 		// check if user has the right
 		$user = JFactory::getUser();
-		// currently only administrators can compile a component
-		if($user->authorise('core.admin', 'com_componentbuilder'))
+		// currently only those with admin access can compile a component
+		if($user->authorise('core.manage', 'com_componentbuilder'))
 		{
 			// get the post values
 			$jinput = JFactory::getApplication()->input;
@@ -303,8 +303,8 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
 		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THESE_EXTENSIONS');
-		// currently only administrators can install a component via JCB
-		if($user->authorise('core.admin'))
+		// currently only those with admin access can install a component via JCB
+		if($user->authorise('core.manage'))
 		{
 			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_EXTENSIONS');
 			$_message = array('success' => array(), 'error' => array());
@@ -365,8 +365,8 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
 		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THE_COMPONENT');
-		// currently only administrators can install a component via JCB
-		if($user->authorise('core.admin'))
+		// currently only those with admin access can install a component via JCB
+		if($user->authorise('core.manage'))
 		{
 			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_COMPONENT');
 			$app = JFactory::getApplication();
@@ -403,8 +403,8 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
 		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THE_MODULE');
-		// currently only administrators can install a molule via JCB
-		if($user->authorise('core.admin'))
+		// currently only those with admin access can install a molule via JCB
+		if($user->authorise('core.manage'))
 		{
 			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_MODULE');
 			$app = JFactory::getApplication();
@@ -446,8 +446,8 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
 		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THE_PLUGIN');
-		// currently only administrators can install a plugin via JCB
-		if($user->authorise('core.admin'))
+		// currently only those with admin access can install a plugin via JCB
+		if($user->authorise('core.manage'))
 		{
 			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_PLUGIN');
 			$app = JFactory::getApplication();
@@ -560,7 +560,7 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
 		$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_CLEAR_THE_TMP_FOLDER');
-		if($user->authorise('compiler.clear_tmp', 'com_componentbuilder') && $user->authorise('core.options', 'com_componentbuilder'))
+		if($user->authorise('compiler.clear_tmp', 'com_componentbuilder') && $user->authorise('core.manage', 'com_componentbuilder'))
 		{
 			// get the model
 			$model = $this->getModel('compiler');
