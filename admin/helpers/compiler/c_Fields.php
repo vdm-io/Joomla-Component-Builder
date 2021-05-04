@@ -6135,7 +6135,7 @@ class Fields extends Structure
 			{
 				$fieldData['component'] = $local_component;
 			}
-			// check that the componet has the com_ value in it
+			// check that the component has the com_ value in it
 			if (strpos($fieldData['component'], 'com_') === false
 				|| strpos(
 					$fieldData['component'], '='

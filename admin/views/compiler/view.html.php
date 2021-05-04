@@ -184,9 +184,9 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 			$options = array();
 			$options[''] = 'COM_COMPONENTBUILDER__SELECT_COMPONENT_';
 			// load component options from array
-			foreach($this->Components as $componet)
+			foreach($this->Components as $component)
 			{
-				$options[(int) $componet->id] = $this->escape($componet->name);
+				$options[(int) $component->id] = $this->escape($component->name);
 			}
 			// add to form
 			$form[] = ComponentbuilderHelper::getFieldObject($attributes, '', $options);

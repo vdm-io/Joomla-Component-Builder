@@ -2099,12 +2099,12 @@ class Structure extends Get
 							// set message that this was done (will still add a tutorial link later)
 							$this->app->enqueueMessage(
 								JText::_(
-									'<hr /><h3>Dynamic folder/s were detected.</h3>'
+									'<hr /><h3>Dynamic folders were detected.</h3>'
 								), 'Notice'
 							);
 							$this->app->enqueueMessage(
 								JText::sprintf(
-									'A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folder/s are copied into the correct place when this componet is installed!'
+									'A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folders are copied into the correct place when this component is installed!'
 								), 'Notice'
 							);
 						}
