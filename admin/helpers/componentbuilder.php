@@ -1116,7 +1116,7 @@ abstract class ComponentbuilderHelper
 		{
 			// we must first store the current woking directory
 			$joomla = getcwd();
-			// we are changing the working directory to the componet path
+			// we are changing the working directory to the component path
 			chdir($folder);
 			// make sure we have file type filter
 			if (self::checkArray($fileTypes))

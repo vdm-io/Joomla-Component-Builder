@@ -678,14 +678,56 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$this->_db->execute();
 		if ($this->_db->getNumRows())
 		{
+			// get the items
 			$items = $this->_db->loadObjectList();
+			// reset the search array (only search for template/layouts)
+			$searchTLArray = array();
 			// check if we have items
 			if (ComponentbuilderHelper::checkArray($items))
 			{
-				// set search array
+				// set search array if site/custom admin view
 				if ('site_view' === $table || 'custom_admin_view' === $table)
 				{
-					$searchArray = array('php_view', 'php_jview', 'php_jview_display', 'php_document', 'js_document', 'css_document', 'css');
+					$searchTLArray = array(
+						'default' => 'force_it',
+						'php_view' => 'add_php_view',
+						'php_jview' => 'add_php_jview',
+						'php_jview_display' => 'add_php_jview_display',
+						'php_document' => 'add_php_document',
+						'javascript_file' => 'add_javascript_file',
+						'js_document' => 'add_js_document',
+						'css_document' => 'add_css_document',
+						'css' => 'add_css'
+					);
+				}
+				// set search array if admin view
+				if ('admin_view' === $table)
+				{
+					$searchTLArray = array(
+						'php_getitem' => 'add_php_getitem',
+						'php_before_save' => 'add_php_before_save',
+						'php_save' => 'add_php_save',
+						'php_getform' => 'add_php_getform',
+						'php_postsavehook' => 'add_php_postsavehook',
+						'php_getitems' => 'add_php_getitems',
+						'php_getitems_after_all' => 'add_php_getitems_after_all',
+						'php_getlistquery' => 'add_php_getlistquery',
+						'php_allowadd' => 'add_php_allowadd',
+						'php_allowedit' => 'add_php_allowedit',
+						'php_before_cancel' => 'add_php_before_cancel',
+						'php_after_cancel' => 'add_php_after_cancel',
+						'php_before_delete' => 'add_php_before_delete',
+						'php_after_delete' => 'add_php_after_delete',
+						'php_before_publish' => 'add_php_before_publish',
+						'php_after_publish' => 'add_php_after_publish',
+						'php_batchcopy' => 'add_php_batchcopy',
+						'php_batchmove' => 'add_php_batchmove',
+						'php_document' => 'add_php_document',
+						'php_model' => 'add_custom_button',
+						'php_controller' => 'add_custom_button',
+						'php_model_list' => 'add_custom_button',
+						'php_controller_list' => 'add_custom_button'
+					);
 				}
 				// reset the global array
 				if ('template' === $table)
@@ -913,19 +955,21 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							}
 						}
 					}
-					// actions to take if table is site_view and custom_admin_view
-					if ('site_view' === $table || 'custom_admin_view' === $table)
-					{
-						// search for templates & layouts
-						$this->getTemplateLayout(base64_decode($item->default));
+					// check if a search is required
+					if (isset($searchTLArray) && ComponentbuilderHelper::checkArray($searchTLArray)){
+
 						// add search array templates and layouts
-						foreach ($searchArray as $scripter)
+						foreach ($searchTLArray as $scripter => $add)
 						{
-							if (isset($item->{'add_'.$scripter}) && $item->{'add_'.$scripter} == 1)
+							if ($add === 'force_it' || (isset($item->{$add}) && $item->{$add} == 1))
 							{
 								$this->getTemplateLayout($item->{$scripter});
 							}
 						}
+					}
+					// actions to take if table is site_view and custom_admin_view
+					if ('site_view' === $table || 'custom_admin_view' === $table)
+					{
 						// add dynamic gets
 						$this->setSmartIDs($item->main_get, 'dynamic_get');
 						$this->setSmartIDs($item->custom_get, 'dynamic_get');
@@ -951,7 +995,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							$this->setSmartIDs((int) $item->snippet, 'snippet');
 						}
 						// search for templates & layouts
-						$this->getTemplateLayout(base64_decode($item->$table), $this->user);
+						$this->getTemplateLayout($item->$table, $this->user);
 						// add search array templates and layouts
 						if (isset($item->add_php_view) && $item->add_php_view == 1)
 						{
@@ -1420,6 +1464,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	 */
 	protected function getTemplateLayout($default, $user = false)
 	{
+		// check if we have base64 encoding
+		if (base64_encode(base64_decode($default, true)) === $default)
+		{
+			$default = base64_decode($default);
+		}
 		// set the Template data
 		$temp1 = ComponentbuilderHelper::getAllBetween($default, "\$this->loadTemplate('","')");
 		$temp2 = ComponentbuilderHelper::getAllBetween($default, '$this->loadTemplate("','")');
