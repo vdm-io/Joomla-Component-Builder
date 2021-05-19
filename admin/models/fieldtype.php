@@ -232,12 +232,6 @@ class ComponentbuilderModelFieldtype extends JModelAdmin
 				$objectUpdate->properties = json_encode($bucket);
 				$this->db->updateObject('#__componentbuilder_fieldtype', $objectUpdate, 'id');
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.fieldtype');
-			}
 		}
 		$this->fieldtypevvvv = $item->id;
 

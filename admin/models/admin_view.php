@@ -665,12 +665,6 @@ class ComponentbuilderModelAdmin_view extends JModelAdmin
 				$item->mysql_table_collate = 'utf8_general_ci';
 			}
 
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.admin_view');
-			}
 		}
 
 		return $item;

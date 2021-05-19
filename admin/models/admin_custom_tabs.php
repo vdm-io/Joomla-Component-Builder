@@ -106,12 +106,6 @@ class ComponentbuilderModelAdmin_custom_tabs extends JModelAdmin
 				$tabs->loadString($item->tabs);
 				$item->tabs = $tabs->toArray();
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.admin_custom_tabs');
-			}
 		}
 
 		return $item;

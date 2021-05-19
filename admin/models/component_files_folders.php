@@ -174,12 +174,6 @@ class ComponentbuilderModelComponent_files_folders extends JModelAdmin
 			{
 				$this->_db->updateObject('#__componentbuilder_component_files_folders', $objectUpdate, 'id');
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.component_files_folders');
-			}
 		}
 
 		return $item;

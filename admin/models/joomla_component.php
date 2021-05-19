@@ -548,12 +548,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			{
 				$this->_db->updateObject('#__componentbuilder_joomla_component', $objectUpdate, 'id');
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.joomla_component');
-			}
 		}
 
 		return $item;

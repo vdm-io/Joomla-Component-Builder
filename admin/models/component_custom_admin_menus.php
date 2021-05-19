@@ -137,12 +137,6 @@ class ComponentbuilderModelComponent_custom_admin_menus extends JModelAdmin
 			{
 				$this->_db->updateObject('#__componentbuilder_component_custom_admin_menus', $objectUpdate, 'id');
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.component_custom_admin_menus');
-			}
 		}
 
 		return $item;

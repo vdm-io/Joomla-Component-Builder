@@ -152,12 +152,6 @@ class ComponentbuilderModelLibrary_files_folders_urls extends JModelAdmin
 				$addurls->loadString($item->addurls);
 				$item->addurls = $addurls->toArray();
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.library_files_folders_urls');
-			}
 		}
 
 		return $item;

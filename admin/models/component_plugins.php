@@ -107,12 +107,6 @@ class ComponentbuilderModelComponent_plugins extends JModelAdmin
 				$addjoomla_plugins->loadString($item->addjoomla_plugins);
 				$item->addjoomla_plugins = $addjoomla_plugins->toArray();
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.component_plugins');
-			}
 		}
 
 		return $item;

@@ -152,12 +152,6 @@ class ComponentbuilderModelJoomla_module_files_folders_urls extends JModelAdmin
 				$addurls->loadString($item->addurls);
 				$item->addurls = $addurls->toArray();
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.joomla_module_files_folders_urls');
-			}
 		}
 
 		return $item;

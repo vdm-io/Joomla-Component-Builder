@@ -137,12 +137,6 @@ class ComponentbuilderModelComponent_config extends JModelAdmin
 			{
 				$this->_db->updateObject('#__componentbuilder_component_config', $objectUpdate, 'id');
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.component_config');
-			}
 		}
 
 		return $item;

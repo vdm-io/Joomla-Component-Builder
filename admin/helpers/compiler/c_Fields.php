@@ -4578,17 +4578,18 @@ class Fields extends Structure
 		$nameListCode, $name, $view, $field, $typeName, $multiple,
 		$custom = false, $options = false
 	) {
+		// check if this is a tag field
+		if ($typeName === 'tag')
+		{
+			// set tags for this view but don't load to DB
+			$this->tagsBuilder[$nameSingleCode] = $nameSingleCode;
+		}
 		// dbSwitch
 		$dbSwitch = true;
 		if (isset($field['list']) && $field['list'] == 2)
 		{
 			// do not add this field to the database
 			$dbSwitch = false;
-		}
-		elseif ($typeName === 'tag')
-		{
-			// set tags for this view but don't load to DB
-			$this->tagsBuilder[$nameSingleCode] = $nameSingleCode;
 		}
 		elseif (isset($field['settings']->datatype))
 		{

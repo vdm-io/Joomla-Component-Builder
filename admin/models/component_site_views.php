@@ -138,12 +138,6 @@ class ComponentbuilderModelComponent_site_views extends JModelAdmin
 			{
 				$this->_db->updateObject('#__componentbuilder_component_site_views', $objectUpdate, 'id');
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.component_site_views');
-			}
 		}
 
 		return $item;

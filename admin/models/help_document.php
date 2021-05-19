@@ -120,12 +120,6 @@ class ComponentbuilderModelHelp_document extends JModelAdmin
 				// JSON Decode groups.
 				$item->groups = json_decode($item->groups,true);
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.help_document');
-			}
 		}
 
 		return $item;

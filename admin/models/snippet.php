@@ -125,12 +125,6 @@ class ComponentbuilderModelSnippet extends JModelAdmin
 				// base64 Decode snippet.
 				$item->snippet = base64_decode($item->snippet);
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.snippet');
-			}
 		}
 
 		return $item;

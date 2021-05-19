@@ -92,12 +92,6 @@ class ###Component###Model###View### extends JModelAdmin
 				$registry->loadString($item->metadata);
 				$item->metadata = $registry->toArray();
 			}###METHOD_GET_ITEM###
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_###component###.###view###');
-			}
 		}###LINKEDVIEWGLOBAL###
 
 		return $item;

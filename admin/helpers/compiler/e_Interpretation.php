@@ -7299,6 +7299,8 @@ class Interpretation extends Fields
 		// get the component name
 		$Component = $this->fileContentStatic[$this->hhh . 'Component'
 		. $this->hhh];
+		$component = $this->fileContentStatic[$this->hhh . 'component'
+		. $this->hhh];
 		// go from base64 to string
 		if (isset($this->base64Builder[$view])
 			&& ComponentbuilderHelper::checkArray($this->base64Builder[$view]))
@@ -7453,7 +7455,21 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(3) . "}";
 			}
 		}
-
+		// add the tag get options
+		if (isset($this->tagsBuilder[$view]))
+		{
+			$script .= PHP_EOL . PHP_EOL . $this->_t(3)
+				. "if (!empty(\$item->id))";
+			$script .= PHP_EOL . $this->_t(3) . "{";
+			$script .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(
+					__LINE__
+				) . " Get Tag IDs.";
+			$script .= PHP_EOL . $this->_t(4) . "\$item->tags"
+				. " = new JHelperTags;";
+			$script .= PHP_EOL . $this->_t(4)
+				. "\$item->tags->getTagIds(\$item->id, 'com_$component.$view');";
+			$script .= PHP_EOL . $this->_t(3) . "}";
+		}
 		// add custom php to getitem method
 		$script .= $this->getCustomScriptBuilder(
 			'php_getitem', $view, PHP_EOL . PHP_EOL
@@ -21704,6 +21720,41 @@ class Interpretation extends Fields
 				. "continue;";
 			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "}"
 				. PHP_EOL;
+		}
+		// add the tags if needed
+		if (isset($this->tagsBuilder[$nameSingleCode]))
+		{
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "//"
+				. $this->setLine(
+					__LINE__
+				) . " Add the tags";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3)
+				. "\$item->tags = new JHelperTags;";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3)
+				. "\$item->tags->getTagIds(";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(4)
+				. "\$item->id, 'com_"
+				. $this->fileContentStatic[$this->hhh . 'component'
+				. $this->hhh] . ".$nameSingleCode'";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . ");";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3)
+				. "if (\$item->tags->tags)";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "{";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(4)
+				. "\$item->tags = implode(', ',";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(5)
+				. "\$item->tags->getTagNames(";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(6)
+				. "explode(',', \$item->tags->tags)";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(5) . ")";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(4) . ");";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "}";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3)
+				. "else";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "{";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(4)
+				. "\$item->tags = '';";
+			$fix_access .= PHP_EOL . $this->_t(1) . $tab . $this->_t(3) . "}";
 		}
 		// get the correct array
 		if ($export || $all)

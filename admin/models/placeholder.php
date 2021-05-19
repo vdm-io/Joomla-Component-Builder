@@ -189,12 +189,6 @@ class ComponentbuilderModelPlaceholder extends JModelAdmin
 					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_componentbuilder.placeholder');
-			}
 		}
 
 		return $item;
