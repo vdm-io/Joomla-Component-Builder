@@ -508,7 +508,8 @@ class ComponentbuilderModelImport_language_translations extends JModelLegacy
 				{
 					$found = false;
 					$has_id = false;
-					if ($canEdit && isset($row[$source_key]) && ComponentbuilderHelper::checkString($row[$source_key]))
+					// check that we have a string or a number<-(which is weird... but happens at times)
+					if ($canEdit && isset($row[$source_key]) && (ComponentbuilderHelper::checkString($row[$source_key]) || is_numeric($row[$source_key])))
 					{
 						// raw items import & update!
 						$query = $db->getQuery(true);
