@@ -56,7 +56,7 @@ class ###Component###Router extends JComponentRouterBase
 		{
 			$view = $query['view'];
 
-			if (empty($query['Itemid']))
+			if (empty($query['Itemid']) && !(isset($view) && isset($query['id']) && ###ROUTER_BUILD_VIEWS###))
 			{
 				$segments[] = $query['view'];
 			}
