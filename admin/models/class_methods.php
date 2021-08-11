@@ -174,7 +174,10 @@ class ComponentbuilderModelClass_methods extends JModelList
 			$visibilityArray = array(
 				'public' => 'COM_COMPONENTBUILDER_CLASS_METHOD_PUBLIC',
 				'protected' => 'COM_COMPONENTBUILDER_CLASS_METHOD_PROTECTED',
-				'private' => 'COM_COMPONENTBUILDER_CLASS_METHOD_PRIVATE'
+				'private' => 'COM_COMPONENTBUILDER_CLASS_METHOD_PRIVATE',
+				'public static' => 'COM_COMPONENTBUILDER_CLASS_METHOD_PUBLIC_STATIC',
+				'protected static' => 'COM_COMPONENTBUILDER_CLASS_METHOD_PROTECTED_STATIC',
+				'private static' => 'COM_COMPONENTBUILDER_CLASS_METHOD_PRIVATE_STATIC'
 			);
 			// Now check if value is found in this array
 			if (isset($visibilityArray[$value]) && ComponentbuilderHelper::checkString($visibilityArray[$value]))
@@ -187,6 +190,7 @@ class ComponentbuilderModelClass_methods extends JModelList
 		{
 			$extension_typeArray = array(
 				0 => 'COM_COMPONENTBUILDER_CLASS_METHOD_SELECT_AN_OPTION',
+				'powers' => 'COM_COMPONENTBUILDER_CLASS_METHOD_POWERS',
 				'components' => 'COM_COMPONENTBUILDER_CLASS_METHOD_COMPONENTS',
 				'plugins' => 'COM_COMPONENTBUILDER_CLASS_METHOD_PLUGINS',
 				'modules' => 'COM_COMPONENTBUILDER_CLASS_METHOD_MODULES'

@@ -57,8 +57,8 @@
 			<option value="a.published DESC">JSTATUS_DESC</option>
 			<option value="a.name ASC">COM_COMPONENTBUILDER_FILTER_NAME_ASCENDING</option>
 			<option value="a.name DESC">COM_COMPONENTBUILDER_FILTER_NAME_DESCENDING</option>
-			<option value="a.extension_type ASC">COM_COMPONENTBUILDER_FILTER_EXTENSION_TYPE_ASCENDING</option>
-			<option value="a.extension_type DESC">COM_COMPONENTBUILDER_FILTER_EXTENSION_TYPE_DESCENDING</option>
+			<option value="a.extension_type ASC">COM_COMPONENTBUILDER_FILTER_TYPE_ASCENDING</option>
+			<option value="a.extension_type DESC">COM_COMPONENTBUILDER_FILTER_TYPE_DESCENDING</option>
 			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
 			<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
 		</field>

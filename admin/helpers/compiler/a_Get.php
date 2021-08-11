@@ -176,12 +176,12 @@ class Get
 	 *    New Replace Code    = /xxx[REPLACE<>$$$$]xxx/               /xxx[/REPLACE<>$$$$]xxx/
 	 *
 	 *    //////////////////////////////// when JCB adds it back //////////////////////////////////
-	 *    JCB Add Inserted Code    = /xxx[INSERTED$$$$]xxx//x23x/          /xxx[/INSERTED$$$$]xxx/
-	 *    JCB Add Replaced Code    = /xxx[REPLACED$$$$]xxx//x25x/          /xxx[/REPLACED$$$$]xxx/
+	 *    JCB Add Inserted Code    = /xxx[INSERTED$$$$]xxx//xx23xx/          /xxx[/INSERTED$$$$]xxx/
+	 *    JCB Add Replaced Code    = /xxx[REPLACED$$$$]xxx//xx25xx/          /xxx[/REPLACED$$$$]xxx/
 	 *
 	 *    /////////////////////////////// changeing existing custom code /////////////////////////
-	 *    Update Inserted Code    = /xxx[INSERTED<>$$$$]xxx//x23x/        /xxx[/INSERTED<>$$$$]xxx/
-	 *    Update Replaced Code    = /xxx[REPLACED<>$$$$]xxx//x25x/        /xxx[/REPLACED<>$$$$]xxx/
+	 *    Update Inserted Code    = /xxx[INSERTED<>$$$$]xxx//xx23xx/        /xxx[/INSERTED<>$$$$]xxx/
+	 *    Update Replaced Code    = /xxx[REPLACED<>$$$$]xxx//xx25xx/        /xxx[/REPLACED<>$$$$]xxx/
 	 *
 	 *    The custom script placeholders - we use the (==) to avoid detection it should be (--)
 	 *    ###################################--->  HTML  <---#####################################
@@ -11423,11 +11423,11 @@ class Get
 		switch ($type)
 		{
 			case 11:
-				//***[REPLACED$$$$]***//*1*/
+				//***[REPLACED$$$$]***//**1**/
 				if ($this->addPlaceholders === true)
 				{
 					return array(
-						'start' => '/***[REPLACED$$$$]***//*' . $id . '*/',
+						'start' => '/***[REPLACED$$$$]***//**' . $id . '**/',
 						'end'   => '/***[/REPLACED$$$$]***/');
 				}
 				else
@@ -11438,11 +11438,11 @@ class Get
 				}
 				break;
 			case 12:
-				//***[INSERTED$$$$]***//*1*/
+				//***[INSERTED$$$$]***//**1**/
 				if ($this->addPlaceholders === true)
 				{
 					return array(
-						'start' => '/***[INSERTED$$$$]***//*' . $id . '*/',
+						'start' => '/***[INSERTED$$$$]***//**' . $id . '**/',
 						'end'   => '/***[/INSERTED$$$$]***/');
 				}
 				else

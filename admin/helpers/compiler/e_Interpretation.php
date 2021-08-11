@@ -465,7 +465,7 @@ class Interpretation extends Fields
 		$bool[] = $this->_t(2) . "return false;";
 		$bool[] = $this->_t(1) . "}";
 
-		// return the genuine mentod statement
+		// return the genuine method statement
 		return implode(PHP_EOL, $bool);
 	}
 

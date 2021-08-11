@@ -72,6 +72,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	}
 	
 	public $canmerge = 1;
+	public $importGuidOnly = 1;
 	public $postfix = false;
 	public $forceUpdate = 0;
 	public $hasKey = 0;
@@ -224,6 +225,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		$this->moreInfo = $this->app->input->getInt('more_info', 0);
 		// allow merge
 		$this->canmerge = $this->app->input->getInt('canmerge', 1);
+		// forch GUID only search
+		$this->importGuidOnly = $this->app->input->getInt('import_guid_only', 0);
 		// has a key
 		 $this->hasKey = $this->app->input->getInt('haskey', 0);
 		// die sleutle
@@ -2671,6 +2674,20 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		$query->from($this->_db->quoteName('#__componentbuilder_' . $type, 'a'));
 		// only run query if where is set
 		$runQuery = false;
+		// we first try to get the item by GUID
+		if ($get == 1 && isset($item->guid))
+		{
+			if (($item = ComponentbuilderHelper::getGUID($item->guid, $type, 'a.*')) !== false)
+			{
+				return $item;
+			}
+			// check if we should continue the search
+			elseif ($this->importGuidOnly == 1)
+			{
+				return false;
+			}
+		}
+		// continue search
 		if ($get == 1 && isset($item->created) && isset($item->id) && (isset($item->name) || isset($item->system_name)))
 		{
 			// to prefent crazy mismatch with old IDs (I know very weired)

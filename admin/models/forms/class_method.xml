@@ -102,8 +102,6 @@
 			maxlength="150"
 			description="COM_COMPONENTBUILDER_CLASS_METHOD_NAME_DESCRIPTION"
 			class="text_area"
-			readonly="false"
-			disabled="false"
 			required="true"
 			filter="STRING"
 			message="COM_COMPONENTBUILDER_CLASS_METHOD_NAME_MESSAGE"
@@ -117,7 +115,7 @@
 			description="COM_COMPONENTBUILDER_CLASS_METHOD_VISIBILITY_DESCRIPTION"
 			class="list_class"
 			multiple="false"
-			filter="WORD"
+			filter="STRING"
 			required="true">
 			<!-- Option Set. -->
 			<option value="public">
@@ -126,6 +124,12 @@
 				COM_COMPONENTBUILDER_CLASS_METHOD_PROTECTED</option>
 			<option value="private">
 				COM_COMPONENTBUILDER_CLASS_METHOD_PRIVATE</option>
+			<option value="public static">
+				COM_COMPONENTBUILDER_CLASS_METHOD_PUBLIC_STATIC</option>
+			<option value="protected static">
+				COM_COMPONENTBUILDER_CLASS_METHOD_PROTECTED_STATIC</option>
+			<option value="private static">
+				COM_COMPONENTBUILDER_CLASS_METHOD_PRIVATE_STATIC</option>
 		</field>
 		<!-- Extension_type Field. Type: List. (joomla) -->
 		<field
@@ -139,6 +143,8 @@
 			<!-- Option Set. -->
 			<option value="">
 				COM_COMPONENTBUILDER_CLASS_METHOD_SELECT_AN_OPTION</option>
+			<option value="powers">
+				COM_COMPONENTBUILDER_CLASS_METHOD_POWERS</option>
 			<option value="components">
 				COM_COMPONENTBUILDER_CLASS_METHOD_COMPONENTS</option>
 			<option value="plugins">

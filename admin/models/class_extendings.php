@@ -163,6 +163,7 @@ class ComponentbuilderModelClass_extendings extends JModelList
 		{
 			$extension_typeArray = array(
 				0 => 'COM_COMPONENTBUILDER_CLASS_EXTENDS_SELECT_AN_OPTION',
+				'powers' => 'COM_COMPONENTBUILDER_CLASS_EXTENDS_POWERS',
 				'components' => 'COM_COMPONENTBUILDER_CLASS_EXTENDS_COMPONENTS',
 				'plugins' => 'COM_COMPONENTBUILDER_CLASS_EXTENDS_PLUGINS',
 				'modules' => 'COM_COMPONENTBUILDER_CLASS_EXTENDS_MODULES'

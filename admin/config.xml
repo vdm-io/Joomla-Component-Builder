@@ -761,20 +761,6 @@
 			max="100"
 			step="10"
 		/>
-		<!-- Export_language_strings Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="export_language_strings"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_CONFIG_NO</option>
-		</field>
 		<!-- Spacer_hr_nine Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_nine" hr="true" class="spacer_hr_nine" />
 		<!-- Assets_table_fix Field. Type: List. (joomla) -->
@@ -837,6 +823,39 @@
 				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
 			<option value="2">
 				COM_COMPONENTBUILDER_CONFIG_ALPHANUMERICDOT</option>
+		</field>
+	</fieldset>
+	<fieldset
+		name="jcb_packages_custom_config"
+		label="COM_COMPONENTBUILDER_CONFIG_JCB_PACKAGES">
+
+		<!-- Import_guid_only Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="import_guid_only"
+			label="COM_COMPONENTBUILDER_CONFIG_IMPORT_GUID_ONLY_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_IMPORT_GUID_ONLY_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_NO</option>
+		</field>
+		<!-- Export_language_strings Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="export_language_strings"
+			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_NO</option>
 		</field>
 	</fieldset>
 	<fieldset

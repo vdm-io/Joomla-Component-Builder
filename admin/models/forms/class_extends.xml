@@ -102,8 +102,6 @@
 			maxlength="150"
 			description="COM_COMPONENTBUILDER_CLASS_EXTENDS_NAME_DESCRIPTION"
 			class="text_area"
-			readonly="false"
-			disabled="false"
 			required="true"
 			filter="STRING"
 			message="COM_COMPONENTBUILDER_CLASS_EXTENDS_NAME_MESSAGE"
@@ -121,6 +119,8 @@
 			<!-- Option Set. -->
 			<option value="">
 				COM_COMPONENTBUILDER_CLASS_EXTENDS_SELECT_AN_OPTION</option>
+			<option value="powers">
+				COM_COMPONENTBUILDER_CLASS_EXTENDS_POWERS</option>
 			<option value="components">
 				COM_COMPONENTBUILDER_CLASS_EXTENDS_COMPONENTS</option>
 			<option value="plugins">

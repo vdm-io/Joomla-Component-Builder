@@ -102,8 +102,6 @@
 			maxlength="150"
 			description="COM_COMPONENTBUILDER_CLASS_PROPERTY_NAME_DESCRIPTION"
 			class="text_area"
-			readonly="false"
-			disabled="false"
 			required="true"
 			filter="STRING"
 			message="COM_COMPONENTBUILDER_CLASS_PROPERTY_NAME_MESSAGE"
@@ -117,7 +115,7 @@
 			description="COM_COMPONENTBUILDER_CLASS_PROPERTY_VISIBILITY_DESCRIPTION"
 			class="list_class"
 			multiple="false"
-			filter="WORD"
+			filter="STRING"
 			required="true">
 			<!-- Option Set. -->
 			<option value="public">
@@ -126,6 +124,12 @@
 				COM_COMPONENTBUILDER_CLASS_PROPERTY_PROTECTED</option>
 			<option value="private">
 				COM_COMPONENTBUILDER_CLASS_PROPERTY_PRIVATE</option>
+			<option value="public static">
+				COM_COMPONENTBUILDER_CLASS_PROPERTY_PUBLIC_STATIC</option>
+			<option value="protected static">
+				COM_COMPONENTBUILDER_CLASS_PROPERTY_PROTECTED_STATIC</option>
+			<option value="private static">
+				COM_COMPONENTBUILDER_CLASS_PROPERTY_PRIVATE_STATIC</option>
 		</field>
 		<!-- Extension_type Field. Type: List. (joomla) -->
 		<field
@@ -139,6 +143,8 @@
 			<!-- Option Set. -->
 			<option value="">
 				COM_COMPONENTBUILDER_CLASS_PROPERTY_SELECT_AN_OPTION</option>
+			<option value="powers">
+				COM_COMPONENTBUILDER_CLASS_PROPERTY_POWERS</option>
 			<option value="components">
 				COM_COMPONENTBUILDER_CLASS_PROPERTY_COMPONENTS</option>
 			<option value="plugins">
@@ -184,17 +190,17 @@
 			required="true"
 			button="true"
 		/>
-		<!-- Default Field. Type: Text. (joomla) -->
+		<!-- Default Field. Type: Textarea. (joomla) -->
 		<field
-			type="text"
+			type="textarea"
 			name="default"
 			label="COM_COMPONENTBUILDER_CLASS_PROPERTY_DEFAULT_LABEL"
-			size="240"
-			maxlength="350"
+			rows="1"
+			cols="5"
 			description="COM_COMPONENTBUILDER_CLASS_PROPERTY_DEFAULT_DESCRIPTION"
+			message="COM_COMPONENTBUILDER_CLASS_PROPERTY_DEFAULT_MESSAGE"
 			class="text_area span12"
 			filter="STRING"
-			message="COM_COMPONENTBUILDER_CLASS_PROPERTY_DEFAULT_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CLASS_PROPERTY_DEFAULT_HINT"
 		/>
 	</fieldset>

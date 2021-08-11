@@ -248,6 +248,31 @@ class ComponentbuilderViewImport_joomla_components extends JViewLegacy
 			$merge->setup($mergeXML,1);
 			// add to form
 			$form[] = $merge;
+
+			// get the import_guid_only radio field
+			$import_guid_only = JFormHelper::loadFieldType('radio',true);
+			// start import_guid_only xml
+			$import_guid_onlyXML = new SimpleXMLElement('<field/>');
+			// import_guid_only attributes
+			$import_guid_onlyAttributes = array(
+				'type' => 'radio',
+				'name' => 'import_guid_only',
+				'label' => 'COM_COMPONENTBUILDER_IMPORT_BY_GUID_ONLY',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_FORCE_THAT_THIS_JCB_PACKAGE_IMPORT_SEARCH_FOR_LOCAL_ITEMS_TO_BE_DONE_WITH_GUID_VALUE_ONLY_IF_BMERGEB_IS_SET_TO_YES_ABOVE',
+				'default' => '1');
+			// load the import_guid_only attributes
+			ComponentbuilderHelper::xmlAddAttributes($import_guid_onlyXML, $import_guid_onlyAttributes);
+			// set the import_guid_only options
+			$import_guid_onlyOptions = array(
+				'1' => 'COM_COMPONENTBUILDER_YES',
+				'0' => 'COM_COMPONENTBUILDER_NO');
+			// load the import_guid_only options
+			ComponentbuilderHelper::xmlAddOptions($import_guid_onlyXML, $import_guid_onlyOptions);
+			// setup the import_guid_only radio field
+			$import_guid_only->setup($import_guid_onlyXML, $this->params->get('import_guid_only', 0));
+			// add to form
+			$form[] = $import_guid_only;
 		
 			if (!$this->packageInfo || ComponentbuilderHelper::getPackageComponentsKeyStatus($this->packageInfo))
 			{

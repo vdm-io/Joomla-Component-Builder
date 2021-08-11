@@ -5042,7 +5042,7 @@ class Fields extends Structure
 					);
 					break;
 				case 4:
-					// WHMCS_ENCRYPTION_VDMKEY
+					// WHMCS_ENCRYPTION_VDMKEY (DUE REMOVAL)
 					$this->whmcsFieldModeling[$nameSingleCode][] = $name;
 					// Site settings of each field if needed
 					$this->buildSiteFieldData(

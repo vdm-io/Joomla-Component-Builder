@@ -2303,6 +2303,57 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
+	 * get the ITEM of a GUID by table
+	 *
+	 * @param string $guid
+	 * @param string $table
+	 * @param string/array $what
+	 *
+	 * @return mix
+	 */
+	public static function getGUID ($guid, $table, $what = 'a.id')
+	{
+		// check if we have a string
+		if (self::validateGUID($guid))
+		{
+			// check if table already has this identifier
+			if (self::checkString($table))
+			{
+				// Get the database object and a new query object.
+				$db = \JFactory::getDbo();
+				$query = $db->getQuery(true);
+				if (self::checkArray($what))
+				{
+					$query->select($db->quoteName($what));
+				}
+				else
+				{
+					$query->select($what);
+				}
+				$query->from($db->quoteName('#__componentbuilder_' . (string) $table, 'a'))
+					->where($db->quoteName('a.guid') . ' = ' . $db->quote($guid));
+
+				// Set and query the database.
+				$db->setQuery($query);
+				$db->execute();
+
+				if ($db->getNumRows())
+				{
+					if (self::checkArray($what) || $what === 'a.*')
+					{
+						return $db->loadObject();
+					}
+					else
+					{
+						return $db->loadResult();
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Validate the Globally Unique Identifier
 	 *
 	 * Thanks to Lewie
@@ -2420,7 +2471,7 @@ abstract class ComponentbuilderHelper
 	 * @return  array   on success
 	 * 
 	 */
-	public static function getFieldTypeProperties($value, $type, $settings = array(), $xml = null, $db_defaults = false)
+	public static function getFieldTypeProperties($value, $type, $settings = array(), $xml = null, $dbDefaults = false)
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -2429,7 +2480,7 @@ abstract class ComponentbuilderHelper
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
 		// load database default values
-		if ($db_defaults)
+		if ($dbDefaults)
 		{
 			$query->select($db->quoteName(array('datadefault', 'datadefault_other', 'datalenght', 'datalenght_other', 'datatype', 'has_defaults', 'indexes', 'null_switch', 'store')));
 		}
@@ -2456,6 +2507,12 @@ abstract class ComponentbuilderHelper
 			$nr = 0;
 			// php tracker (we must try to load alteast 17 rows
 			$phpTracker = array();
+			// force load all properties
+			$forceAll = false;
+			if ($xml && strpos($xml, '..__FORCE_LOAD_ALL_PROPERTIES__..') !== false)
+			{
+				$forceAll = true;
+			}
 			// value to check since there are false and null values even 0 in the values returned
 			$confirmation = '8qvZHoyuFYQqpj0YQbc6F3o5DhBlmS-_-a8pmCZfOVSfANjkmV5LG8pCdAY2JNYu6cB';
 			// set the headers
@@ -2501,7 +2558,7 @@ abstract class ComponentbuilderHelper
 						$field['subform']['properties'.$nr] = array('name' => $property['name'], 'value' => $settings[$property['name']], 'desc' => $property['description']);
 					}
 				}
-				elseif (!$xml || $confirmation !== $value)
+				elseif ($forceAll || !$xml || $confirmation !== $value)
 				{
 					// add the xml values
 					$field['values'] .= PHP_EOL."\t" . $property['name'] . '="' . ($confirmation !== $value) ? $value : $example .'" ';

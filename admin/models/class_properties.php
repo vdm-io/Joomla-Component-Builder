@@ -174,7 +174,10 @@ class ComponentbuilderModelClass_properties extends JModelList
 			$visibilityArray = array(
 				'public' => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_PUBLIC',
 				'protected' => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_PROTECTED',
-				'private' => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_PRIVATE'
+				'private' => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_PRIVATE',
+				'public static' => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_PUBLIC_STATIC',
+				'protected static' => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_PROTECTED_STATIC',
+				'private static' => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_PRIVATE_STATIC'
 			);
 			// Now check if value is found in this array
 			if (isset($visibilityArray[$value]) && ComponentbuilderHelper::checkString($visibilityArray[$value]))
@@ -187,6 +190,7 @@ class ComponentbuilderModelClass_properties extends JModelList
 		{
 			$extension_typeArray = array(
 				0 => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_SELECT_AN_OPTION',
+				'powers' => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_POWERS',
 				'components' => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_COMPONENTS',
 				'plugins' => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_PLUGINS',
 				'modules' => 'COM_COMPONENTBUILDER_CLASS_PROPERTY_MODULES'
