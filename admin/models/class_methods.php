@@ -141,6 +141,8 @@ class ComponentbuilderModelClass_methods extends JModelList
 					continue;
 				}
 
+				// decode arguments
+				$item->arguments = base64_decode($item->arguments);
 			}
 		}
 

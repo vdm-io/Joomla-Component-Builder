@@ -784,6 +784,13 @@ function dbChecker(type){
 		jQuery('#jform_null_switch').removeAttr('required');
 		jQuery('#jform_null_switch').removeAttr('aria-required');
 		jQuery('#jform_null_switch').removeClass('required');
+		// remove the store (modeling method)
+		jQuery('#jform_store-lbl').closest('.control-group').hide();
+		jQuery('#jform_store').closest('.control-group').hide();
+		updateFieldRequired('store',1);
+		jQuery('#jform_store').removeAttr('required');
+		jQuery('#jform_store').removeAttr('aria-required');
+		jQuery('#jform_store').removeClass('required');
 		// show notice
 		jQuery('.note_no_database_settings_needed').closest('.control-group').show();
 		jQuery('.note_database_settings_needed').closest('.control-group').hide();
@@ -802,6 +809,13 @@ function dbChecker(type){
 		jQuery('#jform_null_switch').prop('required','required');
 		jQuery('#jform_null_switch').attr('aria-required',true);
 		jQuery('#jform_null_switch').addClass('required');
+		// remove the store (modeling method)
+		jQuery('#jform_store-lbl').closest('.control-group').show();
+		jQuery('#jform_store').closest('.control-group').show();
+		updateFieldRequired('store',0);
+		jQuery('#jform_store').prop('required','required');
+		jQuery('#jform_store').attr('aria-required',true);
+		jQuery('#jform_store').addClass('required');
 		// remove notice
 		jQuery('.note_no_database_settings_needed').closest('.control-group').hide();
 		jQuery('.note_database_settings_needed').closest('.control-group').show();
