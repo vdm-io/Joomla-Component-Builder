@@ -4343,7 +4343,13 @@ class Interpretation extends Fields
 								. $this->setLine(__LINE__) . " Check if \$"
 								. $default['on_field']
 								. " is an array with values.";
-							$methods .= PHP_EOL . $this->_t(2) . "\$array = \$"
+							$methods .= PHP_EOL . $this->_t(2) . "\$array = ("
+								. $this->fileContentStatic[$this->hhh
+								. 'Component' . $this->hhh]
+								. "Helper::checkJson(\$"
+								. $default['on_field']
+								. ", true)) ? json_decode(\$"
+								. $default['on_field'] . ",true) : \$"
 								. $default['on_field'] . ";";
 							$methods .= PHP_EOL . $this->_t(2)
 								. "if (isset(\$array) && "
