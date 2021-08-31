@@ -27,8 +27,8 @@ class ###Component###ControllerAjax extends JControllerLegacy
 		parent::__construct($config);
 		// make sure all json stuff are set
 		JFactory::getDocument()->setMimeEncoding( 'application/json' );
-		JResponse::setHeader('Content-Disposition','attachment;filename="getajax.json"');
-		JResponse::setHeader("Access-Control-Allow-Origin", "*");
+		JFactory::getApplication()->setHeader('Content-Disposition','attachment;filename="getajax.json"');
+		JFactory::getApplication()->setHeader("Access-Control-Allow-Origin", "*");
 		// load the tasks
 		$this->registerTask('fieldRequired', 'ajax');
 	}

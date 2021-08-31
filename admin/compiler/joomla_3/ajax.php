@@ -60,7 +60,7 @@ class ###Component###ModelAjax extends JModelList
 				$fields = array($name);
 			}
 		}
-		// load the remaining values to seesion
+		// load the remaining values to session
 		if(###Component###Helper::checkArray($fields))
 		{
 			$session->set($form.'_requiredFieldFix', $fields);

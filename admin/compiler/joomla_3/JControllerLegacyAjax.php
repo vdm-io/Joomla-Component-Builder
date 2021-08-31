@@ -29,20 +29,29 @@ class ###Component###ControllerAjax extends JControllerLegacy
 		parent::__construct($config);
 		// make sure all json stuff are set
 		JFactory::getDocument()->setMimeEncoding( 'application/json' );
-		JResponse::setHeader('Content-Disposition','attachment;filename="getajax.json"');
-		JResponse::setHeader("Access-Control-Allow-Origin", "*");
+		// get the application
+		$app = JFactory::getApplication();
+		$app->setHeader('Content-Disposition','attachment;filename="getajax.json"');
+		$app->setHeader('Access-Control-Allow-Origin', '*');
 		// load the tasks ###REGISTER_AJAX_TASK###
 	}
 
 	public function ajax()
 	{
+		// get the user for later use
 		$user 		= JFactory::getUser();
+		// get the input values
 		$jinput 	= JFactory::getApplication()->input;
+		// check if we should return raw
+		$returnRaw	= $jinput->get('raw', false, 'BOOLEAN');
+		// return to a callback function
+		$callback	= $jinput->get('callback', null, 'CMD');
 		// Check Token!
 		$token 		= JSession::getFormToken();
 		$call_token	= $jinput->get('token', 0, 'ALNUM');
 		if($jinput->get($token, 0, 'ALNUM') || $token === $call_token)
 		{
+			// get the task
 			$task = $this->getTask();
 			switch($task)
 			{###AJAX_INPUT_RETURN###
@@ -50,9 +59,14 @@ class ###Component###ControllerAjax extends JControllerLegacy
 		}
 		else
 		{
-			if($callback = $jinput->get('callback', null, 'CMD'))
+			// return to a callback function
+			if($callback)
 			{
 				echo $callback."(".json_encode(false).");";
+			}
+			elseif($returnRaw)
+			{
+				echo json_encode(false);
 			}
 			else
 			{

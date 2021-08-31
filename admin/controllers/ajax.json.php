@@ -24,8 +24,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		parent::__construct($config);
 		// make sure all json stuff are set
 		JFactory::getDocument()->setMimeEncoding( 'application/json' );
-		JResponse::setHeader('Content-Disposition','attachment;filename="getajax.json"');
-		JResponse::setHeader("Access-Control-Allow-Origin", "*");
+		// get the application
+		$app = JFactory::getApplication();
+		$app->setHeader('Content-Disposition','attachment;filename="getajax.json"');
+		$app->setHeader('Access-Control-Allow-Origin', '*');
 		// load the tasks 
 		$this->registerTask('isNew', 'ajax');
 		$this->registerTask('isRead', 'ajax');
@@ -69,20 +71,26 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 
 	public function ajax()
 	{
+		// get the user for later use
 		$user 		= JFactory::getUser();
+		// get the input values
 		$jinput 	= JFactory::getApplication()->input;
+		// check if we should return raw
+		$returnRaw	= $jinput->get('raw', false, 'BOOLEAN');
+		// return to a callback function
+		$callback	= $jinput->get('callback', null, 'CMD');
 		// Check Token!
 		$token 		= JSession::getFormToken();
 		$call_token	= $jinput->get('token', 0, 'ALNUM');
 		if($jinput->get($token, 0, 'ALNUM') || $token === $call_token)
 		{
+			// get the task
 			$task = $this->getTask();
 			switch($task)
 			{
 				case 'isNew':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$noticeValue = $jinput->get('notice', NULL, 'STRING');
 						if($noticeValue && $user->id != 0)
 						{
@@ -92,7 +100,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -107,9 +115,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -120,7 +132,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'isRead':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$noticeValue = $jinput->get('notice', NULL, 'STRING');
 						if($noticeValue && $user->id != 0)
 						{
@@ -130,7 +141,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -145,9 +156,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -158,7 +173,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getComponentDetails':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -168,7 +182,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -183,9 +197,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -196,7 +214,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getCronPath':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$getTypeValue = $jinput->get('getType', NULL, 'WORD');
 						if($getTypeValue && $user->id != 0)
 						{
@@ -206,7 +223,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -221,9 +238,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -234,7 +255,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getJCBpackageInfo':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$urlValue = $jinput->get('url', NULL, 'STRING');
 						if($urlValue && $user->id != 0)
 						{
@@ -244,7 +264,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -259,9 +279,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -272,7 +296,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getCrowdinDetails':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$identifierValue = $jinput->get('identifier', NULL, 'CMD');
 						$keyValue = $jinput->get('key', NULL, 'ALNUM');
 						if($identifierValue && $user->id != 0 && $keyValue)
@@ -283,7 +306,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -298,9 +321,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -311,7 +338,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getModuleCode':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$dataValue = $jinput->get('data', NULL, 'STRING');
 						if($dataValue && $user->id != 0)
 						{
@@ -321,7 +347,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -336,9 +362,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -349,7 +379,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getClassCode':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						if($idValue && $user->id != 0 && $typeValue)
@@ -360,7 +389,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -375,9 +404,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -388,7 +421,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getClassCodeIds':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						if($idValue && $user->id != 0 && $typeValue)
@@ -399,7 +431,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -414,9 +446,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -427,7 +463,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getClassHeaderCode':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						if($idValue && $user->id != 0 && $typeValue)
@@ -438,7 +473,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -453,9 +488,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -466,7 +505,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'tableColumns':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$tableValue = $jinput->get('table', NULL, 'WORD');
 						if($tableValue && $user->id != 0)
 						{
@@ -476,7 +514,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -491,9 +529,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -504,7 +546,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'fieldSelectOptions':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -514,7 +555,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -529,9 +570,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -542,7 +587,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getDynamicScripts':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						if($typeValue && $user->id != 0)
 						{
@@ -552,7 +596,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -567,9 +611,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -580,7 +628,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getButton':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						$sizeValue = $jinput->get('size', NULL, 'INT');
 						if($typeValue && $user->id != 0 && $sizeValue)
@@ -591,7 +638,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -606,9 +653,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -619,7 +670,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getButtonID':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						$sizeValue = $jinput->get('size', NULL, 'INT');
 						if($typeValue && $user->id != 0 && $sizeValue)
@@ -630,7 +680,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -645,9 +695,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -658,7 +712,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getAjaxDisplay':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						if($typeValue && $user->id != 0)
 						{
@@ -668,7 +721,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -683,9 +736,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -696,7 +753,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getLinked':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$typeValue = $jinput->get('type', NULL, 'ALNUM');
 						if($typeValue && $user->id != 0)
 						{
@@ -706,7 +762,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -721,9 +777,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -734,7 +794,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'checkAliasField':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$typeValue = $jinput->get('type', NULL, 'ALNUM');
 						if($typeValue && $user->id != 0)
 						{
@@ -744,7 +803,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -759,9 +818,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -772,7 +835,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'checkCategoryField':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$typeValue = $jinput->get('type', NULL, 'ALNUM');
 						if($typeValue && $user->id != 0)
 						{
@@ -782,7 +844,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -797,9 +859,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -810,7 +876,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'templateDetails':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', null, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -820,7 +885,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -835,9 +900,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -848,7 +917,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getLayoutDetails':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -858,7 +926,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -873,9 +941,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -886,7 +958,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'dbTableColumns':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$nameValue = $jinput->get('name', NULL, 'WORD');
 						$asValue = $jinput->get('as', NULL, 'WORD');
 						$typeValue = $jinput->get('type', NULL, 'INT');
@@ -898,7 +969,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -913,9 +984,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -926,7 +1001,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'viewTableColumns':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$asValue = $jinput->get('as', NULL, 'WORD');
 						$typeValue = $jinput->get('type', NULL, 'INT');
@@ -938,7 +1012,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -953,9 +1027,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -966,7 +1044,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getDynamicValues':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$viewValue = $jinput->get('view', NULL, 'WORD');
 						if($idValue && $user->id != 0 && $viewValue)
@@ -977,7 +1054,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -992,9 +1069,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1005,7 +1086,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'checkFunctionName':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$functioNameValue = $jinput->get('functioName', NULL, 'STRING');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($functioNameValue && $user->id != 0 && $idValue)
@@ -1016,7 +1096,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1031,9 +1111,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1044,7 +1128,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'usedin':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$functioNameValue = $jinput->get('functioName', NULL, 'WORD');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$targetValue = $jinput->get('target', NULL, 'WORD');
@@ -1056,7 +1139,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1071,9 +1154,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1084,7 +1171,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getEditCustomCodeButtons':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -1094,7 +1180,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1109,9 +1195,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1122,7 +1212,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'placedin':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$placeholderValue = $jinput->get('placeholder', NULL, 'WORD');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$targetValue = $jinput->get('target', NULL, 'WORD');
@@ -1134,7 +1223,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1149,9 +1238,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1162,7 +1255,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'checkPlaceholderName':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$placeholderNameValue = $jinput->get('placeholderName', NULL, 'STRING');
 						if($idValue && $user->id != 0 && $placeholderNameValue)
@@ -1173,7 +1265,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1188,9 +1280,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1201,7 +1297,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getExistingValidationRuleCode':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$nameValue = $jinput->get('name', NULL, 'WORD');
 						if($nameValue && $user->id != 0)
 						{
@@ -1211,7 +1306,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1226,9 +1321,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1239,7 +1338,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getValidationRulesTable':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -1249,7 +1347,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1264,9 +1362,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1277,7 +1379,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'checkRuleName':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$nameValue = $jinput->get('name', NULL, 'STRING');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($nameValue && $user->id != 0 && $idValue)
@@ -1288,7 +1389,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1303,9 +1404,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1316,7 +1421,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'fieldTypeProperties':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue)
 						{
@@ -1326,7 +1430,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1341,9 +1445,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1354,7 +1462,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getFieldPropertyDesc':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$propertyValue = $jinput->get('property', NULL, 'WORD');
 						$fieldtypeValue = $jinput->get('fieldtype', NULL, 'ALNUM');
 						if($propertyValue && $user->id != 0 && $fieldtypeValue)
@@ -1365,7 +1472,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1380,9 +1487,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1393,7 +1504,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getCodeGlueOptions':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$listfieldValue = $jinput->get('listfield', NULL, 'INT');
 						$joinfieldsValue = $jinput->get('joinfields', NULL, 'STRING');
 						$typeValue = $jinput->get('type', NULL, 'INT');
@@ -1406,7 +1516,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1421,9 +1531,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1434,7 +1548,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'snippetDetails':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
@@ -1444,7 +1557,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1459,9 +1572,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1472,7 +1589,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'setSnippetGithub':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$pathValue = $jinput->get('path', NULL, 'STRING');
 						$statusValue = $jinput->get('status', NULL, 'WORD');
 						if($pathValue && $user->id != 0 && $statusValue)
@@ -1483,7 +1599,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1498,9 +1614,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1511,7 +1631,6 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 				case 'getSnippets':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$librariesValue = $jinput->get('libraries', NULL, 'STRING');
 						if($librariesValue && $user->id != 0)
 						{
@@ -1521,7 +1640,7 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -1536,9 +1655,13 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -1550,9 +1673,14 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 		}
 		else
 		{
-			if($callback = $jinput->get('callback', null, 'CMD'))
+			// return to a callback function
+			if($callback)
 			{
 				echo $callback."(".json_encode(false).");";
+			}
+			elseif($returnRaw)
+			{
+				echo json_encode(false);
 			}
 			else
 			{

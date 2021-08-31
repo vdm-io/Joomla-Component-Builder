@@ -17900,8 +17900,6 @@ class Interpretation extends Fields
 					$cases .= PHP_EOL . $this->_t(4) . "case '" . $task . "':";
 					$cases .= PHP_EOL . $this->_t(5) . "try";
 					$cases .= PHP_EOL . $this->_t(5) . "{";
-					$cases .= PHP_EOL . $this->_t(6)
-						. "\$returnRaw = \$jinput->get('raw', false, 'BOOLEAN');";
 					foreach ($input[$task] as $string)
 					{
 						$cases .= PHP_EOL . $this->_t(6) . $string;
@@ -17936,7 +17934,7 @@ class Interpretation extends Fields
 					}
 					// continue the build
 					$cases .= PHP_EOL . $this->_t(6)
-						. "if(\$callback = \$jinput->get('callback', null, 'CMD'))";
+						. "if(\$callback)";
 					$cases .= PHP_EOL . $this->_t(6) . "{";
 					$cases .= PHP_EOL . $this->_t(7)
 						. "echo \$callback . \"(\".json_encode(\$result).\");\";";
@@ -17955,10 +17953,16 @@ class Interpretation extends Fields
 					$cases .= PHP_EOL . $this->_t(5) . "catch(Exception \$e)";
 					$cases .= PHP_EOL . $this->_t(5) . "{";
 					$cases .= PHP_EOL . $this->_t(6)
-						. "if(\$callback = \$jinput->get('callback', null, 'CMD'))";
+						. "if(\$callback)";
 					$cases .= PHP_EOL . $this->_t(6) . "{";
 					$cases .= PHP_EOL . $this->_t(7)
 						. "echo \$callback.\"(\".json_encode(\$e).\");\";";
+					$cases .= PHP_EOL . $this->_t(6) . "}";
+					$cases .= PHP_EOL . $this->_t(6)
+						. "elseif(\$returnRaw)";
+					$cases .= PHP_EOL . $this->_t(6) . "{";
+					$cases .= PHP_EOL . $this->_t(7)
+						. "echo json_encode(\$e);";
 					$cases .= PHP_EOL . $this->_t(6) . "}";
 					$cases .= PHP_EOL . $this->_t(6) . "else";
 					$cases .= PHP_EOL . $this->_t(6) . "{";
