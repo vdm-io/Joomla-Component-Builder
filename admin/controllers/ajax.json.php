@@ -423,9 +423,10 @@ class ComponentbuilderControllerAjax extends JControllerLegacy
 					{
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
+						$keyValue = $jinput->get('key', 1, 'INT');
 						if($idValue && $user->id != 0 && $typeValue)
 						{
-							$result = $this->getModel('ajax')->getClassCodeIds($idValue, $typeValue);
+							$result = $this->getModel('ajax')->getClassCodeIds($idValue, $typeValue, $keyValue);
 						}
 						else
 						{

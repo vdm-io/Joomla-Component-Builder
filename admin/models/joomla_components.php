@@ -2073,6 +2073,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			'views' => 'class_methods',
 			'not_base64' => array(),
 			'name' => 'name'
+		),
+		// #__componentbuilder_power (v)
+		'class_method' => array(
+			'search' => array('id', 'name', 'description', 'head', 'head', 'main_class_code'),
+			'views' => 'powers',
+			'not_base64' => array('description'),
+			'name' => 'name'
 		)
 	);
 

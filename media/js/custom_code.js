@@ -328,8 +328,8 @@ function usedin(functioName, ide) {
 	jQuery('#note-usedin-not').hide();
 	jQuery('#note-usedin-found').hide();
 	jQuery('#loading-usedin').show();
-	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u']; // if you update this, also update (below 20) & [customcode-codeUsedInHtmlNote]!
-	var targetNumber = 20;
+	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v']; // if you update this, also update (below 21) & [customcode-codeUsedInHtmlNote]!
+	var targetNumber = 21;
 	var run = 0;
 	var usedinChecker = setInterval(function(){ 
 		var target = targets[run];

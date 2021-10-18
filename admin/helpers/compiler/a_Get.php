@@ -1,5 +1,5 @@
 <?php
-/**
+ /**
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
@@ -10104,7 +10104,7 @@ class Get
 					else
 					{
 						$plugin->{$server} = 0;
-						// only change this for sales server (update server can be added loacaly to the zip file)
+						// only change this for sales server (update server can be added locally to the zip file)
 						if ('sales_server' === $server)
 						{
 							$plugin->{'add_' . $server} = 0;

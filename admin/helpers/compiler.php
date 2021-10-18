@@ -690,6 +690,39 @@ class Compiler extends Infusion
 				File::delete($update_server_xml_path);
 			}
 		}
+		// move the modules update server to host
+		if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+		{
+			foreach ($this->joomlaModules as $module)
+			{
+				if (ComponentbuilderHelper::checkObject($module)
+					&& isset($module->add_update_server)
+					&& $module->add_update_server == 1
+					&& isset($module->update_server_target)
+					&& $module->update_server_target == 1
+					&& isset($module->update_server)
+					&& is_numeric($module->update_server)
+					&& $module->update_server > 0
+					&& isset($module->update_server_xml_path)
+					&& File::exists($module->update_server_xml_path)
+					&& isset($module->update_server_xml_file_name)
+					&& ComponentbuilderHelper::checkString(
+						$module->update_server_xml_file_name
+					))
+				{
+					// move to server
+					ComponentbuilderHelper::moveToServer(
+						$module->update_server_xml_path,
+						$module->update_server_xml_file_name,
+						(int) $module->update_server,
+						$module->update_server_protocol
+					);
+					// remove the local file
+					File::delete($module->update_server_xml_path);
+				}
+				// var_dump($module->update_server_xml_path);exit;
+			}
+		}
 		// move the plugins update server to host
 		if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
 		{
@@ -724,7 +757,7 @@ class Compiler extends Infusion
 		}
 	}
 
-	// link canges made to views into the file license
+	// link changes made to views into the file license
 	protected function fixLicenseValues($data)
 	{
 		// check if these files have its own config data)

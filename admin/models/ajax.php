@@ -317,11 +317,19 @@ class ComponentbuilderModelAjax extends JModelList
 		return ComponentbuilderHelper::getClassCode($id, $type);
 	}
 
-	public function getClassCodeIds($id, $type)
+	public function getClassCodeIds($id, $type, $key)
 	{
 		if ('property' === $type || 'method' === $type)
 		{
-			return ComponentbuilderHelper::getVars('class_' . $type, $id, 'joomla_plugin_group', 'id');
+			// we get the plugin group, or the powers
+			if ($key == 1)
+			{
+				return ComponentbuilderHelper::getVars('class_' . $type, $id, 'joomla_plugin_group', 'id');
+			}
+			elseif ($key == 2)
+			{
+				return ComponentbuilderHelper::getVars('class_' . $type, 'powers', 'extension_type', 'id');
+			}
 		}
 		elseif ('joomla_plugin_group' === $type)
 		{
@@ -2658,6 +2666,13 @@ class ComponentbuilderModelAjax extends JModelList
 			'search' => array('id', 'name', 'code', 'comment'),
 			'views' => 'class_methods',
 			'not_base64' => array(),
+			'name' => 'name'
+		),
+		// #__componentbuilder_power (v)
+		'class_method' => array(
+			'search' => array('id', 'name', 'description', 'head', 'head', 'main_class_code'),
+			'views' => 'powers',
+			'not_base64' => array('description'),
 			'name' => 'name'
 		)
 	);

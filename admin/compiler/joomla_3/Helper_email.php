@@ -14,6 +14,9 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 ###BOM###
 
+// No direct access to this file
+defined('_JEXEC') or die('Restricted access');
+
 /**
  * ###Component### component email helper
  */

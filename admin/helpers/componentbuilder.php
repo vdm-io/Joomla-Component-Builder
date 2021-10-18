@@ -79,6 +79,11 @@ abstract class ComponentbuilderHelper
 	protected static $localCompany = array();
 
 	/**
+	* The excluded powers
+	**/
+	protected static $exPowers= array();
+
+	/**
 	* The snippet paths
 	**/
 	public static $snippetPath = 'https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/';
@@ -1970,6 +1975,39 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
+	* Powers to exclude
+	**/
+	public static function excludePowers($id)
+	{
+		// first check if this power set is already found
+		if (!isset(self::$exPowers[$id]))
+		{
+			// Get a db connection.
+			$db = JFactory::getDbo();
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('a.id')));
+			$query->from($db->quoteName('#__componentbuilder_power', 'a'));
+			$query->join('LEFT', $db->quoteName('#__componentbuilder_power', 'b') . ' ON (' . $db->quoteName('a.name') . ' = ' . $db->quoteName('b.name') . ' AND ' . $db->quoteName('a.namespace') . ' = ' . $db->quoteName('b.namespace') . ')');
+			$query->where($db->quoteName('b.id') . ' = ' . (int) $id);
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				self::$exPowers[$id] = $db->loadColumn();
+			}
+			// all ways add itself aswell
+			self::$exPowers[$id][] = $id;
+		}
+		// if found return
+		if (isset(self::$exPowers[$id]))
+		{
+			return self::$exPowers[$id];
+		}
+		return false;
+	}
+
+	/**
 	 * The array of dynamic content
 	 * 
 	 * @var     array
@@ -2606,7 +2644,7 @@ abstract class ComponentbuilderHelper
 			$field['values'] .= PHP_EOL . "/>";
 			$field['values_description'] .= '</tbody></table>';
 			// load the database defaults if set and wanted
-			if ($db_defaults && isset($result->has_defaults) && $result->has_defaults == 1)
+			if ($dbDefaults && isset($result->has_defaults) && $result->has_defaults == 1)
 			{
 				$field['database'] = array(
 					'datatype' => $result->datatype,
@@ -6713,6 +6751,75 @@ abstract class ComponentbuilderHelper
 		if ($db->getNumRows())
 		{
 			return $db->loadAssocList('langtag', 'name');
+		}
+		return false;
+	}
+
+
+	/**
+	 * Check if a row already exist
+	 *
+	 * @param   string   $table        The table from which to get the variable
+	 * @param   array   $where        The value where
+	 * @param   string   $main         The component in which the table is found
+	 *
+	 * @return  int   the id, or false
+	 *
+	 */
+	public static function checkExist($table, $where, $what = 'id', $operator = '=', $main = 'componentbuilder')
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array($what)));
+		if (empty($table))
+		{
+			$query->from($db->quoteName('#__'.$main));
+		}
+		else
+		{
+			$query->from($db->quoteName('#__'.$main.'_'.$table));
+		}
+		if (self::checkArray($where))
+		{
+			foreach ($where as $key => $value)
+			{
+				if (is_numeric($value))
+				{
+					if (is_float($value + 0))
+					{
+						$query->where($db->quoteName($key) . ' ' . $operator . ' ' . (float) $value);
+					}
+					else
+					{
+						$query->where($db->quoteName($key) . ' ' . $operator . ' ' . (int) $value);
+					}
+				}
+				elseif (is_bool($value))
+				{
+					$query->where($db->quoteName($key) . ' ' . $operator . ' ' . (bool) $value);
+				}
+				// we do not allow arrays at this point
+				elseif (!self::checkArray($value))
+				{
+					$query->where($db->quoteName($key) . ' ' . $operator . ' ' . $db->quote( (string) $value));
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+		else
+		{
+			return false;
+		}
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			return $db->loadResult();
 		}
 		return false;
 	}

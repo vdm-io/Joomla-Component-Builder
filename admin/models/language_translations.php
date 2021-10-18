@@ -387,7 +387,7 @@ class ComponentbuilderModelLanguage_translations extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.source LIKE '.$search.')');
+				$query->where('(a.source LIKE '.$search.' OR a.translation LIKE '.$search.')');
 			}
 		}
 
