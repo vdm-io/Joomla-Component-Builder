@@ -35,23 +35,23 @@ class JFormFieldJoomlacomponents extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-				$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','components_system_name')));
-		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
-		$query->where($db->quoteName('a.published') . ' >= 1');
-		$query->order('a.system_name ASC');
-		$db->setQuery((string)$query);
-		$items = $db->loadObjectList();
-		$options = array();
-		if ($items)
-		{
-			foreach($items as $item)
-			{
-				$options[] = JHtml::_('select.option', $item->id, $item->components_system_name);
-			}
-		}
+		$db = JFactory::getDBO();
+$query = $db->getQuery(true);
+$query->select($db->quoteName(array('a.id','a.system_name'),array('id','joomla_component_system_name')));
+$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
+$query->order('a.system_name ASC');
+$db->setQuery((string)$query);
+$items = $db->loadObjectList();
+$options = array();
+if ($items)
+{
+	$options[] = JHtml::_('select.option', '', 'Select an option');
+	foreach($items as $item)
+	{
+		$options[] = JHtml::_('select.option', $item->id, $item->joomla_component_system_name);
+	}
+}
 
-		return $options;
+return $options;
 	}
 }

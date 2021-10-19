@@ -14,7 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
-JHTML::_('behavior.modal');
+use Joomla\CMS\Installer\Adapter\ComponentAdapter;
+JHTML::_('bootstrap.renderModal');
 
 /**
  * Script File of Componentbuilder Component
@@ -26,23 +27,23 @@ class com_componentbuilderInstallerScript
 	 *
 	 * @param   JAdapterInstance  $parent  The object responsible for running this script
 	 */
-	public function __construct(JAdapterInstance $parent) {}
+	public function __construct(ComponentAdapter $parent) {}
 
 	/**
 	 * Called on installation
 	 *
-	 * @param   JAdapterInstance  $parent  The object responsible for running this script
+	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
 	 */
-	public function install(JAdapterInstance $parent) {}
+	public function install(ComponentAdapter $parent) {}
 
 	/**
 	 * Called on uninstallation
 	 *
-	 * @param   JAdapterInstance  $parent  The object responsible for running this script
+	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 */
-	public function uninstall(JAdapterInstance $parent)
+	public function uninstall(ComponentAdapter $parent)
 	{
 		// Get Application object
 		$app = JFactory::getApplication();
@@ -5515,21 +5516,21 @@ class com_componentbuilderInstallerScript
 	/**
 	 * Called on update
 	 *
-	 * @param   JAdapterInstance  $parent  The object responsible for running this script
+	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
 	 */
-	public function update(JAdapterInstance $parent){}
+	public function update(ComponentAdapter $parent){}
 
 	/**
 	 * Called before any type of action
 	 *
 	 * @param   string  $type  Which action is happening (install|uninstall|discover_install|update)
-	 * @param   JAdapterInstance  $parent  The object responsible for running this script
+	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
 	 */
-	public function preflight($type, JAdapterInstance $parent)
+	public function preflight($type, ComponentAdapter $parent)
 	{
 		// get application
 		$app = JFactory::getApplication();
@@ -6004,11 +6005,11 @@ class com_componentbuilderInstallerScript
 	 * Called after any type of action
 	 *
 	 * @param   string  $type  Which action is happening (install|uninstall|discover_install|update)
-	 * @param   JAdapterInstance  $parent  The object responsible for running this script
+	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
 	 */
-	public function postflight($type, JAdapterInstance $parent)
+	public function postflight($type, ComponentAdapter $parent)
 	{
 		// get application
 		$app = JFactory::getApplication();
@@ -6610,11 +6611,11 @@ class com_componentbuilderInstallerScript
 			$joomla_plugin_files_folders_urls_Inserted = $db->insertObject('#__content_types', $joomla_plugin_files_folders_urls);
 
 
-			// Install the global extenstion params.
+			// Install the global extension params.
 			$query = $db->getQuery(true);
 			// Field to update.
 			$fields = array(
-				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"llewellyn@joomlacomponentbuilder.com","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","builder_gif_size":"480-272","add_menu_prefix":"1","menu_prefix":"»","minify":"0","language":"en-GB","percentagelanguageadd":"50","assets_table_fix":"1","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","import_guid_only":"1","export_language_strings":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
+				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"llewellyn@joomlacomponentbuilder.com","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","builder_gif_size":"480-272","add_menu_prefix":"1","menu_prefix":"»","minify":"0","language":"en-GB","percentagelanguageadd":"30","assets_table_fix":"2","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","import_guid_only":"1","export_language_strings":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
 			);
 			// Condition.
 			$conditions = array(

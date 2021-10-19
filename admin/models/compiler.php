@@ -100,7 +100,7 @@ class ComponentbuilderModelCompiler extends JModelList
 		{
 			// Load the JEvent Dispatcher
 			JPluginHelper::importPlugin('content');
-			$this->_dispatcher = JEventDispatcher::getInstance();
+			$this->_dispatcher = JFactory::getApplication();
 			foreach ($items as $nr => &$item)
 			{
 				// Always create a slug for sef URL's
@@ -111,7 +111,7 @@ class ComponentbuilderModelCompiler extends JModelList
 				$_copyright = new stdClass();
 				$_copyright->text =& $item->copyright; // value must be in text
 				// Since all values are now in text (Joomla Limitation), we also add the field name (copyright) to context
-				$this->_dispatcher->trigger("onContentPrepare", array('com_componentbuilder.compiler.copyright', &$_copyright, &$params, 0));
+				$this->_dispatcher->triggerEvent("onContentPrepare", array('com_componentbuilder.compiler.copyright', &$_copyright, &$params, 0));
 				// Checking if copyright has uikit components that must be loaded.
 				$this->uikitComp = ComponentbuilderHelper::getUikitComp($item->copyright,$this->uikitComp);
 			}

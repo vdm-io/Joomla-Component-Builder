@@ -2910,7 +2910,7 @@ class Interpretation extends Fields
 					$runplugins .= PHP_EOL . $tab . $this->_t(1)
 						. "JPluginHelper::importPlugin('content');";
 					$runplugins .= PHP_EOL . $tab . $this->_t(1)
-						. '$this->_dispatcher = JEventDispatcher::getInstance();';
+						. '$this->_dispatcher = JFactory::getApplication();';
 				}
 				if (!$params)
 				{
@@ -2941,7 +2941,7 @@ class Interpretation extends Fields
 					. " Since all values are now in text (Joomla Limitation), we also add the field name ("
 					. $field . ") to context";
 				$fieldPrepare .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1)
-					. '$this->_dispatcher->trigger("onContentPrepare", array(\''
+					. '$this->_dispatcher->triggerEvent("onContentPrepare", array(\''
 					. $context . '.' . $field . '\', &$_' . $field
 					. ', &$params, 0));';
 			}
@@ -7943,13 +7943,13 @@ class Interpretation extends Fields
 			{
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 						__LINE__
-					) . " Install the global extenstion params.";
+					) . " Install the global extension params.";
 			}
 			else
 			{
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 						__LINE__
-					) . " Install the global extenstion params.";
+					) . " Install the global extension params.";
 				$script .= PHP_EOL . $this->_t(3)
 					. "\$db = JFactory::getDbo();";
 			}
@@ -10178,7 +10178,7 @@ class Interpretation extends Fields
 				) . ';';
 			$newFunction[] = $this->_t(2) . "}";
 			$newFunction[] = PHP_EOL . $this->_t(2)
-				. "\$this->alias = JApplication::stringURLSafe(\$this->alias);";
+				. "\$this->alias = JApplicationHelper::stringURLSafe(\$this->alias);";
 			$newFunction[] = PHP_EOL . $this->_t(2)
 				. "if (trim(str_replace('-', '', \$this->alias)) == '')";
 			$newFunction[] = $this->_t(2) . "{";
@@ -10360,10 +10360,10 @@ class Interpretation extends Fields
 					// be sure to track the last name used :)
 					$last_name = $field;
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['params']))
 				{
-					$db_ .= PHP_EOL . $this->_t(1) . "`params` text NOT NULL,";
+					$db_ .= PHP_EOL . $this->_t(1) . "`params` text NULL,";
 				}
 				// check if default field was over written
 				if (!isset($this->fieldsNames[$view]['published']))
@@ -22437,18 +22437,11 @@ class Interpretation extends Fields
 			case 'site.admin.view':
 				$headers[]
 					       = 'JHtml::addIncludePath(JPATH_COMPONENT.\'/helpers/html\');';
-				$headers[] = 'JHtml::_(\'behavior.tooltip\');';
-				$headers[] = 'JHtml::_(\'behavior.formvalidation\');';
+				$headers[] = 'JHtml::_(\'behavior.formvalidator\');';
 				$headers[] = 'JHtml::_(\'formbehavior.chosen\', \'select\');';
 				$headers[] = 'JHtml::_(\'behavior.keepalive\');';
-				if ($context === 'site.admin.view')
-				{
-					$headers[] = 'JHtml::_(\'behavior.tabstate\');';
-					$headers[] = 'JHtml::_(\'behavior.calendar\');';
-				}
 				break;
 			case 'admin.views':
-				$headers[] = 'JHtml::_(\'behavior.tooltip\');';
 				$headers[] = 'JHtml::_(\'behavior.multiselect\');';
 				$headers[] = 'JHtml::_(\'dropdown.init\');';
 				// add more headers if the new filter option is used
