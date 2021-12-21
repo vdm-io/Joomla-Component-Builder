@@ -1,0 +1,155 @@
+{
+  "global": {
+    "packager": "Vast Development Method",
+    "packager_url": "https://dev.vdm.io/",
+    "url": "git.vdm.dev",
+    "api": "https://git.vdm.dev/api/v1"
+  },
+  "package": {
+    "name": "PKG_COMPONENT_BUILDER",
+    "code_name": "component_builder",
+    "package_name": "pkg_component_builder",
+    "min_joomla_version": "3.8",
+    "max_joomla_version": "3.10",
+    "copyright": "Copyright (C) 2015 Llewellyn van der Merwe. All rights reserved.",
+    "copyright_year": "2015",
+    "license": "GNU General Public License version 2; see LICENSE",
+    "license_file": "LICENSE",
+    "author": "Llewellyn van der Merwe",
+    "author_email": "llewellyn@joomlacomponentbuilder.com",
+    "author_url": "http://www.joomlacomponentbuilder.com/",
+    "description": "The Joomla Component Builder Package that bundles JCB Component and all the plugins and features available into one package for easy install and update of your JCB system.",
+    "version_id": "com_componentbuilder",
+    "update_servers": "https://io.vdm.dev/update/componentbuilder_public_update_server.xml"
+  },
+  "repository": {
+    "owner": "joomla",
+    "repo": "pkg-component-builder"
+  },
+  "files": [
+    {
+      "owner": "joomla",
+      "repo": "Component-Builder",
+      "id": "com_componentbuilder",
+      "type": "component"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_content_componentbuilderadminheaderstabs",
+      "id": "ComponentBuilderAdminHeadersTabs",
+      "type": "plugin",
+      "group": "content",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_content_componentbuildercomponentheaderstabs",
+      "id": "ComponentBuilderComponentHeadersTabs",
+      "type": "plugin",
+      "group": "content",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_content_componentbuildercustomadminheaderstabs",
+      "id": "ComponentBuilderCustomAdminHeadersTabs",
+      "type": "plugin",
+      "group": "content",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_content_componentbuilderfieldorderingtabs",
+      "id": "ComponentBuilderFieldOrderingTabs",
+      "type": "plugin",
+      "group": "content",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_content_componentbuilderlanguagetabs",
+      "id": "ComponentBuilderLanguageTabs",
+      "type": "plugin",
+      "group": "content",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_content_componentbuilderprivacytabs",
+      "id": "ComponentBuilderPrivacyTabs",
+      "type": "plugin",
+      "group": "content",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_content_componentbuildersiteheaderstabs",
+      "id": "ComponentBuilderSiteHeadersTabs",
+      "type": "plugin",
+      "group": "content",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_extension_componentbuilderactionlogcompiler",
+      "id": "ComponentBuilderActionLogCompiler",
+      "type": "plugin",
+      "group": "extension",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_extension_componentbuilderexportcompiler",
+      "id": "ComponentBuilderExportCompiler",
+      "type": "plugin",
+      "group": "extension",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_extension_componentbuilderfieldorderingcompiler",
+      "id": "ComponentBuilderFieldOrderingCompiler",
+      "type": "plugin",
+      "group": "extension",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_extension_componentbuilderheaderscompiler",
+      "id": "ComponentBuilderHeadersCompiler",
+      "type": "plugin",
+      "group": "extension",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_extension_componentbuilderlanguagepackaging",
+      "id": "ComponentBuilderLanguagePackaging",
+      "type": "plugin",
+      "group": "extension",
+      "mode": "releases"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_extension_componentbuilderprivacycompiler",
+      "id": "ComponentBuilderPrivacyCompiler",
+      "type": "plugin",
+      "group": "extension",
+      "mode": "releases"
+    }
+  ],
+  "languages": [
+    {
+      "tag": "en-GB",
+      "ini": "sys.ini",
+      "key": "PKG_COMPONENT_BUILDER",
+      "value": "Component Builder Package"
+    },
+    {
+      "tag": "en-GB",
+      "ini": "ini",
+      "key": "PKG_COMPONENT_BUILDER",
+      "value": "Component Builder Package"
+    }
+  ]
+}
