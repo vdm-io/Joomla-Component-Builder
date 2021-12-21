@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -27,12 +28,18 @@ class ComponentbuilderModelComponent_custom_admin_menus extends JModelAdmin
 	 * @var      array
 	 */
 	protected $tabLayoutFields = array(
-		'tweaks' => array(
+		'menus' => array(
 			'fullwidth' => array(
 				'addcustommenus'
 			),
 			'above' => array(
 				'joomla_component'
+			)
+		),
+		'clone' => array(
+			'left' => array(
+				'note_how_to_clone',
+				'clone_me'
 			)
 		)
 	);
@@ -250,6 +257,9 @@ class ComponentbuilderModelComponent_custom_admin_menus extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
+
+		// update the addcustommenus (sub form) layout
+		$form->setFieldAttribute('addcustommenus', 'layout', ComponentbuilderHelper::getSubformLayout('component_custom_admin_menus', 'addcustommenus'));
 		return $form;
 	}
 
@@ -833,6 +843,15 @@ class ComponentbuilderModelComponent_custom_admin_menus extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
+
+
+		// check if we have a clone moment
+		if (isset($data['clone_me']) && $data['clone_me'] > 0)
+		{
+			// get addcustommenus data from clone_me (component_custom_admin_menus)
+			$data['addcustommenus'] = ComponentbuilderHelper::getVar('component_custom_admin_menus', $data['clone_me'], 'joomla_component', 'addcustommenus');
+		}
+
 
 		// Set the addcustommenus items to data.
 		if (isset($data['addcustommenus']) && is_array($data['addcustommenus']))

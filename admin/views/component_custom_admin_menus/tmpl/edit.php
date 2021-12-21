@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -43,17 +44,25 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('component_custom_admin_menus.tweaks_above', $this); ?>
+	<?php echo JLayoutHelper::render('component_custom_admin_menus.menus_above', $this); ?>
 <div class="form-horizontal">
 
-	<?php echo JHtml::_('bootstrap.startTabSet', 'component_custom_admin_menusTab', array('active' => 'tweaks')); ?>
+	<?php echo JHtml::_('bootstrap.startTabSet', 'component_custom_admin_menusTab', array('active' => 'menus')); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'component_custom_admin_menusTab', 'tweaks', JText::_('COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_TWEAKS', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'component_custom_admin_menusTab', 'menus', JText::_('COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_MENUS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('component_custom_admin_menus.tweaks_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('component_custom_admin_menus.menus_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.addTab', 'component_custom_admin_menusTab', 'clone', JText::_('COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_CLONE', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('component_custom_admin_menus.clone_left', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>

@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -27,12 +28,18 @@ class ComponentbuilderModelComponent_mysql_tweaks extends JModelAdmin
 	 * @var      array
 	 */
 	protected $tabLayoutFields = array(
-		'tweaks' => array(
+		'mysql_tweaks' => array(
 			'fullwidth' => array(
 				'sql_tweak'
 			),
 			'above' => array(
 				'joomla_component'
+			)
+		),
+		'clone' => array(
+			'left' => array(
+				'note_how_to_clone',
+				'clone_me'
 			)
 		)
 	);
@@ -833,6 +840,15 @@ class ComponentbuilderModelComponent_mysql_tweaks extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
+
+
+		// check if we have a clone moment
+		if (isset($data['clone_me']) && $data['clone_me'] > 0)
+		{
+			// get sql_tweak data from clone_me (component_mysql_tweaks)
+			$data['sql_tweak'] = ComponentbuilderHelper::getVar('component_mysql_tweaks', $data['clone_me'], 'joomla_component', 'sql_tweak');
+		}
+
 
 		// Set the sql_tweak items to data.
 		if (isset($data['sql_tweak']) && is_array($data['sql_tweak']))

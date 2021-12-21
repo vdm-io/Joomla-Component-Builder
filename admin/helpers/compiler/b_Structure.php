@@ -3,7 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -259,7 +260,7 @@ class Structure extends Get
 	 */
 	public $stdRootFiles
 		= array('access.xml', 'config.xml', 'controller.php', 'index.html',
-		        'README.txt');
+			'README.txt');
 
 	/**
 	 * Dynamic File Content
@@ -397,7 +398,7 @@ class Structure extends Get
 			ComponentbuilderHelper::runGlobalUpdater();
 			// set the template path
 			$this->templatePath = $this->compilerPath . '/joomla_'
-				. $config['version'];
+				. $this->joomlaVersions[$this->joomlaVersion]['folder_key'];
 			// set some default names
 			$this->componentSalesName  = 'com_'
 				. $this->componentData->sales_name . '__J'
@@ -421,6 +422,8 @@ class Structure extends Get
 			$this->removeFolder($this->componentPath);
 			// load the libraries files/folders and url's
 			$this->setLibraries();
+			// load the powers files/folders
+			$this->buildPowers();
 			// load the module files/folders and url's
 			$this->buildModules();
 			// load the plugin files/folders and url's
@@ -472,6 +475,115 @@ class Structure extends Get
 		}
 
 		return '';
+	}
+
+	/**
+	 * Build the Powers files, folders
+	 *
+	 * @return  void
+	 *
+	 */
+	private function buildPowers()
+	{
+		if (ComponentbuilderHelper::checkArray($this->powers))
+		{
+			// Trigger Event: jcb_ce_onBeforeSetModules
+			$this->triggerEvent(
+				'jcb_ce_onBeforeBuildPowers',
+				array(&$this->componentContext, &$this->powers)
+			);
+			// we track the creation of htaccess files
+			$htaccess = array();
+			foreach ($this->powers as $power)
+			{
+				if (ComponentbuilderHelper::checkObject($power)
+					&& isset($power->path)
+					&& ComponentbuilderHelper::checkString(
+						$power->path
+					))
+				{
+					// power path
+					$power->full_path        = $this->componentPath . '/'
+						. $power->path;
+					$power->full_path_jcb    = $this->componentPath . '/'
+						. $power->path_jcb;
+					$power->full_path_parent = $this->componentPath . '/'
+						. $power->path_parent;
+					// set the power paths
+					$this->dynamicPaths[$power->key] = $power->full_path_parent;
+					// create the power folder if it does not exist
+					// we do it like this to add html files to each part
+					$this->createFolder($power->full_path_jcb);
+					$this->createFolder($power->full_path_parent);
+					$this->createFolder($power->full_path);
+					// set power file
+					$fileDetails = array('path' => $power->full_path . '/'
+						. $power->file_name . '.php',
+					                     'name' => $power->file_name . '.php',
+					                     'zip' => $power->file_name . '.php');
+					$this->writeFile(
+						$fileDetails['path'],
+						'<?php' . PHP_EOL . '// A POWER FILE' .
+						PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
+						PHP_EOL . $this->hhh . 'POWERCODE' . $this->hhh
+					);
+					$this->newFiles[$power->key][] = $fileDetails;
+					// count the file created
+					$this->fileCount++;
+					if (!isset($htaccess[$power->path_jcb]))
+					{
+						// set the htaccess data
+						$data = '# Apache 2.4+' . PHP_EOL .
+							'<IfModule mod_authz_core.c>' . PHP_EOL .
+							'  Require all denied' . PHP_EOL .
+							'</IfModule>' . PHP_EOL . PHP_EOL .
+							'# Apache 2.0-2.2' . PHP_EOL .
+							'<IfModule !mod_authz_core.c>' . PHP_EOL .
+							'  Deny from all' . PHP_EOL .
+							'</IfModule>' . PHP_EOL;
+						// now we must add the .htaccess file
+						$fileDetails = array('path' => $power->full_path_jcb . '/.htaccess',
+						                     'name' => '.htaccess',
+						                     'zip'  => '.htaccess');
+						$this->writeFile(
+							$fileDetails['path'], $data
+						);
+						$this->newFiles[$power->key][] = $fileDetails;
+						// count the file created
+						$this->fileCount++;
+						// now we must add the htaccess.txt file where the zip package my not get the [.] files
+						$fileDetails = array('path' => $power->full_path_jcb . '/htaccess.txt',
+						                     'name' => 'htaccess.txt',
+						                     'zip'  => 'htaccess.txt');
+						$this->writeFile(
+							$fileDetails['path'], $data
+						);
+						$this->newFiles[$power->key][] = $fileDetails;
+						// count the file created
+						$this->fileCount++;
+						// now we must add the web.config file
+						$fileDetails = array('path' => $power->full_path_jcb . '/web.config',
+						                     'name' => 'web.config',
+						                     'zip'  => 'web.config');
+						$this->writeFile(
+							$fileDetails['path'],
+							'<?xml version="1.0"?>' . PHP_EOL .
+							'    <system.web>' . PHP_EOL .
+							'        <authorization>' . PHP_EOL .
+							'            <deny users="*" />' . PHP_EOL .
+							'        </authorization>' . PHP_EOL .
+							'    </system.web>' . PHP_EOL .
+							'</configuration>' . PHP_EOL
+						);
+						$this->newFiles[$power->key][] = $fileDetails;
+						// count the file created
+						$this->fileCount++;
+						// we set these files only once
+						$htaccess[$power->path_jcb] = true;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -1549,7 +1661,7 @@ class Structure extends Get
 								. $libFolder . "</folder>";
 						}
 					}
-					// if config fields are found load into component config (avoiding dublicates)
+					// if config fields are found load into component config (avoiding duplicates)
 					if (isset($library->how) && $library->how > 1
 						&& isset($library->config)
 						&& ComponentbuilderHelper::checkArray($library->config))
@@ -2604,8 +2716,9 @@ class Structure extends Get
 	 *
 	 */
 	public function buildDynamique($target, $type, $fileName = false,
-		$config = false
-	) {
+	                               $config = false
+	)
+	{
 		// did we build the files (any number)
 		$build_status = false;
 		// check that we have the target values
@@ -2863,8 +2976,7 @@ class Structure extends Get
 				// fix custom path
 				$custom['path'] = ltrim($custom['path'], '/');
 				// set new folder to object
-				$versionData->move->static->{$key_pointer}          = new stdClass(
-				);
+				$versionData->move->static->{$key_pointer}          = new stdClass();
 				$versionData->move->static->{$key_pointer}->naam
 				                                                    = str_replace(
 					'//', '/', $custom['folder']
@@ -2951,8 +3063,7 @@ class Structure extends Get
 					) . '_g' . $pointer_tracker;
 				$pointer_tracker++;
 				// set new file to object
-				$versionData->move->static->{$key_pointer}       = new stdClass(
-				);
+				$versionData->move->static->{$key_pointer}       = new stdClass();
 				$versionData->move->static->{$key_pointer}->naam = str_replace(
 					'//', '/', $custom['file']
 				);

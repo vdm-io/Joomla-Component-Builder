@@ -36,7 +36,7 @@ abstract class ###Component###Helper
 	 * 
 	 * @var      string
 	 */
-	public static $langTag;###ADMIN_GLOBAL_EVENT_HELPER######CUSTOM_HELPER_SCRIPT######BOTH_CUSTOM_HELPER_SCRIPT###
+	public static $langTag;###ADMIN_GLOBAL_EVENT_HELPER######CUSTOM_HELPER_SCRIPT######BOTH_CUSTOM_HELPER_SCRIPT######ADMIN_POWER_EVENT_HELPER###
 
 	/**
 	 * Load the Composer Vendors

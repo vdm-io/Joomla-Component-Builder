@@ -101,7 +101,6 @@
 			description="COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_JOOMLA_COMPONENT_DESCRIPTION"
 			class="list_class"
 			multiple="false"
-			default=""
 			required="true"
 			readonly="true"
 			button="false"

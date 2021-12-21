@@ -101,17 +101,29 @@
 			description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_JOOMLA_COMPONENT_DESCRIPTION"
 			class="list_class"
 			multiple="false"
-			default=""
 			required="true"
 			readonly="true"
 			button="false"
 		/>
+		<!-- Clone_me Field. Type: Joomlacomponent. (custom) -->
+		<field
+			type="joomlacomponent"
+			name="clone_me"
+			label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_CLONE_ME_LABEL"
+			class="list_class"
+			multiple="false"
+			default="0"
+			required="false"
+			button="false"
+		/>
+		<!-- Note_how_to_clone Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_how_to_clone" label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NOTE_HOW_TO_CLONE_LABEL" description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_NOTE_HOW_TO_CLONE_DESCRIPTION" heading="h4" class="alert alert-info note_how_to_clone" />
 		<!-- Addcustommenus Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
 			name="addcustommenus"
 			label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_ADDCUSTOMMENUS_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
+			layout="repeatablejcb"
 			multiple="true"
 			default=""
 			icon="list">

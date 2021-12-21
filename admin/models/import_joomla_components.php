@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -705,7 +706,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		}
 		// the array of tables to store
 		$tables = array(
-			'validation_rule', 'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
+			'power', 'validation_rule', 'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
 			'template', 'layout', 'joomla_component', 'language', 'custom_code', 'placeholder', 'class_extends',
 			'joomla_module', 'joomla_module_files_folders_urls', 'joomla_module_updates',
 			'joomla_plugin_group', 'class_property', 'class_method', 'joomla_plugin', 'joomla_plugin_files_folders_urls', 'joomla_plugin_updates',
@@ -732,7 +733,15 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			}
 			else
 			{
-				$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_TABLE_BSB_NOT_FOUND_IN_THE_LOCAL_DATABASE_SO_ITS_VALUES_COULD_NOT_BE_IMPORTED_PLEASE_UPDATE_YOUR_JCB_INSTALL_AND_TRY_AGAIN', '#__componentbuilder_' . $table), 'warning');
+				// check if it is the power table
+				if ($table === 'power')
+				{
+					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_TABLE_BSB_NOT_FOUND_IN_THE_LOCAL_DATABASE_SO_ITS_VALUES_COULD_NOT_BE_IMPORTED_THE_WHOLE_POWERS_FEATURE_IS_ONLY_AVAILABLE_TO_A_HREFSPRO_MEMBERSA_AT_THIS_TIME', '#__componentbuilder_' . $table, '"https://vdm.bz/get-jcb-pro-membership" target="_blank" title="Join PRO Membership today!"'), 'warning');
+				}
+				else
+				{
+					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_TABLE_BSB_NOT_FOUND_IN_THE_LOCAL_DATABASE_SO_ITS_VALUES_COULD_NOT_BE_IMPORTED_PLEASE_UPDATE_YOUR_JCB_INSTALL_AND_TRY_AGAIN', '#__componentbuilder_' . $table), 'warning');
+				}
 			}
 		}
 		// do a after all run on all items that need it
@@ -1072,6 +1081,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// update repeatable
 			foreach ($this->updateAfter['field'] as $field => $action)
 			{
+				// if added we must get the ID now, yet if update the id is already set
 				if ('add' === $action && isset($this->newID['field'][$field]))
 				{
 					$field = $this->newID['field'][$field];
@@ -1134,6 +1144,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// update the addlinked_views
 			foreach ($this->updateAfter['adminview'] as $adminview => $action)
 			{
+				// if added we must get the ID now, yet if update the id is already set
 				if ('add' === $action && isset($this->newID['admin_view'][(int) $adminview]))
 				{
 					$adminview = $this->newID['admin_view'][(int) $adminview];
@@ -1153,7 +1164,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						if (ComponentbuilderHelper::checkArray($addlinked_views))
 						{
 							// only update the view IDs
-							$addlinked_views = $this->updateSubformIDs($addlinked_views, 'admin_view', array('adminview' => 'admin_view'));
+							$addlinked_views = $this->updateIDs($addlinked_views, 'admin_view', array('adminview' => 'admin_view'));
 						}
 						// update the fields
 						$object = new stdClass;
@@ -1171,6 +1182,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// update dashboard of the components
 			foreach ($this->updateAfter['joomla_component'] as $component => $action)
 			{
+				// if added we must get the ID now, yet if update the id is already set
 				if ('add' === $action && isset($this->newID['joomla_component'][(int) $component]))
 				{
 					$component = $this->newID['joomla_component'][(int) $component];
@@ -1222,6 +1234,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			{
 				// check if we must update this relation
 				$update = false;
+				// if added we must get the ID now, yet if update the id is already set
 				if ('add' === $action && isset($this->newID['admin_fields_relations'][$relation]))
 				{
 					$relation = $this->newID['admin_fields_relations'][$relation];
@@ -1295,6 +1308,48 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 			}
 		}
+		// update the verious power linked to these powers
+		if (isset($this->updateAfter['power']) && ComponentbuilderHelper::checkArray($this->updateAfter['power']))
+		{
+			// update repeatable
+			foreach ($this->updateAfter['power'] as $power => $action)
+			{
+				// check if we must update this power
+				$update = false;
+				// if added we must get the ID now, yet if update the id is already set
+				if ('add' === $action && isset($this->newID['power'][$power]))
+				{
+					$power = $this->newID['power'][$power];
+				}
+				// get the power
+				$query = $this->_db->getQuery(true);
+				$query->select(array('a.id', 'a.extends', 'a.implements', 'a.use_selection', 'a.property_selection', 'a.method_selection'));
+				$query->from($this->_db->quoteName('#__componentbuilder_power', 'a'));
+				$query->where($this->_db->quoteName('a.id') . ' = '. (int) $power);
+				// see if we get an item
+				$this->_db->setQuery($query);
+				$this->_db->execute();
+				if ($this->_db->getNumRows())
+				{
+					$item = $this->_db->loadObject();
+					// now update extends
+					$item = $this->setNewID($item, 'extends', 'power', 'power');
+					// now update implements
+					$item = $this->setNewID($item, 'implements', 'power', 'power');
+					// subform fields to target
+					$updaterT = array(
+						// subformfield => array( field => type_value )
+						'use_selection' => array('use' => 'power'),
+						'property_selection' => array('property' => 'class_property'),
+						'method_selection' => array('method' => 'class_method')
+					);
+					// update the subform ids
+					$this->updateSubformsIDs($item, 'power', $updaterT);
+					// update the power
+					$this->_db->updateObject('#__componentbuilder_power', $item, 'id');
+				}
+			}
+		}
 	}
 
 	/**
@@ -1324,6 +1379,56 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	}
 
 	/**
+	* Update Many Params IDs
+	*
+	* @param array           $values      The values to update the IDs in
+	* @param string          $table         The table these values belong to
+	* @param array          $targets       The target to update and its type
+	*
+	* @return void
+	*/
+	protected function updateParamIDs(&$item, $table, $targets)
+	{
+		// update the params fields if exist
+		if (isset($item->params) && ComponentbuilderHelper::checkJson($item->params))
+		{
+			$paramsArray = json_decode($item->params, true);
+			if (ComponentbuilderHelper::checkArray($paramsArray))
+			{
+				foreach ($targets as  $field => $targetArray)
+				{
+					if (isset($paramsArray[$field]))
+					{
+						$target_array = array();
+						foreach ($targetArray as $key => $field_table)
+						{
+							// sub form in params
+							if (strpos($key, '.') !==false)
+							{
+								$key_array = explode('.', $key);
+								// set the target
+								$target_array[$key_array[0]][$key_array[1]] = $field_table;
+							}
+							elseif (isset($paramsArray[$field][$key]))
+							{
+								// load it back
+								$paramsArray[$field] = $this->setNewID($paramsArray[$field], $key, $field_table, $table);
+							}
+						}
+						// check if we had some subforms
+						if (ComponentbuilderHelper::checkArray($target_array))
+						{
+							$paramsArray[$field] = $this->updateIDs($paramsArray[$field], $table, $target_array);
+						}
+					}
+				}
+			}
+			// add the params back
+			$item->params = json_encode($paramsArray, JSON_FORCE_OBJECT);
+		}
+	}
+
+	/**
 	* Update Many Subform IDs
 	*
 	* @param array           $values      The values to update the IDs in
@@ -1343,14 +1448,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				if (ComponentbuilderHelper::checkArray($updateArray))
 				{
 					// load it back
-					$item->{$field} = json_encode($this->updateSubformIDs($updateArray, $table, $targetArray), JSON_FORCE_OBJECT);
+					$item->{$field} = json_encode($this->updateIDs($updateArray, $table, $targetArray), JSON_FORCE_OBJECT);
 				}
 			}
 		}
 	}
 
 	/**
-	* Update One Subform IDs
+	* Update IDs
 	*
 	* @param array           $values      The values to update the IDs in
 	* @param string          $table         The table these values belong to
@@ -1358,7 +1463,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	*
 	* @return void
 	*/
-	protected function updateSubformIDs($values, $table, $targets)
+	protected function updateIDs($values, $table, $targets)
 	{
 		$isJson = false;
 		if (ComponentbuilderHelper::checkJson($values))
@@ -1409,7 +1514,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		if (ComponentbuilderHelper::checkArray($item) && isset($item[$target]))
 		{
 			// set item ID
-			$itemId = (isset($item['id'])) ? $item['id'] :  'newItem';
+			$itemId = (isset($item['id'])) ? $item['id'] :  'id_unknow';
 			// check if it is json
 			$isJsonTarget = false;
 			if (ComponentbuilderHelper::checkJson($item[$target]))
@@ -1420,9 +1525,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// update the target
 			if (ComponentbuilderHelper::checkString($item[$target]) || is_numeric($item[$target]))
 			{
-				if ($item[$target] == 0)
+				if ($item[$target] <= 0)
 				{
-					$item[$target] = '';
+					if ($item[$target] == 0)
+					{
+						$item[$target] = '';
+					}
 				}
 				elseif (isset($this->newID[$type][(int) $item[$target]]))
 				{
@@ -1440,9 +1548,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$bucket = array();
 				foreach ($item[$target] as $nr => $id)
 				{
-					if ($id == 0)
+					if ($id <= 0)
 					{
-						continue;
+						if ($id == 0)
+						{
+							continue;
+						}
+						// we add negative numbers back
+						$bucket[] = $id;
 					}
 					elseif ((ComponentbuilderHelper::checkString($id) || is_numeric($id)) && isset($this->newID[$type][(int) $id]))
 					{
@@ -1468,7 +1581,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		elseif (ComponentbuilderHelper::checkObject($item) && isset($item->{$target}))
 		{
 			// set item ID
-			$itemId = (isset($item->id)) ? $item->id : 'newItem';
+			$itemId = (isset($item->id)) ? $item->id : 'id_unknow';
 			// check if it is json
 			$isJsonTarget = false;
 			if (ComponentbuilderHelper::checkJson($item->{$target}))
@@ -1479,9 +1592,12 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 			// update the target
 			if (ComponentbuilderHelper::checkString($item->{$target}) || is_numeric($item->{$target}))
 			{
-				if ($item->{$target} == 0)
+				if ($item->{$target} <= 0)
 				{
-					$item->{$target} = '';
+					if ($item->{$target} == 0)
+					{
+						$item->{$target} = '';
+					}
 				}
 				elseif (isset($this->newID[$type][(int) $item->{$target}]))
 				{
@@ -1499,9 +1615,14 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				$bucket = array();
 				foreach ($item->{$target} as $id)
 				{
-					if ($id == 0)
+					if ($id <= 0)
 					{
-						continue;
+						if ($id == 0)
+						{
+							continue;
+						}
+						// we add negative numbers back
+						$bucket[] = $id;
 					}
 					elseif ((ComponentbuilderHelper::checkString($id) || is_numeric($id)) && isset($this->newID[$type][(int) $id]))
 					{
@@ -1707,6 +1828,37 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				{
 					$item->system_name = $item->system_name.$this->postfix;
 				}
+				// param fields to target
+				if ($type === 'site_view')
+				{
+					$updaterP = array(
+						// param_field => field* => field_table
+						'site_view_headers' => array(
+							'power_site_view_model' => 'power',
+							'power_site_view' => 'power',
+							'power_site_view_controller' => 'power',
+							'power_site_views_model' => 'power',
+							'power_site_views' => 'power',
+							'power_site_views_controller' => 'power'
+						)
+					);
+				}
+				else
+				{
+					$updaterP = array(
+						// param_field => field* => field_table
+						'custom_admin_view_headers' => array(
+							'power_custom_admin_view_model' => 'power',
+							'power_custom_admin_view' => 'power',
+							'power_custom_admin_view_controller' => 'power',
+							'power_custom_admin_views_model' => 'power',
+							'power_custom_admin_views' => 'power',
+							'power_custom_admin_views_controller' => 'power'
+						)
+					);
+				}
+				// update the params ids
+				$this->updateParamIDs($item, $type, $updaterP);
 			break;
 			case 'admin_view':
 				// set the getters anchors
@@ -1756,6 +1908,28 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				// param fields to target
+				$updaterP = array(
+					// param_field => field* => field_table
+					'admin_view_headers' => array(
+						'power_admin_view_model' => 'power',
+						'power_admin_view' => 'power',
+						'power_admin_view_controller' => 'power',
+						'power_admin_views_model' => 'power',
+						'power_admin_views' => 'power',
+						'power_admin_views_controller' => 'power'
+					),
+					'fieldordering' => array(
+						'admin_ordering_fields.field' => 'field',
+						'linked_ordering_fields.field' => 'field'
+					),
+					'privacy' => array(
+						'anonymize_fields.field' => 'field',
+						'other_user_fields' => 'field'
+					)
+				);
+				// update the params ids
+				$this->updateParamIDs($item, $type, $updaterP);
 				// if we can't merge add postfix to name
 				if ($this->postfix)
 				{
@@ -1899,6 +2073,18 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
+				// param fields to target
+				$updaterP = array(
+					// param_field => field* => field_table
+					'joomla_component_headers' => array(
+						'power_admin_component' => 'power',
+						'power_site_component' => 'power',
+						'power_admin_helper' => 'power',
+						'power_site_helper' => 'power'
+					)
+				);
+				// update the params ids
+				$this->updateParamIDs($item, $type, $updaterP);
 				// if we can't merge add postfix to name
 				if ($this->postfix)
 				{
@@ -2196,6 +2382,10 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$item = $this->setNewID($item, 'joomla_plugin', 'joomla_plugin', $type);
 				}
 			break;
+			case 'power':
+				// update the powers after.... since no power is yet found
+				$this->updateAfter['power'][(int) $item->id] = $action;
+			break;
 			case 'custom_code':
 				// update the component ID where needed
 				$item = $this->setNewID($item, 'component', 'joomla_component', $type);
@@ -2389,6 +2579,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				{
 					$this->updateSubformsIDs($item, $type, $updaterT);
 				}
+			break;
 		}
 		// remove all fields/columns not part of the current table
 		$this->removingFields($type, $item);
@@ -2531,7 +2722,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		{
 			return $this->isMultiple[$typeID];
 		}
-		elseif ($type = $this->getFieldType($typeID))
+		elseif (($type = $this->getFieldType($typeID)) !== false)
 		{
 			if ('repeatable' === $type || 'subform' === $type )
 			{
@@ -2682,7 +2873,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				return $item;
 			}
 			// check if we should continue the search
-			elseif ($this->importGuidOnly == 1)
+			// we only link powers by GUID
+			elseif ($this->importGuidOnly == 1 || $type === 'power')
 			{
 				return false;
 			}

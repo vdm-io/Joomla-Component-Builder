@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -1057,6 +1058,14 @@ class ComponentbuilderModelAjax extends JModelList
 			),
 			'joomla_plugin' => array(
 				array('table' => 'component_plugins', 'tables' => 'components_plugins', 'fields' => array('addjoomla_plugins' => 'plugin', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'linked_name' => 'system_name')
+			),
+			'power' => array(
+				array('table' => 'admin_view', 'tables' => 'admin_views', 'fields' => array('params' => 'admin_view_headers:power_', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_ADMIN_VIEW'),
+				array('table' => 'site_view', 'tables' => 'site_views', 'fields' => array('params' => 'site_view_headers:power_', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_SITE_VIEW'),
+				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('params' => 'custom_admin_view_headers:power_', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW'),
+				array('table' => 'joomla_component', 'tables' => 'joomla_components', 'fields' => array('params' => 'joomla_component_headers:power_', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT'),
+				array('table' => 'component_dashboard', 'tables' => 'components_dashboard', 'fields' => array('params' => 'component_dashboard_headers:power_', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_COMPONENT_DASHBOARD', 'linked_name' => 'system_name'),
+				array('table' => 'power', 'tables' => 'powers', 'fields' => array('extends' => 'INT', 'implements' => 'ARRAY', 'use_selection' => 'use', 'load_selection' => 'load', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_POWER')
 			)
 		);
 
@@ -1209,6 +1218,27 @@ class ComponentbuilderModelAjax extends JModelList
 														foreach ($row[$_target[0]] as $_row)
 														{
 															if (!$found && isset($_row[$_target[2]]) && $_row[$_target[2]] == $id)
+															{
+																$found = true;
+															}
+														}
+													}
+												}
+											}
+										}
+										elseif (strpos($target, ':') !== false)
+										{
+											$_target = (array) explode(':', $target);
+											// check that we have an array and get the size
+											if (($_size = ComponentbuilderHelper::checkArray($_target)) == 2)
+											{
+												foreach ($item->{$key} as $field_name => $row)
+												{
+													if (!$found && $field_name === $_target[0])
+													{
+														foreach ($row as $key => $_ids)
+														{
+															if (!$found && strpos($key, $_target[1]) !== false && in_array($id, $_ids))
 															{
 																$found = true;
 															}
@@ -2670,10 +2700,10 @@ class ComponentbuilderModelAjax extends JModelList
 		),
 		// #__componentbuilder_power (v)
 		'class_method' => array(
-			'search' => array('id', 'name', 'description', 'head', 'head', 'main_class_code'),
+			'search' => array('id', 'system_name', 'name', 'description', 'head', 'namespace', 'main_class_code'),
 			'views' => 'powers',
 			'not_base64' => array('description'),
-			'name' => 'name'
+			'name' => 'system_name'
 		)
 	);
 

@@ -1,9 +1,10 @@
 <?php
- /**
+/**
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -27,6 +28,16 @@ class Get
 	 * @var     string
 	 */
 	public $joomlaVersion;
+
+	/**
+	 * The Joomla Versions
+	 *
+	 * @var     array
+	 */
+	public $joomlaVersions = array(
+		3    => array('folder_key' => 3, 'xml_version' => 3.9), // only joomla 3
+		3.10 => array('folder_key' => 3, 'xml_version' => 4.0) // legacy joomla 4
+	);
 
 	/**
 	 * The hash placeholder
@@ -99,6 +110,13 @@ class Get
 	public $compilerPath;
 
 	/**
+	 * The JCB Powers Path
+	 *
+	 * @var     object
+	 */
+	public $jcbPowersPath;
+
+	/**
 	 * Switch to add assets table fix
 	 *
 	 * @var     int
@@ -153,6 +171,27 @@ class Get
 	 * @var      object
 	 */
 	public $componentData;
+
+	/**
+	 * The Powers data
+	 *
+	 * @var      array
+	 */
+	public $powers = array();
+
+	/**
+	 * The state of all Powers
+	 *
+	 * @var      array
+	 */
+	public $statePowers = array();
+
+	/**
+	 * The linked Powers
+	 *
+	 * @var      array
+	 */
+	public $linkedPowers = array();
 
 	/**
 	 * The Plugins data
@@ -264,6 +303,13 @@ class Get
 	 * @var      array
 	 */
 	protected $externalCodeString = array();
+
+	/**
+	 * The external code/string cutter
+	 *
+	 * @var      array
+	 */
+	protected $externalCodeCutter = array();
 
 	/*
 	 * The line numbers Switch
@@ -648,7 +694,7 @@ class Get
 	 */
 	public $defaultFields
 		= array('created', 'created_by', 'modified', 'modified_by', 'published',
-		        'ordering', 'access', 'version', 'hits', 'id');
+			'ordering', 'access', 'version', 'hits', 'id');
 
 	/**
 	 * The list join fields
@@ -911,7 +957,7 @@ class Get
 			// check the field builder type logic
 			if (!$this->tidy && $this->fieldBuilderType == 2)
 			{
-				// we do not have the tidy extention set fall back to StringManipulation
+				// we do not have the tidy extension set fall back to StringManipulation
 				$this->fieldBuilderType = 1;
 				// load the sugestion to use string manipulation
 				$this->app->enqueueMessage(
@@ -928,6 +974,10 @@ class Get
 				'compiler_folder_path',
 				JPATH_COMPONENT_ADMINISTRATOR . '/compiler'
 			);
+			// load the jcb powers path
+			$this->jcbPowersPath = $this->params->get(
+				'jcb_powers_path',
+				'libraries/jcb_powers');
 			// set the component ID
 			$this->componentID = (int) $config['component'];
 			// set this components code name
@@ -990,7 +1040,7 @@ class Get
 				$this->db = JFactory::getDbo();
 				// get global placeholders
 				$this->globalPlaceholders = $this->getGlobalPlaceholders();
-				// check if this component is install on the current website
+				// check if this component is installed on the current website
 				if ($paths = $this->getLocalInstallPaths())
 				{
 					// start Automatic import of custom code
@@ -1040,6 +1090,8 @@ class Get
 						'.', $version
 					);
 				}
+				// get powers *+*+*+*+*+*+*+*PRO
+				$this->getPowers($this->linkedPowers);
 				// set the percentage when a language can be added
 				$this->percentageLanguageAdd = (int) $this->params->get(
 					'percentagelanguageadd', 50
@@ -1219,6 +1271,7 @@ class Get
 			'k.addjoomla_modules'     => 'addjoomla_modules',
 			'i.dashboard_tab'         => 'dashboard_tab',
 			'i.php_dashboard_methods' => 'php_dashboard_methods',
+			'i.params'                => 'dashboard_params',
 			'i.id'                    => 'component_dashboard_id',
 			'f.sql_tweak'             => 'sql_tweak',
 			'e.version_update'        => 'version_update',
@@ -1264,7 +1317,7 @@ class Get
 		$this->triggerEvent(
 			'jcb_ce_onBeforeQueryComponentData',
 			array(&$this->componentContext, &$this->componentID, &$query,
-			      &$this->db)
+				&$this->db)
 		);
 
 		// Reset the query using our newly populated query object.
@@ -1802,7 +1855,7 @@ class Get
 		$this->lang = 'admin';
 		// add PHP in ADMIN
 		$addScriptMethods = array('php_preflight', 'php_postflight',
-		                          'php_method');
+			'php_method');
 		$addScriptTypes   = array('install', 'update', 'uninstall');
 		// update GUI mapper
 		$guiMapper['type'] = 'php';
@@ -2144,8 +2197,9 @@ class Get
 	 *
 	 */
 	public function setLangContent($target, $language, $string,
-		$addPrefix = false
-	) {
+	                               $addPrefix = false
+	)
+	{
 		if ($addPrefix
 			&& !isset(
 				$this->langContent[$target][$this->langPrefix . '_' . $language]
@@ -2978,8 +3032,8 @@ class Get
 			                   'type'  => 'js');
 			// add_javascript
 			$addArrayJ = array('javascript_view_file', 'javascript_view_footer',
-			                   'javascript_views_file',
-			                   'javascript_views_footer');
+				'javascript_views_file',
+				'javascript_views_footer');
 			// update GUI mapper
 			$guiMapper['prefix'] = PHP_EOL;
 			foreach ($addArrayJ as $scripter)
@@ -3044,14 +3098,14 @@ class Get
 			$guiMapper['type'] = 'php';
 			// add_php
 			$addArrayP = array('php_getitem', 'php_before_save', 'php_save',
-			                   'php_getform', 'php_postsavehook',
-			                   'php_getitems', 'php_getitems_after_all',
-			                   'php_getlistquery', 'php_allowadd',
-			                   'php_allowedit', 'php_before_cancel',
-			                   'php_after_cancel', 'php_before_delete',
-			                   'php_after_delete', 'php_before_publish',
-			                   'php_after_publish', 'php_batchcopy',
-			                   'php_batchmove', 'php_document');
+				'php_getform', 'php_postsavehook',
+				'php_getitems', 'php_getitems_after_all',
+				'php_getlistquery', 'php_allowadd',
+				'php_allowedit', 'php_before_cancel',
+				'php_after_cancel', 'php_before_delete',
+				'php_after_delete', 'php_before_publish',
+				'php_after_publish', 'php_batchcopy',
+				'php_batchmove', 'php_document');
 			foreach ($addArrayP as $scripter)
 			{
 				if (isset($view->{'add_' . $scripter})
@@ -3124,9 +3178,9 @@ class Get
 				&& $view->add_custom_import == 1)
 			{
 				$addImportArray = array('php_import_ext', 'php_import_display',
-				                        'php_import', 'php_import_setdata',
-				                        'php_import_save', 'php_import_headers',
-				                        'html_import_view');
+					'php_import', 'php_import_setdata',
+					'php_import_save', 'php_import_headers',
+					'html_import_view');
 				foreach ($addImportArray as $importScripter)
 				{
 					if (isset($view->$importScripter)
@@ -3523,8 +3577,8 @@ class Get
 		);
 		// set array adding array of scripts
 		$addArray = array('php_view', 'php_jview', 'php_jview_display',
-		                  'php_document', 'javascript_file', 'js_document',
-		                  'css_document', 'css');
+			'php_document', 'javascript_file', 'js_document',
+			'css_document', 'css');
 		// set GUI mapper
 		$guiMapper['type'] = 'php';
 		foreach ($addArray as $scripter)
@@ -4155,8 +4209,9 @@ class Get
 	 *
 	 */
 	public function setFieldDetails(&$field, $singleViewName = null,
-		$listViewName = null, $amicably = ''
-	) {
+	                                $listViewName = null, $amicably = ''
+	)
+	{
 		// set hash
 		static $hash = 123467890;
 		// load hash if not found
@@ -4252,8 +4307,9 @@ class Get
 	 *
 	 */
 	public function getFieldDatabaseName($nameListCode, int $fieldId,
-		$targetArea = 'listBuilder'
-	) {
+	                                     $targetArea = 'listBuilder'
+	)
+	{
 		if (isset($this->{$targetArea}[$nameListCode]))
 		{
 			if ($fieldId < 0)
@@ -4689,10 +4745,10 @@ class Get
 						}
 						// The array of the php scripts that should be added to the script builder
 						$phpSripts = array('php_before_getitem',
-						                   'php_after_getitem',
-						                   'php_before_getitems',
-						                   'php_after_getitems',
-						                   'php_getlistquery');
+							'php_after_getitem',
+							'php_before_getitems',
+							'php_after_getitems',
+							'php_getlistquery');
 						// load the php scripts
 						foreach ($phpSripts as $script)
 						{
@@ -5186,9 +5242,10 @@ class Get
 	 *
 	 */
 	public function setCustomScriptBuilder(&$script, $first, $second = false,
-		$third = false, $config = array(), $base64 = true, $dynamic = true,
-		$add = false
-	) {
+	                                       $third = false, $config = array(), $base64 = true, $dynamic = true,
+	                                       $add = false
+	)
+	{
 		// only load if we have a string
 		if (!ComponentbuilderHelper::checkString($script))
 		{
@@ -5313,8 +5370,9 @@ class Get
 	 *
 	 */
 	public function getCustomScriptBuilder($first, $second, $prefix = '',
-		$note = null, $unset = null, $default = null, $sufix = ''
-	) {
+	                                       $note = null, $unset = null, $default = null, $sufix = ''
+	)
+	{
 		// default is to return an empty string
 		$script = '';
 		// check if there is any custom script
@@ -5446,8 +5504,9 @@ class Get
 	 *
 	 */
 	protected function setUpdateSQL($old, $new, $type, $key = null,
-		$ignore = null
-	) {
+	                                $ignore = null
+	)
+	{
 		// check if there were new items added
 		if (ComponentbuilderHelper::checkArray($new)
 			&& ComponentbuilderHelper::checkArray($old))
@@ -5810,8 +5869,9 @@ class Get
 	 *
 	 */
 	public function setTemplateAndLayoutData($default, $view, $found = false,
-		$templates = array(), $layouts = array()
-	) {
+	                                         $templates = array(), $layouts = array()
+	)
+	{
 		// to check inside the templates
 		$again = array();
 		// check if template keys were passed
@@ -5990,7 +6050,7 @@ class Get
 		$query->select('a.*');
 		$query->from('#__componentbuilder_' . $table . ' AS a');
 		$query->where(
-		$this->db->quoteName('a.id') . ' = ' . (int) $ID
+			$this->db->quoteName('a.id') . ' = ' . (int) $ID
 		);
 		// get the other target if both
 		$_targets = array($this->target);
@@ -6173,8 +6233,8 @@ class Get
 					$key  = preg_replace("/[^A-Za-z]/", '', $k_ey);
 					// set the keys
 					$this->dataWithAliasKeys[$table][$row->alias] = $row->id;
-					$this->dataWithAliasKeys[$table][$k_ey] = $row->id;
-					$this->dataWithAliasKeys[$table][$key] = $row->id;
+					$this->dataWithAliasKeys[$table][$k_ey]       = $row->id;
+					$this->dataWithAliasKeys[$table][$key]        = $row->id;
 				}
 			}
 		}
@@ -6641,8 +6701,9 @@ class Get
 	 *
 	 */
 	public function setDataSelection($method_key, $view_code, $string, $asset,
-		$as, $row_type, $type
-	) {
+	                                 $as, $row_type, $type
+	)
+	{
 		if (ComponentbuilderHelper::checkString($string))
 		{
 			if ('db' === $type)
@@ -7100,8 +7161,9 @@ class Get
 	 *
 	 */
 	public function uniquekey($size, $random = false,
-		$newBag = "vvvvvvvvvvvvvvvvvvv"
-	) {
+	                          $newBag = "vvvvvvvvvvvvvvvvvvv"
+	)
+	{
 		if ($random)
 		{
 			$bag
@@ -7223,7 +7285,7 @@ class Get
 	 */
 	public function setExternalCodeString($string, $debug = 0)
 	{
-		// check if content has custom code place holder
+		// check if content has custom code placeholder
 		if (strpos($string, '[EXTERNA' . 'LCODE=') !== false)
 		{
 			// if debug
@@ -7242,54 +7304,51 @@ class Get
 				// build local bucket
 				foreach ($found as $target)
 				{
-					// check if user has permission to use EXTERNAL code (we may add a custom access switch - use ADMIN for now)
-					if ($this->user->authorise(
-						'core.admin', 'com_componentbuilder'
-					))
+					// check for cutting sequence
+					// example: >{3|4
+					// will cut 3 rows at top and 4 rows at bottom
+					// if the external code has 8 or more lines
+					if (($pos = strpos($target, '>{')) !== false)
 					{
-						// check if the target is valid URL or path
-						if ((!filter_var($target, FILTER_VALIDATE_URL) === false
-								&& ComponentbuilderHelper::urlExists($target))
-							|| (JPath::clean($target) === $target
-								&& File::exists($target)))
-						{
-							$this->getExternalCodeString($target, $bucket);
-						}
-						// give notice that target is not a valid url/path
-						else
-						{
-							// set key
-							$key = '[EXTERNA' . 'LCODE=' . $target . ']';
-							// set the notice
-							$this->app->enqueueMessage(
-								JText::_(
-									'<hr /><h3>External Code Warning</h3>'
-								), 'Warning'
-							);
-							$this->app->enqueueMessage(
-								JText::sprintf(
-									'The <b>%s</b> is not a valid url/path!',
-									$key
-								), 'Warning'
-							);
-							// remove the placeholder
-							$bucket[$key] = '';
-						}
+						// the length
+						$target_len = strlen($target);
+						// where to cut
+						$cutting = $target_len - $pos;
+						// get the sequence
+						$sequence = substr($target, "-$cutting");
+						// remove from the URL
+						$target_url = str_replace($sequence, '', $target);
+						// set the cut key for this target if not set
+						$this->externalCodeCutter[trim($target)] = str_replace('>{', '', $sequence);
 					}
+					else
+					{
+						$target_url = $target;
+					}
+					// check if the target is valid URL or path
+					if ((!filter_var($target_url, FILTER_VALIDATE_URL) === false
+							&& ComponentbuilderHelper::urlExists($target_url))
+						|| (JPath::clean($target_url) === $target_url
+							&& File::exists($target_url)))
+					{
+						$this->getExternalCodeString($target, $bucket);
+					}
+					// give notice that target is not a valid url/path
 					else
 					{
 						// set key
 						$key = '[EXTERNA' . 'LCODE=' . $target . ']';
 						// set the notice
 						$this->app->enqueueMessage(
-							JText::_('<hr /><h3>External Code Error</h3>'),
-							'Error'
+							JText::_(
+								'<hr /><h3>External Code Warning</h3>'
+							), 'Warning'
 						);
 						$this->app->enqueueMessage(
 							JText::sprintf(
-								'%s, you do not have permission to use <b>EXTERNALCODE</b> feature (so <b>%s</b> was removed from the compilation), please contact you system administrator for more info!<br /><small>(admin access required)</small>',
-								$this->user->get('name'), $key
-							), 'Error'
+								'The <b>%s</b> is not a valid url/path!',
+								$key
+							), 'Warning'
 						);
 						// remove the placeholder
 						$bucket[$key] = '';
@@ -7323,34 +7382,57 @@ class Get
 	 */
 	protected function getExternalCodeString($target, &$bucket)
 	{
+		// set URL key
+		$target_key = trim($target);
 		// set key
 		$key = '[EXTERNA' . 'LCODE=' . $target . ']';
-		// set URL key
-		$targetKey = trim($target);
+		// remove the cut sequence from the url
+		if (isset($this->externalCodeCutter[$target_key]))
+		{
+			// remove from the URL
+			$target_url = trim(str_replace('>{' . $this->externalCodeCutter[$target_key], '', $target));
+		}
+		else
+		{
+			$target_url = trim($target);
+		}
 		// check if we already fetched this
-		if (!isset($this->externalCodeString[$targetKey]))
+		if (!isset($this->externalCodeString[$target_key]))
 		{
 			// get the data string (code)
-			$this->externalCodeString[$targetKey]
-				= ComponentbuilderHelper::getFileContents($targetKey);
+			$this->externalCodeString[$target_key]
+				= ComponentbuilderHelper::getFileContents($target_url);
+			// check if we must cut this
+			if (isset($this->externalCodeCutter[$target_key]) &&
+				$this->externalCodeCutter[$target_key])
+			{
+				$this->externalCodeString[$target_key] = $this->cutExternalCodeString(
+					$this->externalCodeString[$target_key],
+					$this->externalCodeCutter[$target_key],
+					$key
+				);
+			}
 			// did we get any value
 			if (ComponentbuilderHelper::checkString(
-				$this->externalCodeString[$targetKey]
+				$this->externalCodeString[$target_key]
 			))
 			{
 				// check for changes
-				$liveHash = md5($this->externalCodeString[$targetKey]);
-				// check if it exist local
+				$live_hash = md5($this->externalCodeString[$target_key]);
+				// check if it exists local
 				if ($hash = ComponentbuilderHelper::getVar(
-					'external_code', $targetKey, 'target', 'hash'
+					'external_code', $target_key, 'target', 'hash'
 				))
 				{
-					if ($hash !== $liveHash)
+					// must be an admin make a change to use EXTERNAL code (we may add a custom access switch - use ADMIN for now)
+					if ($hash !== $live_hash && $this->user->authorise(
+						'core.admin', 'com_componentbuilder'
+					))
 					{
 						// update the hash since it changed
 						$object         = new stdClass();
-						$object->target = $targetKey;
-						$object->hash   = $liveHash;
+						$object->target = $target_key;
+						$object->hash   = $live_hash;
 						// update local hash
 						$this->db->updateObject(
 							'#__componentbuilder_external_code', $object,
@@ -7363,18 +7445,37 @@ class Get
 						);
 						$this->app->enqueueMessage(
 							JText::sprintf(
-								'The code/string from <b>%s</b> has been <b>changed</b> since the last compilation, please investigate to insure the changes are safe!',
+								'The code/string from <b>%s</b> has been <b>changed</b> since the last compilation. Please investigate to ensure the changes are safe! <b>Should you not expect this change to the external code/string being added, then this is a serious issue! and requires immediate attention!</b> Do not ignore this warning as it will only show <b>once</b>.',
 								$key
 							), 'Warning'
 						);
 					}
+					elseif ($hash !== $live_hash)
+					{
+						// set the notice
+						$this->app->enqueueMessage(
+							JText::_('<hr /><h3>External Code Error</h3>'),
+							'Error'
+						);
+						$this->app->enqueueMessage(
+							JText::sprintf(
+								'%s, we detected a change in <b>EXTERNALCODE</b>, but you do not have permission to allow this change so <b>%s</b> was removed from the compilation. Please contact your system administrator for more info!<br /><small>(admin access required)</small>',
+								$this->user->get('name'), $key
+							), 'Error'
+						);
+						// remove the code/string
+						$this->externalCodeString[$target_key] = '';
+					}
 				}
-				else
+				// only an admin can add new EXTERNAL code (we may add a custom access switch - use ADMIN for now)
+				elseif ($this->user->authorise(
+					'core.admin', 'com_componentbuilder'
+				))
 				{
 					// add the hash to track changes
 					$object         = new stdClass();
-					$object->target = $targetKey;
-					$object->hash   = $liveHash;
+					$object->target = $target_key;
+					$object->hash   = $live_hash;
 					// insert local hash
 					$this->db->insertObject(
 						'#__componentbuilder_external_code', $object
@@ -7382,34 +7483,105 @@ class Get
 					// give notice the first time this is added
 					$this->app->enqueueMessage(
 						JText::_('<hr /><h3>External Code Notice</h3>'),
-						'Notice'
+						'Warning'
 					);
 					$this->app->enqueueMessage(
 						JText::sprintf(
-							'The code/string from <b>%s</b> has been added for the <b>first time</b>, please investigate to insure the correct code/string was used!',
+							'The code/string from <b>%s</b> has been added for the <b>first time</b>. Please <i>investigate</i> to ensure the correct code/string was used! <b>Should you not know about this NEW external code/string being added, then this is a serious danger! and requires immediate attention!</b> Do not ignore this warning as it will only show <b>once</b>.',
 							$key
-						), 'Notice'
+						), 'Warning'
 					);
+				}
+				else
+				{
+					// set the notice
+					$this->app->enqueueMessage(
+						JText::_('<hr /><h3>External Code Error</h3>'),
+						'Error'
+					);
+					$this->app->enqueueMessage(
+						JText::sprintf(
+							'%s, we detected <b>NEW EXTERNALCODE</b>, but you do not have permission to allow this new code/string so <b>%s</b> was removed from the compilation. Please contact you system administrator for more info!<br /><small>(admin access required)</small>',
+							$this->user->get('name'), $key
+						), 'Error'
+					);
+					// remove the code/string
+					$this->externalCodeString[$target_key] = '';
 				}
 			}
 			else
 			{
 				// set notice that we could not get a valid string from the target
 				$this->app->enqueueMessage(
-					JText::_('<hr /><h3>External Code Warning</h3>'), 'Warning'
+					JText::_('<hr /><h3>External Code Warning</h3>'), 'Error'
 				);
 				$this->app->enqueueMessage(
 					JText::sprintf(
 						'The <b>%s</b> returned an invalid string!', $key
-					), 'Warning'
+					), 'Error'
 				);
 			}
 		}
 		// add to local bucket
-		if (isset($this->externalCodeString[$targetKey]))
+		if (isset($this->externalCodeString[$target_key]))
 		{
-			$bucket[$key] = $this->externalCodeString[$targetKey];
+			// update the placeholder with the external code string
+			$bucket[$key] = $this->externalCodeString[$target_key];
 		}
+		else
+		{
+			// remove the placeholder
+			$bucket[$key] = '';
+		}
+	}
+
+	/**
+	 * Cut the External Code/String
+	 *
+	 * @param   string  $string    The content to cut
+	 * @param   string  $sequence  The cutting sequence
+	 * @param   string  $key       The content key
+	 *
+	 * @return  string
+	 *
+	 */
+	protected function cutExternalCodeString($string, $sequence, $key)
+	{
+		// we first break the string up in rows
+		$rows = (array) explode(PHP_EOL, $string);
+		// get the cutting sequence
+		$cutter = (array) explode('|', $sequence);
+		// we only continue if we have more rows than we have to cut
+		if (array_sum($cutter) < ComponentbuilderHelper::checkArray($rows))
+		{
+			// remove the rows at the bottom if needed
+			if (isset($cutter[1]) && $cutter[1] > 0)
+			{
+				array_splice($rows, "-$cutter[1]");
+			}
+			// remove the rows at the top if needed
+			if ($cutter[0] > 0)
+			{
+				$rows = array_splice($rows, $cutter[0]);
+			}
+
+			// return the remaining rows
+			return implode(PHP_EOL, $rows);
+		}
+
+		// we set an error message about too few lines to cut
+		$this->app->enqueueMessage(
+			JText::_('<hr /><h3>External Code Notice</h3>'),
+			'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'The <b>%s</b> cut sequence failed on the returned external code/string as more lines has to be cut then was found in the code/string. We have completely removed the code. Please check this code/string!',
+				$key
+			), 'Error'
+		);
+
+		return '';
 	}
 
 	/**
@@ -7779,7 +7951,7 @@ class Get
 			$query->select(
 				$this->db->quoteName(
 					array('a.id', 'a.translation', 'a.source', 'a.components',
-					      'a.modules', 'a.plugins', 'a.published')
+						'a.modules', 'a.plugins', 'a.published')
 				)
 			);
 			$query->where(
@@ -7810,8 +7982,9 @@ class Get
 	 *
 	 */
 	public function setLangPlaceholders($strings, int $target_id,
-		$target = 'components'
-	) {
+	                                    $target = 'components'
+	)
+	{
 		$counterInsert = 0;
 		$counterUpdate = 0;
 		$today         = JFactory::getDate()->toSql();
@@ -7998,7 +8171,7 @@ class Get
 			$continue = false;
 			// Insert columns.
 			$columns = array($target, 'source', 'published', 'created',
-			                 'created_by', 'version', 'access');
+				'created_by', 'version', 'access');
 			// Prepare the insert query.
 			$query->insert(
 				$this->db->quoteName('#__componentbuilder_language_translation')
@@ -8095,8 +8268,9 @@ class Get
 	 *
 	 */
 	public function purgeLanuageStrings($values, $target_id,
-		$target = 'components'
-	) {
+	                                    $target = 'components'
+	)
+	{
 		// the target types are
 		$target_types = array('components' => 'components',
 		                      'modules'    => 'modules',
@@ -8116,7 +8290,7 @@ class Get
 			$query->select(
 				$this->db->quoteName(
 					array('a.id', 'a.translation', 'a.components', 'a.modules',
-					      'a.plugins')
+						'a.plugins')
 				)
 			);
 			// get all string that are not linked to this component
@@ -8239,8 +8413,9 @@ class Get
 	 *
 	 */
 	protected function setUpdateExistingLangStrings($id, $target, $targets,
-		$published, $today, $counterUpdate
-	) {
+	                                                $published, $today, $counterUpdate
+	)
+	{
 		// start the bucket for this lang
 		$this->existingLangStrings[$counterUpdate]               = array();
 		$this->existingLangStrings[$counterUpdate]['id']         = (int) $id;
@@ -8313,8 +8488,8 @@ class Get
 			$query->select(
 				$this->db->quoteName(
 					array('a.id', 'a.code', 'a.comment_type', 'a.component',
-					      'a.from_line', 'a.hashtarget', 'a.hashendtarget',
-					      'a.path', 'a.to_line', 'a.type')
+						'a.from_line', 'a.hashtarget', 'a.hashendtarget',
+						'a.path', 'a.to_line', 'a.type')
 				)
 			);
 			$query->where(
@@ -8396,6 +8571,357 @@ class Get
 
 			return true;
 		}
+
+		return false;
+	}
+
+	/**
+	 * get all the powers linkd to this component
+	 *
+	 * @return void
+	 *
+	 */
+	protected function getPowers($ids)
+	{
+		if (ComponentbuilderHelper::checkArray($ids, true))
+		{
+			foreach ($ids as $id)
+			{
+				$this->getPower($id);
+			}
+		}
+	}
+
+	/**
+	 * get a power linkd to this component
+	 *
+	 * @return mixed
+	 *
+	 */
+	public function getPower($id)
+	{
+		if ($this->setPower($id))
+		{
+			return $this->powers[$id];
+		}
+
+		return false;
+	}
+
+	/**
+	 * set a power linkd to this component
+	 *
+	 * @return bool
+	 *
+	 */
+	protected function setPower($id)
+	{
+		// check if we have been here before
+		if (isset($this->statePowers[$id]))
+		{
+			return $this->statePowers[$id];
+		}
+		elseif (is_numeric($id) && $id > 0)
+		{
+			// Create a new query object.
+			$query = $this->db->getQuery(true);
+
+			$query->select('a.*');
+			// from these tables
+			$query->from('#__componentbuilder_power AS a');
+			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
+			$this->db->setQuery($query);
+			$this->db->execute();
+			if ($this->db->getNumRows())
+			{
+				// make sure that in recursion we
+				// don't try to load this power again
+				$this->statePowers[$id] = true;
+				// we set the fix usr if needed
+				$fix_url
+					= '"index.php?option=com_componentbuilder&view=powers&task=power.edit&id='
+					. $id . '" target="_blank"';
+				// get the power data
+				$power = $this->db->loadObject();
+				// set some keys
+				$power->target_type = 'P0m3R!';
+				$power->key         = $power->id . '_' . $power->target_type;
+				// now set the name
+				$power->name = $this->setPlaceholders(
+					$this->setDynamicValues($power->name),
+					$this->placeholders
+				);
+				// now set the code_name and class name
+				$power->code_name = $power->class_name = ComponentbuilderHelper::safeClassFunctionName(
+					$power->name
+				);
+				// set official name
+				$power->official_name = ComponentbuilderHelper::safeString(
+					$power->name, 'W'
+				);
+				// set namespace
+				$power->namespace = $this->setPlaceholders(
+					$power->namespace, $this->placeholders
+				);
+				// validate namespace
+				if (strpos($power->namespace, '\\') === false)
+				{
+					// we raise an error message
+					$this->app->enqueueMessage(
+						JText::sprintf('<h3>%s namespace error (%s)</h3><p>You must at-least have two sections in your namespace, you just have one. This is an unacceptable action, please see <a href=%s >psr-4</a> for more info.</p><p>This %s was therefore removed, <a href=%s>click here</a> to fix this issue.</p>',
+							ucfirst($power->type), $power->name, $power->namespace,
+							'"https://www.php-fig.org/psr/psr-4/" target="_blank"', $power->type,
+							$fix_url),
+						'Error'
+					);
+					$this->statePowers[$id] = false;
+
+					// we break out here
+					return false;
+				}
+				else
+				{
+					// setup the path array
+					$path_array = (array) explode('\\', $power->namespace);
+					// make sure all sub folders in src dir is set and remove all characters that will not work in folders naming
+					$power->namespace = ComponentbuilderHelper::safeNamespace(str_replace('.', '\\', $power->namespace));
+					// make sure it has two or more
+					if (ComponentbuilderHelper::checkArray($path_array) <= 1)
+					{
+						// we raise an error message
+						$this->app->enqueueMessage(
+							JText::sprintf('<h3>%s namespace error (%s)</h3><p>You must at-least have two sections in your namespace, you just have one (%s). This is an unacceptable action, please see <a href=%s >psr-4</a> for more info.</p><p>This %s was therefore removed, <a href=%s>click here</a> to fix this issue.</p>',
+								ucfirst($power->type), $power->name, $power->namespace,
+								'"https://www.php-fig.org/psr/psr-4/" target="_blank"', $power->type,
+								$fix_url),
+							'Error'
+						);
+						$this->statePowers[$id] = false;
+
+						// we break out here
+						return false;
+					}
+					// get the file and class name (the last value in array)
+					$file_name = array_pop($path_array);
+					// src array bucket
+					$src_array = array();
+					// do we have src folders
+					if (strpos($file_name, '.') !== false)
+					{
+						// we have src folders in the namespace
+						$src_array = (array) explode('.', $file_name);
+						// get the file and class name (the last value in array)
+						$power->file_name = array_pop($src_array);
+						// namespace array
+						$namespace_array = array_merge($path_array, $src_array);
+					}
+					else
+					{
+						// set the file name
+						$power->file_name = $file_name;
+						// namespace array
+						$namespace_array = $path_array;
+					}
+					// the last value is the same as the class name
+					if ($power->file_name !== $power->class_name)
+					{
+						// we raise an error message
+						$this->app->enqueueMessage(
+							JText::sprintf('<p>%s naming mismatch error (%s)</p><p>The %s name is <b>%s</b> and the ending file name in the namespace is <b>%s</b>. This is bad convention, please see <a href=%s >psr-4</a> for more info.</p><p><a href=%s>Click here</a> to fix this issue.</p>',
+								ucfirst($power->type), $power->name, $power->type, $power->class_name, $power->file_name,
+								'"https://www.php-fig.org/psr/psr-4/" target="_blank"',
+								$fix_url),
+							'Error'
+						);
+						$this->statePowers[$id] = false;
+
+						// we break out here
+						return false;
+					}
+					// make sure the arrays are namespace safe
+					$path_array      = array_map(function ($val) {
+						return ComponentbuilderHelper::safeNamespace($val);
+					}, $path_array);
+					$namespace_array = array_map(function ($val) {
+						return ComponentbuilderHelper::safeNamespace($val);
+					}, $namespace_array);
+					// set the actual class namespace
+					$power->_namespace = implode('\\', $namespace_array);
+					// prefix values
+					$power->_namespace_prefix = $path_array;
+					// get the parent folder (the first value in array)
+					$prefix_folder = implode('.', $path_array);
+					// make sub folders if still found
+					$sub_folder = '';
+					if (ComponentbuilderHelper::checkArray($src_array))
+					{
+						// make sure the arrays are namespace safe
+						$sub_folder = '/' . implode('/', array_map(function ($val) {
+								return ComponentbuilderHelper::safeNamespace($val);
+							}, $src_array));
+					}
+					// now we set the paths
+					$power->path_jcb    = $this->jcbPowersPath;
+					$power->path_parent = $power->path_jcb . '/' . $prefix_folder;
+					$power->path        = $power->path_parent . '/src' . $sub_folder;
+				}
+				// load use ids
+				$use = array();
+				// check if we have use selection
+				$power->use_selection = (isset($power->use_selection)
+					&& ComponentbuilderHelper::checkJson(
+						$power->use_selection
+					)) ? json_decode($power->use_selection, true) : null;
+				if ($power->use_selection)
+				{
+					$use = array_values(array_map(function ($u) {
+						return $u['use'];
+					}, $power->use_selection));
+				}
+				// check if we have load selection
+				$power->load_selection = (isset($power->load_selection)
+					&& ComponentbuilderHelper::checkJson(
+						$power->load_selection
+					)) ? json_decode($power->load_selection, true) : null;
+				if ($power->load_selection)
+				{
+					// load use ids
+					array_map(function ($l) {
+						// just load it directly and be done with it
+						return $this->setPower($l['load']);
+					}, $power->load_selection);
+				}
+				// see if we have implements
+				$power->implement_names = array();
+				// does this implement
+				$power->implements = (isset($power->implements)
+					&& ComponentbuilderHelper::checkJson(
+						$power->implements
+					)) ? json_decode($power->implements, true) : null;
+				if ($power->implements)
+				{
+					foreach ($power->implements as $implement)
+					{
+						if ($implement == -1
+							&& ComponentbuilderHelper::checkString($power->implements_custom))
+						{
+							$power->implement_names[] = $this->setPlaceholders(
+								$this->setDynamicValues($power->implements_custom),
+								$this->placeholders
+							);
+							// just add this once
+							unset($power->implements_custom);
+						}
+						// does this extend existing
+						elseif ($implement >= 1)
+						{
+							// check if it was set
+							if ($this->setPower($implement))
+							{
+								// get the name
+								$power->implement_names[] = $this->getPower($implement)->class_name;
+								// add to use
+								$use[] = $implement;
+							}
+						}
+					}
+				}
+				// does this extend something
+				$power->extends_name = null;
+				// we first check for custom extending options
+				if ($power->extends == -1
+					&& ComponentbuilderHelper::checkString($power->extends_custom))
+				{
+					$power->extends_name = $this->setPlaceholders(
+						$this->setDynamicValues($power->extends_custom),
+						$this->placeholders
+					);
+					// just add once
+					unset($power->extends_custom);
+				}
+				// does this extend existing
+				elseif ($power->extends >= 1)
+				{
+					// check if it was set
+					if ($this->setPower($power->extends))
+					{
+						// get the name
+						$power->extends_name = $this->getPower($power->extends)->class_name;
+						// add to use
+						$use[] = $power->extends;
+					}
+				}
+				// set GUI mapper
+				$guiMapper = array('table' => 'power', 'id' => (int) $id, 'type' => 'php');
+				// add the header script
+				if ($power->add_head == 1)
+				{
+					// set GUI mapper field
+					$guiMapper['field'] = 'head';
+					// base64 Decode code
+					$power->head = $this->setGuiCodePlaceholder(
+							$this->setPlaceholders(
+								$this->setDynamicValues(
+									base64_decode(
+										$power->head
+									)
+								), $this->placeholders
+							),
+							$guiMapper
+						) . PHP_EOL;
+				}
+				// now add all the extra use statements
+				if (ComponentbuilderHelper::checkArray($use))
+				{
+					foreach (array_unique($use) as $u)
+					{
+						if ($this->setPower($u))
+						{
+							$add_use = $this->getPower($u)->namespace;
+							// check if it is already added manually, you know how some people are
+							if (strpos($power->head, $add_use) === false)
+							{
+								$power->head .= 'use ' . $add_use . ';' . PHP_EOL;
+							}
+						}
+					}
+				}
+				// now set the description
+				$power->description = (ComponentbuilderHelper::checkString($power->description)) ? $this->setPlaceholders(
+					$this->setDynamicValues($power->description),
+					$this->placeholders
+				) : '';
+				// add the main code if set
+				if (ComponentbuilderHelper::checkString($power->main_class_code))
+				{
+					// set GUI mapper field
+					$guiMapper['field'] = 'main_class_code';
+					// base64 Decode code
+					$power->main_class_code = $this->setGuiCodePlaceholder(
+						$this->setPlaceholders(
+							$this->setDynamicValues(
+								base64_decode(
+									$power->main_class_code
+								)
+							), $this->placeholders
+						),
+						$guiMapper
+					);
+				}
+				// store the power
+				$this->powers[$id] = $power;
+
+				return true;
+			}
+		}
+		// we failed to get the power
+		// so we raise an error message
+		$this->app->enqueueMessage(
+			JText::sprintf('<p>Power <b>id:%s</b> not found!</p>', $id),
+			'Error'
+		);
+		// let's not try again
+		$this->statePowers[$id] = false;
 
 		return false;
 	}
@@ -9131,10 +9657,10 @@ class Get
 				// add PHP in module install
 				$module->add_install_script = false;
 				$addScriptMethods           = array('php_preflight',
-				                                    'php_postflight',
-				                                    'php_method');
+					'php_postflight',
+					'php_method');
 				$addScriptTypes             = array('install', 'update',
-				                                    'uninstall');
+					'uninstall');
 				// the next are php placeholders
 				$guiMapper['type'] = 'php';
 				foreach ($addScriptMethods as $scriptMethod)
@@ -9287,7 +9813,8 @@ class Get
 	public function getModuleXMLTemplate(&$module)
 	{
 		$xml = '<?xml version="1.0" encoding="utf-8"?>';
-		$xml .= PHP_EOL . '<extension type="module" version="3.8" client="'
+		$xml .= PHP_EOL . '<extension type="module" version="'
+			. $this->joomlaVersions[$this->joomlaVersion]['xml_version'] . '" client="'
 			. $module->target_client . '" method="upgrade">';
 		$xml .= PHP_EOL . $this->_t(1) . '<name>' . $module->lang_prefix
 			. '</name>';
@@ -9999,10 +10526,10 @@ class Get
 				// add PHP in plugin install
 				$plugin->add_install_script = false;
 				$addScriptMethods           = array('php_preflight',
-				                                    'php_postflight',
-				                                    'php_method');
+					'php_postflight',
+					'php_method');
 				$addScriptTypes             = array('install', 'update',
-				                                    'uninstall');
+					'uninstall');
 				foreach ($addScriptMethods as $scriptMethod)
 				{
 					foreach ($addScriptTypes as $scriptType)
@@ -10173,7 +10700,8 @@ class Get
 	public function getPluginXMLTemplate(&$plugin)
 	{
 		$xml = '<?xml version="1.0" encoding="utf-8"?>';
-		$xml .= PHP_EOL . '<extension type="plugin" version="3.8" group="'
+		$xml .= PHP_EOL . '<extension type="plugin" version="'
+			. $this->joomlaVersions[$this->joomlaVersion]['xml_version'] . '" group="'
 			. strtolower($plugin->group) . '" method="upgrade">';
 		$xml .= PHP_EOL . $this->_t(1) . '<name>' . $plugin->lang_prefix
 			. '</name>';
@@ -10243,9 +10771,9 @@ class Get
 			$continue = false;
 			// Insert columns.
 			$columns = array('path', 'type', 'target', 'comment_type',
-			                 'component', 'published', 'created', 'created_by',
-			                 'version', 'access', 'hashtarget', 'from_line',
-			                 'to_line', 'code', 'hashendtarget');
+				'component', 'published', 'created', 'created_by',
+				'version', 'access', 'hashtarget', 'from_line',
+				'to_line', 'code', 'hashendtarget');
 			// Prepare the insert query.
 			$query->insert(
 				$this->db->quoteName('#__componentbuilder_custom_code')
@@ -10402,8 +10930,9 @@ class Get
 	 *
 	 */
 	protected function searchFileContent(&$counter, &$file, &$target,
-		&$searchArray, &$placeholders, &$today
-	) {
+	                                     &$searchArray, &$placeholders, &$today
+	)
+	{
 		// we add a new search for the GUI CODE Blocks
 		$this->guiCodeSearch($file, $placeholders, $today, $target);
 		// reset each time per file
@@ -11194,8 +11723,9 @@ class Get
 	 *
 	 */
 	protected function reversePlaceholders($string, &$placeholders, &$target,
-		$id = null, $field = 'code', $table = 'custom_code'
-	) {
+	                                       $id = null, $field = 'code', $table = 'custom_code'
+	)
+	{
 		// get local code if set
 		if ($id > 0
 			&& $code = base64_decode(
@@ -11221,8 +11751,9 @@ class Get
 	 *
 	 */
 	protected function setReverseLangPlaceholders($updateString, $string,
-		&$target
-	) {
+	                                              &$target
+	)
+	{
 		// get targets to search for
 		$langStringTargets = array_filter(
 			$this->langStringTargets, function ($get) use ($string) {
@@ -11511,6 +12042,8 @@ class Get
 		// media path
 		$localPaths['media'] = JPATH_ROOT . '/media/com_'
 			. $this->componentCodeName;
+		// power path
+		$localPaths['power'] = JPATH_ROOT . '/' . $this->jcbPowersPath;
 		// lets also go over the REPOS (TODO)
 		// Painfull but we need to folder paths for the linked modules
 		if (($module_ids = $this->getModuleIDs()) !== false)

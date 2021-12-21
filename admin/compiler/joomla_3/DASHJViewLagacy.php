@@ -17,6 +17,8 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+###DASH_VIEW_HTML_HEADER###
+
 /**
  * ###Component### View class
  */

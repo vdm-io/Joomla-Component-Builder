@@ -17,6 +17,6 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-JHtml::_('behavior.tooltip');
+###DASH_VIEW_HEADER###
 
 ?>###DASH_DISPLAY_DATA###

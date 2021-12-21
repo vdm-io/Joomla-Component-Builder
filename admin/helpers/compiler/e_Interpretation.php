@@ -3,7 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -1247,7 +1248,8 @@ class Interpretation extends Fields
 	 * @param   bool   $current_version
 	 */
 	public function setDynamicUpdateXMLSQL(&$updateXML, $current_version = false
-	) {
+	)
+	{
 		// start building the update
 		$update_ = array();
 		if ($current_version)
@@ -1369,6 +1371,26 @@ class Interpretation extends Fields
 		if ($this->componentData->add_update_server
 			&& $this->componentData->update_server_target != 3)
 		{
+			// we set the defaults
+			$u_element = 'com_' . $this->componentCodeName;
+			$u_server_type = 'component';
+			$u_state = 'stable';
+			$u_target_version = '3.*';
+			$u_client = null;
+			// check if we have advance options set
+			if (isset($update['update_server_adv']) && $update['update_server_adv'])
+			{
+				$u_element = (isset($update['update_element']) && strlen($update['update_element']) > 0)
+					? $update['update_element'] : $u_element;
+				$u_server_type = (isset($update['update_server_type']) && strlen($update['update_server_type']) > 0)
+					? $update['update_server_type'] : $u_server_type;
+				$u_state = (isset($update['update_state']) && strlen($update['update_state']) > 0)
+					? $update['update_state'] : $u_state;
+				$u_target_version = (isset($update['update_target_version']) && strlen($update['update_target_version']) > 0)
+					? $update['update_target_version'] : $u_target_version;
+				$u_client = (isset($update['update_client']) && strlen($update['update_client']) > 0)
+					? $update['update_client'] : $u_client;
+			}
 			// build update xml
 			$updateXML[] = $this->_t(1) . "<update>";
 			$updateXML[] = $this->_t(2) . "<name>"
@@ -1377,9 +1399,13 @@ class Interpretation extends Fields
 			$updateXML[] = $this->_t(2) . "<description>"
 				. $this->fileContentStatic[$this->hhh . 'SHORT_DESCRIPTION'
 				. $this->hhh] . "</description>";
-			$updateXML[] = $this->_t(2) . "<element>com_"
-				. $this->componentCodeName . "</element>";
-			$updateXML[] = $this->_t(2) . "<type>component</type>";
+			$updateXML[] = $this->_t(2) . "<element>$u_element</element>";
+			$updateXML[] = $this->_t(2) . "<type>$u_server_type</type>";
+			// check if we should add the target client value
+			if ($u_client)
+			{
+				$updateXML[] = $this->_t(2) . "<client>$u_client</client>";
+			}
 			$updateXML[] = $this->_t(2) . "<version>" . $update['version']
 				. "</version>";
 			$updateXML[] = $this->_t(2) . '<infourl title="'
@@ -1399,7 +1425,7 @@ class Interpretation extends Fields
 				. '</downloadurl>';
 			$updateXML[] = $this->_t(2) . "</downloads>";
 			$updateXML[] = $this->_t(2) . "<tags>";
-			$updateXML[] = $this->_t(3) . "<tag>stable</tag>";
+			$updateXML[] = $this->_t(3) . "<tag>$u_state</tag>";
 			$updateXML[] = $this->_t(2) . "</tags>";
 			$updateXML[] = $this->_t(2) . "<maintainer>"
 				. $this->fileContentStatic[$this->hhh . 'AUTHOR' . $this->hhh]
@@ -1408,7 +1434,7 @@ class Interpretation extends Fields
 				. $this->fileContentStatic[$this->hhh . 'AUTHORWEBSITE'
 				. $this->hhh] . "</maintainerurl>";
 			$updateXML[] = $this->_t(2)
-				. '<targetplatform name="joomla" version="3.*"/>';
+				. '<targetplatform name="joomla" version="' . $u_target_version . '"/>';
 			$updateXML[] = $this->_t(1) . "</update>";
 		}
 	}
@@ -2405,7 +2431,8 @@ class Interpretation extends Fields
 	}
 
 	public function setCustomViewQuery(&$gets, &$code, $tab = '', $type = 'main'
-	) {
+	)
+	{
 		$query = '';
 		if (ComponentbuilderHelper::checkArray($gets))
 		{
@@ -2520,8 +2547,9 @@ class Interpretation extends Fields
 	}
 
 	public function setCustomViewFieldDecodeFilter(&$get, &$filters, $string,
-		$removeString, $code, $tab
-	) {
+	                                               $removeString, $code, $tab
+	)
+	{
 		$filter = '';
 		// check if filter is set for this field
 		if (ComponentbuilderHelper::checkArray($filters))
@@ -2752,8 +2780,9 @@ class Interpretation extends Fields
 	}
 
 	public function setCustomViewFieldDecode(&$get, $checker, $string, $code,
-		$tab = ''
-	) {
+	                                         $tab = ''
+	)
+	{
 		$fieldDecode = '';
 		foreach ($checker as $field => $array)
 		{
@@ -2876,8 +2905,9 @@ class Interpretation extends Fields
 	}
 
 	public function setCustomViewFieldonContentPrepareChecker(&$get, $checker,
-		$string, $code, $tab = ''
-	) {
+	                                                          $string, $code, $tab = ''
+	)
+	{
 		$fieldPrepare = '';
 		$runplugins   = false;
 		// set component
@@ -2958,8 +2988,9 @@ class Interpretation extends Fields
 	}
 
 	public function setCustomViewFieldUikitChecker(&$get, $checker, $string,
-		$code, $tab = ''
-	) {
+	                                               $code, $tab = ''
+	)
+	{
 		$fieldUikit = '';
 		foreach ($checker as $field => $array)
 		{
@@ -2994,8 +3025,9 @@ class Interpretation extends Fields
 	}
 
 	public function setCustomViewCustomJoin(&$gets, $string, $code, &$asBucket,
-		$tab = ''
-	) {
+	                                        $tab = ''
+	)
+	{
 		if (ComponentbuilderHelper::checkArray($gets))
 		{
 			$customJoin = '';
@@ -3611,8 +3643,9 @@ class Interpretation extends Fields
 	 * @return string
 	 */
 	public function setCustomViewGetItem(&$get, &$code, $tab = '',
-		$type = 'main'
-	) {
+	                                     $type = 'main'
+	)
+	{
 		if (ComponentbuilderHelper::checkObject($get))
 		{
 			// set the site decription switches
@@ -5809,7 +5842,7 @@ class Interpretation extends Fields
 					) === false))
 			{
 				// set the custom get form method  JAVASCRIPT_FOR_BUTTONS
-				$this->fileContentDynamic[$view['settings']->code][$this->hhh
+				$this->fileContentDynamic[$viewCodeName][$this->hhh
 				. $TARGET . '_JAVASCRIPT_FOR_BUTTONS' . $this->hhh]
 					= $this->setJavaScriptForButtons();
 			}
@@ -5819,7 +5852,7 @@ class Interpretation extends Fields
 					$view['settings']->default, '<form'
 				) === false)
 			{
-				$this->addCustomForm[$this->target][$view['settings']->code]
+				$this->addCustomForm[$this->target][$viewCodeName]
 					= true;
 			}
 
@@ -6453,8 +6486,9 @@ class Interpretation extends Fields
 	}
 
 	protected function setIncludeLibScript($path, $local = true,
-		$pathInfo = false
-	) {
+	                                       $pathInfo = false
+	)
+	{
 		// insure we have the path info
 		if (!$pathInfo)
 		{
@@ -7226,6 +7260,13 @@ class Interpretation extends Fields
 					= PHP_EOL . $this->setPlaceholders(
 						$data['html'], $this->placeholders
 					);
+				// SITE_LAYOUT_HEADER <<<DYNAMIC>>>
+				$this->fileContentDynamic[$layout][$this->hhh . $TARGET
+				. '_LAYOUT_HEADER' . $this->hhh]
+					= (($header = $this->setFileHeader(
+						str_replace('_', '.', $this->target) . '.layout',
+						$layout, false)
+					) !== false) ? PHP_EOL . PHP_EOL . $header : '';
 			}
 		}
 	}
@@ -8623,8 +8664,9 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getAssetsTableIntelligentCode($codeIF, $codeA, $codeB,
-		$messageA, $messageB, $tab = 1
-	) {
+	                                                 $messageA, $messageB, $tab = 1
+	)
+	{
 		// reset script
 		$script   = array();
 		$script[] = $this->_t($tab) . $this->_t(1) . "//" . $this->setLine(
@@ -8912,8 +8954,9 @@ class Interpretation extends Fields
 	}
 
 	public function setRouterHelp($nameSingleCode, $nameListCode,
-		$front = false
-	) {
+	                              $front = false
+	)
+	{
 		// add if tags is added, also for all front item views
 		if (((isset($this->tagsBuilder[$nameSingleCode])
 					&& ComponentbuilderHelper::checkString(
@@ -9017,8 +9060,9 @@ class Interpretation extends Fields
 	}
 
 	public function routerParseSwitch(&$view, $viewArray = null,
-		$aliasView = true, $idView = true
-	) {
+	                                  $aliasView = true, $idView = true
+	)
+	{
 		// reset buckets
 		$routerSwitch = array();
 		$isCategory   = '';
@@ -10312,9 +10356,9 @@ class Interpretation extends Fields
 						&& in_array($data['ID'], $this->addSQL['field'][$view]))
 					{
 						$this->updateSQLBuilder["ALTERTABLE`#__" . $component
-						. "_" . $view . "`ADD`" . $field . "`"]
+						. "_" . $view . "`ADDCOLUMNIFNOTEXISTS`" . $field . "`"]
 							= "ALTER TABLE `#__" . $component . "_" . $view
-							. "` ADD `" . $field . "` " . $data['type']
+							. "` ADD COLUMN IF NOT EXISTS `" . $field . "` " . $data['type']
 							. $lenght . " " . $default . " AFTER `" . $last_name
 							. "`;";
 					}
@@ -10780,7 +10824,7 @@ class Interpretation extends Fields
 		$this->triggerEvent(
 			'jcb_ce_onBeforeBuildAdminLang',
 			array(&$this->componentContext, &$this->langContent['admin'],
-			      &$this->langPrefix, &$componentName)
+				&$this->langPrefix, &$componentName)
 		);
 		// start loding the defaults
 		$this->setLangContent('adminsys', $this->langPrefix, $componentName);
@@ -11045,7 +11089,7 @@ class Interpretation extends Fields
 			$this->triggerEvent(
 				'jcb_ce_onAfterBuildAdminLang',
 				array(&$this->componentContext, &$this->langContent['admin'],
-				      &$this->langPrefix, &$componentName)
+					&$this->langPrefix, &$componentName)
 			);
 			// sort the strings
 			ksort($this->langContent['admin']);
@@ -11069,7 +11113,7 @@ class Interpretation extends Fields
 		$this->triggerEvent(
 			'jcb_ce_onBeforeBuildSiteLang',
 			array(&$this->componentContext, &$this->langContent['site'],
-			      &$this->langPrefix, &$componentName)
+				&$this->langPrefix, &$componentName)
 		);
 		// add final list of needed lang strings
 		$this->setLangContent('site', $this->langPrefix, $componentName);
@@ -11140,7 +11184,7 @@ class Interpretation extends Fields
 			$this->triggerEvent(
 				'jcb_ce_onAfterBuildSiteLang',
 				array(&$this->componentContext, &$this->langContent['site'],
-				      &$this->langPrefix, &$componentName)
+					&$this->langPrefix, &$componentName)
 			);
 			// sort the strings
 			ksort($this->langContent['site']);
@@ -11164,7 +11208,7 @@ class Interpretation extends Fields
 		$this->triggerEvent(
 			'jcb_ce_onBeforeBuildSiteSysLang',
 			array(&$this->componentContext, &$this->langContent['sitesys'],
-			      &$this->langPrefix, &$componentName)
+				&$this->langPrefix, &$componentName)
 		);
 		// add final list of needed lang strings
 		$this->setLangContent('sitesys', $this->langPrefix, $componentName);
@@ -11197,7 +11241,7 @@ class Interpretation extends Fields
 			$this->triggerEvent(
 				'jcb_ce_onAfterBuildSiteSysLang',
 				array(&$this->componentContext, &$this->langContent['sitesys'],
-				      &$this->langPrefix, &$componentName)
+					&$this->langPrefix, &$componentName)
 			);
 			// sort strings
 			ksort($this->langContent['sitesys']);
@@ -11221,7 +11265,7 @@ class Interpretation extends Fields
 		$this->triggerEvent(
 			'jcb_ce_onBeforeBuildAdminSysLang',
 			array(&$this->componentContext, &$this->langContent['adminsys'],
-			      &$this->langPrefix, &$componentName)
+				&$this->langPrefix, &$componentName)
 		);
 		// check if the both admin array is set
 		if (isset($this->langContent['bothadmin'])
@@ -11243,7 +11287,7 @@ class Interpretation extends Fields
 			$this->triggerEvent(
 				'jcb_ce_onAfterBuildAdminSysLang',
 				array(&$this->componentContext, &$this->langContent['adminsys'],
-				      &$this->langPrefix, &$componentName)
+					&$this->langPrefix, &$componentName)
 			);
 			// sort strings
 			ksort($this->langContent['adminsys']);
@@ -11584,10 +11628,11 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getListItemBuilder($item, $nameSingleCode,
-		$nameListCode, &$itemClass, $doNotEscape, $coreLoad, $core,
-		$class = true, $ref = null, $escape = '$this->escape',
-		$user = '$this->user', $refview = null
-	) {
+	                                      $nameListCode, &$itemClass, $doNotEscape, $coreLoad, $core,
+	                                      $class = true, $ref = null, $escape = '$this->escape',
+	                                      $user = '$this->user', $refview = null
+	)
+	{
 		// check if we have relation fields
 		if (isset($this->fieldRelations[$nameListCode])
 			&& isset($this->fieldRelations[$nameListCode][(int) $item['id']])
@@ -11704,9 +11749,10 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getListItem($item, $nameSingleCode, $nameListCode,
-		&$itemClass, $doNotEscape, $coreLoad, $core, $class = true, $ref = null,
-		$escape = '$this->escape', $user = '$this->user', $refview = null
-	) {
+	                               &$itemClass, $doNotEscape, $coreLoad, $core, $class = true, $ref = null,
+	                               $escape = '$this->escape', $user = '$this->user', $refview = null
+	)
+	{
 		// get list item code
 		$itemCode = $this->getListItemCode(
 			$item, $nameListCode, $doNotEscape, $escape
@@ -11767,8 +11813,9 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getListItemLinkLogic($itemCode, $itemLink,
-		$itemLinkAuthority, $nameListCode, $checkoutTriger, $class = true
-	) {
+	                                        $itemLinkAuthority, $nameListCode, $checkoutTriger, $class = true
+	)
+	{
 		// build link
 		$link = '';
 		// add class
@@ -11873,8 +11920,9 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getListItemCode(&$item, $nameListCode, $doNotEscape,
-		$escape = '$this->escape'
-	) {
+	                                   $escape = '$this->escape'
+	)
+	{
 		// first update the code id needed
 		if (isset($item['custom'])
 			&& ComponentbuilderHelper::checkArray(
@@ -11955,8 +12003,9 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getListItemLink($item, &$checkoutTriger,
-		$nameSingleCode, $nameListCode, $ref = null
-	) {
+	                                   $nameSingleCode, $nameListCode, $ref = null
+	)
+	{
 		// set referal if not set
 		$referal = '';
 		if (!$ref)
@@ -12029,8 +12078,9 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getListItemLinkAuthority($item, $nameSingleCode,
-		$nameListCode, $coreLoad, $core, $user = '$this->user'
-	) {
+	                                            $nameListCode, $coreLoad, $core, $user = '$this->user'
+	)
+	{
 		// if to be linked
 		if ($item['type'] === 'category' && !$item['title'])
 		{
@@ -12181,9 +12231,9 @@ class Interpretation extends Fields
 		$this->triggerEvent(
 			'jcb_ce_onSetDefaultViewsBodyTop',
 			array(&$this,
-			      &$body,
-			      &$nameSingleCode,
-			      &$nameListCode)
+				&$body,
+				&$nameSingleCode,
+				&$nameListCode)
 		);
 		$body[] = "<form action=\"<?php echo JRoute::_('index.php?option=com_"
 			. $component . "&view=" . $nameListCode
@@ -12202,9 +12252,9 @@ class Interpretation extends Fields
 		$this->triggerEvent(
 			'jcb_ce_onSetDefaultViewsFormTop',
 			array(&$this,
-			      &$body,
-			      &$nameSingleCode,
-			      &$nameListCode)
+				&$body,
+				&$nameSingleCode,
+				&$nameListCode)
 		);
 		// check if the filter type is sidebar (2 = topbar)
 		if (isset($this->adminFilterType[$nameListCode])
@@ -12298,18 +12348,18 @@ class Interpretation extends Fields
 		$this->triggerEvent(
 			'jcb_ce_onSetDefaultViewsFormBottom',
 			array(&$this,
-			      &$body,
-			      &$nameSingleCode,
-			      &$nameListCode)
+				&$body,
+				&$nameSingleCode,
+				&$nameListCode)
 		);
 		$body[] = "</form>";
 		// Trigger Event: jcb_ce_onSetDefaultViewsBodyBottom
 		$this->triggerEvent(
 			'jcb_ce_onSetDefaultViewsBodyBottom',
 			array(&$this,
-			      &$body,
-			      &$nameSingleCode,
-			      &$nameListCode)
+				&$body,
+				&$nameSingleCode,
+				&$nameListCode)
 		);
 
 		return implode(PHP_EOL, $body);
@@ -12789,8 +12839,9 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getEditBodyLinkedAdminViewsTabs(&$view,
-		&$nameSingleCode, &$keys, &$linkedViewIdentifier
-	) {
+	                                                   &$nameSingleCode, &$keys, &$linkedViewIdentifier
+	)
+	{
 		// start linked tabs bucket
 		$linkedTab = array();
 		// check if the view has linked admin view
@@ -12859,9 +12910,10 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getEditBodyTabs(&$nameSingleCode, &$langView,
-		&$linkedTab, &$keys, &$linkedViewIdentifier, &$searchTabs, &$leftside,
-		&$rightside, &$footer, &$header, &$mainwidth, &$sidewidth
-	) {
+	                                   &$linkedTab, &$keys, &$linkedViewIdentifier, &$searchTabs, &$leftside,
+	                                   &$rightside, &$footer, &$header, &$mainwidth, &$sidewidth
+	)
+	{
 		// start tabs
 		$tabs = array();
 		// sort the tabs based on key order
@@ -13080,8 +13132,9 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function setEditBodyTabMainCenterPositionDiv(&$main, &$mainbottom,
-		&$positions
-	) {
+	                                                       &$positions
+	)
+	{
 		foreach ($positions as $position => $string)
 		{
 			if ($positions['lr'] == 2)
@@ -13131,7 +13184,8 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getEditBodyPublishMetaTabs(&$nameSingleCode, &$langView
-	) {
+	)
+	{
 		// build the two tabs
 		$tabs = '';
 		// set default publishing tab lang
@@ -13182,9 +13236,9 @@ class Interpretation extends Fields
 		// load all defaults
 		$loadDefaultFields = array(
 			'left'  => array('created', 'created_by', 'modified',
-			                 'modified_by'),
+				'modified_by'),
 			'right' => array('published', 'ordering', 'access', 'version',
-			                 'hits', 'id')
+				'hits', 'id')
 		);
 		foreach ($loadDefaultFields as $d_alignment => $defaultFields)
 		{
@@ -13343,8 +13397,8 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			$publishingPerOR  = array();
 			$allToBeChekcedOR = array('core.edit.created_by',
-			                          'core.edit.created',
-			                          'core.edit.state');
+				'core.edit.created',
+				'core.edit.state');
 			foreach ($allToBeChekcedOR as $core_permission)
 			{
 				if ($coreLoad && isset($core[$core_permission])
@@ -13661,6 +13715,14 @@ class Interpretation extends Fields
 				= PHP_EOL . $this->setPlaceholders(
 					$data['html'], $placeholder
 				);
+			// OVERRIDE_LAYOUT_HEADER <<<DYNAMIC>>>
+			$this->fileContentDynamic[$nameSingleCode . '_'
+			. $layoutName][$this->hhh
+			. 'OVERRIDE_LAYOUT_HEADER' . $this->hhh]
+				= (($header = $this->setFileHeader(
+					'override.layout',
+					$layoutName, false)
+				) !== false) ? PHP_EOL . PHP_EOL . $header : '';
 
 			// since override was found
 			return true;
@@ -14129,8 +14191,9 @@ class Interpretation extends Fields
 	 * @return string
 	 */
 	public function setListBodyLinked($nameSingleCode, $nameListCode,
-		$refview
-	) {
+	                                  $refview
+	)
+	{
 		if (isset($this->listBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
 				$this->listBuilder[$nameListCode]
@@ -14322,8 +14385,9 @@ class Interpretation extends Fields
 	 * @return string
 	 */
 	public function setListHeadLinked($nameSingleCode, $nameListCode,
-		$addNewButon, $refview
-	) {
+	                                  $addNewButon, $refview
+	)
+	{
 		if (isset($this->listBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
 				$this->listBuilder[$nameListCode]
@@ -14527,8 +14591,9 @@ class Interpretation extends Fields
 	 * @return string
 	 */
 	public function setListQueryLinked($nameSingleCode, $nameListCode,
-		$functionName, $key, $_key, $parentKey, $parent_key, $globalKey
-	) {
+	                                   $functionName, $key, $_key, $parentKey, $parent_key, $globalKey
+	)
+	{
 		// check if this view has category added
 		if (isset($this->categoryBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
@@ -15187,11 +15252,12 @@ class Interpretation extends Fields
 	 * @return string
 	 */
 	public function setGetItemsModelMethod(&$nameSingleCode, &$nameListCode,
-		$config
-		= array('functionName' => 'getExportData',
-		        'docDesc'      => 'Method to get list export data.',
-		        'type'         => 'export')
-	) {
+	                                       $config
+	                                       = array('functionName' => 'getExportData',
+	                                               'docDesc'      => 'Method to get list export data.',
+	                                               'type'         => 'export')
+	)
+	{
 		// start the query string
 		$query = '';
 		// check if this is the export method
@@ -15450,8 +15516,9 @@ class Interpretation extends Fields
 	}
 
 	public function setControllerEximportMethod($nameSingleCode,
-		$nameListCode
-	) {
+	                                            $nameListCode
+	)
+	{
 		$method = '';
 		if (isset($this->eximportView[$nameListCode])
 			&& $this->eximportView[$nameListCode])
@@ -16050,9 +16117,10 @@ class Interpretation extends Fields
 	}
 
 	public function setCustomQuery($nameListCode, $nameSingleCode,
-		$tab = '',
-		$just_text = false
-	) {
+	                               $tab = '',
+	                               $just_text = false
+	)
+	{
 		if (isset($this->customBuilder[$nameListCode])
 			&& ComponentbuilderHelper::checkArray(
 				$this->customBuilder[$nameListCode]
@@ -17013,7 +17081,7 @@ class Interpretation extends Fields
 							{
 								$this->targetRelationControl[$view][$target['name']]
 									   = array($relation['match_name'],
-									           $condition['match_name']);
+									$condition['match_name']);
 								$found = true;
 								break;
 							}
@@ -17031,8 +17099,9 @@ class Interpretation extends Fields
 	}
 
 	public function checkRelationControl($targetName, $relationMatchName,
-		$conditionMatchName, $view
-	) {
+	                                     $conditionMatchName, $view
+	)
+	{
 		if (isset($this->targetRelationControl[$view])
 			&& ComponentbuilderHelper::checkArray(
 				$this->targetRelationControl[$view]
@@ -17072,8 +17141,9 @@ class Interpretation extends Fields
 	}
 
 	public function setTargetControlsScript($toggleSwitch, $targets,
-		$targetBehavior, $targetDefault, $uniqueVar, $nameSingleCode
-	) {
+	                                        $targetBehavior, $targetDefault, $uniqueVar, $nameSingleCode
+	)
+	{
 		$bucket = array();
 		if (ComponentbuilderHelper::checkArray($targets)
 			&& !in_array(
@@ -18361,8 +18431,8 @@ class Interpretation extends Fields
 							'Error'
 						);
 						$field_url
-							       = "index.php?option=com_componentbuilder&view=fields&task=field.edit&id="
-							. $filter['id'];
+							       = '"index.php?option=com_componentbuilder&view=fields&task=field.edit&id='
+							. $filter['id'] . '" target="_blank"';
 						$field_fix
 							       = "<pre>if (\$this->multiple === false) { // <-- this if statement is needed";
 						$field_fix .= PHP_EOL . $this->_t(1)
@@ -18370,7 +18440,7 @@ class Interpretation extends Fields
 						$field_fix .= PHP_EOL . "}</pre>";
 						$this->app->enqueueMessage(
 							JText::sprintf(
-								'We detected that you have an empty option in a <a href="%s" target="_blank">custom field (%s)</a> that is used in a multi filter.<br />This will cause a problem, you will need to add the following code to it.<br />%s',
+								'We detected that you have an empty option in a <a href=%s>custom field (%s)</a> that is used in a multi filter.<br />This will cause a problem, you will need to add the following code to it.<br />%s',
 								$field_url,
 								$filter['code'],
 								$field_fix
@@ -18459,8 +18529,9 @@ class Interpretation extends Fields
 	 *
 	 */
 	public function setFilterFieldSidebarDisplayHelper(&$nameSingleCode,
-		&$nameListCode
-	) {
+	                                                   &$nameListCode
+	)
+	{
 		// start the filter bucket
 		$fieldFilters = array();
 		// add the default filter
@@ -18635,8 +18706,9 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function setDefaultSidebarFilterHelper(&$filter, &$nameSingleCode,
-		&$nameListCode
-	) {
+	                                                 &$nameListCode
+	)
+	{
 		// add the default filters if we are on the old filter paths (1 = sidebar)
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 1)
@@ -20044,8 +20116,9 @@ class Interpretation extends Fields
 	}
 
 	protected function setPermissionEditFields(&$allow, $nameSingleCode,
-		$fieldName, $fieldType, $component
-	) {
+	                                           $fieldName, $fieldType, $component
+	)
+	{
 		// only for fields that can be edited
 		if (!ComponentbuilderHelper::fieldCheck($fieldType, 'spacer'))
 		{
@@ -20097,8 +20170,9 @@ class Interpretation extends Fields
 	}
 
 	protected function setPermissionAccessFields(&$allow, $nameSingleCode,
-		$fieldName, $fieldType, $component
-	) {
+	                                             $fieldName, $fieldType, $component
+	)
+	{
 		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 			. " Modify the from the form based on "
 			. ComponentbuilderHelper::safeString($fieldName, 'W')
@@ -20117,8 +20191,9 @@ class Interpretation extends Fields
 	}
 
 	protected function setPermissionViewFields(&$allow, $nameSingleCode,
-		$fieldName, $fieldType, $component
-	) {
+	                                           $fieldName, $fieldType, $component
+	)
+	{
 		if (ComponentbuilderHelper::fieldCheck($fieldType, 'spacer'))
 		{
 			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -20370,8 +20445,9 @@ class Interpretation extends Fields
 	}
 
 	public function setJmodelAdminCanEditState($nameSingleCode,
-		$nameListCode
-	) {
+	                                           $nameListCode
+	)
+	{
 		$allow = array();
 		// set component name
 		$component = $this->componentCodeName;
@@ -20966,7 +21042,7 @@ class Interpretation extends Fields
 		else
 		{
 			// check if this is the topbar filter, and multi option (2 = topbar)
-			if ($filter['multi'] == 2
+			if (isset($filter['multi']) && $filter['multi'] == 2
 				&& isset($this->adminFilterType[$nameListCode])
 				&& $this->adminFilterType[$nameListCode] == 2)
 			{
@@ -21433,8 +21509,9 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getPopulateStateFilterCode(&$filter, $newFilter,
-		$extra = ''
-	) {
+	                                              $extra = ''
+	)
+	{
 		$state = '';
 		// add category stuff (may still remove these) TODO
 		if (isset($filter['type']) && $filter['type'] === 'category')
@@ -21682,9 +21759,10 @@ class Interpretation extends Fields
 	}
 
 	public function setGetItemsMethodStringFix($nameSingleCode,
-		$nameListCode,
-		$Component, $tab = '', $export = false, $all = false
-	) {
+	                                           $nameListCode,
+	                                           $Component, $tab = '', $export = false, $all = false
+	)
+	{
 		// add the fix if this view has the need for it
 		$fix          = '';
 		$forEachStart = '';
@@ -22399,13 +22477,14 @@ class Interpretation extends Fields
 	/**
 	 * Build headers for the various files
 	 *
-	 * @param   string  $context        The name of the context
-	 * @param   string  $viewsCodeName  The view or views name
+	 * @param   string  $context     The name of the context
+	 * @param   string  $codeName    The view, views, or layout code name
+	 * @param   string  $default     The default to return if none is found
 	 *
 	 * @return  string The php to place in the header
 	 *
 	 */
-	public function setFileHeader($context, $viewsCodeName)
+	public function setFileHeader($context, $codeName, $default = '')
 	{
 		// set the defaults
 		$headers = array();
@@ -22413,7 +22492,16 @@ class Interpretation extends Fields
 		{
 			case 'admin.component':
 			case 'site.component':
-				$headers[] = 'JHtml::_(\'behavior.tabstate\');';
+			case 'site.view':
+			case 'site.views';
+			case 'admin.layout';
+			case 'override.layout';
+			case 'custom.admin.layout';
+			case 'site.layout';
+			case 'dashboard.view';
+			case 'dashboard.view.html';
+			case 'dashboard.model';
+			case 'dashboard.controller';
 				break;
 			case 'admin.helper':
 			case 'site.helper':
@@ -22423,7 +22511,7 @@ class Interpretation extends Fields
 				$headers[] = 'use Joomla\String\StringHelper;';
 				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
 				// load the internal custom headers
-				$this->setHelperClassHeader($headers, $viewsCodeName);
+				$this->setHelperClassHeader($headers, $codeName);
 				break;
 			case 'admin.view.model':
 			case 'site.admin.view.model':
@@ -22445,12 +22533,8 @@ class Interpretation extends Fields
 				$headers[] = 'JHtml::_(\'behavior.multiselect\');';
 				$headers[] = 'JHtml::_(\'dropdown.init\');';
 				// add more headers if the new filter option is used
-				$this->setChosenMultiSelectionHeaders($headers, $viewsCodeName);
+				$this->setChosenMultiSelectionHeaders($headers, $codeName);
 				$headers[] = 'JHtml::_(\'formbehavior.chosen\', \'select\');';
-				break;
-			case 'site.view':
-			case 'site.views':
-				$headers = array();
 				break;
 			case 'admin.view.html':
 			case 'admin.views.html':
@@ -22463,9 +22547,9 @@ class Interpretation extends Fields
 				$headers = array('');
 				// load the file class if uikit is being loaded
 				if ((2 == $this->uikit || 1 == $this->uikit)
-					&& isset($this->uikitComp[$viewsCodeName])
+					&& isset($this->uikitComp[$codeName])
 					&& ComponentbuilderHelper::checkArray(
-						$this->uikitComp[$viewsCodeName]
+						$this->uikitComp[$codeName]
 					))
 				{
 					$headers[] = 'use Joomla\CMS\Filesystem\File;';
@@ -22479,17 +22563,17 @@ class Interpretation extends Fields
 		// Trigger Event: jcb_ce_setClassHeader
 		$this->triggerEvent(
 			'jcb_ce_setClassHeader',
-			array(&$this->componentContext, &$context, &$viewsCodeName,
-			      &$headers)
+			array(&$this->componentContext, &$context, &$codeName,
+				&$headers)
 		);
 		// check if headers were added
 		if (ComponentbuilderHelper::checkArray($headers))
 		{
 			// return the headers
-			return implode(PHP_EOL, $headers);
+			return $this->setPlaceholders(implode(PHP_EOL, $headers), $this->placeholders);
 		}
 
-		return '';
+		return $default;
 	}
 
 	/**
@@ -23698,8 +23782,9 @@ class Interpretation extends Fields
 	}
 
 	public function setCustomAdminSubMenu(&$view, &$codeName, &$lang, &$nr,
-		&$menu, $type
-	) {
+	                                      &$menu, $type
+	)
+	{
 		if ($type === 'customMenu')
 		{
 			$name       = $menu['name'];
@@ -24217,10 +24302,10 @@ class Interpretation extends Fields
 				$this->triggerEvent(
 					'jcb_ce_onBeforeSetConfigFieldsets',
 					array(&$this->componentContext, &$timer,
-					      &$this->configFieldSets,
-					      &$this->configFieldSetsCustomField,
-					      &$this->componentData->config,
-					      &$this->extensionsParams, &$placeholders)
+						&$this->configFieldSets,
+						&$this->configFieldSetsCustomField,
+						&$this->componentData->config,
+						&$this->extensionsParams, &$placeholders)
 				);
 				// build the config fields
 				foreach ($this->componentData->config as $field)
@@ -24294,10 +24379,10 @@ class Interpretation extends Fields
 			$this->triggerEvent(
 				'jcb_ce_onBeforeSetConfigFieldsets',
 				array(&$this->componentContext, &$timer,
-				      &$this->configFieldSets,
-				      &$this->configFieldSetsCustomField,
-				      &$this->componentData->config, &$this->extensionsParams,
-				      &$this->placeholders)
+					&$this->configFieldSets,
+					&$this->configFieldSetsCustomField,
+					&$this->componentData->config, &$this->extensionsParams,
+					&$this->placeholders)
 			);
 			// these field sets can only be added after admin view is build
 			$this->setGroupControlConfigFieldsets($lang);
@@ -24313,8 +24398,8 @@ class Interpretation extends Fields
 		$this->triggerEvent(
 			'jcb_ce_onAfterSetConfigFieldsets',
 			array(&$this->componentContext, &$timer, &$this->configFieldSets,
-			      &$this->configFieldSetsCustomField, &$this->extensionsParams,
-			      &$this->frontEndParams, &$this->placeholders)
+				&$this->configFieldSetsCustomField, &$this->extensionsParams,
+				&$this->frontEndParams, &$this->placeholders)
 		);
 	}
 
@@ -26983,7 +27068,8 @@ function vdm_dkim() {
 	}
 
 	public function setAccessSectionsCategory($nameSingleCode, $nameListCode
-	) {
+	)
+	{
 		$component = '';
 		// check if view has category
 		if (array_key_exists($nameSingleCode, $this->catCodeBuilder))
@@ -27175,7 +27261,7 @@ function vdm_dkim() {
 
 		// set the menu controller lookup
 		$menuControllers = array('access', 'submenu', 'dashboard_list',
-		                         'dashboard_add');
+			'dashboard_add');
 		// set the custom admin views permissions
 		if (isset($this->componentData->custom_admin_views)
 			&& ComponentbuilderHelper::checkArray(
@@ -27594,8 +27680,9 @@ function vdm_dkim() {
 	}
 
 	public function buildPermissions(&$view, $nameView, $nameViews,
-		$menuControllers, $type = 'admin'
-	) {
+	                                 $menuControllers, $type = 'admin'
+	)
+	{
 		if (isset($view['settings']->permissions)
 			&& ComponentbuilderHelper::checkArray(
 				$view['settings']->permissions
@@ -28027,8 +28114,9 @@ function vdm_dkim() {
 	}
 
 	public function getInbetweenStrings($str, $start = '#' . '#' . '#',
-		$end = '#' . '#' . '#'
-	) {
+	                                    $end = '#' . '#' . '#'
+	)
+	{
 		$matches = array();
 		$regex   = "/$start([a-zA-Z0-9_]*)$end/";
 		preg_match_all($regex, $str, $matches);
@@ -28063,7 +28151,7 @@ function vdm_dkim() {
 				. "/helpers/" . $component . ".php');";
 		}
 
-		return $_helper . PHP_EOL . $code . PHP_EOL;
+		return $this->setPlaceholders($_helper . PHP_EOL . $code . PHP_EOL, $this->fileContentStatic);
 	}
 
 	public function getModDefault(&$module, &$key)
@@ -28085,17 +28173,17 @@ function vdm_dkim() {
 		);
 
 		// return the default content for the model default area
-		return $default;
+		return $this->setPlaceholders($default, $this->fileContentStatic);
 	}
 
 	public function getModHelperCode(&$module)
 	{
 		return
-			$module->class_helper_header . PHP_EOL .
-			$module->class_helper_type . $module->class_helper_name . PHP_EOL
-			. '{' . PHP_EOL .
-			$module->class_helper_code . PHP_EOL .
-			"}" . PHP_EOL;
+			$this->setPlaceholders($module->class_helper_header . PHP_EOL .
+				$module->class_helper_type . $module->class_helper_name . PHP_EOL
+				. '{' . PHP_EOL .
+				$module->class_helper_code . PHP_EOL .
+				"}" . PHP_EOL, $this->fileContentStatic);
 	}
 
 	public function getModLibCode(&$module)
@@ -28138,7 +28226,7 @@ function vdm_dkim() {
 		// check if we have string
 		if (ComponentbuilderHelper::checkString($setter))
 		{
-			return $this->setPlaceholders(
+			return $this->setPlaceholders( $this->setPlaceholders(
 				str_replace(
 					'$this->document->', '$document->',
 					implode(
@@ -28150,7 +28238,7 @@ function vdm_dkim() {
 					)
 				),
 				$this->placeholders
-			);
+			), $this->fileContentStatic);
 		}
 
 		return '';
@@ -28218,8 +28306,8 @@ function vdm_dkim() {
 			$this->triggerEvent(
 				'jcb_ce_onBeforeBuildModuleLang',
 				array(&$this->componentContext, &$module,
-				      &$this->langContent[$module->key],
-				      &$module->lang_prefix, &$module->official_name)
+					&$this->langContent[$module->key],
+					&$module->lang_prefix, &$module->official_name)
 			);
 			// get other languages
 			$values = array_unique($this->langContent[$module->key]);
@@ -28241,8 +28329,8 @@ function vdm_dkim() {
 			$this->triggerEvent(
 				'jcb_ce_onBeforeBuildModuleLangFiles',
 				array(&$this->componentContext, &$module,
-				      &$this->languages['modules'],
-				      &$this->langTag)
+					&$this->languages['modules'],
+					&$this->langTag)
 			);
 			// now we insert the values into the files
 			if (ComponentbuilderHelper::checkArray($this->languages['modules']))
@@ -28304,8 +28392,8 @@ function vdm_dkim() {
 		$folders = Folder::folders($module->folder_path);
 		// the files/folders to ignore
 		$ignore = array('sql', 'language', 'script.php',
-		                $module->file_name . '.xml',
-		                $module->file_name . '.php');
+			$module->file_name . '.xml',
+			$module->file_name . '.php');
 		// should the scriptfile be added
 		if ($module->add_install_script)
 		{
@@ -28514,12 +28602,12 @@ function vdm_dkim() {
 	public function getPluginMainClass(&$plugin)
 	{
 		return
-			PHP_EOL . $plugin->head . PHP_EOL .
+			$this->setPlaceholders(PHP_EOL . $plugin->head . PHP_EOL .
 			$plugin->comment . PHP_EOL . 'class ' .
 			$plugin->class_name . ' extends ' .
 			$plugin->extends . PHP_EOL . '{' . PHP_EOL .
 			$plugin->main_class_code . PHP_EOL .
-			"}" . PHP_EOL;
+			"}" . PHP_EOL, $this->fileContentStatic);
 	}
 
 	public function getPluginMainXML(&$plugin)
@@ -28574,8 +28662,8 @@ function vdm_dkim() {
 			$this->triggerEvent(
 				'jcb_ce_onBeforeBuildPluginLang',
 				array(&$this->componentContext, &$plugin,
-				      &$this->langContent[$plugin->key],
-				      &$plugin->lang_prefix, &$plugin->official_name)
+					&$this->langContent[$plugin->key],
+					&$plugin->lang_prefix, &$plugin->official_name)
 			);
 			// get other languages
 			$values = array_unique($this->langContent[$plugin->key]);
@@ -28597,8 +28685,8 @@ function vdm_dkim() {
 			$this->triggerEvent(
 				'jcb_ce_onBeforeBuildPluginLangFiles',
 				array(&$this->componentContext, &$plugin,
-				      &$this->languages['plugins'],
-				      &$this->langTag)
+					&$this->languages['plugins'],
+					&$this->langTag)
 			);
 			// now we insert the values into the files
 			if (ComponentbuilderHelper::checkArray($this->languages['plugins']))
@@ -28665,8 +28753,8 @@ function vdm_dkim() {
 		$folders = Folder::folders($plugin->folder_path);
 		// the files/folders to ignore
 		$ignore = array('sql', 'language', 'script.php',
-		                $plugin->file_name . '.xml',
-		                $plugin->file_name . '.php');
+			$plugin->file_name . '.xml',
+			$plugin->file_name . '.php');
 		// should the scriptfile be added
 		if ($plugin->add_install_script)
 		{
@@ -28865,6 +28953,191 @@ function vdm_dkim() {
 		return $xml;
 	}
 
+	public function getPowerCode(&$power)
+	{
+		$code = array();
+		// set the name space
+		$code[] = 'namespace ' . $power->_namespace . ';' . PHP_EOL;
+		// check if we have header data
+		if (ComponentbuilderHelper::checkString($power->head))
+		{
+			$code[] = PHP_EOL . $power->head;
+		}
+		// add description if set
+		if (ComponentbuilderHelper::checkString($power->description))
+		{
+			// check if this is escaped
+			if (strpos($power->description, '/*') === false)
+			{
+				// make this description escaped
+				$power->description = '/**' . PHP_EOL . ' * ' . implode(' * ', explode(PHP_EOL, $power->description)) . PHP_EOL . ' */';
+			}
+			$code[] = PHP_EOL . $power->description;
+		}
+		// build power declaration
+		$declaration = $power->type . ' ' . $power->class_name;
+		// check if we have extends
+		if (ComponentbuilderHelper::checkString($power->extends_name))
+		{
+			$declaration .= ' extends ' . $power->extends_name;
+		}
+		// check if we have implements
+		if (ComponentbuilderHelper::checkArray($power->implement_names))
+		{
+			$declaration .= ' implements ' . implode(', ', $power->implement_names);
+		}
+		$code[] = $declaration;
+		$code[] = '{';
+		// add the main code if set
+		if (ComponentbuilderHelper::checkString($power->main_class_code))
+		{
+			$code[] = $power->main_class_code;
+		}
+		$code[] = '}' . PHP_EOL . PHP_EOL;
+
+		return $this->setPlaceholders(implode(PHP_EOL, $code), $this->fileContentStatic);
+	}
+
+	public function setPowersAutoloader($namespace, $loadSite)
+	{
+		if (($size = ComponentbuilderHelper::checkArray($namespace)) > 0)
+		{
+			// check if we are using a plugin
+			$use_plugin = isset($this->fileContentStatic[$this->hhh . 'PLUGIN_POWER_AUTOLOADER' . $this->hhh]);
+			// add only if we are not using a plugin
+			if (!$use_plugin)
+			{
+				// build the trigger declaration
+				$trigger   = array();
+				$trigger[] = PHP_EOL . PHP_EOL . '// Trigger the Autoloader of the Powers Libraries';
+				$trigger[] = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::powersAutoloader();';
+			}
+			// build the helper method
+			$helperMethod   = array();
+			// add only if we are not using a plugin
+			if (!$use_plugin)
+			{
+				$helperMethod[] = PHP_EOL . PHP_EOL . $this->_t(1) . '/**';
+				$helperMethod[] = $this->_t(1) . '*	The powers autoloader.';
+				$helperMethod[] = $this->_t(1) . '**/';
+				$helperMethod[] = $this->_t(1) . 'public static function powersAutoloader()';
+				$helperMethod[] = $this->_t(1) . '{';
+			}
+			elseif (!$loadSite)
+			{
+				// we add code to prevent this plugin from triggering on the site area
+				$helperMethod[] = PHP_EOL . $this->_t(2) . '//'
+					. $this->setLine(__LINE__) . ' do not run the autoloader in the site area';
+				$helperMethod[] = $this->_t(2) . 'if ($this->app->isClient(\'site\'))';
+				$helperMethod[] = $this->_t(2) . '{';
+				$helperMethod[] = $this->_t(3) . 'return;';
+				$helperMethod[] = $this->_t(2) . '}' . PHP_EOL;
+			}
+			$helperMethod[] = $this->_t(2) . '//'
+				. $this->setLine(__LINE__) . ' register this component namespace';
+			$helperMethod[] = $this->_t(2) . 'spl_autoload_register(function ($class) {';
+			$helperMethod[] = $this->_t(3) . '//'
+				. $this->setLine(__LINE__) . ' project-specific base directories and namespace prefix';
+			$helperMethod[] = $this->_t(3) . '$search = array(';
+			// ==== IMPORTANT NOTICE =====
+			// make sure the name space values are sorted from the longest string to the shortest
+			// so that the search do not mistakenly match a shorter namespace before a longer one
+			// that has the same short namespace for example:
+			//      NameSpace\SubName\Sub <- will always match first
+			//      NameSpace\SubName\SubSubName
+			// Should the shorter namespace be listed [first] it will match both of these:
+			//      NameSpace\SubName\Sub\ClassName
+			//      ^^^^^^^^^^^^^^^^^^^^^
+			//      NameSpace\SubName\SubSubName\ClassName
+			//      ^^^^^^^^^^^^^^^^^^^^^
+			uksort($namespace, function ($a, $b) {
+				return strlen($b) - strlen($a);
+			});
+			// counter to manage the comma in the actual array
+			$counter = 1;
+			foreach ($namespace as $base_dir => $prefix)
+			{
+				// don't add the ending comma on last value
+				if ($size == $counter)
+				{
+					$helperMethod[] = $this->_t(4) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "'";
+				}
+				else
+				{
+					$helperMethod[] = $this->_t(4) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "',";
+				}
+				$counter++;
+			}
+			$helperMethod[] = $this->_t(3) . ');';
+			$helperMethod[] = $this->_t(3) . '// Start the search and load if found';
+			$helperMethod[] = $this->_t(3) . '$found = false;';
+			$helperMethod[] = $this->_t(3) . '$found_base_dir = "";';
+			$helperMethod[] = $this->_t(3) . '$found_len = 0;';
+			$helperMethod[] = $this->_t(3) . 'foreach ($search as $base_dir => $prefix)';
+			$helperMethod[] = $this->_t(3) . '{';
+			$helperMethod[] = $this->_t(4) . '//'
+				. $this->setLine(__LINE__) . ' does the class use the namespace prefix?';
+			$helperMethod[] = $this->_t(4) . '$len = strlen($prefix);';
+			$helperMethod[] = $this->_t(4) . 'if (strncmp($prefix, $class, $len) === 0)';
+			$helperMethod[] = $this->_t(4) . '{';
+			$helperMethod[] = $this->_t(5) . '//'
+				. $this->setLine(__LINE__) . ' we have a match so load the values';
+			$helperMethod[] = $this->_t(5) . '$found = true;';
+			$helperMethod[] = $this->_t(5) . '$found_base_dir = $base_dir;';
+			$helperMethod[] = $this->_t(5) . '$found_len = $len;';
+			$helperMethod[] = $this->_t(5) . '//'
+				. $this->setLine(__LINE__) . ' done here';
+			$helperMethod[] = $this->_t(5) . 'break;';
+			$helperMethod[] = $this->_t(4) . '}';
+			$helperMethod[] = $this->_t(3) . '}';
+			$helperMethod[] = $this->_t(3) . '//'
+				. $this->setLine(__LINE__) . ' check if we found a match';
+			$helperMethod[] = $this->_t(3) . 'if (!$found)';
+			$helperMethod[] = $this->_t(3) . '{';
+			$helperMethod[] = $this->_t(4) . '//'
+				. $this->setLine(__LINE__) . ' no, move to the next registered autoloader';
+			$helperMethod[] = $this->_t(4) . 'return;';
+			$helperMethod[] = $this->_t(3) . '}';
+			$helperMethod[] = $this->_t(3) . '//'
+				. $this->setLine(__LINE__) . ' get the relative class name';
+			$helperMethod[] = $this->_t(3) . '$relative_class = substr($class, $found_len);';
+			$helperMethod[] = $this->_t(3) . '//'
+				. $this->setLine(__LINE__) . ' replace the namespace prefix with the base directory, replace namespace';
+			$helperMethod[] = $this->_t(3) . '// separators with directory separators in the relative class name, append';
+			$helperMethod[] = $this->_t(3) . '// with .php';
+			$helperMethod[] = $this->_t(3) . "\$file = JPATH_ROOT . '/' . \$found_base_dir . '/src' . str_replace('\\\\', '/', \$relative_class) . '.php';";
+			$helperMethod[] = $this->_t(3) . '//'
+				. $this->setLine(__LINE__) . ' if the file exists, require it';
+			$helperMethod[] = $this->_t(3) . 'if (file_exists($file))';
+			$helperMethod[] = $this->_t(3) . '{';
+			$helperMethod[] = $this->_t(4) . 'require $file;';
+			$helperMethod[] = $this->_t(3) . '}';
+			$helperMethod[] = $this->_t(2) . '});';
+			// add only if we are not using a plugin
+			if (!$use_plugin)
+			{
+				$helperMethod[] = $this->_t(1) . '}';
+			}
+			// check if we are using a plugin
+			if ($use_plugin)
+			{
+				$this->fileContentStatic[$this->hhh . 'PLUGIN_POWER_AUTOLOADER' . $this->hhh] = PHP_EOL . implode(PHP_EOL, $helperMethod);
+			}
+			else
+			{
+				// load to events placeholders
+				$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_EVENT' . $this->hhh]        .= implode(PHP_EOL, $trigger);
+				$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_EVENT_HELPER' . $this->hhh] .= implode(PHP_EOL, $helperMethod);
+				// load to site if needed
+				if ($loadSite)
+				{
+					$this->fileContentStatic[$this->hhh . 'SITE_POWER_EVENT' . $this->hhh]        .= implode(PHP_EOL, $trigger);
+					$this->fileContentStatic[$this->hhh . 'SITE_POWER_EVENT_HELPER' . $this->hhh] .= implode(PHP_EOL, $helperMethod);
+				}
+			}
+		}
+	}
+
 	/**
 	 * build field set for an extention
 	 *
@@ -28876,7 +29149,8 @@ function vdm_dkim() {
 	 *
 	 */
 	public function getExtensionFieldsetXML(&$extension, &$fields, $dbkey = 'zz'
-	) {
+	)
+	{
 		// build the fieldset
 		return $this->getFieldsetXML(
 			$fields, $extension->lang_prefix, $extension->key, $extension->key,
@@ -28908,9 +29182,9 @@ function vdm_dkim() {
 		}
 		// add PHP in extension install
 		$addScriptMethods = array('php_preflight', 'php_postflight',
-		                          'php_method');
+			'php_method');
 		$addScriptTypes   = array('install', 'update', 'uninstall',
-		                          'discover_install');
+			'discover_install');
 		// set some buckets for sorting
 		$function_install        = array();
 		$function_update         = array();
@@ -29112,8 +29386,9 @@ function vdm_dkim() {
 	 *
 	 */
 	public function shouldLanguageBeAdded(&$tag, &$languageStrings, &$total,
-		&$file_name
-	) {
+	                                      &$file_name
+	)
+	{
 		// only log messages for none $this->langTag translations
 		if ($this->langTag !== $tag)
 		{

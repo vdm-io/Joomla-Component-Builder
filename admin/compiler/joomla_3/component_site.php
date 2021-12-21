@@ -26,7 +26,7 @@ $document->addScript('components/com_###component###/assets/js/site.js');
 
 // Require helper files
 JLoader::register('###Component###Helper', __DIR__ . '/helpers/###component###.php');###HELPER_EMAIL###
-JLoader::register('###Component###HelperRoute', __DIR__ . '/helpers/route.php');###LICENSE_LOCKED_INT### ###SITE_GLOBAL_EVENT###
+JLoader::register('###Component###HelperRoute', __DIR__ . '/helpers/route.php');###LICENSE_LOCKED_INT######SITE_GLOBAL_EVENT######SITE_POWER_EVENT###
 
 // Get an instance of the controller prefixed by ###Component###
 $controller = JControllerLegacy::getInstance('###Component###');

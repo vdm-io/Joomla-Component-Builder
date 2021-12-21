@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="3.2" method="upgrade">
+<extension type="component" version="4" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>19th October, 2021</creationDate>
+	<creationDate>21st December, 2021</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>llewellyn@joomlacomponentbuilder.com</authorEmail>
 	<authorUrl>http://www.joomlacomponentbuilder.com</authorUrl>

@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -331,7 +332,7 @@ class ComponentbuilderModelFields extends JModelList
 			$storeArray = array(
 				0 => 'COM_COMPONENTBUILDER_FIELD_DEFAULT',
 				1 => 'COM_COMPONENTBUILDER_FIELD_JSON',
-				2 => 'COM_COMPONENTBUILDER_FIELD_BASESIXTY_FOUR',
+				2 => 'COM_COMPONENTBUILDER_FIELD_BASE64',
 				3 => 'COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALDBKEY',
 				5 => 'COM_COMPONENTBUILDER_FIELD_MEDIUM_ENCRYPTION_LOCALFILEKEY',
 				4 => 'COM_COMPONENTBUILDER_FIELD_WHMCSKEY_ENCRYPTION',

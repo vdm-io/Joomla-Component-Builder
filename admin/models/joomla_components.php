@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -398,6 +399,11 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			{
 				$this->setData('placeholder', array_values($this->smartIDs['placeholder']), 'id');
 			}
+			// add powers
+			if (isset($this->smartIDs['power']) && ComponentbuilderHelper::checkArray($this->smartIDs['power']))
+			{
+				$this->setData('power', array_values($this->smartIDs['power']), 'id');
+			}
 			// set limiter
 			$limit = 0;
 			// and add those custom codes found in custom codes
@@ -641,6 +647,29 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					}, array_unique($values[$key]) );
 				}
 			}
+			// get the powers
+			if ('power' === $type)
+			{
+				if (isset($values[$key]))
+				{
+					foreach ($values[$key] as $k => $val)
+					{
+						if (strpos($k, 'power_') !== false && ComponentbuilderHelper::checkArray($val))
+						{
+							foreach ($val as $v)
+							{
+								$bucket[$v] = $v;
+							}
+						}
+					}
+					// only return if we set the ids
+					if (ComponentbuilderHelper::checkArray($bucket))
+					{
+						// now return the values back
+						return array_values($bucket);
+					}
+				}
+			}
 		}
 		return false;
 	}
@@ -652,8 +681,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*/
 	protected function setData($table, $values, $key, $string = false)
 	{
+		// lets check for json strings
+		if (ComponentbuilderHelper::checkJson($values))
+		{
+			$values = json_decode($values, true);
+		}
 		// make sure we have an array of values
-		if (!ComponentbuilderHelper::checkArray($values) || !ComponentbuilderHelper::checkString($table) || !ComponentbuilderHelper::checkString($key))
+		if (!ComponentbuilderHelper::checkArray($values, true) || !ComponentbuilderHelper::checkString($table) || !ComponentbuilderHelper::checkString($key))
 		{
 			return false;
 		}
@@ -783,6 +817,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						unset($item->php_dashboard_methods);
 						unset($item->addfiles);
 						unset($item->addfolders);
+						// set the powers linked to this admin view
+						$this->setSmartIDs($this->getValues($item->params, 'power', 'joomla_component_headers', null), 'power');
 					}
 					// actions to take before storing the item if table is admin_view
 					if ('admin_view' === $table)
@@ -880,6 +916,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					{
 						// add fields & conditions
 						$this->setSmartIDs($item->id, 'admin_view');
+						// set the powers linked to this admin view
+						$this->setSmartIDs($this->getValues($item->params, 'power', 'admin_view_headers', null), 'power');
 						// do not move anything if clone
 						if ('clone' !== $this->activeType)
 						{
@@ -985,6 +1023,18 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						{
 							$this->setSmartIDs((int) $item->snippet, 'snippet');
 						}
+						// actions to take if table is site_view
+						if ('site_view' === $table)
+						{
+							// set the powers linked to this admin view
+							$this->setSmartIDs($this->getValues($item->params, 'power', 'site_view_headers', null), 'power');
+						}
+						// actions to take if table is custom_admin_view
+						elseif ('custom_admin_view' === $table)
+						{
+							// set the powers linked to this admin view
+							$this->setSmartIDs($this->getValues($item->params, 'power', 'custom_admin_view_headers', null), 'power');
+						}
 					}
 					// actions to take if table is template and layout
 					if ('layout' === $table || 'template' === $table)
@@ -1048,6 +1098,22 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// add joomla_plugin_group
 						$this->setSmartIDs((int) $item->joomla_plugin_group, 'joomla_plugin_group');
 					}
+					// actions to take if table is power
+					if ('power' === $table)
+					{
+						// add the extended class (powers)
+						$this->setData('power', $item->extends, 'id');
+						// add implements interfaces (powers)
+						$this->setData('power', $item->implements, 'id');
+						// add use classes (powers)
+						$this->setData('power', $this->getValues($item->use_selection, 'subform', 'use'), 'id');
+						// add load classes (powers)
+						$this->setData('power', $this->getValues($item->load_selection, 'subform', 'load'), 'id');
+						// add property_selection
+						$this->setData('class_property', $this->getValues($item->property_selection, 'subform', 'property'), 'id');
+						// add class_method
+						$this->setData('class_method', $this->getValues($item->method_selection, 'subform', 'method'), 'id');
+					}
 				}
 			}
 		}
@@ -1086,7 +1152,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				'fieldtype', 'field', 'admin_view', 'snippet', 'dynamic_get', 'custom_admin_view', 'site_view',
 				'template', 'layout', 'joomla_component', 'language', 'language_translation', 'custom_code', 'placeholder',
 				'joomla_module', 'joomla_module_files_folders_urls', 'joomla_module_updates',
-				'joomla_plugin', 'joomla_plugin_files_folders_urls', 'joomla_plugin_updates',
+				'joomla_plugin', 'joomla_plugin_files_folders_urls', 'joomla_plugin_updates', 'power',
 				'admin_fields', 'admin_fields_conditions', 'admin_fields_relations',  'admin_custom_tabs', 'component_admin_views',
 				'component_site_views', 'component_custom_admin_views', 'component_updates', 'component_mysql_tweaks',
 				'component_custom_admin_menus', 'component_config', 'component_dashboard', 'component_files_folders',
@@ -2076,10 +2142,10 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		),
 		// #__componentbuilder_power (v)
 		'class_method' => array(
-			'search' => array('id', 'name', 'description', 'head', 'head', 'main_class_code'),
+			'search' => array('id', 'system_name', 'name', 'description', 'head', 'namespace', 'main_class_code'),
 			'views' => 'powers',
 			'not_base64' => array('description'),
-			'name' => 'name'
+			'name' => 'system_name'
 		)
 	);
 

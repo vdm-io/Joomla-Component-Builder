@@ -124,7 +124,7 @@
 			<option value="1">
 				COM_COMPONENTBUILDER_FIELDTYPE_JSON</option>
 			<option value="2">
-				COM_COMPONENTBUILDER_FIELDTYPE_BASESIXTY_FOUR</option>
+				COM_COMPONENTBUILDER_FIELDTYPE_BASE64</option>
 			<option value="3">
 				COM_COMPONENTBUILDER_FIELDTYPE_BASIC_ENCRYPTION_LOCALDBKEY</option>
 			<option value="5">
@@ -308,7 +308,7 @@
 			type="subform"
 			name="properties"
 			label="COM_COMPONENTBUILDER_FIELDTYPE_PROPERTIES_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
+			layout="repeatablejcb"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_FIELDTYPE_PROPERTIES_DESCRIPTION"
 			icon="list">

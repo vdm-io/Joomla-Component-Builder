@@ -17,7 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+###AJAX_ADMIN_MODEL_HEADER###
 
 /**
  * ###Component### Ajax Model

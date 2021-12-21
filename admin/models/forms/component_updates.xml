@@ -101,17 +101,29 @@
 			description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_JOOMLA_COMPONENT_DESCRIPTION"
 			class="list_class"
 			multiple="false"
-			default=""
 			required="true"
 			readonly="true"
 			button="false"
 		/>
+		<!-- Clone_me Field. Type: Joomlacomponent. (custom) -->
+		<field
+			type="joomlacomponent"
+			name="clone_me"
+			label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_CLONE_ME_LABEL"
+			class="list_class"
+			multiple="false"
+			default="0"
+			required="false"
+			button="false"
+		/>
+		<!-- Note_how_to_clone Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_how_to_clone" label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_NOTE_HOW_TO_CLONE_LABEL" description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_NOTE_HOW_TO_CLONE_DESCRIPTION" heading="h4" class="alert alert-info note_how_to_clone" />
 		<!-- Version_update Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
 			name="version_update"
 			label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_VERSION_UPDATE_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
+			layout="repeatablejcb"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_VERSION_UPDATE_DESCRIPTION"
 			default=""
@@ -162,6 +174,111 @@
 					validated="url"
 					message="COM_COMPONENTBUILDER_COMPONENT_UPDATES_URL_MESSAGE"
 					hint="COM_COMPONENTBUILDER_COMPONENT_UPDATES_URL_HINT"
+				/>
+				<!-- Update_server_adv Field. Type: Radio. (joomla) -->
+				<field
+					type="radio"
+					name="update_server_adv"
+					label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_SERVER_ADV_LABEL"
+					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_SERVER_ADV_DESCRIPTION"
+					class="btn-group btn-group-yesno"
+					default="0"
+					required="true">
+					<!-- Option Set. -->
+					<option value="0">
+						COM_COMPONENTBUILDER_COMPONENT_UPDATES_NO</option>
+					<option value="1">
+						COM_COMPONENTBUILDER_COMPONENT_UPDATES_YES</option>
+				</field>
+				<!-- Update_server_type Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="update_server_type"
+					label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_SERVER_TYPE_LABEL"
+					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_SERVER_TYPE_DESCRIPTION"
+					message="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_SERVER_TYPE_MESSAGE"
+					class="list_class"
+					multiple="false"
+					default="component"
+					showon="update_server_adv:1">
+					<!-- Option Set. -->
+					<option value="">
+						COM_COMPONENTBUILDER_COMPONENT_UPDATES_SELECT_AN_OPTION</option>
+					<option value="component">
+						COM_COMPONENTBUILDER_COMPONENT_UPDATES_COMPONENT</option>
+					<option value="package">
+						COM_COMPONENTBUILDER_COMPONENT_UPDATES_PACKAGE</option>
+				</field>
+				<!-- Update_element Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="update_element"
+					label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_ELEMENT_LABEL"
+					size="10"
+					maxlength="50"
+					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_ELEMENT_DESCRIPTION"
+					class="text_area"
+					filter="word"
+					autocomplete="on"
+					showon="update_server_adv:1"
+				/>
+				<!-- Update_state Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="update_state"
+					label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_STATE_LABEL"
+					size="10"
+					maxlength="50"
+					default="stable"
+					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_STATE_DESCRIPTION"
+					class="text_area"
+					filter="word"
+					hint="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_STATE_HINT"
+					autocomplete="on"
+					showon="update_server_adv:1"
+				/>
+				<!-- Update_target_version Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="update_target_version"
+					label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_TARGET_VERSION_LABEL"
+					size="10"
+					maxlength="50"
+					default="3.*"
+					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_TARGET_VERSION_DESCRIPTION"
+					class="text_area"
+					filter="string"
+					hint="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_TARGET_VERSION_HINT"
+					autocomplete="on"
+					showon="update_server_adv:1"
+				/>
+				<!-- Change_log Field. Type: Textarea. (joomla) -->
+				<field
+					type="textarea"
+					name="change_log"
+					label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_CHANGE_LOG_LABEL"
+					rows="30"
+					cols="15"
+					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_CHANGE_LOG_DESCRIPTION"
+					class="text_area mysql_update"
+					filter="raw"
+					hint="COM_COMPONENTBUILDER_COMPONENT_UPDATES_CHANGE_LOG_HINT"
+					showon="update_server_adv:1"
+				/>
+				<!-- Update_client Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="update_client"
+					label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_CLIENT_LABEL"
+					size="10"
+					maxlength="50"
+					default="site"
+					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_CLIENT_DESCRIPTION"
+					class="text_area"
+					filter="word"
+					hint="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_CLIENT_HINT"
+					autocomplete="on"
+					showon="update_server_adv:1"
 				/>
 			</form>
 		</field>

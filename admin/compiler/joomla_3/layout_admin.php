@@ -15,6 +15,6 @@ defined('_JEXEC') or die('Restricted access');
 ###BOM###
 
 // No direct access to this file
-defined('JPATH_BASE') or die('Restricted access');###ADMIN_LAYOUT_CODE###
+defined('JPATH_BASE') or die('Restricted access');###ADMIN_LAYOUT_HEADER######ADMIN_LAYOUT_CODE###
 
 ?>###ADMIN_LAYOUT_BODY###

@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -27,11 +28,11 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
 	'note_moved_views',
-	'spacer_hr_one',
+	'spacer_hr_1',
 	'note_mysql_tweak_options',
-	'spacer_hr_two',
+	'spacer_hr_2',
 	'note_add_custom_menus',
-	'spacer_hr_three',
+	'spacer_hr_3',
 	'note_add_config'
 );
 

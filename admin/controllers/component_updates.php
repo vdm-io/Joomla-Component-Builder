@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -320,18 +321,28 @@ class ComponentbuilderControllerComponent_updates extends JControllerForm
 		// update the component version to match the updated last version
 		if (isset($validData['joomla_component']) && is_numeric($validData['joomla_component']) && $validData['joomla_component'] > 0)
 		{
-			$objectUpdate = new stdClass();
-			$objectUpdate->id = (int) $validData['joomla_component'];
-			if (isset($validData['version_update']) && ComponentbuilderHelper::checkArray($validData['version_update'])
-				&& ($component_version = end($validData['version_update'])['version'])
-				&& ComponentbuilderHelper::checkString($component_version))
+			// we must load the data (since if changed in the saved method, the $validData will not reflect this change)
+			if (($version_update = ComponentbuilderHelper::getVar(
+				'component_updates',
+				$validData['joomla_component'],
+				'joomla_component',
+				'version_update')) !== false)
 			{
-				$objectUpdate->component_version = $component_version;
-			}
-			// be sure to update the table if we have a value
-			if (isset($objectUpdate->component_version))
-			{
-				JFactory::getDbo()->updateObject('#__componentbuilder_joomla_component', $objectUpdate, 'id');
+				$version_update = json_decode($version_update, true);
+
+				$objectUpdate = new stdClass();
+				$objectUpdate->id = (int) $validData['joomla_component'];
+				if (ComponentbuilderHelper::checkArray($version_update)
+					&& ($component_version = end($version_update)['version'])
+					&& ComponentbuilderHelper::checkString($component_version))
+				{
+					$objectUpdate->component_version = $component_version;
+				}
+				// be sure to update the table if we have a value
+				if (isset($objectUpdate->component_version))
+				{
+					JFactory::getDbo()->updateObject('#__componentbuilder_joomla_component', $objectUpdate, 'id');
+				}
 			}
 		}
 

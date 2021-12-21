@@ -3,7 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -586,6 +587,34 @@ class Compiler extends Infusion
 						// free up some memory
 						unset($this->newFiles[$plugin->key]);
 						unset($this->fileContentDynamic[$plugin->key]);
+					}
+				}
+			}
+			// do powers if found
+			if (ComponentbuilderHelper::checkArray($this->powers))
+			{
+				foreach ($this->powers as $power)
+				{
+					if (ComponentbuilderHelper::checkObject($power)
+						&& isset($this->newFiles[$power->key])
+						&& ComponentbuilderHelper::checkArray(
+							$this->newFiles[$power->key]
+						))
+					{
+						// update the power files
+						foreach ($this->newFiles[$power->key] as $power_file)
+						{
+							if (File::exists($power_file['path']))
+							{
+								$this->setFileContent(
+									$power_file['name'], $power_file['path'],
+									$bom, $power->key
+								);
+							}
+						}
+						// free up some memory
+						unset($this->newFiles[$power->key]);
+						unset($this->fileContentDynamic[$power->key]);
 					}
 				}
 			}

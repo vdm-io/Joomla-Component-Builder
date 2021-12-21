@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="3.2" method="upgrade">
+<extension type="component" version="###XMLVERSION###" method="upgrade">
 	<name>COM_###COMPONENT###</name>
 	<creationDate>###BUILDDATE###</creationDate>
 	<author>###AUTHOR###</author>

@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -26,19 +27,18 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
-	'addcustommenus'
+	'note_how_to_clone',
+	'clone_me'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();
 
 ?>
 <?php if ($fields && count((array) $fields)) :?>
-<div class="form-vertical">
-	<?php foreach($fields as $field): ?>
-		<?php if (in_array($field, $hiddenFields)) : ?>
-			<?php $form->setFieldAttribute($field, 'type', 'hidden'); ?>
-		<?php endif; ?>
-		<?php echo $form->renderField($field, null, null, array('class' => 'control-wrapper-' . $field)); ?>
-	<?php endforeach; ?>
-</div>
+<?php foreach($fields as $field): ?>
+	<?php if (in_array($field, $hiddenFields)) : ?>
+		<?php $form->setFieldAttribute($field, 'type', 'hidden'); ?>
+	<?php endif; ?>
+	<?php echo $form->renderField($field, null, null, array('class' => 'control-wrapper-' . $field)); ?>
+<?php endforeach; ?>
 <?php endif; ?>

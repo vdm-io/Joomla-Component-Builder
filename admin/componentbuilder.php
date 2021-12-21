@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -12,7 +13,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-JHtml::_('behavior.tabstate');
+
 
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_componentbuilder'))
@@ -26,11 +27,11 @@ $document->addStyleSheet('components/com_componentbuilder/assets/css/admin.css')
 $document->addScript('components/com_componentbuilder/assets/js/admin.js');
 
 // require helper files
-JLoader::register('ComponentbuilderHelper', __DIR__ . '/helpers/componentbuilder.php'); 
+JLoader::register('ComponentbuilderHelper', __DIR__ . '/helpers/componentbuilder.php');
 JLoader::register('ComponentbuilderEmail', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/componentbuilderemail.php'); 
-JLoader::register('JHtmlBatch_', __DIR__ . '/helpers/html/batch_.php'); 
+JLoader::register('JHtmlBatch_', __DIR__ . '/helpers/html/batch_.php');
 
-// Triger the Global Admin Event
+// Trigger the Global Admin Event
 ComponentbuilderHelper::globalEvent($document);
 
 // Get an instance of the controller prefixed by Componentbuilder

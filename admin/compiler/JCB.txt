@@ -3,6 +3,7 @@
  *
  * @created    ###CREATIONDATE###
  * @author     ###AUTHOR### <###AUTHORWEBSITE###>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  ###COPYRIGHT###
  * @license    ###LICENSE###

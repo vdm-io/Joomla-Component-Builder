@@ -119,7 +119,7 @@ class ###Component###Router extends JComponentRouterBase
 		$count = count($segments);
 		$vars = array();
 		
-		//Handle View and Identifier
+		// Handle View and Identifier
 		switch($segments[0])
 		{###ROUTER_PARSE_SWITCH###
 		}

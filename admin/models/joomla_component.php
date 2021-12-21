@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -36,9 +37,9 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				'add_placeholders',
 				'remove_line_breaks',
 				'mvc_versiondate',
-				'note_version_options_one',
-				'note_version_options_two',
-				'note_version_options_three',
+				'note_version_options_1',
+				'note_version_options_2',
+				'note_version_options_3',
 				'short_description',
 				'description'
 			),
@@ -160,29 +161,29 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		'settings' => array(
 			'left' => array(
 				'note_moved_views',
-				'spacer_hr_one',
+				'spacer_hr_1',
 				'note_mysql_tweak_options',
-				'spacer_hr_two',
+				'spacer_hr_2',
 				'note_add_custom_menus',
-				'spacer_hr_three',
+				'spacer_hr_3',
 				'note_add_config'
 			),
 			'right' => array(
 				'note_component_files_folders',
-				'spacer_hr_four',
+				'spacer_hr_4',
 				'add_menu_prefix',
 				'menu_prefix',
-				'spacer_hr_five',
+				'spacer_hr_5',
 				'to_ignore_note',
 				'toignore',
-				'spacer_hr_six',
+				'spacer_hr_6',
 				'jcb_export_package_note',
 				'export_key',
 				'joomla_source_link',
 				'export_buy_link'
 			),
 			'fullwidth' => array(
-				'spacer_hr_seven',
+				'spacer_hr_7',
 				'note_on_contributors',
 				'addcontributors',
 				'emptycontributors',

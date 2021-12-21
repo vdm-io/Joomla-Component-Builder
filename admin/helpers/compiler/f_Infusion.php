@@ -3,7 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -75,8 +76,8 @@ class Infusion extends Interpretation
 			$this->triggerEvent(
 				'jcb_ce_onBeforeBuildFilesContent',
 				array(&$this->componentContext, &$this->componentData,
-				      &$this->fileContentStatic, &$this->fileContentDynamic,
-				      &$this->placeholders, &$this->hhh)
+					&$this->fileContentStatic, &$this->fileContentDynamic,
+					&$this->placeholders, &$this->hhh)
 			);
 
 			// COMPONENT
@@ -181,6 +182,10 @@ class Infusion extends Interpretation
 			. 'GLOBAL']
 				= $this->fileContentStatic[$this->hhh . 'VERSION' . $this->hhh];
 
+			// set the joomla target xml version
+			$this->fileContentStatic[$this->hhh . 'XMLVERSION' . $this->hhh]
+				= $this->joomlaVersions[$this->joomlaVersion]['xml_version'];
+
 			// Component_name
 			$this->fileContentStatic[$this->hhh . 'Component_name' . $this->hhh]
 				= JFilterOutput::cleanText($this->componentData->name);
@@ -261,22 +266,25 @@ class Infusion extends Interpretation
 			);
 
 			// ADMIN_GLOBAL_EVENT_HELPER
-			$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT_HELPER'
-			. $this->hhh]
-				= '';
-
-			// ADMIN_GLOBAL_EVENT
-			$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT'
-			. $this->hhh]
-				= '';
-
+			if (!isset($this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT'
+				. $this->hhh]))
+			{
+				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT'
+				. $this->hhh] = '';
+			}
+			if (!isset($this->fileContentStatic[$this->hhh
+				. 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh]))
+			{
+				$this->fileContentStatic[$this->hhh
+				. 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh] = '';
+			}
 			// now load the data for the global event if needed
 			if ($this->componentData->add_admin_event == 1)
 			{
 				// ADMIN_GLOBAL_EVENT
 				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT'
 				. $this->hhh]
-					= PHP_EOL . PHP_EOL . '// Triger the Global Admin Event';
+					.= PHP_EOL . PHP_EOL . '// Trigger the Global Admin Event';
 				$this->fileContentStatic[$this->hhh . 'ADMIN_GLOBAL_EVENT'
 				. $this->hhh]
 					.= PHP_EOL . $this->fileContentStatic[$this->hhh
@@ -285,7 +293,7 @@ class Infusion extends Interpretation
 				// ADMIN_GLOBAL_EVENT_HELPER
 				$this->fileContentStatic[$this->hhh
 				. 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh]
-					= PHP_EOL . PHP_EOL . $this->_t(1) . '/**';
+					.= PHP_EOL . PHP_EOL . $this->_t(1) . '/**';
 				$this->fileContentStatic[$this->hhh
 				. 'ADMIN_GLOBAL_EVENT_HELPER' . $this->hhh]
 					.= PHP_EOL . $this->_t(1)
@@ -416,11 +424,11 @@ class Infusion extends Interpretation
 					$this->triggerEvent(
 						'jcb_ce_onBeforeBuildAdminEditViewContent',
 						array(&$this->componentContext, &$view,
-						      &$nameSingleCode,
-						      &$nameListCode,
-						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$nameSingleCode],
-						      &$this->placeholders, &$this->hhh)
+							&$nameSingleCode,
+							&$nameListCode,
+							&$this->fileContentStatic,
+							&$this->fileContentDynamic[$nameSingleCode],
+							&$this->placeholders, &$this->hhh)
 					);
 
 					// FIELDSETS <<<DYNAMIC>>>
@@ -701,11 +709,11 @@ class Infusion extends Interpretation
 					$this->triggerEvent(
 						'jcb_ce_onAfterBuildAdminEditViewContent',
 						array(&$this->componentContext, &$view,
-						      &$nameSingleCode,
-						      &$nameListCode,
-						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$nameSingleCode],
-						      &$this->placeholders, &$this->hhh)
+							&$nameSingleCode,
+							&$nameListCode,
+							&$this->fileContentStatic,
+							&$this->fileContentDynamic[$nameSingleCode],
+							&$this->placeholders, &$this->hhh)
 					);
 				}
 				// set the views names
@@ -723,11 +731,11 @@ class Infusion extends Interpretation
 					$this->triggerEvent(
 						'jcb_ce_onBeforeBuildAdminListViewContent',
 						array(&$this->componentContext, &$view,
-						      &$nameSingleCode,
-						      &$nameListCode,
-						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$nameListCode],
-						      &$this->placeholders, &$this->hhh)
+							&$nameSingleCode,
+							&$nameListCode,
+							&$this->fileContentStatic,
+							&$this->fileContentDynamic[$nameListCode],
+							&$this->placeholders, &$this->hhh)
 					);
 
 					// set the export/import option
@@ -1079,11 +1087,11 @@ class Infusion extends Interpretation
 					$this->triggerEvent(
 						'jcb_ce_onAfterBuildAdminListViewContent',
 						array(&$this->componentContext, &$view,
-						      &$nameSingleCode,
-						      &$nameListCode,
-						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$nameListCode],
-						      &$this->placeholders, &$this->hhh)
+							&$nameSingleCode,
+							&$nameListCode,
+							&$this->fileContentStatic,
+							&$this->fileContentDynamic[$nameListCode],
+							&$this->placeholders, &$this->hhh)
 					);
 				}
 
@@ -1275,11 +1283,11 @@ class Infusion extends Interpretation
 				$this->triggerEvent(
 					'jcb_ce_onAfterBuildAdminViewContent',
 					array(&$this->componentContext, &$view,
-					      &$nameSingleCode,
-					      &$nameListCode,
-					      &$this->fileContentStatic,
-					      &$this->fileContentDynamic, &$this->placeholders,
-					      &$this->hhh)
+						&$nameSingleCode,
+						&$nameListCode,
+						&$this->fileContentStatic,
+						&$this->fileContentDynamic, &$this->placeholders,
+						&$this->hhh)
 				);
 			}
 
@@ -1363,10 +1371,10 @@ class Infusion extends Interpretation
 					$this->triggerEvent(
 						'jcb_ce_onBeforeBuildCustomAdminViewContent',
 						array(&$this->componentContext, &$view,
-						      &$view['settings']->code,
-						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$view['settings']->code],
-						      &$this->placeholders, &$this->hhh)
+							&$view['settings']->code,
+							&$this->fileContentStatic,
+							&$this->fileContentDynamic[$view['settings']->code],
+							&$this->placeholders, &$this->hhh)
 					);
 
 					// set license per view if needed
@@ -1575,10 +1583,10 @@ class Infusion extends Interpretation
 					$this->triggerEvent(
 						'jcb_ce_onAfterBuildCustomAdminViewContent',
 						array(&$this->componentContext, &$view,
-						      &$view['settings']->code,
-						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$view['settings']->code],
-						      &$this->placeholders, &$this->hhh)
+							&$view['settings']->code,
+							&$this->fileContentStatic,
+							&$this->fileContentDynamic[$view['settings']->code],
+							&$this->placeholders, &$this->hhh)
 					);
 				}
 
@@ -1690,6 +1698,23 @@ class Infusion extends Interpretation
 				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
 				. 'DASH_DISPLAY_DATA' . $this->hhh]
 					= $this->setDashboardDisplayData();
+
+				// DASH_VIEW_HEADER
+				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				. 'DASH_VIEW_HEADER' . $this->hhh]
+					= $this->setFileHeader('dashboard.view', 'dashboard');
+				// DASH_VIEW_HTML_HEADER
+				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				. 'DASH_VIEW_HTML_HEADER' . $this->hhh]
+					= $this->setFileHeader('dashboard.view.html', 'dashboard');
+				// DASH_MODEL_HEADER
+				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				. 'DASH_MODEL_HEADER' . $this->hhh]
+					= $this->setFileHeader('dashboard.model', 'dashboard');
+				// DASH_CONTROLLER_HEADER
+				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				. 'DASH_CONTROLLER_HEADER' . $this->hhh]
+					= $this->setFileHeader('dashboard.controller', 'dashboard');
 			}
 			else
 			{
@@ -1741,6 +1766,10 @@ class Infusion extends Interpretation
 				$this->fileContentDynamic['ajax'][$this->hhh
 				. 'AJAX_INPUT_RETURN' . $this->hhh]
 					= $this->setAjaxInputReturn('admin');
+				// set the model header
+				$this->fileContentDynamic['ajax'][$this->hhh
+				. 'AJAX_ADMIN_MODEL_HEADER' . $this->hhh]
+					= $this->setFileHeader('ajax.admin.model', 'ajax');
 				// set the module
 				$this->fileContentDynamic['ajax'][$this->hhh
 				. 'AJAX_MODEL_METHODS' . $this->hhh]
@@ -1760,6 +1789,10 @@ class Infusion extends Interpretation
 				$this->fileContentDynamic['ajax'][$this->hhh
 				. 'AJAX_SITE_INPUT_RETURN' . $this->hhh]
 					= $this->setAjaxInputReturn('site');
+				// set the model header
+				$this->fileContentDynamic['ajax'][$this->hhh
+				. 'AJAX_SITE_MODEL_HEADER' . $this->hhh]
+					= $this->setFileHeader('ajax.site.model', 'ajax');
 				// set the module
 				$this->fileContentDynamic['ajax'][$this->hhh
 				. 'AJAX_SITE_MODEL_METHODS' . $this->hhh]
@@ -1866,10 +1899,10 @@ class Infusion extends Interpretation
 					$this->triggerEvent(
 						'jcb_ce_onBeforeBuildSiteViewContent',
 						array(&$this->componentContext, &$view,
-						      &$view['settings']->code,
-						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$view['settings']->code],
-						      &$this->placeholders, &$this->hhh)
+							&$view['settings']->code,
+							&$this->fileContentStatic,
+							&$this->fileContentDynamic[$view['settings']->code],
+							&$this->placeholders, &$this->hhh)
 					);
 
 					// set license per view if needed
@@ -2109,10 +2142,10 @@ class Infusion extends Interpretation
 					$this->triggerEvent(
 						'jcb_ce_onAfterBuildSiteViewContent',
 						array(&$this->componentContext, &$view,
-						      &$view['settings']->code,
-						      &$this->fileContentStatic,
-						      &$this->fileContentDynamic[$view['settings']->code],
-						      &$this->placeholders, &$this->hhh)
+							&$view['settings']->code,
+							&$this->fileContentStatic,
+							&$this->fileContentDynamic[$view['settings']->code],
+							&$this->placeholders, &$this->hhh)
 					);
 				}
 
@@ -2147,19 +2180,24 @@ class Infusion extends Interpretation
 					$this->placeholders
 				);
 				// SITE_GLOBAL_EVENT_HELPER
-				$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT_HELPER'
-				. $this->hhh]
-					= '';
-				// SITE_GLOBAL_EVENT
-				$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT'
-				. $this->hhh]
-					= '';
+				if (!isset($this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT'
+					. $this->hhh]))
+				{
+					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT'
+					. $this->hhh] = '';
+				}
+				if (!isset($this->fileContentStatic[$this->hhh
+					. 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh]))
+				{
+					$this->fileContentStatic[$this->hhh
+					. 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh] = '';
+				}
 				// now load the data for the global event if needed
 				if ($this->componentData->add_site_event == 1)
 				{
 					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT'
 					. $this->hhh]
-						= PHP_EOL . PHP_EOL . '// Triger the Global Site Event';
+						.= PHP_EOL . PHP_EOL . '// Trigger the Global Site Event';
 					$this->fileContentStatic[$this->hhh . 'SITE_GLOBAL_EVENT'
 					. $this->hhh]
 						.= PHP_EOL . $this->fileContentStatic[$this->hhh
@@ -2168,7 +2206,7 @@ class Infusion extends Interpretation
 					// SITE_GLOBAL_EVENT_HELPER
 					$this->fileContentStatic[$this->hhh
 					. 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh]
-						= PHP_EOL . PHP_EOL . $this->_t(1) . '/**';
+						.= PHP_EOL . PHP_EOL . $this->_t(1) . '/**';
 					$this->fileContentStatic[$this->hhh
 					. 'SITE_GLOBAL_EVENT_HELPER' . $this->hhh]
 						.= PHP_EOL . $this->_t(1)
@@ -2271,7 +2309,41 @@ class Infusion extends Interpretation
 				$this->fileContentStatic[$this->hhh . 'README' . $this->hhh]
 					= $this->componentData->readme;
 			}
-
+			// remove all the power placeholders
+			$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_EVENT_HELPER' . $this->hhh] = '';
+			$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_EVENT' . $this->hhh] = '';
+			$this->fileContentStatic[$this->hhh . 'SITE_POWER_EVENT_HELPER' . $this->hhh] = '';
+			$this->fileContentStatic[$this->hhh . 'SITE_POWER_EVENT' . $this->hhh] = '';
+			// infuse powers data if set
+			if (ComponentbuilderHelper::checkArray($this->powers))
+			{
+				// start the autoloader
+				$autoloader = array();
+				foreach ($this->powers as $power)
+				{
+					if (ComponentbuilderHelper::checkObject($power))
+					{
+						// Trigger Event: jcb_ce_onBeforeInfusePowerData
+						$this->triggerEvent(
+							'jcb_ce_onBeforeInfusePowerData',
+							array(&$this->componentContext, &$power, &$this)
+						);
+						// POWERCODE
+						$this->fileContentDynamic[$power->key][$this->hhh
+						. 'POWERCODE' . $this->hhh]
+							= $this->getPowerCode($power);
+						// build the autoloader
+						$autoloader[implode('.', $power->_namespace_prefix)] = $power->_namespace_prefix;
+						// Trigger Event: jcb_ce_onAfterInfusePowerData
+						$this->triggerEvent(
+							'jcb_ce_onAfterInfusePowerData',
+							array(&$this->componentContext, &$power, &$this)
+						);
+					}
+				}
+				// now set the power autoloader
+				$this->setPowersAutoloader($autoloader, (!$this->removeSiteFolder || !$this->removeSiteEditFolder));
+			}
 			// tweak system to set stuff to the module domain
 			$_backup_target     = $this->target;
 			$_backup_lang       = $this->lang;
@@ -2421,13 +2493,12 @@ class Infusion extends Interpretation
 			$this->target     = $_backup_target;
 			$this->lang       = $_backup_lang;
 			$this->langPrefix = $_backup_langPrefix;
-
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent
 			$this->triggerEvent(
 				'jcb_ce_onAfterBuildFilesContent',
 				array(&$this->componentContext, &$this->componentData,
-				      &$this->fileContentStatic, &$this->fileContentDynamic,
-				      &$this->placeholders, &$this->hhh)
+					&$this->fileContentStatic, &$this->fileContentDynamic,
+					&$this->placeholders, &$this->hhh)
 			);
 
 			return true;
@@ -2625,7 +2696,7 @@ class Infusion extends Interpretation
 		$this->triggerEvent(
 			'jcb_ce_onBeforeBuildAllLangFiles',
 			array(&$this->componentContext, &$this->languages['components'],
-			      &$this->langTag)
+				&$this->langTag)
 		);
 		// now we insert the values into the files
 		if (ComponentbuilderHelper::checkArray($this->languages['components']))

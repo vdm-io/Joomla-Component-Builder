@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -783,6 +784,33 @@ abstract class ComponentbuilderHelper
 		}
 		// use the default (original behaviour/convention)
 		return self::safeString($string);
+	}
+
+	/**
+	* Making namespace safe
+	*
+	* @input	string       The you would like to make safe
+	*
+	* @returns string on success
+	**/
+	public static function safeNamespace($string)
+	{
+		// 0nly continue if we have a string
+		if (self::checkString($string))
+		{
+			// make sure it has not numbers
+			$string = self::replaceNumbers($string);
+			// Transliterate string TODO: look again as this make it lowercase
+			// $string = self::transliterate($string);
+			// first remove all [\] backslashes
+			$string = str_replace('\\', '1', $string);
+			// remove all and keep only characters and [\] backslashes inside of the string
+			$string = trim(preg_replace("/[^A-Za-z1]/", '', $string), '1');
+			// place the [\] backslashes back
+			return trim(preg_replace("/1+/", '\\', $string));
+		}
+		// not a string
+		return '';
 	}
 
 	/*
@@ -4481,8 +4509,10 @@ abstract class ComponentbuilderHelper
 			// use the SFTP protocol
 			elseif (2 == $server->jcb_protocol)
 			{
+				// get the remote path
+				$remote_path = '/' . trim($server->jcb_remote_server_path[(int) $serverID], '/') . '/' . $fileName;
 				// now move the file
-				if (!$server->put($server->jcb_remote_server_path[(int) $serverID] . $fileName, self::getFileContents($localPath, null)))
+				if (!$server->put($remote_path, self::getFileContents($localPath, null)))
 				{
 					JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_FILE_COULD_NOT_BE_MOVED_TO_BSB_PATH_ON_BSB_SERVER', $fileName, $server->jcb_remote_server_path[(int) $serverID], $server->jcb_remote_server_name[(int) $serverID]), 'Error');
 					return false;
@@ -4558,7 +4588,7 @@ abstract class ComponentbuilderHelper
 					return false;
 				}
 				// insure the port is set
-				$server->port = (isset($server->port) && is_int($server->port) && $server->port > 0) ? $server->port : 22;
+				$server->port = (isset($server->port) && is_numeric($server->port) && $server->port > 0) ? (int) $server->port : 22;
 				// open the connection
 				self::$sftp[$server->cache] = new phpseclib\Net\SFTP($server->host, $server->port);
 				// heads-up on protocol

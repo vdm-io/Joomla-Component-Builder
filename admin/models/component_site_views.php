@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -34,6 +35,12 @@ class ComponentbuilderModelComponent_site_views extends JModelAdmin
 			),
 			'above' => array(
 				'joomla_component'
+			)
+		),
+		'clone' => array(
+			'left' => array(
+				'note_how_to_clone',
+				'clone_me'
 			)
 		)
 	);
@@ -837,6 +844,15 @@ class ComponentbuilderModelComponent_site_views extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
+
+
+		// check if we have a clone moment
+		if (isset($data['clone_me']) && $data['clone_me'] > 0)
+		{
+			// get addsite_views data from clone_me (component_site_views)
+			$data['addsite_views'] = ComponentbuilderHelper::getVar('component_site_views', $data['clone_me'], 'joomla_component', 'addsite_views');
+		}
+
 
 		// Set the addsite_views items to data.
 		if (isset($data['addsite_views']) && is_array($data['addsite_views']))

@@ -521,7 +521,7 @@
 					description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_INPUT_FILTER_DESCRIPTION"
 					class="list_class"
 					multiple="false"
-					filter="WORD"
+					filter="ALNUM"
 					required="true"
 					default="INT">
 					<!-- Option Set. -->
@@ -540,7 +540,7 @@
 					<option value="CMD">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CMD</option>
 					<option value="BASE64">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_BASESIXTY_FOUR</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_BASE64</option>
 					<option value="STRING">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_STRING</option>
 					<option value="HTML">
@@ -697,33 +697,33 @@
 					<option value="archive">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARCHIVE</option>
 					<option value="arrow-down-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_DOWN_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_DOWN_2</option>
 					<option value="arrow-down-3">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_DOWN_THREE</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_DOWN_3</option>
 					<option value="arrow-down-4">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_DOWN_FOUR</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_DOWN_4</option>
 					<option value="arrow-first">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_FIRST</option>
 					<option value="arrow-last">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_LAST</option>
 					<option value="arrow-left-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_LEFT_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_LEFT_2</option>
 					<option value="arrow-left-3">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_LEFT_THREE</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_LEFT_3</option>
 					<option value="arrow-left-4">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_LEFT_FOUR</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_LEFT_4</option>
 					<option value="arrow-right-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_RIGHT_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_RIGHT_2</option>
 					<option value="arrow-right-3">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_RIGHT_THREE</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_RIGHT_3</option>
 					<option value="arrow-right-4">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_RIGHT_FOUR</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_RIGHT_4</option>
 					<option value="arrow-up-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_UP_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_UP_2</option>
 					<option value="arrow-up-3">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_UP_THREE</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_UP_3</option>
 					<option value="arrow-up-4">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_UP_FOUR</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ARROW_UP_4</option>
 					<option value="attachment">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ATTACHMENT</option>
 					<option value="reply">
@@ -741,7 +741,7 @@
 					<option value="bookmark">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_BOOKMARK</option>
 					<option value="bookmark-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_BOOKMARK_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_BOOKMARK_2</option>
 					<option value="box-add">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_BOX_ADD</option>
 					<option value="box-remove">
@@ -755,13 +755,13 @@
 					<option value="calendar">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CALENDAR</option>
 					<option value="calendar-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CALENDAR_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CALENDAR_2</option>
 					<option value="calendar-3">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CALENDAR_THREE</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CALENDAR_3</option>
 					<option value="camera">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CAMERA</option>
 					<option value="camera-2 / video">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CAMERA_TWO_VIDEO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CAMERA_2_VIDEO</option>
 					<option value="cancel-circle">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CANCEL_CIRCLE</option>
 					<option value="cart">
@@ -777,7 +777,7 @@
 					<option value="checkbox">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CHECKBOX</option>
 					<option value="checkmark-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CHECKMARK_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CHECKMARK_2</option>
 					<option value="checkmark-circle">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CHECKMARK_CIRCLE</option>
 					<option value="arrow-down">
@@ -797,17 +797,17 @@
 					<option value="comment">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_COMMENT</option>
 					<option value="comments-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_COMMENTS_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_COMMENTS_2</option>
 					<option value="compass">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_COMPASS</option>
 					<option value="contract">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CONTRACT</option>
 					<option value="contract-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CONTRACT_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CONTRACT_2</option>
 					<option value="credit">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CREDIT</option>
 					<option value="credit-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CREDIT_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CREDIT_2</option>
 					<option value="cube">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CUBE</option>
 					<option value="dashboard">
@@ -831,7 +831,7 @@
 					<option value="expand">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_EXPAND</option>
 					<option value="expand-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_EXPAND_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_EXPAND_2</option>
 					<option value="expired">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_EXPIRED</option>
 					<option value="eye-close">
@@ -845,7 +845,7 @@
 					<option value="file">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FILE</option>
 					<option value="file-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FILE_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FILE_2</option>
 					<option value="file-add">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FILE_ADD</option>
 					<option value="file-check">
@@ -861,9 +861,9 @@
 					<option value="flag">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FLAG</option>
 					<option value="flag-3">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FLAG_THREE</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FLAG_3</option>
 					<option value="folder-3">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FOLDER_THREE</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FOLDER_3</option>
 					<option value="folder-close">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FOLDER_CLOSE</option>
 					<option value="folder-minus">
@@ -873,27 +873,27 @@
 					<option value="folder-plus">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FOLDER_PLUS</option>
 					<option value="folder-plus-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FOLDER_PLUS_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FOLDER_PLUS_2</option>
 					<option value="folder-remove">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FOLDER_REMOVE</option>
 					<option value="forward-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FORWARD_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FORWARD_2</option>
 					<option value="forward-circle">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_FORWARD_CIRCLE</option>
 					<option value="grid">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_GRID</option>
 					<option value="grid-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_GRID_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_GRID_2</option>
 					<option value="health">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_HEALTH</option>
 					<option value="heart">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_HEART</option>
 					<option value="heart-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_HEART_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_HEART_2</option>
 					<option value="home">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_HOME</option>
 					<option value="home-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_HOME_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_HOME_2</option>
 					<option value="info">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_INFO</option>
 					<option value="info-circle">
@@ -911,7 +911,7 @@
 					<option value="list">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_LIST</option>
 					<option value="list-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_LIST_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_LIST_2</option>
 					<option value="location">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_LOCATION</option>
 					<option value="loop">
@@ -919,9 +919,9 @@
 					<option value="menu">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MENU</option>
 					<option value="menu-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MENU_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MENU_2</option>
 					<option value="menu-3">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MENU_THREE</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MENU_3</option>
 					<option value="minus">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MINUS</option>
 					<option value="minus-sign">
@@ -945,7 +945,7 @@
 					<option value="new-tab">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NEW_TAB</option>
 					<option value="new-tab-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NEW_TAB_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NEW_TAB_2</option>
 					<option value="palette">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PALETTE</option>
 					<option value="paragraph-center">
@@ -961,13 +961,13 @@
 					<option value="pause-circle">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PAUSE_CIRCLE</option>
 					<option value="pencil-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PENCIL_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PENCIL_2</option>
 					<option value="warning">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_WARNING</option>
 					<option value="phone">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHONE</option>
 					<option value="phone-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHONE_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_PHONE_2</option>
 					<option value="image">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_IMAGE</option>
 					<option value="images">
@@ -999,7 +999,7 @@
 					<option value="question">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_QUESTION</option>
 					<option value="question-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_QUESTION_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_QUESTION_2</option>
 					<option value="quotes-left">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_QUOTES_LEFT</option>
 					<option value="quotes-right">
@@ -1035,21 +1035,21 @@
 					<option value="smiley">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SMILEY</option>
 					<option value="smiley-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SMILEY_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SMILEY_2</option>
 					<option value="smiley-neutral">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SMILEY_NEUTRAL</option>
 					<option value="smiley-neutral-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SMILEY_NEUTRAL_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SMILEY_NEUTRAL_2</option>
 					<option value="smiley-sad">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SMILEY_SAD</option>
 					<option value="smiley-sad-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SMILEY_SAD_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SMILEY_SAD_2</option>
 					<option value="square">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SQUARE</option>
 					<option value="stack">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_STACK</option>
 					<option value="star-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_STAR_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_STAR_2</option>
 					<option value="stop">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_STOP</option>
 					<option value="stop-circle">
@@ -1063,11 +1063,11 @@
 					<option value="tag">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TAG</option>
 					<option value="tag-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TAG_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TAG_2</option>
 					<option value="tags">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TAGS</option>
 					<option value="tags-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TAGS_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TAGS_2</option>
 					<option value="thumbs-down">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_THUMBS_DOWN</option>
 					<option value="thumbs-up">
@@ -1075,7 +1075,7 @@
 					<option value="tree">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TREE</option>
 					<option value="tree-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TREE_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_TREE_2</option>
 					<option value="unarchive">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_UNARCHIVE</option>
 					<option value="unblock">
@@ -1083,7 +1083,7 @@
 					<option value="undo">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_UNDO</option>
 					<option value="undo-2">
-						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_UNDO_TWO</option>
+						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_UNDO_2</option>
 					<option value="unfeatured">
 						COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_UNFEATURED</option>
 					<option value="unlock">

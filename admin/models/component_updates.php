@@ -4,6 +4,7 @@
  *
  * @created    30th April, 2015
  * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
@@ -33,6 +34,12 @@ class ComponentbuilderModelComponent_updates extends JModelAdmin
 			),
 			'above' => array(
 				'joomla_component'
+			)
+		),
+		'clone' => array(
+			'left' => array(
+				'note_how_to_clone',
+				'clone_me'
 			)
 		)
 	);
@@ -250,6 +257,9 @@ class ComponentbuilderModelComponent_updates extends JModelAdmin
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
+
+		// update the version_update (sub form) layout
+		$form->setFieldAttribute('version_update', 'layout', ComponentbuilderHelper::getSubformLayout('component_updates', 'version_update'));
 		return $form;
 	}
 
@@ -833,6 +843,15 @@ class ComponentbuilderModelComponent_updates extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
+
+
+		// check if we have a clone moment
+		if (isset($data['clone_me']) && $data['clone_me'] > 0)
+		{
+			// get version_update data from clone_me (component_updates)
+			$data['version_update'] = ComponentbuilderHelper::getVar('component_updates', $data['clone_me'], 'joomla_component', 'version_update');
+		}
+
 
 		// Set the version_update items to data.
 		if (isset($data['version_update']) && is_array($data['version_update']))

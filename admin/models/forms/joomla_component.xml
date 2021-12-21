@@ -263,8 +263,8 @@
 			filter="raw"
 			validate="code"
 		/>
-		<!-- Note_version_options_three Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_version_options_three" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_VERSION_OPTIONS_THREE_DESCRIPTION" class="alert alert-info note_version_options_three" showon="mvc_versiondate:3" />
+		<!-- Note_version_options_3 Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_version_options_3" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_VERSION_OPTIONS_3_DESCRIPTION" class="alert alert-info note_version_options_3" showon="mvc_versiondate:3" />
 		<!-- Css_admin Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -281,10 +281,10 @@
 			filter="raw"
 			validate="code"
 		/>
-		<!-- Note_version_options_two Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_version_options_two" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_VERSION_OPTIONS_TWO_DESCRIPTION" class="alert alert-info note_version_options_two" showon="mvc_versiondate:2" />
-		<!-- Note_version_options_one Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_version_options_one" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_VERSION_OPTIONS_ONE_DESCRIPTION" class="alert alert-info note_version_options_one" showon="mvc_versiondate:1" />
+		<!-- Note_version_options_2 Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_version_options_2" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_VERSION_OPTIONS_2_DESCRIPTION" class="alert alert-info note_version_options_2" showon="mvc_versiondate:2" />
+		<!-- Note_version_options_1 Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_version_options_1" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_VERSION_OPTIONS_1_DESCRIPTION" class="alert alert-info note_version_options_1" showon="mvc_versiondate:1" />
 		<!-- Mvc_versiondate Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -302,9 +302,9 @@
 			<option value="1">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_USE_VIEW_VERSION_DATE</option>
 			<option value="2">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_USE_ONLY_FIRST_TWO_NUMBER_OF_GLOBAL_VERSION_ONEZEROX</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_USE_ONLY_FIRST_2_NUMBER_OF_GLOBAL_VERSION_10X</option>
 			<option value="3">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_USE_ONLY_FIRST_NUMBER_OF_GLOBAL_VERSION_ONEXX</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_USE_ONLY_FIRST_NUMBER_OF_GLOBAL_VERSION_1XX</option>
 		</field>
 		<!-- Remove_line_breaks Field. Type: Radio. (joomla) -->
 		<field
@@ -808,12 +808,12 @@
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_HINT"
 			required="true"
 		/>
-		<!-- Spacer_hr_one Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_one" hr="true" class="spacer_hr_one" />
+		<!-- Spacer_hr_1 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_1" hr="true" class="spacer_hr_1" />
 		<!-- Note_mysql_tweak_options Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_mysql_tweak_options" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_MYSQL_TWEAK_OPTIONS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_MYSQL_TWEAK_OPTIONS_DESCRIPTION" heading="h4" class="alert alert-info note_mysql_tweak_options" />
-		<!-- Spacer_hr_two Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_two" hr="true" class="spacer_hr_two" />
+		<!-- Spacer_hr_2 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_2" hr="true" class="spacer_hr_2" />
 		<!-- Add_php_helper_both Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -844,8 +844,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Spacer_hr_three Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_three" hr="true" class="spacer_hr_three" />
+		<!-- Spacer_hr_3 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_3" hr="true" class="spacer_hr_3" />
 		<!-- Add_admin_event Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -892,8 +892,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Spacer_hr_four Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_four" hr="true" class="spacer_hr_four" />
+		<!-- Spacer_hr_4 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_4" hr="true" class="spacer_hr_4" />
 		<!-- Add_javascript Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -968,8 +968,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Spacer_hr_five Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_five" hr="true" class="spacer_hr_five" />
+		<!-- Spacer_hr_5 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_5" hr="true" class="spacer_hr_5" />
 		<!-- Dashboard_type Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -1025,8 +1025,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Spacer_hr_six Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_six" hr="true" class="spacer_hr_six" />
+		<!-- Spacer_hr_6 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_6" hr="true" class="spacer_hr_6" />
 		<!-- Add_php_preflight_update Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -1145,8 +1145,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Spacer_hr_seven Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_seven" hr="true" class="spacer_hr_seven" />
+		<!-- Spacer_hr_7 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_7" hr="true" class="spacer_hr_7" />
 		<!-- Add_sql_uninstall Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -1466,11 +1466,11 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC</option>
 			<option value="2">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_BOTH_VTWO_AMP_VTHREE</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_BOTH_V2_AMP_V3</option>
 			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_UIKIT_VTWO</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_UIKIT_V2</option>
 			<option value="3">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_UIKIT_VTHREE</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_UIKIT_V3</option>
 		</field>
 		<!-- Guid Field. Type: Text. (joomla) -->
 		<field
@@ -1500,9 +1500,9 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC</option>
 			<option value="3">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_FOOTABLE_VTHREE</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_FOOTABLE_V3</option>
 			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_FOOTABLE_VTWO</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_FOOTABLE_V2</option>
 		</field>
 		<!-- Modified Field. Type: Calendar. (joomla) -->
 		<field

@@ -218,7 +218,7 @@
 			<option value="1">
 				COM_COMPONENTBUILDER_FIELD_JSON</option>
 			<option value="2">
-				COM_COMPONENTBUILDER_FIELD_BASESIXTY_FOUR</option>
+				COM_COMPONENTBUILDER_FIELD_BASE64</option>
 			<option value="3">
 				COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALDBKEY</option>
 			<option value="5">
