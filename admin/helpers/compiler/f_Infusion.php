@@ -2454,6 +2454,9 @@ class Infusion extends Interpretation
 							. 'INSTALLCLASS' . $this->hhh]
 								= $this->getExtensionInstallClass($plugin);
 						}
+
+                        $this->setPluginVersionController($plugin);
+
 						// FIELDSET
 						if (isset($plugin->form_files)
 							&& ComponentbuilderHelper::checkArray(

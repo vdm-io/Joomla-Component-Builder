@@ -221,6 +221,13 @@
 			}
 		},
 		"dynamic": {
+			"plugin": {
+				"1.0.0.sql": {
+					"path": "P|uG!n/sql/mysql/updates",
+					"rename": "1.0.0",
+					"type": "sql_update"
+				}
+			},
 			"admin": {
 				"whmcs.php": {
 					"path": "c0mp0n3nt/admin",

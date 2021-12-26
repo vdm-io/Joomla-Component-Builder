@@ -580,7 +580,7 @@ class Compiler extends Infusion
 							{
 								$this->setFileContent(
 									$plugin_file['name'], $plugin_file['path'],
-									$bom, $plugin->key
+									$bom, ['plugin_key' => $plugin->key, 'view' => $plugin_file['view']]
 								);
 							}
 						}
@@ -633,6 +633,12 @@ class Compiler extends Infusion
 	 */
 	protected function setFileContent(&$name, &$path, &$bom, $view = null)
 	{
+	    $main_view= null;
+	    if (is_array($view))
+        {
+            $main_view= $view['view'];
+            $view= $view['plugin_key'];
+        }
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
 		$this->triggerEvent(
 			'jcb_ce_onBeforeSetFileContent',
@@ -667,9 +673,20 @@ class Compiler extends Infusion
 		// set the dynamic answer
 		if ($view)
 		{
-			$answer = $this->setPlaceholders(
-				$answer, $this->fileContentDynamic[$view], 3
-			);
+		    if ($main_view)
+            {
+                $answer = $this->setPlaceholders(
+                    $answer, $this->fileContentDynamic[$view][$main_view], 3
+                );
+            }
+		    else
+            {
+                $answer = $this->setPlaceholders(
+                    $answer, $this->fileContentDynamic[$view], 3
+                );
+            }
+
+
 		}
 		// check if this file needs extra care :)
 		if (isset($this->updateFileContent[$path]))

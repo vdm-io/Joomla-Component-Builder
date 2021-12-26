@@ -1396,7 +1396,8 @@ class Structure extends Get
 						}
 					}
 					// set SQL stuff if needed
-					if ($plugin->add_sql || $plugin->add_sql_uninstall)
+
+					if ($plugin->add_sql || $plugin->add_sql_uninstall || $plugin->version_update)
 					{
 						// create SQL folder
 						$this->createFolder($plugin->folder_path . '/sql');
@@ -2716,7 +2717,7 @@ class Structure extends Get
 	 *
 	 */
 	public function buildDynamique($target, $type, $fileName = false,
-	                               $config = false
+	                               $config = false, $plugin= null
 	)
 	{
 		// did we build the files (any number)
@@ -2755,6 +2756,13 @@ class Structure extends Get
 								'c0mp0n3nt/', $this->componentPath . '/', $path
 							);
 						}
+						elseif (strpos($path, 'P|uG!n') !== false)
+                        {
+                            $zipPath = str_replace('P|uG!n/', '', $path);
+                            $path    = str_replace(
+                                'P|uG!n/', $plugin->folder_path . '/', $path
+                            );
+                        }
 						else
 						{
 							$this->app->enqueueMessage(
@@ -2770,7 +2778,10 @@ class Structure extends Get
 						if (!Folder::exists($path))
 						{
 							Folder::create($path);
-							$this->indexHTML($zipPath);
+							if (!empty($plugin))
+                 $this->indexHTML($zipPath,'plugin', $plugin);
+							else
+                  $this->indexHTML($zipPath);
 							// count the folder created
 							$this->folderCount++;
 						}
@@ -2817,8 +2828,14 @@ class Structure extends Get
 						{
 							$newFIle['config'] = $config;
 						}
-						// store the new files
-						$this->newFiles['dynamic'][$name][] = $newFIle;
+            // store the new files
+						if (!empty($plugin))
+              $this->newFiles[$plugin->key][$name] = $newFIle;
+						else
+              $this->newFiles['dynamic'][$name][] = $newFIle;
+
+
+
 						// we have build atleast one
 						$build_status = true;
 					}
@@ -3148,11 +3165,15 @@ class Structure extends Get
 	 * @return  void
 	 *
 	 */
-	private function indexHTML($path, $root = 'component')
+	private function indexHTML($path, $root = 'component', $plugin= null)
 	{
 		if ('component' === $root)
 		{
 			$root = $this->componentPath . '/';
+		}
+		if ('plugin' === $root)
+		{
+			$root = $plugin->folder_path . '/';
 		}
 		// use path if exist
 		if (strlen($path) > 0)

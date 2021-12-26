@@ -1095,6 +1095,43 @@ class Interpretation extends Fields
 		return '';
 	}
 
+
+    /**
+     * set plugin Version Controller
+     */
+    public function setPluginVersionController(&$plugin)
+    {
+        if (ComponentbuilderHelper::checkArray(
+                $plugin->version_update
+            ))
+        {
+            $updateXML = array();
+            
+
+            // add the dynamic sql switch
+            $addDynamicSQL = true;
+            $addActive     = true;
+            if (ComponentbuilderHelper::checkArray(
+                $plugin->version_update
+            ))
+            {
+
+                foreach (
+                    $plugin->version_update as $nr => &$update
+                )
+                {
+                    $this->setPluginUpdateXMLSQL($update, $updateXML, $addDynamicSQL, $plugin);
+
+                    if ($update['version']
+                        == $plugin->plugin_version)
+                    {
+                        $addActive = false;
+                    }
+                }
+            }
+        }
+    }
+
 	/**
 	 * set Version Controller
 	 */
@@ -1306,6 +1343,40 @@ class Interpretation extends Fields
 		// add dynamic SQL
 		$this->setUpdateXMLSQL($update_, $updateXML, $addDynamicSQL);
 	}
+
+    /**
+     * set plugin Update XML SQL
+     *
+     * @param   array    $update
+     * @param   array    $updateXML
+     * @param   boolean  $addDynamicSQL
+     */
+    public function setPluginUpdateXMLSQL(&$update, &$updateXML, &$addDynamicSQL, $plugin)
+    {
+        // ensure version naming is correct
+        $update['version'] = preg_replace('/[^0-9.]+/', '', $update['version']);
+        // setup SQL
+        if (ComponentbuilderHelper::checkString($update['mysql']))
+        {
+            $update['mysql'] = $this->setPlaceholders(
+                $update['mysql'], $this->placeholders
+            );
+        }
+
+        // setup import files
+        if ($update['version'] != $plugin->plugin_version)
+        {
+            $name   = ComponentbuilderHelper::safeString($update['version']);
+            $target = array('plugin' => $name);
+            $this->buildDynamique($target, 'sql_update', $update['version'], false, $plugin);
+            $this->fileContentDynamic[$plugin->key][$name . '_'
+            . $update['version']][$this->hhh . 'UPDATE_VERSION_MYSQL'
+            . $this->hhh]
+                = $update['mysql'];
+        }
+
+    }
+
 
 	/**
 	 * set Update XML SQL
@@ -28790,6 +28861,19 @@ function vdm_dkim() {
 			$xml .= PHP_EOL . $this->_t(2) . '</sql>';
 			$xml .= PHP_EOL . $this->_t(1) . '</uninstall>';
 		}
+        // should the sql update be added
+        if ($plugin->version_update)
+        {
+            $xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(
+                    __LINE__
+                ) . ' Runs on update; New in Joomla 1.5 -->';
+            $xml .= PHP_EOL . $this->_t(1) . '<update>';
+            $xml .= PHP_EOL . $this->_t(2) . '<schemas>';
+            $xml .= PHP_EOL . $this->_t(3)
+                . '<schemapath type="mysql">sql/mysql/updates/</schemapath>';
+            $xml .= PHP_EOL . $this->_t(2) . '</schemas>';
+            $xml .= PHP_EOL . $this->_t(1) . '</update>';
+        }
 		// should the language xml be added
 		if (ComponentbuilderHelper::checkArray($addLang))
 		{
@@ -28840,7 +28924,7 @@ function vdm_dkim() {
 			$xml .= PHP_EOL . $this->_t(2) . '<folder>language</folder>';
 		}
 		// add sql folder
-		if ($plugin->add_sql || $plugin->add_sql_uninstall)
+		if ($plugin->add_sql || $plugin->add_sql_uninstall || $plugin->version_update)
 		{
 			$xml .= PHP_EOL . $this->_t(2) . '<folder>sql</folder>';
 		}

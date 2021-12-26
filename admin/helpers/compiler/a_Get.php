@@ -10639,6 +10639,15 @@ class Get
 						$plugin->{$server . '_protocol'} = 0;
 					}
 				}
+                $plugin->version_update = (isset($plugin->version_update)
+                    && ComponentbuilderHelper::checkJson($plugin->version_update))
+                    ? json_decode($plugin->version_update, true) : null;
+                if (ComponentbuilderHelper::checkArray($plugin->version_update))
+                {
+                    $plugin->version_update = array_values(
+                        $plugin->version_update
+                    );
+                }
 				// set the update server stuff (TODO)
 				// update_server_xml_path
 				// update_server_xml_file_name
