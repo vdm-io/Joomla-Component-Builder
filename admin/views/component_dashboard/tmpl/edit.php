@@ -59,6 +59,14 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php echo JHtml::_('bootstrap.addTab', 'component_dashboardTab', 'clone', JText::_('COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_CLONE', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('component_dashboard.clone_left', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
 	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
 	<?php $this->tab_name = 'component_dashboardTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>

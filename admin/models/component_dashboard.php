@@ -31,11 +31,17 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 		'dashboard' => array(
 			'fullwidth' => array(
 				'note_php_dashboard_note',
-				'php_dashboard_methods',
-				'dashboard_tab'
+				'dashboard_tab',
+				'php_dashboard_methods'
 			),
 			'above' => array(
 				'joomla_component'
+			)
+		),
+		'clone' => array(
+			'left' => array(
+				'note_how_to_clone',
+				'clone_me'
 			)
 		)
 	);
@@ -926,6 +932,19 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
+
+
+		// check if we have a clone moment
+		if (isset($data['clone_me']) && $data['clone_me'] > 0)
+		{
+			// get the following data from clone_me (component_dashboard)
+			$keys = array('php_dashboard_methods','dashboard_tab','params');
+			foreach ($keys as $key)
+			{
+				$data[$key] = ComponentbuilderHelper::getVar('component_dashboard', $data['clone_me'], 'joomla_component', $key);
+			}
+		}
+
 
 		// Set the dashboard_tab items to data.
 		if (isset($data['dashboard_tab']) && is_array($data['dashboard_tab']))

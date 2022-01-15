@@ -36,6 +36,12 @@ class ComponentbuilderModelComponent_plugins extends JModelAdmin
 			'above' => array(
 				'joomla_component'
 			)
+		),
+		'clone' => array(
+			'left' => array(
+				'note_how_to_clone',
+				'clone_me'
+			)
 		)
 	);
 
@@ -804,6 +810,15 @@ class ComponentbuilderModelComponent_plugins extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
+
+
+		// check if we have a clone moment
+		if (isset($data['clone_me']) && $data['clone_me'] > 0)
+		{
+			// get addjoomla_plugins data from clone_me (component_plugins)
+			$data['addjoomla_plugins'] = ComponentbuilderHelper::getVar('component_plugins', $data['clone_me'], 'joomla_component', 'addjoomla_plugins');
+		}
+
 
 		// Set the addjoomla_plugins items to data.
 		if (isset($data['addjoomla_plugins']) && is_array($data['addjoomla_plugins']))

@@ -59,6 +59,14 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php echo JHtml::_('bootstrap.addTab', 'component_placeholdersTab', 'clone', JText::_('COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_CLONE', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('component_placeholders.clone_left', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
 	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
 	<?php $this->tab_name = 'component_placeholdersTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>

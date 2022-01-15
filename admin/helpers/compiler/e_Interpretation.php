@@ -10263,7 +10263,7 @@ class Interpretation extends Fields
 			$db = '';
 			foreach ($this->queryBuilder as $view => $fields)
 			{
-				// build the uninstall array
+				// build the uninstallation array
 				$this->uninstallBuilder[] = "DROP TABLE IF EXISTS `#__"
 					. $component . "_" . $view . "`;";
 
@@ -10355,10 +10355,17 @@ class Interpretation extends Fields
 						)
 						&& in_array($data['ID'], $this->addSQL['field'][$view]))
 					{
+						// to soon....
+						//$this->updateSQLBuilder["ALTERTABLE`#__" . $component
+						//. "_" . $view . "`ADDCOLUMNIFNOTEXISTS`" . $field . "`"]
+						//	= "ALTER TABLE `#__" . $component . "_" . $view
+						//	. "` ADD COLUMN IF NOT EXISTS `" . $field . "` " . $data['type']
+						//	. $lenght . " " . $default . " AFTER `" . $last_name
+						//	. "`;";
 						$this->updateSQLBuilder["ALTERTABLE`#__" . $component
-						. "_" . $view . "`ADDCOLUMNIFNOTEXISTS`" . $field . "`"]
+						. "_" . $view . "`ADD`" . $field . "`"]
 							= "ALTER TABLE `#__" . $component . "_" . $view
-							. "` ADD COLUMN IF NOT EXISTS `" . $field . "` " . $data['type']
+							. "` ADD `" . $field . "` " . $data['type']
 							. $lenght . " " . $default . " AFTER `" . $last_name
 							. "`;";
 					}
@@ -10409,55 +10416,55 @@ class Interpretation extends Fields
 				{
 					$db_ .= PHP_EOL . $this->_t(1) . "`params` text NULL,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['published']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`published` TINYINT(3) NOT NULL DEFAULT 1,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['created_by']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`created_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['modified_by']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['created']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['modified']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['checked_out']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`checked_out` int(11) unsigned NOT NULL DEFAULT 0,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['checked_out_time']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['version']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`version` INT(10) unsigned NOT NULL DEFAULT 1,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['hits']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)

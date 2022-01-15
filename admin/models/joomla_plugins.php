@@ -112,7 +112,7 @@ class ComponentbuilderModelJoomla_plugins extends JModelList
 							// extract the boilerplate class comment
 							$class['comment'] = ComponentbuilderHelper::extractBoilerplateClassComment($fooClass, $classExtends, 'plugins');
 							// set the extension type
-							$class['target_type'] = 'plugins';
+							$class['extension_type'] = 'plugins';
 							// store the class
 							$this->storePluginBoilerplate($tables['e'], $models['e'], $class, $app);
 							// work around

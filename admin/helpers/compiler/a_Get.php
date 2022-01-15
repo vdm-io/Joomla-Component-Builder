@@ -4703,6 +4703,11 @@ class Get
 					                       'type'  => 'php');
 					foreach ($results as $_nr => &$result)
 					{
+						// Trigger Event: jcb_ce_onBeforeModelDynamicGetData
+						$this->triggerEvent(
+							'jcb_ce_onBeforeModelDynamicGetData',
+							array(&$this->componentContext, &$result, &$result->id, &$view_code, &$context)
+						);
 						// set GUI mapper id
 						$guiMapper['id'] = (int) $result->id;
 						// add calculations if set
@@ -5213,6 +5218,11 @@ class Get
 						{
 							$result->plugin_events = '';
 						}
+						// Trigger Event: jcb_ce_onAfterModelDynamicGetData
+						$this->triggerEvent(
+							'jcb_ce_onAfterModelDynamicGetData',
+							array(&$this->componentContext, &$result, &$result->id, &$view_code, &$context)
+						);
 					}
 
 					return $results;

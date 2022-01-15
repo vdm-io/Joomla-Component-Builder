@@ -658,7 +658,7 @@
 					buttons="add,remove,move"
 					description="COM_COMPONENTBUILDER_JOOMLA_MODULE_FIELDS_DESCRIPTION"
 					icon="list"
-					max="50"
+					max="100"
 					nested_depth="1">
 					<form hidden="true" name="list_fields_modal" repeat="true">
 						<!-- Field Field. Type: Fields. (custom) -->

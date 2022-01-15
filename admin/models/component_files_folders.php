@@ -39,6 +39,12 @@ class ComponentbuilderModelComponent_files_folders extends JModelAdmin
 				'joomla_component'
 			)
 		),
+		'clone' => array(
+			'left' => array(
+				'note_how_to_clone',
+				'clone_me'
+			)
+		),
 		'advance' => array(
 			'fullwidth' => array(
 				'note_add_files_fullpath',
@@ -871,6 +877,19 @@ class ComponentbuilderModelComponent_files_folders extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
+
+
+		// check if we have a clone moment
+		if (isset($data['clone_me']) && $data['clone_me'] > 0)
+		{
+			// get the following data from clone_me (component_files_folders)
+			$keys = array('addfiles','addfolders','addfilesfullpath','addfoldersfullpath');
+			foreach ($keys as $key)
+			{
+				$data[$key] = ComponentbuilderHelper::getVar('component_files_folders', $data['clone_me'], 'joomla_component', $key);
+			}
+		}
+
 
 		// Set the addfoldersfullpath items to data.
 		if (isset($data['addfoldersfullpath']) && is_array($data['addfoldersfullpath']))
