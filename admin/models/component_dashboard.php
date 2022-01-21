@@ -31,8 +31,8 @@ class ComponentbuilderModelComponent_dashboard extends JModelAdmin
 		'dashboard' => array(
 			'fullwidth' => array(
 				'note_php_dashboard_note',
-				'dashboard_tab',
-				'php_dashboard_methods'
+				'php_dashboard_methods',
+				'dashboard_tab'
 			),
 			'above' => array(
 				'joomla_component'

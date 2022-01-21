@@ -28,8 +28,8 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
 	'note_php_dashboard_note',
-	'dashboard_tab',
-	'php_dashboard_methods'
+	'php_dashboard_methods',
+	'dashboard_tab'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

@@ -3700,17 +3700,8 @@ class Interpretation extends Fields
 			{
 				$getItem .= $this->setCustomViewGroup($get->group, $code, $tab);
 			}
-			// get ready to get query
-			$getItem .= PHP_EOL . PHP_EOL . $tab . $this->_t(2) . "//"
-				. $this->setLine(__LINE__)
-				. " Reset the query using our newly populated query object.";
-			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1)
-				. "\$db->setQuery(\$query);";
-			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//"
-				. $this->setLine(__LINE__)
-				. " Load the results as a stdClass object.";
-			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1)
-				. "\$data = \$db->loadObject();";
+			// db set query data placeholder
+			$getItem .= $this->hhh . "DB_SET_QUERY_DATA" . $this->hhh;
 			// set after item php
 			if (isset($get->add_php_after_getitem)
 				&& $get->add_php_after_getitem == 1
@@ -3719,6 +3710,30 @@ class Interpretation extends Fields
 			{
 				$getItem .= $this->setPlaceholders(
 					$get->php_after_getitem, $this->placeholders
+				);
+			}
+			// check the getItem string to see if we should still add set query to data
+			if (strpos($getItem, '$data =') === false)
+			{
+				// get ready to get query
+				$setQuery[$this->hhh . "DB_SET_QUERY_DATA" . $this->hhh] =
+					PHP_EOL . PHP_EOL . $tab . $this->_t(2) . "//"
+					. $this->setLine(__LINE__)
+					. " Reset the query using our newly populated query object.";
+				$setQuery[$this->hhh . "DB_SET_QUERY_DATA" . $this->hhh] .=
+					PHP_EOL . $this->_t(1) . $tab . $this->_t(1)
+					. "\$db->setQuery(\$query);";
+				$setQuery[$this->hhh . "DB_SET_QUERY_DATA" . $this->hhh] .=
+					PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//"
+					. $this->setLine(__LINE__)
+					. " Load the results as a stdClass object.";
+				$setQuery[$this->hhh . "DB_SET_QUERY_DATA" . $this->hhh] .=
+					PHP_EOL . $this->_t(1) . $tab . $this->_t(1)
+					. "\$data = \$db->loadObject();";
+				// add the db set query to data
+				$getItem = str_replace(
+					array_keys($setQuery),
+					array_values($setQuery), $getItem
 				);
 			}
 			$getItem .= PHP_EOL . PHP_EOL . $tab . $this->_t(2)
@@ -3778,7 +3793,7 @@ class Interpretation extends Fields
 					. "return false;";
 			}
 			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "}";
-			// dispatcher placholder
+			// dispatcher placeholder
 			$getItem .= $this->hhh . "DISPATCHER" . $this->hhh;
 			if (ComponentbuilderHelper::checkArray($get->main_get))
 			{

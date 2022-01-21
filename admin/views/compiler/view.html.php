@@ -310,7 +310,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 				jQuery.get(noticeboard)
 				.success(function(board) { 
 					if (board.length > 5) {
-						jQuery(\".noticeboard-md\").html(marked(board));
+						jQuery(\".noticeboard-md\").html(marked.parse(board));
 						getIS(1,board).done(function(result) {
 							if (result){
 								jQuery(\".vdm-new-notice\").show();
@@ -327,7 +327,7 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 				jQuery.get(proboard)
 				.success(function(board) { 
 					if (board.length > 5) {
-						jQuery(\".proboard-md\").html(marked(board));
+						jQuery(\".proboard-md\").html(marked.parse(board));
 					} else {
 						jQuery(\".proboard-md\").html(all_is_good);
 					}
