@@ -3731,11 +3731,17 @@ class Interpretation extends Fields
 					PHP_EOL . $this->_t(1) . $tab . $this->_t(1)
 					. "\$data = \$db->loadObject();";
 				// add the db set query to data
-				$getItem = str_replace(
-					array_keys($setQuery),
-					array_values($setQuery), $getItem
-				);
 			}
+			else
+			{
+				// remove our placeholder
+				$setQuery[$this->hhh . "DB_SET_QUERY_DATA" . $this->hhh] = '';
+			}
+			// add the db set query to data
+			$getItem = str_replace(
+				array_keys($setQuery),
+				array_values($setQuery), $getItem
+			);
 			$getItem .= PHP_EOL . PHP_EOL . $tab . $this->_t(2)
 				. "if (empty(\$data))";
 			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "{";
@@ -21699,7 +21705,7 @@ class Interpretation extends Fields
 	public function setCheckinCall()
 	{
 		$call = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
-			. " check in items";
+			. " Check in items";
 		$call .= PHP_EOL . $this->_t(2) . "\$this->checkInNow();" . PHP_EOL;
 
 		return $call;
@@ -21728,22 +21734,28 @@ class Interpretation extends Fields
 			) . " Get a db connection.";
 		$checkin .= PHP_EOL . $this->_t(3) . "\$db = JFactory::getDbo();";
 		$checkin .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
-			. " reset query";
+			. " Reset query.";
 		$checkin .= PHP_EOL . $this->_t(3) . "\$query = \$db->getQuery(true);";
 		$checkin .= PHP_EOL . $this->_t(3) . "\$query->select('*');";
 		$checkin .= PHP_EOL . $this->_t(3)
 			. "\$query->from(\$db->quoteName('#__" . $component . "_" . $view
 			. "'));";
-		$checkin .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query);";
+		$checkin .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
+			. " Only select items that are checked out.";
+		$checkin .= PHP_EOL . $this->_t(3)
+			. "\$query->where(\$db->quoteName('checked_out') . '!=0');";
+		$this->_t(3) . "//" . $this->setLine(__LINE__)
+		. " Query only to see if we have a rows";
+		$checkin .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query, 0, 1);";
 		$checkin .= PHP_EOL . $this->_t(3) . "\$db->execute();";
 		$checkin .= PHP_EOL . $this->_t(3) . "if (\$db->getNumRows())";
 		$checkin .= PHP_EOL . $this->_t(3) . "{";
 		$checkin .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__)
-			. " Get Yesterdays date";
+			. " Get Yesterdays date.";
 		$checkin .= PHP_EOL . $this->_t(4)
 			. "\$date = JFactory::getDate()->modify(\$time)->toSql();";
 		$checkin .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__)
-			. " reset query";
+			. " Reset query.";
 		$checkin .= PHP_EOL . $this->_t(4) . "\$query = \$db->getQuery(true);";
 		$checkin .= PHP_EOL . PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 				__LINE__
@@ -21765,7 +21777,7 @@ class Interpretation extends Fields
 		$checkin .= PHP_EOL . $this->_t(4) . ");";
 		$checkin .= PHP_EOL . PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 				__LINE__
-			) . " Check table";
+			) . " Check table.";
 		$checkin .= PHP_EOL . $this->_t(4)
 			. "\$query->update(\$db->quoteName('#__" . $component . "_" . $view
 			. "'))->set(\$fields)->where(\$conditions); ";
