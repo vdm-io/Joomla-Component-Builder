@@ -28572,31 +28572,57 @@ function vdm_dkim() {
 						&& $module->fieldsets_paths[$field_name . $fieldset]
 						== 2)
 					{
-						$xml .= PHP_EOL . $this->_t(1) . '<!--'
-							. $this->setLine(__LINE__) . ' default paths of '
-							. $fieldset . ' fieldset points to the module -->';
-						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
-							. $fieldset . '" label="' . $label . '"';
 						if ($module->target == 2)
 						{
-							$xml .= PHP_EOL . $this->_t(2)
-								. 'addrulepath="/administrator/modules/'
-								. $module->file_name
-								. '/rules"';
-							$xml .= PHP_EOL . $this->_t(2)
-								. 'addfieldpath="/administrator/modules/'
-								. $module->file_name
-								. '/fields"';
+							$module->add_rule_path[$field_name . $fieldset][] =
+								'/administrator/modules/'
+								. $module->file_name . '/rules';
+
+							$module->add_field_path[$field_name . $fieldset][] =
+								'/administrator/modules/'
+								. $module->file_name . '/fields';
 						}
 						else
 						{
-							$xml .= PHP_EOL . $this->_t(2)
-								. 'addrulepath="/modules/' . $module->file_name
-								. '/rules"';
-							$xml .= PHP_EOL . $this->_t(2)
-								. 'addfieldpath="/modules/' . $module->file_name
-								. '/fields"';
+							$module->add_rule_path[$field_name . $fieldset][] =
+								'/modules/' . $module->file_name
+								. '/rules';
+
+							$module->add_field_path[$field_name . $fieldset][] =
+								'/modules/' . $module->file_name
+								. '/fields';
 						}
+					}
+					// add path to module rules and custom fields
+					if (isset($module->add_rule_path[$field_name . $fieldset])
+						|| isset($module->add_field_path[$field_name . $fieldset]))
+					{
+
+						$xml .= PHP_EOL . $this->_t(1) . '<!--'
+							. $this->setLine(__LINE__) . ' default paths of '
+							. $fieldset . ' fieldset points to the module -->';
+
+						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
+							. $fieldset . '" label="' . $label . '"';
+
+						if (isset($module->add_rule_path[$field_name . $fieldset]))
+						{
+							foreach ($module->add_rule_path[$field_name . $fieldset] as $path)
+							{
+								$xml .= PHP_EOL . $this->_t(2)
+									. 'addrulepath="' . $path . '"';
+							}
+						}
+
+						if (isset($module->add_field_path[$field_name . $fieldset]))
+						{
+							foreach ($module->add_field_path[$field_name . $fieldset] as $path)
+							{
+								$xml .= PHP_EOL . $this->_t(2)
+									. 'addfieldpath="' . $path . '"';
+							}
+						}
+
 						$xml .= PHP_EOL . $this->_t(1) . '>';
 					}
 					else
@@ -28931,26 +28957,51 @@ function vdm_dkim() {
 						$label = $plugin->fieldsets_label[$field_name
 						. $fieldset];
 					}
+
 					// add path to plugin rules and custom fields
 					if (isset($plugin->fieldsets_paths[$field_name . $fieldset])
 						&& $plugin->fieldsets_paths[$field_name . $fieldset]
 						== 2)
 					{
+						$plugin->add_rule_path[$field_name . $fieldset][] =
+							'/plugins/' . strtolower($plugin->group
+							) . '/' . strtolower($plugin->code_name)
+							. '/rules';
+
+						$plugin->add_field_path[$field_name . $fieldset][] =
+							'/plugins/' . strtolower($plugin->group
+							) . '/' . strtolower($plugin->code_name)
+							. '/fields';
+					}
+					// add path to plugin rules and custom fields
+					if (isset($plugin->add_rule_path[$field_name . $fieldset])
+						|| isset($plugin->add_field_path[$field_name . $fieldset]))
+					{
 						$xml .= PHP_EOL . $this->_t(1) . '<!--'
 							. $this->setLine(__LINE__) . ' default paths of '
 							. $fieldset . ' fieldset points to the plugin -->';
+
 						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
 							. $fieldset . '" label="' . $label . '"';
-						$xml .= PHP_EOL . $this->_t(2)
-							. 'addrulepath="/plugins/' . strtolower(
-								$plugin->group
-							) . '/' . strtolower($plugin->code_name)
-							. '/rules"';
-						$xml .= PHP_EOL . $this->_t(2)
-							. 'addfieldpath="/plugins/' . strtolower(
-								$plugin->group
-							) . '/' . strtolower($plugin->code_name)
-							. '/fields"';
+
+						if (isset($plugin->add_rule_path[$field_name . $fieldset]))
+						{
+							foreach ($plugin->add_rule_path[$field_name . $fieldset] as $path)
+							{
+								$xml .= PHP_EOL . $this->_t(2)
+									. 'addrulepath="' . $path . '"';
+							}
+						}
+
+						if (isset($plugin->add_field_path[$field_name . $fieldset]))
+						{
+							foreach ($plugin->add_field_path[$field_name . $fieldset] as $path)
+							{
+								$xml .= PHP_EOL . $this->_t(2)
+									. 'addfieldpath="' . $path . '"';
+							}
+						}
+
 						$xml .= PHP_EOL . $this->_t(1) . '>';
 					}
 					else
