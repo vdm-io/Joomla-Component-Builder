@@ -526,6 +526,64 @@
 						COM_COMPONENTBUILDER_JOOMLA_PLUGIN_COMPONENT</option>
 					<option value="2">
 						COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PLUGIN</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_JOOMLA_PLUGIN_OTHER</option>
+				</field>
+				<!-- Addrulepath Field. Type: Subform. (joomla) -->
+				<field
+					type="subform"
+					name="addrulepath"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ADDRULEPATH_LABEL"
+					layout="joomla.form.field.subform.repeatable-table"
+					multiple="true"
+					buttons="add,remove,move"
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ADDRULEPATH_DESCRIPTION"
+					icon="list"
+					max="1"
+					showon="fields_rules_paths:3"
+					nested_depth="1">
+					<form hidden="true" name="list_addrulepath_modal" repeat="true">
+						<!-- Path Field. Type: Text. (joomla) -->
+						<field
+							type="text"
+							name="path"
+							label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PATH_LABEL"
+							size="50"
+							maxlength="150"
+							class="text_area"
+							filter="STRING"
+							message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PATH_MESSAGE"
+							autocomplete="on"
+						/>
+					</form>
+				</field>
+				<!-- Addfieldpath Field. Type: Subform. (joomla) -->
+				<field
+					type="subform"
+					name="addfieldpath"
+					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ADDFIELDPATH_LABEL"
+					layout="joomla.form.field.subform.repeatable-table"
+					multiple="true"
+					buttons="add,remove,move"
+					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ADDFIELDPATH_DESCRIPTION"
+					icon="list"
+					max="1"
+					showon="fields_rules_paths:3"
+					nested_depth="1">
+					<form hidden="true" name="list_addfieldpath_modal" repeat="true">
+						<!-- Path Field. Type: Text. (joomla) -->
+						<field
+							type="text"
+							name="path"
+							label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PATH_LABEL"
+							size="50"
+							maxlength="150"
+							class="text_area"
+							filter="STRING"
+							message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PATH_MESSAGE"
+							autocomplete="on"
+						/>
+					</form>
 				</field>
 				<!-- Fields Field. Type: Subform. (joomla) -->
 				<field
@@ -564,60 +622,6 @@
 							required="false"
 							readonly="false"
 							disabled="false"
-						/>
-					</form>
-				</field>
-				<!-- Addrulepath Field. Type: Subform. (joomla) -->
-				<field
-					type="subform"
-					name="addrulepath"
-					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ADDRULEPATH_LABEL"
-					layout="joomla.form.field.subform.repeatable-table"
-					multiple="true"
-					buttons="add,remove,move"
-					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ADDRULEPATH_DESCRIPTION"
-					icon="list"
-					max="10"
-					nested_depth="1">
-					<form hidden="true" name="list_addrulepath_modal" repeat="true">
-						<!-- Path Field. Type: Text. (joomla) -->
-						<field
-							type="text"
-							name="path"
-							label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PATH_LABEL"
-							size="50"
-							maxlength="150"
-							class="text_area"
-							filter="STRING"
-							message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PATH_MESSAGE"
-							autocomplete="on"
-						/>
-					</form>
-				</field>
-				<!-- Addfieldpath Field. Type: Subform. (joomla) -->
-				<field
-					type="subform"
-					name="addfieldpath"
-					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ADDFIELDPATH_LABEL"
-					layout="joomla.form.field.subform.repeatable-table"
-					multiple="true"
-					buttons="add,remove,move"
-					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ADDFIELDPATH_DESCRIPTION"
-					icon="list"
-					max="10"
-					nested_depth="1">
-					<form hidden="true" name="list_addfieldpath_modal" repeat="true">
-						<!-- Path Field. Type: Text. (joomla) -->
-						<field
-							type="text"
-							name="path"
-							label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PATH_LABEL"
-							size="50"
-							maxlength="150"
-							class="text_area"
-							filter="STRING"
-							message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_PATH_MESSAGE"
-							autocomplete="on"
 						/>
 					</form>
 				</field>

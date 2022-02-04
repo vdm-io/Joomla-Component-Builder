@@ -9473,7 +9473,7 @@ class Get
 								{
 									if (ComponentbuilderHelper::checkString($add_rule_path['path']))
 									{
-										$module->add_rule_path[$unique][] = $add_rule_path['path'];
+										$module->add_rule_path[$unique] = $add_rule_path['path'];
 									}
 								}
 							}
@@ -9485,7 +9485,7 @@ class Get
 								{
 									if (ComponentbuilderHelper::checkString($add_field_path['path']))
 									{
-										$module->add_field_path[$unique][] = $add_field_path['path'];
+										$module->add_field_path[$unique] = $add_field_path['path'];
 									}
 								}
 							}
@@ -10416,7 +10416,7 @@ class Get
 								{
 									if (ComponentbuilderHelper::checkString($add_rule_path['path']))
 									{
-										$plugin->add_rule_path[$unique][] = $add_rule_path['path'];
+										$plugin->add_rule_path[$unique] = $add_rule_path['path'];
 									}
 								}
 							}
@@ -10428,7 +10428,7 @@ class Get
 								{
 									if (ComponentbuilderHelper::checkString($add_field_path['path']))
 									{
-										$plugin->add_field_path[$unique][] = $add_field_path['path'];
+										$plugin->add_field_path[$unique] = $add_field_path['path'];
 									}
 								}
 							}

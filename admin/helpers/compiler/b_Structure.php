@@ -946,44 +946,78 @@ class Structure extends Get
 								{
 									// default to the field set name
 									$label = $fieldset;
-									if (isset(
-										$module->fieldsets_label[$file
-										. $field_name . $fieldset]
-									))
+									if (isset($module->fieldsets_label[$file . $field_name . $fieldset]))
 									{
-										$label = $module->fieldsets_label[$file
-										. $field_name . $fieldset];
+										$label = $module->fieldsets_label[$file . $field_name . $fieldset];
 									}
 									// add path to module rules and custom fields
-									if (isset(
-											$module->fieldsets_paths[$file
-											. $field_name . $fieldset]
-										)
-										&& $module->fieldsets_paths[$file
-										. $field_name . $fieldset] == 2)
+									if (isset($module->fieldsets_paths[$file . $field_name . $fieldset])
+										&& ($module->fieldsets_paths[$file . $field_name . $fieldset] == 2
+											|| $module->fieldsets_paths[$file . $field_name . $fieldset] == 3))
 									{
+										if ($module->target == 2)
+										{
+											if (!isset($module->add_rule_path[$file . $field_name . $fieldset]))
+											{
+												$module->add_rule_path[$file . $field_name . $fieldset] =
+													'/administrator/modules/'
+													. $module->file_name . '/rules';
+											}
+
+											if (!isset($module->add_field_path[$file . $field_name . $fieldset]))
+											{
+												$module->add_field_path[$file . $field_name . $fieldset] =
+													'/administrator/modules/'
+													. $module->file_name . '/fields';
+											}
+										}
+										else
+										{
+											if (!isset($module->add_rule_path[$file . $field_name . $fieldset]))
+											{
+												$module->add_rule_path[$file . $field_name . $fieldset] =
+													'/modules/' . $module->file_name
+													. '/rules';
+											}
+
+											if (!isset($module->add_field_path[$file . $field_name . $fieldset]))
+											{
+												$module->add_field_path[$file . $field_name . $fieldset] =
+													'/modules/' . $module->file_name
+													. '/fields';
+											}
+										}
+									}
+									// add path to module rules and custom fields
+									if (isset($module->add_rule_path[$file . $field_name . $fieldset])
+										|| isset($module->add_field_path[$file . $field_name . $fieldset]))
+									{
+
 										$xml .= PHP_EOL . $this->_t(1) . '<!--'
-											. $this->setLine(__LINE__)
-											. ' default paths of ' . $fieldset
-											. ' fieldset points to the module -->';
-										$xml .= PHP_EOL . $this->_t(1)
-											. '<fieldset name="' . $fieldset
-											. '" label="' . $label . '"';
-										$xml .= PHP_EOL . $this->_t(2)
-											. 'addrulepath="/modules/'
-											. strtolower($module->code_name)
-											. '/rules"';
-										$xml .= PHP_EOL . $this->_t(2)
-											. 'addfieldpath="/modules/'
-											. strtolower($module->code_name)
-											. '/fields"';
+											. $this->setLine(__LINE__) . ' default paths of '
+											. $fieldset . ' fieldset points to the module -->';
+
+										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
+											. $fieldset . '" label="' . $label . '"';
+
+										if (isset($module->add_rule_path[$file . $field_name . $fieldset]))
+										{
+											$xml .= PHP_EOL . $this->_t(2)
+												. 'addrulepath="' . $module->add_rule_path[$file . $field_name . $fieldset] . '"';
+										}
+
+										if (isset($module->add_field_path[$file . $field_name . $fieldset]))
+										{
+											$xml .= PHP_EOL . $this->_t(2)
+												. 'addfieldpath="' . $module->add_field_path[$file . $field_name . $fieldset] . '"';
+										}
+
 										$xml .= PHP_EOL . $this->_t(1) . '>';
 									}
 									else
 									{
-										$xml .= PHP_EOL . $this->_t(1)
-											. '<fieldset name="' . $fieldset
-											. '" label="' . $label . '">';
+										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
+											. $fieldset . '" label="' . $label . '">';
 									}
 									// check if we have an inner field set
 									if (ComponentbuilderHelper::checkString(
@@ -1321,46 +1355,60 @@ class Structure extends Get
 								{
 									// default to the field set name
 									$label = $fieldset;
-									if (isset(
-										$plugin->fieldsets_label[$file
-										. $field_name . $fieldset]
-									))
+									if (isset($plugin->fieldsets_label[$file . $field_name . $fieldset]))
 									{
-										$label = $plugin->fieldsets_label[$file
-										. $field_name . $fieldset];
+										$label = $plugin->fieldsets_label[$file . $field_name . $fieldset];
 									}
 									// add path to plugin rules and custom fields
-									if (isset(
-											$plugin->fieldsets_paths[$file
-											. $field_name . $fieldset]
-										)
-										&& $plugin->fieldsets_paths[$file
-										. $field_name . $fieldset] == 2)
+									if (isset($plugin->fieldsets_paths[$file . $field_name . $fieldset])
+										&& ($plugin->fieldsets_paths[$file . $field_name . $fieldset] == 2
+											|| $plugin->fieldsets_paths[$file . $field_name . $fieldset] == 3))
+									{
+										if (!isset($plugin->add_rule_path[$file . $field_name . $fieldset]))
+										{
+											$plugin->add_rule_path[$file . $field_name . $fieldset] =
+												'/plugins/' . strtolower($plugin->group
+												) . '/' . strtolower($plugin->code_name)
+												. '/rules';
+										}
+
+										if (!isset($plugin->add_field_path[$file . $field_name . $fieldset]))
+										{
+											$plugin->add_field_path[$file . $field_name . $fieldset] =
+												'/plugins/' . strtolower($plugin->group
+												) . '/' . strtolower($plugin->code_name)
+												. '/fields';
+										}
+									}
+									// add path to plugin rules and custom fields
+									if (isset($plugin->add_rule_path[$file . $field_name . $fieldset])
+										|| isset($plugin->add_field_path[$file . $field_name . $fieldset]))
 									{
 										$xml .= PHP_EOL . $this->_t(1) . '<!--'
-											. $this->setLine(__LINE__)
-											. ' default paths of ' . $fieldset
-											. ' fieldset points to the plugin -->';
-										$xml .= PHP_EOL . $this->_t(1)
-											. '<fieldset name="' . $fieldset
-											. '" label="' . $label . '"';
-										$xml .= PHP_EOL . $this->_t(2)
-											. 'addrulepath="/plugins/'
-											. strtolower($plugin->group) . '/'
-											. strtolower($plugin->code_name)
-											. '/rules"';
-										$xml .= PHP_EOL . $this->_t(2)
-											. 'addfieldpath="/plugins/'
-											. strtolower($plugin->group) . '/'
-											. strtolower($plugin->code_name)
-											. '/fields"';
+											. $this->setLine(__LINE__) . ' default paths of '
+											. $fieldset . ' fieldset points to the plugin -->';
+
+										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
+											. $fieldset . '" label="' . $label . '"';
+
+										if (isset($plugin->add_rule_path[$file . $field_name . $fieldset]))
+										{
+											$xml .= PHP_EOL . $this->_t(2)
+												. 'addrulepath="' . $plugin->add_rule_path[$file . $field_name . $fieldset] . '"';
+										}
+
+										if (isset($plugin->add_field_path[$file . $field_name . $fieldset]))
+										{
+											$xml .= PHP_EOL . $this->_t(2)
+												. 'addfieldpath="' . $plugin->add_field_path[$file . $field_name . $fieldset] . '"';
+										}
+
 										$xml .= PHP_EOL . $this->_t(1) . '>';
 									}
 									else
 									{
-										$xml .= PHP_EOL . $this->_t(1)
-											. '<fieldset name="' . $fieldset
-											. '" label="' . $label . '">';
+										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
+											. $fieldset . '" label="' . $label . '">';
 									}
 									// check if we have an inner field set
 									if (ComponentbuilderHelper::checkString(
