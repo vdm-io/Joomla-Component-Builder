@@ -1803,10 +1803,10 @@ class ComponentbuilderModelAjax extends JModelList
 		$db = JFactory::getDbo();	
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.alias','a.template','b.name','a.dynamic_get')));
+		$query->select($db->quoteName(array('a.id', 'a.alias', 'a.template', 'b.name', 'a.dynamic_get')));
 		$query->from($db->quoteName('#__componentbuilder_template', 'a'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_dynamic_get', 'b') . ' ON (' . $db->quoteName('b.id') . ' = ' . $db->quoteName('a.dynamic_get') . ')');
-		$query->where($db->quoteName('a.id') . ' != '.(int) $id);
+		$query->where($db->quoteName('a.id') . ' != '. (int) $id);
 		$query->where($db->quoteName('a.published') . ' = 1');
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
@@ -1839,10 +1839,10 @@ class ComponentbuilderModelAjax extends JModelList
 				$templateString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo \$this->loadTemplate('".ComponentbuilderHelper::safeString($result->alias)."'); ?&gt;</code> ".$edit."</td>";
 			}
 			// build the table
-			$table = '<h2>'.JText::_('COM_COMPONENTBUILDER_TEMPLATE_CODE_SNIPPETS').'</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
-			$table .= '<caption>'.JText::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE').'</caption>';
-			$table .= '<thead><tr><th>'.JText::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET').'</th><th>'.JText::_('COM_COMPONENTBUILDER_SNIPPET').'</th></thead>';
-			$table .= '<tbody><tr>'.implode("</tr><tr>",$templateString)."</tr></tbody></table></div>";
+			$table = '<h2>' . JText::_('COM_COMPONENTBUILDER_TEMPLATE_CODE_SNIPPETS') . '</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
+			$table .= '<caption>' . JText::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE') . '</caption>';
+			$table .= '<thead><tr><th>' . JText::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET') . '</th><th>' . JText::_('COM_COMPONENTBUILDER_SNIPPET') . '</th></thead>';
+			$table .= '<tbody><tr>' . implode("</tr><tr>", $templateString) . "</tr></tbody></table></div>";
 		}
 		return $table;
 	}
@@ -1892,34 +1892,38 @@ class ComponentbuilderModelAjax extends JModelList
 				switch ($result->gettype)
 				{
 					case 1:
-					// single
-					$layoutString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->item); ?&gt;</code> ".$edit."</td>";
+						// single
+						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . ComponentbuilderHelper::safeString($result->alias) . "', \$this->item); ?&gt;</code> " . $edit . "</td>";
 					break;
 					case 2:
-					// list
-					$layoutString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->items); ?&gt;</code> ".$edit."</td>";
+						// list
+						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . ComponentbuilderHelper::safeString($result->alias) . "', \$this->items); ?&gt;</code> " . $edit . "</td>";
 					break;
 					case 3:
 					case 4:
-					// custom
-					$result->getcustom = ComponentbuilderHelper::safeString($result->getcustom);
-					if (substr($result->getcustom, 0, strlen('get')) == 'get')
-					{
-						$varName = substr($result->getcustom, strlen('get'));
-					}
-					else
-					{
-						$varName = $result->getcustom;
-					}
-					$layoutString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo JLayoutHelper::render('".ComponentbuilderHelper::safeString($result->alias)."', \$this->".$varName."); ?&gt;</code> ".$edit."</td>";
+						// custom
+						$result->getcustom = ComponentbuilderHelper::safeString($result->getcustom);
+						if (substr($result->getcustom, 0, strlen('get')) == 'get')
+						{
+							$varName = substr($result->getcustom, strlen('get'));
+						}
+						else
+						{
+							$varName = $result->getcustom;
+						}
+						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . ComponentbuilderHelper::safeString($result->alias) . "', \$this->" . $varName . "); ?&gt;</code> " . $edit . "</td>";
+					break;
+					default:
+						// no get
+						$layoutString[] = "<td>" . JText::_('COM_COMPONENTBUILDER_NONE_SELECTED') . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . ComponentbuilderHelper::safeString($result->alias) . "', [?]); ?&gt;</code> " . $edit . "</td>";
 					break;
 				}
 			}
 			// build the table
-			$table = '<h2>'.JText::_('COM_COMPONENTBUILDER_LAYOUT_CODE_SNIPPETS').'</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
-			$table .= '<caption>'.JText::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE').'</caption>';
-			$table .= '<thead><tr><th>'.JText::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET').'</th><th>'.JText::_('COM_COMPONENTBUILDER_SNIPPET').'</th></thead>';
-			$table .= '<tbody><tr>'.implode("</tr><tr>",$layoutString)."</tr></tbody></table></div>";
+			$table = '<h2>' . JText::_('COM_COMPONENTBUILDER_LAYOUT_CODE_SNIPPETS') . '</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
+			$table .= '<caption>' . JText::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE') . '</caption>';
+			$table .= '<thead><tr><th>' . JText::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET') . '</th><th>' . JText::_('COM_COMPONENTBUILDER_SNIPPET') . '</th></thead>';
+			$table .= '<tbody><tr>' . implode("</tr><tr>",$layoutString) . "</tr></tbody></table></div>";
 		}
 		return $table;
 	}
