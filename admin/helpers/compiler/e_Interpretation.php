@@ -21444,16 +21444,16 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . $this->_t(2) . "JToolbarHelper::divider();";
 			$toolBar .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " set help url for this view if found";
-			$toolBar .= PHP_EOL . $this->_t(2) . "\$help_url = "
+			$toolBar .= PHP_EOL . $this->_t(2) . "\$this->help_url = "
 				. $this->fileContentStatic[$this->hhh . 'Component'
 				. $this->hhh] . "Helper::getHelpUrl('" . $nameSingleCode
 				. "');";
 			$toolBar .= PHP_EOL . $this->_t(2) . "if ("
 				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh] . "Helper::checkString(\$help_url))";
+				. $this->hhh] . "Helper::checkString(\$this->help_url))";
 			$toolBar .= PHP_EOL . $this->_t(2) . "{";
 			$toolBar .= PHP_EOL . $this->_t(3) . "JToolbarHelper::help('"
-				. $this->langPrefix . "_HELP_MANAGER', false, \$help_url);";
+				. $this->langPrefix . "_HELP_MANAGER', false, \$this->help_url);";
 			$toolBar .= PHP_EOL . $this->_t(2) . "}";
 		}
 
