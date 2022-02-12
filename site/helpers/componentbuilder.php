@@ -2820,8 +2820,8 @@ abstract class ComponentbuilderHelper
 		// delete an existing zip file (or use an exclusion parameter in Folder::files()
 		File::delete($filepath);
 
-		// get a list of files in the current directory tree
-		$files = Folder::files('.', '', true, true);
+		// get a list of files in the current directory tree (also the hidden files)
+		$files = Folder::files('.', '', true, true, array('.svn', 'CVS', '.DS_Store', '__MACOSX'), array('.*~'));
 		$zipArray = array();
 		// setup the zip array
 		foreach ($files as $file)
