@@ -10149,9 +10149,7 @@ class Get
 				// set lang prefix
 				$plugin->lang_prefix = $this->langPrefix;
 				// set plugin class name
-				$plugin->class_name = 'Plg' . ucfirst($plugin->group) . ucfirst(
-						$plugin->code_name
-					);
+				$plugin->class_name = ComponentbuilderHelper::createPluginClassName($plugin->group, $plugin->code_name);
 				// set plugin install class name
 				$plugin->installer_class_name = 'plg' . ucfirst($plugin->group)
 					. ucfirst($plugin->code_name) . 'InstallerScript';

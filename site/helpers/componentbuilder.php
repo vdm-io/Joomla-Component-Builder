@@ -6624,6 +6624,21 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
+
+        /**
+         * create plugin class name
+         */
+        public static function createPluginClassName($group, $code_name)
+        {
+            // editors-xtd group plugins must have a class with plgButton<PluginName> structure
+            if ($group == 'editors-xtd')
+                $group= 'Button';
+
+            return 'Plg' . ucfirst($group) . ucfirst(
+                    $code_name
+                );
+        }
+
 	/**
 	 * get an admin view fields IDs
 	 */
