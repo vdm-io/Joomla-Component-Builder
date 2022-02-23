@@ -53,10 +53,10 @@ class ###Component###View###SViews### extends JViewLegacy
 		JToolbarHelper::title(JText::_('COM_###COMPONENT###_###SVIEWS###'),'###ICOMOON###');###CUSTOM_ADMIN_CUSTOM_BUTTONS###
 
 		// set help url for this view if found
-		$help_url = ###Component###Helper::getHelpUrl('###sviews###');
-		if (###Component###Helper::checkString($help_url))
+		$this->help_url = ###Component###Helper::getHelpUrl('###sviews###');
+		if (###Component###Helper::checkString($this->help_url))
 		{
-			JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $help_url);
+			JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button

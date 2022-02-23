@@ -49,10 +49,10 @@ class ###Component###View###SView### extends JViewLegacy
 	{###SITE_CUSTOM_BUTTONS###
 
 		// set help url for this view if found
-		$help_url = ###Component###Helper::getHelpUrl('###sview###');
-		if (###Component###Helper::checkString($help_url))
+		$this->help_url = ###Component###Helper::getHelpUrl('###sview###');
+		if (###Component###Helper::checkString($this->help_url))
 		{
-			JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $help_url);
+			JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 		// now initiate the toolbar
 		$this->toolbar = JToolbar::getInstance();

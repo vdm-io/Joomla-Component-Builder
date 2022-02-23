@@ -62,10 +62,10 @@ class ###Component###View###Component### extends JViewLegacy
 		JToolBarHelper::title(JText::_('COM_###COMPONENT###_DASHBOARD'), 'grid-2');
 
 		// set help url for this view if found
-		$help_url = ###Component###Helper::getHelpUrl('###component###');
-		if (###Component###Helper::checkString($help_url))
+		$this->help_url = ###Component###Helper::getHelpUrl('###component###');
+		if (###Component###Helper::checkString($this->help_url))
 		{
-			JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $help_url);
+			JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 
 		if ($canDo->get('core.admin') || $canDo->get('core.options'))

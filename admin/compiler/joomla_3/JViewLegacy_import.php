@@ -89,10 +89,10 @@ class ###Component###ViewImport extends JViewLegacy
 		}
 
 		// set help url for this view if found
-		$help_url = ###Component###Helper::getHelpUrl('import');
-		if (###Component###Helper::checkString($help_url))
+		$this->help_url = ###Component###Helper::getHelpUrl('import');
+		if (###Component###Helper::checkString($this->help_url))
 		{
-			   JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $help_url);
+			   JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 	}
 }

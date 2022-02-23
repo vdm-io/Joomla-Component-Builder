@@ -152,10 +152,10 @@ class ComponentbuilderViewFields extends JViewLegacy
 		}
 
 		// set help url for this view if found
-		$help_url = ComponentbuilderHelper::getHelpUrl('fields');
-		if (ComponentbuilderHelper::checkString($help_url))
+		$this->help_url = ComponentbuilderHelper::getHelpUrl('fields');
+		if (ComponentbuilderHelper::checkString($this->help_url))
 		{
-				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
+				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button

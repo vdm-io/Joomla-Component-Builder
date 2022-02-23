@@ -150,10 +150,10 @@ class ComponentbuilderViewAdmin_custom_tabs extends JViewLegacy
 		}
 		JToolbarHelper::divider();
 		// set help url for this view if found
-		$help_url = ComponentbuilderHelper::getHelpUrl('admin_custom_tabs');
-		if (ComponentbuilderHelper::checkString($help_url))
+		$this->help_url = ComponentbuilderHelper::getHelpUrl('admin_custom_tabs');
+		if (ComponentbuilderHelper::checkString($this->help_url))
 		{
-			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $help_url);
+			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 	}
 

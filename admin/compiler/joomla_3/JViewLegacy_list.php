@@ -129,10 +129,10 @@ class ###Component###View###Views### extends JViewLegacy
 		}###ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST######IMPORTBUTTON###
 
 		// set help url for this view if found
-		$help_url = ###Component###Helper::getHelpUrl('###views###');
-		if (###Component###Helper::checkString($help_url))
+		$this->help_url = ###Component###Helper::getHelpUrl('###views###');
+		if (###Component###Helper::checkString($this->help_url))
 		{
-				JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $help_url);
+				JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button

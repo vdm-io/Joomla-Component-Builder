@@ -4703,6 +4703,11 @@ class Get
 					                       'type'  => 'php');
 					foreach ($results as $_nr => &$result)
 					{
+						// Trigger Event: jcb_ce_onBeforeModelDynamicGetData
+						$this->triggerEvent(
+							'jcb_ce_onBeforeModelDynamicGetData',
+							array(&$this->componentContext, &$result, &$result->id, &$view_code, &$context)
+						);
 						// set GUI mapper id
 						$guiMapper['id'] = (int) $result->id;
 						// add calculations if set
@@ -5213,6 +5218,11 @@ class Get
 						{
 							$result->plugin_events = '';
 						}
+						// Trigger Event: jcb_ce_onAfterModelDynamicGetData
+						$this->triggerEvent(
+							'jcb_ce_onAfterModelDynamicGetData',
+							array(&$this->componentContext, &$result, &$result->id, &$view_code, &$context)
+						);
 					}
 
 					return $results;
@@ -9379,6 +9389,8 @@ class Get
 				$module->form_files      = array();
 				$module->fieldsets_label = array();
 				$module->fieldsets_paths = array();
+				$module->add_rule_path = array();
+				$module->add_field_path = array();
 				// set global fields rule to default component path
 				$module->fields_rules_paths = 1;
 				// set the fields data
@@ -9453,6 +9465,30 @@ class Get
 							// set where to path is pointing
 							$module->fieldsets_paths[$unique]
 								= $form['fields_rules_paths'];
+							// check for extra rule paths
+							if (isset($form['addrulepath'])
+								&& ComponentbuilderHelper::checkArray($form['addrulepath']))
+							{
+								foreach ($form['addrulepath'] as $add_rule_path)
+								{
+									if (ComponentbuilderHelper::checkString($add_rule_path['path']))
+									{
+										$module->add_rule_path[$unique] = $add_rule_path['path'];
+									}
+								}
+							}
+							// check for extra field paths
+							if (isset($form['addfieldpath'])
+								&& ComponentbuilderHelper::checkArray($form['addfieldpath']))
+							{
+								foreach ($form['addfieldpath'] as $add_field_path)
+								{
+									if (ComponentbuilderHelper::checkString($add_field_path['path']))
+									{
+										$module->add_field_path[$unique] = $add_field_path['path'];
+									}
+								}
+							}
 							// add the label if set to lang
 							if (isset($form['label'])
 								&& ComponentbuilderHelper::checkString(
@@ -10287,6 +10323,8 @@ class Get
 				$plugin->form_files      = array();
 				$plugin->fieldsets_label = array();
 				$plugin->fieldsets_paths = array();
+				$plugin->add_rule_path = array();
+				$plugin->add_field_path = array();
 				// set global fields rule to default component path
 				$plugin->fields_rules_paths = 1;
 				// set the fields data
@@ -10369,6 +10407,30 @@ class Get
 							{
 								$plugin->fieldsets_label[$unique]
 									= $this->setLang($form['label']);
+							}
+							// check for extra rule paths
+							if (isset($form['addrulepath'])
+								&& ComponentbuilderHelper::checkArray($form['addrulepath']))
+							{
+								foreach ($form['addrulepath'] as $add_rule_path)
+								{
+									if (ComponentbuilderHelper::checkString($add_rule_path['path']))
+									{
+										$plugin->add_rule_path[$unique] = $add_rule_path['path'];
+									}
+								}
+							}
+							// check for extra field paths
+							if (isset($form['addfieldpath'])
+								&& ComponentbuilderHelper::checkArray($form['addfieldpath']))
+							{
+								foreach ($form['addfieldpath'] as $add_field_path)
+								{
+									if (ComponentbuilderHelper::checkString($add_field_path['path']))
+									{
+										$plugin->add_field_path[$unique] = $add_field_path['path'];
+									}
+								}
 							}
 							// build the fields
 							$form['fields'] = array_map(

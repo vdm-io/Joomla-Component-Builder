@@ -3771,17 +3771,8 @@ class Interpretation extends Fields
 			{
 				$getItem .= $this->setCustomViewGroup($get->group, $code, $tab);
 			}
-			// get ready to get query
-			$getItem .= PHP_EOL . PHP_EOL . $tab . $this->_t(2) . "//"
-				. $this->setLine(__LINE__)
-				. " Reset the query using our newly populated query object.";
-			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1)
-				. "\$db->setQuery(\$query);";
-			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//"
-				. $this->setLine(__LINE__)
-				. " Load the results as a stdClass object.";
-			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1)
-				. "\$data = \$db->loadObject();";
+			// db set query data placeholder
+			$getItem .= $this->hhh . "DB_SET_QUERY_DATA" . $this->hhh;
 			// set after item php
 			if (isset($get->add_php_after_getitem)
 				&& $get->add_php_after_getitem == 1
@@ -3792,6 +3783,36 @@ class Interpretation extends Fields
 					$get->php_after_getitem, $this->placeholders
 				);
 			}
+			// check the getItem string to see if we should still add set query to data
+			if (strpos($getItem, '$data =') === false)
+			{
+				// get ready to get query
+				$setQuery[$this->hhh . "DB_SET_QUERY_DATA" . $this->hhh] =
+					PHP_EOL . PHP_EOL . $tab . $this->_t(2) . "//"
+					. $this->setLine(__LINE__)
+					. " Reset the query using our newly populated query object.";
+				$setQuery[$this->hhh . "DB_SET_QUERY_DATA" . $this->hhh] .=
+					PHP_EOL . $this->_t(1) . $tab . $this->_t(1)
+					. "\$db->setQuery(\$query);";
+				$setQuery[$this->hhh . "DB_SET_QUERY_DATA" . $this->hhh] .=
+					PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "//"
+					. $this->setLine(__LINE__)
+					. " Load the results as a stdClass object.";
+				$setQuery[$this->hhh . "DB_SET_QUERY_DATA" . $this->hhh] .=
+					PHP_EOL . $this->_t(1) . $tab . $this->_t(1)
+					. "\$data = \$db->loadObject();";
+				// add the db set query to data
+			}
+			else
+			{
+				// remove our placeholder
+				$setQuery[$this->hhh . "DB_SET_QUERY_DATA" . $this->hhh] = '';
+			}
+			// add the db set query to data
+			$getItem = str_replace(
+				array_keys($setQuery),
+				array_values($setQuery), $getItem
+			);
 			$getItem .= PHP_EOL . PHP_EOL . $tab . $this->_t(2)
 				. "if (empty(\$data))";
 			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "{";
@@ -3849,7 +3870,7 @@ class Interpretation extends Fields
 					. "return false;";
 			}
 			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "}";
-			// dispatcher placholder
+			// dispatcher placeholder
 			$getItem .= $this->hhh . "DISPATCHER" . $this->hhh;
 			if (ComponentbuilderHelper::checkArray($get->main_get))
 			{
@@ -10334,7 +10355,7 @@ class Interpretation extends Fields
 			$db = '';
 			foreach ($this->queryBuilder as $view => $fields)
 			{
-				// build the uninstall array
+				// build the uninstallation array
 				$this->uninstallBuilder[] = "DROP TABLE IF EXISTS `#__"
 					. $component . "_" . $view . "`;";
 
@@ -10426,10 +10447,17 @@ class Interpretation extends Fields
 						)
 						&& in_array($data['ID'], $this->addSQL['field'][$view]))
 					{
+						// to soon....
+						//$this->updateSQLBuilder["ALTERTABLE`#__" . $component
+						//. "_" . $view . "`ADDCOLUMNIFNOTEXISTS`" . $field . "`"]
+						//	= "ALTER TABLE `#__" . $component . "_" . $view
+						//	. "` ADD COLUMN IF NOT EXISTS `" . $field . "` " . $data['type']
+						//	. $lenght . " " . $default . " AFTER `" . $last_name
+						//	. "`;";
 						$this->updateSQLBuilder["ALTERTABLE`#__" . $component
-						. "_" . $view . "`ADDCOLUMNIFNOTEXISTS`" . $field . "`"]
+						. "_" . $view . "`ADD`" . $field . "`"]
 							= "ALTER TABLE `#__" . $component . "_" . $view
-							. "` ADD COLUMN IF NOT EXISTS `" . $field . "` " . $data['type']
+							. "` ADD `" . $field . "` " . $data['type']
 							. $lenght . " " . $default . " AFTER `" . $last_name
 							. "`;";
 					}
@@ -10480,55 +10508,55 @@ class Interpretation extends Fields
 				{
 					$db_ .= PHP_EOL . $this->_t(1) . "`params` text NULL,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['published']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`published` TINYINT(3) NOT NULL DEFAULT 1,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['created_by']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`created_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['modified_by']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['created']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['modified']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['checked_out']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`checked_out` int(11) unsigned NOT NULL DEFAULT 0,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['checked_out_time']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['version']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
 						. "`version` INT(10) unsigned NOT NULL DEFAULT 1,";
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!isset($this->fieldsNames[$view]['hits']))
 				{
 					$db_ .= PHP_EOL . $this->_t(1)
@@ -21487,16 +21515,16 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . $this->_t(2) . "JToolbarHelper::divider();";
 			$toolBar .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " set help url for this view if found";
-			$toolBar .= PHP_EOL . $this->_t(2) . "\$help_url = "
+			$toolBar .= PHP_EOL . $this->_t(2) . "\$this->help_url = "
 				. $this->fileContentStatic[$this->hhh . 'Component'
 				. $this->hhh] . "Helper::getHelpUrl('" . $nameSingleCode
 				. "');";
 			$toolBar .= PHP_EOL . $this->_t(2) . "if ("
 				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh] . "Helper::checkString(\$help_url))";
+				. $this->hhh] . "Helper::checkString(\$this->help_url))";
 			$toolBar .= PHP_EOL . $this->_t(2) . "{";
 			$toolBar .= PHP_EOL . $this->_t(3) . "JToolbarHelper::help('"
-				. $this->langPrefix . "_HELP_MANAGER', false, \$help_url);";
+				. $this->langPrefix . "_HELP_MANAGER', false, \$this->help_url);";
 			$toolBar .= PHP_EOL . $this->_t(2) . "}";
 		}
 
@@ -21748,7 +21776,7 @@ class Interpretation extends Fields
 	public function setCheckinCall()
 	{
 		$call = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
-			. " check in items";
+			. " Check in items";
 		$call .= PHP_EOL . $this->_t(2) . "\$this->checkInNow();" . PHP_EOL;
 
 		return $call;
@@ -21777,22 +21805,28 @@ class Interpretation extends Fields
 			) . " Get a db connection.";
 		$checkin .= PHP_EOL . $this->_t(3) . "\$db = JFactory::getDbo();";
 		$checkin .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
-			. " reset query";
+			. " Reset query.";
 		$checkin .= PHP_EOL . $this->_t(3) . "\$query = \$db->getQuery(true);";
 		$checkin .= PHP_EOL . $this->_t(3) . "\$query->select('*');";
 		$checkin .= PHP_EOL . $this->_t(3)
 			. "\$query->from(\$db->quoteName('#__" . $component . "_" . $view
 			. "'));";
-		$checkin .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query);";
+		$checkin .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(__LINE__)
+			. " Only select items that are checked out.";
+		$checkin .= PHP_EOL . $this->_t(3)
+			. "\$query->where(\$db->quoteName('checked_out') . '!=0');";
+		$this->_t(3) . "//" . $this->setLine(__LINE__)
+		. " Query only to see if we have a rows";
+		$checkin .= PHP_EOL . $this->_t(3) . "\$db->setQuery(\$query, 0, 1);";
 		$checkin .= PHP_EOL . $this->_t(3) . "\$db->execute();";
 		$checkin .= PHP_EOL . $this->_t(3) . "if (\$db->getNumRows())";
 		$checkin .= PHP_EOL . $this->_t(3) . "{";
 		$checkin .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__)
-			. " Get Yesterdays date";
+			. " Get Yesterdays date.";
 		$checkin .= PHP_EOL . $this->_t(4)
 			. "\$date = JFactory::getDate()->modify(\$time)->toSql();";
 		$checkin .= PHP_EOL . $this->_t(4) . "//" . $this->setLine(__LINE__)
-			. " reset query";
+			. " Reset query.";
 		$checkin .= PHP_EOL . $this->_t(4) . "\$query = \$db->getQuery(true);";
 		$checkin .= PHP_EOL . PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 				__LINE__
@@ -21814,7 +21848,7 @@ class Interpretation extends Fields
 		$checkin .= PHP_EOL . $this->_t(4) . ");";
 		$checkin .= PHP_EOL . PHP_EOL . $this->_t(4) . "//" . $this->setLine(
 				__LINE__
-			) . " Check table";
+			) . " Check table.";
 		$checkin .= PHP_EOL . $this->_t(4)
 			. "\$query->update(\$db->quoteName('#__" . $component . "_" . $view
 			. "'))->set(\$fields)->where(\$conditions); ";
@@ -28597,43 +28631,72 @@ function vdm_dkim() {
 				{
 					// default to the field set name
 					$label = $fieldset;
-					if (isset(
-						$module->fieldsets_label[$field_name . $fieldset]
-					))
+					if (isset($module->fieldsets_label[$field_name . $fieldset]))
 					{
-						$label = $module->fieldsets_label[$field_name
-						. $fieldset];
+						$label = $module->fieldsets_label[$field_name . $fieldset];
 					}
 					// add path to module rules and custom fields
 					if (isset($module->fieldsets_paths[$field_name . $fieldset])
-						&& $module->fieldsets_paths[$field_name . $fieldset]
-						== 2)
+						&& ($module->fieldsets_paths[$field_name . $fieldset] == 2
+							|| $module->fieldsets_paths[$field_name . $fieldset] == 3))
 					{
-						$xml .= PHP_EOL . $this->_t(1) . '<!--'
-							. $this->setLine(__LINE__) . ' default paths of '
-							. $fieldset . ' fieldset points to the module -->';
-						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
-							. $fieldset . '" label="' . $label . '"';
 						if ($module->target == 2)
 						{
-							$xml .= PHP_EOL . $this->_t(2)
-								. 'addrulepath="/administrator/modules/'
-								. $module->file_name
-								. '/rules"';
-							$xml .= PHP_EOL . $this->_t(2)
-								. 'addfieldpath="/administrator/modules/'
-								. $module->file_name
-								. '/fields"';
+							if (!isset($module->add_rule_path[$field_name . $fieldset]))
+							{
+								$module->add_rule_path[$field_name . $fieldset] =
+									'/administrator/modules/'
+									. $module->file_name . '/rules';
+							}
+
+							if (!isset($module->add_field_path[$field_name . $fieldset]))
+							{
+								$module->add_field_path[$field_name . $fieldset] =
+									'/administrator/modules/'
+									. $module->file_name . '/fields';
+							}
 						}
 						else
 						{
-							$xml .= PHP_EOL . $this->_t(2)
-								. 'addrulepath="/modules/' . $module->file_name
-								. '/rules"';
-							$xml .= PHP_EOL . $this->_t(2)
-								. 'addfieldpath="/modules/' . $module->file_name
-								. '/fields"';
+							if (!isset($module->add_rule_path[$field_name . $fieldset]))
+							{
+								$module->add_rule_path[$field_name . $fieldset] =
+									'/modules/' . $module->file_name
+									. '/rules';
+							}
+
+							if (!isset($module->add_field_path[$field_name . $fieldset]))
+							{
+								$module->add_field_path[$field_name . $fieldset] =
+									'/modules/' . $module->file_name
+									. '/fields';
+							}
 						}
+					}
+					// add path to module rules and custom fields
+					if (isset($module->add_rule_path[$field_name . $fieldset])
+						|| isset($module->add_field_path[$field_name . $fieldset]))
+					{
+
+						$xml .= PHP_EOL . $this->_t(1) . '<!--'
+							. $this->setLine(__LINE__) . ' default paths of '
+							. $fieldset . ' fieldset points to the module -->';
+
+						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
+							. $fieldset . '" label="' . $label . '"';
+
+						if (isset($module->add_rule_path[$field_name . $fieldset]))
+						{
+							$xml .= PHP_EOL . $this->_t(2)
+								. 'addrulepath="' . $module->add_rule_path[$field_name . $fieldset] . '"';
+						}
+
+						if (isset($module->add_field_path[$field_name . $fieldset]))
+						{
+							$xml .= PHP_EOL . $this->_t(2)
+								. 'addfieldpath="' . $module->add_field_path[$field_name . $fieldset] . '"';
+						}
+
 						$xml .= PHP_EOL . $this->_t(1) . '>';
 					}
 					else
@@ -28974,33 +29037,54 @@ function vdm_dkim() {
 				{
 					// default to the field set name
 					$label = $fieldset;
-					if (isset(
-						$plugin->fieldsets_label[$field_name . $fieldset]
-					))
+					if (isset($plugin->fieldsets_label[$field_name . $fieldset]))
 					{
-						$label = $plugin->fieldsets_label[$field_name
-						. $fieldset];
+						$label = $plugin->fieldsets_label[$field_name . $fieldset];
 					}
 					// add path to plugin rules and custom fields
 					if (isset($plugin->fieldsets_paths[$field_name . $fieldset])
-						&& $plugin->fieldsets_paths[$field_name . $fieldset]
-						== 2)
+						&& ($plugin->fieldsets_paths[$field_name . $fieldset] == 2
+							|| $plugin->fieldsets_paths[$field_name . $fieldset] == 3))
+					{
+						if (!isset($plugin->add_rule_path[$field_name . $fieldset]))
+						{
+							$plugin->add_rule_path[$field_name . $fieldset] =
+								'/plugins/' . strtolower($plugin->group
+								) . '/' . strtolower($plugin->code_name)
+								. '/rules';
+						}
+
+						if (!isset($plugin->add_field_path[$field_name . $fieldset]))
+						{
+							$plugin->add_field_path[$field_name . $fieldset] =
+								'/plugins/' . strtolower($plugin->group
+								) . '/' . strtolower($plugin->code_name)
+								. '/fields';
+						}
+					}
+					// add path to plugin rules and custom fields
+					if (isset($plugin->add_rule_path[$field_name . $fieldset])
+						|| isset($plugin->add_field_path[$field_name . $fieldset]))
 					{
 						$xml .= PHP_EOL . $this->_t(1) . '<!--'
 							. $this->setLine(__LINE__) . ' default paths of '
 							. $fieldset . ' fieldset points to the plugin -->';
+
 						$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
 							. $fieldset . '" label="' . $label . '"';
-						$xml .= PHP_EOL . $this->_t(2)
-							. 'addrulepath="/plugins/' . strtolower(
-								$plugin->group
-							) . '/' . strtolower($plugin->code_name)
-							. '/rules"';
-						$xml .= PHP_EOL . $this->_t(2)
-							. 'addfieldpath="/plugins/' . strtolower(
-								$plugin->group
-							) . '/' . strtolower($plugin->code_name)
-							. '/fields"';
+
+						if (isset($plugin->add_rule_path[$field_name . $fieldset]))
+						{
+							$xml .= PHP_EOL . $this->_t(2)
+								. 'addrulepath="' . $plugin->add_rule_path[$field_name . $fieldset] . '"';
+						}
+
+						if (isset($plugin->add_field_path[$field_name . $fieldset]))
+						{
+							$xml .= PHP_EOL . $this->_t(2)
+								. 'addfieldpath="' . $plugin->add_field_path[$field_name . $fieldset] . '"';
+						}
+
 						$xml .= PHP_EOL . $this->_t(1) . '>';
 					}
 					else

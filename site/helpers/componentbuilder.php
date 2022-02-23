@@ -2058,7 +2058,7 @@ abstract class ComponentbuilderHelper
 					'hash' => '84478dfa0cd880395815e0ee026812a4',
 					'html' => '<a href="https://vdm.bz/jcb-sponsor-vdm" target="_blank" title="VDM a JCB sponsor | Because community matters..."><img class="jcb-sponsor-banner" alt="VDM a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/vdm_jcb_sponsor_728_90.gif" width="728" height="90" border="0" /></a>'),
 				array(
-					'url' => 'https://allmycms.com/images/banners/agerix/agerix-loves-jcb-728-90.gif',
+					'url' => 'https://cms-experts.org/images/banners/agerix/agerix-loves-jcb-728-90.gif',
 					'hash' => 'b24c0726aa809cdcc04bcffe7e1e1529',
 					'html' => '<a href="https://vdm.bz/jcb-sponsor-agerix" target="_blank" title="Agerix a JCB sponsor | Because community matters..."><img class="jcb-sponsor-banner" alt="Agerix a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/agerix-loves-jcb-728-90.gif" width="728" height="90" border="0" /></a>')
 			),
@@ -2820,8 +2820,8 @@ abstract class ComponentbuilderHelper
 		// delete an existing zip file (or use an exclusion parameter in Folder::files()
 		File::delete($filepath);
 
-		// get a list of files in the current directory tree
-		$files = Folder::files('.', '', true, true);
+		// get a list of files in the current directory tree (also the hidden files)
+		$files = Folder::files('.', '', true, true, array('.svn', 'CVS', '.DS_Store', '__MACOSX'), array('.*~'));
 		$zipArray = array();
 		// setup the zip array
 		foreach ($files as $file)

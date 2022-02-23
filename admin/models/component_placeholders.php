@@ -35,6 +35,12 @@ class ComponentbuilderModelComponent_placeholders extends JModelAdmin
 			'above' => array(
 				'joomla_component'
 			)
+		),
+		'clone' => array(
+			'left' => array(
+				'note_how_to_clone',
+				'clone_me'
+			)
 		)
 	);
 
@@ -803,6 +809,15 @@ class ComponentbuilderModelComponent_placeholders extends JModelAdmin
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
+
+
+		// check if we have a clone moment
+		if (isset($data['clone_me']) && $data['clone_me'] > 0)
+		{
+			// get addplaceholders data from clone_me (component_placeholders)
+			$data['addplaceholders'] = ComponentbuilderHelper::getVar('component_placeholders', $data['clone_me'], 'joomla_component', 'addplaceholders');
+		}
+
 
 		// Set the addplaceholders items to data.
 		if (isset($data['addplaceholders']) && is_array($data['addplaceholders']))
