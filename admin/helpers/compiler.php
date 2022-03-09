@@ -15,6 +15,11 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\MathHelper;
+
 // Use the component builder autoloader
 ComponentbuilderHelper::autoLoader();
 
@@ -145,10 +150,10 @@ class Compiler extends Infusion
 			// set the lang data now
 			$this->setLangFileData();
 			// set the language notice if it was set
-			if (ComponentbuilderHelper::checkArray($this->langNot)
-				|| ComponentbuilderHelper::checkArray($this->langSet))
+			if (ArrayHelper::check($this->langNot)
+				|| ArrayHelper::check($this->langSet))
 			{
-				if (ComponentbuilderHelper::checkArray($this->langNot))
+				if (ArrayHelper::check($this->langNot))
 				{
 					$this->app->enqueueMessage(
 						JText::_('<hr /><h3>Language Warning</h3>'), 'Warning'
@@ -184,7 +189,7 @@ class Compiler extends Infusion
 					);
 				}
 				// show languages that were added
-				if (ComponentbuilderHelper::checkArray($this->langSet))
+				if (ArrayHelper::check($this->langSet))
 				{
 					$this->app->enqueueMessage(
 						JText::_('<hr /><h3>Language Notice</h3>'), 'Notice'
@@ -275,9 +280,9 @@ class Compiler extends Infusion
 			// if there are plugins zip them
 			$this->zipPlugins();
 			// do lang mismatch check
-			if (ComponentbuilderHelper::checkArray($this->langMismatch))
+			if (ArrayHelper::check($this->langMismatch))
 			{
-				if (ComponentbuilderHelper::checkArray($this->langMatch))
+				if (ArrayHelper::check($this->langMatch))
 				{
 					$mismatch = array_diff(
 						array_unique($this->langMismatch),
@@ -290,7 +295,7 @@ class Compiler extends Infusion
 				}
 				// set a notice if we have a mismatch
 				if (isset($mismatch)
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$mismatch
 					))
 				{
@@ -317,7 +322,7 @@ class Compiler extends Infusion
 					foreach ($mismatch as $string)
 					{
 						$constant = $this->langPrefix . '_'
-							. ComponentbuilderHelper::safeString($string, 'U');
+							. StringHelper::safe($string, 'U');
 						$this->app->enqueueMessage(
 							JText::sprintf(
 								'The <b>Joomla.JText._(&apos;%s&apos;)</b> language constant for <b>%s</b> does not have a corresponding <code>JText::script(&apos;%s&apos;)</code> decalaration, please add it.',
@@ -328,7 +333,7 @@ class Compiler extends Infusion
 				}
 			}
 			// check if we should add a EXTERNALCODE notice
-			if (ComponentbuilderHelper::checkArray($this->externalCodeString))
+			if (ArrayHelper::check($this->externalCodeString))
 			{
 				// number of external code strings
 				$externalCount = count($this->externalCodeString);
@@ -385,9 +390,9 @@ class Compiler extends Infusion
 	protected function updateFiles()
 	{
 		if (isset($this->newFiles['static'])
-			&& ComponentbuilderHelper::checkArray($this->newFiles['static'])
+			&& ArrayHelper::check($this->newFiles['static'])
 			&& isset($this->newFiles['dynamic'])
-			&& ComponentbuilderHelper::checkArray($this->newFiles['dynamic']))
+			&& ArrayHelper::check($this->newFiles['dynamic']))
 		{
 			// get the bom file
 			$bom = ComponentbuilderHelper::getFileContents($this->bomPath);
@@ -405,7 +410,7 @@ class Compiler extends Infusion
 			foreach ($this->newFiles['dynamic'] as $view => $files)
 			{
 				if (isset($this->fileContentDynamic[$view])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->fileContentDynamic[$view]
 					))
 				{
@@ -429,13 +434,13 @@ class Compiler extends Infusion
 			// free up some memory
 			unset($this->newFiles['dynamic']);
 			// do modules if found
-			if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+			if (ArrayHelper::check($this->joomlaModules))
 			{
 				foreach ($this->joomlaModules as $module)
 				{
-					if (ComponentbuilderHelper::checkObject($module)
+					if (ObjectHelper::check($module)
 						&& isset($this->newFiles[$module->key])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->newFiles[$module->key]
 						))
 					{
@@ -445,7 +450,7 @@ class Compiler extends Infusion
 						{
 							// check the config fields
 							if (isset($module->config_fields)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$module->config_fields
 								))
 							{
@@ -467,7 +472,7 @@ class Compiler extends Infusion
 							}
 							// check the fieldsets
 							if (isset($module->form_files)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$module->form_files
 								))
 							{
@@ -510,13 +515,13 @@ class Compiler extends Infusion
 				}
 			}
 			// do plugins if found
-			if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
+			if (ArrayHelper::check($this->joomlaPlugins))
 			{
 				foreach ($this->joomlaPlugins as $plugin)
 				{
-					if (ComponentbuilderHelper::checkObject($plugin)
+					if (ObjectHelper::check($plugin)
 						&& isset($this->newFiles[$plugin->key])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->newFiles[$plugin->key]
 						))
 					{
@@ -526,7 +531,7 @@ class Compiler extends Infusion
 						{
 							// check the config fields
 							if (isset($plugin->config_fields)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$plugin->config_fields
 								))
 							{
@@ -548,7 +553,7 @@ class Compiler extends Infusion
 							}
 							// check the fieldsets
 							if (isset($plugin->form_files)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$plugin->form_files
 								))
 							{
@@ -591,13 +596,13 @@ class Compiler extends Infusion
 				}
 			}
 			// do powers if found
-			if (ComponentbuilderHelper::checkArray($this->powers))
+			if (ArrayHelper::check($this->powers))
 			{
 				foreach ($this->powers as $power)
 				{
-					if (ComponentbuilderHelper::checkObject($power)
+					if (ObjectHelper::check($power)
 						&& isset($this->newFiles[$power->key])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->newFiles[$power->key]
 						))
 					{
@@ -720,11 +725,11 @@ class Compiler extends Infusion
 			}
 		}
 		// move the modules update server to host
-		if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+		if (ArrayHelper::check($this->joomlaModules))
 		{
 			foreach ($this->joomlaModules as $module)
 			{
-				if (ComponentbuilderHelper::checkObject($module)
+				if (ObjectHelper::check($module)
 					&& isset($module->add_update_server)
 					&& $module->add_update_server == 1
 					&& isset($module->update_server_target)
@@ -735,7 +740,7 @@ class Compiler extends Infusion
 					&& isset($module->update_server_xml_path)
 					&& File::exists($module->update_server_xml_path)
 					&& isset($module->update_server_xml_file_name)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$module->update_server_xml_file_name
 					))
 				{
@@ -753,11 +758,11 @@ class Compiler extends Infusion
 			}
 		}
 		// move the plugins update server to host
-		if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
+		if (ArrayHelper::check($this->joomlaPlugins))
 		{
 			foreach ($this->joomlaPlugins as $plugin)
 			{
-				if (ComponentbuilderHelper::checkObject($plugin)
+				if (ObjectHelper::check($plugin)
 					&& isset($plugin->add_update_server)
 					&& $plugin->add_update_server == 1
 					&& isset($plugin->update_server_target)
@@ -768,7 +773,7 @@ class Compiler extends Infusion
 					&& isset($plugin->update_server_xml_path)
 					&& File::exists($plugin->update_server_xml_path)
 					&& isset($plugin->update_server_xml_file_name)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$plugin->update_server_xml_file_name
 					))
 				{
@@ -791,7 +796,7 @@ class Compiler extends Infusion
 	{
 		// check if these files have its own config data)
 		if (isset($data['config'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$data['config']
 			)
 			&& $this->componentData->mvc_versiondate == 1)
@@ -981,7 +986,7 @@ class Compiler extends Infusion
 	{
 		// move it to the repo folder if set
 		if (isset($this->repoPath)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->repoPath
 			))
 		{
@@ -1007,11 +1012,11 @@ class Compiler extends Infusion
 			);
 
 			// move the modules to local folder repos
-			if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+			if (ArrayHelper::check($this->joomlaModules))
 			{
 				foreach ($this->joomlaModules as $module)
 				{
-					if (ComponentbuilderHelper::checkObject($module)
+					if (ObjectHelper::check($module)
 						&& isset($module->file_name))
 					{
 						$module_context = 'module.' . $module->file_name . '.'
@@ -1044,11 +1049,11 @@ class Compiler extends Infusion
 				}
 			}
 			// move the plugins to local folder repos
-			if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
+			if (ArrayHelper::check($this->joomlaPlugins))
 			{
 				foreach ($this->joomlaPlugins as $plugin)
 				{
-					if (ComponentbuilderHelper::checkObject($plugin)
+					if (ObjectHelper::check($plugin)
 						&& isset($plugin->file_name))
 					{
 						$plugin_context = 'plugin.' . $plugin->file_name . '.'
@@ -1162,15 +1167,15 @@ class Compiler extends Infusion
 
 	private function zipModules()
 	{
-		if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+		if (ArrayHelper::check($this->joomlaModules))
 		{
 			foreach ($this->joomlaModules as $module)
 			{
-				if (ComponentbuilderHelper::checkObject($module)
+				if (ObjectHelper::check($module)
 					&& isset($module->zip_name)
-					&& ComponentbuilderHelper::checkString($module->zip_name)
+					&& StringHelper::check($module->zip_name)
 					&& isset($module->folder_path)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$module->folder_path
 					))
 				{
@@ -1256,15 +1261,15 @@ class Compiler extends Infusion
 
 	private function zipPlugins()
 	{
-		if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
+		if (ArrayHelper::check($this->joomlaPlugins))
 		{
 			foreach ($this->joomlaPlugins as $plugin)
 			{
-				if (ComponentbuilderHelper::checkObject($plugin)
+				if (ObjectHelper::check($plugin)
 					&& isset($plugin->zip_name)
-					&& ComponentbuilderHelper::checkString($plugin->zip_name)
+					&& StringHelper::check($plugin->zip_name)
 					&& isset($plugin->folder_path)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$plugin->folder_path
 					))
 				{
@@ -1359,9 +1364,9 @@ class Compiler extends Infusion
 			$fingerPrint = array();
 			if (isset($target['hashtarget'][0]) && $target['hashtarget'][0] > 3
 				&& isset($target['path'])
-				&& ComponentbuilderHelper::checkString($target['path'])
+				&& StringHelper::check($target['path'])
 				&& isset($target['hashtarget'][1])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$target['hashtarget'][1]
 				))
 			{
@@ -1400,7 +1405,7 @@ class Compiler extends Infusion
 						);
 						if (!$found)
 						{
-							$bites = (int) ComponentbuilderHelper::bcmath(
+							$bites = (int) MathHelper::bc(
 								'add', $lineBites[$lineNumber], $bites
 							);
 						}
@@ -1590,14 +1595,14 @@ class Compiler extends Infusion
 		// Add the data
 		fwrite($fpFile, $data);
 		// truncate file at the end of the data that was added
-		$remove = ComponentbuilderHelper::bcmath(
+		$remove = MathHelper::bc(
 			'add', $position, mb_strlen($data, '8bit')
 		);
 		ftruncate($fpFile, $remove);
 		// check if this was a replacement of data
 		if ($replace)
 		{
-			$position = ComponentbuilderHelper::bcmath(
+			$position = MathHelper::bc(
 				'add', $position, $replace
 			);
 		}

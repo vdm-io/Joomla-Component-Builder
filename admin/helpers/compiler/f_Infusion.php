@@ -15,6 +15,9 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
 
 /**
  * Infusion class
@@ -68,7 +71,7 @@ class Infusion extends Interpretation
 	protected function buildFileContent()
 	{
 		if (isset($this->componentData->admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->admin_views
 			))
 		{
@@ -157,7 +160,7 @@ class Infusion extends Interpretation
 			}
 			// load only first two values
 			if (isset($versionArray)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$versionArray
 				)
 				&& $this->componentData->mvc_versiondate == 2)
@@ -167,7 +170,7 @@ class Infusion extends Interpretation
 			}
 			// load only the first value
 			elseif (isset($versionArray)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$versionArray
 				)
 				&& $this->componentData->mvc_versiondate == 3)
@@ -356,7 +359,7 @@ class Infusion extends Interpretation
 				= $this->addEmailHelper();
 
 			// load the global placeholders
-			if (ComponentbuilderHelper::checkArray($this->globalPlaceholders))
+			if (ArrayHelper::check($this->globalPlaceholders))
 			{
 				foreach (
 					$this->globalPlaceholders as $globalPlaceholder =>
@@ -1030,7 +1033,7 @@ class Infusion extends Interpretation
 							$scriptNote, true,
 							false, PHP_EOL
 						)) !== false
-						&& ComponentbuilderHelper::checkString($footerScript))
+						&& StringHelper::check($footerScript))
 					{
 						// only minfy if no php is added to the footer script
 						if ($this->minify
@@ -1296,7 +1299,7 @@ class Infusion extends Interpretation
 
 			// setup custom_admin_views and all needed stuff for the site
 			if (isset($this->componentData->custom_admin_views)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->componentData->custom_admin_views
 				))
 			{
@@ -1667,7 +1670,7 @@ class Infusion extends Interpretation
 			$this->setVersionController();
 
 			// only set these if default dashboard it used
-			if (!ComponentbuilderHelper::checkString($this->dynamicDashboard))
+			if (!StringHelper::check($this->dynamicDashboard))
 			{
 				// DASHBOARDVIEW
 				$this->fileContentStatic[$this->hhh . 'DASHBOARDVIEW'
@@ -1801,7 +1804,7 @@ class Infusion extends Interpretation
 
 			// build the validation rules
 			if (isset($this->validationRules)
-				&& ComponentbuilderHelper::checkArray($this->validationRules))
+				&& ArrayHelper::check($this->validationRules))
 			{
 				foreach ($this->validationRules as $rule => $_php)
 				{
@@ -1821,13 +1824,13 @@ class Infusion extends Interpretation
 
 			// run the second run if needed
 			if (isset($this->secondRunAdmin)
-				&& ComponentbuilderHelper::checkArray($this->secondRunAdmin))
+				&& ArrayHelper::check($this->secondRunAdmin))
 			{
 				// start dynamic build
 				foreach ($this->secondRunAdmin as $function => $arrays)
 				{
-					if (ComponentbuilderHelper::checkArray($arrays)
-						&& ComponentbuilderHelper::checkString($function))
+					if (ArrayHelper::check($arrays)
+						&& StringHelper::check($function))
 					{
 						foreach ($arrays as $array)
 						{
@@ -1846,7 +1849,7 @@ class Infusion extends Interpretation
 
 			// setup front-views and all needed stuff for the site
 			if (isset($this->componentData->site_views)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->componentData->site_views
 				))
 			{
@@ -2072,7 +2075,7 @@ class Infusion extends Interpretation
 					if ($view['settings']->main_get->gettype == 1)
 					{
 						// insure the controller headers are added
-						if (ComponentbuilderHelper::checkString(
+						if (StringHelper::check(
 								$view['settings']->php_controller
 							)
 							&& $view['settings']->php_controller != '//')
@@ -2106,7 +2109,7 @@ class Infusion extends Interpretation
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
 						// insure the controller headers are added
-						if (ComponentbuilderHelper::checkString(
+						if (StringHelper::check(
 								$view['settings']->php_controller
 							)
 							&& $view['settings']->php_controller != '//')
@@ -2286,7 +2289,7 @@ class Infusion extends Interpretation
 					$this->fileContentStatic[$this->hhh . 'ROUTER_BUILD_VIEWS'
 					. $this->hhh]
 				)
-				|| !ComponentbuilderHelper::checkString(
+				|| !StringHelper::check(
 					$this->fileContentStatic[$this->hhh . 'ROUTER_BUILD_VIEWS'
 					. $this->hhh]
 				))
@@ -2310,18 +2313,16 @@ class Infusion extends Interpretation
 					= $this->componentData->readme;
 			}
 			// remove all the power placeholders
-			$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_EVENT_HELPER' . $this->hhh] = '';
-			$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_EVENT' . $this->hhh] = '';
-			$this->fileContentStatic[$this->hhh . 'SITE_POWER_EVENT_HELPER' . $this->hhh] = '';
-			$this->fileContentStatic[$this->hhh . 'SITE_POWER_EVENT' . $this->hhh] = '';
+			$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_HELPER' . $this->hhh] = '';
+			$this->fileContentStatic[$this->hhh . 'SITE_POWER_HELPER' . $this->hhh] = '';
 			// infuse powers data if set
-			if (ComponentbuilderHelper::checkArray($this->powers))
+			if (ArrayHelper::check($this->powers))
 			{
 				// start the autoloader
 				$autoloader = array();
 				foreach ($this->powers as $power)
 				{
-					if (ComponentbuilderHelper::checkObject($power))
+					if (ObjectHelper::check($power))
 					{
 						// Trigger Event: jcb_ce_onBeforeInfusePowerData
 						$this->triggerEvent(
@@ -2349,11 +2350,11 @@ class Infusion extends Interpretation
 			$_backup_lang       = $this->lang;
 			$_backup_langPrefix = $this->langPrefix;
 			// infuse module data if set
-			if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+			if (ArrayHelper::check($this->joomlaModules))
 			{
 				foreach ($this->joomlaModules as $module)
 				{
-					if (ComponentbuilderHelper::checkObject($module))
+					if (ObjectHelper::check($module))
 					{
 						// Trigger Event: jcb_ce_onBeforeInfuseModuleData
 						$this->triggerEvent(
@@ -2394,7 +2395,7 @@ class Infusion extends Interpretation
 						}
 						// FIELDSET
 						if (isset($module->form_files)
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$module->form_files
 							))
 						{
@@ -2428,11 +2429,11 @@ class Infusion extends Interpretation
 				}
 			}
 			// infuse plugin data if set
-			if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
+			if (ArrayHelper::check($this->joomlaPlugins))
 			{
 				foreach ($this->joomlaPlugins as $plugin)
 				{
-					if (ComponentbuilderHelper::checkObject($plugin))
+					if (ObjectHelper::check($plugin))
 					{
 						// Trigger Event: jcb_ce_onBeforeInfusePluginData
 						$this->triggerEvent(
@@ -2456,7 +2457,7 @@ class Infusion extends Interpretation
 						}
 						// FIELDSET
 						if (isset($plugin->form_files)
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$plugin->form_files
 							))
 						{
@@ -2524,10 +2525,10 @@ class Infusion extends Interpretation
 		{
 			// set main keys
 			$nameSingleCode              = $view->name_single_code;
-			$name_single_uppercase       = ComponentbuilderHelper::safeString(
+			$name_single_uppercase       = StringHelper::safe(
 				$view->name_single, 'U'
 			);
-			$name_single_first_uppercase = ComponentbuilderHelper::safeString(
+			$name_single_first_uppercase = StringHelper::safe(
 				$view->name_single, 'F'
 			);
 
@@ -2550,10 +2551,10 @@ class Infusion extends Interpretation
 		if (isset($view->name_list) && $view->name_list != 'null')
 		{
 			$nameListCode              = $view->name_list_code;
-			$name_list_uppercase       = ComponentbuilderHelper::safeString(
+			$name_list_uppercase       = StringHelper::safe(
 				$view->name_list, 'U'
 			);
-			$name_list_first_uppercase = ComponentbuilderHelper::safeString(
+			$name_list_first_uppercase = StringHelper::safe(
 				$view->name_list, 'F'
 			);
 
@@ -2683,7 +2684,7 @@ class Infusion extends Interpretation
 				$this->languages['components'][$this->langTag]['sitesys']
 			);
 		}
-		$values = array_unique(ComponentbuilderHelper::mergeArrays($values));
+		$values = array_unique(ArrayHelper::merge($values));
 		// get the other lang strings if there is any
 		$this->multiLangString = $this->getMultiLangStrings($values);
 		// update insert the current lang in to DB
@@ -2699,7 +2700,7 @@ class Infusion extends Interpretation
 				&$this->langTag)
 		);
 		// now we insert the values into the files
-		if (ComponentbuilderHelper::checkArray($this->languages['components']))
+		if (ArrayHelper::check($this->languages['components']))
 		{
 			// rest xml array
 			$langXML = array();
@@ -2775,18 +2776,18 @@ class Infusion extends Interpretation
 				}
 			}
 			// load the lang xml
-			if (ComponentbuilderHelper::checkArray($langXML))
+			if (ArrayHelper::check($langXML))
 			{
 				$replace = array();
 				if (isset($langXML['admin'])
-					&& ComponentbuilderHelper::checkArray($langXML['admin']))
+					&& ArrayHelper::check($langXML['admin']))
 				{
 					$replace[$this->hhh . 'ADMIN_LANGUAGES' . $this->hhh]
 						= implode(PHP_EOL . $this->_t(3), $langXML['admin']);
 				}
 				if ((!$this->removeSiteFolder || !$this->removeSiteEditFolder)
 					&& isset($langXML['site'])
-					&& ComponentbuilderHelper::checkArray($langXML['site']))
+					&& ArrayHelper::check($langXML['site']))
 				{
 					$replace[$this->hhh . 'SITE_LANGUAGES' . $this->hhh]
 						= implode(PHP_EOL . $this->_t(2), $langXML['site']);

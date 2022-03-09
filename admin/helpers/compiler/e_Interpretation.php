@@ -15,6 +15,10 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\MathHelper;
 
 /**
  * Compiler class
@@ -310,7 +314,7 @@ class Interpretation extends Fields
 				. $this->hhh]
 			))
 			{
-				$_WHMCS = '_' . ComponentbuilderHelper::safeString(
+				$_WHMCS = '_' . StringHelper::safe(
 						$this->uniquekey(10), 'U'
 					);
 				// add it to the system
@@ -363,10 +367,10 @@ class Interpretation extends Fields
 				. $this->hhh]
 			))
 			{
-				$boolMethod = 'get' . ComponentbuilderHelper::safeString(
+				$boolMethod = 'get' . StringHelper::safe(
 						$this->uniquekey(3, false, 'ddd'), 'W'
 					);
-				$globalbool = 'set' . ComponentbuilderHelper::safeString(
+				$globalbool = 'set' . StringHelper::safe(
 						$this->uniquekey(3), 'W'
 					);
 				// add it to the system
@@ -542,7 +546,7 @@ class Interpretation extends Fields
 	{
 		// make sure we have the correct file
 		if (isset($this->componentData->whmcs_key)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->componentData->whmcs_key
 			))
 		{
@@ -848,21 +852,21 @@ class Interpretation extends Fields
 			= '';
 		// check if encryption is ative
 		if ((isset($this->basicFieldModeling)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->basicFieldModeling
 				))
 			|| (isset($this->mediumFieldModeling)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->mediumFieldModeling
 				))
 			|| (isset($this->whmcsFieldModeling)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->whmcsFieldModeling
 				))
 			|| $this->componentData->add_license)
 		{
 			if (isset($this->whmcsFieldModeling)
-				&& ComponentbuilderHelper::checkArray($this->whmcsFieldModeling)
+				&& ArrayHelper::check($this->whmcsFieldModeling)
 				|| $this->componentData->add_license)
 			{
 				// set whmcs encrypt file into place
@@ -903,7 +907,7 @@ class Interpretation extends Fields
 				. "', true);";
 			// add the basic option
 			if (isset($this->basicFieldModeling)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->basicFieldModeling
 				))
 			{
@@ -922,7 +926,7 @@ class Interpretation extends Fields
 			}
 			// add the medium option
 			if (isset($this->mediumFieldModeling)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->mediumFieldModeling
 				))
 			{
@@ -958,7 +962,7 @@ class Interpretation extends Fields
 			}
 			// add the whmcs option
 			if (isset($this->whmcsFieldModeling)
-				&& ComponentbuilderHelper::checkArray($this->whmcsFieldModeling)
+				&& ArrayHelper::check($this->whmcsFieldModeling)
 				|| $this->componentData->add_license)
 			{
 				$function[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
@@ -985,7 +989,7 @@ class Interpretation extends Fields
 			$function[] = $this->_t(1) . "}";
 			// set the getMediumCryptKey class/method
 			if (isset($this->mediumFieldModeling)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->mediumFieldModeling
 				))
 			{
@@ -1100,10 +1104,10 @@ class Interpretation extends Fields
 	 */
 	public function setVersionController()
 	{
-		if (ComponentbuilderHelper::checkArray(
+		if (ArrayHelper::check(
 				$this->componentData->version_update
 			)
-			|| ComponentbuilderHelper::checkArray($this->updateSQLBuilder))
+			|| ArrayHelper::check($this->updateSQLBuilder))
 		{
 			$updateXML = array();
 			// add the update server
@@ -1116,7 +1120,7 @@ class Interpretation extends Fields
 			// add the dynamic sql switch
 			$addDynamicSQL = true;
 			$addActive     = true;
-			if (ComponentbuilderHelper::checkArray(
+			if (ArrayHelper::check(
 				$this->componentData->version_update
 			))
 			{
@@ -1135,7 +1139,7 @@ class Interpretation extends Fields
 			}
 			// add the dynamic sql if not already added
 			if ($addDynamicSQL
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->updateSQLBuilder
 				))
 			{
@@ -1144,7 +1148,7 @@ class Interpretation extends Fields
 			}
 			// add the new active version if needed
 			if ($addActive
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->updateSQLBuilder
 				))
 			{
@@ -1176,7 +1180,7 @@ class Interpretation extends Fields
 		// add the update server link to component XML
 		if ($this->componentData->add_update_server
 			&& isset($this->componentData->update_server_url)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->componentData->update_server_url
 			))
 		{
@@ -1203,7 +1207,7 @@ class Interpretation extends Fields
 				= '';
 		}
 		// ensure to update Component version data
-		if (ComponentbuilderHelper::checkArray($this->updateSQLBuilder))
+		if (ArrayHelper::check($this->updateSQLBuilder))
 		{
 			$buket = array();
 			$nr    = 0;
@@ -1319,7 +1323,7 @@ class Interpretation extends Fields
 		// ensure version naming is correct
 		$update['version'] = preg_replace('/[^0-9.]+/', '', $update['version']);
 		// setup SQL
-		if (ComponentbuilderHelper::checkString($update['mysql']))
+		if (StringHelper::check($update['mysql']))
 		{
 			$update['mysql'] = $this->setPlaceholders(
 				$update['mysql'], $this->placeholders
@@ -1328,7 +1332,7 @@ class Interpretation extends Fields
 		// add dynamic SQL
 		$force = false;
 		if ($addDynamicSQL
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->updateSQLBuilder
 			)
 			&& (isset($this->componentData->old_component_version)
@@ -1352,7 +1356,7 @@ class Interpretation extends Fields
 		// setup import files
 		if ($update['version'] != $this->componentData->component_version)
 		{
-			$name   = ComponentbuilderHelper::safeString($update['version']);
+			$name   = StringHelper::safe($update['version']);
 			$target = array('admin' => $name);
 			$this->buildDynamique($target, 'sql_update', $update['version']);
 			$this->fileContentDynamic[$name . '_'
@@ -1361,7 +1365,7 @@ class Interpretation extends Fields
 				= $update['mysql'];
 		}
 		elseif (isset($update['url'])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$update['url']
 			))
 		{
@@ -1414,7 +1418,7 @@ class Interpretation extends Fields
 				. 'AUTHORWEBSITE' . $this->hhh] . '</infourl>';
 			$updateXML[] = $this->_t(2) . "<downloads>";
 			if (!isset($update['url'])
-				|| !ComponentbuilderHelper::checkString(
+				|| !StringHelper::check(
 					$update['url']
 				))
 			{
@@ -2217,7 +2221,7 @@ class Interpretation extends Fields
 		if ($this->buildDynamique($target, 'admin_menu'))
 		{
 			// set the lang
-			$lang = ComponentbuilderHelper::safeString(
+			$lang = StringHelper::safe(
 				'com_' . $this->componentCodeName . '_menu_'
 				. $nameSingleCode,
 				'U'
@@ -2267,7 +2271,7 @@ class Interpretation extends Fields
 		if ($this->buildDynamique($target, 'menu'))
 		{
 			// set the lang
-			$lang = ComponentbuilderHelper::safeString(
+			$lang = StringHelper::safe(
 				'com_' . $this->componentCodeName . '_menu_'
 				. $view['settings']->code, 'U'
 			);
@@ -2305,7 +2309,7 @@ class Interpretation extends Fields
 					. 'addfieldpath="/administrator/components/com_'
 					. $this->componentCodeName . '/models/fields">';
 				if (isset($this->hasIdRequest[$view['settings']->code])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->hasIdRequest[$view['settings']->code]
 					))
 				{
@@ -2318,7 +2322,7 @@ class Interpretation extends Fields
 					}
 				}
 				if (isset($this->hasCatIdRequest[$view['settings']->code])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->hasCatIdRequest[$view['settings']->code]
 					))
 				{
@@ -2342,7 +2346,7 @@ class Interpretation extends Fields
 					$view['settings']->code
 				);
 				// now load the fields
-				if (ComponentbuilderHelper::checkArray($params))
+				if (ArrayHelper::check($params))
 				{
 					$xml .= PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(
 							__LINE__
@@ -2388,7 +2392,7 @@ class Interpretation extends Fields
 			$target = ComponentbuilderHelper::getBetween(
 				$field, 'display="', '"'
 			);
-			if (!ComponentbuilderHelper::checkString($target)
+			if (!StringHelper::check($target)
 				|| $target === 'menu')
 			{
 				$field = str_replace('display="menu"', '', $field);
@@ -2396,7 +2400,7 @@ class Interpretation extends Fields
 				if ($target !== 'menu'
 					&& strpos($field, 'Option Set. -->') !== false
 					&& strpos($field, $menuSetter) === false
-					&& !ComponentbuilderHelper::checkString($target))
+					&& !StringHelper::check($target))
 				{
 					// we add the global option
 					$field = str_replace(
@@ -2434,7 +2438,7 @@ class Interpretation extends Fields
 	)
 	{
 		$query = '';
-		if (ComponentbuilderHelper::checkArray($gets))
+		if (ArrayHelper::check($gets))
 		{
 			$mainAsArray = array();
 			$check       = 'zzz';
@@ -2449,7 +2453,7 @@ class Interpretation extends Fields
 					$this->customViewQueryChecker[$this->target][$checker]
 						= true;
 					if (isset($the_get['selection']['type'])
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$the_get['selection']['type']
 						))
 					{
@@ -2475,16 +2479,16 @@ class Interpretation extends Fields
 					// load the from selection
 					if (($nr == 0
 							&& (!isset($the_get['join_field'])
-								|| !ComponentbuilderHelper::checkString(
+								|| !StringHelper::check(
 									$the_get['join_field']
 								))
 							&& (isset($the_get['selection']['type'])
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$the_get['selection']['type']
 								)))
 						|| ($type === 'custom'
 							&& (isset($the_get['selection']['type'])
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$the_get['selection']['type']
 								))))
 					{
@@ -2493,11 +2497,11 @@ class Interpretation extends Fields
 							. ');';
 					}
 					elseif (isset($the_get['join_field'])
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$the_get['join_field']
 						)
 						&& isset($the_get['selection']['type'])
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$the_get['selection']['type']
 						))
 					{
@@ -2519,7 +2523,7 @@ class Interpretation extends Fields
 						)) !== false)
 					{
 						if (isset($this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']])
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]
 							)
 							&& !in_array($check, $mainAsArray))
@@ -2552,7 +2556,7 @@ class Interpretation extends Fields
 	{
 		$filter = '';
 		// check if filter is set for this field
-		if (ComponentbuilderHelper::checkArray($filters))
+		if (ArrayHelper::check($filters))
 		{
 			foreach ($filters as $field => $ter)
 			{
@@ -2794,7 +2798,7 @@ class Interpretation extends Fields
 			// check if we should load this again
 			if (strpos($get['selection']['select'], $field) !== false
 				&& !isset($this->loadTracker[$key])
-				&& ComponentbuilderHelper::checkArray($array['decode']))
+				&& ArrayHelper::check($array['decode']))
 			{
 				// set the key
 				$this->loadTracker[$key] = $key;
@@ -2880,7 +2884,7 @@ class Interpretation extends Fields
 						}
 					}
 					// check if we have found the details
-					if (ComponentbuilderHelper::checkString($if))
+					if (StringHelper::check($if))
 					{
 						// build decoder string
 						$fieldDecode .= PHP_EOL . $this->_t(1) . $tab
@@ -2890,7 +2894,7 @@ class Interpretation extends Fields
 							. "//" . $this->setLine(__LINE__) . " Decode "
 							. $field;
 					}
-					if (ComponentbuilderHelper::checkString($decoder))
+					if (StringHelper::check($decoder))
 					{
 						// build decoder string
 						$fieldDecode .= PHP_EOL . $this->_t(1) . $tab
@@ -3028,7 +3032,7 @@ class Interpretation extends Fields
 	                                        $tab = ''
 	)
 	{
-		if (ComponentbuilderHelper::checkArray($gets))
+		if (ArrayHelper::check($gets))
 		{
 			$customJoin = '';
 			foreach ($gets as $get)
@@ -3089,7 +3093,7 @@ class Interpretation extends Fields
 	{
 		// check if this function is not linked to the main call
 		list($aJoin) = explode('.', $get['on_field']);
-		if (ComponentbuilderHelper::checkArray($asBucket)
+		if (ArrayHelper::check($asBucket)
 			&& in_array(
 				$aJoin, $asBucket
 			))
@@ -3098,7 +3102,7 @@ class Interpretation extends Fields
 		}
 		// default fallback
 		elseif (isset($this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->siteDynamicGet[$this->target][$default['code']][$default['as']][$default['join_field']]
 			))
 		{
@@ -3111,7 +3115,7 @@ class Interpretation extends Fields
 	public function setCustomViewFilter(&$filter, &$code, $tab = '')
 	{
 		$filters = '';
-		if (ComponentbuilderHelper::checkArray($filter))
+		if (ArrayHelper::check($filter))
 		{
 			foreach ($filter as $ter)
 			{
@@ -3149,7 +3153,7 @@ class Interpretation extends Fields
 						// COM_COMPONENTBUILDER_DYNAMIC_GET_USER_GROUPS
 						$decodeChecker
 							= $this->siteFieldData['decode'][$code][$ter['key']][$as][$field];
-						if (ComponentbuilderHelper::checkArray($decodeChecker)
+						if (ArrayHelper::check($decodeChecker)
 							|| $ter['state_key'] === 'array')
 						{
 							// set needed fields to filter after query
@@ -3286,12 +3290,12 @@ class Interpretation extends Fields
 						break;
 				}
 				// only add if the filter is set
-				if (ComponentbuilderHelper::checkString($string))
+				if (StringHelper::check($string))
 				{
 					// sort where
 					if ($as === 'a'
 						|| (isset($this->siteMainGet[$this->target][$code][$as])
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$this->siteMainGet[$this->target][$code][$as]
 							)))
 					{
@@ -3312,7 +3316,7 @@ class Interpretation extends Fields
 	public function setCustomViewGroup(&$group, &$code, $tab = '')
 	{
 		$grouping = '';
-		if (ComponentbuilderHelper::checkArray($group))
+		if (ArrayHelper::check($group))
 		{
 			foreach ($group as $gr)
 			{
@@ -3324,7 +3328,7 @@ class Interpretation extends Fields
 				// sort where
 				if ($as === 'a'
 					|| (isset($this->siteMainGet[$this->target][$code][$as])
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$this->siteMainGet[$this->target][$code][$as]
 						)))
 				{
@@ -3345,7 +3349,7 @@ class Interpretation extends Fields
 	public function setCustomViewOrder(&$order, &$code, $tab = '')
 	{
 		$ordering = '';
-		if (ComponentbuilderHelper::checkArray($order))
+		if (ArrayHelper::check($order))
 		{
 			foreach ($order as $or)
 			{
@@ -3367,7 +3371,7 @@ class Interpretation extends Fields
 				// sort where
 				if ($as === 'a'
 					|| (isset($this->siteMainGet[$this->target][$code][$as])
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$this->siteMainGet[$this->target][$code][$as]
 						)))
 				{
@@ -3388,7 +3392,7 @@ class Interpretation extends Fields
 	public function setCustomViewWhere(&$where, &$code, $tab = '')
 	{
 		$wheres = '';
-		if (ComponentbuilderHelper::checkArray($where))
+		if (ArrayHelper::check($where))
 		{
 			foreach ($where as $whe)
 			{
@@ -3428,12 +3432,12 @@ class Interpretation extends Fields
 						$value = " " . $whe['value_key'] . "');";
 					}
 				}
-				elseif (ComponentbuilderHelper::checkString($whe['value_key']))
+				elseif (StringHelper::check($whe['value_key']))
 				{
 					$value = " " . $whe['value_key'] . "');";
 				}
 				// only load if there is a value
-				if (ComponentbuilderHelper::checkString($value))
+				if (StringHelper::check($value))
 				{
 					$tabe = '';
 					if ($as === 'a')
@@ -3479,7 +3483,7 @@ class Interpretation extends Fields
 					// sort where
 					if ($as === 'a'
 						|| (isset($this->siteMainGet[$this->target][$code][$as])
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$this->siteMainGet[$this->target][$code][$as]
 							)))
 					{
@@ -3501,7 +3505,7 @@ class Interpretation extends Fields
 	public function setCustomViewGlobals(&$global, $string, $as, $tab = '')
 	{
 		$globals = '';
-		if (ComponentbuilderHelper::checkArray($global))
+		if (ArrayHelper::check($global))
 		{
 			$as = array_unique($as);
 			foreach ($global as $glo)
@@ -3524,7 +3528,7 @@ class Interpretation extends Fields
 							break;
 					}
 					// only add if the filter is set
-					if (ComponentbuilderHelper::checkString($value))
+					if (StringHelper::check($value))
 					{
 						$globals .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1)
 							. "//" . $this->setLine(__LINE__)
@@ -3611,7 +3615,7 @@ class Interpretation extends Fields
 				. "\$app = JFactory::getApplication();";
 			// set lang
 			$langKeyWord = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString(
+				. StringHelper::safe(
 					'Not authorised to view ' . $view['settings']->code . '!',
 					'U'
 				);
@@ -3646,7 +3650,7 @@ class Interpretation extends Fields
 	                                     $type = 'main'
 	)
 	{
-		if (ComponentbuilderHelper::checkObject($get))
+		if (ObjectHelper::check($get))
 		{
 			// set the site decription switches
 			foreach ($this->cryptionTypes as $cryptionType)
@@ -3659,7 +3663,7 @@ class Interpretation extends Fields
 			if (isset($get->add_php_before_getitem)
 				&& $get->add_php_before_getitem == 1
 				&& isset($get->php_before_getitem)
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$get->php_before_getitem
 				))
 			{
@@ -3706,7 +3710,7 @@ class Interpretation extends Fields
 			if (isset($get->add_php_after_getitem)
 				&& $get->add_php_after_getitem == 1
 				&& isset($get->php_after_getitem)
-				&& ComponentbuilderHelper::checkString($get->php_after_getitem))
+				&& StringHelper::check($get->php_after_getitem))
 			{
 				$getItem .= $this->setPlaceholders(
 					$get->php_after_getitem, $this->placeholders
@@ -3750,7 +3754,7 @@ class Interpretation extends Fields
 				$getItem      .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2)
 					. "\$app = JFactory::getApplication();";
 				$langKeyWoord = $this->langPrefix . '_'
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						'Not found or access denied', 'U'
 					);
 				$this->setLangContent(
@@ -3801,7 +3805,7 @@ class Interpretation extends Fields
 			$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(1) . "}";
 			// dispatcher placeholder
 			$getItem .= $this->hhh . "DISPATCHER" . $this->hhh;
-			if (ComponentbuilderHelper::checkArray($get->main_get))
+			if (ArrayHelper::check($get->main_get))
 			{
 				$asBucket = array();
 				foreach ($get->main_get as $main_get)
@@ -3812,7 +3816,7 @@ class Interpretation extends Fields
 						{
 							$decodeChecker
 								= $this->siteFieldData['decode'][$code][$main_get['key']][$main_get['as']];
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$decodeChecker
 							))
 							{
@@ -3828,7 +3832,7 @@ class Interpretation extends Fields
 						{
 							$decodeFilter
 								= $this->siteFieldDecodeFilter[$this->target][$code][$main_get['key']][$main_get['as']];
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$decodeFilter
 							))
 							{
@@ -3844,7 +3848,7 @@ class Interpretation extends Fields
 						{
 							$contentprepareChecker
 								= $this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']];
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$contentprepareChecker
 							))
 							{
@@ -3860,7 +3864,7 @@ class Interpretation extends Fields
 						{
 							$uikitChecker
 								= $this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']];
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$uikitChecker
 							))
 							{
@@ -3969,7 +3973,7 @@ class Interpretation extends Fields
 			{
 				// check if the dispather should be added
 				if (!isset($this->JEventDispatcher)
-					|| !ComponentbuilderHelper::checkArray(
+					|| !ArrayHelper::check(
 						$this->JEventDispatcher
 					))
 				{
@@ -3993,21 +3997,21 @@ class Interpretation extends Fields
 	{
 		$methods = '';
 		// then set the needed custom methods
-		if (ComponentbuilderHelper::checkArray($main_view)
+		if (ArrayHelper::check($main_view)
 			&& isset($main_view['settings'])
-			&& ComponentbuilderHelper::checkObject($main_view['settings'])
+			&& ObjectHelper::check($main_view['settings'])
 			&& isset($main_view['settings']->custom_get))
 		{
 			$_dynamic_get = $main_view['settings']->custom_get;
 		}
-		elseif (ComponentbuilderHelper::checkObject($main_view)
+		elseif (ObjectHelper::check($main_view)
 			&& isset($main_view->custom_get))
 		{
 			$_dynamic_get = $main_view->custom_get;
 		}
 		// check if we have an array
 		if (isset($_dynamic_get)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$_dynamic_get
 			))
 		{
@@ -4015,11 +4019,11 @@ class Interpretation extends Fields
 			foreach ($_dynamic_get as $view)
 			{
 				// fix alias to use in code
-				$view->code = ComponentbuilderHelper::safeString($code);
-				$view->Code = ComponentbuilderHelper::safeString(
+				$view->code = StringHelper::safe($code);
+				$view->Code = StringHelper::safe(
 					$view->code, 'F'
 				);
-				$view->CODE = ComponentbuilderHelper::safeString(
+				$view->CODE = StringHelper::safe(
 					$view->code, 'U'
 				);
 				$main       = '';
@@ -4077,7 +4081,7 @@ class Interpretation extends Fields
 					if (isset($view->add_php_getlistquery)
 						&& $view->add_php_getlistquery == 1
 						&& isset($view->php_getlistquery)
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$view->php_getlistquery
 						))
 					{
@@ -4093,7 +4097,7 @@ class Interpretation extends Fields
 					if (isset($view->add_php_before_getitems)
 						&& $view->add_php_before_getitems == 1
 						&& isset($view->php_before_getitems)
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$view->php_before_getitems
 						))
 					{
@@ -4113,7 +4117,7 @@ class Interpretation extends Fields
 					if (isset($view->add_php_after_getitems)
 						&& $view->add_php_after_getitems == 1
 						&& isset($view->php_after_getitems)
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$view->php_after_getitems
 						))
 					{
@@ -4146,7 +4150,7 @@ class Interpretation extends Fields
 			}
 		}
 		// load uikit get method
-		if (ComponentbuilderHelper::checkArray($main_view)
+		if (ArrayHelper::check($main_view)
 			&& isset($main_view['settings']))
 		{
 			$methods .= $this->setUikitGetMethod();
@@ -4314,7 +4318,7 @@ class Interpretation extends Fields
 	public function setMainCustomMehtod(&$body, $nAme, $type)
 	{
 		$method = '';
-		if (ComponentbuilderHelper::checkString($body))
+		if (StringHelper::check($body))
 		{
 			// build custom method
 			$method .= PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
@@ -4337,10 +4341,10 @@ class Interpretation extends Fields
 		$methods                = '';
 		$this->JEventDispatcher = '';
 		// first set the needed item/s methods
-		if (ComponentbuilderHelper::checkObject($main_get))
+		if (ObjectHelper::check($main_get))
 		{
 			if (isset($main_get->custom_get)
-				&& ComponentbuilderHelper::checkArray($main_get->custom_get))
+				&& ArrayHelper::check($main_get->custom_get))
 			{
 				foreach ($main_get->custom_get as $get)
 				{
@@ -4432,12 +4436,12 @@ class Interpretation extends Fields
 						// check if other queries should be loaded
 						$queryChecker
 							= (isset($this->otherQuery[$this->target][$default['code']][$default['as']])
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$this->otherQuery[$this->target][$default['code']][$default['as']]
 							))
 							? $this->otherQuery[$this->target][$default['code']][$default['as']]
 							: '';
-						if (ComponentbuilderHelper::checkArray($queryChecker))
+						if (ArrayHelper::check($queryChecker))
 						{
 							foreach ($queryChecker as $query)
 							{
@@ -4446,7 +4450,7 @@ class Interpretation extends Fields
 						}
 						// add any other filter that was set
 						if (isset($this->otherFilter[$this->target][$default['code']][$default['as']])
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$this->otherFilter[$this->target][$default['code']][$default['as']]
 							))
 						{
@@ -4460,7 +4464,7 @@ class Interpretation extends Fields
 						}
 						// add any other where that was set
 						if (isset($this->otherWhere[$this->target][$default['code']][$default['as']])
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$this->otherWhere[$this->target][$default['code']][$default['as']]
 							))
 						{
@@ -4474,7 +4478,7 @@ class Interpretation extends Fields
 						}
 						// add any other order that was set
 						if (isset($this->otherOrder[$this->target][$default['code']][$default['as']])
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$this->otherOrder[$this->target][$default['code']][$default['as']]
 							))
 						{
@@ -4488,7 +4492,7 @@ class Interpretation extends Fields
 						}
 						// add any other grouping that was set
 						if (isset($this->otherGroup[$this->target][$default['code']][$default['as']])
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$this->otherGroup[$this->target][$default['code']][$default['as']]
 							))
 						{
@@ -4545,34 +4549,34 @@ class Interpretation extends Fields
 						                      . $this->hhh => '$item');
 						$joinedChecker
 						              = (isset($this->otherJoin[$this->target][$default['code']][$default['as']])
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$this->otherJoin[$this->target][$default['code']][$default['as']]
 							))
 							? $this->otherJoin[$this->target][$default['code']][$default['as']]
 							: '';
 						if ((isset($decodeChecker)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$decodeChecker
 								))
 							|| (isset($uikitChecker)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$uikitChecker
 								))
 							|| (isset($decodeFilter)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$decodeFilter
 								))
 							|| (isset($contentprepareChecker)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$contentprepareChecker
 								))
-							|| ComponentbuilderHelper::checkArray(
+							|| ArrayHelper::check(
 								$joinedChecker
 							))
 						{
 							$decoder = '';
 							if (isset($decodeChecker)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$decodeChecker
 								))
 							{
@@ -4584,7 +4588,7 @@ class Interpretation extends Fields
 							}
 							$decoder_filter = '';
 							if (isset($decodeFilter)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$decodeFilter
 								))
 							{
@@ -4596,7 +4600,7 @@ class Interpretation extends Fields
 							}
 							$contentprepare = '';
 							if (isset($contentprepareChecker)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$contentprepareChecker
 								))
 							{
@@ -4608,7 +4612,7 @@ class Interpretation extends Fields
 							}
 							$uikit = '';
 							if (isset($uikitChecker)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$uikitChecker
 								))
 							{
@@ -4618,7 +4622,7 @@ class Interpretation extends Fields
 								);
 							}
 							$joine = '';
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$joinedChecker
 							))
 							{
@@ -4629,15 +4633,15 @@ class Interpretation extends Fields
 									);
 								}
 							}
-							if (ComponentbuilderHelper::checkString($decoder)
-								|| ComponentbuilderHelper::checkString(
+							if (StringHelper::check($decoder)
+								|| StringHelper::check(
 									$contentprepare
 								)
-								|| ComponentbuilderHelper::checkString($uikit)
-								|| ComponentbuilderHelper::checkString(
+								|| StringHelper::check($uikit)
+								|| StringHelper::check(
 									$decoder_filter
 								)
-								|| ComponentbuilderHelper::checkString($joine))
+								|| StringHelper::check($joine))
 							{
 								$methods .= PHP_EOL . $this->_t(3)
 									. "\$items = \$db->loadObjectList();";
@@ -4647,29 +4651,29 @@ class Interpretation extends Fields
 								$methods .= PHP_EOL . $this->_t(3)
 									. "foreach (\$items as \$nr => &\$item)";
 								$methods .= PHP_EOL . $this->_t(3) . "{";
-								if (ComponentbuilderHelper::checkString(
+								if (StringHelper::check(
 									$decoder
 								))
 								{
 									$methods .= $decoder;
 								}
-								if (ComponentbuilderHelper::checkString(
+								if (StringHelper::check(
 									$decoder_filter
 								))
 								{
 									$methods .= $decoder_filter;
 								}
-								if (ComponentbuilderHelper::checkString(
+								if (StringHelper::check(
 									$contentprepare
 								))
 								{
 									$methods .= $contentprepare;
 								}
-								if (ComponentbuilderHelper::checkString($uikit))
+								if (StringHelper::check($uikit))
 								{
 									$methods .= $uikit;
 								}
-								if (ComponentbuilderHelper::checkString($joine))
+								if (StringHelper::check($joine))
 								{
 									$methods .= $joine;
 								}
@@ -4747,7 +4751,7 @@ class Interpretation extends Fields
 					}
 				}
 				// insure the crypt placeholder is removed
-				if (ComponentbuilderHelper::checkString($methods))
+				if (StringHelper::check($methods))
 				{
 					$methods = str_replace(
 						$this->hhh . 'CRYPT' . $this->hhh, '', $methods
@@ -4760,7 +4764,7 @@ class Interpretation extends Fields
 		{
 			// check if the dispather should be added
 			if (!isset($this->JEventDispatcher)
-				|| !ComponentbuilderHelper::checkArray($this->JEventDispatcher))
+				|| !ArrayHelper::check($this->JEventDispatcher))
 			{
 				$this->JEventDispatcher = array($this->hhh . 'DISPATCHER'
 				                                . $this->hhh => '');
@@ -4771,7 +4775,7 @@ class Interpretation extends Fields
 			);
 		}
 		// insure the crypt placeholder is removed
-		if (ComponentbuilderHelper::checkString($methods))
+		if (StringHelper::check($methods))
 		{
 			return $methods . PHP_EOL;
 		}
@@ -4784,32 +4788,32 @@ class Interpretation extends Fields
 		if (isset($get['key']) && isset($get['as']))
 		{
 			$key                  = substr(
-				ComponentbuilderHelper::safeString(
+				StringHelper::safe(
 					preg_replace('/[0-9]+/', '', md5($get['key'])), 'F'
 				), 0, 4
 			);
 			$method['on_field']   = (isset($get['on_field']))
 				? $this->removeAsDot($get['on_field']) : null;
 			$method['join_field'] = (isset($get['join_field']))
-				? ComponentbuilderHelper::safeString(
+				? StringHelper::safe(
 					$this->removeAsDot($get['join_field'])
 				) : null;
 			$method['Join_field'] = (isset($method['join_field']))
-				? ComponentbuilderHelper::safeString($method['join_field'], 'F')
+				? StringHelper::safe($method['join_field'], 'F')
 				: null;
-			$method['name']       = ComponentbuilderHelper::safeString(
+			$method['name']       = StringHelper::safe(
 				$get['selection']['name'], 'F'
 			);
-			$method['code']       = ComponentbuilderHelper::safeString($code);
-			$method['AS']         = ComponentbuilderHelper::safeString(
+			$method['code']       = StringHelper::safe($code);
+			$method['AS']         = StringHelper::safe(
 				$get['as'], 'U'
 			);
-			$method['as']         = ComponentbuilderHelper::safeString(
+			$method['as']         = StringHelper::safe(
 				$get['as']
 			);
 			$method['valueName']  = $method['on_field'] . $method['Join_field']
 				. $method['name'] . $method['AS'];
-			$method['methodName'] = ComponentbuilderHelper::safeString(
+			$method['methodName'] = StringHelper::safe(
 					$method['on_field'], 'F'
 				) . $method['Join_field'] . $method['name'] . $key . '_'
 				. $method['AS'];
@@ -4823,7 +4827,7 @@ class Interpretation extends Fields
 
 	public function setCustomViewListQuery(&$get, $code, $return = true)
 	{
-		if (ComponentbuilderHelper::checkObject($get))
+		if (ObjectHelper::check($get))
 		{
 			if ($get->pagination == 1)
 			{
@@ -4910,7 +4914,7 @@ class Interpretation extends Fields
 		$Component = $this->fileContentStatic[$this->hhh . 'Component'
 		. $this->hhh];
 		// start load the get item
-		if (ComponentbuilderHelper::checkObject($get))
+		if (ObjectHelper::check($get))
 		{
 			$getItem .= PHP_EOL . PHP_EOL . $this->_t(2) . "//"
 				. $this->setLine(__LINE__)
@@ -4927,7 +4931,7 @@ class Interpretation extends Fields
 			$getItem .= PHP_EOL . $this->_t(4)
 				. "\$item->slug = (isset(\$item->alias) && isset(\$item->id)) ? \$item->id.':'.\$item->alias : \$item->id;";
 			if (isset($get->main_get)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$get->main_get
 				))
 			{
@@ -4938,7 +4942,7 @@ class Interpretation extends Fields
 					{
 						$decodeChecker
 							= $this->siteFieldData['decode'][$code][$main_get['key']][$main_get['as']];
-						if (ComponentbuilderHelper::checkArray($decodeChecker))
+						if (ArrayHelper::check($decodeChecker))
 						{
 							// set decoding of needed fields
 							$getItem .= $this->setCustomViewFieldDecode(
@@ -4952,7 +4956,7 @@ class Interpretation extends Fields
 					{
 						$decodeFilter
 							= $this->siteFieldDecodeFilter[$this->target][$code][$main_get['key']][$main_get['as']];
-						if (ComponentbuilderHelper::checkArray($decodeFilter))
+						if (ArrayHelper::check($decodeFilter))
 						{
 							$getItem .= $this->setCustomViewFieldDecodeFilter(
 								$main_get, $decodeFilter, "\$item",
@@ -4964,7 +4968,7 @@ class Interpretation extends Fields
 					{
 						$contentprepareChecker
 							= $this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']];
-						if (ComponentbuilderHelper::checkArray(
+						if (ArrayHelper::check(
 							$contentprepareChecker
 						))
 						{
@@ -4979,7 +4983,7 @@ class Interpretation extends Fields
 					{
 						$uikitChecker
 							= $this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']];
-						if (ComponentbuilderHelper::checkArray($uikitChecker))
+						if (ArrayHelper::check($uikitChecker))
 						{
 							// set uikit checkers on needed fields
 							$getItem .= $this->setCustomViewFieldUikitChecker(
@@ -4997,7 +5001,7 @@ class Interpretation extends Fields
 			{
 				// check if the dispather should be added
 				if (!isset($this->JEventDispatcher)
-					|| !ComponentbuilderHelper::checkArray(
+					|| !ArrayHelper::check(
 						$this->JEventDispatcher
 					))
 				{
@@ -5023,7 +5027,7 @@ class Interpretation extends Fields
 				$get->php_calculation = (array) explode(
 					PHP_EOL, $get->php_calculation
 				);
-				if (ComponentbuilderHelper::checkArray($get->php_calculation))
+				if (ArrayHelper::check($get->php_calculation))
 				{
 					$_tmp    = PHP_EOL . $this->_t(4) . implode(
 							PHP_EOL . $this->_t(4), $get->php_calculation
@@ -5135,12 +5139,12 @@ class Interpretation extends Fields
 	{
 		$method = '';
 		if (isset($view['settings']->main_get)
-			&& ComponentbuilderHelper::checkObject($view['settings']->main_get))
+			&& ObjectHelper::check($view['settings']->main_get))
 		{
 
 			// add events if needed
 			if ($view['settings']->main_get->gettype == 1
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$view['settings']->main_get->plugin_events
 				))
 			{
@@ -5177,7 +5181,7 @@ class Interpretation extends Fields
 			}
 			// add the custom get methods
 			if (isset($view['settings']->custom_get)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$view['settings']->custom_get
 				))
 			{
@@ -5187,7 +5191,7 @@ class Interpretation extends Fields
 						'get', '', $custom_get->getcustom
 					);
 					$method          .= PHP_EOL . $this->_t(2) . "\$this->"
-						. ComponentbuilderHelper::safeString($custom_get_name)
+						. StringHelper::safe($custom_get_name)
 						. " = \$this->get('" . $custom_get_name . "');";
 				}
 			}
@@ -5197,7 +5201,7 @@ class Interpretation extends Fields
 				$view['settings']->php_jview_display = (array) explode(
 					PHP_EOL, $view['settings']->php_jview_display
 				);
-				if (ComponentbuilderHelper::checkArray(
+				if (ArrayHelper::check(
 					$view['settings']->php_jview_display
 				))
 				{
@@ -5249,7 +5253,7 @@ class Interpretation extends Fields
 			$method .= PHP_EOL . $this->_t(2) . "}";
 			// add events if needed
 			if ($view['settings']->main_get->gettype == 1
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$view['settings']->main_get->plugin_events
 				))
 			{
@@ -5326,7 +5330,7 @@ class Interpretation extends Fields
 		}
 
 		// ensure correct target is set
-		$TARGET = ComponentbuilderHelper::safeString($this->target, 'U');
+		$TARGET = StringHelper::safe($this->target, 'U');
 
 		// set libraries $TARGET.'_LIBRARIES_LOADER
 		$this->fileContentDynamic[$view['settings']->code][$this->hhh . $TARGET
@@ -5511,7 +5515,7 @@ class Interpretation extends Fields
 			$view['settings']->php_document = (array) explode(
 				PHP_EOL, $view['settings']->php_document
 			);
-			if (ComponentbuilderHelper::checkArray(
+			if (ArrayHelper::check(
 				$view['settings']->php_document
 			))
 			{
@@ -5531,7 +5535,7 @@ class Interpretation extends Fields
 		// do not validate selection
 		$validateSelection = 'false';
 		// ensure correct target is set
-		$TARGET = ComponentbuilderHelper::safeString($this->target, 'U');
+		$TARGET = StringHelper::safe($this->target, 'U');
 		if (1 == $type || 2 == $type)
 		{
 			if (1 == $type)
@@ -5641,7 +5645,7 @@ class Interpretation extends Fields
 			$this->onlyFunctionButton = array();
 			$functionNames            = array();
 			if (isset($view['settings']->custom_buttons)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$view['settings']->custom_buttons
 				))
 			{
@@ -5649,10 +5653,10 @@ class Interpretation extends Fields
 				{
 					// Load to lang
 					$keyLang = $this->langPrefix . '_'
-						. ComponentbuilderHelper::safeString(
+						. StringHelper::safe(
 							$custom_button['name'], 'U'
 						);
-					$keyCode = ComponentbuilderHelper::safeString(
+					$keyCode = StringHelper::safe(
 						$custom_button['name']
 					);
 					$this->setLangContent(
@@ -5770,7 +5774,7 @@ class Interpretation extends Fields
 			{
 				// insure the controller and model strings are added
 				if (isset($view['settings']->php_controller_list)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$view['settings']->php_controller_list
 					)
 					&& $view['settings']->php_controller_list != '//')
@@ -5786,7 +5790,7 @@ class Interpretation extends Fields
 				}
 				// load the model
 				if (isset($view['settings']->php_model_list)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$view['settings']->php_model_list
 					)
 					&& $view['settings']->php_model_list != '//')
@@ -5804,7 +5808,7 @@ class Interpretation extends Fields
 			else
 			{
 				// insure the controller and model strings are added
-				if (ComponentbuilderHelper::checkString(
+				if (StringHelper::check(
 						$view['settings']->php_controller
 					)
 					&& $view['settings']->php_controller != '//')
@@ -5827,7 +5831,7 @@ class Interpretation extends Fields
 					}
 				}
 				// load the model
-				if (ComponentbuilderHelper::checkString(
+				if (StringHelper::check(
 						$view['settings']->php_model
 					)
 					&& $view['settings']->php_model != '//')
@@ -5843,18 +5847,18 @@ class Interpretation extends Fields
 			}
 		}
 		// return buttons if they were build
-		if (ComponentbuilderHelper::checkArray($buttons))
+		if (ArrayHelper::check($buttons))
 		{
 			// just to check if the submission script is manually added
 			if (!isset($view['settings']->php_document)
-				|| (ComponentbuilderHelper::checkArray(
+				|| (ArrayHelper::check(
 						$view['settings']->php_document
 					)
 					&& strpos(
 						implode(' ', $view['settings']->php_document),
 						'/submitbutton.js'
 					) === false)
-				|| (ComponentbuilderHelper::checkString(
+				|| (StringHelper::check(
 						$view['settings']->php_document
 					)
 					&& strpos(
@@ -5901,7 +5905,7 @@ class Interpretation extends Fields
 	{
 		// return buttons if they were build
 		if (isset($this->onlyFunctionButton[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->onlyFunctionButton[$nameListCode]
 			))
 		{
@@ -5917,7 +5921,7 @@ class Interpretation extends Fields
 	{
 		if ($view['settings']->add_css == 1)
 		{
-			if (ComponentbuilderHelper::checkString($view['settings']->css))
+			if (StringHelper::check($view['settings']->css))
 			{
 				return $this->setPlaceholders(
 					$view['settings']->css, $this->placeholders
@@ -5935,7 +5939,7 @@ class Interpretation extends Fields
 			$view['settings']->css_document = (array) explode(
 				PHP_EOL, $view['settings']->css_document
 			);
-			if (ComponentbuilderHelper::checkArray(
+			if (ArrayHelper::check(
 				$view['settings']->css_document
 			))
 			{
@@ -5962,7 +5966,7 @@ class Interpretation extends Fields
 	public function setJavaScriptFile(&$view, $TARGET)
 	{
 		if ($view['settings']->add_javascript_file == 1
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$view['settings']->javascript_file
 			))
 		{
@@ -6013,7 +6017,7 @@ class Interpretation extends Fields
 			$view['settings']->js_document = (array) explode(
 				PHP_EOL, $view['settings']->js_document
 			);
-			if (ComponentbuilderHelper::checkArray(
+			if (ArrayHelper::check(
 				$view['settings']->js_document
 			))
 			{
@@ -6062,7 +6066,7 @@ class Interpretation extends Fields
 			// if we do then it posibly can be that the metadata is loaded via that method
 			// and we can load the full metadata structure with its vars
 			if (isset($view['settings']->custom_get)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$view['settings']->custom_get
 				))
 			{
@@ -6276,18 +6280,18 @@ class Interpretation extends Fields
 		}
 		// check if this view should get libraries
 		if (isset($this->libManager[$this->target][$code])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->libManager[$this->target][$code]
 			))
 		{
 			foreach ($this->libManager[$this->target][$code] as $id => $true)
 			{
 				if (isset($this->libraries[$id])
-					&& ComponentbuilderHelper::checkObject(
+					&& ObjectHelper::check(
 						$this->libraries[$id]
 					)
 					&& isset($this->libraries[$id]->document)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->libraries[$id]->document
 					))
 				{
@@ -6299,7 +6303,7 @@ class Interpretation extends Fields
 						);
 				}
 				elseif (isset($this->libraries[$id])
-					&& ComponentbuilderHelper::checkObject(
+					&& ObjectHelper::check(
 						$this->libraries[$id]
 					)
 					&& isset($this->libraries[$id]->how))
@@ -6321,7 +6325,7 @@ class Interpretation extends Fields
 	{
 		if (2 == $this->libraries[$id]->how
 			&& isset($this->libraries[$id]->conditions)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->libraries[$id]->conditions
 			))
 		{
@@ -6337,7 +6341,7 @@ class Interpretation extends Fields
 		}
 		// check if the document was build
 		if (isset($this->libraries[$id]->document)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->libraries[$id]->document
 			))
 		{
@@ -6366,7 +6370,7 @@ class Interpretation extends Fields
 			$this->libwarning[$id] = true;
 		}
 		// if there was any code added to document then set globaly
-		if (ComponentbuilderHelper::checkString($document))
+		if (StringHelper::check($document))
 		{
 			$this->libraries[$id]->document = $document;
 		}
@@ -6377,7 +6381,7 @@ class Interpretation extends Fields
 		$scripts = array();
 		// load the urls if found
 		if (isset($this->libraries[$id]->urls)
-			&& ComponentbuilderHelper::checkArray($this->libraries[$id]->urls))
+			&& ArrayHelper::check($this->libraries[$id]->urls))
 		{
 			// set all the files
 			foreach ($this->libraries[$id]->urls as $url)
@@ -6411,7 +6415,7 @@ class Interpretation extends Fields
 		}
 		// load the local files if found
 		if (isset($this->libraries[$id]->files)
-			&& ComponentbuilderHelper::checkArray($this->libraries[$id]->files))
+			&& ArrayHelper::check($this->libraries[$id]->files))
 		{
 			// set all the files
 			foreach ($this->libraries[$id]->files as $file)
@@ -6440,7 +6444,7 @@ class Interpretation extends Fields
 		}
 		// load the local folders if found
 		if (isset($this->libraries[$id]->folders)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->libraries[$id]->folders
 			))
 		{
@@ -6487,7 +6491,7 @@ class Interpretation extends Fields
 			}
 		}
 		// if there was any code added to document then set globaly
-		if ($buildDoc && ComponentbuilderHelper::checkArray($scripts))
+		if ($buildDoc && ArrayHelper::check($scripts))
 		{
 			$this->libraries[$id]->document = $this->_t(2) . "//"
 				. $this->setLine(__LINE__) . " always load these files."
@@ -6498,7 +6502,7 @@ class Interpretation extends Fields
 			// success
 			return true;
 		}
-		elseif (ComponentbuilderHelper::checkArray($scripts))
+		elseif (ArrayHelper::check($scripts))
 		{
 			return $scripts;
 		}
@@ -6656,7 +6660,7 @@ class Interpretation extends Fields
 		// load the components need
 		if ((2 == $this->uikit || 1 == $this->uikit)
 			&& isset($this->uikitComp[$view['settings']->code])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->uikitComp[$view['settings']->code]
 			))
 		{
@@ -6677,7 +6681,7 @@ class Interpretation extends Fields
 			}
 			// check content for more needed components
 			if (isset($this->siteFieldData['uikit'][$view['settings']->code])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->siteFieldData['uikit'][$view['settings']->code]
 				))
 			{
@@ -6779,7 +6783,7 @@ class Interpretation extends Fields
 		}
 		elseif ((2 == $this->uikit || 1 == $this->uikit)
 			&& isset($this->siteFieldData['uikit'][$view['settings']->code])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->siteFieldData['uikit'][$view['settings']->code]
 			))
 		{
@@ -6920,7 +6924,7 @@ class Interpretation extends Fields
 
 	public function setCustomViewBody(&$view)
 	{
-		if (ComponentbuilderHelper::checkString($view['settings']->default))
+		if (StringHelper::check($view['settings']->default))
 		{
 			if ($view['settings']->main_get->gettype == 2
 				&& $view['settings']->main_get->pagination == 1)
@@ -7131,7 +7135,7 @@ class Interpretation extends Fields
 
 	public function setCustomViewSubmitButtonScript(&$view)
 	{
-		if (ComponentbuilderHelper::checkString($view['settings']->default))
+		if (StringHelper::check($view['settings']->default))
 		{
 			// add the script only if there is none set
 			if (strpos(
@@ -7170,7 +7174,7 @@ class Interpretation extends Fields
 			$view['settings']->php_view = (array) explode(
 				PHP_EOL, $view['settings']->php_view
 			);
-			if (ComponentbuilderHelper::checkArray($view['settings']->php_view))
+			if (ArrayHelper::check($view['settings']->php_view))
 			{
 				$_tmp = PHP_EOL . PHP_EOL . implode(
 						PHP_EOL, $view['settings']->php_view
@@ -7186,7 +7190,7 @@ class Interpretation extends Fields
 	public function setCustomViewTemplateBody(&$view)
 	{
 		if (isset($this->templateData[$this->target][$view['settings']->code])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->templateData[$this->target][$view['settings']->code]
 			))
 		{
@@ -7207,7 +7211,7 @@ class Interpretation extends Fields
 				                . $this->hhh => $view['settings']->version);
 				$this->buildDynamique($target, 'template', $template, $config);
 				// set the file data
-				$TARGET = ComponentbuilderHelper::safeString(
+				$TARGET = StringHelper::safe(
 					$this->target, 'U'
 				);
 				// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
@@ -7228,10 +7232,10 @@ class Interpretation extends Fields
 
 	public function setCustomViewTemplateCode(&$php)
 	{
-		if (ComponentbuilderHelper::checkString($php))
+		if (StringHelper::check($php))
 		{
 			$php_view = (array) explode(PHP_EOL, $php);
-			if (ComponentbuilderHelper::checkArray($php_view))
+			if (ArrayHelper::check($php_view))
 			{
 				$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
 
@@ -7245,7 +7249,7 @@ class Interpretation extends Fields
 	public function setCustomViewLayouts()
 	{
 		if (isset($this->layoutData[$this->target])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->layoutData[$this->target]
 			))
 		{
@@ -7255,12 +7259,12 @@ class Interpretation extends Fields
 				$target = array($this->target => $layout);
 				$this->buildDynamique($target, 'layout');
 				// set the file data
-				$TARGET = ComponentbuilderHelper::safeString(
+				$TARGET = StringHelper::safe(
 					$this->target, 'U'
 				);
 				// SITE_LAYOUT_CODE <<<DYNAMIC>>>
 				$php_view = (array) explode(PHP_EOL, $data['php_view']);
-				if (ComponentbuilderHelper::checkArray($php_view))
+				if (ArrayHelper::check($php_view))
 				{
 					$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
 					$this->fileContentDynamic[$layout][$this->hhh . $TARGET
@@ -7299,7 +7303,7 @@ class Interpretation extends Fields
 			foreach ($files as $view => $file)
 			{
 				if (isset($file['path'])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$file
 					))
 				{
@@ -7313,11 +7317,11 @@ class Interpretation extends Fields
 						);
 					}
 				}
-				elseif (ComponentbuilderHelper::checkArray($file))
+				elseif (ArrayHelper::check($file))
 				{
 					foreach ($file as $nr => $doc)
 					{
-						if (ComponentbuilderHelper::checkArray($doc))
+						if (ArrayHelper::check($doc))
 						{
 							if (File::exists($doc['path']))
 							{
@@ -7371,7 +7375,7 @@ class Interpretation extends Fields
 		. $this->hhh];
 		// go from base64 to string
 		if (isset($this->base64Builder[$view])
-			&& ComponentbuilderHelper::checkArray($this->base64Builder[$view]))
+			&& ArrayHelper::check($this->base64Builder[$view]))
 		{
 			foreach ($this->base64Builder[$view] as $baseString)
 			{
@@ -7391,7 +7395,7 @@ class Interpretation extends Fields
 		foreach ($this->cryptionTypes as $cryptionType)
 		{
 			if (isset($this->{$cryptionType . 'FieldModeling'}[$view])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->{$cryptionType . 'FieldModeling'}[$view]
 				))
 			{
@@ -7467,7 +7471,7 @@ class Interpretation extends Fields
 		}
 		// go from json to array
 		if (isset($this->jsonItemBuilder[$view])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->jsonItemBuilder[$view]
 			))
 		{
@@ -7490,7 +7494,7 @@ class Interpretation extends Fields
 		}
 		// go from json to string
 		if (isset($this->jsonStringBuilder[$view])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->jsonStringBuilder[$view]
 			))
 		{
@@ -7504,7 +7508,7 @@ class Interpretation extends Fields
 						__LINE__
 					) . " JSON Decode " . $jsonString . ".";
 				if (isset($this->jsonItemBuilderArray[$view])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->jsonItemBuilderArray[$view]
 					)
 					&& in_array(
@@ -7550,7 +7554,7 @@ class Interpretation extends Fields
 	{
 		$script = '';
 		if (isset($this->checkboxBuilder[$view])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->checkboxBuilder[$view]
 			))
 		{
@@ -7584,7 +7588,7 @@ class Interpretation extends Fields
 		);
 		// turn array into JSON string
 		if (isset($this->jsonItemBuilder[$view])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->jsonItemBuilder[$view]
 			))
 		{
@@ -7606,7 +7610,7 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . $this->_t(2) . "}";
 				if (isset($this->permissionFields[$view])
 					&& isset($this->permissionFields[$view][$jsonItem])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->permissionFields[$view][$jsonItem]
 					))
 				{
@@ -7650,7 +7654,7 @@ class Interpretation extends Fields
 		}
 		// turn string into json string
 		if (isset($this->jsonStringBuilder[$view])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->jsonStringBuilder[$view]
 			))
 		{
@@ -7670,7 +7674,7 @@ class Interpretation extends Fields
 		}
 		// turn string into base 64 string
 		if (isset($this->base64Builder[$view])
-			&& ComponentbuilderHelper::checkArray($this->base64Builder[$view]))
+			&& ArrayHelper::check($this->base64Builder[$view]))
 		{
 			foreach ($this->base64Builder[$view] as $baseString)
 			{
@@ -7689,7 +7693,7 @@ class Interpretation extends Fields
 		foreach ($this->cryptionTypes as $cryptionType)
 		{
 			if (isset($this->{$cryptionType . 'FieldModeling'}[$view])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->{$cryptionType . 'FieldModeling'}[$view]
 				))
 			{
@@ -7779,7 +7783,7 @@ class Interpretation extends Fields
 		$component = $this->componentCodeName;
 		// add the tags observer
 		if (isset($this->tagsBuilder[$view])
-			&& ComponentbuilderHelper::checkString($this->tagsBuilder[$view]))
+			&& StringHelper::check($this->tagsBuilder[$view]))
 		{
 			$oserver .= PHP_EOL . PHP_EOL . $this->_t(2) . "//"
 				. $this->setLine(__LINE__) . " Adding Tag Options";
@@ -7789,7 +7793,7 @@ class Interpretation extends Fields
 		}
 		// add the history/version observer
 		if (isset($this->historyBuilder[$view])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->historyBuilder[$view]
 			))
 		{
@@ -7820,7 +7824,7 @@ class Interpretation extends Fields
 	{
 		$script = '';
 		if (isset($this->componentData->admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->admin_views
 			))
 		{
@@ -7832,21 +7836,21 @@ class Interpretation extends Fields
 			foreach ($this->componentData->admin_views as $viewData)
 			{
 				// set main keys
-				$view = ComponentbuilderHelper::safeString(
+				$view = StringHelper::safe(
 					$viewData['settings']->name_single
 				);
 				// set list view keys
-				$views = ComponentbuilderHelper::safeString(
+				$views = StringHelper::safe(
 					$viewData['settings']->name_list
 				);
 				// get this views content type data
 				$dbStuff[$view] = $this->getContentType($view, $component);
 				// get the correct views name
 				$checkViews = (isset($this->catCodeBuilder[$view]['views'])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->catCodeBuilder[$view]['views']
 					)) ? $this->catCodeBuilder[$view]['views'] : $views;
-				if (ComponentbuilderHelper::checkArray($dbStuff[$view])
+				if (ArrayHelper::check($dbStuff[$view])
 					&& array_key_exists($view, $this->catCodeBuilder)
 					&& ($checkViews == $views))
 				{
@@ -7856,14 +7860,14 @@ class Interpretation extends Fields
 					);
 				}
 				elseif (!isset($dbStuff[$view])
-					|| !ComponentbuilderHelper::checkArray($dbStuff[$view]))
+					|| !ArrayHelper::check($dbStuff[$view]))
 				{
 					// remove if not array
 					unset($dbStuff[$view]);
 				}
 			}
 			// build the db insert query
-			if (ComponentbuilderHelper::checkArray($dbStuff))
+			if (ArrayHelper::check($dbStuff))
 			{
 				$taabb = '';
 				if ($action === 'update')
@@ -7876,9 +7880,9 @@ class Interpretation extends Fields
 					. "\$db = JFactory::getDbo();";
 				foreach ($dbStuff as $name => $tables)
 				{
-					if (ComponentbuilderHelper::checkArray($tables))
+					if (ArrayHelper::check($tables))
 					{
-						$code   = ComponentbuilderHelper::safeString($name);
+						$code   = StringHelper::safe($name);
 						$script .= PHP_EOL . PHP_EOL . $this->_t(3) . "//"
 							. $this->setLine(__LINE__) . " Create the " . $name
 							. " content type object.";
@@ -7956,11 +7960,11 @@ class Interpretation extends Fields
 
 		// add the assets table update for permissions rules
 		if (isset($this->assetsRules)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->assetsRules
 			))
 		{
-			if (ComponentbuilderHelper::checkString($script))
+			if (StringHelper::check($script))
 			{
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 						__LINE__
@@ -7970,7 +7974,7 @@ class Interpretation extends Fields
 			{
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 						__LINE__
-					) . " Install the global extenstion assets permission.";
+					) . " Install the global extension assets permission.";
 				$script .= PHP_EOL . $this->_t(3)
 					. "\$db = JFactory::getDbo();";
 			}
@@ -7999,9 +8003,9 @@ class Interpretation extends Fields
 		}
 		// add the global params for the component global settings
 		if (isset($this->extensionsParams)
-			&& ComponentbuilderHelper::checkArray($this->extensionsParams))
+			&& ArrayHelper::check($this->extensionsParams))
 		{
-			if (ComponentbuilderHelper::checkString($script))
+			if (StringHelper::check($script))
 			{
 				$script .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 						__LINE__
@@ -8044,7 +8048,7 @@ class Interpretation extends Fields
 		// add the Intelligent Fix script if needed
 		$script .= $this->getAssetsTableIntelligentInstall();
 		// add the component install notice
-		if (ComponentbuilderHelper::checkString($script))
+		if (StringHelper::check($script))
 		{
 			$script .= PHP_EOL . $this->_t(3)
 				. 'echo \'<a target="_blank" href="'
@@ -8073,7 +8077,7 @@ class Interpretation extends Fields
 			'php_postflight', 'update', PHP_EOL . PHP_EOL, null, true
 		);
 		if (isset($this->componentData->admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->admin_views
 			))
 		{
@@ -8093,7 +8097,7 @@ class Interpretation extends Fields
 				. " Was Successful! Let us know if anything is not working as expected.</h3>';";
 		}
 
-		if (ComponentbuilderHelper::checkString($script))
+		if (StringHelper::check($script))
 		{
 			return $script;
 		}
@@ -8107,7 +8111,7 @@ class Interpretation extends Fields
 		// reset script
 		$script = '';
 		if (isset($this->uninstallScriptBuilder)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->uninstallScriptBuilder
 			))
 		{
@@ -8127,7 +8131,7 @@ class Interpretation extends Fields
 			)
 			{
 				// set a var value
-				$view = ComponentbuilderHelper::safeString($viewsCodeName);
+				$view = StringHelper::safe($viewsCodeName);
 
 				// check if it has field relations
 				if (isset($this->uninstallScriptFields)
@@ -8714,8 +8718,8 @@ class Interpretation extends Fields
 		$script[] = $messageA;
 		$script[] = $this->_t($tab) . $this->_t(2) . "}";
 		// only ad this if there is a B part
-		if (ComponentbuilderHelper::checkString($codeB)
-			|| ComponentbuilderHelper::checkString($messageB))
+		if (StringHelper::check($codeB)
+			|| StringHelper::check($messageB))
 		{
 			$script[] = $this->_t($tab) . $this->_t(2) . "else";
 			$script[] = $this->_t($tab) . $this->_t(2) . "{";
@@ -8813,11 +8817,11 @@ class Interpretation extends Fields
 	{
 		// add if history is to be kept or if tags is added
 		if ((isset($this->historyBuilder[$view])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->historyBuilder[$view]
 				))
 			|| (isset($this->tagsBuilder[$view])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->tagsBuilder[$view]
 				)))
 		{
@@ -8835,28 +8839,28 @@ class Interpretation extends Fields
 				'{"sourceColumn": "' . $category
 				. '","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},'
 				: '';
-			$Component        = ComponentbuilderHelper::safeString(
+			$Component        = StringHelper::safe(
 				$component, 'F'
 			);
-			$View             = ComponentbuilderHelper::safeString($view, 'F');
+			$View             = StringHelper::safe($view, 'F');
 			$maintext         = (isset($this->maintextBuilder[$view])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->maintextBuilder[$view]
 				)) ? $this->maintextBuilder[$view] : 'null';
 			$hiddenFields     = (isset($this->hiddenFieldsBuilder[$view])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->hiddenFieldsBuilder[$view]
 				)) ? $this->hiddenFieldsBuilder[$view] : '';
 			$dynamicfields    = (isset($this->dynamicfieldsBuilder[$view])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->dynamicfieldsBuilder[$view]
 				)) ? $this->dynamicfieldsBuilder[$view] : '';
 			$intFields        = (isset($this->intFieldsBuilder[$view])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->intFieldsBuilder[$view]
 				)) ? $this->intFieldsBuilder[$view] : '';
 			$customfieldlinks = (isset($this->customFieldLinksBuilder[$view])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->customFieldLinksBuilder[$view]
 				)) ? $this->customFieldLinksBuilder[$view] : '';
 			// build uninstall script for content types
@@ -8865,7 +8869,7 @@ class Interpretation extends Fields
 			$this->uninstallScriptContent[$view] = $view;
 			// check if this view has metadata
 			if (isset($this->metadataBuilder[$view])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->metadataBuilder[$view]
 				))
 			{
@@ -8881,7 +8885,7 @@ class Interpretation extends Fields
 			}
 			// check if view has access
 			if (isset($this->accessBuilder[$view])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->accessBuilder[$view]
 				))
 			{
@@ -8946,8 +8950,8 @@ class Interpretation extends Fields
 		// get the other view
 		$otherView = $this->catCodeBuilder[$view]['view'];
 		$category  = $this->catCodeBuilder[$view]['code'];
-		$Component = ComponentbuilderHelper::safeString($component, 'F');
-		$View      = ComponentbuilderHelper::safeString($view, 'F');
+		$Component = StringHelper::safe($component, 'F');
+		$View      = StringHelper::safe($view, 'F');
 		// build uninstall script for content types
 		$this->uninstallScriptBuilder[$View . ' ' . $category] = 'com_'
 			. $component . '.' . $otherView . '.category';
@@ -8955,7 +8959,7 @@ class Interpretation extends Fields
 			. $category;
 		// set the title
 		$array['type_title'] = $Component . ' ' . $View . ' '
-			. ComponentbuilderHelper::safeString($category, 'F');
+			. StringHelper::safe($category, 'F');
 		// set the alias
 		$array['type_alias'] = 'com_' . $component . '.' . $otherView
 			. '.category';
@@ -8980,7 +8984,7 @@ class Interpretation extends Fields
 	{
 		// add if tags is added, also for all front item views
 		if (((isset($this->tagsBuilder[$nameSingleCode])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->tagsBuilder[$nameSingleCode]
 					))
 				|| $front)
@@ -8989,7 +8993,7 @@ class Interpretation extends Fields
 			// insure we load a view only once
 			$this->setRouterHelpDone[] = $nameSingleCode;
 			// build view route helper
-			$View          = ComponentbuilderHelper::safeString(
+			$View          = StringHelper::safe(
 				$nameSingleCode, 'F'
 			);
 			$routeHelper   = array();
@@ -9088,7 +9092,7 @@ class Interpretation extends Fields
 		$routerSwitch = array();
 		$isCategory   = '';
 		$viewTable    = false;
-		if ($viewArray && ComponentbuilderHelper::checkArray($viewArray)
+		if ($viewArray && ArrayHelper::check($viewArray)
 			&& isset($viewArray['settings'])
 			&& isset($viewArray['settings']->main_get))
 		{
@@ -9096,7 +9100,7 @@ class Interpretation extends Fields
 			if (isset($viewArray['settings']->main_get->add_php_router_parse)
 				&& $viewArray['settings']->main_get->add_php_router_parse == 1
 				&& isset($viewArray['settings']->main_get->php_router_parse)
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$viewArray['settings']->main_get->php_router_parse
 				))
 			{
@@ -9120,7 +9124,7 @@ class Interpretation extends Fields
 			}
 			// get the main table name
 			elseif (isset($viewArray['settings']->main_get->main_get)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$viewArray['settings']->main_get->main_get
 				))
 			{
@@ -9129,11 +9133,11 @@ class Interpretation extends Fields
 					if (isset($get['as']) && $get['as'] === 'a')
 					{
 						if (isset($get['selection'])
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$get['selection']
 							)
 							&& isset($get['selection']['select_gets'])
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$get['selection']['select_gets']
 							))
 						{
@@ -9214,7 +9218,7 @@ class Interpretation extends Fields
 				$this->fileContentStatic[$this->hhh . 'ROUTER_BUILD_VIEWS'
 				. $this->hhh]
 			)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->fileContentStatic[$this->hhh . 'ROUTER_BUILD_VIEWS'
 				. $this->hhh]
 			))
@@ -9232,7 +9236,7 @@ class Interpretation extends Fields
 		// set needed defaults
 		$category  = false;
 		$batchmove = array();
-		$VIEW      = ComponentbuilderHelper::safeString($nameSingleCode, 'U');
+		$VIEW      = StringHelper::safe($nameSingleCode, 'U');
 		// component helper name
 		$Helper = $this->fileContentStatic[$this->hhh . 'Component'
 			. $this->hhh] . 'Helper';
@@ -9287,7 +9291,7 @@ class Interpretation extends Fields
 
 		if ($coreLoad && isset($core['core.edit'])
 			&& isset($this->permissionBuilder['global'][$core['core.edit']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder['global'][$core['core.edit']]
 			)
 			&& in_array(
@@ -9314,7 +9318,7 @@ class Interpretation extends Fields
 			. " make sure published only updates if user has the permission.";
 		if ($coreLoad && isset($core['core.edit.state'])
 			&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder['global'][$core['core.edit.state']]
 			)
 			&& in_array(
@@ -9368,7 +9372,7 @@ class Interpretation extends Fields
 		$batchmove[] = $this->_t(2) . "{";
 		if ($coreLoad && isset($core['core.edit'])
 			&& isset($this->permissionBuilder[$core['core.edit']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder[$core['core.edit']]
 			)
 			&& in_array(
@@ -9480,7 +9484,7 @@ class Interpretation extends Fields
 		$alias     = false;
 		$category  = false;
 		$batchcopy = array();
-		$VIEW      = ComponentbuilderHelper::safeString($nameSingleCode, 'U');
+		$VIEW      = StringHelper::safe($nameSingleCode, 'U');
 		// component helper name
 		$Helper = $this->fileContentStatic[$this->hhh . 'Component'
 			. $this->hhh] . 'Helper';
@@ -9566,7 +9570,7 @@ class Interpretation extends Fields
 		$batchcopy[] = $this->_t(2) . "}";
 		if ($coreLoad && isset($core['core.create'])
 			&& isset($this->permissionBuilder['global'][$core['core.create']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder['global'][$core['core.create']]
 			)
 			&& in_array(
@@ -9603,7 +9607,7 @@ class Interpretation extends Fields
 		$batchcopy[] = $this->_t(2) . "}";
 		if ($coreLoad && isset($core['core.edit.state'])
 			&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder['global'][$core['core.edit.state']]
 			)
 			&& in_array(
@@ -9663,7 +9667,7 @@ class Interpretation extends Fields
 			. " only allow copy if user may edit this item.";
 		if ($coreLoad && isset($core['core.edit'])
 			&& isset($this->permissionBuilder[$core['core.edit']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder[$core['core.edit']]
 			)
 			&& in_array(
@@ -9879,7 +9883,7 @@ class Interpretation extends Fields
 			// set needed defaults
 			$setCategory = false;
 			$alias       = $this->aliasBuilder[$nameSingleCode];
-			$VIEW        = ComponentbuilderHelper::safeString(
+			$VIEW        = StringHelper::safe(
 				$nameSingleCode, 'U'
 			);
 			if (array_key_exists($nameSingleCode, $this->catCodeBuilder))
@@ -10212,7 +10216,7 @@ class Interpretation extends Fields
 			// reset the bucket
 			$titleData = array();
 			// load the dynamic title builder
-			if (isset($titles) && ComponentbuilderHelper::checkArray($titles))
+			if (isset($titles) && ArrayHelper::check($titles))
 			{
 				foreach ($titles as $title)
 				{
@@ -10274,7 +10278,7 @@ class Interpretation extends Fields
 	public function setInstall()
 	{
 		if (isset($this->queryBuilder)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->queryBuilder
 			))
 		{
@@ -10371,7 +10375,7 @@ class Interpretation extends Fields
 					// check if this a new field that should be added via SQL update
 					if (isset($this->addSQL['field'])
 						&& isset($this->addSQL['field'][$view])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->addSQL['field'][$view]
 						)
 						&& in_array($data['ID'], $this->addSQL['field'][$view]))
@@ -10493,7 +10497,7 @@ class Interpretation extends Fields
 				}
 				// check if view has access
 				if (isset($this->accessBuilder[$view])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->accessBuilder[$view]
 					)
 					&& !isset($this->fieldsNames[$view]['access']))
@@ -10509,7 +10513,7 @@ class Interpretation extends Fields
 				}
 				// check if metadata is added to this view
 				if (isset($this->metadataBuilder[$view])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->metadataBuilder[$view]
 					))
 				{
@@ -10537,7 +10541,7 @@ class Interpretation extends Fields
 				// check if a key was set for any of the default fields then we should not set it again
 				$check_keys_set = array();
 				if (isset($this->dbUniqueKeys[$view])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->dbUniqueKeys[$view]
 					))
 				{
@@ -10549,7 +10553,7 @@ class Interpretation extends Fields
 					}
 				}
 				if (isset($this->dbKeys[$view])
-					&& ComponentbuilderHelper::checkArray($this->dbKeys[$view]))
+					&& ArrayHelper::check($this->dbKeys[$view]))
 				{
 					foreach ($this->dbKeys[$view] as $nr => $key)
 					{
@@ -10561,7 +10565,7 @@ class Interpretation extends Fields
 				// check if view has access
 				if (!isset($check_keys_set['access'])
 					&& isset($this->accessBuilder[$view])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->accessBuilder[$view]
 					))
 				{
@@ -10600,7 +10604,7 @@ class Interpretation extends Fields
 				)
 				{
 					if (isset($this->mysqlTableSetting[$view])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->mysqlTableSetting[$view]
 						)
 						&& isset($this->mysqlTableSetting[$view][$_mysqlTableKey]))
@@ -10615,7 +10619,7 @@ class Interpretation extends Fields
 					}
 				}
 				// add a little fix for the row_format
-				if (ComponentbuilderHelper::checkString($easy['row_format']))
+				if (StringHelper::check($easy['row_format']))
 				{
 					$easy['row_format'] = ' ROW_FORMAT=' . $easy['row_format'];
 				}
@@ -10627,7 +10631,7 @@ class Interpretation extends Fields
 
 				// check if this is a new table that should be added via update SQL
 				if (isset($this->addSQL['adminview'])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->addSQL['adminview']
 					)
 					&& in_array($view, $this->addSQL['adminview']))
@@ -10638,7 +10642,7 @@ class Interpretation extends Fields
 						= $db_;
 				}
 				// check if the table row_format has changed
-				if (ComponentbuilderHelper::checkString($easy['row_format'])
+				if (StringHelper::check($easy['row_format'])
 					&& isset($this->updateSQL['table_row_format'])
 					&& isset($this->updateSQL['table_row_format'][$view]))
 				{
@@ -10678,7 +10682,7 @@ class Interpretation extends Fields
 			}
 			// add custom sql dump to the file
 			if (isset($this->customScriptBuilder['sql'])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->customScriptBuilder['sql']
 				))
 			{
@@ -10781,7 +10785,7 @@ class Interpretation extends Fields
 	{
 		$db = '';
 		if (isset($this->queryBuilder)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->queryBuilder
 			))
 		{
@@ -10792,7 +10796,7 @@ class Interpretation extends Fields
 		}
 		// add custom sql uninstall dump to the file
 		if (isset($this->customScriptBuilder['sql_uninstall'])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->customScriptBuilder['sql_uninstall']
 			))
 		{
@@ -11092,7 +11096,7 @@ class Interpretation extends Fields
 		}
 		// check if the both array is set
 		if (isset($this->langContent['both'])
-			&& ComponentbuilderHelper::checkArray($this->langContent['both']))
+			&& ArrayHelper::check($this->langContent['both']))
 		{
 			foreach ($this->langContent['both'] as $keylang => $langval)
 			{
@@ -11101,7 +11105,7 @@ class Interpretation extends Fields
 		}
 		// check if the both admin array is set
 		if (isset($this->langContent['bothadmin'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->langContent['bothadmin']
 			))
 		{
@@ -11111,7 +11115,7 @@ class Interpretation extends Fields
 			}
 		}
 		if (isset($this->langContent['admin'])
-			&& ComponentbuilderHelper::checkArray($this->langContent['admin']))
+			&& ArrayHelper::check($this->langContent['admin']))
 		{
 			// Trigger Event: jcb_ce_onAfterBuildAdminLang
 			$this->triggerEvent(
@@ -11187,7 +11191,7 @@ class Interpretation extends Fields
 
 		// check if the both array is set
 		if (isset($this->langContent['both'])
-			&& ComponentbuilderHelper::checkArray($this->langContent['both']))
+			&& ArrayHelper::check($this->langContent['both']))
 		{
 			foreach ($this->langContent['both'] as $keylang => $langval)
 			{
@@ -11196,7 +11200,7 @@ class Interpretation extends Fields
 		}
 		// check if the both site array is set
 		if (isset($this->langContent['bothsite'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->langContent['bothsite']
 			))
 		{
@@ -11206,7 +11210,7 @@ class Interpretation extends Fields
 			}
 		}
 		if (isset($this->langContent['site'])
-			&& ComponentbuilderHelper::checkArray($this->langContent['site']))
+			&& ArrayHelper::check($this->langContent['site']))
 		{
 			// Trigger Event: jcb_ce_onAfterBuildSiteLang
 			$this->triggerEvent(
@@ -11251,7 +11255,7 @@ class Interpretation extends Fields
 
 		// check if the both site array is set
 		if (isset($this->langContent['bothsite'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->langContent['bothsite']
 			))
 		{
@@ -11261,7 +11265,7 @@ class Interpretation extends Fields
 			}
 		}
 		if (isset($this->langContent['sitesys'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->langContent['sitesys']
 			))
 		{
@@ -11297,7 +11301,7 @@ class Interpretation extends Fields
 		);
 		// check if the both admin array is set
 		if (isset($this->langContent['bothadmin'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->langContent['bothadmin']
 			))
 		{
@@ -11307,7 +11311,7 @@ class Interpretation extends Fields
 			}
 		}
 		if (isset($this->langContent['adminsys'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->langContent['adminsys']
 			))
 		{
@@ -11334,7 +11338,7 @@ class Interpretation extends Fields
 	public function setCustomAdminViewListLink($view, $nameListCode)
 	{
 		if (isset($this->componentData->custom_admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->custom_admin_views
 			))
 		{
@@ -11343,7 +11347,7 @@ class Interpretation extends Fields
 			)
 			{
 				if (isset($custom_admin_view['adminviews'])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$custom_admin_view['adminviews']
 					))
 				{
@@ -11354,7 +11358,7 @@ class Interpretation extends Fields
 						{
 							// set the needed keys
 							$setId = false;
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$custom_admin_view['settings']->main_get->filter
 							))
 							{
@@ -11413,7 +11417,7 @@ class Interpretation extends Fields
 	public function setListBody($nameSingleCode, $nameListCode)
 	{
 		if (isset($this->listBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->listBuilder[$nameListCode]
 			))
 		{
@@ -11451,7 +11455,7 @@ class Interpretation extends Fields
 				// check if the item has permissions.
 				if ($coreLoad && isset($core['core.edit.state'])
 					&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->permissionBuilder['global'][$core['core.edit.state']]
 					)
 					&& in_array(
@@ -11497,7 +11501,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit'])
 				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(
@@ -11576,7 +11580,7 @@ class Interpretation extends Fields
 				// check if the item has permissions.
 				if ($coreLoad && isset($core['core.edit.state'])
 					&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->permissionBuilder['global'][$core['core.edit.state']]
 					)
 					&& in_array(
@@ -11674,7 +11678,7 @@ class Interpretation extends Fields
 				&& $this->fieldRelations[$nameListCode][(int) $item['id']][2]['join_type']
 				== 2
 				&& isset($this->fieldRelations[$nameListCode][(int) $item['id']][2]['set'])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->fieldRelations[$nameListCode][(int) $item['id']][2]['set']
 				));
 			// load the main list view field
@@ -11691,7 +11695,7 @@ class Interpretation extends Fields
 			}
 			// now load the relations
 			if (isset($this->fieldRelations[$nameListCode][(int) $item['id']][2]['joinfields'])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->fieldRelations[$nameListCode][(int) $item['id']][2]['joinfields']
 				))
 			{
@@ -11735,7 +11739,7 @@ class Interpretation extends Fields
 					) . PHP_EOL . $this->_t(3) . "</div>";
 			}
 			elseif (isset($this->fieldRelations[$nameListCode][(int) $item['id']]['set'])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->fieldRelations[$nameListCode][(int) $item['id']][2]['set']
 				))
 			{
@@ -11787,7 +11791,7 @@ class Interpretation extends Fields
 		);
 		// add default links
 		$defaultLink = true;
-		if (ComponentbuilderHelper::checkString($refview)
+		if (StringHelper::check($refview)
 			&& isset($item['custom'])
 			&& isset($item['custom']['view'])
 			&& $refview === $item['custom']['view'])
@@ -11796,7 +11800,7 @@ class Interpretation extends Fields
 		}
 		// is this a linked item
 		if (($item['link']
-				|| (ComponentbuilderHelper::checkArray(
+				|| (ArrayHelper::check(
 						$item['custom']
 					)
 					&& $item['custom']['extends'] === 'user'))
@@ -11895,7 +11899,7 @@ class Interpretation extends Fields
 		$customAdminViewButton = '';
 		// check if custom links should be added to this list views
 		if (isset($this->customAdminViewListLink[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->customAdminViewListLink[$nameListCode]
 			))
 		{
@@ -11953,11 +11957,11 @@ class Interpretation extends Fields
 	{
 		// first update the code id needed
 		if (isset($item['custom'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$item['custom']
 			)
 			&& isset($item['custom']['table'])
-			&& ComponentbuilderHelper::checkString($item['custom']['table']))
+			&& StringHelper::check($item['custom']['table']))
 		{
 			$item['id_code'] = $item['code'];
 			if (!$item['multiple'])
@@ -11977,7 +11981,7 @@ class Interpretation extends Fields
 		}
 		// check if custom user
 		elseif (isset($item['custom'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$item['custom']
 			)
 			&& $item['custom']['extends'] === 'user'
@@ -11988,7 +11992,7 @@ class Interpretation extends Fields
 		}
 		// check if translated value is used
 		elseif (isset($this->selectionTranslationFixBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->selectionTranslationFixBuilder[$nameListCode]
 			)
 			&& array_key_exists(
@@ -11999,7 +12003,7 @@ class Interpretation extends Fields
 			return 'JText:' . ':_($item->' . $item['code'] . ')';
 		}
 		elseif (isset($item['custom'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$item['custom']
 			)
 			&& $item['custom']['text'] === 'user')
@@ -12060,7 +12064,7 @@ class Interpretation extends Fields
 				. $item['code'] . ' ?>';
 		}
 		elseif (isset($item['custom'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$item['custom']
 			)
 			&& $item['custom']['extends'] != 'user'
@@ -12074,7 +12078,7 @@ class Interpretation extends Fields
 				. $ref;
 		}
 		elseif (isset($item['custom'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$item['custom']
 			)
 			&& $item['custom']['extends'] === 'user'
@@ -12126,7 +12130,7 @@ class Interpretation extends Fields
 			return $user . "->authorise('core.edit', 'com_users')";
 		}
 		elseif (isset($item['custom'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$item['custom']
 			)
 			&& $item['custom']['extends'] != 'user'
@@ -12144,7 +12148,7 @@ class Interpretation extends Fields
 			if ($coreLoadLink
 				&& (isset($coreLink['core.edit'])
 					&& isset($this->permissionBuilder[$coreLink['core.edit']]))
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$coreLink['core.edit']]
 				)
 				&& in_array(
@@ -12164,7 +12168,7 @@ class Interpretation extends Fields
 				. ".' . (int)\$item->" . $item['id_code'] . ")";
 		}
 		elseif (isset($item['custom'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$item['custom']
 			)
 			&& $item['custom']['extends'] === 'user'
@@ -12177,7 +12181,7 @@ class Interpretation extends Fields
 		// check if the item has custom permissions.
 		elseif ($coreLoad && isset($core['core.edit'])
 			&& isset($this->permissionBuilder['global'][$core['core.edit']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder['global'][$core['core.edit']]
 			)
 			&& in_array(
@@ -12404,7 +12408,7 @@ class Interpretation extends Fields
 	public function setListHead($nameSingleCode, $nameListCode)
 	{
 		if (isset($this->listBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->listBuilder[$nameListCode]
 			))
 		{
@@ -12422,7 +12426,7 @@ class Interpretation extends Fields
 			}
 			// main lang prefix
 			$langView = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString($nameSingleCode, 'U');
+				. StringHelper::safe($nameSingleCode, 'U');
 			// set status lang
 			$statusLangName = $langView . '_STATUS';
 			// set id lang
@@ -12471,7 +12475,7 @@ class Interpretation extends Fields
 				{
 					// check if we have an over-ride
 					if (isset($this->listHeadOverRide[$nameListCode])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->listHeadOverRide[$nameListCode]
 						)
 						&& isset($this->listHeadOverRide[$nameListCode][$item['id']]))
@@ -12497,7 +12501,7 @@ class Interpretation extends Fields
 								. "', \$this->listDirn, \$this->listOrder); ?>";
 						}
 						// set the custom code
-						elseif (ComponentbuilderHelper::checkArray(
+						elseif (ArrayHelper::check(
 							$item['custom']
 						))
 						{
@@ -12588,7 +12592,7 @@ class Interpretation extends Fields
 	{
 		// check if the load build is set for this view
 		if (isset($this->layoutBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->layoutBuilder[$nameSingleCode]
 			))
 		{
@@ -12620,7 +12624,7 @@ class Interpretation extends Fields
 				}
 				// add the layout key
 				$layoutArray[] = PHP_EOL . $this->_t(2) . "'"
-					. ComponentbuilderHelper::safeString($layout)
+					. StringHelper::safe($layout)
 					. "' => array(" . implode(',', $alignmentArray) . PHP_EOL
 					. $this->_t(2) . ")";
 			}
@@ -12647,10 +12651,10 @@ class Interpretation extends Fields
 		$nameSingleCode = $view['settings']->name_single_code;
 		// main lang prefix
 		$langView = $this->langPrefix . '_'
-			. ComponentbuilderHelper::safeString($nameSingleCode, 'U');
+			. StringHelper::safe($nameSingleCode, 'U');
 		// check if the load build is set for this view
 		if (isset($this->layoutBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->layoutBuilder[$nameSingleCode]
 			))
 		{
@@ -12686,7 +12690,7 @@ class Interpretation extends Fields
 			}
 			// start building body
 			$body = PHP_EOL . '<div class="form-horizontal">';
-			if (ComponentbuilderHelper::checkString($span))
+			if (StringHelper::check($span))
 			{
 				$body .= PHP_EOL . $this->_t(1) . '<div class="' . $span . '">';
 			}
@@ -12718,7 +12722,7 @@ class Interpretation extends Fields
 				}
 				// if this is a linked view set permissions
 				$closeIT = false;
-				if (ComponentbuilderHelper::checkArray($linkedViewIdentifier)
+				if (ArrayHelper::check($linkedViewIdentifier)
 					&& in_array($tabCodeName, $linkedViewIdentifier))
 				{
 					// get view name
@@ -12726,7 +12730,7 @@ class Interpretation extends Fields
 						$tabCodeName, $linkedViewIdentifier
 					);
 					$linkedViewData = $this->getAdminViewData($linkedViewId);
-					$linkedCodeName = ComponentbuilderHelper::safeString(
+					$linkedCodeName = StringHelper::safe(
 						$linkedViewData->name_single
 					);
 					// setup correct core target
@@ -12739,7 +12743,7 @@ class Interpretation extends Fields
 					// check if the item has permissions.
 					if ($coreLoadLinked && isset($coreLinked['core.access'])
 						&& isset($this->permissionBuilder['global'][$coreLinked['core.access']])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->permissionBuilder['global'][$coreLinked['core.access']]
 						)
 						&& in_array(
@@ -12822,7 +12826,7 @@ class Interpretation extends Fields
 				. "<?php echo JHtml::_('form.token'); ?>";
 			$body .= PHP_EOL . $this->_t(1) . "</div>";
 			// close divs
-			if (ComponentbuilderHelper::checkString($span))
+			if (StringHelper::check($span))
 			{
 				$body .= PHP_EOL . $this->_t(1) . "</div>";
 			}
@@ -12874,7 +12878,7 @@ class Interpretation extends Fields
 		$linkedTab = array();
 		// check if the view has linked admin view
 		if (isset($this->linkedAdminViews[$nameSingleCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->linkedAdminViews[$nameSingleCode]
 			))
 		{
@@ -12888,8 +12892,8 @@ class Interpretation extends Fields
 				// add the linked view
 				$linkedTab[$linkedView['adminview']] = $linkedView['tab'];
 				// set the keys if values are set
-				if (ComponentbuilderHelper::checkString($linkedView['key'])
-					&& ComponentbuilderHelper::checkString(
+				if (StringHelper::check($linkedView['key'])
+					&& StringHelper::check(
 						$linkedView['parentkey']
 					))
 				{
@@ -12952,11 +12956,11 @@ class Interpretation extends Fields
 			$tabWidth  = 12;
 			$lrCounter = 0;
 			// set tab lang
-			$tabLangName = $langView . '_' . ComponentbuilderHelper::safeString(
+			$tabLangName = $langView . '_' . StringHelper::safe(
 					$tabName, 'U'
 				);
 			// set tab code name
-			$tabCodeName = ComponentbuilderHelper::safeString($tabName);
+			$tabCodeName = StringHelper::safe($tabName);
 			/// set the values to use in search latter
 			$searchTabs[$tabCodeName] = $tabNr;
 			// add to lang array
@@ -12964,7 +12968,7 @@ class Interpretation extends Fields
 			// check if linked view belongs to this tab
 			$buildLayout  = true;
 			$linkedViewId = '';
-			if (ComponentbuilderHelper::checkArray($linkedTab))
+			if (ArrayHelper::check($linkedTab))
 			{
 				if (($linkedViewId = array_search($tabNr, $linkedTab))
 					!== false)
@@ -13104,7 +13108,7 @@ class Interpretation extends Fields
 				// set identifiers
 				$linkedViewIdentifier[$linkedViewId] = $tabCodeName;
 				//set function name
-				$codeName = ComponentbuilderHelper::safeString(
+				$codeName = StringHelper::safe(
 					$this->uniquekey(3) . $tabCodeName
 				);
 				// set as items layout
@@ -13256,7 +13260,7 @@ class Interpretation extends Fields
 				}
 			}
 			// set switch to trigger notice if custom fields added to right
-			if (ComponentbuilderHelper::checkArray($items['right']))
+			if (ArrayHelper::check($items['right']))
 			{
 				$fieldsAddedRight = true;
 			}
@@ -13280,7 +13284,7 @@ class Interpretation extends Fields
 					}
 					elseif ($defaultField === 'access'
 						&& isset($this->accessBuilder[$nameSingleCode])
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$this->accessBuilder[$nameSingleCode]
 						))
 					{
@@ -13291,7 +13295,7 @@ class Interpretation extends Fields
 		}
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->metadataBuilder[$nameSingleCode]
 			))
 		{
@@ -13299,18 +13303,18 @@ class Interpretation extends Fields
 			$tabCodeNameLeft  = 'publishing';
 			$tabCodeNameRight = 'metadata';
 			// the default publishing tiems
-			if (ComponentbuilderHelper::checkArray($items['left'])
-				|| ComponentbuilderHelper::checkArray($items['right']))
+			if (ArrayHelper::check($items['left'])
+				|| ArrayHelper::check($items['right']))
 			{
 				$items_one = '';
 				// load the items into one side
-				if (ComponentbuilderHelper::checkArray($items['left']))
+				if (ArrayHelper::check($items['left']))
 				{
 					$items_one .= "'" . implode(
 							"'," . PHP_EOL . $this->_t(1) . "'", $items['left']
 						) . "'";
 				}
-				if (ComponentbuilderHelper::checkArray($items['right']))
+				if (ArrayHelper::check($items['right']))
 				{
 					// there is already fields just add these
 					if (strlen($items_one) > 3)
@@ -13366,11 +13370,11 @@ class Interpretation extends Fields
 			$tabCodeNameLeft  = 'publishing';
 			$tabCodeNameRight = 'publlshing';
 			// the default publishing tiems
-			if (ComponentbuilderHelper::checkArray($items['left'])
-				|| ComponentbuilderHelper::checkArray($items['right']))
+			if (ArrayHelper::check($items['left'])
+				|| ArrayHelper::check($items['right']))
 			{
 				// load left items that remain
-				if (ComponentbuilderHelper::checkArray($items['left']))
+				if (ArrayHelper::check($items['left']))
 				{
 					// load all items
 					$items_one = "'" . implode(
@@ -13384,7 +13388,7 @@ class Interpretation extends Fields
 					$items_one = true;
 				}
 				// load right items that remain
-				if (ComponentbuilderHelper::checkArray($items['right']))
+				if (ArrayHelper::check($items['right']))
 				{
 					// load all items
 					$items_two = "'" . implode(
@@ -13431,7 +13435,7 @@ class Interpretation extends Fields
 			{
 				if ($coreLoad && isset($core[$core_permission])
 					&& isset($this->permissionBuilder['global'][$core[$core_permission]])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->permissionBuilder['global'][$core[$core_permission]]
 					)
 					&& in_array(
@@ -13457,7 +13461,7 @@ class Interpretation extends Fields
 			{
 				if ($coreLoad && isset($core[$core_permission])
 					&& isset($this->permissionBuilder['global'][$core[$core_permission]])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->permissionBuilder['global'][$core[$core_permission]]
 					)
 					&& in_array(
@@ -13575,20 +13579,20 @@ class Interpretation extends Fields
 	{
 		// check if this view is having custom tabs
 		if (isset($this->customTabs[$name_single])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->customTabs[$name_single]
 			))
 		{
 			$html = array();
 			foreach ($this->customTabs[$name_single] as $customTab)
 			{
-				if (ComponentbuilderHelper::checkArray($customTab)
+				if (ArrayHelper::check($customTab)
 					&& isset($customTab['html']))
 				{
 					if ($customTab['tab'] == $nr
 						&& $customTab['position'] == $target
 						&& isset($customTab['html'])
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$customTab['html']
 						))
 					{
@@ -13597,7 +13601,7 @@ class Interpretation extends Fields
 				}
 			}
 			// return if found
-			if (ComponentbuilderHelper::checkArray($html))
+			if (ArrayHelper::check($html))
 			{
 				return PHP_EOL . implode(PHP_EOL, $html);
 			}
@@ -13671,7 +13675,7 @@ class Interpretation extends Fields
 				$target = array('site' => $nameSingleCode);
 				$this->buildDynamique($target, $type, $layoutName);
 			}
-			if (ComponentbuilderHelper::checkString($items))
+			if (StringHelper::check($items))
 			{
 				// LAYOUTITEMS <<<DYNAMIC>>>
 				$this->fileContentDynamic[$nameSingleCode . '_'
@@ -13710,7 +13714,7 @@ class Interpretation extends Fields
 				$this->buildDynamique($target, 'layoutoverride', $layoutName);
 			}
 			// make sure items is an empty string (should not be needed.. but)
-			if (!ComponentbuilderHelper::checkString($items))
+			if (!StringHelper::check($items))
 			{
 				$items = '';
 			}
@@ -13719,7 +13723,7 @@ class Interpretation extends Fields
 			$placeholder[$this->hhh . 'LAYOUTITEMS' . $this->hhh] = $items;
 			// OVERRIDE_LAYOUT_CODE <<<DYNAMIC>>>
 			$php_view = (array) explode(PHP_EOL, $data['php_view']);
-			if (ComponentbuilderHelper::checkArray($php_view))
+			if (ArrayHelper::check($php_view))
 			{
 				$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
 				$this->fileContentDynamic[$nameSingleCode . '_'
@@ -13900,8 +13904,8 @@ class Interpretation extends Fields
 				break;
 			}
 		}
-		if (ComponentbuilderHelper::checkString($name_single_code)
-			&& ComponentbuilderHelper::checkString($name_list_code))
+		if (StringHelper::check($name_single_code)
+			&& StringHelper::check($name_list_code))
 		{
 			$head         = $this->setListHeadLinked(
 				$name_single_code, $name_list_code, $addNewButon,
@@ -13910,7 +13914,7 @@ class Interpretation extends Fields
 			$body         = $this->setListBodyLinked(
 				$name_single_code, $name_list_code, $nameSingleCode
 			);
-			$functionName = ComponentbuilderHelper::safeString($codeName, 'F');
+			$functionName = StringHelper::safe($codeName, 'F');
 			// LAYOUTITEMSTABLE <<<DYNAMIC>>>
 			$this->fileContentDynamic[$nameSingleCode . '_'
 			. $layoutCodeName][$this->hhh . 'LAYOUTITEMSTABLE' . $this->hhh]
@@ -14031,7 +14035,7 @@ class Interpretation extends Fields
 			}
 			// LINKEDVIEWGLOBAL <<<DYNAMIC>>>
 			if (isset($parent_keys)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$parent_keys
 				))
 			{
@@ -14039,7 +14043,7 @@ class Interpretation extends Fields
 				foreach ($parent_keys as $parent_key)
 				{
 					$globalKey[$parent_key]
-						= ComponentbuilderHelper::safeString(
+						= StringHelper::safe(
 						$_key . $this->uniquekey(4)
 					);
 					$this->fileContentDynamic[$nameSingleCode][$this->hhh
@@ -14052,7 +14056,7 @@ class Interpretation extends Fields
 			else
 			{
 				// set the global key
-				$globalKey = ComponentbuilderHelper::safeString(
+				$globalKey = StringHelper::safe(
 					$_key . $this->uniquekey(4)
 				);
 				$this->fileContentDynamic[$nameSingleCode][$this->hhh
@@ -14223,7 +14227,7 @@ class Interpretation extends Fields
 	)
 	{
 		if (isset($this->listBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->listBuilder[$nameListCode]
 			))
 		{
@@ -14417,7 +14421,7 @@ class Interpretation extends Fields
 	)
 	{
 		if (isset($this->listBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->listBuilder[$nameListCode]
 			))
 		{
@@ -14438,7 +14442,7 @@ class Interpretation extends Fields
 				// check if the item has permissions.
 				if ($coreLoad && isset($core['core.create'])
 					&& isset($this->permissionBuilder['global'][$core['core.create']])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->permissionBuilder['global'][$core['core.create']]
 					)
 					&& in_array(
@@ -14511,7 +14515,7 @@ class Interpretation extends Fields
 			$head    .= PHP_EOL . "<thead>";
 			// main lang prefix
 			$langView = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString($nameSingleCode, 'U');
+				. StringHelper::safe($nameSingleCode, 'U');
 			// set status lang
 			$statusLangName = $langView . '_STATUS';
 			// set id lang
@@ -14533,7 +14537,7 @@ class Interpretation extends Fields
 				{
 					// check if we have an over-ride
 					if (isset($this->listHeadOverRide[$nameListCode])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->listHeadOverRide[$nameListCode]
 						)
 						&& isset($this->listHeadOverRide[$nameListCode][$item['id']]))
@@ -14624,7 +14628,7 @@ class Interpretation extends Fields
 	{
 		// check if this view has category added
 		if (isset($this->categoryBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->categoryBuilder[$nameListCode]
 			))
 		{
@@ -14683,7 +14687,7 @@ class Interpretation extends Fields
 		);
 		// add the custom fields query
 		$query .= $this->setCustomQuery($nameListCode, $nameSingleCode);
-		if (ComponentbuilderHelper::checkString($globalKey) && $key
+		if (StringHelper::check($globalKey) && $key
 			&& strpos(
 				$key, '-R>'
 			) === false
@@ -14730,7 +14734,7 @@ class Interpretation extends Fields
 				$ORarray = array($key);
 			}
 			// make sure we have an array
-			if (!ComponentbuilderHelper::checkArray($globalKey))
+			if (!ArrayHelper::check($globalKey))
 			{
 				$globalKey = array($globalKey);
 			}
@@ -14773,7 +14777,7 @@ class Interpretation extends Fields
 			}
 		}
 		if (isset($this->accessBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->accessBuilder[$nameSingleCode]
 			))
 		{
@@ -14890,7 +14894,7 @@ class Interpretation extends Fields
 			$this->_t(1)
 		);
 		// filter by child repetable field values
-		if (ComponentbuilderHelper::checkString($globalKey) && $key
+		if (StringHelper::check($globalKey) && $key
 			&& strpos(
 				$key, '-R>'
 			) !== false
@@ -14937,7 +14941,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(3) . "}";
 		}
 		// filter by child array field values
-		if (ComponentbuilderHelper::checkString($globalKey) && $key
+		if (StringHelper::check($globalKey) && $key
 			&& strpos(
 				$key, '-R>'
 			) === false
@@ -14957,7 +14961,7 @@ class Interpretation extends Fields
 				. "foreach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . $this->_t(4) . "{";
 			list($bin, $target) = explode('-A>', $key);
-			if (ComponentbuilderHelper::checkString($target))
+			if (StringHelper::check($target))
 			{
 				$query .= PHP_EOL . $this->_t(5) . "if ("
 					. $this->fileContentStatic[$this->hhh . 'Component'
@@ -15010,7 +15014,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(3) . "}";
 		}
 		// filter by parent repetable field values
-		if (ComponentbuilderHelper::checkString($globalKey) && $key
+		if (StringHelper::check($globalKey) && $key
 			&& strpos(
 				$parentKey, '-R>'
 			) !== false
@@ -15058,7 +15062,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . $this->_t(3) . "}";
 		}
 		// filter by parent array field values
-		if (ComponentbuilderHelper::checkString($globalKey) && $key
+		if (StringHelper::check($globalKey) && $key
 			&& strpos(
 				$parentKey, '-R>'
 			) === false
@@ -15079,7 +15083,7 @@ class Interpretation extends Fields
 				. "foreach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . $this->_t(4) . "{";
 			list($bin, $target) = explode('-A>', $parentKey);
-			if (ComponentbuilderHelper::checkString($target))
+			if (StringHelper::check($target))
 			{
 				$query .= PHP_EOL . $this->_t(5) . "if (\$item->" . $_key
 					. " && " . $this->fileContentStatic[$this->hhh . 'Component'
@@ -15147,7 +15151,7 @@ class Interpretation extends Fields
 	{
 		$buttons = '';
 		if (isset($this->customAdminDynamicButtons[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->customAdminDynamicButtons[$nameListCode]
 			))
 		{
@@ -15160,7 +15164,7 @@ class Interpretation extends Fields
 				// Load to lang
 				$keyLang = $this->langPrefix . '_' . $custom_button['NAME'];
 				$this->setLangContent(
-					$this->lang, $keyLang, ComponentbuilderHelper::safeString(
+					$this->lang, $keyLang, StringHelper::safe(
 					$custom_button['name'], 'Ww'
 				)
 				);
@@ -15172,13 +15176,13 @@ class Interpretation extends Fields
 					. " add " . $custom_button['name'] . " button.";
 				$buttons[] = $this->_t(3) . "JToolBarHelper::custom('"
 					. $nameListCode . ".redirectTo"
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$custom_button['link'], 'F'
 					) . "', '" . $custom_button['icon'] . "', '', '" . $keyLang
 					. "', true);";
 				$buttons[] = $this->_t(2) . "}";
 			}
-			if (ComponentbuilderHelper::checkArray($buttons))
+			if (ArrayHelper::check($buttons))
 			{
 				return implode(PHP_EOL, $buttons);
 			}
@@ -15196,7 +15200,7 @@ class Interpretation extends Fields
 	{
 		$method = '';
 		if (isset($this->customAdminDynamicButtons[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->customAdminDynamicButtons[$nameListCode]
 			))
 		{
@@ -15209,7 +15213,7 @@ class Interpretation extends Fields
 				// add the custom redirect method
 				$method[] = PHP_EOL . PHP_EOL . $this->_t(1)
 					. "public function redirectTo"
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$custom_button['link'], 'F'
 					) . "()";
 				$method[] = $this->_t(1) . "{";
@@ -15402,7 +15406,7 @@ class Interpretation extends Fields
 			}
 			// if values were returned add the area
 			if (isset($custom_query)
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$custom_query
 				))
 			{
@@ -15417,7 +15421,7 @@ class Interpretation extends Fields
 			}
 			// add access levels if the view has access set
 			if (isset($this->accessBuilder[$nameSingleCode])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->accessBuilder[$nameSingleCode]
 				))
 			{
@@ -15494,7 +15498,7 @@ class Interpretation extends Fields
 			}
 			// add translations
 			if (isset($query_translations)
-				&& ComponentbuilderHelper::checkString($query_translations))
+				&& StringHelper::check($query_translations))
 			{
 				$query .= PHP_EOL . $this->_t(3) . "//" . $this->setLine(
 						__LINE__
@@ -15582,7 +15586,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Get the model";
 			$method[] = $this->_t(3) . "\$model = \$this->getModel('"
-				. ComponentbuilderHelper::safeString($nameListCode, 'F')
+				. StringHelper::safe($nameListCode, 'F')
 				. "');";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " get the data to export";
@@ -15597,11 +15601,11 @@ class Interpretation extends Fields
 			$method[] = $this->_t(4) . "\$date = JFactory::getDate();";
 			$method[] = $this->_t(4) . $this->fileContentStatic[$this->hhh
 				. 'Component' . $this->hhh] . "Helper::xls(\$data,'"
-				. ComponentbuilderHelper::safeString($nameListCode, 'F')
+				. StringHelper::safe($nameListCode, 'F')
 				. "_'.\$date->format('jS_F_Y'),'"
-				. ComponentbuilderHelper::safeString($nameListCode, 'Ww')
+				. StringHelper::safe($nameListCode, 'Ww')
 				. " exported ('.\$date->format('jS F, Y').')','"
-				. ComponentbuilderHelper::safeString($nameListCode, 'w')
+				. StringHelper::safe($nameListCode, 'w')
 				. "');";
 			$method[] = $this->_t(3) . "}";
 			$method[] = $this->_t(2) . "}";
@@ -15636,7 +15640,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Get the import model";
 			$method[] = $this->_t(3) . "\$model = \$this->getModel('"
-				. ComponentbuilderHelper::safeString($nameListCode, 'F')
+				. StringHelper::safe($nameListCode, 'F')
 				. "');";
 			$method[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " get the headers to import";
@@ -15662,7 +15666,7 @@ class Interpretation extends Fields
 			// add to lang array
 			$selectImportFileNote = $this->langPrefix
 				. "_IMPORT_SELECT_FILE_FOR_"
-				. ComponentbuilderHelper::safeString($nameListCode, 'U');
+				. StringHelper::safe($nameListCode, 'U');
 			$this->setLangContent(
 				$this->lang, $selectImportFileNote,
 				'Select the file to import data to ' . $nameListCode . '.'
@@ -15713,7 +15717,7 @@ class Interpretation extends Fields
 		{
 			// main lang prefix
 			$langExport = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString('Export Data', 'U');
+				. StringHelper::safe('Export Data', 'U');
 			// add to lang array
 			$this->setLangContent($this->lang, $langExport, 'Export Data');
 			$button   = array();
@@ -15740,7 +15744,7 @@ class Interpretation extends Fields
 		{
 			// main lang prefix
 			$langImport = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString('Import Data', 'U');
+				. StringHelper::safe('Import Data', 'U');
 			// add to lang array
 			$this->setLangContent($this->lang, $langImport, 'Import Data');
 			$button   = array();
@@ -15844,7 +15848,7 @@ class Interpretation extends Fields
 	{
 		// check if this view has category added
 		if (isset($this->categoryBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->categoryBuilder[$nameListCode]
 			))
 		{
@@ -15910,7 +15914,7 @@ class Interpretation extends Fields
 			. "\$query->where('(a.published = 0 OR a.published = 1)');";
 		$query .= PHP_EOL . $this->_t(2) . "}";
 		if (isset($this->accessBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->accessBuilder[$nameSingleCode]
 			))
 		{
@@ -16084,7 +16088,7 @@ class Interpretation extends Fields
 	public function setSearchQuery($nameListCode)
 	{
 		if (isset($this->searchBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->searchBuilder[$nameListCode]
 			))
 		{
@@ -16096,7 +16100,7 @@ class Interpretation extends Fields
 				if ($nr == 0)
 				{
 					$search .= "a." . $array['code'] . " LIKE '.\$search.'";
-					if (ComponentbuilderHelper::checkArray($array['custom'])
+					if (ArrayHelper::check($array['custom'])
 						&& 1 == $array['list'])
 					{
 						$search .= " OR " . $array['custom']['db'] . "."
@@ -16106,7 +16110,7 @@ class Interpretation extends Fields
 				else
 				{
 					$search .= " OR a." . $array['code'] . " LIKE '.\$search.'";
-					if (ComponentbuilderHelper::checkArray($array['custom'])
+					if (ArrayHelper::check($array['custom'])
 						&& 1 == $array['list'])
 					{
 						$search .= " OR " . $array['custom']['db'] . "."
@@ -16150,7 +16154,7 @@ class Interpretation extends Fields
 	)
 	{
 		if (isset($this->customBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->customBuilder[$nameListCode]
 			))
 		{
@@ -16159,7 +16163,7 @@ class Interpretation extends Fields
 			{
 				// only load this if table is set
 				if ((isset($this->customBuilderList[$nameListCode])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->customBuilderList[$nameListCode]
 						)
 						&& in_array(
@@ -16167,20 +16171,20 @@ class Interpretation extends Fields
 							$this->customBuilderList[$nameListCode]
 						)
 						&& isset($filter['custom']['table'])
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$filter['custom']['table']
 						)
 						&& $filter['method'] == 0)
 					|| ($just_text && isset($filter['custom']['table'])
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$filter['custom']['table']
 						)
 						&& $filter['method'] == 0))
 				{
 					$query .= PHP_EOL . PHP_EOL . $this->_t(2) . $tab . "//"
 						. $this->setLine(__LINE__) . " From the "
-						. ComponentbuilderHelper::safeString(
-							ComponentbuilderHelper::safeString(
+						. StringHelper::safe(
+							StringHelper::safe(
 								$filter['custom']['table'], 'w'
 							)
 						) . " table.";
@@ -16232,7 +16236,7 @@ class Interpretation extends Fields
 	public function setFilterQuery($nameListCode)
 	{
 		if (isset($this->filterBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->filterBuilder[$nameListCode]
 			))
 		{
@@ -16406,7 +16410,7 @@ class Interpretation extends Fields
 		$nameSingleCode = $viewArray['settings']->name_single_code;
 		// add conditions to this view
 		if (isset($viewArray['settings']->conditions)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$viewArray['settings']->conditions
 			))
 		{
@@ -16419,7 +16423,7 @@ class Interpretation extends Fields
 			foreach ($viewArray['settings']->conditions as $condition)
 			{
 				if (isset($condition['match_name'])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$condition['match_name']
 					))
 				{
@@ -16441,7 +16445,7 @@ class Interpretation extends Fields
 							$viewArray['settings']->conditions, $condition,
 							$nameSingleCode
 						);
-						if (ComponentbuilderHelper::checkArray($relations))
+						if (ArrayHelper::check($relations))
 						{
 							// set behavior and default array
 							$behaviors[$matchName] = $targetBehavior;
@@ -16483,7 +16487,7 @@ class Interpretation extends Fields
 
 							foreach ($relations as $relation)
 							{
-								if (ComponentbuilderHelper::checkString(
+								if (StringHelper::check(
 									$relation['match_name']
 								))
 								{
@@ -16564,7 +16568,7 @@ class Interpretation extends Fields
 			$validation = '';
 			$isSet      = '';
 			$listener   = '';
-			if (ComponentbuilderHelper::checkArray($functions))
+			if (ArrayHelper::check($functions))
 			{
 				// now build the initial script
 				$initial .= "//" . $this->setLine(__LINE__) . " Initial Script"
@@ -16593,7 +16597,7 @@ class Interpretation extends Fields
 						);
 
 						if (isset($this->setScriptMediaSwitch)
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$this->setScriptMediaSwitch
 							)
 							&& in_array(
@@ -16605,7 +16609,7 @@ class Interpretation extends Fields
 						else
 						{
 							if (isset($this->setScriptUserSwitch)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$this->setScriptUserSwitch
 								)
 								&& in_array(
@@ -16635,7 +16639,7 @@ class Interpretation extends Fields
 						}
 					}
 				}
-				if (ComponentbuilderHelper::checkString($modal))
+				if (StringHelper::check($modal))
 				{
 					$listener .= PHP_EOL . "window.SqueezeBox.initialize({";
 					$listener .= PHP_EOL . $this->_t(1) . "onClose:function(){";
@@ -16666,7 +16670,7 @@ class Interpretation extends Fields
 					$fucounter = 0;
 					foreach ($f_matchKeys as $fu_matchKey)
 					{
-						if (ComponentbuilderHelper::checkString($fu_matchKey))
+						if (StringHelper::check($fu_matchKey))
 						{
 							if ($fucounter == 0)
 							{
@@ -16717,7 +16721,7 @@ class Interpretation extends Fields
 								. " set the function logic";
 							$map .= PHP_EOL . $this->_t(1) . "if (";
 							$if  = $ifValue[$a_matchKey];
-							if (ComponentbuilderHelper::checkString($if))
+							if (StringHelper::check($if))
 							{
 								$map .= $if;
 							}
@@ -16760,7 +16764,7 @@ class Interpretation extends Fields
 						foreach ($f_matchKeys as $f_matchKey)
 						{
 							$if = $ifValue[$f_matchKey];
-							if (ComponentbuilderHelper::checkString($if))
+							if (StringHelper::check($if))
 							{
 								if ($ifcounter == 0)
 								{
@@ -16784,7 +16788,7 @@ class Interpretation extends Fields
 					foreach ($controls as $target => $action)
 					{
 						$func .= $action['behavior'];
-						if (ComponentbuilderHelper::checkString(
+						if (StringHelper::check(
 							$action[$targetBehavior]
 						))
 						{
@@ -16802,7 +16806,7 @@ class Interpretation extends Fields
 						foreach ($controls as $target => $action)
 						{
 							$func .= $action['default'];
-							if (ComponentbuilderHelper::checkString(
+							if (StringHelper::check(
 								$action[$targetDefault]
 							))
 							{
@@ -16815,7 +16819,7 @@ class Interpretation extends Fields
 				}
 				// add the needed validation to file
 				if (isset($this->validationFixBuilder[$nameSingleCode])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->validationFixBuilder[$nameSingleCode]
 					))
 				{
@@ -16901,7 +16905,7 @@ class Interpretation extends Fields
 		);
 		// add custom script to footer
 		if (isset($this->customScriptBuilder['view_footer'][$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->customScriptBuilder['view_footer'][$nameSingleCode]
 			))
 		{
@@ -16927,7 +16931,7 @@ class Interpretation extends Fields
 				'views_file', $nameSingleCode, PHP_EOL . PHP_EOL, null, true,
 				false
 			)) !== false
-			&& ComponentbuilderHelper::checkString($list_fileScript))
+			&& StringHelper::check($list_fileScript))
 		{
 			// get dates
 			$_created  = $this->getCreatedDate($viewArray);
@@ -16961,7 +16965,7 @@ class Interpretation extends Fields
 		}
 		// minfy the script
 		if ($this->minify && isset($list_fileScript)
-			&& ComponentbuilderHelper::checkString($list_fileScript))
+			&& StringHelper::check($list_fileScript))
 		{
 			// minify the fielScript javscript
 			$minifier = new JS;
@@ -16970,7 +16974,7 @@ class Interpretation extends Fields
 		}
 		// minfy the script
 		if ($this->minify && isset($fileScript)
-			&& ComponentbuilderHelper::checkString($fileScript))
+			&& StringHelper::check($fileScript))
 		{
 			// minify the fielScript javscript
 			$minifier = new JS;
@@ -16979,7 +16983,7 @@ class Interpretation extends Fields
 		}
 		// minfy the script
 		if ($this->minify && isset($footerScript)
-			&& ComponentbuilderHelper::checkString($footerScript))
+			&& StringHelper::check($footerScript))
 		{
 			// minify the footerScript javscript
 			$minifier = new JS;
@@ -16988,7 +16992,7 @@ class Interpretation extends Fields
 		}
 		// make sure there is script to add
 		if (isset($list_fileScript)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$list_fileScript
 			))
 		{
@@ -16998,12 +17002,12 @@ class Interpretation extends Fields
 		}
 		// make sure there is script to add
 		if (isset($fileScript)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$fileScript
 			))
 		{
 			// add the head script if set
-			if (isset($head) && ComponentbuilderHelper::checkString($head))
+			if (isset($head) && StringHelper::check($head))
 			{
 				$fileScript = "// Some Global Values" . PHP_EOL . $head
 					. PHP_EOL . $fileScript;
@@ -17014,7 +17018,7 @@ class Interpretation extends Fields
 		}
 		// make sure to add custom footer script if php was found in it, since we canot minfy it with php
 		if (isset($customFooterScript)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$customFooterScript
 			))
 		{
@@ -17026,7 +17030,7 @@ class Interpretation extends Fields
 		}
 		// make sure there is script to add
 		if (isset($footerScript)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$footerScript
 			))
 		{
@@ -17061,7 +17065,7 @@ class Interpretation extends Fields
 		}
 
 		// make sure that the function is loaded only once
-		if (ComponentbuilderHelper::checkArray($funcsets))
+		if (ArrayHelper::check($funcsets))
 		{
 			$initial .= PHP_EOL . $this->_t(1) . $function . "(";
 			$initial .= implode(',', $funcsets);
@@ -17078,7 +17082,7 @@ class Interpretation extends Fields
 		// convert to name array
 		foreach ($condition['target_field'] as $targetField)
 		{
-			if (ComponentbuilderHelper::checkArray($targetField)
+			if (ArrayHelper::check($targetField)
 				&& isset($targetField['name']))
 			{
 				$currentTargets[] = $targetField['name'];
@@ -17093,13 +17097,13 @@ class Interpretation extends Fields
 			if ($relation['match_field'] !== $condition['match_field']
 				&& $relation['target_relation']) // Made this change to see if it improves the expected result (TODO)
 			{
-				if (ComponentbuilderHelper::checkArray(
+				if (ArrayHelper::check(
 					$relation['target_field']
 				))
 				{
 					foreach ($relation['target_field'] as $target)
 					{
-						if (ComponentbuilderHelper::checkArray($target)
+						if (ArrayHelper::check($target)
 							&& $this->checkRelationControl(
 								$target['name'], $relation['match_name'],
 								$condition['match_name'], $view
@@ -17131,12 +17135,12 @@ class Interpretation extends Fields
 	)
 	{
 		if (isset($this->targetRelationControl[$view])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->targetRelationControl[$view]
 			))
 		{
 			if (isset($this->targetRelationControl[$view][$targetName])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->targetRelationControl[$view][$targetName]
 				))
 			{
@@ -17158,7 +17162,7 @@ class Interpretation extends Fields
 			}
 		}
 		elseif (!isset($this->targetRelationControl[$view])
-			|| !ComponentbuilderHelper::checkArray(
+			|| !ArrayHelper::check(
 				$this->targetRelationControl[$view]
 			))
 		{
@@ -17173,14 +17177,14 @@ class Interpretation extends Fields
 	)
 	{
 		$bucket = array();
-		if (ComponentbuilderHelper::checkArray($targets)
+		if (ArrayHelper::check($targets)
 			&& !in_array(
 				$uniqueVar, $this->targetControlsScriptChecker
 			))
 		{
 			foreach ($targets as $target)
 			{
-				if (ComponentbuilderHelper::checkArray($target))
+				if (ArrayHelper::check($target))
 				{
 					// set the required var
 					if ($target['required'] === 'yes')
@@ -17371,7 +17375,7 @@ class Interpretation extends Fields
 					|| ComponentbuilderHelper::fieldCheck($type, 'dynamic')
 					|| !ComponentbuilderHelper::fieldCheck($type))
 				{
-					if (ComponentbuilderHelper::checkArray($options))
+					if (ArrayHelper::check($options))
 					{
 						foreach ($options as $option)
 						{
@@ -17382,7 +17386,7 @@ class Interpretation extends Fields
 									$option = "'" . $option . "'";
 								}
 							}
-							if (ComponentbuilderHelper::checkString($string))
+							if (StringHelper::check($string))
 							{
 								$string .= ' || ' . $value . ' == ' . $option;
 							}
@@ -17404,7 +17408,7 @@ class Interpretation extends Fields
 					|| ComponentbuilderHelper::fieldCheck($type, 'dynamic')
 					|| !ComponentbuilderHelper::fieldCheck($type))
 				{
-					if (ComponentbuilderHelper::checkArray($options))
+					if (ArrayHelper::check($options))
 					{
 						foreach ($options as $option)
 						{
@@ -17415,7 +17419,7 @@ class Interpretation extends Fields
 									$option = "'" . $option . "'";
 								}
 							}
-							if (ComponentbuilderHelper::checkString($string))
+							if (StringHelper::check($string))
 							{
 								$string .= ' || ' . $value . ' != ' . $option;
 							}
@@ -17437,7 +17441,7 @@ class Interpretation extends Fields
 					|| ComponentbuilderHelper::fieldCheck($type, 'dynamic')
 					|| !ComponentbuilderHelper::fieldCheck($type))
 				{
-					if (ComponentbuilderHelper::checkArray($options))
+					if (ArrayHelper::check($options))
 					{
 						foreach ($options as $option)
 						{
@@ -17448,7 +17452,7 @@ class Interpretation extends Fields
 									$option = "'" . $option . "'";
 								}
 							}
-							if (ComponentbuilderHelper::checkString($string))
+							if (StringHelper::check($string))
 							{
 								$string .= ' || ' . $value . ' == ' . $option;
 							}
@@ -17462,7 +17466,7 @@ class Interpretation extends Fields
 					{
 						$userFix = '';
 						if (isset($this->setScriptUserSwitch)
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$this->setScriptUserSwitch
 							)
 							&& in_array($type, $this->setScriptUserSwitch))
@@ -17492,13 +17496,13 @@ class Interpretation extends Fields
 				// only 4 text_field
 				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
-					if (ComponentbuilderHelper::checkArray(
+					if (ArrayHelper::check(
 						$options['keywords']
 					))
 					{
 						foreach ($options['keywords'] as $keyword)
 						{
-							if (ComponentbuilderHelper::checkString($string))
+							if (StringHelper::check($string))
 							{
 								$string .= ' && ' . $value . '.indexOf("'
 									. $keyword . '") >= 0';
@@ -17510,7 +17514,7 @@ class Interpretation extends Fields
 							}
 						}
 					}
-					if (!ComponentbuilderHelper::checkString($string))
+					if (!StringHelper::check($string))
 					{
 						$string .= $value . ' == "error"';
 					}
@@ -17520,13 +17524,13 @@ class Interpretation extends Fields
 				// only 4 text_field
 				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
-					if (ComponentbuilderHelper::checkArray(
+					if (ArrayHelper::check(
 						$options['keywords']
 					))
 					{
 						foreach ($options['keywords'] as $keyword)
 						{
-							if (ComponentbuilderHelper::checkString($string))
+							if (StringHelper::check($string))
 							{
 								$string .= ' || ' . $value . '.indexOf("'
 									. $keyword . '") >= 0';
@@ -17538,7 +17542,7 @@ class Interpretation extends Fields
 							}
 						}
 					}
-					if (!ComponentbuilderHelper::checkString($string))
+					if (!StringHelper::check($string))
 					{
 						$string .= $value . ' == "error"';
 					}
@@ -17548,16 +17552,16 @@ class Interpretation extends Fields
 				// only 4 text_field
 				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
-					if (ComponentbuilderHelper::checkArray(
+					if (ArrayHelper::check(
 						$options['keywords']
 					))
 					{
 						foreach ($options['keywords'] as $keyword)
 						{
-							$keyword = ComponentbuilderHelper::safeString(
+							$keyword = StringHelper::safe(
 								$keyword, 'w'
 							);
-							if (ComponentbuilderHelper::checkString($string))
+							if (StringHelper::check($string))
 							{
 								$string .= ' && ' . $value
 									. '.toLowerCase().indexOf("' . $keyword
@@ -17570,7 +17574,7 @@ class Interpretation extends Fields
 							}
 						}
 					}
-					if (!ComponentbuilderHelper::checkString($string))
+					if (!StringHelper::check($string))
 					{
 						$string .= $value . ' == "error"';
 					}
@@ -17580,16 +17584,16 @@ class Interpretation extends Fields
 				// only 4 text_field
 				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
-					if (ComponentbuilderHelper::checkArray(
+					if (ArrayHelper::check(
 						$options['keywords']
 					))
 					{
 						foreach ($options['keywords'] as $keyword)
 						{
-							$keyword = ComponentbuilderHelper::safeString(
+							$keyword = StringHelper::safe(
 								$keyword, 'w'
 							);
-							if (ComponentbuilderHelper::checkString($string))
+							if (StringHelper::check($string))
 							{
 								$string .= ' || ' . $value
 									. '.toLowerCase().indexOf("' . $keyword
@@ -17602,7 +17606,7 @@ class Interpretation extends Fields
 							}
 						}
 					}
-					if (!ComponentbuilderHelper::checkString($string))
+					if (!StringHelper::check($string))
 					{
 						$string .= $value . ' == "error"';
 					}
@@ -17612,7 +17616,7 @@ class Interpretation extends Fields
 				// only 4 text_field
 				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
-					if (ComponentbuilderHelper::checkArray($options))
+					if (ArrayHelper::check($options))
 					{
 						if ($options['length'])
 						{
@@ -17620,7 +17624,7 @@ class Interpretation extends Fields
 								. (int) $options['length'];
 						}
 					}
-					if (!ComponentbuilderHelper::checkString($string))
+					if (!StringHelper::check($string))
 					{
 						$string .= $value . '.length >= 5';
 					}
@@ -17630,7 +17634,7 @@ class Interpretation extends Fields
 				// only 4 text_field
 				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
-					if (ComponentbuilderHelper::checkArray($options))
+					if (ArrayHelper::check($options))
 					{
 						if ($options['length'])
 						{
@@ -17638,7 +17642,7 @@ class Interpretation extends Fields
 								. (int) $options['length'];
 						}
 					}
-					if (!ComponentbuilderHelper::checkString($string))
+					if (!StringHelper::check($string))
 					{
 						$string .= $value . '.length <= 5';
 					}
@@ -17648,7 +17652,7 @@ class Interpretation extends Fields
 				// only 4 text_field
 				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
 				{
-					if (ComponentbuilderHelper::checkArray($options))
+					if (ArrayHelper::check($options))
 					{
 						if ($options['length'])
 						{
@@ -17656,14 +17660,14 @@ class Interpretation extends Fields
 								. (int) $options['length'];
 						}
 					}
-					if (!ComponentbuilderHelper::checkString($string))
+					if (!StringHelper::check($string))
 					{
 						$string .= $value . '.length == 5';
 					}
 				}
 				break;
 		}
-		if (!ComponentbuilderHelper::checkString($string))
+		if (!StringHelper::check($string))
 		{
 			$string = 0;
 		}
@@ -17674,7 +17678,7 @@ class Interpretation extends Fields
 	public function getOptionsScript($type, $options)
 	{
 		$buket = array();
-		if (ComponentbuilderHelper::checkString($options))
+		if (StringHelper::check($options))
 		{
 			if (ComponentbuilderHelper::fieldCheck($type, 'list')
 				|| ComponentbuilderHelper::fieldCheck($type, 'dynamic')
@@ -17683,7 +17687,7 @@ class Interpretation extends Fields
 				$optionsArray = array_map(
 					'trim', (array) explode(PHP_EOL, $options)
 				);
-				if (!ComponentbuilderHelper::checkArray($optionsArray))
+				if (!ArrayHelper::check($optionsArray))
 				{
 					$optionsArray[] = $optionsArray;
 				}
@@ -17708,7 +17712,7 @@ class Interpretation extends Fields
 				$keywords = ComponentbuilderHelper::getBetween(
 					$options, 'keywords="', '"'
 				);
-				if (ComponentbuilderHelper::checkString($keywords))
+				if (StringHelper::check($keywords))
 				{
 					if (strpos($keywords, ',') !== false)
 					{
@@ -17729,7 +17733,7 @@ class Interpretation extends Fields
 				$length = ComponentbuilderHelper::getBetween(
 					$options, 'length="', '"'
 				);
-				if (ComponentbuilderHelper::checkString($length))
+				if (StringHelper::check($length))
 				{
 					$buket['length'] = $length;
 				}
@@ -17771,7 +17775,7 @@ class Interpretation extends Fields
 				. ' input[type=\'radio\']:checked").val();';
 		}
 		elseif (isset($this->setScriptUserSwitch)
-			&& ComponentbuilderHelper::checkArray($this->setScriptUserSwitch)
+			&& ArrayHelper::check($this->setScriptUserSwitch)
 			&& in_array($type, $this->setScriptUserSwitch))
 		{
 			// this is only since 3.3.4
@@ -17834,7 +17838,7 @@ class Interpretation extends Fields
 	{
 		$fix = '';
 		if (isset($this->validationFixBuilder[$view])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->validationFixBuilder[$view]
 			))
 		{
@@ -17916,7 +17920,7 @@ class Interpretation extends Fields
 	{
 		$tasks = '';
 		if (isset($this->customScriptBuilder[$target]['ajax_controller'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->customScriptBuilder[$target]['ajax_controller']
 			))
 		{
@@ -17930,7 +17934,7 @@ class Interpretation extends Fields
 					$taskArray[$task['task_name']] = $task['task_name'];
 				}
 			}
-			if (ComponentbuilderHelper::checkArray($taskArray))
+			if (ArrayHelper::check($taskArray))
 			{
 				foreach ($taskArray as $name)
 				{
@@ -17947,7 +17951,7 @@ class Interpretation extends Fields
 	{
 		$cases = '';
 		if (isset($this->customScriptBuilder[$target]['ajax_controller'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->customScriptBuilder[$target]['ajax_controller']
 			))
 		{
@@ -17991,7 +17995,7 @@ class Interpretation extends Fields
 					}
 				}
 			}
-			if (ComponentbuilderHelper::checkArray($getModel))
+			if (ArrayHelper::check($getModel))
 			{
 				foreach ($getModel as $task => $getMethod)
 				{
@@ -18011,7 +18015,7 @@ class Interpretation extends Fields
 					);
 					// check if we have some values to check
 					if (isset($ifArray[$task])
-						&& ComponentbuilderHelper::checkArray($ifArray[$task]))
+						&& ArrayHelper::check($ifArray[$task]))
 					{
 						// set if string
 						$ifvalues = implode(' && ', $ifArray[$task]);
@@ -18080,7 +18084,7 @@ class Interpretation extends Fields
 	{
 		$methods = '';
 		if (isset($this->customScriptBuilder[$target]['ajax_model'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->customScriptBuilder[$target]['ajax_model']
 			))
 		{
@@ -18113,7 +18117,7 @@ class Interpretation extends Fields
 	{
 		// the old filter type uses these functions
 		if (isset($this->filterBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->filterBuilder[$nameListCode]
 			))
 		{
@@ -18131,7 +18135,7 @@ class Interpretation extends Fields
 			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				if ($filter['type'] != 'category'
-					&& ComponentbuilderHelper::checkArray($filter['custom'])
+					&& ArrayHelper::check($filter['custom'])
 					&& $filter['custom']['extends'] === 'user')
 				{
 					// add if this is a function path
@@ -18139,7 +18143,7 @@ class Interpretation extends Fields
 					{
 						$function[] = PHP_EOL . $this->_t(1)
 							. "protected function getThe" . $filter['function']
-							. ComponentbuilderHelper::safeString(
+							. StringHelper::safe(
 								$filter['custom']['text'], 'F'
 							) . "Selections()";
 						$function[] = $this->_t(1) . "{";
@@ -18210,7 +18214,7 @@ class Interpretation extends Fields
 
 					/* else
 					  {
-					  $function[] = PHP_EOL.$this->_t(1) . "protected function getThe".$filter['function'].ComponentbuilderHelper::safeString($filter['custom']['text'],'F')."Selections()";
+					  $function[] = PHP_EOL.$this->_t(1) . "protected function getThe".$filter['function'].StringHelper::safe($filter['custom']['text'],'F')."Selections()";
 					  $function[] = $this->_t(1) . "{";
 					  $function[] = $this->_t(2) . "//".$this->setLine(__LINE__)." Get a db connection.";
 					  $function[] = $this->_t(2) . "\$db = JFactory::getDbo();";
@@ -18248,11 +18252,11 @@ class Interpretation extends Fields
 					  } */
 				}
 				elseif ($filter['type'] != 'category'
-					&& !ComponentbuilderHelper::checkArray($filter['custom']))
+					&& !ArrayHelper::check($filter['custom']))
 				{
 					$translation = false;
 					if (isset($this->selectionTranslationFixBuilder[$nameListCode])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->selectionTranslationFixBuilder[$nameListCode]
 						)
 						&& array_key_exists(
@@ -18441,7 +18445,7 @@ class Interpretation extends Fields
 				// and give a notice that this will cause an issue
 				elseif (!$funtion_path && $filter['type'] != 'category'
 					&& $filter['multi'] == 2
-					&& ComponentbuilderHelper::checkArray($filter['custom']))
+					&& ArrayHelper::check($filter['custom']))
 				{
 					// get the field code
 					$field_code = $this->getCustomFieldCode(
@@ -18478,7 +18482,7 @@ class Interpretation extends Fields
 				}
 				// divert the code to a file if this is not a funtion path
 				if (!$funtion_path
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$function
 					))
 				{
@@ -18491,7 +18495,7 @@ class Interpretation extends Fields
 				}
 			}
 			// if this is a function path, return the function if set
-			if ($funtion_path && ComponentbuilderHelper::checkArray($function))
+			if ($funtion_path && ArrayHelper::check($function))
 			{
 				// return the function
 				return PHP_EOL . implode(PHP_EOL, $function);
@@ -18516,7 +18520,7 @@ class Interpretation extends Fields
 		$fields[] = $this->_t(1) . "protected function getUniqueFields()";
 		$fields[] = $this->_t(1) . "{";
 		if (isset($this->dbUniqueKeys[$view])
-			&& ComponentbuilderHelper::checkArray($this->dbUniqueKeys[$view]))
+			&& ArrayHelper::check($this->dbUniqueKeys[$view]))
 		{
 			// if guid should also be added
 			if (isset($this->dbUniqueGuid[$view]))
@@ -18572,7 +18576,7 @@ class Interpretation extends Fields
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 1
 			&& isset($this->filterBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->filterBuilder[$nameListCode]
 			))
 		{
@@ -18583,17 +18587,17 @@ class Interpretation extends Fields
 			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				if ($filter['type'] != 'category'
-					&& ComponentbuilderHelper::checkArray($filter['custom'])
+					&& ArrayHelper::check($filter['custom'])
 					&& $filter['custom']['extends'] !== 'user')
 				{
-					$CodeName       = ComponentbuilderHelper::safeString(
+					$CodeName       = StringHelper::safe(
 						$filter['code'] . ' ' . $filter['custom']['text'], 'W'
 					);
 					$codeName       = $filter['code']
-						. ComponentbuilderHelper::safeString(
+						. StringHelper::safe(
 							$filter['custom']['text'], 'F'
 						);
-					$type           = ComponentbuilderHelper::safeString(
+					$type           = StringHelper::safe(
 						$filter['custom']['type'], 'F'
 					);
 					$fieldFilters[] = PHP_EOL . $this->_t(2) . "//"
@@ -18646,15 +18650,15 @@ class Interpretation extends Fields
 				}
 				elseif ($filter['type'] != 'category')
 				{
-					$Codename = ComponentbuilderHelper::safeString(
+					$Codename = StringHelper::safe(
 						$filter['code'], 'W'
 					);
 					if (isset($filter['custom'])
-						&& ComponentbuilderHelper::checkArray($filter['custom'])
+						&& ArrayHelper::check($filter['custom'])
 						&& $filter['custom']['extends'] === 'user')
 					{
 						$functionName = "\$this->getThe" . $filter['function']
-							. ComponentbuilderHelper::safeString(
+							. StringHelper::safe(
 								$filter['custom']['text'], 'F'
 							) . "Selections();";
 					}
@@ -18714,7 +18718,7 @@ class Interpretation extends Fields
 			}
 		}
 		// did we find filters
-		if (ComponentbuilderHelper::checkArray($fieldFilters))
+		if (ArrayHelper::check($fieldFilters))
 		{
 			// return the filter
 			return PHP_EOL . implode(PHP_EOL, $fieldFilters);
@@ -18758,7 +18762,7 @@ class Interpretation extends Fields
 			$filter[] = $this->_t(2) . "}";
 			// check if view has access
 			if (isset($this->accessBuilder[$nameSingleCode])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->accessBuilder[$nameSingleCode]
 				)
 				&& !isset($this->fieldsNames[$nameSingleCode]['access']))
@@ -18789,7 +18793,7 @@ class Interpretation extends Fields
 		if (isset($this->adminFilterType[$nameListCode])
 			&& $this->adminFilterType[$nameListCode] == 1
 			&& isset($this->categoryBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->categoryBuilder[$nameListCode]
 			)
 			&& isset($this->categoryBuilder[$nameListCode]['extension'])
@@ -18830,7 +18834,7 @@ class Interpretation extends Fields
 		$this->setCategoryBatchHelper($fieldBatch, $nameListCode);
 		// check if we have other batch options to add
 		if (isset($this->filterBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->filterBuilder[$nameListCode]
 			))
 		{
@@ -18849,14 +18853,14 @@ class Interpretation extends Fields
 			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				if ($filter['type'] != 'category'
-					&& ComponentbuilderHelper::checkArray($filter['custom'])
+					&& ArrayHelper::check($filter['custom'])
 					&& $filter['custom']['extends'] !== 'user')
 				{
-					$CodeName     = ComponentbuilderHelper::safeString(
+					$CodeName     = StringHelper::safe(
 						$filter['code'] . ' ' . $filter['custom']['text'], 'W'
 					);
 					$codeName     = $filter['code']
-						. ComponentbuilderHelper::safeString(
+						. StringHelper::safe(
 							$filter['custom']['text'], 'F'
 						);
 					$fieldBatch[] = PHP_EOL . $this->_t(2)
@@ -18869,7 +18873,7 @@ class Interpretation extends Fields
 					// add the get values here
 					if ($get_values)
 					{
-						$type         = ComponentbuilderHelper::safeString(
+						$type         = StringHelper::safe(
 							$filter['custom']['type'], 'F'
 						);
 						$fieldBatch[] = $this->_t(3) . "//"
@@ -18914,7 +18918,7 @@ class Interpretation extends Fields
 				}
 				elseif ($filter['type'] != 'category')
 				{
-					$CodeName = ComponentbuilderHelper::safeString(
+					$CodeName = StringHelper::safe(
 						$filter['code'], 'W'
 					);
 
@@ -18971,7 +18975,7 @@ class Interpretation extends Fields
 			}
 		}
 		// did we find batch options
-		if (ComponentbuilderHelper::checkArray($fieldBatch))
+		if (ArrayHelper::check($fieldBatch))
 		{
 			// return the batch
 			return PHP_EOL . implode(PHP_EOL, $fieldBatch);
@@ -18992,7 +18996,7 @@ class Interpretation extends Fields
 	protected function setDefaultBatchHelper(&$batch, &$nameSingleCode)
 	{
 		// set component name
-		$COPMONENT = ComponentbuilderHelper::safeString(
+		$COPMONENT = StringHelper::safe(
 			$this->componentData->name_code, 'U'
 		);
 		// set batch
@@ -19012,7 +19016,7 @@ class Interpretation extends Fields
 		$batch[] = $this->_t(2) . "}";
 		// check if view has access
 		if (isset($this->accessBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->accessBuilder[$nameSingleCode]
 			)
 			&& !isset($this->fieldsNames[$nameSingleCode]['access']))
@@ -19046,13 +19050,13 @@ class Interpretation extends Fields
 	protected function setCategoryBatchHelper(&$batch, &$nameListCode)
 	{
 		if (isset($this->categoryBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->categoryBuilder[$nameListCode]
 			)
 			&& isset($this->categoryBuilder[$nameListCode]['extension']))
 		{
 			// set component name
-			$COPMONENT = ComponentbuilderHelper::safeString(
+			$COPMONENT = StringHelper::safe(
 				$this->componentData->name_code, 'U'
 			);
 			// set filter
@@ -19077,7 +19081,7 @@ class Interpretation extends Fields
 	public function setRouterCategoryViews($nameSingleCode, $nameListCode)
 	{
 		if (isset($this->categoryBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->categoryBuilder[$nameListCode]
 			))
 		{
@@ -19085,7 +19089,7 @@ class Interpretation extends Fields
 			$_extension = $this->categoryBuilder[$nameListCode]['extension'];
 			$_extension = explode('.', $_extension);
 			// set component name
-			if (ComponentbuilderHelper::checkArray($_extension))
+			if (ArrayHelper::check($_extension))
 			{
 				$component = str_replace('com_', '', $_extension[0]);
 			}
@@ -19095,7 +19099,7 @@ class Interpretation extends Fields
 			}
 			// check if category has another name
 			if (isset($this->catOtherName[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->catOtherName[$nameListCode]
 				))
 			{
@@ -19158,7 +19162,7 @@ class Interpretation extends Fields
 					$this->fileContentStatic[$this->hhh
 					. 'ROUTER_CATEGORY_VIEWS' . $this->hhh]
 				)
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->fileContentStatic[$this->hhh
 					. 'ROUTER_CATEGORY_VIEWS' . $this->hhh]
 				))
@@ -19195,11 +19199,11 @@ class Interpretation extends Fields
 			$coreLoad = true;
 		}
 		// check if item has category
-		if (0) //isset($this->categoryBuilder[$nameListCode]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameListCode])) <-- remove category from check
+		if (0) //isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode])) <-- remove category from check
 		{
 			// check if category has another name
 			if ($coreLoad && isset($this->catOtherName[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->catOtherName[$nameListCode]
 				))
 			{
@@ -19218,7 +19222,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access'])
 				&& isset($this->permissionBuilder['global'][$core['core.access']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.access']]
 				)
 				&& in_array(
@@ -19252,7 +19256,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.create'])
 				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
@@ -19287,7 +19291,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access'])
 				&& isset($this->permissionBuilder['global'][$core['core.access']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.access']]
 				)
 				&& in_array(
@@ -19309,7 +19313,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.create'])
 				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
@@ -19352,13 +19356,13 @@ class Interpretation extends Fields
 			$coreLoad = true;
 		}
 		if (isset($this->categoryBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->categoryBuilder[$nameListCode]
 			))
 		{
 			// check if category has another name
 			if ($coreLoad && isset($this->catOtherName[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->catOtherName[$nameListCode]
 				))
 			{
@@ -19383,7 +19387,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access'])
 				&& isset($this->permissionBuilder['global'][$core['core.access']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.access']]
 				)
 				&& in_array(
@@ -19411,7 +19415,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit'])
 				&& isset($this->permissionBuilder[$core['core.edit']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.edit']]
 				)
 				&& in_array(
@@ -19433,7 +19437,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.own'])
 				&& isset($this->permissionBuilder[$core['core.edit.own']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.edit.own']]
 				)
 				&& in_array(
@@ -19474,7 +19478,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.own'])
 				&& isset($this->permissionBuilder['global'][$core['core.edit.own']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.edit.own']]
 				)
 				&& in_array(
@@ -19511,7 +19515,7 @@ class Interpretation extends Fields
 			$allow[] = $this->_t(2) . "}";
 			if ($coreLoad && isset($core['core.edit'])
 				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(
@@ -19547,7 +19551,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access'])
 				&& isset($this->permissionBuilder[$core['core.access']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.access']]
 				)
 				&& in_array(
@@ -19575,7 +19579,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit'])
 				&& isset($this->permissionBuilder[$core['core.edit']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.edit']]
 				)
 				&& in_array(
@@ -19599,7 +19603,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.own'])
 				&& isset($this->permissionBuilder[$core['core.edit.own']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.edit.own']]
 				)
 				&& in_array(
@@ -19642,7 +19646,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.own'])
 				&& isset($this->permissionBuilder['global'][$core['core.edit.own']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.edit.own']]
 				)
 				&& in_array(
@@ -19669,7 +19673,7 @@ class Interpretation extends Fields
 			$allow[] = $this->_t(2) . "}";
 			if ($coreLoad && isset($core['core.edit'])
 				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(
@@ -19745,11 +19749,11 @@ class Interpretation extends Fields
 			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
-		if (0) //isset($this->categoryBuilder[$nameListCode]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameListCode]))  <-- remove category from check
+		if (0) //isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode]))  <-- remove category from check
 		{
 			// check if category has another name
 			if ($coreLoad && isset($this->catOtherName[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->catOtherName[$nameListCode]
 				))
 			{
@@ -19826,7 +19830,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.state'])
 				&& isset($this->permissionBuilder[$core['core.edit.state']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.edit.state']]
 				)
 				&& in_array(
@@ -19906,7 +19910,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.state'])
 				&& isset($this->permissionBuilder[$core['core.edit.state']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.edit.state']]
 				)
 				&& in_array(
@@ -19962,7 +19966,7 @@ class Interpretation extends Fields
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.edit.created_by'])
 			&& isset($this->permissionBuilder[$core['core.edit.created_by']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder[$core['core.edit.created_by']]
 			)
 			&& in_array(
@@ -20002,7 +20006,7 @@ class Interpretation extends Fields
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.edit.created'])
 			&& isset($this->permissionBuilder[$core['core.edit.created']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder[$core['core.edit.created']]
 			)
 			&& in_array(
@@ -20035,7 +20039,7 @@ class Interpretation extends Fields
 		// check if the item has access permissions.
 		if ($coreLoad && isset($core['core.edit.access'])
 			&& isset($this->permissionBuilder[$core['core.edit.access']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder[$core['core.edit.access']]
 			)
 			&& in_array(
@@ -20063,7 +20067,7 @@ class Interpretation extends Fields
 		}
 		// handel the fields permissions
 		if (isset($this->permissionFields[$nameSingleCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionFields[$nameSingleCode]
 			))
 		{
@@ -20152,7 +20156,7 @@ class Interpretation extends Fields
 		{
 			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Modify the form based on Edit "
-				. ComponentbuilderHelper::safeString($fieldName, 'W')
+				. StringHelper::safe($fieldName, 'W')
 				. " access controls.";
 			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('"
 				. $nameSingleCode . ".edit." . $fieldName . "', 'com_"
@@ -20203,7 +20207,7 @@ class Interpretation extends Fields
 	{
 		$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 			. " Modify the from the form based on "
-			. ComponentbuilderHelper::safeString($fieldName, 'W')
+			. StringHelper::safe($fieldName, 'W')
 			. " access controls.";
 		$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('"
 			. $nameSingleCode . ".access." . $fieldName . "', 'com_"
@@ -20226,7 +20230,7 @@ class Interpretation extends Fields
 		{
 			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Modify the form based on View "
-				. ComponentbuilderHelper::safeString($fieldName, 'W')
+				. StringHelper::safe($fieldName, 'W')
 				. " access controls.";
 			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('"
 				. $nameSingleCode . ".view." . $fieldName . "', 'com_"
@@ -20245,7 +20249,7 @@ class Interpretation extends Fields
 		{
 			$allow[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Modify the form based on View "
-				. ComponentbuilderHelper::safeString($fieldName, 'W')
+				. StringHelper::safe($fieldName, 'W')
 				. " access controls.";
 			$allow[] = $this->_t(2) . "if (\$id != 0 && (!\$user->authorise('"
 				. $nameSingleCode . ".view." . $fieldName . "', 'com_"
@@ -20313,7 +20317,7 @@ class Interpretation extends Fields
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.edit'])
 			&& isset($this->permissionBuilder[$core['core.edit']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder[$core['core.edit']]
 			)
 			&& in_array(
@@ -20335,7 +20339,7 @@ class Interpretation extends Fields
 		{
 			$allow[] = PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Check specific edit permission then general edit permission.";
-			if (ComponentbuilderHelper::checkString($customAllow))
+			if (StringHelper::check($customAllow))
 			{
 				$allow[] = $this->_t(2) . "\$user = JFactory::getUser();";
 			}
@@ -20362,11 +20366,11 @@ class Interpretation extends Fields
 			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
-		if (0) //isset($this->categoryBuilder[$nameListCode]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameListCode]))  <-- remove category from check
+		if (0) //isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode]))  <-- remove category from check
 		{
 			// check if category has another name
 			if ($coreLoad && isset($this->catOtherName[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->catOtherName[$nameListCode]
 				))
 			{
@@ -20393,7 +20397,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad
 				&& isset($this->permissionBuilder[$core['core.delete']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.delete']]
 				)
 				&& in_array(
@@ -20438,7 +20442,7 @@ class Interpretation extends Fields
 			if ($coreLoad
 				&& (isset($core['core.delete'])
 					&& isset($this->permissionBuilder[$core['core.delete']]))
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.delete']]
 				)
 				&& in_array(
@@ -20486,11 +20490,11 @@ class Interpretation extends Fields
 			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
-		if (0) // isset($this->categoryBuilder[$nameListCode]) && ComponentbuilderHelper::checkArray($this->categoryBuilder[$nameListCode]))  <-- remove category from check
+		if (0) // isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode]))  <-- remove category from check
 		{
 			// check if category has another name
 			if (isset($this->catOtherName[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->catOtherName[$nameListCode]
 				))
 			{
@@ -20512,7 +20516,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.state'])
 				&& isset($this->permissionBuilder[$core['core.edit.state']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.edit.state']]
 				)
 				&& in_array(
@@ -20554,7 +20558,7 @@ class Interpretation extends Fields
 			$allow[] = $this->_t(2) . "}";
 			if ($coreLoad && isset($core['core.edit.state'])
 				&& isset($this->permissionBuilder[$core['core.edit.state']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.edit.state']]
 				)
 				&& in_array(
@@ -20589,7 +20593,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit.state'])
 				&& isset($this->permissionBuilder[$core['core.edit.state']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder[$core['core.edit.state']]
 				)
 				&& in_array(
@@ -20616,7 +20620,7 @@ class Interpretation extends Fields
 			$allow[] = $this->_t(2) . "}";
 			if ($coreLoad && isset($core['core.edit.state'])
 				&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.edit.state']]
 				)
 				&& in_array(
@@ -20657,7 +20661,7 @@ class Interpretation extends Fields
 		// check if the item has permissions for edit.
 		if ($coreLoad && isset($core['core.edit'])
 			&& isset($this->permissionBuilder['global'][$core['core.edit']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder['global'][$core['core.edit']]
 			)
 			&& in_array(
@@ -20677,7 +20681,7 @@ class Interpretation extends Fields
 		// check if the item has permissions for edit state.
 		if ($coreLoad && isset($core['core.edit.state'])
 			&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder['global'][$core['core.edit.state']]
 			)
 			&& in_array(
@@ -20696,7 +20700,7 @@ class Interpretation extends Fields
 		// check if the item has permissions for create.
 		if ($coreLoad && isset($core['core.create'])
 			&& isset($this->permissionBuilder['global'][$core['core.create']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder['global'][$core['core.create']]
 			)
 			&& in_array(
@@ -20715,7 +20719,7 @@ class Interpretation extends Fields
 		// check if the item has permissions for delete.
 		if ($coreLoad && isset($core['core.delete'])
 			&& isset($this->permissionBuilder['global'][$core['core.delete']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder['global'][$core['core.delete']]
 			)
 			&& in_array(
@@ -20734,7 +20738,7 @@ class Interpretation extends Fields
 		// check if the item has permissions for batch.
 		if ($coreLoad && isset($core['core.batch'])
 			&& isset($this->permissionBuilder['global']['global'][$core['core.batch']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder['global']['global'][$core['core.batch']]
 			)
 			&& in_array(
@@ -20818,7 +20822,7 @@ class Interpretation extends Fields
 		$fields = "'a.id','id'";
 		$fields .= "," . PHP_EOL . $this->_t(4) . "'a.published','published'";
 		if (isset($this->accessBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->accessBuilder[$nameSingleCode]
 			))
 		{
@@ -20831,7 +20835,7 @@ class Interpretation extends Fields
 
 		// add the rest of the set filters
 		if (isset($this->filterBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->filterBuilder[$nameListCode]
 			))
 		{
@@ -20848,7 +20852,7 @@ class Interpretation extends Fields
 		}
 		// add the rest of the set filters
 		if (isset($this->sortBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->sortBuilder[$nameListCode]
 			))
 		{
@@ -20894,15 +20898,15 @@ class Interpretation extends Fields
 		else
 		{
 			// check if custom field is set
-			if (ComponentbuilderHelper::checkArray(
+			if (ArrayHelper::check(
 					$filter['custom']
 				)
 				&& isset($filter['custom']['db'])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$filter['custom']['db']
 				)
 				&& isset($filter['custom']['text'])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$filter['custom']['text']
 				))
 			{
@@ -20953,7 +20957,7 @@ class Interpretation extends Fields
 		}
 		// add if view calls for it, and not already added
 		if (isset($this->accessBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->accessBuilder[$nameSingleCode]
 			)
 			&& !isset($this->fieldsNames[$nameSingleCode]['access']))
@@ -20988,7 +20992,7 @@ class Interpretation extends Fields
 		}
 		// add the rest of the set filters
 		if (isset($this->filterBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->filterBuilder[$nameListCode]
 			))
 		{
@@ -21005,7 +21009,7 @@ class Interpretation extends Fields
 		}
 		// add the rest of the set filters
 		if (isset($this->sortBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->sortBuilder[$nameListCode]
 			))
 		{
@@ -21152,7 +21156,7 @@ class Interpretation extends Fields
 		{
 			// set lang strings
 			$viewNameLang_readonly = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString(
+				. StringHelper::safe(
 					$view['settings']->name_single . ' readonly', 'U'
 				);
 			// load to lang
@@ -21174,11 +21178,11 @@ class Interpretation extends Fields
 		{
 			// set lang strings
 			$viewNameLang_new  = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString(
+				. StringHelper::safe(
 					$view['settings']->name_single . ' New', 'U'
 				);
 			$viewNameLang_edit = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString(
+				. StringHelper::safe(
 					$view['settings']->name_single . ' Edit', 'U'
 				);
 			// load to lang
@@ -21210,7 +21214,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . $this->_t(2) . "{";
 			if ($coreLoad && isset($core['core.create'])
 				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
@@ -21234,7 +21238,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . $this->_t(3) . "}";
 			if ($coreLoad && isset($core['core.edit'])
 				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(
@@ -21280,7 +21284,7 @@ class Interpretation extends Fields
 				. " For new records, check the create permission.";
 			if ($coreLoad && isset($core['core.create'])
 				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
@@ -21312,7 +21316,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . $this->_t(3) . "{";
 			if ($coreLoad && isset($core['core.edit'])
 				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(
@@ -21341,7 +21345,7 @@ class Interpretation extends Fields
 				. " if we can return to make a new one.";
 			if ($coreLoad && isset($core['core.create'])
 				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
@@ -21365,7 +21369,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . $this->_t(4) . "}";
 			if ($coreLoad && isset($core['core.edit'])
 				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(
@@ -21374,7 +21378,7 @@ class Interpretation extends Fields
 				))
 			{
 				if ($coreLoad && isset($this->historyBuilder[$nameSingleCode])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->historyBuilder[$nameSingleCode]
 					))
 				{
@@ -21395,7 +21399,7 @@ class Interpretation extends Fields
 			else
 			{
 				if ($coreLoad && isset($this->historyBuilder[$nameSingleCode])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->historyBuilder[$nameSingleCode]
 					))
 				{
@@ -21414,7 +21418,7 @@ class Interpretation extends Fields
 			}
 			if ($coreLoad && isset($core['core.create'])
 				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
@@ -21490,7 +21494,7 @@ class Interpretation extends Fields
 		$state .= $this->setDefaultPopulateState($nameSingleCode, $new_filter);
 		// add the filters
 		if (isset($this->filterBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->filterBuilder[$nameListCode]
 			))
 		{
@@ -21507,7 +21511,7 @@ class Interpretation extends Fields
 		}
 		// add the rest of the set filters
 		if (isset($this->sortBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->sortBuilder[$nameListCode]
 			))
 		{
@@ -21662,7 +21666,7 @@ class Interpretation extends Fields
 
 		// add the rest of the set filters
 		if (isset($this->sortBuilder[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->sortBuilder[$nameListCode]
 			))
 		{
@@ -21676,7 +21680,7 @@ class Interpretation extends Fields
 							. "'category_title' => JText:" . ":_('"
 							. $filter['lang'] . "')";
 					}
-					elseif (ComponentbuilderHelper::checkArray(
+					elseif (ArrayHelper::check(
 						$filter['custom']
 					))
 					{
@@ -21813,11 +21817,11 @@ class Interpretation extends Fields
 			$core     = $this->permissionCore[$nameSingleCode];
 			$coreLoad = true;
 		}
-		$component = ComponentbuilderHelper::safeString($Component);
+		$component = StringHelper::safe($Component);
 		// check if the item has permissions.
 		if ($coreLoad && isset($core['core.access'])
 			&& isset($this->permissionBuilder[$core['core.access']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->permissionBuilder[$core['core.access']]
 			)
 			&& in_array(
@@ -21889,7 +21893,7 @@ class Interpretation extends Fields
 		}
 		// load the relations before modeling
 		if (isset($this->fieldRelations[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->fieldRelations[$nameListCode]
 			))
 		{
@@ -21910,7 +21914,7 @@ class Interpretation extends Fields
 		}
 		// open the values
 		if (isset($this->{$methodName}[$nameSingleCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->{$methodName}[$nameSingleCode]
 			))
 		{
@@ -22248,7 +22252,7 @@ class Interpretation extends Fields
 			}
 		}
 		/* // set translation (TODO) would be nice to cut down on double loops..
-		if (!$export && isset($this->selectionTranslationFixBuilder[$nameListCode]) && ComponentbuilderHelper::checkArray($this->selectionTranslationFixBuilder[$nameListCode]))
+		if (!$export && isset($this->selectionTranslationFixBuilder[$nameListCode]) && ArrayHelper::check($this->selectionTranslationFixBuilder[$nameListCode]))
 		{
 			foreach ($this->selectionTranslationFixBuilder[$nameListCode] as $name => $values)
 			{
@@ -22258,7 +22262,7 @@ class Interpretation extends Fields
 		} */
 		// load the relations after modeling
 		if (isset($this->fieldRelations[$nameListCode])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->fieldRelations[$nameListCode]
 			))
 		{
@@ -22276,8 +22280,8 @@ class Interpretation extends Fields
 			}
 		}
 		// close the foreach if needed
-		if (ComponentbuilderHelper::checkString($fix)
-			|| ComponentbuilderHelper::checkString($fix_access)
+		if (StringHelper::check($fix)
+			|| StringHelper::check($fix_access)
 			|| $export
 			|| $all)
 		{
@@ -22311,7 +22315,7 @@ class Interpretation extends Fields
 			// add the permissional removal of values the user has not right to view or access
 			if ($this->strictFieldExportPermissions
 				&& isset($this->permissionFields[$nameSingleCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionFields[$nameSingleCode]
 				))
 			{
@@ -22544,6 +22548,7 @@ class Interpretation extends Fields
 				$headers[] = 'use Joomla\Registry\Registry;';
 				$headers[] = 'use Joomla\String\StringHelper;';
 				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
+				// $headers[] = 'use VDM\Joomla\Utilities;';
 				// load the internal custom headers
 				$this->setHelperClassHeader($headers, $codeName);
 				break;
@@ -22582,7 +22587,7 @@ class Interpretation extends Fields
 				// load the file class if uikit is being loaded
 				if ((2 == $this->uikit || 1 == $this->uikit)
 					&& isset($this->uikitComp[$codeName])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->uikitComp[$codeName]
 					))
 				{
@@ -22601,7 +22606,7 @@ class Interpretation extends Fields
 				&$headers)
 		);
 		// check if headers were added
-		if (ComponentbuilderHelper::checkArray($headers))
+		if (ArrayHelper::check($headers))
 		{
 			// return the headers
 			return $this->setPlaceholders(implode(PHP_EOL, $headers), $this->placeholders);
@@ -22647,7 +22652,7 @@ class Interpretation extends Fields
 			// add category switch
 			$add_category = false;
 			if (isset($this->categoryBuilder[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->categoryBuilder[$nameListCode]
 				)
 				&& isset($this->categoryBuilder[$nameListCode]['extension'])
@@ -22666,7 +22671,7 @@ class Interpretation extends Fields
 			}
 			// check if this view have filters
 			if (isset($this->filterBuilder[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->filterBuilder[$nameListCode]
 				))
 			{
@@ -22727,7 +22732,7 @@ class Interpretation extends Fields
 				// set the language strings for selection
 				$filter_name_select      = 'Select Access';
 				$filter_name_select_lang = $this->langPrefix . '_FILTER_'
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$filter_name_select, 'U'
 					);
 				// and to translation
@@ -22753,7 +22758,7 @@ class Interpretation extends Fields
 			. $item['code'];
 		// load joint field names
 		if (isset($item['joinfields'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$item['joinfields']
 			))
 		{
@@ -22796,7 +22801,7 @@ class Interpretation extends Fields
 		// add the fix if this view has the need for it
 		$fix = '';
 		if (isset($this->selectionTranslationFixBuilder[$views])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->selectionTranslationFixBuilder[$views]
 			))
 		{
@@ -22834,7 +22839,7 @@ class Interpretation extends Fields
 		// add the fix if this view has the need for it
 		$fix = '';
 		if (isset($this->selectionTranslationFixBuilder[$views])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->selectionTranslationFixBuilder[$views]
 			))
 		{
@@ -22852,7 +22857,7 @@ class Interpretation extends Fields
 				$values
 			)
 			{
-				if (ComponentbuilderHelper::checkArray($values))
+				if (ArrayHelper::check($values))
 				{
 					$fix     .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 							__LINE__
@@ -22866,7 +22871,7 @@ class Interpretation extends Fields
 					foreach ($values as $value => $translang)
 					{
 						// only add quotes to strings
-						if (ComponentbuilderHelper::checkString($value))
+						if (StringHelper::check($value))
 						{
 							$key = "'" . $value . "'";
 						}
@@ -22955,7 +22960,7 @@ class Interpretation extends Fields
 	public function setDashboardIconAccess()
 	{
 		if (isset($this->permissionDashboard)
-			&& ComponentbuilderHelper::checkArray($this->permissionDashboard))
+			&& ArrayHelper::check($this->permissionDashboard))
 		{
 			$this->permissionDashboard = array_unique(
 				$this->permissionDashboard
@@ -22974,7 +22979,7 @@ class Interpretation extends Fields
 	public function setDashboardIcons()
 	{
 		if (isset($this->componentData->admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->admin_views
 			))
 		{
@@ -22983,10 +22988,10 @@ class Interpretation extends Fields
 			$catArray = array();
 			foreach ($this->componentData->admin_views as $view)
 			{
-				$name_single = ComponentbuilderHelper::safeString(
+				$name_single = StringHelper::safe(
 					$view['settings']->name_single
 				);
-				$name_list   = ComponentbuilderHelper::safeString(
+				$name_list   = StringHelper::safe(
 					$view['settings']->name_list
 				);
 
@@ -23018,11 +23023,11 @@ class Interpretation extends Fields
 					}
 					// build lang
 					$langName = 'Add&nbsp;'
-						. ComponentbuilderHelper::safeString(
+						. StringHelper::safe(
 							$view['settings']->name_single, 'W'
 						) . '<br /><br />';
 					$langKey  = $this->langPrefix . '_DASHBOARD_'
-						. ComponentbuilderHelper::safeString(
+						. StringHelper::safe(
 							$view['settings']->name_single, 'U'
 						) . '_ADD';
 					// add to lang
@@ -23055,11 +23060,11 @@ class Interpretation extends Fields
 						$icons .= ", '" . $type . $name_list . "'";
 					}
 					// build lang
-					$langName = ComponentbuilderHelper::safeString(
+					$langName = StringHelper::safe(
 							$view['settings']->name_list, 'W'
 						) . '<br /><br />';
 					$langKey  = $this->langPrefix . '_DASHBOARD_'
-						. ComponentbuilderHelper::safeString(
+						. StringHelper::safe(
 							$view['settings']->name_list, 'U'
 						);
 					// add to lang
@@ -23068,7 +23073,7 @@ class Interpretation extends Fields
 				}
 				// dashboard link to category on dashboard is build here
 				if (isset($this->categoryBuilder[$name_list])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->categoryBuilder[$name_list]
 					))
 				{
@@ -23076,14 +23081,14 @@ class Interpretation extends Fields
 
 					// check if category has another name
 					if (isset($this->catOtherName[$name_list])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->catOtherName[$name_list]
 						))
 					{
 						$otherViews = $this->catOtherName[$name_list]['views'];
 						$otherNames = $this->catOtherName[$name_list]['name'];
 						// build lang
-						$langName = ComponentbuilderHelper::safeString(
+						$langName = StringHelper::safe(
 							$otherNames, 'W'
 						);
 					}
@@ -23092,7 +23097,7 @@ class Interpretation extends Fields
 						$otherViews = $name_list;
 						// build lang
 						$langName = 'Categories&nbsp;For<br />'
-							. ComponentbuilderHelper::safeString(
+							. StringHelper::safe(
 								$otherViews, 'W'
 							);
 					}
@@ -23107,9 +23112,9 @@ class Interpretation extends Fields
 
 						// add to lang
 						$langKey = $this->langPrefix . '_DASHBOARD_'
-							. ComponentbuilderHelper::safeString(
+							. StringHelper::safe(
 								$otherViews, 'U'
-							) . '_' . ComponentbuilderHelper::safeString(
+							) . '_' . StringHelper::safe(
 								$catCode, 'U'
 							);
 						$this->setLangContent($this->lang, $langKey, $langName);
@@ -23147,7 +23152,7 @@ class Interpretation extends Fields
 				}
 			}
 			if (isset($this->lastCustomDashboardIcon)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->lastCustomDashboardIcon
 				))
 			{
@@ -23158,7 +23163,7 @@ class Interpretation extends Fields
 				unset($this->lastCustomDashboardIcon);
 			}
 			if (isset($this->iconBuilder)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->iconBuilder
 				))
 			{
@@ -23201,7 +23206,7 @@ class Interpretation extends Fields
 	public function setDashboardModelMethods()
 	{
 		if (isset($this->componentData->php_dashboard_methods)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->componentData->php_dashboard_methods
 			))
 		{
@@ -23225,7 +23230,7 @@ class Interpretation extends Fields
 	public function setDashboardGetCustomData()
 	{
 		if (isset($this->DashboardGetCustomData)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->DashboardGetCustomData
 			))
 		{
@@ -23234,7 +23239,7 @@ class Interpretation extends Fields
 			// set dashboard gets
 			foreach ($this->DashboardGetCustomData as $get)
 			{
-				$string = ComponentbuilderHelper::safeString($get);
+				$string = StringHelper::safe($get);
 				$gets[] = "\$this->" . $string . " = \$this->get('" . $get
 					. "');";
 			}
@@ -23258,7 +23263,7 @@ class Interpretation extends Fields
 		$loadTabs          = false;
 		// check if we have custom tabs
 		if (isset($this->componentData->dashboard_tab)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->dashboard_tab
 			))
 		{
@@ -23326,7 +23331,7 @@ class Interpretation extends Fields
 			// load the new tabs
 			foreach ($builder as $tabname => $accordians)
 			{
-				$alias        = ComponentbuilderHelper::safeString($tabname);
+				$alias        = StringHelper::safe($tabname);
 				$display[]    = PHP_EOL . $this->_t(2)
 					. "<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', '"
 					. $alias . "', JText:" . ":_('" . $tabname
@@ -23340,10 +23345,10 @@ class Interpretation extends Fields
 				$slidecounter = 1;
 				foreach ($accordians as $accordianname => $html)
 				{
-					$ac_alias    = ComponentbuilderHelper::safeString(
+					$ac_alias    = StringHelper::safe(
 						$accordianname
 					);
-					$counterName = ComponentbuilderHelper::safeString(
+					$counterName = StringHelper::safe(
 						$slidecounter
 					);
 					$tempName    = $alias . '_' . $ac_alias;
@@ -23361,7 +23366,7 @@ class Interpretation extends Fields
 					$target = array('custom_admin' => $this->componentCodeName);
 					$this->buildDynamique($target, 'template', $tempName);
 					// set the file data
-					$TARGET = ComponentbuilderHelper::safeString(
+					$TARGET = StringHelper::safe(
 						$this->target, 'U'
 					);
 					// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
@@ -23397,7 +23402,7 @@ class Interpretation extends Fields
 	{
 		$icon = '';
 		if (isset($this->componentData->custom_admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->custom_admin_views
 			))
 		{
@@ -23473,17 +23478,17 @@ class Interpretation extends Fields
 		}
 		// see if we should have custom menus
 		if (isset($this->componentData->custommenus)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->custommenus
 			))
 		{
 			foreach ($this->componentData->custommenus as $nr => $menu)
 			{
 				$nr        = $nr + 100;
-				$nameList  = ComponentbuilderHelper::safeString(
+				$nameList  = StringHelper::safe(
 					$menu['name_code']
 				);
-				$nameUpper = ComponentbuilderHelper::safeString(
+				$nameUpper = StringHelper::safe(
 					$menu['name_code'], 'U'
 				);
 				if (isset($menu['dashboard_list'])
@@ -23511,7 +23516,7 @@ class Interpretation extends Fields
 
 					// if this is a link build the icon values with pipe
 					if (isset($menu['link'])
-						&& ComponentbuilderHelper::checkString($menu['link']))
+						&& StringHelper::check($menu['link']))
 					{
 						// set icon
 						if ($counter == 0)
@@ -23567,7 +23572,7 @@ class Interpretation extends Fields
 
 					// if this is a link build the icon values with pipe
 					if (isset($menu['link'])
-						&& ComponentbuilderHelper::checkString($menu['link']))
+						&& StringHelper::check($menu['link']))
 					{
 						// set icon
 						$this->lastCustomDashboardIcon[$nr] = ", '" . $type
@@ -23589,7 +23594,7 @@ class Interpretation extends Fields
 	public function setSubMenus()
 	{
 		if (isset($this->componentData->admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->admin_views
 			))
 		{
@@ -23599,7 +23604,7 @@ class Interpretation extends Fields
 			// set the code name
 			$codeName = $this->componentCodeName;
 			// set default dashboard
-			if (!ComponentbuilderHelper::checkString($this->dynamicDashboard))
+			if (!StringHelper::check($this->dynamicDashboard))
 			{
 				$menus .= "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang
 					. "_DASHBOARD'), 'index.php?option=com_" . $codeName
@@ -23619,7 +23624,7 @@ class Interpretation extends Fields
 				);
 				$nameSingleCode = $view['settings']->name_single_code;
 				$nameListCode   = $view['settings']->name_list_code;
-				$nameUpper      = ComponentbuilderHelper::safeString(
+				$nameUpper      = StringHelper::safe(
 					$view['settings']->name_list, 'U'
 				);
 				// check if view is set to be in the sub-menu
@@ -23636,7 +23641,7 @@ class Interpretation extends Fields
 					// check if the item has permissions.
 					if ($coreLoad && isset($core['core.access'])
 						&& isset($this->permissionBuilder['global'][$core['core.access']])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->permissionBuilder['global'][$core['core.access']]
 						)
 						&& in_array(
@@ -23664,7 +23669,7 @@ class Interpretation extends Fields
 					);
 					// check if category has another name
 					if (isset($this->catOtherName[$nameListCode])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->catOtherName[$nameListCode]
 						))
 					{
@@ -23679,7 +23684,7 @@ class Interpretation extends Fields
 					// then check if view has category, if true add sub-menu for it
 					if ($view['settings']->add_category_submenu == 1
 						&& isset($this->categoryBuilder[$nameListCode])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->categoryBuilder[$nameListCode]
 						)
 						&& !in_array($otherViews, $catArray))
@@ -23711,7 +23716,7 @@ class Interpretation extends Fields
 					// check if the item has permissions.
 					if ($coreLoad && isset($core['core.access'])
 						&& isset($this->permissionBuilder['global'][$core['core.access']])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->permissionBuilder['global'][$core['core.access']]
 						)
 						&& in_array(
@@ -23722,7 +23727,7 @@ class Interpretation extends Fields
 						$menus .= PHP_EOL . $this->_t(2) . "}";
 					}
 				}
-				// set the Joomla cutstom fields options
+				// set the Joomla custom fields options
 				if (isset($view['joomla_fields'])
 					&& $view['joomla_fields'] == 1)
 				{
@@ -23759,7 +23764,7 @@ class Interpretation extends Fields
 				}
 			}
 			if (isset($this->lastCustomSubMenu)
-				&& ComponentbuilderHelper::checkArray($this->lastCustomSubMenu))
+				&& ArrayHelper::check($this->lastCustomSubMenu))
 			{
 				foreach ($this->lastCustomSubMenu as $menu)
 				{
@@ -23779,7 +23784,7 @@ class Interpretation extends Fields
 		// see if we should have custom menus
 		$custom = '';
 		if (isset($this->componentData->custom_admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->custom_admin_views
 			))
 		{
@@ -23797,7 +23802,7 @@ class Interpretation extends Fields
 			}
 		}
 		if (isset($this->componentData->custommenus)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->custommenus
 			))
 		{
@@ -23822,9 +23827,9 @@ class Interpretation extends Fields
 		if ($type === 'customMenu')
 		{
 			$name       = $menu['name'];
-			$nameSingle = ComponentbuilderHelper::safeString($menu['name']);
-			$nameList   = ComponentbuilderHelper::safeString($menu['name']);
-			$nameUpper  = ComponentbuilderHelper::safeString(
+			$nameSingle = StringHelper::safe($menu['name']);
+			$nameList   = StringHelper::safe($menu['name']);
+			$nameUpper  = StringHelper::safe(
 				$menu['name'], 'U'
 			);
 		}
@@ -23851,7 +23856,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access'])
 				&& isset($this->permissionBuilder['global'][$core['core.access']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.access']]
 				)
 				&& in_array(
@@ -23883,7 +23888,7 @@ class Interpretation extends Fields
 				$tab = $this->_t(1);
 			}
 			if (isset($menu['link'])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$menu['link']
 				))
 			{
@@ -23919,7 +23924,7 @@ class Interpretation extends Fields
 		{
 			// setup access defaults
 			$tab        = "";
-			$nameSingle = ComponentbuilderHelper::safeString($name);
+			$nameSingle = StringHelper::safe($name);
 			$coreLoad   = false;
 			if (isset($this->permissionCore[$nameSingle]))
 			{
@@ -23930,7 +23935,7 @@ class Interpretation extends Fields
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.access'])
 				&& isset($this->permissionBuilder['global'][$core['core.access']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.access']]
 				)
 				&& in_array(
@@ -23956,7 +23961,7 @@ class Interpretation extends Fields
 				$tab = $this->_t(1);
 			}
 			if (isset($menu['link'])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$menu['link']
 				))
 			{
@@ -23991,7 +23996,7 @@ class Interpretation extends Fields
 	public function setMainMenus()
 	{
 		if (isset($this->componentData->admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->admin_views
 			))
 		{
@@ -24011,7 +24016,7 @@ class Interpretation extends Fields
 				// set main menu prefix switch
 				$addPrefix = $this->componentData->add_menu_prefix;
 				if ($addPrefix == 1 && isset($this->componentData->menu_prefix)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->componentData->menu_prefix
 					))
 				{
@@ -24048,10 +24053,10 @@ class Interpretation extends Fields
 				$menus .= $this->addCustomMainMenu($view, $codeName, $lang);
 				if (isset($view['mainmenu']) && $view['mainmenu'] == 1)
 				{
-					$nameList  = ComponentbuilderHelper::safeString(
+					$nameList  = StringHelper::safe(
 						$view['settings']->name_list
 					);
-					$nameUpper = ComponentbuilderHelper::safeString(
+					$nameUpper = StringHelper::safe(
 						$view['settings']->name_list, 'U'
 					);
 					$menus     .= PHP_EOL . $this->_t(3) . '<menu option="com_'
@@ -24064,7 +24069,7 @@ class Interpretation extends Fields
 				}
 			}
 			if (isset($this->lastCustomMainMenu)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->lastCustomMainMenu
 				))
 			{
@@ -24086,7 +24091,7 @@ class Interpretation extends Fields
 		$customMenu = '';
 		// see if we should have custom admin views
 		if (isset($this->componentData->custom_admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->custom_admin_views
 			))
 		{
@@ -24125,7 +24130,7 @@ class Interpretation extends Fields
 		}
 		// see if we should have custom menus
 		if (isset($this->componentData->custommenus)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->custommenus
 			))
 		{
@@ -24136,12 +24141,12 @@ class Interpretation extends Fields
 					&& $view['adminview'] == $menu['before'])
 				{
 					if (isset($menu['link'])
-						&& ComponentbuilderHelper::checkString($menu['link']))
+						&& StringHelper::check($menu['link']))
 					{
-						$nameList  = ComponentbuilderHelper::safeString(
+						$nameList  = StringHelper::safe(
 							$menu['name']
 						);
-						$nameUpper = ComponentbuilderHelper::safeString(
+						$nameUpper = StringHelper::safe(
 							$menu['name'], 'U'
 						);
 						$this->setLangContent(
@@ -24178,10 +24183,10 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$nameList  = ComponentbuilderHelper::safeString(
+						$nameList  = StringHelper::safe(
 							$menu['name_code']
 						);
-						$nameUpper = ComponentbuilderHelper::safeString(
+						$nameUpper = StringHelper::safe(
 							$menu['name_code'], 'U'
 						);
 						$this->setLangContent(
@@ -24198,12 +24203,12 @@ class Interpretation extends Fields
 					&& empty($menu['before']))
 				{
 					if (isset($menu['link'])
-						&& ComponentbuilderHelper::checkString($menu['link']))
+						&& StringHelper::check($menu['link']))
 					{
-						$nameList  = ComponentbuilderHelper::safeString(
+						$nameList  = StringHelper::safe(
 							$menu['name']
 						);
-						$nameUpper = ComponentbuilderHelper::safeString(
+						$nameUpper = StringHelper::safe(
 							$menu['name'], 'U'
 						);
 						$this->setLangContent(
@@ -24240,10 +24245,10 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$nameList  = ComponentbuilderHelper::safeString(
+						$nameList  = StringHelper::safe(
 							$menu['name_code']
 						);
-						$nameUpper = ComponentbuilderHelper::safeString(
+						$nameUpper = StringHelper::safe(
 							$menu['name_code'], 'U'
 						);
 						$this->setLangContent(
@@ -24279,7 +24284,7 @@ class Interpretation extends Fields
 				. '","autorEmail":"' . $autorEmail . '"';
 			// set the custom fields
 			if (isset($this->componentData->config)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->componentData->config
 				))
 			{
@@ -24292,11 +24297,11 @@ class Interpretation extends Fields
 				$placeholders[$this->hhh . 'component' . $this->hhh]
 				              = $this->componentCodeName;
 				$placeholders[$this->hhh . 'Component' . $this->hhh]
-				              = ComponentbuilderHelper::safeString(
+				              = StringHelper::safe(
 					$this->componentData->name_code, 'F'
 				);
 				$placeholders[$this->hhh . 'COMPONENT' . $this->hhh]
-				              = ComponentbuilderHelper::safeString(
+				              = StringHelper::safe(
 					$this->componentData->name_code, 'U'
 				);
 				$placeholders[$this->hhh . 'view' . $this->hhh]
@@ -24316,7 +24321,7 @@ class Interpretation extends Fields
 				$placeholders[$this->bbb . 'views' . $this->ddd]
 				              = $nameListCode;
 				// load the global placeholders
-				if (ComponentbuilderHelper::checkArray(
+				if (ArrayHelper::check(
 					$this->globalPlaceholders
 				))
 				{
@@ -24352,14 +24357,14 @@ class Interpretation extends Fields
 
 					// make sure the xml is set and a string
 					if (isset($xmlField)
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$xmlField
 						))
 					{
 						$this->configFieldSetsCustomField[$field['tabname']][]
 							= $xmlField;
 						// set global params to db on install
-						$fieldName    = ComponentbuilderHelper::safeString(
+						$fieldName    = StringHelper::safe(
 							$this->setPlaceholders(
 								ComponentbuilderHelper::getBetween(
 									$xmlField, 'name="', '"'
@@ -24372,7 +24377,7 @@ class Interpretation extends Fields
 							), $placeholders
 						);
 						if (isset($field['custom_value'])
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$field['custom_value']
 							))
 						{
@@ -24392,7 +24397,7 @@ class Interpretation extends Fields
 									. '":"' . $field['custom_value'] . '"';
 							}
 						}
-						elseif (ComponentbuilderHelper::checkString(
+						elseif (StringHelper::check(
 							$fieldDefault
 						))
 						{
@@ -24442,7 +24447,7 @@ class Interpretation extends Fields
 		$front_end = array();
 		// do quick build of front-end views
 		if (isset($this->componentData->site_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->site_views
 			))
 		{
@@ -24456,16 +24461,16 @@ class Interpretation extends Fields
 
 		// add frontend view stuff including menus
 		if (isset($this->configFieldSetsCustomField)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->configFieldSetsCustomField
 			))
 		{
 			foreach ($this->configFieldSetsCustomField as $tab => &$tabFields)
 			{
-				$tabCode  = ComponentbuilderHelper::safeString($tab)
+				$tabCode  = StringHelper::safe($tab)
 					. '_custom_config';
-				$tabUpper = ComponentbuilderHelper::safeString($tab, 'U');
-				$tabLower = ComponentbuilderHelper::safeString($tab);
+				$tabUpper = StringHelper::safe($tab, 'U');
+				$tabLower = StringHelper::safe($tab);
 				// load the request id setters for menu views
 				$viewRequest = 'name="' . $tabLower . '_request_id';
 				foreach ($tabFields as $et => $id_field)
@@ -24557,7 +24562,7 @@ class Interpretation extends Fields
 	protected function setRequestValues($view, $field, $search, $target, $store)
 	{
 		$key = ComponentbuilderHelper::getBetween($field, $search, '"');
-		if (!ComponentbuilderHelper::checkString($key))
+		if (!StringHelper::check($key))
 		{
 			// is not having special var
 			$key = $target;
@@ -24583,16 +24588,16 @@ class Interpretation extends Fields
 	{
 		// add custom new global fields set
 		if (isset($this->configFieldSetsCustomField)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->configFieldSetsCustomField
 			))
 		{
 			foreach ($this->configFieldSetsCustomField as $tab => $tabFields)
 			{
-				$tabCode  = ComponentbuilderHelper::safeString($tab)
+				$tabCode  = StringHelper::safe($tab)
 					. '_custom_config';
-				$tabUpper = ComponentbuilderHelper::safeString($tab, 'U');
-				$tabLower = ComponentbuilderHelper::safeString($tab);
+				$tabUpper = StringHelper::safe($tab, 'U');
+				$tabLower = StringHelper::safe($tab);
 				// remove display targeted fields
 				$bucket = array();
 				foreach ($tabFields as $tabField)
@@ -24600,7 +24605,7 @@ class Interpretation extends Fields
 					$display = ComponentbuilderHelper::getBetween(
 						$tabField, 'display="', '"'
 					);
-					if (!ComponentbuilderHelper::checkString($display)
+					if (!StringHelper::check($display)
 						|| $display === 'config')
 					{
 						// remove this display since it is not used in Joomla
@@ -24610,7 +24615,7 @@ class Interpretation extends Fields
 					}
 				}
 				// only add the tab if it has values
-				if (ComponentbuilderHelper::checkArray($bucket))
+				if (ArrayHelper::check($bucket))
 				{
 					// setup lang
 					$this->setLangContent(
@@ -24637,7 +24642,7 @@ class Interpretation extends Fields
 	{
 		// start loading Group control params if needed
 		if (isset($this->setGroupControl)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->setGroupControl
 			))
 		{
@@ -24677,7 +24682,7 @@ class Interpretation extends Fields
 			}
 			// add custom Target Groups fields
 			if (isset($this->configFieldSetsCustomField['Target Groups'])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->configFieldSetsCustomField['Target Groups']
 				))
 			{
@@ -24820,7 +24825,7 @@ class Interpretation extends Fields
 		}
 		// add custom global fields
 		if (isset($this->configFieldSetsCustomField['Global'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->configFieldSetsCustomField['Global']
 			))
 		{
@@ -24879,7 +24884,7 @@ class Interpretation extends Fields
 		$langCont = $lang . '_CONTRIBUTOR';
 		if (isset($this->addContributors) && $this->addContributors
 			&& isset($this->componentData->contributors)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->contributors
 			))
 		{
@@ -24890,7 +24895,7 @@ class Interpretation extends Fields
 				// make sure we dont use 0
 				$counter++;
 				// get the word for this number
-				$COUNTER = ComponentbuilderHelper::safeString($counter, 'U');
+				$COUNTER = StringHelper::safe($counter, 'U');
 				// set the dynamic values
 				$cbTitle   = htmlspecialchars(
 					$contributor['title'], ENT_XML1, 'UTF-8'
@@ -24999,7 +25004,7 @@ class Interpretation extends Fields
 					. $contributor['name'] . ' <' . $contributor['website']
 					. '>';
 				// setup lang
-				$Counter = ComponentbuilderHelper::safeString($counter, 'Ww');
+				$Counter = StringHelper::safe($counter, 'Ww');
 				$this->setLangContent(
 					$this->lang, $langCont . '_' . $COUNTER,
 					"Contributor " . $Counter
@@ -25035,7 +25040,7 @@ class Interpretation extends Fields
 			$moreContributerFields = range($min, $max, 1);
 			foreach ($moreContributerFields as $counter)
 			{
-				$COUNTER = ComponentbuilderHelper::safeString($counter, 'U');
+				$COUNTER = StringHelper::safe($counter, 'U');
 
 				$this->configFieldSets[] = $this->_t(2)
 					. '<field type="spacer" name="spacerContributor' . $counter
@@ -25120,7 +25125,7 @@ class Interpretation extends Fields
 					. $langCont . '_SHOW_ALL</option>';
 				$this->configFieldSets[] = $this->_t(2) . "</field>";
 				// setup lang
-				$Counter = ComponentbuilderHelper::safeString($counter, 'Ww');
+				$Counter = StringHelper::safe($counter, 'Ww');
 				$this->setLangContent(
 					$this->lang, $langCont . '_' . $COUNTER,
 					"Contributor " . $Counter
@@ -25415,7 +25420,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 			}
 			// add custom Uikit Settings fields
 			if (isset($this->configFieldSetsCustomField['Uikit Settings'])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->configFieldSetsCustomField['Uikit Settings']
 				))
 			{
@@ -25449,7 +25454,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 				. "_MAIL_CONFIGURATION\">";
 			// add custom Mail Configurations
 			if (isset($this->configFieldSetsCustomField['Mail Configuration'])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->configFieldSetsCustomField['Mail Configuration']
 				))
 			{
@@ -25917,7 +25922,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 				. "_DKIM\">";
 			// add custom DKIM fields
 			if (isset($this->configFieldSetsCustomField['DKIM'])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->configFieldSetsCustomField['DKIM']
 				))
 			{
@@ -26650,7 +26655,7 @@ function vdm_dkim() {
 
 			// add custom Encryption Settings fields
 			if (isset($this->configFieldSetsCustomField['Chart Settings'])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->configFieldSetsCustomField['Chart Settings']
 				))
 			{
@@ -26796,7 +26801,7 @@ function vdm_dkim() {
 			|| (isset($this->mediumEncryption) && $this->mediumEncryption)
 			|| $this->componentData->add_license
 			|| (isset($this->configFieldSetsCustomField['Encryption Settings'])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->configFieldSetsCustomField['Encryption Settings']
 				)))
 		{
@@ -27086,7 +27091,7 @@ function vdm_dkim() {
 			{
 				// add custom Encryption Settings fields
 				if (isset($this->configFieldSetsCustomField[$dynamicAddField])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->configFieldSetsCustomField[$dynamicAddField]
 					))
 				{
@@ -27188,9 +27193,9 @@ function vdm_dkim() {
 		if ($this->addEximport)
 		{
 			$exportTitle = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString('Export Data', 'U');
+				. StringHelper::safe('Export Data', 'U');
 			$exportDesc  = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString('Export Data', 'U')
+				. StringHelper::safe('Export Data', 'U')
 				. '_DESC';
 			$this->setLangContent('bothadmin', $exportTitle, 'Export Data');
 			$this->setLangContent(
@@ -27203,9 +27208,9 @@ function vdm_dkim() {
 			// the size needs increase
 			$this->accessSize++;
 			$importTitle = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString('Import Data', 'U');
+				. StringHelper::safe('Import Data', 'U');
 			$importDesc  = $this->langPrefix . '_'
-				. ComponentbuilderHelper::safeString('Import Data', 'U')
+				. StringHelper::safe('Import Data', 'U')
 				. '_DESC';
 			$this->setLangContent('bothadmin', $importTitle, 'Import Data');
 			$this->setLangContent(
@@ -27220,9 +27225,9 @@ function vdm_dkim() {
 		}
 		// version permission
 		$batchTitle = $this->langPrefix . '_'
-			. ComponentbuilderHelper::safeString('Use Batch', 'U');
+			. StringHelper::safe('Use Batch', 'U');
 		$batchDesc  = $this->langPrefix . '_'
-			. ComponentbuilderHelper::safeString('Use Batch', 'U') . '_DESC';
+			. StringHelper::safe('Use Batch', 'U') . '_DESC';
 		$this->setLangContent('bothadmin', $batchTitle, 'Use Batch');
 		$this->setLangContent(
 			'bothadmin', $batchDesc,
@@ -27233,9 +27238,9 @@ function vdm_dkim() {
 			. '" description="' . $batchDesc . '" />';
 		// version permission
 		$importTitle = $this->langPrefix . '_'
-			. ComponentbuilderHelper::safeString('Edit Versions', 'U');
+			. StringHelper::safe('Edit Versions', 'U');
 		$importDesc  = $this->langPrefix . '_'
-			. ComponentbuilderHelper::safeString('Edit Versions', 'U')
+			. StringHelper::safe('Edit Versions', 'U')
 			. '_DESC';
 		$this->setLangContent('bothadmin', $importTitle, 'Edit Version');
 		$this->setLangContent(
@@ -27266,9 +27271,9 @@ function vdm_dkim() {
 		}
 		// new custom created by permissions
 		$created_byTitle = $this->langPrefix . '_'
-			. ComponentbuilderHelper::safeString('Edit Created By', 'U');
+			. StringHelper::safe('Edit Created By', 'U');
 		$created_byDesc  = $this->langPrefix . '_'
-			. ComponentbuilderHelper::safeString('Edit Created By', 'U')
+			. StringHelper::safe('Edit Created By', 'U')
 			. '_DESC';
 		$this->setLangContent('bothadmin', $created_byTitle, 'Edit Created By');
 		$this->setLangContent(
@@ -27280,9 +27285,9 @@ function vdm_dkim() {
 			. '" description="' . $created_byDesc . '" />';
 		// new custom created date permissions
 		$createdTitle = $this->langPrefix . '_'
-			. ComponentbuilderHelper::safeString('Edit Created Date', 'U');
+			. StringHelper::safe('Edit Created Date', 'U');
 		$createdDesc  = $this->langPrefix . '_'
-			. ComponentbuilderHelper::safeString('Edit Created Date', 'U')
+			. StringHelper::safe('Edit Created Date', 'U')
 			. '_DESC';
 		$this->setLangContent('bothadmin', $createdTitle, 'Edit Created Date');
 		$this->setLangContent(
@@ -27298,7 +27303,7 @@ function vdm_dkim() {
 			'dashboard_add');
 		// set the custom admin views permissions
 		if (isset($this->componentData->custom_admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->custom_admin_views
 			))
 		{
@@ -27310,14 +27315,14 @@ function vdm_dkim() {
 				$customAdminName  = $custom_admin_view['settings']->name;
 				$customAdminCode  = $custom_admin_view['settings']->code;
 				$customAdminTitle = $this->langPrefix . '_'
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$customAdminName . ' Access', 'U'
 					);
 				$customAdminDesc  = $this->langPrefix . '_'
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$customAdminName . ' Access', 'U'
 					) . '_DESC';
-				$sortKey          = ComponentbuilderHelper::safeString(
+				$sortKey          = StringHelper::safe(
 					$customAdminName . ' Access'
 				);
 				$this->setLangContent(
@@ -27326,7 +27331,7 @@ function vdm_dkim() {
 				$this->setLangContent(
 					'bothadmin', $customAdminDesc,
 					' Allows the users in this group to access '
-					. ComponentbuilderHelper::safeString($customAdminName, 'w')
+					. StringHelper::safe($customAdminName, 'w')
 					. '.'
 				);
 				$this->componentGlobal[$sortKey] = $this->_t(2)
@@ -27357,7 +27362,7 @@ function vdm_dkim() {
 							. $menuController;
 						$menucontrollerView['implementation'] = '2';
 						if (isset($custom_admin_view['settings']->permissions)
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$custom_admin_view['settings']->permissions
 							))
 						{
@@ -27384,7 +27389,7 @@ function vdm_dkim() {
 		}
 		// set the site views permissions
 		if (isset($this->componentData->site_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->site_views
 			))
 		{
@@ -27394,14 +27399,14 @@ function vdm_dkim() {
 				$siteName  = $site_view['settings']->name;
 				$siteCode  = $site_view['settings']->code;
 				$siteTitle = $this->langPrefix . '_'
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$siteName . ' Access Site', 'U'
 					);
 				$siteDesc  = $this->langPrefix . '_'
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$siteName . ' Access Site', 'U'
 					) . '_DESC';
-				$sortKey   = ComponentbuilderHelper::safeString(
+				$sortKey   = StringHelper::safe(
 					$siteName . ' Access Site'
 				);
 				if (isset($site_view['access']) && $site_view['access'] == 1)
@@ -27412,7 +27417,7 @@ function vdm_dkim() {
 					$this->setLangContent(
 						'bothadmin', $siteDesc,
 						' Allows the users in this group to access site '
-						. ComponentbuilderHelper::safeString($siteName, 'w')
+						. StringHelper::safe($siteName, 'w')
 						. '.'
 					);
 					$this->componentGlobal[$sortKey] = $this->_t(2)
@@ -27436,22 +27441,22 @@ function vdm_dkim() {
 			}
 		}
 		if (isset($this->componentData->admin_views)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->componentData->admin_views
 			))
 		{
 			foreach ($this->componentData->admin_views as $view)
 			{
 				// set view name
-				$nameView  = ComponentbuilderHelper::safeString(
+				$nameView  = StringHelper::safe(
 					$view['settings']->name_single
 				);
-				$nameViews = ComponentbuilderHelper::safeString(
+				$nameViews = StringHelper::safe(
 					$view['settings']->name_list
 				);
 				// add custom tab permissions if found
 				if (isset($this->customTabs[$nameView])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$this->customTabs[$nameView]
 					))
 				{
@@ -27495,7 +27500,7 @@ function vdm_dkim() {
 								. $menuController;
 							$menucontrollerView['implementation'] = '2';
 							if (isset($view['settings']->permissions)
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$view['settings']->permissions
 								))
 							{
@@ -27514,7 +27519,7 @@ function vdm_dkim() {
 						}
 					}
 					// check if there are fields
-					if (ComponentbuilderHelper::checkArray(
+					if (ArrayHelper::check(
 						$view['settings']->fields
 					))
 					{
@@ -27526,11 +27531,11 @@ function vdm_dkim() {
 						{
 							// see if field require permissions to be set
 							if (isset($field['permission'])
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$field['permission']
 								))
 							{
-								if (ComponentbuilderHelper::checkArray(
+								if (ArrayHelper::check(
 									$field['settings']->properties
 								))
 								{
@@ -27555,7 +27560,7 @@ function vdm_dkim() {
 										$fieldView['implementation'] = '3';
 										// check if persmissions was already set
 										if (isset($view['settings']->permissions)
-											&& ComponentbuilderHelper::checkArray(
+											&& ArrayHelper::check(
 												$view['settings']->permissions
 											))
 										{
@@ -27578,7 +27583,7 @@ function vdm_dkim() {
 										{
 											// make sure the array is set
 											if (!isset($this->permissionFields[$nameView])
-												|| !ComponentbuilderHelper::checkArray(
+												|| !ArrayHelper::check(
 													$this->permissionFields[$nameView]
 												))
 											{
@@ -27586,7 +27591,7 @@ function vdm_dkim() {
 													= array();
 											}
 											if (!isset($this->permissionFields[$nameView][$fieldName])
-												|| !ComponentbuilderHelper::checkArray(
+												|| !ArrayHelper::check(
 													$this->permissionFields[$nameView][$fieldName]
 												))
 											{
@@ -27615,7 +27620,7 @@ function vdm_dkim() {
 			);
 
 			// set the views permissions now
-			if (ComponentbuilderHelper::checkArray($this->permissionViews))
+			if (ArrayHelper::check($this->permissionViews))
 			{
 				foreach ($this->permissionViews as $viewsCodeName => $actions)
 				{
@@ -27653,10 +27658,10 @@ function vdm_dkim() {
 			{
 				// get the worse case column size required (can be worse I know)
 				// access/action size x 20 characters x 8 groups
-				$character_length      = (int) ComponentbuilderHelper::bcmath(
+				$character_length      = (int) MathHelper::bc(
 					'mul', $this->accessSize, 20, 0
 				);
-				$this->accessWorseCase = (int) ComponentbuilderHelper::bcmath(
+				$this->accessWorseCase = (int) MathHelper::bc(
 					'mul', $character_length, 8, 0
 				);
 			}
@@ -27672,25 +27677,25 @@ function vdm_dkim() {
 	{
 		// add the custom permissions to use the buttons of this view
 		if (isset($settings->custom_buttons)
-			&& ComponentbuilderHelper::checkArray($settings->custom_buttons))
+			&& ArrayHelper::check($settings->custom_buttons))
 		{
 			foreach ($settings->custom_buttons as $custom_buttons)
 			{
 				$customButtonName  = $custom_buttons['name'];
-				$customButtonCode  = ComponentbuilderHelper::safeString(
+				$customButtonCode  = StringHelper::safe(
 					$customButtonName
 				);
 				$customButtonTitle = $this->langPrefix . '_'
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$nameView . ' ' . $customButtonName . ' Button Access',
 						'U'
 					);
 				$customButtonDesc  = $this->langPrefix . '_'
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$nameView . ' ' . $customButtonName . ' Button Access',
 						'U'
 					) . '_DESC';
-				$sortButtonKey     = ComponentbuilderHelper::safeString(
+				$sortButtonKey     = StringHelper::safe(
 					$nameView . ' ' . $customButtonName . ' Button Access'
 				);
 				$this->setLangContent(
@@ -27700,7 +27705,7 @@ function vdm_dkim() {
 				$this->setLangContent(
 					'bothadmin', $customButtonDesc,
 					' Allows the users in this group to access the '
-					. ComponentbuilderHelper::safeString($customButtonName, 'w')
+					. StringHelper::safe($customButtonName, 'w')
 					. ' button.'
 				);
 				$this->componentGlobal[$sortButtonKey] = $this->_t(2)
@@ -27718,7 +27723,7 @@ function vdm_dkim() {
 	)
 	{
 		if (isset($view['settings']->permissions)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$view['settings']->permissions
 			)
 			|| (isset($view['port']) && $view['port'])
@@ -27730,7 +27735,7 @@ function vdm_dkim() {
 				// export
 				$exportView['action']         = 'view.export';
 				$exportView['implementation'] = '2';
-				if (ComponentbuilderHelper::checkArray(
+				if (ArrayHelper::check(
 					$view['settings']->permissions
 				))
 				{
@@ -27744,7 +27749,7 @@ function vdm_dkim() {
 				// import
 				$importView['action']         = 'view.import';
 				$importView['implementation'] = '2';
-				if (ComponentbuilderHelper::checkArray(
+				if (ArrayHelper::check(
 					$view['settings']->permissions
 				))
 				{
@@ -27762,7 +27767,7 @@ function vdm_dkim() {
 				// set version control
 				$versionView['action']         = 'view.version';
 				$versionView['implementation'] = '3';
-				if (ComponentbuilderHelper::checkArray(
+				if (ArrayHelper::check(
 					$view['settings']->permissions
 				))
 				{
@@ -27780,7 +27785,7 @@ function vdm_dkim() {
 				// set batch control
 				$batchView['action']         = 'view.batch';
 				$batchView['implementation'] = '2';
-				if (ComponentbuilderHelper::checkArray(
+				if (ArrayHelper::check(
 					$view['settings']->permissions
 				))
 				{
@@ -27826,19 +27831,19 @@ function vdm_dkim() {
 				// build the names
 				if ($type === 'admin')
 				{
-					$W_NameList   = ComponentbuilderHelper::safeString(
+					$W_NameList   = StringHelper::safe(
 						$view['settings']->name_list, 'W'
 					);
-					$w_NameList   = ComponentbuilderHelper::safeString(
+					$w_NameList   = StringHelper::safe(
 						$customName . ' ' . $view['settings']->name_list, 'w'
 					);
-					$w_NameSingle = ComponentbuilderHelper::safeString(
+					$w_NameSingle = StringHelper::safe(
 						$view['settings']->name_single, 'w'
 					);
 				}
 				elseif ($type === 'customAdmin')
 				{
-					$W_NameList   = ComponentbuilderHelper::safeString(
+					$W_NameList   = StringHelper::safe(
 						$view['settings']->name, 'W'
 					);
 					$w_NameList   = $view['settings']->name;
@@ -27846,7 +27851,7 @@ function vdm_dkim() {
 				}
 				// set title (only if not set already)
 				if (!isset($permission['title'])
-					|| !ComponentbuilderHelper::checkString(
+					|| !StringHelper::check(
 						$permission['title']
 					))
 				{
@@ -27911,7 +27916,7 @@ function vdm_dkim() {
 						default:
 							// set edit title
 							$permission['title'] = $W_NameList . ' '
-								. ComponentbuilderHelper::safeString(
+								. StringHelper::safe(
 									$customName, 'W'
 								);
 							break;
@@ -27919,7 +27924,7 @@ function vdm_dkim() {
 				}
 				// set description (only if not set already)
 				if (!isset($permission['description'])
-					|| !ComponentbuilderHelper::checkString(
+					|| !StringHelper::check(
 						$permission['description']
 					))
 				{
@@ -28008,7 +28013,7 @@ function vdm_dkim() {
 							// set edit description
 							$permission['description']
 								= ' Allows the users in this group to '
-								. ComponentbuilderHelper::safeString(
+								. StringHelper::safe(
 									$customName, 'w'
 								) . ' of ' . $w_NameSingle;
 							break;
@@ -28024,12 +28029,12 @@ function vdm_dkim() {
 				);
 				$this->permissionCore[$nameView][$coreTarget] = $action;
 				// set array sort name
-				$sortKey = ComponentbuilderHelper::safeString(
+				$sortKey = StringHelper::safe(
 					$permission['title']
 				);
 				// set title
 				$title = $this->langPrefix . '_'
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$permission['title'], 'U'
 					);
 				// load the actions
@@ -28224,7 +28229,7 @@ function vdm_dkim() {
 	{
 		$setter = '';
 		if (isset($this->libManager[$module->key][$module->code_name])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->libManager[$module->key][$module->code_name]
 			))
 		{
@@ -28237,18 +28242,18 @@ function vdm_dkim() {
 			)
 			{
 				if (isset($this->libraries[$id])
-					&& ComponentbuilderHelper::checkObject(
+					&& ObjectHelper::check(
 						$this->libraries[$id]
 					)
 					&& isset($this->libraries[$id]->document)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->libraries[$id]->document
 					))
 				{
 					$setter .= PHP_EOL . $this->libraries[$id]->document;
 				}
 				elseif (isset($this->libraries[$id])
-					&& ComponentbuilderHelper::checkObject(
+					&& ObjectHelper::check(
 						$this->libraries[$id]
 					)
 					&& isset($this->libraries[$id]->how))
@@ -28258,7 +28263,7 @@ function vdm_dkim() {
 			}
 		}
 		// check if we have string
-		if (ComponentbuilderHelper::checkString($setter))
+		if (StringHelper::check($setter))
 		{
 			return $this->setPlaceholders( $this->setPlaceholders(
 				str_replace(
@@ -28289,7 +28294,7 @@ function vdm_dkim() {
 		// build the config fields
 		$config_fields = array();
 		if (isset($module->config_fields)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$module->config_fields
 			))
 		{
@@ -28313,7 +28318,7 @@ function vdm_dkim() {
 					}
 					// make sure the xml is set and a string
 					if (isset($xmlFields)
-						&& ComponentbuilderHelper::checkString($xmlFields))
+						&& StringHelper::check($xmlFields))
 					{
 						$config_fields[$field_name . $fieldset] = $xmlFields;
 					}
@@ -28367,7 +28372,7 @@ function vdm_dkim() {
 					&$this->langTag)
 			);
 			// now we insert the values into the files
-			if (ComponentbuilderHelper::checkArray($this->languages['modules']))
+			if (ArrayHelper::check($this->languages['modules']))
 			{
 				foreach ($this->languages['modules'] as $tag => $areas)
 				{
@@ -28464,7 +28469,7 @@ function vdm_dkim() {
 			$xml .= PHP_EOL . $this->_t(1) . '</uninstall>';
 		}
 		// should the language xml be added
-		if (ComponentbuilderHelper::checkArray($addLang))
+		if (ArrayHelper::check($addLang))
 		{
 			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(
 					__LINE__
@@ -28492,7 +28497,7 @@ function vdm_dkim() {
 			. $module->file_name . '">' . $module->file_name
 			. '.php</filename>';
 		// add other files found
-		if (ComponentbuilderHelper::checkArray($files))
+		if (ArrayHelper::check($files))
 		{
 			foreach ($files as $file)
 			{
@@ -28505,7 +28510,7 @@ function vdm_dkim() {
 			}
 		}
 		// add language folder
-		if (ComponentbuilderHelper::checkArray($addLang))
+		if (ArrayHelper::check($addLang))
 		{
 			$xml .= PHP_EOL . $this->_t(2) . '<folder>language</folder>';
 		}
@@ -28515,7 +28520,7 @@ function vdm_dkim() {
 			$xml .= PHP_EOL . $this->_t(2) . '<folder>sql</folder>';
 		}
 		// add other files found
-		if (ComponentbuilderHelper::checkArray($folders))
+		if (ArrayHelper::check($folders))
 		{
 			foreach ($folders as $folder)
 			{
@@ -28529,7 +28534,7 @@ function vdm_dkim() {
 		}
 		$xml .= PHP_EOL . $this->_t(1) . '</files>';
 		// now add the Config Params if needed
-		if (ComponentbuilderHelper::checkArray($config_fields))
+		if (ArrayHelper::check($config_fields))
 		{
 			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(
 					__LINE__
@@ -28684,7 +28689,7 @@ function vdm_dkim() {
 		// build the config fields
 		$config_fields = array();
 		if (isset($plugin->config_fields)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$plugin->config_fields
 			))
 		{
@@ -28698,7 +28703,7 @@ function vdm_dkim() {
 					);
 					// make sure the xml is set and a string
 					if (isset($xmlFields)
-						&& ComponentbuilderHelper::checkString($xmlFields))
+						&& StringHelper::check($xmlFields))
 					{
 						$config_fields[$field_name . $fieldset] = $xmlFields;
 					}
@@ -28752,7 +28757,7 @@ function vdm_dkim() {
 					&$this->langTag)
 			);
 			// now we insert the values into the files
-			if (ComponentbuilderHelper::checkArray($this->languages['plugins']))
+			if (ArrayHelper::check($this->languages['plugins']))
 			{
 				foreach ($this->languages['plugins'] as $tag => $areas)
 				{
@@ -28854,7 +28859,7 @@ function vdm_dkim() {
 			$xml .= PHP_EOL . $this->_t(1) . '</uninstall>';
 		}
 		// should the language xml be added
-		if (ComponentbuilderHelper::checkArray($addLang))
+		if (ArrayHelper::check($addLang))
 		{
 			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(
 					__LINE__
@@ -28885,7 +28890,7 @@ function vdm_dkim() {
 			. $plugin->file_name . '">' . $plugin->file_name
 			. '.php</filename>';
 		// add other files found
-		if (ComponentbuilderHelper::checkArray($files))
+		if (ArrayHelper::check($files))
 		{
 			foreach ($files as $file)
 			{
@@ -28898,7 +28903,7 @@ function vdm_dkim() {
 			}
 		}
 		// add language folder
-		if (ComponentbuilderHelper::checkArray($addLang))
+		if (ArrayHelper::check($addLang))
 		{
 			$xml .= PHP_EOL . $this->_t(2) . '<folder>language</folder>';
 		}
@@ -28908,7 +28913,7 @@ function vdm_dkim() {
 			$xml .= PHP_EOL . $this->_t(2) . '<folder>sql</folder>';
 		}
 		// add other files found
-		if (ComponentbuilderHelper::checkArray($folders))
+		if (ArrayHelper::check($folders))
 		{
 			foreach ($folders as $folder)
 			{
@@ -28922,7 +28927,7 @@ function vdm_dkim() {
 		}
 		$xml .= PHP_EOL . $this->_t(1) . '</files>';
 		// now add the Config Params if needed
-		if (ComponentbuilderHelper::checkArray($config_fields))
+		if (ArrayHelper::check($config_fields))
 		{
 			$xml .= PHP_EOL . PHP_EOL . $this->_t(1) . '<!--' . $this->setLine(
 					__LINE__
@@ -29043,12 +29048,12 @@ function vdm_dkim() {
 		// set the name space
 		$code[] = 'namespace ' . $power->_namespace . ';' . PHP_EOL;
 		// check if we have header data
-		if (ComponentbuilderHelper::checkString($power->head))
+		if (StringHelper::check($power->head))
 		{
 			$code[] = PHP_EOL . $power->head;
 		}
 		// add description if set
-		if (ComponentbuilderHelper::checkString($power->description))
+		if (StringHelper::check($power->description))
 		{
 			// check if this is escaped
 			if (strpos($power->description, '/*') === false)
@@ -29061,19 +29066,19 @@ function vdm_dkim() {
 		// build power declaration
 		$declaration = $power->type . ' ' . $power->class_name;
 		// check if we have extends
-		if (ComponentbuilderHelper::checkString($power->extends_name))
+		if (StringHelper::check($power->extends_name))
 		{
 			$declaration .= ' extends ' . $power->extends_name;
 		}
 		// check if we have implements
-		if (ComponentbuilderHelper::checkArray($power->implement_names))
+		if (ArrayHelper::check($power->implement_names))
 		{
 			$declaration .= ' implements ' . implode(', ', $power->implement_names);
 		}
 		$code[] = $declaration;
 		$code[] = '{';
 		// add the main code if set
-		if (ComponentbuilderHelper::checkString($power->main_class_code))
+		if (StringHelper::check($power->main_class_code))
 		{
 			$code[] = $power->main_class_code;
 		}
@@ -29084,28 +29089,18 @@ function vdm_dkim() {
 
 	public function setPowersAutoloader($namespace, $loadSite)
 	{
-		if (($size = ComponentbuilderHelper::checkArray($namespace)) > 0)
+		if (($size = ArrayHelper::check($namespace)) > 0)
 		{
 			// check if we are using a plugin
 			$use_plugin = isset($this->fileContentStatic[$this->hhh . 'PLUGIN_POWER_AUTOLOADER' . $this->hhh]);
-			// add only if we are not using a plugin
-			if (!$use_plugin)
-			{
-				// build the trigger declaration
-				$trigger   = array();
-				$trigger[] = PHP_EOL . PHP_EOL . '// Trigger the Autoloader of the Powers Libraries';
-				$trigger[] = $this->fileContentStatic[$this->hhh . 'Component' . $this->hhh] . 'Helper::powersAutoloader();';
-			}
 			// build the helper method
 			$helperMethod   = array();
 			// add only if we are not using a plugin
+			$tab_space = 2;
 			if (!$use_plugin)
 			{
-				$helperMethod[] = PHP_EOL . PHP_EOL . $this->_t(1) . '/**';
-				$helperMethod[] = $this->_t(1) . '*	The powers autoloader.';
-				$helperMethod[] = $this->_t(1) . '**/';
-				$helperMethod[] = $this->_t(1) . 'public static function powersAutoloader()';
-				$helperMethod[] = $this->_t(1) . '{';
+				$helperMethod[] = PHP_EOL . PHP_EOL;
+				$tab_space = 0;
 			}
 			elseif (!$loadSite)
 			{
@@ -29117,12 +29112,13 @@ function vdm_dkim() {
 				$helperMethod[] = $this->_t(3) . 'return;';
 				$helperMethod[] = $this->_t(2) . '}' . PHP_EOL;
 			}
-			$helperMethod[] = $this->_t(2) . '//'
+			// we start building the spl_autoload_register function call
+			$helperMethod[] = $this->_t($tab_space) . '//'
 				. $this->setLine(__LINE__) . ' register this component namespace';
-			$helperMethod[] = $this->_t(2) . 'spl_autoload_register(function ($class) {';
-			$helperMethod[] = $this->_t(3) . '//'
+			$helperMethod[] = $this->_t($tab_space) . 'spl_autoload_register(function ($class) {';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
 				. $this->setLine(__LINE__) . ' project-specific base directories and namespace prefix';
-			$helperMethod[] = $this->_t(3) . '$search = array(';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '$search = array(';
 			// ==== IMPORTANT NOTICE =====
 			// make sure the name space values are sorted from the longest string to the shortest
 			// so that the search do not mistakenly match a shorter namespace before a longer one
@@ -29144,64 +29140,59 @@ function vdm_dkim() {
 				// don't add the ending comma on last value
 				if ($size == $counter)
 				{
-					$helperMethod[] = $this->_t(4) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "'";
+					$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "'";
 				}
 				else
 				{
-					$helperMethod[] = $this->_t(4) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "',";
+					$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "',";
 				}
 				$counter++;
 			}
-			$helperMethod[] = $this->_t(3) . ');';
-			$helperMethod[] = $this->_t(3) . '// Start the search and load if found';
-			$helperMethod[] = $this->_t(3) . '$found = false;';
-			$helperMethod[] = $this->_t(3) . '$found_base_dir = "";';
-			$helperMethod[] = $this->_t(3) . '$found_len = 0;';
-			$helperMethod[] = $this->_t(3) . 'foreach ($search as $base_dir => $prefix)';
-			$helperMethod[] = $this->_t(3) . '{';
-			$helperMethod[] = $this->_t(4) . '//'
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . ');';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '// Start the search and load if found';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '$found = false;';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '$found_base_dir = "";';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '$found_len = 0;';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . 'foreach ($search as $base_dir => $prefix)';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '{';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . '//'
 				. $this->setLine(__LINE__) . ' does the class use the namespace prefix?';
-			$helperMethod[] = $this->_t(4) . '$len = strlen($prefix);';
-			$helperMethod[] = $this->_t(4) . 'if (strncmp($prefix, $class, $len) === 0)';
-			$helperMethod[] = $this->_t(4) . '{';
-			$helperMethod[] = $this->_t(5) . '//'
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . '$len = strlen($prefix);';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . 'if (strncmp($prefix, $class, $len) === 0)';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . '{';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . '//'
 				. $this->setLine(__LINE__) . ' we have a match so load the values';
-			$helperMethod[] = $this->_t(5) . '$found = true;';
-			$helperMethod[] = $this->_t(5) . '$found_base_dir = $base_dir;';
-			$helperMethod[] = $this->_t(5) . '$found_len = $len;';
-			$helperMethod[] = $this->_t(5) . '//'
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . '$found = true;';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . '$found_base_dir = $base_dir;';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . '$found_len = $len;';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . '//'
 				. $this->setLine(__LINE__) . ' done here';
-			$helperMethod[] = $this->_t(5) . 'break;';
-			$helperMethod[] = $this->_t(4) . '}';
-			$helperMethod[] = $this->_t(3) . '}';
-			$helperMethod[] = $this->_t(3) . '//'
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . 'break;';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . '}';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '}';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
 				. $this->setLine(__LINE__) . ' check if we found a match';
-			$helperMethod[] = $this->_t(3) . 'if (!$found)';
-			$helperMethod[] = $this->_t(3) . '{';
-			$helperMethod[] = $this->_t(4) . '//'
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . 'if (!$found)';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '{';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . '//'
 				. $this->setLine(__LINE__) . ' no, move to the next registered autoloader';
-			$helperMethod[] = $this->_t(4) . 'return;';
-			$helperMethod[] = $this->_t(3) . '}';
-			$helperMethod[] = $this->_t(3) . '//'
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . 'return;';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '}';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
 				. $this->setLine(__LINE__) . ' get the relative class name';
-			$helperMethod[] = $this->_t(3) . '$relative_class = substr($class, $found_len);';
-			$helperMethod[] = $this->_t(3) . '//'
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '$relative_class = substr($class, $found_len);';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
 				. $this->setLine(__LINE__) . ' replace the namespace prefix with the base directory, replace namespace';
-			$helperMethod[] = $this->_t(3) . '// separators with directory separators in the relative class name, append';
-			$helperMethod[] = $this->_t(3) . '// with .php';
-			$helperMethod[] = $this->_t(3) . "\$file = JPATH_ROOT . '/' . \$found_base_dir . '/src' . str_replace('\\\\', '/', \$relative_class) . '.php';";
-			$helperMethod[] = $this->_t(3) . '//'
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '// separators with directory separators in the relative class name, append';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '// with .php';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . "\$file = JPATH_ROOT . '/' . \$found_base_dir . '/src' . str_replace('\\\\', '/', \$relative_class) . '.php';";
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
 				. $this->setLine(__LINE__) . ' if the file exists, require it';
-			$helperMethod[] = $this->_t(3) . 'if (file_exists($file))';
-			$helperMethod[] = $this->_t(3) . '{';
-			$helperMethod[] = $this->_t(4) . 'require $file;';
-			$helperMethod[] = $this->_t(3) . '}';
-			$helperMethod[] = $this->_t(2) . '});';
-			// add only if we are not using a plugin
-			if (!$use_plugin)
-			{
-				$helperMethod[] = $this->_t(1) . '}';
-			}
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . 'if (file_exists($file))';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '{';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . 'require $file;';
+			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '}';
+			$helperMethod[] = $this->_t($tab_space) . '});';
 			// check if we are using a plugin
 			if ($use_plugin)
 			{
@@ -29210,13 +29201,11 @@ function vdm_dkim() {
 			else
 			{
 				// load to events placeholders
-				$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_EVENT' . $this->hhh]        .= implode(PHP_EOL, $trigger);
-				$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_EVENT_HELPER' . $this->hhh] .= implode(PHP_EOL, $helperMethod);
+				$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_HELPER' . $this->hhh] .= implode(PHP_EOL, $helperMethod);
 				// load to site if needed
 				if ($loadSite)
 				{
-					$this->fileContentStatic[$this->hhh . 'SITE_POWER_EVENT' . $this->hhh]        .= implode(PHP_EOL, $trigger);
-					$this->fileContentStatic[$this->hhh . 'SITE_POWER_EVENT_HELPER' . $this->hhh] .= implode(PHP_EOL, $helperMethod);
+					$this->fileContentStatic[$this->hhh . 'SITE_POWER_HELPER' . $this->hhh] .= implode(PHP_EOL, $helperMethod);
 				}
 			}
 		}
@@ -29256,7 +29245,7 @@ function vdm_dkim() {
 		// set constructor
 		if (isset($extension->add_php_script_construct)
 			&& $extension->add_php_script_construct == 1
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$extension->php_script_construct
 			))
 		{
@@ -29293,7 +29282,7 @@ function vdm_dkim() {
 					)
 					&& $extension->{'add_' . $scriptMethod . '_' . $scriptType}
 					== 1
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$extension->{$scriptMethod . '_' . $scriptType}
 					))
 				{
@@ -29314,21 +29303,21 @@ function vdm_dkim() {
 			}
 		}
 		// now add the install script.
-		if (ComponentbuilderHelper::checkArray($function_install))
+		if (ArrayHelper::check($function_install))
 		{
 			$script .= $this->setInstallMethodScript(
 				'install', $function_install
 			);
 		}
 		// now add the update script.
-		if (ComponentbuilderHelper::checkArray($function_update))
+		if (ArrayHelper::check($function_update))
 		{
 			$script .= $this->setInstallMethodScript(
 				'update', $function_update
 			);
 		}
 		// now add the uninstall script.
-		if (ComponentbuilderHelper::checkArray($function_uninstall))
+		if (ArrayHelper::check($function_uninstall))
 		{
 			$script .= $this->setInstallMethodScript(
 				'uninstall', $function_uninstall
@@ -29425,7 +29414,7 @@ function vdm_dkim() {
 				// now add the scripts
 				foreach ($scripts as $route => $_script)
 				{
-					if (ComponentbuilderHelper::checkArray($_script))
+					if (ArrayHelper::check($_script))
 					{
 						// set the if and script
 						$script .= PHP_EOL . $this->_t(2) . "if ('" . $route
@@ -29477,10 +29466,10 @@ function vdm_dkim() {
 		if ($this->langTag !== $tag)
 		{
 			$langStringNr  = count($languageStrings);
-			$langStringSum = ComponentbuilderHelper::bcmath(
+			$langStringSum = MathHelper::bc(
 				'mul', $langStringNr, 100
 			);
-			$percentage    = ComponentbuilderHelper::bcmath(
+			$percentage    = MathHelper::bc(
 				'div', $langStringSum, $total
 			);
 			$stringNAme    = ($langStringNr == 1) ? '(string '

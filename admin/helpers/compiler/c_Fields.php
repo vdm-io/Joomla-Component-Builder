@@ -13,6 +13,11 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\String\FieldHelper;
+
 /**
  * Compiler class
  */
@@ -396,7 +401,7 @@ class Fields extends Structure
 	) {
 		// setup the fieldset of this view
 		if (isset($view['settings']->fields)
-			&& ComponentbuilderHelper::checkArray($view['settings']->fields))
+			&& ArrayHelper::check($view['settings']->fields))
 		{
 			// add metadata to the view
 			if (isset($view['metadata']) && $view['metadata'])
@@ -764,7 +769,7 @@ class Fields extends Structure
 		}
 		// check if view has access
 		if (isset($this->accessBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->accessBuilder[$nameSingleCode]
 			)
 			&& !isset($this->fieldsNames[$nameSingleCode]['access']))
@@ -830,7 +835,7 @@ class Fields extends Structure
 		}
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->metadataBuilder[$nameSingleCode]
 			))
 		{
@@ -907,7 +912,7 @@ class Fields extends Structure
 			);
 		}
 		// load the dynamic fields now
-		if (ComponentbuilderHelper::checkString($dynamicFields))
+		if (StringHelper::check($dynamicFields))
 		{
 			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
 				. " Dynamic Fields. -->" . $dynamicFields;
@@ -916,7 +921,7 @@ class Fields extends Structure
 		$fieldSet[] = $this->_t(1) . "</fieldset>";
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->metadataBuilder[$nameSingleCode]
 			))
 		{
@@ -1192,7 +1197,7 @@ class Fields extends Structure
 		}
 		// check if view has access
 		if (isset($this->accessBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->accessBuilder[$nameSingleCode]
 			)
 			&& !isset($this->fieldsNames[$nameSingleCode]['access']))
@@ -1262,7 +1267,7 @@ class Fields extends Structure
 		}
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->metadataBuilder[$nameSingleCode]
 			))
 		{
@@ -1362,7 +1367,7 @@ class Fields extends Structure
 		}
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$nameSingleCode])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->metadataBuilder[$nameSingleCode]
 			))
 		{
@@ -1496,7 +1501,7 @@ class Fields extends Structure
 			}
 			// check if the view has permissions
 			if (isset($view['settings'])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$view['settings']->permissions, true
 				))
 			{
@@ -1521,7 +1526,7 @@ class Fields extends Structure
 			}
 			// check if the fields has permissions
 			if (isset($view['settings'])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$view['settings']->fields, true
 				))
 			{
@@ -1530,7 +1535,7 @@ class Fields extends Structure
 					// if a field has any permissions
 					// the a view has permissions
 					if (isset($field['permission'])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$field['permission'], true
 						))
 					{
@@ -1592,7 +1597,7 @@ class Fields extends Structure
 		}
 		// make sure we have settings
 		if (isset($field['settings'])
-			&& ComponentbuilderHelper::checkObject(
+			&& ObjectHelper::check(
 				$field['settings']
 			))
 		{
@@ -1609,7 +1614,7 @@ class Fields extends Structure
 				$langView, $nameListCode, $nameSingleCode, $placeholders
 			);
 			// check if values were set
-			if (ComponentbuilderHelper::checkArray($fieldAttributes))
+			if (ArrayHelper::check($fieldAttributes))
 			{
 				// set the array of field names
 				$this->setFieldsNames(
@@ -1689,7 +1694,7 @@ class Fields extends Structure
 					}
 				}
 				elseif (isset($fieldAttributes['custom'])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$fieldAttributes['custom']
 					))
 				{
@@ -1772,7 +1777,7 @@ class Fields extends Structure
 			$fieldset = array();
 		}
 		// loop over the fields to build
-		if (ComponentbuilderHelper::checkArray($fields))
+		if (ArrayHelper::check($fields))
 		{
 			foreach ($fields as $field)
 			{
@@ -1784,7 +1789,7 @@ class Fields extends Structure
 				);
 				// make sure the xml is set and a string
 				if (isset($xmlField)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$xmlField
 					))
 				{
@@ -1933,7 +1938,7 @@ class Fields extends Structure
 			// now add to the field set
 			$field     .= PHP_EOL . $this->_t(1) . $taber . $this->_t(1)
 				. "<!--" . $this->setLine(__LINE__) . " " . ucfirst($name)
-				. " Field. Type: " . ComponentbuilderHelper::safeString(
+				. " Field. Type: " . StringHelper::safe(
 					$typeName, 'F'
 				) . ". (joomla) -->";
 			$field     .= PHP_EOL . $this->_t(1) . $taber . $this->_t(1)
@@ -1971,7 +1976,7 @@ class Fields extends Structure
 								if (count((array) $valueKeyArray) == 2)
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[0], true
 										);
 									// add to lang array
@@ -1995,7 +2000,7 @@ class Fields extends Structure
 								if (count((array) $valueKeyArray) == 3)
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[1], true
 										);
 									// add to lang array
@@ -2019,7 +2024,7 @@ class Fields extends Structure
 								else
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[1], true
 										);
 									// add to lang array
@@ -2045,7 +2050,7 @@ class Fields extends Structure
 							{
 								// text is also the value
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$option, true
 									);
 								// add to lang array
@@ -2076,7 +2081,7 @@ class Fields extends Structure
 							// check if this is a group loader
 							if ('group' === $key_ && isset($groups_[$_id])
 								&& isset($grouped_[$key_][$_id])
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$grouped_[$key_][$_id]
 								))
 							{
@@ -2093,7 +2098,7 @@ class Fields extends Structure
 									. $this->_t(2) . '</group>';
 							}
 							elseif (isset($grouped_[$key_][$_id])
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$grouped_[$key_][$_id]
 								))
 							{
@@ -2112,7 +2117,7 @@ class Fields extends Structure
 								// has other value then text
 								list($v, $t) = explode('|', $option);
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$t, true
 									);
 								// add to lang array
@@ -2131,7 +2136,7 @@ class Fields extends Structure
 							{
 								// text is also the value
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$option, true
 									);
 								// add to lang array
@@ -2156,7 +2161,7 @@ class Fields extends Structure
 							// has other value then text
 							list($v, $t) = explode('|', $value);
 							$langValue = $langView . '_'
-								. ComponentbuilderHelper::safeFieldName(
+								. FieldHelper::safe(
 									$t, true
 								);
 							// add to lang array
@@ -2172,7 +2177,7 @@ class Fields extends Structure
 						{
 							// text is also the value
 							$langValue = $langView . '_'
-								. ComponentbuilderHelper::safeFieldName(
+								. FieldHelper::safe(
 									$value, true
 								);
 							// add to lang array
@@ -2191,7 +2196,7 @@ class Fields extends Structure
 				}
 			}
 			// if options were found
-			if (ComponentbuilderHelper::checkString($optionSet))
+			if (StringHelper::check($optionSet))
 			{
 				$field .= '>';
 				$field .= PHP_EOL . $this->_t(3) . $taber . "<!--"
@@ -2221,7 +2226,7 @@ class Fields extends Structure
 			$field .= PHP_EOL . $this->_t(2) . $taber . "<!--" . $this->setLine(
 					__LINE__
 				) . " " . ucfirst($name) . " Field. Type: "
-				. ComponentbuilderHelper::safeString($typeName, 'F')
+				. StringHelper::safe($typeName, 'F')
 				. ". (joomla) -->";
 			$field .= PHP_EOL . $this->_t(2) . $taber . "<field";
 			foreach ($fieldAttributes as $property => $value)
@@ -2239,7 +2244,7 @@ class Fields extends Structure
 			// now add to the field set
 			$field .= PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__)
 				. " " . ucfirst($name) . " Field. Type: "
-				. ComponentbuilderHelper::safeString($typeName, 'F')
+				. StringHelper::safe($typeName, 'F')
 				. ". A None Database Field. (joomla) -->";
 			$field .= PHP_EOL . $this->_t(2) . "<field";
 			foreach ($fieldAttributes as $property => $value)
@@ -2260,7 +2265,7 @@ class Fields extends Structure
 				$field     .= PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(
 						__LINE__
 					) . " " . ucfirst($name) . " Field. Type: "
-					. ComponentbuilderHelper::safeString($typeName, 'F')
+					. StringHelper::safe($typeName, 'F')
 					. ". (joomla) -->";
 				$field     .= PHP_EOL . $this->_t(2) . "<field";
 				$fieldsSet = array();
@@ -2291,7 +2296,7 @@ class Fields extends Structure
 					$fieldsSets[] = (int) $fieldAttributes['fields'];
 				}
 				// only continue if we have a field set
-				if (ComponentbuilderHelper::checkArray($fieldsSets))
+				if (ArrayHelper::check($fieldsSets))
 				{
 					// set the resolver
 					$_resolverKey = $fieldAttributes['name'];
@@ -2317,7 +2322,7 @@ class Fields extends Structure
 					foreach ($fieldsSets as $fieldData)
 					{
 						// if we have settings continue
-						if (ComponentbuilderHelper::checkObject(
+						if (ObjectHelper::check(
 							$fieldData['settings']
 						))
 						{
@@ -2337,7 +2342,7 @@ class Fields extends Structure
 								$placeholders, true
 							);
 							// check if values were set
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$r_fieldValues
 							))
 							{
@@ -2357,7 +2362,7 @@ class Fields extends Structure
 									);
 								}
 								elseif (isset($r_fieldValues['custom'])
-									&& ComponentbuilderHelper::checkArray(
+									&& ArrayHelper::check(
 										$r_fieldValues['custom']
 									))
 								{
@@ -2374,18 +2379,18 @@ class Fields extends Structure
 									);
 									// set lang (just incase)
 									$r_listLangName = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$r_name, true
 										);
 									// add to lang array
 									$this->setLangContent(
 										$this->lang, $r_listLangName,
-										ComponentbuilderHelper::safeString(
+										StringHelper::safe(
 											$r_name, 'W'
 										)
 									);
 									// if label was set use instead
-									if (ComponentbuilderHelper::checkString(
+									if (StringHelper::check(
 										$r_langLabel
 									))
 									{
@@ -2427,7 +2432,7 @@ class Fields extends Structure
 				// now add to the field set
 				$field     .= PHP_EOL . $this->_t(2) . $taber . "<!--"
 					. $this->setLine(__LINE__) . " " . ucfirst($name)
-					. " Field. Type: " . ComponentbuilderHelper::safeString(
+					. " Field. Type: " . StringHelper::safe(
 						$typeName, 'F'
 					) . ". (joomla) -->";
 				$field     .= PHP_EOL . $this->_t(2) . $taber . "<field";
@@ -2457,7 +2462,7 @@ class Fields extends Structure
 					$fieldsSets[] = (int) $fieldAttributes['fields'];
 				}
 				// only continue if we have a field set
-				if (ComponentbuilderHelper::checkArray($fieldsSets))
+				if (ArrayHelper::check($fieldsSets))
 				{
 					// set the resolver
 					$_resolverKey = $fieldAttributes['name'];
@@ -2483,7 +2488,7 @@ class Fields extends Structure
 					foreach ($fieldsSets as $fieldData)
 					{
 						// if we have settings continue
-						if (ComponentbuilderHelper::checkObject(
+						if (ObjectHelper::check(
 							$fieldData['settings']
 						))
 						{
@@ -2503,7 +2508,7 @@ class Fields extends Structure
 								$placeholders, true
 							);
 							// check if values were set
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$r_fieldValues
 							))
 							{
@@ -2548,7 +2553,7 @@ class Fields extends Structure
 									}
 								}
 								elseif (isset($r_fieldValues['custom'])
-									&& ComponentbuilderHelper::checkArray(
+									&& ArrayHelper::check(
 										$r_fieldValues['custom']
 									))
 								{
@@ -2565,18 +2570,18 @@ class Fields extends Structure
 									);
 									// set lang (just incase)
 									$r_listLangName = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$r_name, true
 										);
 									// add to lang array
 									$this->setLangContent(
 										$this->lang, $r_listLangName,
-										ComponentbuilderHelper::safeString(
+										StringHelper::safe(
 											$r_name, 'W'
 										)
 									);
 									// if label was set use instead
-									if (ComponentbuilderHelper::checkString(
+									if (StringHelper::check(
 										$r_langLabel
 									))
 									{
@@ -2619,7 +2624,7 @@ class Fields extends Structure
 				. $this->setLine(
 					__LINE__
 				) . " " . ucfirst($name) . " Field. Type: "
-				. ComponentbuilderHelper::safeString($typeName, 'F')
+				. StringHelper::safe($typeName, 'F')
 				. ". (custom) -->";
 			$field     .= PHP_EOL . $this->_t(2) . $taber . "<field";
 			$optionSet = '';
@@ -2655,7 +2660,7 @@ class Fields extends Structure
 								if (count((array) $valueKeyArray) == 2)
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[0], true
 										);
 									// add to lang array
@@ -2679,7 +2684,7 @@ class Fields extends Structure
 								if (count((array) $valueKeyArray) == 3)
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[1], true
 										);
 									// add to lang array
@@ -2703,7 +2708,7 @@ class Fields extends Structure
 								else
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[1], true
 										);
 									// add to lang array
@@ -2729,7 +2734,7 @@ class Fields extends Structure
 							{
 								// text is also the value
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$option, true
 									);
 								// add to lang array
@@ -2760,7 +2765,7 @@ class Fields extends Structure
 							// check if this is a group loader
 							if ('group' === $key_ && isset($groups_[$_id])
 								&& isset($grouped_[$key_][$_id])
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$grouped_[$key_][$_id]
 								))
 							{
@@ -2777,7 +2782,7 @@ class Fields extends Structure
 									. $this->_t(2) . '</group>';
 							}
 							elseif (isset($grouped_[$key_][$_id])
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$grouped_[$key_][$_id]
 								))
 							{
@@ -2796,7 +2801,7 @@ class Fields extends Structure
 								// has other value then text
 								list($v, $t) = explode('|', $option);
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$t, true
 									);
 								// add to lang array
@@ -2815,7 +2820,7 @@ class Fields extends Structure
 							{
 								// text is also the value
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$option, true
 									);
 								// add to lang array
@@ -2840,7 +2845,7 @@ class Fields extends Structure
 							// has other value then text
 							list($v, $t) = explode('|', $value);
 							$langValue = $langView . '_'
-								. ComponentbuilderHelper::safeFieldName(
+								. FieldHelper::safe(
 									$t, true
 								);
 							// add to lang array
@@ -2856,7 +2861,7 @@ class Fields extends Structure
 						{
 							// text is also the value
 							$langValue = $langView . '_'
-								. ComponentbuilderHelper::safeFieldName(
+								. FieldHelper::safe(
 									$value, true
 								);
 							// add to lang array
@@ -2875,7 +2880,7 @@ class Fields extends Structure
 				}
 			}
 			// if options were found
-			if (ComponentbuilderHelper::checkString($optionSet))
+			if (StringHelper::check($optionSet))
 			{
 				$field .= '>';
 				$field .= PHP_EOL . $this->_t(3) . $taber . "<!--"
@@ -2907,7 +2912,7 @@ class Fields extends Structure
 			{
 				// set lang (just incase)
 				$listLangName = $langView . '_'
-					. ComponentbuilderHelper::safeString($name, 'U');
+					. StringHelper::safe($name, 'U');
 				// set the custom array
 				$data = array('type' => $typeName, 'code' => $name,
 				              'lang' => $listLangName, 'custom' => $custom);
@@ -2949,7 +2954,7 @@ class Fields extends Structure
 			// now add to the field set
 			$field->fieldXML = new SimpleXMLElement('<field/>');
 			$field->comment  = $this->setLine(__LINE__) . " " . ucfirst($name)
-				. " Field. Type: " . ComponentbuilderHelper::safeString(
+				. " Field. Type: " . StringHelper::safe(
 					$typeName, 'F'
 				) . ". (joomla)";
 
@@ -2987,7 +2992,7 @@ class Fields extends Structure
 								if (count((array) $valueKeyArray) == 2)
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[0], true
 										);
 									// add to lang array
@@ -3009,7 +3014,7 @@ class Fields extends Structure
 								if (count((array) $valueKeyArray) == 3)
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[1], true
 										);
 									// add to lang array
@@ -3030,7 +3035,7 @@ class Fields extends Structure
 								else
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[1], true
 										);
 									// add to lang array
@@ -3053,7 +3058,7 @@ class Fields extends Structure
 							{
 								// text is also the value
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$option, true
 									);
 								// add to lang array
@@ -3082,7 +3087,7 @@ class Fields extends Structure
 							// check if this is a group loader
 							if ('group' === $key_ && isset($groups_[$_id])
 								&& isset($grouped_[$key_][$_id])
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$grouped_[$key_][$_id]
 								))
 							{
@@ -3106,7 +3111,7 @@ class Fields extends Structure
 								unset($grouped_[$key_][$_id]);
 							}
 							elseif (isset($grouped_[$key_][$_id])
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$grouped_[$key_][$_id]
 								))
 							{
@@ -3132,7 +3137,7 @@ class Fields extends Structure
 								// has other value then text
 								list($v, $t) = explode('|', $option);
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$t, true
 									);
 								// add to lang array
@@ -3147,7 +3152,7 @@ class Fields extends Structure
 							{
 								// text is also the value
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$option, true
 									);
 								// add to lang array
@@ -3170,7 +3175,7 @@ class Fields extends Structure
 							// has other value then text
 							list($v, $t) = explode('|', $value);
 							$langValue = $langView . '_'
-								. ComponentbuilderHelper::safeFieldName(
+								. FieldHelper::safe(
 									$t, true
 								);
 							// add to lang array
@@ -3183,7 +3188,7 @@ class Fields extends Structure
 						{
 							// text is also the value
 							$langValue = $langView . '_'
-								. ComponentbuilderHelper::safeFieldName(
+								. FieldHelper::safe(
 									$value, true
 								);
 							// add to lang array
@@ -3213,7 +3218,7 @@ class Fields extends Structure
 			// now add to the field set
 			$field->fieldXML = new SimpleXMLElement('<field/>');
 			$field->comment  = $this->setLine(__LINE__) . " " . ucfirst($name)
-				. " Field. Type: " . ComponentbuilderHelper::safeString(
+				. " Field. Type: " . StringHelper::safe(
 					$typeName, 'F'
 				) . ". (joomla)";
 
@@ -3230,7 +3235,7 @@ class Fields extends Structure
 			// now add to the field set
 			$field->fieldXML = new SimpleXMLElement('<field/>');
 			$field->comment  = $this->setLine(__LINE__) . " " . ucfirst($name)
-				. " Field. Type: " . ComponentbuilderHelper::safeString(
+				. " Field. Type: " . StringHelper::safe(
 					$typeName, 'F'
 				) . ". A None Database Field. (joomla)";
 
@@ -3251,7 +3256,7 @@ class Fields extends Structure
 				$field->fieldXML = new SimpleXMLElement('<field/>');
 				$field->comment  = $this->setLine(__LINE__) . " " . ucfirst(
 						$name
-					) . " Field. Type: " . ComponentbuilderHelper::safeString(
+					) . " Field. Type: " . StringHelper::safe(
 						$typeName, 'F'
 					) . ". (depreciated)";
 
@@ -3287,7 +3292,7 @@ class Fields extends Structure
 					$fieldsSets[] = (int) $fieldAttributes['fields'];
 				}
 				// only continue if we have a field set
-				if (ComponentbuilderHelper::checkArray($fieldsSets))
+				if (ArrayHelper::check($fieldsSets))
 				{
 					// set the resolver
 					$_resolverKey = $fieldAttributes['name'];
@@ -3313,7 +3318,7 @@ class Fields extends Structure
 					foreach ($fieldsSets as $fieldData)
 					{
 						// if we have settings continue
-						if (ComponentbuilderHelper::checkObject(
+						if (ObjectHelper::check(
 							$fieldData['settings']
 						))
 						{
@@ -3331,7 +3336,7 @@ class Fields extends Structure
 								$placeholders, true
 							);
 							// check if values were set
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$r_fieldValues
 							))
 							{
@@ -3352,7 +3357,7 @@ class Fields extends Structure
 									);
 								}
 								elseif (isset($r_fieldValues['custom'])
-									&& ComponentbuilderHelper::checkArray(
+									&& ArrayHelper::check(
 										$r_fieldValues['custom']
 									))
 								{
@@ -3370,18 +3375,18 @@ class Fields extends Structure
 									);
 									// set lang (just incase)
 									$r_listLangName = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$r_name, true
 										);
 									// add to lang array
 									$this->setLangContent(
 										$this->lang, $r_listLangName,
-										ComponentbuilderHelper::safeString(
+										StringHelper::safe(
 											$r_name, 'W'
 										)
 									);
 									// if label was set use instead
-									if (ComponentbuilderHelper::checkString(
+									if (StringHelper::check(
 										$r_langLabel
 									))
 									{
@@ -3422,7 +3427,7 @@ class Fields extends Structure
 				$field->fieldXML = new SimpleXMLElement('<field/>');
 				$field->comment  = $this->setLine(__LINE__) . " " . ucfirst(
 						$name
-					) . " Field. Type: " . ComponentbuilderHelper::safeString(
+					) . " Field. Type: " . StringHelper::safe(
 						$typeName, 'F'
 					) . ". (joomla)";
 				// add all properties
@@ -3435,7 +3440,7 @@ class Fields extends Structure
 				}
 				// if we detect formsource we do not add the form
 				if (isset($fieldAttributes['formsource'])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$fieldAttributes['formsource']
 					))
 				{
@@ -3470,7 +3475,7 @@ class Fields extends Structure
 						$fieldsSets[] = (int) $fieldAttributes['fields'];
 					}
 					// only continue if we have a field set
-					if (ComponentbuilderHelper::checkArray($fieldsSets))
+					if (ArrayHelper::check($fieldsSets))
 					{
 						// set the resolver
 						$_resolverKey = $fieldAttributes['name'];
@@ -3497,7 +3502,7 @@ class Fields extends Structure
 						foreach ($fieldsSets as $fieldData)
 						{
 							// if we have settings continue
-							if (ComponentbuilderHelper::checkObject(
+							if (ObjectHelper::check(
 								$fieldData['settings']
 							))
 							{
@@ -3515,7 +3520,7 @@ class Fields extends Structure
 									$placeholders, true
 								);
 								// check if values were set
-								if (ComponentbuilderHelper::checkArray(
+								if (ArrayHelper::check(
 									$r_fieldValues
 								))
 								{
@@ -3565,7 +3570,7 @@ class Fields extends Structure
 
 									}
 									elseif (isset($r_fieldValues['custom'])
-										&& ComponentbuilderHelper::checkArray(
+										&& ArrayHelper::check(
 											$r_fieldValues['custom']
 										))
 									{
@@ -3583,18 +3588,18 @@ class Fields extends Structure
 										);
 										// set lang (just incase)
 										$r_listLangName = $langView . '_'
-											. ComponentbuilderHelper::safeFieldName(
+											. FieldHelper::safe(
 												$r_name, true
 											);
 										// add to lang array
 										$this->setLangContent(
 											$this->lang, $r_listLangName,
-											ComponentbuilderHelper::safeString(
+											StringHelper::safe(
 												$r_name, 'W'
 											)
 										);
 										// if label was set use instead
-										if (ComponentbuilderHelper::checkString(
+										if (StringHelper::check(
 											$r_langLabel
 										))
 										{
@@ -3635,7 +3640,7 @@ class Fields extends Structure
 			// now add to the field set
 			$field->fieldXML = new SimpleXMLElement('<field/>');
 			$field->comment  = $this->setLine(__LINE__) . " " . ucfirst($name)
-				. " Field. Type: " . ComponentbuilderHelper::safeString(
+				. " Field. Type: " . StringHelper::safe(
 					$typeName, 'F'
 				) . ". (custom)";
 			foreach ($fieldAttributes as $property => $value)
@@ -3672,7 +3677,7 @@ class Fields extends Structure
 								if (count((array) $valueKeyArray) == 2)
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[0], true
 										);
 									// add to lang array
@@ -3694,7 +3699,7 @@ class Fields extends Structure
 								if (count((array) $valueKeyArray) == 3)
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[1], true
 										);
 									// add to lang array
@@ -3715,7 +3720,7 @@ class Fields extends Structure
 								else
 								{
 									$langValue = $langView . '_'
-										. ComponentbuilderHelper::safeFieldName(
+										. FieldHelper::safe(
 											$valueKeyArray[1], true
 										);
 									// add to lang array
@@ -3738,7 +3743,7 @@ class Fields extends Structure
 							{
 								// text is also the value
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$option, true
 									);
 								// add to lang array
@@ -3767,7 +3772,7 @@ class Fields extends Structure
 							// check if this is a group loader
 							if ('group' === $key_ && isset($groups_[$_id])
 								&& isset($grouped_[$key_][$_id])
-								&& ComponentbuilderHelper::checkArray(
+								&& ArrayHelper::check(
 									$grouped_[$key_][$_id]
 								))
 							{
@@ -3791,7 +3796,7 @@ class Fields extends Structure
 								unset($grouped_[$key_][$_id]);
 							}
 							elseif (isset($grouped_[$key_][$_id])
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$grouped_[$key_][$_id]
 								))
 							{
@@ -3807,7 +3812,7 @@ class Fields extends Structure
 					}
 					elseif (strpos($value, ',') !== false)
 					{
-						// mulitpal options
+						// municipal options
 						$options = explode(',', $value);
 						foreach ($options as $option)
 						{
@@ -3817,7 +3822,7 @@ class Fields extends Structure
 								// has other value then text
 								list($v, $t) = explode('|', $option);
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$t, true
 									);
 								// add to lang array
@@ -3832,7 +3837,7 @@ class Fields extends Structure
 							{
 								// text is also the value
 								$langValue = $langView . '_'
-									. ComponentbuilderHelper::safeFieldName(
+									. FieldHelper::safe(
 										$option, true
 									);
 								// add to lang array
@@ -3855,7 +3860,7 @@ class Fields extends Structure
 							// has other value then text
 							list($v, $t) = explode('|', $value);
 							$langValue = $langView . '_'
-								. ComponentbuilderHelper::safeFieldName(
+								. FieldHelper::safe(
 									$t, true
 								);
 							// add to lang array
@@ -3868,7 +3873,7 @@ class Fields extends Structure
 						{
 							// text is also the value
 							$langValue = $langView . '_'
-								. ComponentbuilderHelper::safeFieldName(
+								. FieldHelper::safe(
 									$value, true
 								);
 							// add to lang array
@@ -3893,7 +3898,7 @@ class Fields extends Structure
 			{
 				// set lang (just incase)
 				$listLangName = $langView . '_'
-					. ComponentbuilderHelper::safeString($name, 'U');
+					. StringHelper::safe($name, 'U');
 				// set the custom array
 				$data = array('type' => $typeName, 'code' => $name,
 				              'lang' => $listLangName, 'custom' => $custom);
@@ -3943,7 +3948,7 @@ class Fields extends Structure
 				= $this->zeroOrderFix[$nameSingleCode][(int) $field['tab']];
 		}
 		// now build the layout
-		if (ComponentbuilderHelper::checkString($tabName)
+		if (StringHelper::check($tabName)
 			&& $tabName != 'publishing')
 		{
 			$this->tabCounter[$nameSingleCode][(int) $field['tab']]
@@ -4042,7 +4047,7 @@ class Fields extends Structure
 		                   'expert_mode');
 		$textareas = array('textarea', 'editor');
 		if (isset($this->siteFields[$view][$field])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->siteFields[$view][$field]
 			))
 		{
@@ -4133,7 +4138,7 @@ class Fields extends Structure
 			$setCustom = true;
 		}
 		// setup a default field
-		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
+		if (ArrayHelper::check($field['settings']->properties))
 		{
 			// we need a deeper php code search tracker
 			$phpTracker = array();
@@ -4165,9 +4170,9 @@ class Fields extends Structure
 					$xmlValue = ComponentbuilderHelper::getBetween(
 						$field['settings']->xml, 'validate="', '"'
 					);
-					if (ComponentbuilderHelper::checkString($xmlValue))
+					if (StringHelper::check($xmlValue))
 					{
-						$xmlValue = ComponentbuilderHelper::safeString(
+						$xmlValue = StringHelper::safe(
 							$xmlValue
 						);
 					}
@@ -4232,7 +4237,7 @@ class Fields extends Structure
 				{
 					// load the view name & replace the placeholders
 					$fieldAttributes['custom']['view']
-						= ComponentbuilderHelper::safeString(
+						= StringHelper::safe(
 						$this->setPlaceholders(
 							ComponentbuilderHelper::getBetween(
 								$field['settings']->xml, 'view="', '"'
@@ -4244,7 +4249,7 @@ class Fields extends Structure
 				{
 					// load the views name & replace the placeholders
 					$fieldAttributes['custom']['views']
-						= ComponentbuilderHelper::safeString(
+						= StringHelper::safe(
 						$this->setPlaceholders(
 							ComponentbuilderHelper::getBetween(
 								$field['settings']->xml, 'views="', '"'
@@ -4276,7 +4281,7 @@ class Fields extends Structure
 				{
 					// load the text key
 					$fieldAttributes['custom']['text']
-						= ComponentbuilderHelper::safeString(
+						= StringHelper::safe(
 						ComponentbuilderHelper::getBetween(
 							$field['settings']->xml, 'value_field="', '"'
 						)
@@ -4286,7 +4291,7 @@ class Fields extends Structure
 				{
 					// load the id key
 					$fieldAttributes['custom']['id']
-						= ComponentbuilderHelper::safeString(
+						= StringHelper::safe(
 						ComponentbuilderHelper::getBetween(
 							$field['settings']->xml, 'key_field="', '"'
 						)
@@ -4303,14 +4308,14 @@ class Fields extends Structure
 				elseif ($property['name'] === 'button' && $setCustom)
 				{
 					// load the button string value if found
-					$xmlValue = (string) ComponentbuilderHelper::safeString(
+					$xmlValue = (string) StringHelper::safe(
 						ComponentbuilderHelper::getBetween(
 							$field['settings']->xml, 'button="', '"'
 						)
 					);
 					// add to custom values
 					$fieldAttributes['custom']['add_button']
-						= (ComponentbuilderHelper::checkString($xmlValue)
+						= (StringHelper::check($xmlValue)
 						|| 1 == $xmlValue) ? $xmlValue : 'false';
 				}
 				elseif ($property['name'] === 'required'
@@ -4351,7 +4356,7 @@ class Fields extends Structure
 						$field['settings']->xml, 'class="', '"'
 					);
 					// add the type class
-					if (ComponentbuilderHelper::checkString($xmlValue))
+					if (StringHelper::check($xmlValue))
 					{
 						if (strpos($xmlValue, $name) === false)
 						{
@@ -4375,7 +4380,7 @@ class Fields extends Structure
 				}
 
 				// check if translatable
-				if (ComponentbuilderHelper::checkString($xmlValue)
+				if (StringHelper::check($xmlValue)
 					&& isset($property['translatable'])
 					&& $property['translatable'] == 1)
 				{
@@ -4386,7 +4391,7 @@ class Fields extends Structure
 							&& isset($this->uniqueNames[$nameListCode]['names'][$fieldAttributes['name']]))
 						{
 							$xmlValue .= ' ('
-								. ComponentbuilderHelper::safeString(
+								. StringHelper::safe(
 									$this->uniqueNames[$nameListCode]['names'][$fieldAttributes['name']]
 								) . ')';
 						}
@@ -4402,7 +4407,7 @@ class Fields extends Structure
 					}
 					// set lang key
 					$langValue = $langView . '_'
-						. ComponentbuilderHelper::safeFieldName(
+						. FieldHelper::safe(
 							$name . ' ' . $property['name'], true
 						);
 					// add to lang array
@@ -4437,16 +4442,16 @@ class Fields extends Structure
 					}
 				}
 				// only load value if found or is mandatory
-				if (ComponentbuilderHelper::checkString($xmlValue)
+				if (StringHelper::check($xmlValue)
 					|| (isset($property['mandatory'])
 						&& $property['mandatory'] == 1
 						&& !$setCustom))
 				{
 					// make sure mantory fields are added
-					if (!ComponentbuilderHelper::checkString($xmlValue))
+					if (!StringHelper::check($xmlValue))
 					{
 						if (isset($property['example'])
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$property['example']
 							))
 						{
@@ -4477,7 +4482,7 @@ class Fields extends Structure
 				}
 			}
 			// check if all php is loaded using the tracker
-			if (ComponentbuilderHelper::checkArray($phpTracker))
+			if (ArrayHelper::check($phpTracker))
 			{
 				// litle search validation
 				$confirmation
@@ -4509,7 +4514,7 @@ class Fields extends Structure
 				$listclass = ComponentbuilderHelper::getBetween(
 					$field['settings']->xml, 'listclass="', '"'
 				);
-				if (ComponentbuilderHelper::checkString($listclass))
+				if (StringHelper::check($listclass))
 				{
 					$this->listFieldClass[$nameListCode][$fieldAttributes['name']]
 						= $listclass;
@@ -4518,16 +4523,16 @@ class Fields extends Structure
 				$escaped = ComponentbuilderHelper::getBetween(
 					$field['settings']->xml, 'escape="', '"'
 				);
-				if (ComponentbuilderHelper::checkString($escaped))
+				if (StringHelper::check($escaped))
 				{
 					$this->doNotEscape[$nameListCode][]
 						= $fieldAttributes['name'];
 				}
-				// check if we have display switch for dynamic placment
+				// check if we have display switch for dynamic placement
 				$display = ComponentbuilderHelper::getBetween(
 					$field['settings']->xml, 'display="', '"'
 				);
-				if (ComponentbuilderHelper::checkString($display))
+				if (StringHelper::check($display))
 				{
 					$fieldAttributes['display'] = $display;
 				}
@@ -4538,10 +4543,10 @@ class Fields extends Structure
 					$validationRule = ComponentbuilderHelper::getBetween(
 						$field['settings']->xml, 'validate="', '"'
 					);
-					if (ComponentbuilderHelper::checkString($validationRule))
+					if (StringHelper::check($validationRule))
 					{
 						$fieldAttributes['validate']
-							= ComponentbuilderHelper::safeString(
+							= StringHelper::safe(
 							$validationRule
 						);
 					}
@@ -4712,7 +4717,7 @@ class Fields extends Structure
 		if ($typeName === 'category')
 		{
 			if (isset($this->catOtherName[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->catOtherName[$nameListCode]
 				))
 			{
@@ -4724,9 +4729,9 @@ class Fields extends Structure
 			}
 			// set lang
 			$listLangName = $langView . '_'
-				. ComponentbuilderHelper::safeFieldName($tempName, true);
+				. FieldHelper::safe($tempName, true);
 			// set field name
-			$listFieldName = ComponentbuilderHelper::safeString($tempName, 'W');
+			$listFieldName = StringHelper::safe($tempName, 'W');
 			// add to lang array
 			$this->setLangContent(
 				$this->lang, $listLangName, $listFieldName
@@ -4735,7 +4740,7 @@ class Fields extends Structure
 		else
 		{
 			// if label was set use instead
-			if (ComponentbuilderHelper::checkString($langLabel))
+			if (StringHelper::check($langLabel))
 			{
 				$listLangName = $langLabel;
 				// get field label from the lang label
@@ -4761,9 +4766,9 @@ class Fields extends Structure
 			{
 				// set lang (just in case)
 				$listLangName = $langView . '_'
-					. ComponentbuilderHelper::safeFieldName($name, true);
+					. FieldHelper::safe($name, true);
 				// set field name
-				$listFieldName = ComponentbuilderHelper::safeString($name, 'W');
+				$listFieldName = StringHelper::safe($name, 'W');
 				// add to lang array
 				$this->setLangContent(
 					$this->lang, $listLangName, $listFieldName
@@ -4824,7 +4829,7 @@ class Fields extends Structure
 		// update the field relations
 		if (isset($this->fieldRelations[$nameListCode])
 			&& isset($this->fieldRelations[$nameListCode][(int) $field['field']])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->fieldRelations[$nameListCode][(int) $field['field']]
 			))
 		{
@@ -4869,7 +4874,7 @@ class Fields extends Structure
 				$this->dynamicfieldsBuilder[$nameSingleCode] = '';
 			}
 			if (isset($this->dynamicfieldsBuilder[$nameSingleCode])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->dynamicfieldsBuilder[$nameSingleCode]
 				))
 			{
@@ -4887,7 +4892,7 @@ class Fields extends Structure
 		if ($dbSwitch && $typeName === 'editor')
 		{
 			if (!isset($this->maintextBuilder[$nameSingleCode])
-				|| !ComponentbuilderHelper::checkString(
+				|| !StringHelper::check(
 					$this->maintextBuilder[$nameSingleCode]
 				))
 			{
@@ -4895,7 +4900,7 @@ class Fields extends Structure
 			}
 		}
 		// set the custom builder
-		if (ComponentbuilderHelper::checkArray($custom)
+		if (ArrayHelper::check($custom)
 			&& $typeName != 'category'
 			&& $typeName != 'repeatable'
 			&& $typeName != 'subform')
@@ -4912,7 +4917,7 @@ class Fields extends Structure
 			}
 			// only load this if table is set
 			if (isset($custom['table'])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$custom['table']
 				))
 			{
@@ -4935,7 +4940,7 @@ class Fields extends Structure
 		if ($dbSwitch && $typeName === 'category')
 		{
 			if (isset($this->catOtherName[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->catOtherName[$nameListCode]
 				))
 			{
@@ -4954,7 +4959,7 @@ class Fields extends Structure
 				), $this->placeholders
 			);
 			// if they left out the extension for some reason
-			if (!ComponentbuilderHelper::checkString($_extension))
+			if (!StringHelper::check($_extension))
 			{
 				$_extension = 'com_' . $this->componentCodeName . '.'
 					. $otherView;
@@ -5000,7 +5005,7 @@ class Fields extends Structure
 		// setup checkbox for this view
 		if ($dbSwitch
 			&& ($typeName === 'checkbox'
-				|| (ComponentbuilderHelper::checkArray($custom)
+				|| (ArrayHelper::check($custom)
 					&& isset($custom['extends'])
 					&& $custom['extends'] === 'checkboxes')))
 		{
@@ -5105,7 +5110,7 @@ class Fields extends Structure
 						&& $typeName != 'subform')
 					|| $field['settings']->store == 6))
 			{
-				if (ComponentbuilderHelper::checkArray($options))
+				if (ArrayHelper::check($options))
 				{
 					$this->getItemsMethodListStringFixBuilder[$nameSingleCode][]
 						= array('name'        => $name, 'type' => $typeName,
@@ -5142,7 +5147,7 @@ class Fields extends Structure
 		if ($dbSwitch
 			&& (($typeName === 'checkboxes' || $multiple
 					|| $field['settings']->store != 0)
-				&& !ComponentbuilderHelper::checkArray($options)))
+				&& !ArrayHelper::check($options)))
 		{
 			$this->getItemsMethodEximportStringFixBuilder[$nameSingleCode][]
 				= array('name'        => $name, 'type' => $typeName,
@@ -5152,7 +5157,7 @@ class Fields extends Structure
 		// check if field should be added to uikit
 		$this->buildSiteFieldData($nameSingleCode, $name, 'uikit', $typeName);
 		// load the selection translation fix
-		if (ComponentbuilderHelper::checkArray($options)
+		if (ArrayHelper::check($options)
 			&& ($listSwitch
 				|| $listJoin)
 			&& $typeName != 'repeatable'
@@ -5180,7 +5185,7 @@ class Fields extends Structure
 				// set the language strings for ascending
 				$filter_name_asc      = $listFieldName . ' ascending';
 				$filter_name_asc_lang = $lang_filter_
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$filter_name_asc, 'U'
 					);
 				// and to translation
@@ -5190,7 +5195,7 @@ class Fields extends Structure
 				// set the language strings for descending
 				$filter_name_desc      = $listFieldName . ' descending';
 				$filter_name_desc_lang = $lang_filter_
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$filter_name_desc, 'U'
 					);
 				// and to translation
@@ -5225,11 +5230,11 @@ class Fields extends Structure
 				&& $typeName != 'subform'))
 		{
 			// this pains me... but to avoid collusion
-			$filter_type_code     = ComponentbuilderHelper::safeString(
+			$filter_type_code     = StringHelper::safe(
 				$nameListCode . 'filter' . $name
 			);
 			$filter_type_code     = preg_replace('/_+/', '', $filter_type_code);
-			$filter_function_name = ComponentbuilderHelper::safeString(
+			$filter_function_name = StringHelper::safe(
 				$name, 'F'
 			);
 			// add the language only for new filter option
@@ -5240,7 +5245,7 @@ class Fields extends Structure
 				// set the language strings for selection
 				$filter_name_select      = 'Select ' . $listFieldName;
 				$filter_name_select_lang = $lang_filter_
-					. ComponentbuilderHelper::safeString(
+					. StringHelper::safe(
 						$filter_name_select, 'U'
 					);
 				// and to translation
@@ -5301,7 +5306,7 @@ class Fields extends Structure
 				|| !isset(
 					$this->fileContentDynamic['customfield_' . $data['type']]
 				)
-				|| !ComponentbuilderHelper::checkArray(
+				|| !ArrayHelper::check(
 					$this->fileContentDynamic['customfield_' . $data['type']]
 				)))
 		{
@@ -5349,9 +5354,9 @@ class Fields extends Structure
 					? $data['type'] : '',
 				$this->bbb . 'com_component'
 				. $this->ddd                          => (isset($data['custom']['component'])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$data['custom']['component']
-					)) ? ComponentbuilderHelper::safeString(
+					)) ? StringHelper::safe(
 					$data['custom']['component']
 				) : 'com_' . $this->componentCodeName,
 				// set the generic values
@@ -5362,16 +5367,16 @@ class Fields extends Structure
 				. 'Component' . $this->hhh],
 				$this->bbb . 'view'
 				. $this->ddd                          => (isset($data['custom']['view'])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$data['custom']['view']
-					)) ? ComponentbuilderHelper::safeString(
+					)) ? StringHelper::safe(
 					$data['custom']['view']
 				) : $nameSingleCode,
 				$this->bbb . 'views'
 				. $this->ddd                          => (isset($data['custom']['views'])
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$data['custom']['views']
-					)) ? ComponentbuilderHelper::safeString(
+					)) ? StringHelper::safe(
 					$data['custom']['views']
 				) : $nameListCode
 			);
@@ -5387,7 +5392,7 @@ class Fields extends Structure
 				$replace[$replacekey] = $replacevalue;
 			}
 			// load the global placeholders
-			if (ComponentbuilderHelper::checkArray($this->globalPlaceholders))
+			if (ArrayHelper::check($this->globalPlaceholders))
 			{
 				foreach (
 					$this->globalPlaceholders as $globalPlaceholder =>
@@ -5406,13 +5411,13 @@ class Fields extends Structure
 			// Type <<<DYNAMIC>>>
 			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh
 			. 'Type' . $this->hhh]
-				= ComponentbuilderHelper::safeString(
+				= StringHelper::safe(
 				$data['custom']['type'], 'F'
 			);
 			// type <<<DYNAMIC>>>
 			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh
 			. 'type' . $this->hhh]
-				= ComponentbuilderHelper::safeString($data['custom']['type']);
+				= StringHelper::safe($data['custom']['type']);
 			// is this a own custom field
 			if (isset($data['custom']['own_custom']))
 			{
@@ -5437,7 +5442,7 @@ class Fields extends Structure
 					$target, 'fieldcustom', $data['custom']['type']
 				);
 				// get the extends name
-				$JFORM_extends = ComponentbuilderHelper::safeString(
+				$JFORM_extends = StringHelper::safe(
 					$data['custom']['extends']
 				);
 				// JFORM_TYPE_HEADER <<<DYNAMIC>>>
@@ -5455,7 +5460,7 @@ class Fields extends Structure
 				// JFORM_EXTENDS <<<DYNAMIC>>>
 				$this->fileContentDynamic['customfield_'
 				. $data['type']][$this->hhh . 'JFORM_EXTENDS' . $this->hhh]
-					= ComponentbuilderHelper::safeString(
+					= StringHelper::safe(
 					$data['custom']['extends'], 'F'
 				);
 				// JFORM_TYPE_PHP <<<DYNAMIC>>>
@@ -5471,13 +5476,13 @@ class Fields extends Structure
 					$phpBucket = '';
 					// only set if available
 					if (isset($data['custom']['php' . $x])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$data['custom']['php' . $x]
 						))
 					{
 						foreach ($data['custom']['php' . $x] as $line => $code)
 						{
-							if (ComponentbuilderHelper::checkString($code))
+							if (StringHelper::check($code))
 							{
 								$phpBucket .= PHP_EOL . $this->setPlaceholders(
 										$code, $tabBreak
@@ -5547,13 +5552,13 @@ class Fields extends Structure
 				$phpCode = '';
 				// now load the php script
 				if (isset($data['custom']['php'])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$data['custom']['php']
 					))
 				{
 					foreach ($data['custom']['php'] as $line => $code)
 					{
-						if (ComponentbuilderHelper::checkString($code))
+						if (StringHelper::check($code))
 						{
 							if ($line == 1)
 							{
@@ -5572,7 +5577,7 @@ class Fields extends Structure
 					$phpCode = $this->setPlaceholders($phpCode, $replace);
 				}
 				// catch empty stuff
-				if (!ComponentbuilderHelper::checkString($phpCode))
+				if (!StringHelper::check($phpCode))
 				{
 					$phpCode = 'return null;';
 				}
@@ -5582,13 +5587,13 @@ class Fields extends Structure
 					// make sure the value is reset
 					$phpxCode = '';
 					// now load the php xclude script
-					if (ComponentbuilderHelper::checkArray(
+					if (ArrayHelper::check(
 						$data['custom']['phpx']
 					))
 					{
 						foreach ($data['custom']['phpx'] as $line => $code)
 						{
-							if (ComponentbuilderHelper::checkString($code))
+							if (StringHelper::check($code))
 							{
 								if ($line == 1)
 								{
@@ -5609,7 +5614,7 @@ class Fields extends Structure
 						$phpxCode = $this->setPlaceholders($phpxCode, $replace);
 					}
 					// catch empty stuff
-					if (!ComponentbuilderHelper::checkString($phpxCode))
+					if (!StringHelper::check($phpxCode))
 					{
 						$phpxCode = 'return null;';
 					}
@@ -5617,13 +5622,13 @@ class Fields extends Structure
 					$tempName = $data['custom']['label'] . ' Group';
 					// set lang
 					$groupLangName = $this->langPrefix . '_'
-						. ComponentbuilderHelper::safeFieldName(
+						. FieldHelper::safe(
 							$tempName, true
 						);
 					// add to lang array
 					$this->setLangContent(
 						$this->lang, $groupLangName,
-						ComponentbuilderHelper::safeString($tempName, 'W')
+						StringHelper::safe($tempName, 'W')
 					);
 					// build the Group Control
 					$this->setGroupControl[$data['type']] = $groupLangName;
@@ -5693,13 +5698,13 @@ class Fields extends Structure
 			$phpBucket = '';
 			// only set if available
 			if (isset($custom['php' . $x])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$custom['php' . $x]
 				))
 			{
 				foreach ($custom['php' . $x] as $line => $code)
 				{
-					if (ComponentbuilderHelper::checkString($code))
+					if (StringHelper::check($code))
 					{
 						$phpBucket .= PHP_EOL . $this->setPlaceholders(
 								$code, $tabBreak
@@ -5749,7 +5754,7 @@ class Fields extends Structure
 			// and to translation
 			$this->setLangContent(
 				$this->lang, $lang_search, 'Search'
-				. ComponentbuilderHelper::safeString($nameListCode, 'w')
+				. StringHelper::safe($nameListCode, 'w')
 			);
 			// the search description language string
 			$lang_search_desc = $this->langPrefix . '_FILTER_SEARCH_'
@@ -5757,7 +5762,7 @@ class Fields extends Structure
 			// and to translation
 			$this->setLangContent(
 				$this->lang, $lang_search_desc, 'Search the '
-				. ComponentbuilderHelper::safeString($nameSingleCode, 'w')
+				. StringHelper::safe($nameSingleCode, 'w')
 				. ' items. Prefix with ID: to search for an item by ID.'
 			);
 			// now build the XML
@@ -5789,7 +5794,7 @@ class Fields extends Structure
 				// and to translation
 				$this->setLangContent(
 					$this->lang, $lang_published_desc, 'Status options for '
-					. ComponentbuilderHelper::safeString($nameListCode, 'w')
+					. StringHelper::safe($nameListCode, 'w')
 				);
 				$field_filter_sets[] = $this->_t(2) . '<field';
 				$field_filter_sets[] = $this->_t(3) . 'type="status"';
@@ -5807,7 +5812,7 @@ class Fields extends Structure
 			}
 			// add the category if found
 			if (isset($this->categoryBuilder[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->categoryBuilder[$nameListCode]
 				)
 				&& isset($this->categoryBuilder[$nameListCode]['extension'])
@@ -5836,7 +5841,7 @@ class Fields extends Structure
 			// add the access filter if this view has access
 			// and if access manually is not set
 			if (isset($this->accessBuilder[$nameSingleCode])
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$this->accessBuilder[$nameSingleCode]
 				)
 				&& !isset($this->fieldsNames[$nameSingleCode]['access']))
@@ -5857,7 +5862,7 @@ class Fields extends Structure
 			}
 			// now add the dynamic fields
 			if (isset($this->filterBuilder[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->filterBuilder[$nameListCode]
 				))
 			{
@@ -5867,7 +5872,7 @@ class Fields extends Structure
 					{
 						$field_filter_sets[] = $this->_t(2) . '<field';
 						// if this is a custom field
-						if (ComponentbuilderHelper::checkArray(
+						if (ArrayHelper::check(
 							$filter['custom']
 						))
 						{
@@ -5978,7 +5983,7 @@ class Fields extends Structure
 
 			// add the rest of the set filters
 			if (isset($this->sortBuilder[$nameListCode])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->sortBuilder[$nameListCode]
 				))
 			{
@@ -5995,7 +6000,7 @@ class Fields extends Structure
 								. '<option value="category_title DESC">'
 								. $filter['lang_desc'] . '</option>';
 						}
-						elseif (ComponentbuilderHelper::checkArray(
+						elseif (ArrayHelper::check(
 							$filter['custom']
 						))
 						{
@@ -6063,7 +6068,7 @@ class Fields extends Structure
 				$this->fileContentDynamic['customfilterfield_'
 				. $filter['filter_type']]
 			)
-			|| !ComponentbuilderHelper::checkArray(
+			|| !ArrayHelper::check(
 				$this->fileContentDynamic['customfilterfield_'
 				. $filter['filter_type']]
 			)
@@ -6082,14 +6087,14 @@ class Fields extends Structure
 			$this->fileContentDynamic['customfilterfield_'
 			. $filter['filter_type']][$this->hhh
 			. 'Type' . $this->hhh]
-				= ComponentbuilderHelper::safeString(
+				= StringHelper::safe(
 				$filter['filter_type'], 'F'
 			);
 			// type <<<DYNAMIC>>>
 			$this->fileContentDynamic['customfilterfield_'
 			. $filter['filter_type']][$this->hhh
 			. 'type' . $this->hhh]
-				= ComponentbuilderHelper::safeString($filter['filter_type']);
+				= StringHelper::safe($filter['filter_type']);
 			// JFORM_GETOPTIONS_PHP <<<DYNAMIC>>>
 			$this->fileContentDynamic['customfilterfield_'
 			. $filter['filter_type']][$this->hhh . 'JFORM_GETOPTIONS_PHP'
@@ -6124,14 +6129,14 @@ class Fields extends Structure
 				|| 1 == $fieldData['add_button'])
 			&& isset($fieldData['view'])
 			&& isset($fieldData['views'])
-			&& ComponentbuilderHelper::checkString($fieldData['view'])
-			&& ComponentbuilderHelper::checkString($fieldData['views']))
+			&& StringHelper::check($fieldData['view'])
+			&& StringHelper::check($fieldData['views']))
 		{
 			// set local component
 			$local_component = "com_" . $this->componentCodeName;
 			// check that the component value is set
 			if (!isset($fieldData['component'])
-				|| !ComponentbuilderHelper::checkString(
+				|| !StringHelper::check(
 					$fieldData['component']
 				))
 			{
@@ -6287,7 +6292,7 @@ class Fields extends Structure
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.create'])
 				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.create']]
 				)
 				&& in_array(
@@ -6323,7 +6328,7 @@ class Fields extends Structure
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit'])
 				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->permissionBuilder['global'][$core['core.edit']]
 				)
 				&& in_array(

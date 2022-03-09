@@ -32,7 +32,7 @@ $document->addScript('components/com_###component###/assets/js/admin.js');
 
 // require helper files
 JLoader::register('###Component###Helper', __DIR__ . '/helpers/###component###.php');###HELPER_EMAIL###
-JLoader::register('JHtmlBatch_', __DIR__ . '/helpers/html/batch_.php');###LICENSE_LOCKED_INT######ADMIN_GLOBAL_EVENT######ADMIN_POWER_EVENT###
+JLoader::register('JHtmlBatch_', __DIR__ . '/helpers/html/batch_.php');###LICENSE_LOCKED_INT######ADMIN_GLOBAL_EVENT###
 
 // Get an instance of the controller prefixed by ###Component###
 $controller = JControllerLegacy::getInstance('###Component###');

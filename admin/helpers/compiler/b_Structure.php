@@ -15,6 +15,10 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+
 
 /**
  * Structure class
@@ -485,7 +489,7 @@ class Structure extends Get
 	 */
 	private function buildPowers()
 	{
-		if (ComponentbuilderHelper::checkArray($this->powers))
+		if (ArrayHelper::check($this->powers))
 		{
 			// Trigger Event: jcb_ce_onBeforeSetModules
 			$this->triggerEvent(
@@ -496,9 +500,9 @@ class Structure extends Get
 			$htaccess = array();
 			foreach ($this->powers as $power)
 			{
-				if (ComponentbuilderHelper::checkObject($power)
+				if (ObjectHelper::check($power)
 					&& isset($power->path)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$power->path
 					))
 				{
@@ -594,7 +598,7 @@ class Structure extends Get
 	 */
 	private function buildModules()
 	{
-		if (ComponentbuilderHelper::checkArray($this->joomlaModules))
+		if (ArrayHelper::check($this->joomlaModules))
 		{
 			// Trigger Event: jcb_ce_onBeforeSetModules
 			$this->triggerEvent(
@@ -603,9 +607,9 @@ class Structure extends Get
 			);
 			foreach ($this->joomlaModules as $module)
 			{
-				if (ComponentbuilderHelper::checkObject($module)
+				if (ObjectHelper::check($module)
 					&& isset($module->folder_name)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$module->folder_name
 					))
 				{
@@ -764,7 +768,7 @@ class Structure extends Get
 					if (($css = $this->getCustomScriptBuilder(
 							'css_view', $module->key
 						)) !== null
-						&& ComponentbuilderHelper::checkString($css))
+						&& StringHelper::check($css))
 					{
 						// make sure this script does not have PHP
 						if (strpos($css, '<?php') === false)
@@ -799,7 +803,7 @@ class Structure extends Get
 					if (($javascript = $this->getCustomScriptBuilder(
 							'view_footer', $module->key
 						)) !== null
-						&& ComponentbuilderHelper::checkString($javascript))
+						&& StringHelper::check($javascript))
 					{
 						// make sure this script does not have PHP
 						if (strpos($javascript, '<?php') === false)
@@ -864,7 +868,7 @@ class Structure extends Get
 					}
 					// set forms folder if needed
 					if (isset($module->form_files)
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$module->form_files
 						))
 					{
@@ -1020,7 +1024,7 @@ class Structure extends Get
 											. $fieldset . '" label="' . $label . '">';
 									}
 									// check if we have an inner field set
-									if (ComponentbuilderHelper::checkString(
+									if (StringHelper::check(
 										$field_name_inner
 									))
 									{
@@ -1032,7 +1036,7 @@ class Structure extends Get
 									$xml .= $this->hhh . 'FIELDSET_' . $file
 										. $field_name . $fieldset . $this->hhh;
 									// check if we have an inner field set
-									if (ComponentbuilderHelper::checkString(
+									if (StringHelper::check(
 										$field_name_inner
 									))
 									{
@@ -1091,7 +1095,7 @@ class Structure extends Get
 					);
 					// check if this lib has files
 					if (isset($module->files)
-						&& ComponentbuilderHelper::checkArray($module->files))
+						&& ArrayHelper::check($module->files))
 					{
 						// add to component files
 						foreach ($module->files as $file)
@@ -1104,7 +1108,7 @@ class Structure extends Get
 					}
 					// check if this lib has folders
 					if (isset($module->folders)
-						&& ComponentbuilderHelper::checkArray($module->folders))
+						&& ArrayHelper::check($module->folders))
 					{
 						// add to component folders
 						foreach ($module->folders as $folder)
@@ -1117,7 +1121,7 @@ class Structure extends Get
 					}
 					// check if this module has urls
 					if (isset($module->urls)
-						&& ComponentbuilderHelper::checkArray($module->urls))
+						&& ArrayHelper::check($module->urls))
 					{
 						// add to component urls
 						foreach ($module->urls as $n => &$url)
@@ -1125,7 +1129,7 @@ class Structure extends Get
 							// should we add the local folder
 							if (isset($url['type']) && $url['type'] > 1
 								&& isset($url['url'])
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$url['url']
 								))
 							{
@@ -1175,7 +1179,7 @@ class Structure extends Get
 	 */
 	private function buildPlugins()
 	{
-		if (ComponentbuilderHelper::checkArray($this->joomlaPlugins))
+		if (ArrayHelper::check($this->joomlaPlugins))
 		{
 			// Trigger Event: jcb_ce_onBeforeSetPlugins
 			$this->triggerEvent(
@@ -1184,9 +1188,9 @@ class Structure extends Get
 			);
 			foreach ($this->joomlaPlugins as $plugin)
 			{
-				if (ComponentbuilderHelper::checkObject($plugin)
+				if (ObjectHelper::check($plugin)
 					&& isset($plugin->folder_name)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$plugin->folder_name
 					))
 				{
@@ -1273,7 +1277,7 @@ class Structure extends Get
 					}
 					// set forms folder if needed
 					if (isset($plugin->form_files)
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$plugin->form_files
 						))
 					{
@@ -1411,7 +1415,7 @@ class Structure extends Get
 											. $fieldset . '" label="' . $label . '">';
 									}
 									// check if we have an inner field set
-									if (ComponentbuilderHelper::checkString(
+									if (StringHelper::check(
 										$field_name_inner
 									))
 									{
@@ -1423,7 +1427,7 @@ class Structure extends Get
 									$xml .= $this->hhh . 'FIELDSET_' . $file
 										. $field_name . $fieldset . $this->hhh;
 									// check if we have an inner field set
-									if (ComponentbuilderHelper::checkString(
+									if (StringHelper::check(
 										$field_name_inner
 									))
 									{
@@ -1482,7 +1486,7 @@ class Structure extends Get
 					);
 					// check if this lib has files
 					if (isset($plugin->files)
-						&& ComponentbuilderHelper::checkArray($plugin->files))
+						&& ArrayHelper::check($plugin->files))
 					{
 						// add to component files
 						foreach ($plugin->files as $file)
@@ -1495,7 +1499,7 @@ class Structure extends Get
 					}
 					// check if this lib has folders
 					if (isset($plugin->folders)
-						&& ComponentbuilderHelper::checkArray($plugin->folders))
+						&& ArrayHelper::check($plugin->folders))
 					{
 						// add to component folders
 						foreach ($plugin->folders as $folder)
@@ -1508,7 +1512,7 @@ class Structure extends Get
 					}
 					// check if this plugin has urls
 					if (isset($plugin->urls)
-						&& ComponentbuilderHelper::checkArray($plugin->urls))
+						&& ArrayHelper::check($plugin->urls))
 					{
 						// add to component urls
 						foreach ($plugin->urls as $n => &$url)
@@ -1516,7 +1520,7 @@ class Structure extends Get
 							// should we add the local folder
 							if (isset($url['type']) && $url['type'] > 1
 								&& isset($url['url'])
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$url['url']
 								))
 							{
@@ -1591,7 +1595,7 @@ class Structure extends Get
 	 */
 	private function setLibraries()
 	{
-		if (ComponentbuilderHelper::checkArray($this->libraries))
+		if (ArrayHelper::check($this->libraries))
 		{
 			// Trigger Event: jcb_ce_onBeforeSetLibraries
 			$this->triggerEvent(
@@ -1610,11 +1614,11 @@ class Structure extends Get
 			$this->createFolder($this->componentPath . '/media');
 			foreach ($this->libraries as $id => &$library)
 			{
-				if (ComponentbuilderHelper::checkObject($library))
+				if (ObjectHelper::check($library))
 				{
 					// check if this lib has files
 					if (isset($library->files)
-						&& ComponentbuilderHelper::checkArray($library->files))
+						&& ArrayHelper::check($library->files))
 					{
 						// add to component files
 						foreach ($library->files as $file)
@@ -1624,7 +1628,7 @@ class Structure extends Get
 					}
 					// check if this lib has folders
 					if (isset($library->folders)
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$library->folders
 						))
 					{
@@ -1636,13 +1640,13 @@ class Structure extends Get
 					}
 					// check if this lib has urls
 					if (isset($library->urls)
-						&& ComponentbuilderHelper::checkArray($library->urls))
+						&& ArrayHelper::check($library->urls))
 					{
 						// build media folder path
 						$libFolder = strtolower(
 							preg_replace(
 								'/\s+/', '-',
-								ComponentbuilderHelper::safeString(
+								StringHelper::safe(
 									$library->name, 'filename', ' ', false
 								)
 							)
@@ -1655,7 +1659,7 @@ class Structure extends Get
 						{
 							if (isset($url['type']) && $url['type'] > 1
 								&& isset($url['url'])
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$url['url']
 								))
 							{
@@ -1712,7 +1716,7 @@ class Structure extends Get
 					// if config fields are found load into component config (avoiding duplicates)
 					if (isset($library->how) && $library->how > 1
 						&& isset($library->config)
-						&& ComponentbuilderHelper::checkArray($library->config))
+						&& ArrayHelper::check($library->config))
 					{
 						foreach ($library->config as $cofig)
 						{
@@ -1723,7 +1727,7 @@ class Structure extends Get
 								}
 							);
 							// set the config data if not found
-							if (!ComponentbuilderHelper::checkArray($found))
+							if (!ArrayHelper::check($found))
 							{
 								$this->componentData->config[] = $cofig;
 							}
@@ -1746,7 +1750,7 @@ class Structure extends Get
 		if (isset($this->componentData->dashboard_type)
 			&& 2 == $this->componentData->dashboard_type
 			&& isset($this->componentData->dashboard)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->componentData->dashboard
 			)
 			&& strpos($this->componentData->dashboard, '_') !== false)
@@ -1756,7 +1760,7 @@ class Structure extends Get
 			if (count((array) $getter) == 2 && is_numeric($getter[1]))
 			{
 				// the pointers
-				$t  = ComponentbuilderHelper::safeString($getter[0], 'U');
+				$t  = StringHelper::safe($getter[0], 'U');
 				$id = (int) $getter[1];
 				// the dynamic stuff
 				$targets = array('A' => 'admin_views',
@@ -1769,12 +1773,12 @@ class Structure extends Get
 				if (isset($targets[$t]) && $id > 0)
 				{
 					// set the type name
-					$type_names = ComponentbuilderHelper::safeString(
+					$type_names = StringHelper::safe(
 						$targets[$t], 'w'
 					);
 					// set the dynamic dash
 					if (isset($this->componentData->{$targets[$t]})
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->componentData->{$targets[$t]}
 						))
 					{
@@ -1792,7 +1796,7 @@ class Structure extends Get
 							}
 						);
 						// set dashboard
-						if (ComponentbuilderHelper::checkArray($dashboard))
+						if (ArrayHelper::check($dashboard))
 						{
 							$dashboard = array_values($dashboard)[0];
 						}
@@ -1801,7 +1805,7 @@ class Structure extends Get
 							&& isset($dashboard['settings']->{$keys[$t]}))
 						{
 							$this->dynamicDashboard
-								= ComponentbuilderHelper::safeString(
+								= StringHelper::safe(
 								$dashboard['settings']->{$keys[$t]}
 							);
 							$this->dynamicDashboardType
@@ -1866,7 +1870,7 @@ class Structure extends Get
 				);
 			}
 			// if default was changed to dynamic dashboard the remove default tab and methods
-			if (ComponentbuilderHelper::checkString($this->dynamicDashboard))
+			if (StringHelper::check($this->dynamicDashboard))
 			{
 				// dynamic dashboard is used
 				$this->componentData->dashboard_tab         = '';
@@ -1894,7 +1898,7 @@ class Structure extends Get
 	 */
 	private function setFolders()
 	{
-		if (ComponentbuilderHelper::checkObject(
+		if (ObjectHelper::check(
 			$this->joomlaVersionData->create
 		))
 		{
@@ -1910,14 +1914,14 @@ class Structure extends Get
 			foreach ($this->joomlaVersionData->create as $main => $folders)
 			{
 				$this->createFolder($this->componentPath . '/' . $main);
-				if (ComponentbuilderHelper::checkObject($folders))
+				if (ObjectHelper::check($folders))
 				{
 					foreach ($folders as $sub => $subFolders)
 					{
 						$this->createFolder(
 							$this->componentPath . '/' . $main . '/' . $sub
 						);
-						if (ComponentbuilderHelper::checkObject($subFolders))
+						if (ObjectHelper::check($subFolders))
 						{
 							foreach ($subFolders as $sub_2 => $subFolders_2)
 							{
@@ -1925,7 +1929,7 @@ class Structure extends Get
 									$this->componentPath . '/' . $main . '/'
 									. $sub . '/' . $sub_2
 								);
-								if (ComponentbuilderHelper::checkObject(
+								if (ObjectHelper::check(
 									$subFolders_2
 								))
 								{
@@ -1938,7 +1942,7 @@ class Structure extends Get
 											. '/' . $sub . '/' . $sub_2 . '/'
 											. $sub_3
 										);
-										if (ComponentbuilderHelper::checkObject(
+										if (ObjectHelper::check(
 											$subFolders_3
 										))
 										{
@@ -1953,7 +1957,7 @@ class Structure extends Get
 													. $sub_2 . '/' . $sub_3
 													. '/' . $sub_4
 												);
-												if (ComponentbuilderHelper::checkObject(
+												if (ObjectHelper::check(
 													$subFolders_4
 												))
 												{
@@ -1971,7 +1975,7 @@ class Structure extends Get
 															. $sub_4 . '/'
 															. $sub_5
 														);
-														if (ComponentbuilderHelper::checkObject(
+														if (ObjectHelper::check(
 															$subFolders_5
 														))
 														{
@@ -1998,7 +2002,7 @@ class Structure extends Get
 																	. '/'
 																	. $sub_6
 																);
-																if (ComponentbuilderHelper::checkObject(
+																if (ObjectHelper::check(
 																	$subFolders_6
 																))
 																{
@@ -2059,7 +2063,7 @@ class Structure extends Get
 	 */
 	private function setStatic()
 	{
-		if (ComponentbuilderHelper::checkObject(
+		if (ObjectHelper::check(
 			$this->joomlaVersionData->move->static
 		))
 		{
@@ -2248,7 +2252,7 @@ class Structure extends Get
 					// TODO <-- this may not be the best way, will keep an eye on this.
 					// We basicly only want to check if a folder is added that is not in the stdFolders array
 					if (isset($checker[0])
-						&& ComponentbuilderHelper::checkString($checker[0])
+						&& StringHelper::check($checker[0])
 						&& !in_array($checker[0], $this->stdFolders))
 					{
 						// check if we should add the dynamic folder moving script to the installer script
@@ -2270,7 +2274,7 @@ class Structure extends Get
 						}
 					}
 					elseif (count((array) $checker) == 2
-						&& ComponentbuilderHelper::checkString($checker[0]))
+						&& StringHelper::check($checker[0]))
 					{
 						$add_to_extra = false;
 						// set the target
@@ -2302,7 +2306,7 @@ class Structure extends Get
 							}
 							// set the xml file
 							$this->fileContentStatic[$this->hhh . 'EXSTRA_'
-							. ComponentbuilderHelper::safeString(
+							. StringHelper::safe(
 								$checker[0], 'U'
 							) . '_' . $eNAME . $this->hhh]
 								.= PHP_EOL . $eTab . "<" . $ename . ">"
@@ -2329,15 +2333,15 @@ class Structure extends Get
 		$back  = false;
 		$front = false;
 		if ((isset($this->joomlaVersionData->move->dynamic)
-				&& ComponentbuilderHelper::checkObject(
+				&& ObjectHelper::check(
 					$this->joomlaVersionData->move->dynamic
 				))
 			&& (isset($this->componentData->admin_views)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->componentData->admin_views
 				)))
 		{
-			if (!ComponentbuilderHelper::checkString($this->dynamicDashboard))
+			if (!StringHelper::check($this->dynamicDashboard))
 			{
 				// setup dashboard
 				$target = array('admin' => $this->componentData->name_code);
@@ -2346,7 +2350,7 @@ class Structure extends Get
 			// now the rest of the views
 			foreach ($this->componentData->admin_views as $nr => $view)
 			{
-				if (ComponentbuilderHelper::checkObject($view['settings']))
+				if (ObjectHelper::check($view['settings']))
 				{
 					$created  = $this->getCreatedDate($view);
 					$modified = $this->getLastModifiedDate($view);
@@ -2405,11 +2409,11 @@ class Structure extends Get
 			$back = true;
 		}
 		if ((isset($this->joomlaVersionData->move->dynamic)
-				&& ComponentbuilderHelper::checkObject(
+				&& ObjectHelper::check(
 					$this->joomlaVersionData->move->dynamic
 				))
 			&& (isset($this->componentData->site_views)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->componentData->site_views
 				)))
 		{
@@ -2446,11 +2450,11 @@ class Structure extends Get
 			$front = true;
 		}
 		if ((isset($this->joomlaVersionData->move->dynamic)
-				&& ComponentbuilderHelper::checkObject(
+				&& ObjectHelper::check(
 					$this->joomlaVersionData->move->dynamic
 				))
 			&& (isset($this->componentData->custom_admin_views)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->componentData->custom_admin_views
 				)))
 		{
@@ -2592,7 +2596,7 @@ class Structure extends Get
 				)
 			)
 		);
-		if (ComponentbuilderHelper::checkArray($ids))
+		if (ArrayHelper::check($ids))
 		{
 			foreach ($ids as $id)
 			{
@@ -2617,7 +2621,7 @@ class Structure extends Get
 	public function getCreatedDate($view)
 	{
 		if (isset($view['settings']->created)
-			&& ComponentbuilderHelper::checkString($view['settings']->created))
+			&& StringHelper::check($view['settings']->created))
 		{
 			// first set the main date
 			$date = strtotime($view['settings']->created);
@@ -2643,7 +2647,7 @@ class Structure extends Get
 	{
 		// first set the main date
 		if (isset($view['settings']->modified)
-			&& ComponentbuilderHelper::checkString($view['settings']->modified)
+			&& StringHelper::check($view['settings']->modified)
 			&& '0000-00-00 00:00:00' !== $view['settings']->modified)
 		{
 			$date = strtotime($view['settings']->modified);
@@ -2661,18 +2665,18 @@ class Structure extends Get
 			if (!isset($this->lastModifiedDate[$id]))
 			{
 				if (isset($view['settings']->fields)
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$view['settings']->fields
 					))
 				{
 					foreach ($view['settings']->fields as $field)
 					{
 						if (isset($field['settings'])
-							&& ComponentbuilderHelper::checkObject(
+							&& ObjectHelper::check(
 								$field['settings']
 							)
 							&& isset($field['settings']->modified)
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$field['settings']->modified
 							)
 							&& '0000-00-00 00:00:00'
@@ -2697,7 +2701,7 @@ class Structure extends Get
 			if (!isset($this->lastModifiedDate[$id]))
 			{
 				if (isset($view['settings']->main_get->modified)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$view['settings']->main_get->modified
 					)
 					&& '0000-00-00 00:00:00'
@@ -2720,7 +2724,7 @@ class Structure extends Get
 			if (!isset($this->lastModifiedDate[$id]))
 			{
 				if (isset($view['settings']->main_get->modified)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$view['settings']->main_get->modified
 					)
 					&& '0000-00-00 00:00:00'
@@ -2770,13 +2774,13 @@ class Structure extends Get
 		// did we build the files (any number)
 		$build_status = false;
 		// check that we have the target values
-		if (ComponentbuilderHelper::checkArray($target))
+		if (ArrayHelper::check($target))
 		{
 			// search the target
 			foreach ($target as $main => $name)
 			{
 				// make sure it is lower case
-				$name = ComponentbuilderHelper::safeString($name);
+				$name = StringHelper::safe($name);
 				// setup the files
 				foreach (
 					$this->joomlaVersionData->move->dynamic->{$main} as $item =>
@@ -2861,7 +2865,7 @@ class Structure extends Get
 						$newFIle = array('path' => $path . '/' . $new,
 						                 'name' => $new, 'view' => $name,
 						                 'zip'  => $zipPath . '/' . $new);
-						if (ComponentbuilderHelper::checkArray($config))
+						if (ArrayHelper::check($config))
 						{
 							$newFIle['config'] = $config;
 						}
@@ -2885,15 +2889,28 @@ class Structure extends Get
 	 */
 	private function setJoomlaVersionData()
 	{
+		// option to load other settings
+		$custom_settings = $this->templatePath . '/settings_' . $this->componentCodeName . '.json';
 		// set the version data
-		$versionData = json_decode(
-			ComponentbuilderHelper::getFileContents(
-				$this->templatePath . '/settings.json'
-			)
-		);
+		if (File::exists($custom_settings))
+		{
+			$version_data = json_decode(
+				ComponentbuilderHelper::getFileContents(
+					$custom_settings
+				)
+			);
+		}
+		else
+		{
+			$version_data = json_decode(
+				ComponentbuilderHelper::getFileContents(
+					$this->templatePath . '/settings.json'
+				)
+			);
+		}
 		// add custom folders
 		if ((isset($this->componentData->folders)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->componentData->folders
 				))
 			|| $this->addEximport
@@ -2965,7 +2982,7 @@ class Structure extends Get
 				);
 				// fix custom path
 				if (isset($custom['path'])
-					&& ComponentbuilderHelper::checkString($custom['path']))
+					&& StringHelper::check($custom['path']))
 				{
 					$custom['path'] = trim($custom['path'], '/');
 				}
@@ -3017,31 +3034,31 @@ class Structure extends Get
 					$newname    = '';
 				}
 				// insure we have no duplicates
-				$key_pointer = ComponentbuilderHelper::safeString(
+				$key_pointer = StringHelper::safe(
 						$custom['folder']
 					) . '_f' . $pointer_tracker;
 				$pointer_tracker++;
 				// fix custom path
 				$custom['path'] = ltrim($custom['path'], '/');
 				// set new folder to object
-				$versionData->move->static->{$key_pointer}          = new stdClass();
-				$versionData->move->static->{$key_pointer}->naam
+				$version_data->move->static->{$key_pointer}          = new stdClass();
+				$version_data->move->static->{$key_pointer}->naam
 				                                                    = str_replace(
 					'//', '/', $custom['folder']
 				);
-				$versionData->move->static->{$key_pointer}->path
+				$version_data->move->static->{$key_pointer}->path
 				                                                    = $_target_type
 					. '/' . $custom['path'];
-				$versionData->move->static->{$key_pointer}->rename  = $rename;
-				$versionData->move->static->{$key_pointer}->newName = $newname;
-				$versionData->move->static->{$key_pointer}->type    = 'folder';
-				$versionData->move->static->{$key_pointer}->custom
+				$version_data->move->static->{$key_pointer}->rename  = $rename;
+				$version_data->move->static->{$key_pointer}->newName = $newname;
+				$version_data->move->static->{$key_pointer}->type    = 'folder';
+				$version_data->move->static->{$key_pointer}->custom
 				                                                    = $customPath;
 				// set the target if type and id is found
 				if (isset($custom['target_id'])
 					&& isset($custom['target_type']))
 				{
-					$versionData->move->static->{$key_pointer}->_target
+					$version_data->move->static->{$key_pointer}->_target
 						= array('key'  => $custom['target_id'] . '_'
 						. $custom['target_type'],
 						        'type' => $custom['target_type']);
@@ -3052,7 +3069,7 @@ class Structure extends Get
 		}
 		// add custom files
 		if ((isset($this->componentData->files)
-				&& ComponentbuilderHelper::checkArray(
+				&& ArrayHelper::check(
 					$this->componentData->files
 				))
 			|| $this->googlechart)
@@ -3106,13 +3123,13 @@ class Structure extends Get
 					$customPath = 'full';
 				}
 				// make sure we have not duplicates
-				$key_pointer = ComponentbuilderHelper::safeString(
+				$key_pointer = StringHelper::safe(
 						$custom['file']
 					) . '_g' . $pointer_tracker;
 				$pointer_tracker++;
 				// set new file to object
-				$versionData->move->static->{$key_pointer}       = new stdClass();
-				$versionData->move->static->{$key_pointer}->naam = str_replace(
+				$version_data->move->static->{$key_pointer}       = new stdClass();
+				$version_data->move->static->{$key_pointer}->naam = str_replace(
 					'//', '/', $custom['file']
 				);
 				// update the dynamic component name placholders in file names
@@ -3125,11 +3142,11 @@ class Structure extends Get
 				{
 					$pathInfo['dirname'] = trim($pathInfo['dirname'], '/');
 					// set the info
-					$versionData->move->static->{$key_pointer}->path
+					$version_data->move->static->{$key_pointer}->path
 						                                               = $_target_type
 						. '/' . $pathInfo['dirname'];
-					$versionData->move->static->{$key_pointer}->rename = 'new';
-					$versionData->move->static->{$key_pointer}->newName
+					$version_data->move->static->{$key_pointer}->rename = 'new';
+					$version_data->move->static->{$key_pointer}->newName
 						                                               = $pathInfo['basename'];
 				}
 				elseif ('full' === $customPath)
@@ -3139,11 +3156,11 @@ class Structure extends Get
 					// get file array
 					$fileArray = (array) explode('/', $custom['file']);
 					// set the info
-					$versionData->move->static->{$key_pointer}->path
+					$version_data->move->static->{$key_pointer}->path
 						                                                = $_target_type
 						. '/' . $custom['path'];
-					$versionData->move->static->{$key_pointer}->rename  = 'new';
-					$versionData->move->static->{$key_pointer}->newName = end(
+					$version_data->move->static->{$key_pointer}->rename  = 'new';
+					$version_data->move->static->{$key_pointer}->newName = end(
 						$fileArray
 					);
 				}
@@ -3152,19 +3169,19 @@ class Structure extends Get
 					// fix custom path
 					$custom['path'] = ltrim($custom['path'], '/');
 					// set the info
-					$versionData->move->static->{$key_pointer}->path
+					$version_data->move->static->{$key_pointer}->path
 						                                               = $_target_type
 						. '/' . $custom['path'];
-					$versionData->move->static->{$key_pointer}->rename = false;
+					$version_data->move->static->{$key_pointer}->rename = false;
 				}
-				$versionData->move->static->{$key_pointer}->type = 'file';
-				$versionData->move->static->{$key_pointer}->custom
+				$version_data->move->static->{$key_pointer}->type = 'file';
+				$version_data->move->static->{$key_pointer}->custom
 				                                                 = $customPath;
 				// set the target if type and id is found
 				if (isset($custom['target_id'])
 					&& isset($custom['target_type']))
 				{
-					$versionData->move->static->{$key_pointer}->_target
+					$version_data->move->static->{$key_pointer}->_target
 						= array('key'  => $custom['target_id'] . '_'
 						. $custom['target_type'],
 						        'type' => $custom['target_type']);
@@ -3185,7 +3202,7 @@ class Structure extends Get
 			unset($custom);
 		}
 
-		return $versionData;
+		return $version_data;
 	}
 
 	/**

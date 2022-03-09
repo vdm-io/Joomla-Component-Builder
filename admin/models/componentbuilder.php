@@ -620,7 +620,7 @@ jQuery(document).ready( function($) {
 		jQuery(document).ready(function () {
 			jQuery.get(getreadme)
 			.success(function(readme) { 
-				jQuery("#readme-md").html(marked(readme));
+				jQuery("#readme-md").html(marked.parse(readme));
 			})
 			.error(function(jqXHR, textStatus, errorThrown) { 
 				jQuery("#readme-md").html("'.JText::_('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_LATTER').'");

@@ -15,6 +15,16 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\String\FieldHelper;
+use VDM\Joomla\Utilities\String\TypeHelper;
+use VDM\Joomla\Utilities\String\ClassfunctionHelper;
+use VDM\Joomla\Utilities\String\NamespaceHelper;
+use VDM\Joomla\Utilities\String\PluginHelper;
 
 /**
  * Get class as the main compilers class
@@ -981,16 +991,16 @@ class Get
 			// set the component ID
 			$this->componentID = (int) $config['component'];
 			// set this components code name
-			if ($name_code = ComponentbuilderHelper::getVar(
+			if ($name_code = GetHelper::var(
 				'joomla_component', $this->componentID, 'id', 'name_code'
 			))
 			{
 				// set lang prefix
-				$this->langPrefix = 'COM_' . ComponentbuilderHelper::safeString(
+				$this->langPrefix = 'COM_' . StringHelper::safe(
 						$name_code, 'U'
 					);
 				// set component code name
-				$this->componentCodeName = ComponentbuilderHelper::safeString(
+				$this->componentCodeName = StringHelper::safe(
 					$name_code
 				);
 				// set component context
@@ -1005,12 +1015,12 @@ class Get
 					'assets_table_fix', 1
 				);
 				$this->addAssetsTableFix = (($add_assets_table_fix
-						= (int) ComponentbuilderHelper::getVar(
+						= (int) GetHelper::var(
 						'joomla_component', $this->componentID, 'id',
 						'assets_table_fix'
 					)) == 3) ? $global : $add_assets_table_fix;
 				// set if language strings line breaks should be removed
-				$global                 = ((int) ComponentbuilderHelper::getVar(
+				$global                 = ((int) GetHelper::var(
 						'joomla_component', $this->componentID, 'id',
 						'remove_line_breaks'
 					) == 1) ? true : false;
@@ -1020,7 +1030,7 @@ class Get
 					: (((int) $config['remove_line_breaks'] == 1) ? true
 						: $global);
 				// set if placeholders should be added to customcode
-				$global                = ((int) ComponentbuilderHelper::getVar(
+				$global                = ((int) GetHelper::var(
 						'joomla_component', $this->componentID, 'id',
 						'add_placeholders'
 					) == 1) ? true : false;
@@ -1028,7 +1038,7 @@ class Get
 					? false
 					: (((int) $config['placeholders'] == 1) ? true : $global);
 				// set if line numbers should be added to comments
-				$global            = ((int) ComponentbuilderHelper::getVar(
+				$global            = ((int) GetHelper::var(
 						'joomla_component', $this->componentID, 'id',
 						'debug_linenr'
 					) == 1) ? true : false;
@@ -1068,8 +1078,8 @@ class Get
 				}
 				// update the version
 				if (!isset($this->componentData->old_component_version)
-					&& (ComponentbuilderHelper::checkArray($this->addSQL)
-						|| ComponentbuilderHelper::checkArray(
+					&& (ArrayHelper::check($this->addSQL)
+						|| ArrayHelper::check(
 							$this->updateSQL
 						)))
 				{
@@ -1207,11 +1217,11 @@ class Get
 		$bucket[$this->hhh . 'component' . $this->hhh]
 			                                             = $this->componentCodeName;
 		$bucket[$this->hhh . 'Component' . $this->hhh]
-			                                             = ComponentbuilderHelper::safeString(
+			                                             = StringHelper::safe(
 			$this->componentCodeName, 'F'
 		);
 		$bucket[$this->hhh . 'COMPONENT' . $this->hhh]
-			                                             = ComponentbuilderHelper::safeString(
+			                                             = StringHelper::safe(
 			$this->componentCodeName, 'U'
 		);
 		$bucket[$this->bbb . 'component' . $this->ddd]   = $bucket[$this->hhh
@@ -1224,14 +1234,14 @@ class Get
 		$bucket[$this->bbb . 'LANG_PREFIX' . $this->ddd] = $bucket[$this->hhh
 		. 'LANG_PREFIX' . $this->hhh];
 		// get the current components overides
-		if (($_placeholders = ComponentbuilderHelper::getVar(
+		if (($_placeholders = GetHelper::var(
 				'component_placeholders', $this->componentID,
 				'joomla_component', 'addplaceholders'
 			)) !== false
-			&& ComponentbuilderHelper::checkJson($_placeholders))
+			&& JsonHelper::check($_placeholders))
 		{
 			$_placeholders = json_decode($_placeholders, true);
-			if (ComponentbuilderHelper::checkArray($_placeholders))
+			if (ArrayHelper::check($_placeholders))
 			{
 				foreach ($_placeholders as $row)
 				{
@@ -1391,18 +1401,18 @@ class Get
 		);
 
 		// load the global placeholders
-		if (ComponentbuilderHelper::checkArray($this->globalPlaceholders))
+		if (ArrayHelper::check($this->globalPlaceholders))
 		{
 			$this->placeholders = $this->globalPlaceholders;
 		}
 
 		// set component sales name
-		$component->sales_name = ComponentbuilderHelper::safeString(
+		$component->sales_name = StringHelper::safe(
 			$component->system_name
 		);
 
 		// set the component name_code
-		$component->name_code = ComponentbuilderHelper::safeString(
+		$component->name_code = StringHelper::safe(
 			$component->name_code
 		);
 
@@ -1422,15 +1432,15 @@ class Get
 			$component->{'add' . $addTarget} = (isset(
 					$component->{'add' . $addTarget}
 				)
-				&& ComponentbuilderHelper::checkJson(
+				&& JsonHelper::check(
 					$component->{'add' . $addTarget}
 				)) ? json_decode($component->{'add' . $addTarget}, true) : null;
-			if (ComponentbuilderHelper::checkArray(
+			if (ArrayHelper::check(
 				$component->{'add' . $addTarget}
 			))
 			{
 				if (isset($component->{$targetHere})
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$component->{$targetHere}
 					))
 				{
@@ -1455,19 +1465,19 @@ class Get
 		// set whmcs links if needed
 		if (1 == $component->add_license
 			&& (!isset($component->whmcs_buy_link)
-				|| !ComponentbuilderHelper::checkString(
+				|| !StringHelper::check(
 					$component->whmcs_buy_link
 				)))
 		{
 			// update with the whmcs url
 			if (isset($component->whmcs_url)
-				&& ComponentbuilderHelper::checkString($component->whmcs_url))
+				&& StringHelper::check($component->whmcs_url))
 			{
 				$component->whmcs_buy_link = $component->whmcs_url;
 			}
 			// use the company website
 			elseif (isset($component->website)
-				&& ComponentbuilderHelper::checkString($component->website))
+				&& StringHelper::check($component->website))
 			{
 				$component->whmcs_buy_link = $component->website;
 				$component->whmcs_url      = rtrim($component->website, '/')
@@ -1499,9 +1509,9 @@ class Get
 
 		// set the addcustommenus data
 		$component->addcustommenus = (isset($component->addcustommenus)
-			&& ComponentbuilderHelper::checkJson($component->addcustommenus))
+			&& JsonHelper::check($component->addcustommenus))
 			? json_decode($component->addcustommenus, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->addcustommenus))
+		if (ArrayHelper::check($component->addcustommenus))
 		{
 			$component->custommenus = array_values($component->addcustommenus);
 		}
@@ -1509,9 +1519,9 @@ class Get
 
 		// set the sql_tweak data
 		$component->sql_tweak = (isset($component->sql_tweak)
-			&& ComponentbuilderHelper::checkJson($component->sql_tweak))
+			&& JsonHelper::check($component->sql_tweak))
 			? json_decode($component->sql_tweak, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->sql_tweak))
+		if (ArrayHelper::check($component->sql_tweak))
 		{
 			// build the tweak settings
 			$this->setSqlTweaking(
@@ -1519,8 +1529,8 @@ class Get
 					function ($array) {
 						return array_map(
 							function ($value) {
-								if (!ComponentbuilderHelper::checkArray($value)
-									&& !ComponentbuilderHelper::checkObject(
+								if (!ArrayHelper::check($value)
+									&& !ObjectHelper::check(
 										$value
 									)
 									&& strval($value) === strval(
@@ -1541,9 +1551,9 @@ class Get
 
 		// set the admin_view data
 		$component->addadmin_views = (isset($component->addadmin_views)
-			&& ComponentbuilderHelper::checkJson($component->addadmin_views))
+			&& JsonHelper::check($component->addadmin_views))
 			? json_decode($component->addadmin_views, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->addadmin_views))
+		if (ArrayHelper::check($component->addadmin_views))
 		{
 			$this->lang   = 'admin';
 			$this->target = 'admin';
@@ -1571,8 +1581,8 @@ class Get
 				function ($array) {
 					$array = array_map(
 						function ($value) {
-							if (!ComponentbuilderHelper::checkArray($value)
-								&& !ComponentbuilderHelper::checkObject($value)
+							if (!ArrayHelper::check($value)
+								&& !ObjectHelper::check($value)
 								&& strval($value) === strval(intval($value)))
 							{
 								return (int) $value;
@@ -1635,9 +1645,9 @@ class Get
 		}
 		// set the site_view data
 		$component->addsite_views = (isset($component->addsite_views)
-			&& ComponentbuilderHelper::checkJson($component->addsite_views))
+			&& JsonHelper::check($component->addsite_views))
 			? json_decode($component->addsite_views, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->addsite_views))
+		if (ArrayHelper::check($component->addsite_views))
 		{
 			$this->lang   = 'site';
 			$this->target = 'site';
@@ -1652,8 +1662,8 @@ class Get
 
 					return array_map(
 						function ($value) {
-							if (!ComponentbuilderHelper::checkArray($value)
-								&& !ComponentbuilderHelper::checkObject($value)
+							if (!ArrayHelper::check($value)
+								&& !ObjectHelper::check($value)
 								&& strval($value) === strval(intval($value)))
 							{
 								return (int) $value;
@@ -1671,10 +1681,10 @@ class Get
 		// set the custom_admin_views data
 		$component->addcustom_admin_views
 			= (isset($component->addcustom_admin_views)
-			&& ComponentbuilderHelper::checkJson(
+			&& JsonHelper::check(
 				$component->addcustom_admin_views
 			)) ? json_decode($component->addcustom_admin_views, true) : null;
-		if (ComponentbuilderHelper::checkArray(
+		if (ArrayHelper::check(
 			$component->addcustom_admin_views
 		))
 		{
@@ -1691,8 +1701,8 @@ class Get
 
 					return array_map(
 						function ($value) {
-							if (!ComponentbuilderHelper::checkArray($value)
-								&& !ComponentbuilderHelper::checkObject($value)
+							if (!ArrayHelper::check($value)
+								&& !ObjectHelper::check($value)
 								&& strval($value) === strval(intval($value)))
 							{
 								return (int) $value;
@@ -1709,9 +1719,9 @@ class Get
 
 		// set the config data
 		$component->addconfig = (isset($component->addconfig)
-			&& ComponentbuilderHelper::checkJson($component->addconfig))
+			&& JsonHelper::check($component->addconfig))
 			? json_decode($component->addconfig, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->addconfig))
+		if (ArrayHelper::check($component->addconfig))
 		{
 			$component->config = array_map(
 				function ($field) {
@@ -1740,9 +1750,9 @@ class Get
 
 		// set the addcustommenus data
 		$component->addcontributors = (isset($component->addcontributors)
-			&& ComponentbuilderHelper::checkJson($component->addcontributors))
+			&& JsonHelper::check($component->addcontributors))
 			? json_decode($component->addcontributors, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->addcontributors))
+		if (ArrayHelper::check($component->addcontributors))
 		{
 			$this->addContributors   = true;
 			$component->contributors = array_values(
@@ -1753,9 +1763,9 @@ class Get
 
 		// set the addcustommenus data
 		$component->version_update = (isset($component->version_update)
-			&& ComponentbuilderHelper::checkJson($component->version_update))
+			&& JsonHelper::check($component->version_update))
 			? json_decode($component->version_update, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->version_update))
+		if (ArrayHelper::check($component->version_update))
 		{
 			$component->version_update = array_values(
 				$component->version_update
@@ -1771,11 +1781,11 @@ class Get
 		);
 		if ($old_component || $old_admin_views)
 		{
-			if (ComponentbuilderHelper::checkObject($old_admin_views))
+			if (ObjectHelper::check($old_admin_views))
 			{
 				// add new views if found
 				if (isset($old_admin_views->addadmin_views)
-					&& ComponentbuilderHelper::checkJson(
+					&& JsonHelper::check(
 						$old_admin_views->addadmin_views
 					))
 				{
@@ -1785,7 +1795,7 @@ class Get
 					);
 				}
 				// check if a new version was manualy set
-				if (ComponentbuilderHelper::checkObject($old_component))
+				if (ObjectHelper::check($old_component))
 				{
 					$old_component_version = preg_replace(
 						'/[^0-9.]+/', '', $old_component->component_version
@@ -1836,7 +1846,7 @@ class Get
 			if (isset($component->{'add_css_' . $area})
 				&& $component->{'add_css_' . $area} == 1
 				&& isset($component->{'css_' . $area})
-				&& ComponentbuilderHelper::checkString(
+				&& StringHelper::check(
 					$component->{'css_' . $area}
 				))
 			{
@@ -1868,7 +1878,7 @@ class Get
 					)
 					&& $component->{'add_' . $scriptMethod . '_' . $scriptType}
 					== 1
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$component->{$scriptMethod . '_' . $scriptType}
 					))
 				{
@@ -1891,7 +1901,7 @@ class Get
 		}
 		// add_php_helper
 		if ($component->add_php_helper_admin == 1
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$component->php_helper_admin
 			))
 		{
@@ -1915,7 +1925,7 @@ class Get
 		unset($component->php_helper);
 		// add_admin_event
 		if ($component->add_admin_event == 1
-			&& ComponentbuilderHelper::checkString($component->php_admin_event))
+			&& StringHelper::check($component->php_admin_event))
 		{
 			$this->lang = 'admin';
 			// update GUI mapper field
@@ -1935,7 +1945,7 @@ class Get
 		unset($component->php_admin_event);
 		// add_php_helper_both
 		if ($component->add_php_helper_both == 1
-			&& ComponentbuilderHelper::checkString($component->php_helper_both))
+			&& StringHelper::check($component->php_helper_both))
 		{
 			$this->lang = 'both';
 			// update GUI mapper field
@@ -1956,7 +1966,7 @@ class Get
 		}
 		// add_php_helper_site
 		if ($component->add_php_helper_site == 1
-			&& ComponentbuilderHelper::checkString($component->php_helper_site))
+			&& StringHelper::check($component->php_helper_site))
 		{
 			$this->lang = 'site';
 			// update GUI mapper field
@@ -1978,7 +1988,7 @@ class Get
 		unset($component->php_helper);
 		// add_site_event
 		if ($component->add_site_event == 1
-			&& ComponentbuilderHelper::checkString($component->php_site_event))
+			&& StringHelper::check($component->php_site_event))
 		{
 			$this->lang = 'site';
 			// update GUI mapper field
@@ -2016,7 +2026,7 @@ class Get
 		}
 		unset($component->sql_uninstall);
 		// bom
-		if (ComponentbuilderHelper::checkString($component->bom))
+		if (StringHelper::check($component->bom))
 		{
 			$this->bomPath = $this->compilerPath . '/' . $component->bom;
 		}
@@ -2042,9 +2052,9 @@ class Get
 		$this->lang = 'admin';
 		// dashboard methods
 		$component->dashboard_tab = (isset($component->dashboard_tab)
-			&& ComponentbuilderHelper::checkJson($component->dashboard_tab))
+			&& JsonHelper::check($component->dashboard_tab))
 			? json_decode($component->dashboard_tab, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->dashboard_tab))
+		if (ArrayHelper::check($component->dashboard_tab))
 		{
 			$component->dashboard_tab = array_map(
 				function ($array) {
@@ -2060,7 +2070,7 @@ class Get
 		}
 		// add the php of the dashboard if set
 		if (isset($component->php_dashboard_methods)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$component->php_dashboard_methods
 			))
 		{
@@ -2095,7 +2105,7 @@ class Get
 			{
 				// get the server protocol
 				$component->{$server . '_protocol'}
-					= ComponentbuilderHelper::getVar(
+					= GetHelper::var(
 					'server', (int) $component->{$server}, 'id', 'protocol'
 				);
 			}
@@ -2112,7 +2122,7 @@ class Get
 		}
 		// set the ignore folders for repo if found
 		if (isset($component->toignore)
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$component->toignore
 			))
 		{
@@ -2134,9 +2144,9 @@ class Get
 		}
 		// get all modules
 		$component->addjoomla_modules = (isset($component->addjoomla_modules)
-			&& ComponentbuilderHelper::checkJson($component->addjoomla_modules))
+			&& JsonHelper::check($component->addjoomla_modules))
 			? json_decode($component->addjoomla_modules, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->addjoomla_modules))
+		if (ArrayHelper::check($component->addjoomla_modules))
 		{
 			$joomla_modules = array_map(
 				function ($array) use (&$component) {
@@ -2155,9 +2165,9 @@ class Get
 		unset($component->addjoomla_modules);
 		// get all plugins
 		$component->addjoomla_plugins = (isset($component->addjoomla_plugins)
-			&& ComponentbuilderHelper::checkJson($component->addjoomla_plugins))
+			&& JsonHelper::check($component->addjoomla_plugins))
 			? json_decode($component->addjoomla_plugins, true) : null;
-		if (ComponentbuilderHelper::checkArray($component->addjoomla_plugins))
+		if (ArrayHelper::check($component->addjoomla_plugins))
 		{
 			$joomla_plugins = array_map(
 				function ($array) use (&$component) {
@@ -2312,7 +2322,7 @@ class Get
 			$view->name_single_code = 'oops_hmm_' . $id;
 			if (isset($view->name_single) && $view->name_single != 'null')
 			{
-				$view->name_single_code = ComponentbuilderHelper::safeString(
+				$view->name_single_code = StringHelper::safe(
 					$view->name_single
 				);
 			}
@@ -2321,7 +2331,7 @@ class Get
 			$view->name_list_code = 'oops_hmmm_' . $id;
 			if (isset($view->name_list) && $view->name_list != 'null')
 			{
-				$view->name_list_code = ComponentbuilderHelper::safeString(
+				$view->name_list_code = StringHelper::safe(
 					$view->name_list
 				);
 			}
@@ -2381,19 +2391,19 @@ class Get
 			$this->placeholders[$this->hhh . 'views' . $this->hhh]
 				= $view->name_list_code;
 			$this->placeholders[$this->hhh . 'View' . $this->hhh]
-				= ComponentbuilderHelper::safeString(
+				= StringHelper::safe(
 				$view->name_single, 'F'
 			);
 			$this->placeholders[$this->hhh . 'Views' . $this->hhh]
-				= ComponentbuilderHelper::safeString(
+				= StringHelper::safe(
 				$view->name_list, 'F'
 			);
 			$this->placeholders[$this->hhh . 'VIEW' . $this->hhh]
-				= ComponentbuilderHelper::safeString(
+				= StringHelper::safe(
 				$view->name_single, 'U'
 			);
 			$this->placeholders[$this->hhh . 'VIEWS' . $this->hhh]
-				= ComponentbuilderHelper::safeString(
+				= StringHelper::safe(
 				$view->name_list, 'U'
 			);
 			$this->placeholders[$this->bbb . 'view' . $this->ddd]
@@ -2417,9 +2427,9 @@ class Get
 
 			// add the tables
 			$view->addtables = (isset($view->addtables)
-				&& ComponentbuilderHelper::checkJson($view->addtables))
+				&& JsonHelper::check($view->addtables))
 				? json_decode($view->addtables, true) : null;
-			if (ComponentbuilderHelper::checkArray($view->addtables))
+			if (ArrayHelper::check($view->addtables))
 			{
 				$view->tables = array_values($view->addtables);
 			}
@@ -2429,9 +2439,9 @@ class Get
 			$this->customTabs[$view->name_single_code] = null;
 			$view->customtabs
 			                                           = (isset($view->customtabs)
-				&& ComponentbuilderHelper::checkJson($view->customtabs))
+				&& JsonHelper::check($view->customtabs))
 				? json_decode($view->customtabs, true) : null;
-			if (ComponentbuilderHelper::checkArray($view->customtabs))
+			if (ArrayHelper::check($view->customtabs))
 			{
 				// setup custom tabs to global data sets
 				$this->customTabs[$view->name_single_code] = array_map(
@@ -2445,21 +2455,21 @@ class Get
 						);
 						// set the tab name
 						$tab['name'] = (isset($tab['name'])
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$tab['name']
 							)) ? $tab['name'] : 'Tab';
 						// set lang
 						$tab['lang'] = $this->langPrefix . '_'
-							. ComponentbuilderHelper::safeString(
+							. StringHelper::safe(
 								$tab['view'], 'U'
-							) . '_' . ComponentbuilderHelper::safeString(
+							) . '_' . StringHelper::safe(
 								$tab['name'], 'U'
 							);
 						$this->setLangContent(
 							'both', $tab['lang'], $tab['name']
 						);
 						// set code name
-						$tab['code'] = ComponentbuilderHelper::safeString(
+						$tab['code'] = StringHelper::safe(
 							$tab['name']
 						);
 						// check if the permissions for the tab should be added
@@ -2537,7 +2547,7 @@ class Get
 							);
 							// set the sort key
 							$tab['sortKey']
-								= ComponentbuilderHelper::safeString(
+								= StringHelper::safe(
 								$tab['lang_permission_title']
 							);
 						}
@@ -2551,9 +2561,9 @@ class Get
 
 			// add the local tabs
 			$view->addtabs = (isset($view->addtabs)
-				&& ComponentbuilderHelper::checkJson($view->addtabs))
+				&& JsonHelper::check($view->addtabs))
 				? json_decode($view->addtabs, true) : null;
-			if (ComponentbuilderHelper::checkArray($view->addtabs))
+			if (ArrayHelper::check($view->addtabs))
 			{
 				$nr = 1;
 				foreach ($view->addtabs as $tab)
@@ -2579,9 +2589,9 @@ class Get
 			unset($view->addtabs);
 			// add permissions
 			$view->addpermissions = (isset($view->addpermissions)
-				&& ComponentbuilderHelper::checkJson($view->addpermissions))
+				&& JsonHelper::check($view->addpermissions))
 				? json_decode($view->addpermissions, true) : null;
-			if (ComponentbuilderHelper::checkArray($view->addpermissions))
+			if (ArrayHelper::check($view->addpermissions))
 			{
 				$view->permissions = array_values($view->addpermissions);
 			}
@@ -2590,9 +2600,9 @@ class Get
 			$view->fields = array();
 			// set fields
 			$view->addfields = (isset($view->addfields)
-				&& ComponentbuilderHelper::checkJson($view->addfields))
+				&& JsonHelper::check($view->addfields))
 				? json_decode($view->addfields, true) : null;
-			if (ComponentbuilderHelper::checkArray($view->addfields))
+			if (ArrayHelper::check($view->addfields))
 			{
 				$ignoreFields = array();
 				// load the field data
@@ -2628,7 +2638,7 @@ class Get
 				{
 					// add new fields were added
 					if (isset($old_view->addfields)
-						&& ComponentbuilderHelper::checkJson(
+						&& JsonHelper::check(
 							$old_view->addfields
 						))
 					{
@@ -2674,7 +2684,7 @@ class Get
 					);
 					// check if the field changed since the last compilation (default fields never change and are always added)
 					if (!isset($ignoreFields[$field['field']])
-						&& ComponentbuilderHelper::checkObject(
+						&& ObjectHelper::check(
 							$field['settings']->history
 						))
 					{
@@ -2702,7 +2712,7 @@ class Get
 						}
 						// check if the name changed
 						if (isset($field['settings']->history->xml)
-							&& ComponentbuilderHelper::checkJson(
+							&& JsonHelper::check(
 								$field['settings']->history->xml
 							))
 						{
@@ -2773,10 +2783,10 @@ class Get
 			if ($old_view = $this->getHistoryWatch('admin_view', $id))
 			{
 				// check if the view name changed
-				if (ComponentbuilderHelper::checkString($old_view->name_single))
+				if (StringHelper::check($old_view->name_single))
 				{
 					$this->setUpdateSQL(
-						ComponentbuilderHelper::safeString(
+						StringHelper::safe(
 							$old_view->name_single
 						), $view->name_single_code, 'table_name',
 						$view->name_single_code
@@ -2799,7 +2809,7 @@ class Get
 					}
 					// check if there is no history on table engine, and it changed from the default/global
 					elseif (isset($view->{'mysql_table_' . $_mysqlTableKey})
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$view->{'mysql_table_' . $_mysqlTableKey}
 						)
 						&& !is_numeric(
@@ -2818,18 +2828,18 @@ class Get
 			}
 			// set the conditions
 			$view->addconditions = (isset($view->addconditions)
-				&& ComponentbuilderHelper::checkJson($view->addconditions))
+				&& JsonHelper::check($view->addconditions))
 				? json_decode($view->addconditions, true) : null;
-			if (ComponentbuilderHelper::checkArray($view->addconditions))
+			if (ArrayHelper::check($view->addconditions))
 			{
 				$view->conditions = array();
 				$ne               = 0;
 				foreach ($view->addconditions as $nr => $conditionValue)
 				{
-					if (ComponentbuilderHelper::checkArray(
+					if (ArrayHelper::check(
 							$conditionValue['target_field']
 						)
-						&& ComponentbuilderHelper::checkArray($view->fields))
+						&& ArrayHelper::check($view->fields))
 					{
 						foreach (
 							$conditionValue['target_field'] as $fieldKey =>
@@ -2855,7 +2865,7 @@ class Get
 										'filter="', '"'
 									);
 									$filter
-										      = ComponentbuilderHelper::checkString(
+										      = StringHelper::check(
 										$filter
 									) ? $filter : 'none';
 									// set the field name
@@ -2877,7 +2887,7 @@ class Get
 					}
 
 					// load match field
-					if (ComponentbuilderHelper::checkArray($view->fields)
+					if (ArrayHelper::check($view->fields)
 						&& isset($conditionValue['match_field']))
 					{
 						foreach ($view->fields as $fieldValue)
@@ -2925,9 +2935,9 @@ class Get
 			$this->listHeadOverRide[$view->name_list_code] = array();
 			// set the relations
 			$view->addrelations = (isset($view->addrelations)
-				&& ComponentbuilderHelper::checkJson($view->addrelations))
+				&& JsonHelper::check($view->addrelations))
 				? json_decode($view->addrelations, true) : null;
-			if (ComponentbuilderHelper::checkArray($view->addrelations))
+			if (ArrayHelper::check($view->addrelations))
 			{
 				foreach ($view->addrelations as $nr => $relationsValue)
 				{
@@ -2943,7 +2953,7 @@ class Get
 					{
 						// do a dynamic update on the set values
 						if (isset($relationsValue['set'])
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$relationsValue['set']
 							))
 						{
@@ -2953,7 +2963,7 @@ class Get
 						}
 						// check that the arrays are set
 						if (!isset($this->fieldRelations[$view->name_list_code][(int) $relationsValue['listfield']])
-							|| !ComponentbuilderHelper::checkArray(
+							|| !ArrayHelper::check(
 								$this->fieldRelations[$view->name_list_code][(int) $relationsValue['listfield']]
 							))
 						{
@@ -2965,7 +2975,7 @@ class Get
 							= $relationsValue;
 						// load the list joints
 						if (isset($relationsValue['joinfields'])
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$relationsValue['joinfields']
 							))
 						{
@@ -2977,7 +2987,7 @@ class Get
 						}
 						// set header over-ride
 						if (isset($relationsValue['column_name'])
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$relationsValue['column_name']
 							))
 						{
@@ -2988,10 +2998,10 @@ class Get
 							if ('default' !== $check_column_name)
 							{
 								$column_name_lang = $this->langPrefix . '_'
-									. ComponentbuilderHelper::safeString(
+									. StringHelper::safe(
 										$view->name_list_code, 'U'
 									) . '_'
-									. ComponentbuilderHelper::safeString(
+									. StringHelper::safe(
 										$relationsValue['column_name'], 'U'
 									);
 								$this->setLangContent(
@@ -3011,9 +3021,9 @@ class Get
 			$this->linkedAdminViews[$view->name_single_code] = null;
 			$view->addlinked_views
 			                                                 = (isset($view->addlinked_views)
-				&& ComponentbuilderHelper::checkJson($view->addlinked_views))
+				&& JsonHelper::check($view->addlinked_views))
 				? json_decode($view->addlinked_views, true) : null;
-			if (ComponentbuilderHelper::checkArray($view->addlinked_views))
+			if (ArrayHelper::check($view->addlinked_views))
 			{
 				// setup linked views to global data sets
 				$this->linkedAdminViews[$view->name_single_code] = array_values(
@@ -3040,7 +3050,7 @@ class Get
 			{
 				if (isset($view->{'add_' . $scripter})
 					&& $view->{'add_' . $scripter} == 1
-					&& ComponentbuilderHelper::checkString($view->$scripter))
+					&& StringHelper::check($view->$scripter))
 				{
 					$scripter_target = str_replace(
 						'javascript_', '', $scripter
@@ -3079,7 +3089,7 @@ class Get
 			{
 				if (isset($view->{'add_' . $scripter})
 					&& $view->{'add_' . $scripter} == 1
-					&& ComponentbuilderHelper::checkString($view->{$scripter}))
+					&& StringHelper::check($view->{$scripter}))
 				{
 					$this->setCustomScriptBuilder(
 						$view->{$scripter},
@@ -3143,7 +3153,7 @@ class Get
 				foreach ($button_code_array as $button_code_field)
 				{
 					if (isset($view->{$button_code_field})
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$view->{$button_code_field}
 						))
 					{
@@ -3165,9 +3175,9 @@ class Get
 				}
 				// set the button array
 				$view->custom_button = (isset($view->custom_button)
-					&& ComponentbuilderHelper::checkJson($view->custom_button))
+					&& JsonHelper::check($view->custom_button))
 					? json_decode($view->custom_button, true) : null;
-				if (ComponentbuilderHelper::checkArray($view->custom_button))
+				if (ArrayHelper::check($view->custom_button))
 				{
 					$view->custom_buttons = array_values($view->custom_button);
 				}
@@ -3234,9 +3244,9 @@ class Get
 				}
 				// check if controller input as been set
 				$view->ajax_input = (isset($view->ajax_input)
-					&& ComponentbuilderHelper::checkJson($view->ajax_input))
+					&& JsonHelper::check($view->ajax_input))
 					? json_decode($view->ajax_input, true) : null;
-				if (ComponentbuilderHelper::checkArray($view->ajax_input))
+				if (ArrayHelper::check($view->ajax_input))
 				{
 					if ($addAjaxSite)
 					{
@@ -3248,7 +3258,7 @@ class Get
 					$this->addAjax = true;
 					unset($view->ajax_input);
 				}
-				if (ComponentbuilderHelper::checkString($view->php_ajaxmethod))
+				if (StringHelper::check($view->php_ajaxmethod))
 				{
 					// make sure we are still in PHP
 					$guiMapper['type'] = 'php';
@@ -3284,7 +3294,7 @@ class Get
 				&& isset($view->alias_builder_type)
 				&& 2 == $view->alias_builder_type
 				&& isset($view->alias_builder)
-				&& ComponentbuilderHelper::checkJson($view->alias_builder))
+				&& JsonHelper::check($view->alias_builder))
 			{
 				// get the aliasFields
 				$alias_fields = (array) json_decode($view->alias_builder, true);
@@ -3301,7 +3311,7 @@ class Get
 				}
 				);
 				// check if all is well
-				if (ComponentbuilderHelper::checkArray($alias_fields))
+				if (ArrayHelper::check($alias_fields))
 				{
 					// load the field names
 					$this->customAliasBuilder[$view->name_single_code]
@@ -3350,7 +3360,7 @@ class Get
 			)
 			{
 				if (isset($view->{'mysql_table_' . $_mysqlTableKey})
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$view->{'mysql_table_' . $_mysqlTableKey}
 					)
 					&& !is_numeric($view->{'mysql_table_' . $_mysqlTableKey}))
@@ -3426,10 +3436,10 @@ class Get
 		$view = $this->db->loadObject();
 		// fix alias to use in code
 		$view->code = $this->uniqueCode(
-			ComponentbuilderHelper::safeString($view->codename)
+			StringHelper::safe($view->codename)
 		);
-		$view->Code = ComponentbuilderHelper::safeString($view->code, 'F');
-		$view->CODE = ComponentbuilderHelper::safeString($view->code, 'U');
+		$view->Code = StringHelper::safe($view->code, 'F');
+		$view->CODE = StringHelper::safe($view->code, 'U');
 		// Trigger Event: jcb_ce_onBeforeModelCustomViewData
 		$this->triggerEvent(
 			'jcb_ce_onBeforeModelCustomViewData',
@@ -3477,7 +3487,7 @@ class Get
 		);
 		// load context if not set
 		if (!isset($view->context)
-			|| !ComponentbuilderHelper::checkString(
+			|| !StringHelper::check(
 				$view->context
 			))
 		{
@@ -3486,7 +3496,7 @@ class Get
 		else
 		{
 			// always make sure context is a safe string
-			$view->context = ComponentbuilderHelper::safeString($view->context);
+			$view->context = StringHelper::safe($view->context);
 		}
 		// load the library
 		if (!isset($this->libManager[$this->target]))
@@ -3498,12 +3508,12 @@ class Get
 			$this->libManager[$this->target][$view->code] = array();
 		}
 		// make sure json become array
-		if (ComponentbuilderHelper::checkJson($view->libraries))
+		if (JsonHelper::check($view->libraries))
 		{
 			$view->libraries = json_decode($view->libraries, true);
 		}
 		// if we have an array add it
-		if (ComponentbuilderHelper::checkArray($view->libraries))
+		if (ArrayHelper::check($view->libraries))
 		{
 			foreach ($view->libraries as $library)
 			{
@@ -3585,7 +3595,7 @@ class Get
 		{
 			if (isset($view->{'add_' . $scripter})
 				&& $view->{'add_' . $scripter} == 1
-				&& ComponentbuilderHelper::checkString($view->$scripter))
+				&& StringHelper::check($view->$scripter))
 			{
 				// css does not get placholders yet
 				if (strpos($scripter, 'css') === false)
@@ -3676,9 +3686,9 @@ class Get
 			$setAjax = false;
 			// check if controller input as been set
 			$view->ajax_input = (isset($view->ajax_input)
-				&& ComponentbuilderHelper::checkJson($view->ajax_input))
+				&& JsonHelper::check($view->ajax_input))
 				? json_decode($view->ajax_input, true) : null;
-			if (ComponentbuilderHelper::checkArray($view->ajax_input))
+			if (ArrayHelper::check($view->ajax_input))
 			{
 				$this->customScriptBuilder[$target]['ajax_controller'][$view->code]
 					     = array_values($view->ajax_input);
@@ -3686,7 +3696,7 @@ class Get
 			}
 			unset($view->ajax_input);
 			// load the ajax class mathods (if set)
-			if (ComponentbuilderHelper::checkString($view->php_ajaxmethod))
+			if (StringHelper::check($view->php_ajaxmethod))
 			{
 				// set field
 				$guiMapper['field'] = 'php_ajaxmethod';
@@ -3726,7 +3736,7 @@ class Get
 			foreach ($button_code_array as $button_code_field)
 			{
 				if (isset($view->{$button_code_field})
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$view->{$button_code_field}
 					))
 				{
@@ -3742,9 +3752,9 @@ class Get
 			}
 			// set the button array
 			$view->custom_button = (isset($view->custom_button)
-				&& ComponentbuilderHelper::checkJson($view->custom_button))
+				&& JsonHelper::check($view->custom_button))
 				? json_decode($view->custom_button, true) : null;
-			if (ComponentbuilderHelper::checkArray($view->custom_button))
+			if (ArrayHelper::check($view->custom_button))
 			{
 				$view->custom_buttons = array_values($view->custom_button);
 			}
@@ -3843,10 +3853,10 @@ class Get
 				$validationRule = ComponentbuilderHelper::getBetween(
 					$field->xml, 'validate="', '"'
 				);
-				if (ComponentbuilderHelper::checkString($validationRule))
+				if (StringHelper::check($validationRule))
 				{
 					// make sure it is lowercase
-					$validationRule = ComponentbuilderHelper::safeString(
+					$validationRule = StringHelper::safe(
 						$validationRule
 					);
 					// link this field to this validation
@@ -3867,7 +3877,7 @@ class Get
 							{
 								// get the class methods for this rule if it exists
 								if ($this->validationRules[$validationRule]
-									= ComponentbuilderHelper::getVar(
+									= GetHelper::var(
 									'validation_rule', $validationRule, 'name',
 									'php'
 								))
@@ -3885,7 +3895,7 @@ class Get
 										array(
 											'table' => 'validation_rule',
 											'field' => 'php',
-											'id'    => ComponentbuilderHelper::getVar(
+											'id'    => GetHelper::var(
 												'validation_rule',
 												$validationRule, 'name', 'id'
 											),
@@ -3909,9 +3919,9 @@ class Get
 
 				// load the type values form type params
 				$field->properties = (isset($field->properties)
-					&& ComponentbuilderHelper::checkJson($field->properties))
+					&& JsonHelper::check($field->properties))
 					? json_decode($field->properties, true) : null;
-				if (ComponentbuilderHelper::checkArray($field->properties))
+				if (ArrayHelper::check($field->properties))
 				{
 					$field->properties = array_values($field->properties);
 				}
@@ -3938,15 +3948,15 @@ class Get
 				}
 				// check if we have better encryption
 				elseif (6 == $field->store
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$field->on_get_model_field
 					)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$field->on_save_model_field
 					))
 				{
 					// add only if string lenght found
-					if (ComponentbuilderHelper::checkString(
+					if (StringHelper::check(
 						$field->initiator_on_save_model
 					))
 					{
@@ -3963,7 +3973,7 @@ class Get
 						)
 						);
 					}
-					if (ComponentbuilderHelper::checkString(
+					if (StringHelper::check(
 						$field->initiator_on_save_model
 					))
 					{
@@ -4019,12 +4029,12 @@ class Get
 		if ($id > 0 && isset($this->_fieldData[$id]))
 		{
 			// check if we should load scripts for single view
-			if (ComponentbuilderHelper::checkString($name_single)
+			if (StringHelper::check($name_single)
 				&& !isset($this->customFieldScript[$name_single][$id]))
 			{
 				// add_javascript_view_footer
 				if ($this->_fieldData[$id]->add_javascript_view_footer == 1
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->_fieldData[$id]->javascript_view_footer
 					))
 				{
@@ -4102,12 +4112,12 @@ class Get
 				}
 			}
 			// check if we should load scripts for list views
-			if (ComponentbuilderHelper::checkString($name_list)
+			if (StringHelper::check($name_list)
 				&& !isset($this->customFieldScript[$name_list][$id]))
 			{
 				// add_javascript_views_footer
 				if ($this->_fieldData[$id]->add_javascript_views_footer == 1
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$this->_fieldData[$id]->javascript_views_footer
 					))
 				{
@@ -4240,7 +4250,7 @@ class Get
 		}
 		// check if value is array
 		if (isset($field['permission'])
-			&& !ComponentbuilderHelper::checkArray(
+			&& !ArrayHelper::check(
 				$field['permission']
 			)
 			&& is_numeric($field['permission'])
@@ -4334,7 +4344,7 @@ class Get
 						return 'c.title';
 					}
 					// set the custom code
-					elseif (ComponentbuilderHelper::checkArray(
+					elseif (ArrayHelper::check(
 						$field['custom']
 					))
 					{
@@ -4369,11 +4379,11 @@ class Get
 		}
 		// check that we have the poperties
 		if (isset($field['settings'])
-			&& ComponentbuilderHelper::checkObject(
+			&& ObjectHelper::check(
 				$field['settings']
 			)
 			&& isset($field['settings']->properties)
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$field['settings']->properties
 			))
 		{
@@ -4385,14 +4395,14 @@ class Get
 				$field['settings']->type_name  = 'Custom';
 			}
 			// set the type name
-			$type_name = ComponentbuilderHelper::safeTypeName(
+			$type_name = TypeHelper::safe(
 				$field['settings']->type_name
 			);
 			// if custom (we must use the xml value)
 			if (strtolower($type_name) === 'custom'
 				|| strtolower($type_name) === 'customuser')
 			{
-				$type = ComponentbuilderHelper::safeTypeName(
+				$type = TypeHelper::safe(
 					ComponentbuilderHelper::getBetween(
 						$field['settings']->xml, 'type="', '"'
 					)
@@ -4408,18 +4418,18 @@ class Get
 					{
 						// force the default value
 						if (isset($property['example'])
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$property['example']
 							))
 						{
-							$type = ComponentbuilderHelper::safeTypeName(
+							$type = TypeHelper::safe(
 								$property['example']
 							);
 						}
 						// fall back on the xml settings (not ideal)
 						else
 						{
-							$type = ComponentbuilderHelper::safeTypeName(
+							$type = TypeHelper::safe(
 								ComponentbuilderHelper::getBetween(
 									$field['settings']->xml, 'type="', '"'
 								)
@@ -4431,7 +4441,7 @@ class Get
 				}
 			}
 			// check if the value is set
-			if (isset($type) && ComponentbuilderHelper::checkString($type))
+			if (isset($type) && StringHelper::check($type))
 			{
 				return $type;
 			}
@@ -4459,7 +4469,7 @@ class Get
 	public function getFieldName(&$field, $listViewName = null, $amicably = '')
 	{
 		// return the unique name if already set
-		if (ComponentbuilderHelper::checkString($listViewName)
+		if (StringHelper::check($listViewName)
 			&& isset($field['hash'])
 			&& isset(
 				$this->uniqueFieldNames[$listViewName . $amicably
@@ -4476,13 +4486,13 @@ class Get
 			return 'error';
 		}
 		// set the type name
-		$type_name = ComponentbuilderHelper::safeTypeName(
+		$type_name = TypeHelper::safe(
 			$field['settings']->type_name
 		);
 		// set the name of the field
-		$name = ComponentbuilderHelper::safeFieldName($field['settings']->name);
+		$name = FieldHelper::safe($field['settings']->name);
 		// check that we have the properties
-		if (ComponentbuilderHelper::checkArray($field['settings']->properties))
+		if (ArrayHelper::check($field['settings']->properties))
 		{
 			foreach ($field['settings']->properties as $property)
 			{
@@ -4508,7 +4518,7 @@ class Get
 							$name = 'catid';
 						}
 						// if list view name is set
-						if (ComponentbuilderHelper::checkString($listViewName))
+						if (StringHelper::check($listViewName))
 						{
 							// check if we should use another Text Name as this views name
 							$otherName  = $this->setPlaceholders(
@@ -4527,23 +4537,23 @@ class Get
 								), $this->placeholders
 							);
 							// This is to link other view category
-							if (ComponentbuilderHelper::checkString($otherName)
-								&& ComponentbuilderHelper::checkString(
+							if (StringHelper::check($otherName)
+								&& StringHelper::check(
 									$otherViews
 								)
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$otherView
 								))
 							{
 								// set other category details
 								$this->catOtherName[$listViewName] = array(
-									'name'  => ComponentbuilderHelper::safeFieldName(
+									'name'  => FieldHelper::safe(
 										$otherName
 									),
-									'views' => ComponentbuilderHelper::safeString(
+									'views' => StringHelper::safe(
 										$otherViews
 									),
-									'view'  => ComponentbuilderHelper::safeString(
+									'view'  => StringHelper::safe(
 										$otherView
 									)
 								);
@@ -4563,7 +4573,7 @@ class Get
 					else
 					{
 						// get value from xml
-						$xml = ComponentbuilderHelper::safeFieldName(
+						$xml = FieldHelper::safe(
 							$this->setPlaceholders(
 								ComponentbuilderHelper::getBetween(
 									$field['settings']->xml, 'name="', '"'
@@ -4571,7 +4581,7 @@ class Get
 							)
 						);
 						// check if a value was found
-						if (ComponentbuilderHelper::checkString($xml))
+						if (StringHelper::check($xml))
 						{
 							$name = $xml;
 						}
@@ -4582,7 +4592,7 @@ class Get
 			}
 		}
 		// return the value unique
-		if (ComponentbuilderHelper::checkString($listViewName)
+		if (StringHelper::check($listViewName)
 			&& isset($field['hash']))
 		{
 			$this->uniqueFieldNames[$listViewName . $amicably . $field['hash']]
@@ -4643,7 +4653,7 @@ class Get
 		{
 			$counter = 1;
 			// set the unique name
-			$uniqueName = ComponentbuilderHelper::safeFieldName(
+			$uniqueName = FieldHelper::safe(
 				$name . '_' . $counter
 			);
 			while (isset($this->uniqueNames[$view]['names'][$uniqueName]))
@@ -4651,7 +4661,7 @@ class Get
 				// increment the number
 				$counter++;
 				// try again
-				$uniqueName = ComponentbuilderHelper::safeFieldName(
+				$uniqueName = FieldHelper::safe(
 					$name . '_' . $counter
 				);
 			}
@@ -4677,10 +4687,10 @@ class Get
 	 */
 	public function setGetData($ids, $view_code, $context)
 	{
-		if (ComponentbuilderHelper::checkArray($ids))
+		if (ArrayHelper::check($ids))
 		{
 			$ids = implode(',', $ids);
-			if (ComponentbuilderHelper::checkString($ids))
+			if (StringHelper::check($ids))
 			{
 				// Create a new query object.
 				$query = $this->db->getQuery(true);
@@ -4712,7 +4722,7 @@ class Get
 						$guiMapper['id'] = (int) $result->id;
 						// add calculations if set
 						if ($result->addcalculation == 1
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$result->php_calculation
 							))
 						{
@@ -4730,7 +4740,7 @@ class Get
 						if (isset($result->add_php_router_parse)
 							&& $result->add_php_router_parse == 1
 							&& isset($result->php_router_parse)
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$result->php_router_parse
 							))
 						{
@@ -4761,7 +4771,7 @@ class Get
 							if (isset($result->{'add_' . $script})
 								&& $result->{'add_' . $script} == 1
 								&& isset($result->{$script})
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$result->{$script}
 								))
 							{
@@ -4810,7 +4820,7 @@ class Get
 							}
 						}
 						// set the getmethod code name
-						$result->key = ComponentbuilderHelper::safeString(
+						$result->key = StringHelper::safe(
 							$view_code . ' ' . $result->name . ' ' . $result->id
 						);
 						// reset buckets
@@ -4873,7 +4883,7 @@ class Get
 									= ComponentbuilderHelper::getBetween(
 									$customQueryString, '$query->from(', ')'
 								);
-								if (ComponentbuilderHelper::checkString(
+								if (StringHelper::check(
 										$_searchQuery
 									)
 									&& strpos($_searchQuery, '#__') !== false)
@@ -4882,7 +4892,7 @@ class Get
 										= ComponentbuilderHelper::getBetween(
 										$_searchQuery, '#__', "'"
 									);
-									if (!ComponentbuilderHelper::checkString(
+									if (!StringHelper::check(
 										$_queryName
 									))
 									{
@@ -4894,7 +4904,7 @@ class Get
 								}
 								// set to blank if not found
 								if (!isset($_queryName)
-									|| !ComponentbuilderHelper::checkString(
+									|| !StringHelper::check(
 										$_queryName
 									))
 								{
@@ -4920,7 +4930,7 @@ class Get
 							$result->join_view_table = json_decode(
 								$result->join_view_table, true
 							);
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$result->join_view_table
 							))
 							{
@@ -4957,7 +4967,7 @@ class Get
 									$result->join_view_table as $nr => &$option
 								)
 								{
-									if (ComponentbuilderHelper::checkString(
+									if (StringHelper::check(
 										$option['selection']
 									))
 									{
@@ -5019,7 +5029,7 @@ class Get
 							$result->join_db_table = json_decode(
 								$result->join_db_table, true
 							);
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$result->join_db_table
 							))
 							{
@@ -5057,7 +5067,7 @@ class Get
 									$result->join_db_table as $nr => &$option1
 								)
 								{
-									if (ComponentbuilderHelper::checkString(
+									if (StringHelper::check(
 										$option1['selection']
 									))
 									{
@@ -5119,7 +5129,7 @@ class Get
 							$result->filter = json_decode(
 								$result->filter, true
 							);
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$result->filter
 							))
 							{
@@ -5145,7 +5155,7 @@ class Get
 							}
 							// set where details
 							$result->where = json_decode($result->where, true);
-							if (ComponentbuilderHelper::checkArray(
+							if (ArrayHelper::check(
 								$result->where
 							))
 							{
@@ -5168,7 +5178,7 @@ class Get
 							}
 							// set order details
 							$result->order = json_decode($result->order, true);
-							if (!ComponentbuilderHelper::checkArray(
+							if (!ArrayHelper::check(
 								$result->order
 							))
 							{
@@ -5176,7 +5186,7 @@ class Get
 							}
 							// set grouping
 							$result->group = json_decode($result->group, true);
-							if (!ComponentbuilderHelper::checkArray(
+							if (!ArrayHelper::check(
 								$result->group
 							))
 							{
@@ -5186,7 +5196,7 @@ class Get
 							$result->global = json_decode(
 								$result->global, true
 							);
-							if (!ComponentbuilderHelper::checkArray(
+							if (!ArrayHelper::check(
 								$result->global
 							))
 							{
@@ -5206,7 +5216,7 @@ class Get
 						}
 						// load the events if any is set
 						if ($result->gettype == 1
-							&& ComponentbuilderHelper::checkJson(
+							&& JsonHelper::check(
 								$result->plugin_events
 							))
 						{
@@ -5257,7 +5267,7 @@ class Get
 	)
 	{
 		// only load if we have a string
-		if (!ComponentbuilderHelper::checkString($script))
+		if (!StringHelper::check($script))
 		{
 			return false;
 		}
@@ -5308,7 +5318,7 @@ class Get
 			$script = $this->setDynamicValues($script);
 		}
 		// check if we still have a string
-		if (ComponentbuilderHelper::checkString($script))
+		if (StringHelper::check($script))
 		{
 			// now load the placeholder snippet if needed
 			if ($base64 || $dynamic)
@@ -5387,7 +5397,7 @@ class Get
 		$script = '';
 		// check if there is any custom script
 		if (isset($this->customScriptBuilder[$first][$second])
-			&& ComponentbuilderHelper::checkString(
+			&& StringHelper::check(
 				$this->customScriptBuilder[$first][$second]
 			))
 		{
@@ -5409,7 +5419,7 @@ class Get
 			}
 		}
 		// if not found return default
-		if (!ComponentbuilderHelper::checkString($script) && $default)
+		if (!StringHelper::check($script) && $default)
 		{
 			return $default;
 		}
@@ -5427,7 +5437,7 @@ class Get
 	 */
 	public function setSqlTweaking($settings)
 	{
-		if (ComponentbuilderHelper::checkArray($settings))
+		if (ArrayHelper::check($settings))
 		{
 			foreach ($settings as $setting)
 			{
@@ -5474,12 +5484,12 @@ class Get
 								}
 							}
 						}
-						if (ComponentbuilderHelper::checkArray($id_array_new))
+						if (ArrayHelper::check($id_array_new))
 						{
 							$id_array = array_merge($id_array_new, $id_array);
 						}
 						// final fixing to array
-						if (ComponentbuilderHelper::checkArray($id_array))
+						if (ArrayHelper::check($id_array))
 						{
 							// uniqe
 							$id_array = array_unique($id_array, SORT_NUMERIC);
@@ -5518,8 +5528,8 @@ class Get
 	)
 	{
 		// check if there were new items added
-		if (ComponentbuilderHelper::checkArray($new)
-			&& ComponentbuilderHelper::checkArray($old))
+		if (ArrayHelper::check($new)
+			&& ArrayHelper::check($old))
 		{
 			// check if this is old repeatable field
 			if (isset($new[$type]))
@@ -5528,7 +5538,7 @@ class Get
 				{
 					$newItem = true;
 					// check if this is an id to ignore
-					if (ComponentbuilderHelper::checkArray($ignore)
+					if (ArrayHelper::check($ignore)
 						&& in_array(
 							$item, $ignore
 						))
@@ -5538,7 +5548,7 @@ class Get
 					}
 					// check if this is old repeatable field
 					elseif (isset($old[$type])
-						&& ComponentbuilderHelper::checkArray($old[$type]))
+						&& ArrayHelper::check($old[$type]))
 					{
 						if (!in_array($item, $old[$type]))
 						{
@@ -5589,7 +5599,7 @@ class Get
 						// search to see if this is a new value
 						$newItem = true;
 						// check if this is an id to ignore
-						if (ComponentbuilderHelper::checkArray($ignore)
+						if (ArrayHelper::check($ignore)
 							&& in_array($item[$type], $ignore))
 						{
 							// don't add ignored ids
@@ -5597,7 +5607,7 @@ class Get
 						}
 						// check if this is old repeatable field
 						elseif (isset($old[$type])
-							&& ComponentbuilderHelper::checkArray($old[$type]))
+							&& ArrayHelper::check($old[$type]))
 						{
 							if (in_array($item[$type], $old[$type]))
 							{
@@ -5639,14 +5649,14 @@ class Get
 			}
 		}
 		elseif ($key
-			&& ((ComponentbuilderHelper::checkString($new)
-					&& ComponentbuilderHelper::checkString($old))
+			&& ((StringHelper::check($new)
+					&& StringHelper::check($old))
 				|| (is_numeric($new) && is_numeric($old)))
 			&& $new !== $old)
 		{
 			// the string changed, lets add to SQL update
 			if (!isset($this->updateSQL[$type])
-				|| !ComponentbuilderHelper::checkArray($this->updateSQL[$type]))
+				|| !ArrayHelper::check($this->updateSQL[$type]))
 			{
 				$this->updateSQL[$type] = array();
 			}
@@ -5668,7 +5678,7 @@ class Get
 	{
 		// we have a new item, lets add to SQL
 		if (!isset($this->addSQL[$type])
-			|| !ComponentbuilderHelper::checkArray(
+			|| !ArrayHelper::check(
 				$this->addSQL[$type]
 			))
 		{
@@ -5678,7 +5688,7 @@ class Get
 		if ($key)
 		{
 			if (!isset($this->addSQL[$type][$key])
-				|| !ComponentbuilderHelper::checkArray(
+				|| !ArrayHelper::check(
 					$this->addSQL[$type][$key]
 				))
 			{
@@ -5691,7 +5701,7 @@ class Get
 			// convert adminview id to name
 			if ('adminview' === $type)
 			{
-				$this->addSQL[$type][] = ComponentbuilderHelper::safeString(
+				$this->addSQL[$type][] = StringHelper::safe(
 					$this->getAdminViewData($item)->name_single
 				);
 			}
@@ -5802,7 +5812,7 @@ class Get
 	protected function setHistoryWatch($object, $action)
 	{
 		// check the note
-		if (ComponentbuilderHelper::checkJson($object->version_note))
+		if (JsonHelper::check($object->version_note))
 		{
 			$version_note = json_decode($object->version_note, true);
 		}
@@ -5846,7 +5856,7 @@ class Get
 		}
 		// check if we need to still keep this locked
 		if (isset($version_note['component'])
-			&& ComponentbuilderHelper::checkArray($version_note['component']))
+			&& ArrayHelper::check($version_note['component']))
 		{
 			// insure component ids are only added once per item
 			$version_note['component'] = array_unique(
@@ -5885,7 +5895,7 @@ class Get
 		// to check inside the templates
 		$again = array();
 		// check if template keys were passed
-		if (!ComponentbuilderHelper::checkArray($templates))
+		if (!ArrayHelper::check($templates))
 		{
 			// set the Template data
 			$temp1 = ComponentbuilderHelper::getAllBetween(
@@ -5894,25 +5904,25 @@ class Get
 			$temp2 = ComponentbuilderHelper::getAllBetween(
 				$default, '$this->loadTemplate("', '")'
 			);
-			if (ComponentbuilderHelper::checkArray($temp1)
-				&& ComponentbuilderHelper::checkArray($temp2))
+			if (ArrayHelper::check($temp1)
+				&& ArrayHelper::check($temp2))
 			{
 				$templates = array_merge($temp1, $temp2);
 			}
 			else
 			{
-				if (ComponentbuilderHelper::checkArray($temp1))
+				if (ArrayHelper::check($temp1))
 				{
 					$templates = $temp1;
 				}
-				elseif (ComponentbuilderHelper::checkArray($temp2))
+				elseif (ArrayHelper::check($temp2))
 				{
 					$templates = $temp2;
 				}
 			}
 		}
 		// check if we found templates
-		if (ComponentbuilderHelper::checkArray($templates, true))
+		if (ArrayHelper::check($templates, true))
 		{
 			foreach ($templates as $template)
 			{
@@ -5924,7 +5934,7 @@ class Get
 					$data = $this->getDataWithAlias(
 						$template, 'template', $view
 					);
-					if (ComponentbuilderHelper::checkArray($data))
+					if (ArrayHelper::check($data))
 					{
 						// load it to the template data array
 						$this->templateData[$this->target][$view][$template]
@@ -5944,7 +5954,7 @@ class Get
 			}
 		}
 		// check if layout keys were passed
-		if (!ComponentbuilderHelper::checkArray($layouts))
+		if (!ArrayHelper::check($layouts))
 		{
 			// set the Layout data
 			$lay1 = ComponentbuilderHelper::getAllBetween(
@@ -5953,25 +5963,25 @@ class Get
 			$lay2 = ComponentbuilderHelper::getAllBetween(
 				$default, 'JLayoutHelper::render("', '",'
 			);
-			if (ComponentbuilderHelper::checkArray($lay1)
-				&& ComponentbuilderHelper::checkArray($lay2))
+			if (ArrayHelper::check($lay1)
+				&& ArrayHelper::check($lay2))
 			{
 				$layouts = array_merge($lay1, $lay2);
 			}
 			else
 			{
-				if (ComponentbuilderHelper::checkArray($lay1))
+				if (ArrayHelper::check($lay1))
 				{
 					$layouts = $lay1;
 				}
-				elseif (ComponentbuilderHelper::checkArray($lay2))
+				elseif (ArrayHelper::check($lay2))
 				{
 					$layouts = $lay2;
 				}
 			}
 		}
 		// check if we found layouts
-		if (ComponentbuilderHelper::checkArray($layouts, true))
+		if (ArrayHelper::check($layouts, true))
 		{
 			// get the other target if both
 			$_target = null;
@@ -5982,7 +5992,7 @@ class Get
 			foreach ($layouts as $layout)
 			{
 				if (!isset($this->layoutData[$this->target])
-					|| !ComponentbuilderHelper::checkArray(
+					|| !ArrayHelper::check(
 						$this->layoutData[$this->target]
 					)
 					|| !array_key_exists(
@@ -5990,7 +6000,7 @@ class Get
 					))
 				{
 					$data = $this->getDataWithAlias($layout, 'layout', $view);
-					if (ComponentbuilderHelper::checkArray($data))
+					if (ArrayHelper::check($data))
 					{
 						// load it to the layout data array
 						$this->layoutData[$this->target][$layout] = $data;
@@ -6013,7 +6023,7 @@ class Get
 			}
 		}
 		// check again
-		if (ComponentbuilderHelper::checkArray($again))
+		if (ArrayHelper::check($again))
 		{
 			foreach ($again as $go)
 			{
@@ -6074,7 +6084,7 @@ class Get
 		// we load this layout
 		$php_view = '';
 		if ($row->add_php_view == 1
-			&& ComponentbuilderHelper::checkString($row->php_view))
+			&& StringHelper::check($row->php_view))
 		{
 			$php_view = $this->setGuiCodePlaceholder(
 				$this->setDynamicValues(base64_decode($row->php_view)),
@@ -6106,12 +6116,12 @@ class Get
 				$this->libManager[$_target][$view] = array();
 			}
 			// make sure json become array
-			if (ComponentbuilderHelper::checkJson($row->libraries))
+			if (JsonHelper::check($row->libraries))
 			{
 				$row->libraries = json_decode($row->libraries, true);
 			}
 			// if we have an array add it
-			if (ComponentbuilderHelper::checkArray($row->libraries))
+			if (ArrayHelper::check($row->libraries))
 			{
 				foreach ($row->libraries as $library)
 				{
@@ -6234,12 +6244,12 @@ class Get
 			$this->db->setQuery($query);
 			$rows = $this->db->loadObjectList();
 			// check if we have an array
-			if (ComponentbuilderHelper::checkArray($rows))
+			if (ArrayHelper::check($rows))
 			{
 				foreach ($rows as $row)
 				{
 					// build the key
-					$k_ey = ComponentbuilderHelper::safeString($row->alias);
+					$k_ey = StringHelper::safe($row->alias);
 					$key  = preg_replace("/[^A-Za-z]/", '', $k_ey);
 					// set the keys
 					$this->dataWithAliasKeys[$table][$row->alias] = $row->id;
@@ -6371,7 +6381,7 @@ class Get
 				                 6 => array('footableVersion' => 3,
 				                            'footable'        => true));
 				if (isset($buildin[$library->id])
-					&& ComponentbuilderHelper::checkArray(
+					&& ArrayHelper::check(
 						$buildin[$library->id]
 					))
 				{
@@ -6404,16 +6414,16 @@ class Get
 					$library->{'add' . $addTarget} = (isset(
 							$library->{'add' . $addTarget}
 						)
-						&& ComponentbuilderHelper::checkJson(
+						&& JsonHelper::check(
 							$library->{'add' . $addTarget}
 						)) ? json_decode($library->{'add' . $addTarget}, true)
 						: null;
-					if (ComponentbuilderHelper::checkArray(
+					if (ArrayHelper::check(
 						$library->{'add' . $addTarget}
 					))
 					{
 						if (isset($library->{$targetHere})
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$library->{$targetHere}
 							))
 						{
@@ -6436,10 +6446,10 @@ class Get
 				{
 					// set the config data
 					$library->addconfig = (isset($library->addconfig)
-						&& ComponentbuilderHelper::checkJson(
+						&& JsonHelper::check(
 							$library->addconfig
 						)) ? json_decode($library->addconfig, true) : null;
-					if (ComponentbuilderHelper::checkArray($library->addconfig))
+					if (ArrayHelper::check($library->addconfig))
 					{
 						$library->config = array_map(
 							function ($array) {
@@ -6459,7 +6469,7 @@ class Get
 				{
 					// set Needed PHP
 					if (isset($library->php_setdocument)
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$library->php_setdocument
 						))
 					{
@@ -6480,10 +6490,10 @@ class Get
 				{
 					// set the addconditions data
 					$library->addconditions = (isset($library->addconditions)
-						&& ComponentbuilderHelper::checkJson(
+						&& JsonHelper::check(
 							$library->addconditions
 						)) ? json_decode($library->addconditions, true) : null;
-					if (ComponentbuilderHelper::checkArray(
+					if (ArrayHelper::check(
 						$library->addconditions
 					))
 					{
@@ -6534,7 +6544,7 @@ class Get
 		}
 		);
 		// check if we should continue
-		if (ComponentbuilderHelper::checkArray($langStringTargets))
+		if (ArrayHelper::check($langStringTargets))
 		{
 			// insure string is not broken
 			$content = $this->setPlaceholders($content, $this->placeholders);
@@ -6554,15 +6564,15 @@ class Get
 					$content, 'Joomla' . '.JText._("', '"'
 				);
 				// combine into one array
-				$jsTEXT = ComponentbuilderHelper::mergeArrays($jsTEXT);
+				$jsTEXT = ArrayHelper::merge($jsTEXT);
 				// we need to add a check to insure these JavaScript lang matchup
-				if (ComponentbuilderHelper::checkArray(
+				if (ArrayHelper::check(
 					$jsTEXT
 				)) //<-- not really needed hmmm
 				{
 					// load the JS text to mismatch array
 					$langCheck[]        = $jsTEXT;
-					$this->langMismatch = ComponentbuilderHelper::mergeArrays(
+					$this->langMismatch = ArrayHelper::merge(
 						array($jsTEXT, $this->langMismatch)
 					);
 				}
@@ -6577,13 +6587,13 @@ class Get
 					$content, 'JText:' . ':script("', '"'
 				);
 				// combine into one array
-				$scTEXT = ComponentbuilderHelper::mergeArrays($scTEXT);
+				$scTEXT = ArrayHelper::merge($scTEXT);
 				// we need to add a check to insure these JavaScript lang matchup
-				if (ComponentbuilderHelper::checkArray($scTEXT))
+				if (ArrayHelper::check($scTEXT))
 				{
 					// load the Script text to match array
 					$langCheck[]     = $scTEXT;
-					$this->langMatch = ComponentbuilderHelper::mergeArrays(
+					$this->langMatch = ArrayHelper::merge(
 						array($scTEXT, $this->langMatch)
 					);
 				}
@@ -6598,7 +6608,7 @@ class Get
 					$content, 'JustTEXT:' . ':_("', '")'
 				);
 				// merge lang only
-				$langOnly = ComponentbuilderHelper::mergeArrays($langOnly);
+				$langOnly = ArrayHelper::merge($langOnly);
 			}
 			// set language data
 			foreach ($langStringTargets as $langStringTarget)
@@ -6618,8 +6628,8 @@ class Get
 				);
 			}
 			// the normal loading of the language strings
-			$langCheck = ComponentbuilderHelper::mergeArrays($langCheck);
-			if (ComponentbuilderHelper::checkArray(
+			$langCheck = ArrayHelper::merge($langCheck);
+			if (ArrayHelper::check(
 				$langCheck
 			)) //<-- not really needed hmmm
 			{
@@ -6646,7 +6656,7 @@ class Get
 				}
 			}
 			// the uppercase loading only (for arrays and other tricks)
-			if (ComponentbuilderHelper::checkArray($langOnly))
+			if (ArrayHelper::check($langOnly))
 			{
 				foreach ($langOnly as $string)
 				{
@@ -6661,7 +6671,7 @@ class Get
 				}
 			}
 			// only continue if we have value to replace
-			if (ComponentbuilderHelper::checkArray($langHolders))
+			if (ArrayHelper::check($langHolders))
 			{
 				$content = $this->setPlaceholders($content, $langHolders);
 			}
@@ -6681,13 +6691,13 @@ class Get
 	public function setLang($string)
 	{
 		// this is there to insure we dont break already added Language strings
-		if (ComponentbuilderHelper::safeString($string, 'U', '_', false, false)
+		if (StringHelper::safe($string, 'U', '_', false, false)
 			=== $string)
 		{
 			return false;
 		}
 		// build lang key
-		$keyLang = $this->langPrefix . '_' . ComponentbuilderHelper::safeString(
+		$keyLang = $this->langPrefix . '_' . StringHelper::safe(
 				$string, 'U'
 			);
 		// set the language string
@@ -6714,7 +6724,7 @@ class Get
 	                                 $as, $row_type, $type
 	)
 	{
-		if (ComponentbuilderHelper::checkString($string))
+		if (StringHelper::check($string))
 		{
 			if ('db' === $type)
 			{
@@ -6754,7 +6764,7 @@ class Get
 				$lines = explode(PHP_EOL, $string);
 			}
 			// only continue if lines are available
-			if (ComponentbuilderHelper::checkArray($lines))
+			if (ArrayHelper::check($lines))
 			{
 				$gets = array();
 				$keys = array();
@@ -6787,10 +6797,10 @@ class Get
 						$key = $view . '_' . trim($key);
 					}
 					// continue only if we have get
-					if (ComponentbuilderHelper::checkString($get))
+					if (StringHelper::check($get))
 					{
 						$gets[] = $this->db->quote($get);
-						if (ComponentbuilderHelper::checkString($key))
+						if (StringHelper::check($key))
 						{
 							$this->getAsLookup[$method_key][$get] = $key;
 							$keys[]
@@ -6810,7 +6820,7 @@ class Get
 							);
 						}
 						// make sure we have the view name
-						if (ComponentbuilderHelper::checkString($view))
+						if (StringHelper::check($view))
 						{
 							// prep the field name
 							$field = str_replace($as . '.', '', $get);
@@ -6827,8 +6837,8 @@ class Get
 						}
 					}
 				}
-				if (ComponentbuilderHelper::checkArray($gets)
-					&& ComponentbuilderHelper::checkArray($keys))
+				if (ArrayHelper::check($gets)
+					&& ArrayHelper::check($keys))
 				{
 					// single joined selection needs the prefix to the values to avoid conflict in the names
 					// so we must still add then AS
@@ -6879,7 +6889,7 @@ class Get
 		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 		$this->db->setQuery($query);
 
-		return ComponentbuilderHelper::safeString($this->db->loadResult());
+		return StringHelper::safe($this->db->loadResult());
 	}
 
 	/**
@@ -6895,7 +6905,7 @@ class Get
 	public function buildSqlDump($tables, $view, $view_id)
 	{
 		// first build a query statment to get all the data (insure it must be added - check the tweaking)
-		if (ComponentbuilderHelper::checkArray($tables)
+		if (ArrayHelper::check($tables)
 			&& (!isset($this->sqlTweak[$view_id]['remove'])
 				|| !$this->sqlTweak[$view_id]['remove']))
 		{
@@ -6914,7 +6924,7 @@ class Get
 						if (strpos($table['sourcemap'], PHP_EOL) !== false)
 						{
 							$fields = explode(PHP_EOL, $table['sourcemap']);
-							if (ComponentbuilderHelper::checkArray($fields))
+							if (ArrayHelper::check($fields))
 							{
 								// reset array buckets
 								$sourceArray = array();
@@ -6932,10 +6942,10 @@ class Get
 										$targetArray[] = trim($target);
 									}
 								}
-								if (ComponentbuilderHelper::checkArray(
+								if (ArrayHelper::check(
 										$sourceArray
 									)
-									&& ComponentbuilderHelper::checkArray(
+									&& ArrayHelper::check(
 										$targetArray
 									))
 								{
@@ -6969,7 +6979,7 @@ class Get
 						if (strpos($table['sourcemap'], PHP_EOL) !== false)
 						{
 							$fields = explode(PHP_EOL, $table['sourcemap']);
-							if (ComponentbuilderHelper::checkArray($fields))
+							if (ArrayHelper::check($fields))
 							{
 								// reset array buckets
 								$sourceArray = array();
@@ -7004,10 +7014,10 @@ class Get
 										);
 									}
 								}
-								if (ComponentbuilderHelper::checkArray(
+								if (ArrayHelper::check(
 										$sourceArray
 									)
-									&& ComponentbuilderHelper::checkArray(
+									&& ArrayHelper::check(
 										$targetArray
 									))
 								{
@@ -7119,12 +7129,12 @@ class Get
 	public function mysql_escape($value)
 	{
 		// if array then return maped
-		if (ComponentbuilderHelper::checkArray($value))
+		if (ArrayHelper::check($value))
 		{
 			return array_map(__METHOD__, $value);
 		}
 		// if string make sure it is correctly escaped
-		if (ComponentbuilderHelper::checkString($value) && !is_numeric($value))
+		if (StringHelper::check($value) && !is_numeric($value))
 		{
 			return $this->db->quote($value);
 		}
@@ -7267,7 +7277,7 @@ class Get
 	 */
 	public function setDynamicValues($string, $debug = 0)
 	{
-		if (ComponentbuilderHelper::checkString($string))
+		if (StringHelper::check($string))
 		{
 			$string = $this->setLangStrings(
 				$this->setCustomCodeData(
@@ -7309,7 +7319,7 @@ class Get
 			$found  = ComponentbuilderHelper::getAllBetween(
 				$string, '[EXTERNA' . 'LCODE=', ']'
 			);
-			if (ComponentbuilderHelper::checkArray($found))
+			if (ArrayHelper::check($found))
 			{
 				// build local bucket
 				foreach ($found as $target)
@@ -7365,7 +7375,7 @@ class Get
 					}
 				}
 				// now update local string if bucket has values
-				if (ComponentbuilderHelper::checkArray($bucket))
+				if (ArrayHelper::check($bucket))
 				{
 					$string = $this->setPlaceholders($string, $bucket);
 				}
@@ -7423,14 +7433,14 @@ class Get
 				);
 			}
 			// did we get any value
-			if (ComponentbuilderHelper::checkString(
+			if (StringHelper::check(
 				$this->externalCodeString[$target_key]
 			))
 			{
 				// check for changes
 				$live_hash = md5($this->externalCodeString[$target_key]);
 				// check if it exists local
-				if ($hash = ComponentbuilderHelper::getVar(
+				if ($hash = GetHelper::var(
 					'external_code', $target_key, 'target', 'hash'
 				))
 				{
@@ -7562,7 +7572,7 @@ class Get
 		// get the cutting sequence
 		$cutter = (array) explode('|', $sequence);
 		// we only continue if we have more rows than we have to cut
-		if (array_sum($cutter) < ComponentbuilderHelper::checkArray($rows))
+		if (array_sum($cutter) < ArrayHelper::check($rows))
 		{
 			// remove the rows at the bottom if needed
 			if (isset($cutter[1]) && $cutter[1] > 0)
@@ -7621,7 +7631,7 @@ class Get
 			$found  = ComponentbuilderHelper::getAllBetween(
 				$string, '[CUSTO' . 'MCODE=', ']'
 			);
-			if (ComponentbuilderHelper::checkArray($found))
+			if (ArrayHelper::check($found))
 			{
 				foreach ($found as $key)
 				{
@@ -7636,7 +7646,7 @@ class Get
 					{
 						$id = (int) $key;
 					}
-					elseif (ComponentbuilderHelper::checkString($key)
+					elseif (StringHelper::check($key)
 						&& strpos(
 							$key, '+'
 						) === false)
@@ -7644,7 +7654,7 @@ class Get
 						$getFuncName = trim($key);
 						if (!isset($this->functionNameMemory[$getFuncName]))
 						{
-							if (!$found_local = ComponentbuilderHelper::getVar(
+							if (!$found_local = GetHelper::var(
 								'custom_code', $getFuncName, 'function_name',
 								'id'
 							))
@@ -7656,7 +7666,7 @@ class Get
 						}
 						$id = (int) $this->functionNameMemory[$getFuncName];
 					}
-					elseif (ComponentbuilderHelper::checkString($key)
+					elseif (StringHelper::check($key)
 						&& strpos(
 							$key, '+'
 						) !== false)
@@ -7667,13 +7677,13 @@ class Get
 						{
 							$id = (int) $array[0];
 						}
-						elseif (ComponentbuilderHelper::checkString($array[0]))
+						elseif (StringHelper::check($array[0]))
 						{
 							$getFuncName = trim($array[0]);
 							if (!isset($this->functionNameMemory[$getFuncName]))
 							{
 								if (!$found_local
-									= ComponentbuilderHelper::getVar(
+									= GetHelper::var(
 									'custom_code', $getFuncName,
 									'function_name', 'id'
 								))
@@ -7712,7 +7722,7 @@ class Get
 										}, (array) explode(',', $array[1])
 									);
 								}
-								elseif (ComponentbuilderHelper::checkString(
+								elseif (StringHelper::check(
 									$array[1]
 								))
 								{
@@ -7747,7 +7757,7 @@ class Get
 				var_dump($bucket);
 			}
 			// check if any custom code placeholders where found
-			if (ComponentbuilderHelper::checkArray($bucket))
+			if (ArrayHelper::check($bucket))
 			{
 				$_tmpLang = $this->lang;
 				// insure we add the langs to both site and admin
@@ -7824,7 +7834,7 @@ class Get
 	{
 		// check if there is args for this code
 		if (isset($this->customCodeData[$item['id']]['args'])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$this->customCodeData[$item['id']]['args']
 			))
 		{
@@ -7899,7 +7909,7 @@ class Get
 	{
 		// aways fist reset these
 		$this->clearFromPlaceHolders($key);
-		if (ComponentbuilderHelper::checkArray($values))
+		if (ArrayHelper::check($values))
 		{
 			$number = 0;
 			foreach ($values as $value)
@@ -7956,7 +7966,7 @@ class Get
 				'#__componentbuilder_language_translation', 'a'
 			)
 		);
-		if (ComponentbuilderHelper::checkArray($values))
+		if (ArrayHelper::check($values))
 		{
 			$query->select(
 				$this->db->quoteName(
@@ -8007,12 +8017,12 @@ class Get
 				// to keep or remove
 				$remove = false;
 				// build the translations
-				if (ComponentbuilderHelper::checkString($string)
+				if (StringHelper::check($string)
 					&& isset($this->multiLangString[$string]))
 				{
 					// make sure we have converted the string to array
 					if (isset($this->multiLangString[$string]['translation'])
-						&& ComponentbuilderHelper::checkJson(
+						&& JsonHelper::check(
 							$this->multiLangString[$string]['translation']
 						))
 					{
@@ -8023,7 +8033,7 @@ class Get
 					}
 					// if we have an array continue
 					if (isset($this->multiLangString[$string]['translation'])
-						&& ComponentbuilderHelper::checkArray(
+						&& ArrayHelper::check(
 							$this->multiLangString[$string]['translation']
 						))
 					{
@@ -8059,14 +8069,14 @@ class Get
 					}
 				}
 				// do the database management
-				if (ComponentbuilderHelper::checkString($string)
+				if (StringHelper::check($string)
 					&& ($key = array_search($string, $strings)) !== false)
 				{
 					if (isset($this->multiLangString[$string]))
 					{
 						// update the existing placeholder in db
 						$id = $this->multiLangString[$string]['id'];
-						if (ComponentbuilderHelper::checkJson(
+						if (JsonHelper::check(
 							$this->multiLangString[$string][$target]
 						))
 						{
@@ -8323,7 +8333,7 @@ class Get
 				$today         = JFactory::getDate()->toSql();
 				foreach ($otherStrings as $item)
 				{
-					if (ComponentbuilderHelper::checkJson($item[$target]))
+					if (JsonHelper::check($item[$target]))
 					{
 						$targets = (array) json_decode($item[$target], true);
 						// if component is not found ignore this string, and do nothing
@@ -8333,7 +8343,7 @@ class Get
 							// first remove the component from the string
 							unset($targets[$key]);
 							// check if there are more components
-							if (ComponentbuilderHelper::checkArray($targets))
+							if (ArrayHelper::check($targets))
 							{
 								// just update the string to unlink the current component
 								$this->setUpdateExistingLangStrings(
@@ -8356,7 +8366,7 @@ class Get
 								{
 									// just one linked extension type is enough to stop the search
 									if ($action_with_string
-										&& ComponentbuilderHelper::checkJson(
+										&& JsonHelper::check(
 											$item[$other_target]
 										))
 									{
@@ -8364,7 +8374,7 @@ class Get
 											$item[$other_target], true
 										);
 										// check if linked to other extensions
-										if (ComponentbuilderHelper::checkArray(
+										if (ArrayHelper::check(
 											$other_targets
 										))
 										{
@@ -8375,14 +8385,14 @@ class Get
 								}
 								// check we should just archive or remove string
 								if ($action_with_string
-									&& ComponentbuilderHelper::checkJson(
+									&& JsonHelper::check(
 										$item['translation']
 									))
 								{
 									$translation = json_decode(
 										$item['translation'], true
 									);
-									if (ComponentbuilderHelper::checkArray(
+									if (ArrayHelper::check(
 										$translation
 									))
 									{
@@ -8468,7 +8478,7 @@ class Get
 		$query->from(
 			$this->db->quoteName('#__componentbuilder_custom_code', 'a')
 		);
-		if (ComponentbuilderHelper::checkArray($ids))
+		if (ArrayHelper::check($ids))
 		{
 			if ($idArray = $this->checkCustomCodeMemory($ids))
 			{
@@ -8593,7 +8603,7 @@ class Get
 	 */
 	protected function getPowers($ids)
 	{
-		if (ComponentbuilderHelper::checkArray($ids, true))
+		if (ArrayHelper::check($ids, true))
 		{
 			foreach ($ids as $id)
 			{
@@ -8662,11 +8672,11 @@ class Get
 					$this->placeholders
 				);
 				// now set the code_name and class name
-				$power->code_name = $power->class_name = ComponentbuilderHelper::safeClassFunctionName(
+				$power->code_name = $power->class_name = ClassfunctionHelper::safe(
 					$power->name
 				);
 				// set official name
-				$power->official_name = ComponentbuilderHelper::safeString(
+				$power->official_name = StringHelper::safe(
 					$power->name, 'W'
 				);
 				// set namespace
@@ -8694,9 +8704,9 @@ class Get
 					// setup the path array
 					$path_array = (array) explode('\\', $power->namespace);
 					// make sure all sub folders in src dir is set and remove all characters that will not work in folders naming
-					$power->namespace = ComponentbuilderHelper::safeNamespace(str_replace('.', '\\', $power->namespace));
+					$power->namespace = NamespaceHelper::safe(str_replace('.', '\\', $power->namespace));
 					// make sure it has two or more
-					if (ComponentbuilderHelper::checkArray($path_array) <= 1)
+					if (ArrayHelper::check($path_array) <= 1)
 					{
 						// we raise an error message
 						$this->app->enqueueMessage(
@@ -8750,10 +8760,10 @@ class Get
 					}
 					// make sure the arrays are namespace safe
 					$path_array      = array_map(function ($val) {
-						return ComponentbuilderHelper::safeNamespace($val);
+						return NamespaceHelper::safe($val);
 					}, $path_array);
 					$namespace_array = array_map(function ($val) {
-						return ComponentbuilderHelper::safeNamespace($val);
+						return NamespaceHelper::safe($val);
 					}, $namespace_array);
 					// set the actual class namespace
 					$power->_namespace = implode('\\', $namespace_array);
@@ -8763,11 +8773,11 @@ class Get
 					$prefix_folder = implode('.', $path_array);
 					// make sub folders if still found
 					$sub_folder = '';
-					if (ComponentbuilderHelper::checkArray($src_array))
+					if (ArrayHelper::check($src_array))
 					{
 						// make sure the arrays are namespace safe
 						$sub_folder = '/' . implode('/', array_map(function ($val) {
-								return ComponentbuilderHelper::safeNamespace($val);
+								return NamespaceHelper::safe($val);
 							}, $src_array));
 					}
 					// now we set the paths
@@ -8779,7 +8789,7 @@ class Get
 				$use = array();
 				// check if we have use selection
 				$power->use_selection = (isset($power->use_selection)
-					&& ComponentbuilderHelper::checkJson(
+					&& JsonHelper::check(
 						$power->use_selection
 					)) ? json_decode($power->use_selection, true) : null;
 				if ($power->use_selection)
@@ -8790,7 +8800,7 @@ class Get
 				}
 				// check if we have load selection
 				$power->load_selection = (isset($power->load_selection)
-					&& ComponentbuilderHelper::checkJson(
+					&& JsonHelper::check(
 						$power->load_selection
 					)) ? json_decode($power->load_selection, true) : null;
 				if ($power->load_selection)
@@ -8805,7 +8815,7 @@ class Get
 				$power->implement_names = array();
 				// does this implement
 				$power->implements = (isset($power->implements)
-					&& ComponentbuilderHelper::checkJson(
+					&& JsonHelper::check(
 						$power->implements
 					)) ? json_decode($power->implements, true) : null;
 				if ($power->implements)
@@ -8813,7 +8823,7 @@ class Get
 					foreach ($power->implements as $implement)
 					{
 						if ($implement == -1
-							&& ComponentbuilderHelper::checkString($power->implements_custom))
+							&& StringHelper::check($power->implements_custom))
 						{
 							$power->implement_names[] = $this->setPlaceholders(
 								$this->setDynamicValues($power->implements_custom),
@@ -8840,7 +8850,7 @@ class Get
 				$power->extends_name = null;
 				// we first check for custom extending options
 				if ($power->extends == -1
-					&& ComponentbuilderHelper::checkString($power->extends_custom))
+					&& StringHelper::check($power->extends_custom))
 				{
 					$power->extends_name = $this->setPlaceholders(
 						$this->setDynamicValues($power->extends_custom),
@@ -8881,7 +8891,7 @@ class Get
 						) . PHP_EOL;
 				}
 				// now add all the extra use statements
-				if (ComponentbuilderHelper::checkArray($use))
+				if (ArrayHelper::check($use))
 				{
 					foreach (array_unique($use) as $u)
 					{
@@ -8897,12 +8907,12 @@ class Get
 					}
 				}
 				// now set the description
-				$power->description = (ComponentbuilderHelper::checkString($power->description)) ? $this->setPlaceholders(
+				$power->description = (StringHelper::check($power->description)) ? $this->setPlaceholders(
 					$this->setDynamicValues($power->description),
 					$this->placeholders
 				) : '';
 				// add the main code if set
-				if (ComponentbuilderHelper::checkString($power->main_class_code))
+				if (StringHelper::check($power->main_class_code))
 				{
 					// set GUI mapper field
 					$guiMapper['field'] = 'main_class_code';
@@ -8977,7 +8987,7 @@ class Get
 				);
 				// set safe class function name
 				$module->code_name
-					= ComponentbuilderHelper::safeClassFunctionName(
+					= ClassfunctionHelper::safe(
 					$module->name
 				);
 				// set module folder name
@@ -9011,15 +9021,15 @@ class Get
 	 */
 	protected function getModuleIDs()
 	{
-		if (($addjoomla_modules = ComponentbuilderHelper::getVar(
+		if (($addjoomla_modules = GetHelper::var(
 				'component_modules', $this->componentID, 'joomla_component',
 				'addjoomla_modules'
 			)) !== false)
 		{
-			$addjoomla_modules = (ComponentbuilderHelper::checkJson(
+			$addjoomla_modules = (JsonHelper::check(
 				$addjoomla_modules
 			)) ? json_decode($addjoomla_modules, true) : null;
-			if (ComponentbuilderHelper::checkArray($addjoomla_modules))
+			if (ArrayHelper::check($addjoomla_modules))
 			{
 				$joomla_modules = array_filter(
 					array_values($addjoomla_modules),
@@ -9034,7 +9044,7 @@ class Get
 					}
 				);
 				// if we have values we return IDs
-				if (ComponentbuilderHelper::checkArray($joomla_modules))
+				if (ArrayHelper::check($joomla_modules))
 				{
 					return array_map(
 						function ($array) {
@@ -9144,11 +9154,11 @@ class Get
 				);
 				// set safe class function name
 				$module->code_name
-					= ComponentbuilderHelper::safeClassFunctionName(
+					= ClassfunctionHelper::safe(
 					$module->name
 				);
 				// set official name
-				$module->official_name = ComponentbuilderHelper::safeString(
+				$module->official_name = StringHelper::safe(
 					$module->name, 'W'
 				);
 				// set langPrefix
@@ -9197,7 +9207,7 @@ class Get
 				);
 				// set description (TODO) add description field to module
 				if (!isset($module->description)
-					|| !ComponentbuilderHelper::checkString(
+					|| !StringHelper::check(
 						$module->description
 					))
 				{
@@ -9246,9 +9256,9 @@ class Get
 				}
 				// get the custom_get
 				$module->custom_get = (isset($module->custom_get)
-					&& ComponentbuilderHelper::checkJson($module->custom_get))
+					&& JsonHelper::check($module->custom_get))
 					? json_decode($module->custom_get, true) : null;
-				if (ComponentbuilderHelper::checkArray($module->custom_get))
+				if (ArrayHelper::check($module->custom_get))
 				{
 					$module->custom_get = $this->setGetData(
 						$module->custom_get, $module->key, $module->key
@@ -9260,12 +9270,12 @@ class Get
 				}
 				// set helper class details
 				if ($module->add_class_helper >= 1
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$module->class_helper_code
 					))
 				{
 					if ($module->add_class_helper_header == 1
-						&& ComponentbuilderHelper::checkString(
+						&& StringHelper::check(
 							$module->class_helper_header
 						))
 					{
@@ -9318,7 +9328,7 @@ class Get
 				}
 				// base64 Decode mod_code
 				if (isset($module->mod_code)
-					&& ComponentbuilderHelper::checkString($module->mod_code))
+					&& StringHelper::check($module->mod_code))
 				{
 					// set GUI mapper field
 					$guiMapper['field'] = 'mod_code';
@@ -9344,7 +9354,7 @@ class Get
 				}
 				// base64 Decode default header
 				if (isset($module->default_header)
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$module->default_header
 					))
 				{
@@ -9365,7 +9375,7 @@ class Get
 				}
 				// base64 Decode default
 				if (isset($module->default)
-					&& ComponentbuilderHelper::checkString($module->default))
+					&& StringHelper::check($module->default))
 				{
 					// set GUI mapper field
 					$guiMapper['field'] = 'default';
@@ -9395,9 +9405,9 @@ class Get
 				$module->fields_rules_paths = 1;
 				// set the fields data
 				$module->fields = (isset($module->fields)
-					&& ComponentbuilderHelper::checkJson($module->fields))
+					&& JsonHelper::check($module->fields))
 					? json_decode($module->fields, true) : null;
-				if (ComponentbuilderHelper::checkArray($module->fields))
+				if (ArrayHelper::check($module->fields))
 				{
 					// ket global key
 					$key            = $module->key;
@@ -9407,7 +9417,7 @@ class Get
 					foreach ($module->fields as $n => &$form)
 					{
 						if (isset($form['fields'])
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$form['fields']
 							))
 						{
@@ -9418,7 +9428,7 @@ class Get
 							)
 							{
 								if (!isset($form[$dynamic_field])
-									|| !ComponentbuilderHelper::checkString(
+									|| !StringHelper::check(
 										$form[$dynamic_field]
 									))
 								{
@@ -9436,7 +9446,7 @@ class Get
 									else
 									{
 										$form[$dynamic_field]
-											= ComponentbuilderHelper::safeString(
+											= StringHelper::safe(
 											$form[$dynamic_field]
 										);
 									}
@@ -9467,11 +9477,11 @@ class Get
 								= $form['fields_rules_paths'];
 							// check for extra rule paths
 							if (isset($form['addrulepath'])
-								&& ComponentbuilderHelper::checkArray($form['addrulepath']))
+								&& ArrayHelper::check($form['addrulepath']))
 							{
 								foreach ($form['addrulepath'] as $add_rule_path)
 								{
-									if (ComponentbuilderHelper::checkString($add_rule_path['path']))
+									if (StringHelper::check($add_rule_path['path']))
 									{
 										$module->add_rule_path[$unique] = $add_rule_path['path'];
 									}
@@ -9479,11 +9489,11 @@ class Get
 							}
 							// check for extra field paths
 							if (isset($form['addfieldpath'])
-								&& ComponentbuilderHelper::checkArray($form['addfieldpath']))
+								&& ArrayHelper::check($form['addfieldpath']))
 							{
 								foreach ($form['addfieldpath'] as $add_field_path)
 								{
-									if (ComponentbuilderHelper::checkString($add_field_path['path']))
+									if (StringHelper::check($add_field_path['path']))
 									{
 										$module->add_field_path[$unique] = $add_field_path['path'];
 									}
@@ -9491,7 +9501,7 @@ class Get
 							}
 							// add the label if set to lang
 							if (isset($form['label'])
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$form['label']
 								))
 							{
@@ -9509,7 +9519,7 @@ class Get
 										$field, $key, $key, $unique
 									);
 									// update the default if set
-									if (ComponentbuilderHelper::checkString(
+									if (StringHelper::check(
 											$field['custom_value']
 										)
 										&& isset($field['settings']))
@@ -9624,16 +9634,16 @@ class Get
 					$module->{'add' . $addTarget} = (isset(
 							$module->{'add' . $addTarget}
 						)
-						&& ComponentbuilderHelper::checkJson(
+						&& JsonHelper::check(
 							$module->{'add' . $addTarget}
 						)) ? json_decode($module->{'add' . $addTarget}, true)
 						: null;
-					if (ComponentbuilderHelper::checkArray(
+					if (ArrayHelper::check(
 						$module->{'add' . $addTarget}
 					))
 					{
 						if (isset($module->{$targetHere})
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$module->{$targetHere}
 							))
 						{
@@ -9662,12 +9672,12 @@ class Get
 						= array();
 				}
 				// make sure json become array
-				if (ComponentbuilderHelper::checkJson($module->libraries))
+				if (JsonHelper::check($module->libraries))
 				{
 					$module->libraries = json_decode($module->libraries, true);
 				}
 				// if we have an array add it
-				if (ComponentbuilderHelper::checkArray($module->libraries))
+				if (ArrayHelper::check($module->libraries))
 				{
 					foreach ($module->libraries as $library)
 					{
@@ -9709,7 +9719,7 @@ class Get
 							)
 							&& $module->{'add_' . $scriptMethod . '_'
 							. $scriptType} == 1
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$module->{$scriptMethod . '_' . $scriptType}
 							))
 						{
@@ -9741,7 +9751,7 @@ class Get
 				}
 				// add_sql
 				if ($module->add_sql == 1
-					&& ComponentbuilderHelper::checkString($module->sql))
+					&& StringHelper::check($module->sql))
 				{
 					$module->sql = $this->setPlaceholders(
 						$this->setDynamicValues(base64_decode($module->sql)),
@@ -9755,7 +9765,7 @@ class Get
 				}
 				// add_sql_uninstall
 				if ($module->add_sql_uninstall == 1
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$module->sql_uninstall
 					))
 				{
@@ -9772,7 +9782,7 @@ class Get
 				}
 				// update the URL of the update_server if set
 				if ($module->add_update_server == 1
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$module->update_server_url
 					))
 				{
@@ -9793,7 +9803,7 @@ class Get
 					{
 						// get the server protocol
 						$module->{$server . '_protocol'}
-							= ComponentbuilderHelper::getVar(
+							= GetHelper::var(
 							'server', (int) $module->{$server}, 'id', 'protocol'
 						);
 					}
@@ -9924,15 +9934,15 @@ class Get
 	 */
 	protected function getPluginIDs()
 	{
-		if (($addjoomla_plugins = ComponentbuilderHelper::getVar(
+		if (($addjoomla_plugins = GetHelper::var(
 				'component_plugins', $this->componentID, 'joomla_component',
 				'addjoomla_plugins'
 			)) !== false)
 		{
-			$addjoomla_plugins = (ComponentbuilderHelper::checkJson(
+			$addjoomla_plugins = (JsonHelper::check(
 				$addjoomla_plugins
 			)) ? json_decode($addjoomla_plugins, true) : null;
-			if (ComponentbuilderHelper::checkArray($addjoomla_plugins))
+			if (ArrayHelper::check($addjoomla_plugins))
 			{
 				$joomla_plugins = array_filter(
 					array_values($addjoomla_plugins),
@@ -9947,7 +9957,7 @@ class Get
 					}
 				);
 				// if we have values we return IDs
-				if (ComponentbuilderHelper::checkArray($joomla_plugins))
+				if (ArrayHelper::check($joomla_plugins))
 				{
 					return array_map(
 						function ($array) {
@@ -10008,7 +10018,7 @@ class Get
 				);
 				// update the name if it has dynamic values
 				$plugin->code_name
-					= ComponentbuilderHelper::safeClassFunctionName(
+					= ClassfunctionHelper::safe(
 					$plugin->name
 				);
 				// set plugin folder name
@@ -10136,7 +10146,7 @@ class Get
 				);
 				// update the name if it has dynamic values
 				$plugin->code_name
-					= ComponentbuilderHelper::safeClassFunctionName(
+					= ClassfunctionHelper::safe(
 					$plugin->name
 				);
 				// set official name
@@ -10144,20 +10154,31 @@ class Get
 					$plugin->group . ' - ' . $plugin->name
 				);
 				// set langPrefix
-				$this->langPrefix = 'PLG_' . strtoupper($plugin->group) . '_'
-					. strtoupper($plugin->code_name);
+				$this->langPrefix
+					= PluginHelper::safeLangPrefix(
+						$plugin->code_name,
+						$plugin->group
+				);
 				// set lang prefix
 				$plugin->lang_prefix = $this->langPrefix;
 				// set plugin class name
-				$plugin->class_name = 'Plg' . ucfirst($plugin->group) . ucfirst(
-						$plugin->code_name
-					);
+				$plugin->class_name
+					= PluginHelper::safeClassName(
+						$plugin->code_name,
+						$plugin->group
+				);
 				// set plugin install class name
-				$plugin->installer_class_name = 'plg' . ucfirst($plugin->group)
-					. ucfirst($plugin->code_name) . 'InstallerScript';
+				$plugin->installer_class_name
+					= PluginHelper::safeInstallClassName(
+						$plugin->code_name,
+						$plugin->group
+				);
 				// set plugin folder name
-				$plugin->folder_name = 'plg_' . strtolower($plugin->group) . '_'
-					. strtolower($plugin->code_name);
+				$plugin->folder_name
+					= PluginHelper::safeFolderName(
+						$plugin->code_name,
+						$plugin->group
+				);
 				// set the zip name
 				$plugin->zip_name = $plugin->folder_name . '_v' . str_replace(
 						'.', '_', $plugin->plugin_version
@@ -10203,7 +10224,7 @@ class Get
 				$this->placeholders[$this->hhh . 'DESCRIPTION' . $this->hhh]
 					= '';
 				if (!isset($plugin->description)
-					|| !ComponentbuilderHelper::checkString(
+					|| !StringHelper::check(
 						$plugin->description
 					))
 				{
@@ -10329,9 +10350,9 @@ class Get
 				$plugin->fields_rules_paths = 1;
 				// set the fields data
 				$plugin->fields = (isset($plugin->fields)
-					&& ComponentbuilderHelper::checkJson($plugin->fields))
+					&& JsonHelper::check($plugin->fields))
 					? json_decode($plugin->fields, true) : null;
-				if (ComponentbuilderHelper::checkArray($plugin->fields))
+				if (ArrayHelper::check($plugin->fields))
 				{
 					// ket global key
 					$key            = $plugin->key;
@@ -10341,7 +10362,7 @@ class Get
 					foreach ($plugin->fields as $n => &$form)
 					{
 						if (isset($form['fields'])
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$form['fields']
 							))
 						{
@@ -10352,7 +10373,7 @@ class Get
 							)
 							{
 								if (!isset($form[$dynamic_field])
-									|| !ComponentbuilderHelper::checkString(
+									|| !StringHelper::check(
 										$form[$dynamic_field]
 									))
 								{
@@ -10370,7 +10391,7 @@ class Get
 									else
 									{
 										$form[$dynamic_field]
-											= ComponentbuilderHelper::safeString(
+											= StringHelper::safe(
 											$form[$dynamic_field]
 										);
 									}
@@ -10401,7 +10422,7 @@ class Get
 								= $form['fields_rules_paths'];
 							// add the label if set to lang
 							if (isset($form['label'])
-								&& ComponentbuilderHelper::checkString(
+								&& StringHelper::check(
 									$form['label']
 								))
 							{
@@ -10410,11 +10431,11 @@ class Get
 							}
 							// check for extra rule paths
 							if (isset($form['addrulepath'])
-								&& ComponentbuilderHelper::checkArray($form['addrulepath']))
+								&& ArrayHelper::check($form['addrulepath']))
 							{
 								foreach ($form['addrulepath'] as $add_rule_path)
 								{
-									if (ComponentbuilderHelper::checkString($add_rule_path['path']))
+									if (StringHelper::check($add_rule_path['path']))
 									{
 										$plugin->add_rule_path[$unique] = $add_rule_path['path'];
 									}
@@ -10422,11 +10443,11 @@ class Get
 							}
 							// check for extra field paths
 							if (isset($form['addfieldpath'])
-								&& ComponentbuilderHelper::checkArray($form['addfieldpath']))
+								&& ArrayHelper::check($form['addfieldpath']))
 							{
 								foreach ($form['addfieldpath'] as $add_field_path)
 								{
-									if (ComponentbuilderHelper::checkString($add_field_path['path']))
+									if (StringHelper::check($add_field_path['path']))
 									{
 										$plugin->add_field_path[$unique] = $add_field_path['path'];
 									}
@@ -10443,7 +10464,7 @@ class Get
 										$field, $key, $key, $unique
 									);
 									// update the default if set
-									if (ComponentbuilderHelper::checkString(
+									if (StringHelper::check(
 											$field['custom_value']
 										)
 										&& isset($field['settings']))
@@ -10558,16 +10579,16 @@ class Get
 					$plugin->{'add' . $addTarget} = (isset(
 							$plugin->{'add' . $addTarget}
 						)
-						&& ComponentbuilderHelper::checkJson(
+						&& JsonHelper::check(
 							$plugin->{'add' . $addTarget}
 						)) ? json_decode($plugin->{'add' . $addTarget}, true)
 						: null;
-					if (ComponentbuilderHelper::checkArray(
+					if (ArrayHelper::check(
 						$plugin->{'add' . $addTarget}
 					))
 					{
 						if (isset($plugin->{$targetHere})
-							&& ComponentbuilderHelper::checkArray(
+							&& ArrayHelper::check(
 								$plugin->{$targetHere}
 							))
 						{
@@ -10602,7 +10623,7 @@ class Get
 							)
 							&& $plugin->{'add_' . $scriptMethod . '_'
 							. $scriptType} == 1
-							&& ComponentbuilderHelper::checkString(
+							&& StringHelper::check(
 								$plugin->{$scriptMethod . '_' . $scriptType}
 							))
 						{
@@ -10634,7 +10655,7 @@ class Get
 				}
 				// add_sql
 				if ($plugin->add_sql == 1
-					&& ComponentbuilderHelper::checkString($plugin->sql))
+					&& StringHelper::check($plugin->sql))
 				{
 					$plugin->sql = $this->setPlaceholders(
 						$this->setDynamicValues(base64_decode($plugin->sql)),
@@ -10648,7 +10669,7 @@ class Get
 				}
 				// add_sql_uninstall
 				if ($plugin->add_sql_uninstall == 1
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$plugin->sql_uninstall
 					))
 				{
@@ -10665,7 +10686,7 @@ class Get
 				}
 				// update the URL of the update_server if set
 				if ($plugin->add_update_server == 1
-					&& ComponentbuilderHelper::checkString(
+					&& StringHelper::check(
 						$plugin->update_server_url
 					))
 				{
@@ -10686,7 +10707,7 @@ class Get
 					{
 						// get the server protocol
 						$plugin->{$server . '_protocol'}
-							= ComponentbuilderHelper::getVar(
+							= GetHelper::var(
 							'server', (int) $plugin->{$server}, 'id', 'protocol'
 						);
 					}
@@ -10808,7 +10829,7 @@ class Get
 			}
 		}
 		// check if any ids left to fetch
-		if (ComponentbuilderHelper::checkArray($ids))
+		if (ArrayHelper::check($ids))
 		{
 			return $ids;
 		}
@@ -10915,12 +10936,12 @@ class Get
 		$placeholders                                    = array_flip(
 			$this->globalPlaceholders
 		);
-		$placeholders[ComponentbuilderHelper::safeString(
+		$placeholders[StringHelper::safe(
 			$this->componentCodeName, 'F'
 		) . 'Helper::']
 		                                                 = $this->bbb
 			. 'Component' . $this->ddd . 'Helper::';
-		$placeholders['COM_' . ComponentbuilderHelper::safeString(
+		$placeholders['COM_' . StringHelper::safe(
 			$this->componentCodeName, 'U'
 		)]
 		                                                 = 'COM_' . $this->bbb
@@ -10939,7 +10960,7 @@ class Get
 				// get a list of files in the current directory tree (only PHP, JS and XML for now)
 				$files = Folder::files('.', $type, true, true);
 				// check if files found
-				if (ComponentbuilderHelper::checkArray($files))
+				if (ArrayHelper::check($files))
 				{
 					foreach ($files as $file)
 					{
@@ -10948,14 +10969,14 @@ class Get
 							$this->customCodePlaceholders, $placeholders, $today
 						);
 						// insert new code
-						if (ComponentbuilderHelper::checkArray(
+						if (ArrayHelper::check(
 							$this->newCustomCode
 						))
 						{
 							$this->setNewCustomCode(100);
 						}
 						// update existing custom code
-						if (ComponentbuilderHelper::checkArray(
+						if (ArrayHelper::check(
 							$this->existingCustomCode
 						))
 						{
@@ -10968,12 +10989,12 @@ class Get
 		// change back to Joomla working directory
 		chdir($joomla);
 		// make sure all code is stored
-		if (ComponentbuilderHelper::checkArray($this->newCustomCode))
+		if (ArrayHelper::check($this->newCustomCode))
 		{
 			$this->setNewCustomCode();
 		}
 		// update existing custom code
-		if (ComponentbuilderHelper::checkArray($this->existingCustomCode))
+		if (ArrayHelper::check($this->existingCustomCode))
 		{
 			$this->setExistingCustomCode();
 		}
@@ -11500,28 +11521,28 @@ class Get
 	 */
 	public function setGuiCodePlaceholder($string, $config)
 	{
-		if (ComponentbuilderHelper::checkString($string))
+		if (StringHelper::check($string))
 		{
 			if ($this->addPlaceholders
 				&& $this->canAddGuiCodePlaceholder(
 					$string
 				)
-				&& ComponentbuilderHelper::checkArray($config)
+				&& ArrayHelper::check($config)
 				&& isset($config['table'])
-				&& ComponentbuilderHelper::checkString($config['table'])
+				&& StringHelper::check($config['table'])
 				&& isset($config['field'])
-				&& ComponentbuilderHelper::checkString($config['field'])
+				&& StringHelper::check($config['field'])
 				&& isset($config['type'])
-				&& ComponentbuilderHelper::checkString($config['type'])
+				&& StringHelper::check($config['type'])
 				&& isset($config['id'])
 				&& is_numeric($config['id']))
 			{
 				// if we have a key we must get the ID
 				if (isset($config['key'])
-					&& ComponentbuilderHelper::checkString($config['key'])
+					&& StringHelper::check($config['key'])
 					&& $config['key'] !== 'id')
 				{
-					if (($id = ComponentbuilderHelper::getVar(
+					if (($id = GetHelper::var(
 							$config['table'], $config['id'], $config['key'],
 							'id'
 						)) !== false
@@ -11632,8 +11653,8 @@ class Get
 			$file_conent, '<!--[JCB' . 'GUI<>', '<!--[/JCBGUI' . '$$$$]-->'
 		);
 
-		if (($guiCode = ComponentbuilderHelper::mergeArrays($guiCode)) !== false
-			&& ComponentbuilderHelper::checkArray($guiCode, true))
+		if (($guiCode = ArrayHelper::merge($guiCode)) !== false
+			&& ArrayHelper::check($guiCode, true))
 		{
 			foreach ($guiCode as $code)
 			{
@@ -11649,9 +11670,9 @@ class Get
 					// set the ID
 					$id = (int) $query[2];
 					// make the field name save
-					$field = ComponentbuilderHelper::safeFieldName($query[1]);
+					$field = FieldHelper::safe($query[1]);
 					// make the table name save
-					$table = ComponentbuilderHelper::safeString($query[0]);
+					$table = StringHelper::safe($query[0]);
 					// reverse placeholder as much as we can
 					$code = $this->reversePlaceholders(
 						$code, $placeholders, $target, $id, $field, $table
@@ -11689,7 +11710,7 @@ class Get
 			case 1:
 				// beginning of code
 				$i = trim($check[1]);
-				if (ComponentbuilderHelper::checkString($i))
+				if (StringHelper::check($i))
 				{
 					return $check[1];
 				}
@@ -11697,7 +11718,7 @@ class Get
 			case 2:
 				// end of code
 				$i = trim($check[0]);
-				if (ComponentbuilderHelper::checkString($i))
+				if (StringHelper::check($i))
 				{
 					return $check[0];
 				}
@@ -11761,7 +11782,7 @@ class Get
 		preg_match_all('!\d+!', $string, $numbers);
 		// return the first number
 		if (isset($numbers[0])
-			&& ComponentbuilderHelper::checkArray(
+			&& ArrayHelper::check(
 				$numbers[0]
 			))
 		{
@@ -11791,7 +11812,7 @@ class Get
 		// get local code if set
 		if ($id > 0
 			&& $code = base64_decode(
-				ComponentbuilderHelper::getVar($table, $id, 'id', $field)
+				GetHelper::var($table, $id, 'id', $field)
 			))
 		{
 			$string = $this->setReverseLangPlaceholders(
@@ -11828,7 +11849,7 @@ class Get
 		}
 		);
 		// check if we should continue
-		if (ComponentbuilderHelper::checkArray($langStringTargets))
+		if (ArrayHelper::check($langStringTargets))
 		{
 			// start lang holder
 			$langHolders = array();
@@ -11886,15 +11907,15 @@ class Get
 				);
 			}
 			// merge arrays
-			$langArray = ComponentbuilderHelper::mergeArrays($langCheck);
+			$langArray = ArrayHelper::merge($langCheck);
 			// continue only if strings were found
-			if (ComponentbuilderHelper::checkArray(
+			if (ArrayHelper::check(
 				$langArray
 			)) //<-- not really needed hmmm
 			{
 				foreach ($langArray as $lang)
 				{
-					$_keyLang = ComponentbuilderHelper::safeString($lang, 'U');
+					$_keyLang = StringHelper::safe($lang, 'U');
 					// this is there to insure we dont break already added Language strings
 					if ($_keyLang === $lang)
 					{
@@ -11948,7 +11969,7 @@ class Get
 	public function setPlaceholders($data, &$placeholder, $action = 1)
 	{
 		// make sure the placeholders is an array
-		if (!ComponentbuilderHelper::checkArray($placeholder))
+		if (!ArrayHelper::check($placeholder))
 		{
 			// This is an error, (TODO) actualy we need to add a kind of log here to know that this happened
 			return $data;
@@ -11991,7 +12012,7 @@ class Get
 				}
 			}
 			// only replace if the data has these placeholder values
-			if (ComponentbuilderHelper::checkArray($replace))
+			if (ArrayHelper::check($replace))
 			{
 				return str_replace(
 					array_keys($replace), array_values($replace), $data
@@ -12143,7 +12164,7 @@ class Get
 				unset($localPaths[$key]);
 			}
 		}
-		if (ComponentbuilderHelper::checkArray($localPaths))
+		if (ArrayHelper::check($localPaths))
 		{
 			return $localPaths;
 		}
