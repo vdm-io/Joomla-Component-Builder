@@ -97,7 +97,7 @@ abstract class PluginHelper
 			$group = 'Button';
 		}
 
-		return 'PLG_' . strtoupper($group) . strtoupper(
+		return 'PLG_' . strtoupper($group) . '_' . strtoupper(
 			$codeName
 		);
 	}
