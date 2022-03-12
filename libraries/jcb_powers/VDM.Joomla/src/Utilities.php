@@ -19,6 +19,8 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\MathHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\String\FieldHelper;
 use VDM\Joomla\Utilities\String\TypeHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
@@ -28,6 +30,8 @@ use VDM\Joomla\Utilities\String\PluginHelper;
 
 /**
  * Basic shared utilities, a legacy implementation
+ * 
+ * @since  3.0.9
  */
 trait Utilities
 {
@@ -35,6 +39,8 @@ trait Utilities
 	 * The Main Active Language
 	 * 
 	 * @var      string
+	 * 
+	 * @since  3.0.9
 	 */
 	public static $langTag;
 
@@ -44,6 +50,8 @@ trait Utilities
 	 * @input    string  $string The string to check
 	 *
 	 * @returns bool true on success
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use StringHelper::check($string);
 	 */
@@ -58,6 +66,8 @@ trait Utilities
 	 * @input    string  $string That you would like to shorten
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use StringHelper::shorten($string, $length, $addTip);
 	 */
@@ -72,6 +82,8 @@ trait Utilities
 	 * @input    string  $string That you would like to make safe
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use StringHelper::safe($string, $type, $spacer, $replaceNumbers, $keepOnlyCharacters);
 	 */
@@ -86,6 +98,8 @@ trait Utilities
 	 * @input	string       The name you would like to make safe
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use ClassfunctionHelper::safe($name);
 	 */
@@ -102,6 +116,8 @@ trait Utilities
 	 * @input	string       The string to use in white space
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use FieldHelper::safe($string, $allcap, $spacer);
 	 */
@@ -116,6 +132,8 @@ trait Utilities
 	 * @input	string       The you would like to make safe
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use TypeHelper::safe($string);
 	 */
@@ -130,6 +148,8 @@ trait Utilities
 	 * @input	string       The you would like to make safe
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use NamespaceHelper::safe($string);
 	 */
@@ -139,6 +159,8 @@ trait Utilities
 	}
 
 	/**
+	 * @since  3.0.9
+	 * 
 	 * @deprecated  4.0 - Use StringHelper::transliterate($string);
 	 */
 	public static function transliterate($string)
@@ -147,6 +169,8 @@ trait Utilities
 	}
 
 	/**
+	 * @since  3.0.9
+	 * 
 	 * @deprecated  4.0 - Use StringHelper::html($var, $charset, $shorten, $length);
 	 */
 	public static function htmlEscape($var, $charset = 'UTF-8', $shorten = false, $length = 40)
@@ -155,6 +179,8 @@ trait Utilities
 	}
 
 	/**
+	 * @since  3.0.9
+	 * 
 	 * @deprecated  4.0 - Use StringHelper::numbers($string);
 	 */
 	public static function replaceNumbers($string)
@@ -169,6 +195,8 @@ trait Utilities
 	 * @input    int $x an int
 	 *
 	 * @returns string a string
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use StringHelper::number($x);
 	 */
@@ -183,6 +211,8 @@ trait Utilities
 	 * @input int $size the length of the string
 	 *
 	 * @returns string a string of random characters
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use StringHelper::random($size);
 	 */
@@ -197,6 +227,8 @@ trait Utilities
 	 * @input    string  $string  The json string to check
 	 *
 	 * @returns bool true on success
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use JsonHelper::check($string);
 	 */
@@ -206,6 +238,8 @@ trait Utilities
 	}
 
 	/**
+	 * @since  3.0.9
+	 * 
 	 * @deprecated  4.0 - Use JsonHelper::string($value, $sperator, $table, $id, $name);
 	 */
 	public static function jsonToString($value, $sperator = ", ", $table = null, $id = 'id', $name = 'name')
@@ -220,6 +254,8 @@ trait Utilities
 	 * @input    bool  $removeEmptyString  Should we remove empty values
 	 *
 	 * @returns int  number of items in array on success
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use ArrayHelper::check($array, $removeEmptyString);
 	 */
@@ -234,6 +270,8 @@ trait Utilities
 	 * @input    mixed  $arrays The arrays you would like to merge
 	 *
 	 * @returns mixed array on success
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use ArrayHelper::merge($arrays);
 	 */
@@ -248,6 +286,8 @@ trait Utilities
 	 * @input    object $object  The object to check
 	 *
 	 * @returns bool true on success
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use ObjectHelper::check($object);
 	 */
@@ -267,6 +307,8 @@ trait Utilities
 	 * @param   string   $main         The component in which the table is found
 	 *
 	 * @return  mix string/int/float
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use GetHelper::var($table, $where, $whereString, $what, $operator, $main);
 	 */
@@ -287,12 +329,51 @@ trait Utilities
 	 * @param   bool     $unique       The switch to return a unique array
 	 *
 	 * @return  array
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use GetHelper::vars($table, $where, $whereString, $what, $operator, $main, $unique);
 	 */
 	public static function getVars($table, $where = null, $whereString = 'user', $what = 'id', $operator = 'IN', $main = 'componentbuilder', $unique = true)
 	{
 		return GetHelper::vars($table, $where, $whereString, $what, $operator, $main, $unique);
+	}
+
+	/**
+	 * get all strings between two other strings
+	 *
+	 * @param  string          $content    The content to search
+	 * @param  string          $start        The starting value
+	 * @param  string          $end         The ending value
+	 *
+	 * @return  array          On success
+	 * 
+	 * @since  3.0.9
+	 *
+	 * @deprecated  4.0 - Use GetHelper::allBetween($content, $start, $end);
+	 */
+	public static function getAllBetween($content, $start, $end)
+	{
+		return GetHelper::allBetween($content, $start, $end);
+	}
+
+	/**
+	 * get a string between two other strings
+	 * 
+	 * @param  string          $content    The content to search
+	 * @param  string          $start        The starting value
+	 * @param  string          $end         The ending value
+	 * @param  string          $default     The default value if none found
+	 *
+	 * @return  string          On success / empty string on failure
+	 * 
+	 * @since  3.0.9
+	 *
+	 * @deprecated  4.0 - Use GetHelper::between($content, $start, $end, $default);
+	 */
+	public static function getBetween($content, $start, $end, $default = '')
+	{
+		return GetHelper::between($content, $start, $end, $default);
 	}
 
 	/**
@@ -303,7 +384,9 @@ trait Utilities
 	 * @param   int      $val2    The second value
 	 * @param   int      $scale   The scale value
 	 *
-	 * @return int
+	 * @return float|int
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use MathHelper::bc($type, $val1, $val2, $scale);
 	 */
@@ -318,7 +401,9 @@ trait Utilities
 	 * @param   array   $array    The values to sum
 	 * @param   int      $scale   The scale value
 	 *
-	 * @return float
+	 * @return float|int
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use MathHelper::sum($array, $scale);
 	 */
@@ -333,13 +418,142 @@ trait Utilities
 	 * @input	string       The group name
 	 * @input	string       The name
 	 *
-	 * @return float
+	 * @return string
+	 * 
+	 * @since  3.0.9
 	 *
 	 * @deprecated  4.0 - Use PluginHelper::safe($name, $group);
          */
         public static function createPluginClassName($group, $name)
 	{
 		return PluginHelper::safeClassName($name, $group);
+	}
+
+	/**
+	 * Returns a GUIDv4 string
+	 * 
+	 * Thanks to Dave Pearson (and other)
+	 * https://www.php.net/manual/en/function.com-create-guid.php#119168 
+	 *
+	 * Uses the best cryptographically secure method
+	 * for all supported platforms with fallback to an older,
+	 * less secure version.
+	 *
+	 * @param bool $trim
+	 *
+	 * @return string
+	 * 
+	 * @since  3.0.9
+	 *
+	 * @deprecated  4.0 - Use GuidHelper::get($trim);
+	 */
+	public static function GUID($trim = true)
+	{
+		return GuidHelper::get($trim);
+	}
+
+	/**
+	 * Validate the Globally Unique Identifier ( and check if table already has this identifier)
+	 *
+	 * @param string $guid
+	 * @param string $table
+	 * @param int      $id
+	 *
+	 * @return bool
+	 * 
+	 * @since  3.0.9
+	 *
+	 * @deprecated  4.0 - Use GuidHelper::valid($guid, $table, $id);
+	 */
+	public static function validGUID($guid, $table = null, $id = 0)
+	{
+		return GuidHelper::valid($guid, $table, $id);
+	}
+
+	/**
+	 * get the ITEM of a GUID by table
+	 *
+	 * @param string $guid
+	 * @param string $table
+	 * @param string/array $what
+	 *
+	 * @return mix
+	 * 
+	 * @since  3.0.9
+	 *
+	 * @deprecated  4.0 - Use GuidHelper::valid($guid, $table, $id);
+	 */
+	public static function getGUID($guid, $table, $what = 'a.id')
+	{
+		return GuidHelper::item($guid, $table, $what);
+	}
+
+	/**
+	 * Validate the Globally Unique Identifier
+	 *
+	 * Thanks to Lewie
+	 * https://stackoverflow.com/a/1515456/1429677
+	 *
+	 * @param string $guid
+	 *
+	 * @return bool
+	 *
+	 * @deprecated  4.0 - Use GuidHelper::validate($guid);
+	 */
+	protected static function validateGUID($guid)
+	{
+		return GuidHelper::validate($guid);
+	}
+
+	/**
+	 * The zipper method
+	 * 
+	 * @param  string   $workingDIR    The directory where the items must be zipped
+	 * @param  string   $filepath          The path to where the zip file must be placed
+	 *
+	 * @return  bool true   On success
+	 *
+	 * @since  3.0.9
+	 *
+	 * @deprecated  4.0 - Use FileHelper::zip($workingDIR, $filepath);
+	 */
+	public static function zip($workingDIR, &$filepath)
+	{
+		return FileHelper::zip($workingDIR, $filepath);
+	}
+
+	/**
+	 * get the content of a file
+	 *
+	 * @param  string        $path   The path to the file
+	 * @param  string/bool   $none   The return value if no content was found
+	 *
+	 * @return  string   On success
+	 *
+	 * @since  3.0.9
+	 *
+	 * @deprecated  4.0 - Use FileHelper::getContent($path, $none);
+	 */
+	public static function getFileContents($path, $none = '')
+	{
+		return FileHelper::getContent($path, $none);
+	}
+
+	/**
+	 * Write a file to the server
+	 *
+	 * @param  string   $path    The path and file name where to safe the data
+	 * @param  string   $data    The data to safe
+	 *
+	 * @return  bool true   On success
+	 *
+	 * @since  3.0.9
+	 *
+	 * @deprecated  4.0 - Use FileHelper::write($path, $data);
+	 */
+	public static function writeFile($path, $data)
+	{
+		return FileHelper::write($path, $data);
 	}
 
 }

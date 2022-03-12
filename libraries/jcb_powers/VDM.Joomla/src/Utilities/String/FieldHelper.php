@@ -19,23 +19,29 @@ use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Control the naming of a field
+ * 
+ * @since  3.0.9
  */
 abstract class FieldHelper
 {
 	/**
-	* The field builder switch
-	**/
+	 * The field builder switch
+	 * 
+	 * @since  3.0.9
+	 */
 	protected static $builder = false;
 
 	/**
-	* Making field names safe
-	*
-	* @input	string       The string you would like to make safe
-	* @input	boolean      The switch to return an ALL UPPER CASE string
-	* @input	string       The string to use in white space
-	*
-	* @returns string on success
-	**/
+	 * Making field names safe
+	 *
+	 * @input	string       The string you would like to make safe
+	 * @input	boolean      The switch to return an ALL UPPER CASE string
+	 * @input	string       The string to use in white space
+	 *
+	 * @returns string on success
+	 * 
+	 * @since  3.0.9
+	 */
 	public static function safe($string, $allcap = false, $spacer = '_')
 	{
 		// get global value

@@ -20,6 +20,8 @@ use Joomla\CMS\Component\ComponentHelper;
 
 /**
  * Some string tricks
+ * 
+ * @since  3.0.9
  */
 abstract class StringHelper
 {
@@ -27,6 +29,8 @@ abstract class StringHelper
 	 * The Main Active Language
 	 * 
 	 * @var      string
+	 * 
+	 * @since  3.0.9
 	 */
 	public static $langTag;
 
@@ -36,6 +40,8 @@ abstract class StringHelper
 	 * @input    string  $string The string to check
 	 *
 	 * @returns bool true on success
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function check($string): bool
 	{
@@ -53,6 +59,8 @@ abstract class StringHelper
 	 * @input	string   The you would like to shorten
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function shorten($string, $length = 40, $addTip = true)
 	{
@@ -94,6 +102,8 @@ abstract class StringHelper
 	 * @input	string   The you would like to make safe
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function safe($string, $type = 'L', $spacer = '_', $replaceNumbers = true, $keepOnlyCharacters = true)
 	{
@@ -195,6 +205,15 @@ abstract class StringHelper
 		return '';
 	}
 
+	/**
+	 * Convert none English strings to code usable string
+	 *
+	 * @input	an string
+	 *
+	 * @returns a string
+	 * 
+	 * @since  3.0.9
+	 */
 	public static function transliterate($string)
 	{
 		// set tag only once
@@ -210,6 +229,15 @@ abstract class StringHelper
 		return $lang->transliterate($string);
 	}
 
+	/**
+	 * make sure a string is HTML save
+	 *
+	 * @input	an html string
+	 *
+	 * @returns a string
+	 * 
+	 * @since  3.0.9
+	 */
 	public static function html($var, $charset = 'UTF-8', $shorten = false, $length = 40)
 	{
 		if (self::check($var))
@@ -237,6 +265,15 @@ abstract class StringHelper
 		}
 	}
 
+	/**
+	 * Convert all int in a string to an English word string
+	 *
+	 * @input	an string with numbers
+	 *
+	 * @returns a string
+	 * 
+	 * @since  3.0.9
+	 */
 	public static function numbers($string)
 	{
 		// set numbers array
@@ -270,6 +307,8 @@ abstract class StringHelper
 	 *
 	 * @input	an int
 	 * @returns a string
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function number($x)
 	{
@@ -359,6 +398,8 @@ abstract class StringHelper
 	 * Random Key
 	 *
 	 * @returns a string
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function random($size)
 	{

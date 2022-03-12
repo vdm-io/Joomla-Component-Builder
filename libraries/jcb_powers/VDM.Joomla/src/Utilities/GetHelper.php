@@ -18,6 +18,8 @@ use Joomla\CMS\Factory;
 
 /**
  * Some easy get...
+ * 
+ * @since  3.0.9
  */
 abstract class GetHelper
 {
@@ -32,7 +34,8 @@ abstract class GetHelper
 	 * @param   string   $main         The component in which the table is found
 	 *
 	 * @return  mix string/int/float
-	 *
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function var($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = 'componentbuilder')
 	{
@@ -92,7 +95,8 @@ abstract class GetHelper
 	 * @param   bool     $unique       The switch to return a unique array
 	 *
 	 * @return  array
-	 *
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function vars($table, $where = null, $whereString = 'user', $what = 'id', $operator = 'IN', $main = 'componentbuilder', $unique = true)
 	{
@@ -153,6 +157,71 @@ abstract class GetHelper
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * get all strings between two other strings
+	 * 
+	 * @param  string          $content    The content to search
+	 * @param  string          $start        The starting value
+	 * @param  string          $end         The ending value
+	 *
+	 * @return  array          On success
+	 * 
+	 * @since  3.0.9
+	 */
+	public static function allBetween($content, $start, $end)
+	{
+		// reset bucket
+		$bucket = array();
+		for ($i = 0; ; $i++)
+		{
+			// search for string
+			$found = self::between($content,$start,$end);
+			if (StringHelper::check($found))
+			{
+				// add to bucket
+				$bucket[] = $found;
+				// build removal string
+				$remove = $start.$found.$end;
+				// remove from content
+				$content = str_replace($remove,'',$content);
+			}
+			else
+			{
+				break;
+			}
+			// safety catch
+			if ($i == 500)
+			{
+				break;
+			}
+		}
+		// only return unique array of values
+		return  array_unique($bucket);
+	}
+
+	/**
+	 * get a string between two other strings
+	 * 
+	 * @param  string          $content    The content to search
+	 * @param  string          $start        The starting value
+	 * @param  string          $end         The ending value
+	 * @param  string          $default     The default value if none found
+	 *
+	 * @return  string          On success / empty string on failure
+	 * 
+	 * @since  3.0.9
+	 */
+	public static function between($content, $start, $end, $default = '')
+	{
+		$r = explode($start, $content);
+		if (isset($r[1]))
+		{
+			$r = explode($end, $r[1]);
+			return $r[0];
+		}
+		return $default;
 	}
 
 }

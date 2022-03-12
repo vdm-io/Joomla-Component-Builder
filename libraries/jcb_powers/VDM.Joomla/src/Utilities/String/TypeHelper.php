@@ -19,21 +19,27 @@ use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Control the naming of a field type
+ * 
+ * @since  3.0.9
  */
 abstract class TypeHelper
 {
 	/**
-	* The field builder switch
-	**/
+	 * The field builder switch
+	 * 
+	 * @since  3.0.9
+	 */
 	protected static $builder = false;
 
 	/**
-	* Making field type name safe
-	*
-	* @input	string       The you would like to make safe
-	*
-	* @returns string on success
-	**/
+	 * Making field type name safe
+	 *
+	 * @input	string       The you would like to make safe
+	 *
+	 * @returns string on success
+	 * 
+	 * @since  3.0.9
+	 */
 	public static function safe($string)
 	{
 		// get global value

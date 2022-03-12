@@ -15,6 +15,8 @@ namespace VDM\Joomla\Utilities;
 
 /**
  * The json checker
+ * 
+ * @since  3.0.9
  */
 abstract class JsonHelper
 {
@@ -24,6 +26,8 @@ abstract class JsonHelper
 	 * @input    string  $string  The json string to check
 	 *
 	 * @returns bool true on success
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function check($string): bool
 	{
@@ -36,6 +40,15 @@ abstract class JsonHelper
 		return false;
 	}
 
+	/**
+	 * Convert a json object to a string
+	 *
+	 * @input    string  $value  The json string to convert
+	 *
+	 * @returns a string
+	 * 
+	 * @since  3.0.9
+	 */
 	public static function string($value, $separator = ", ", $table = null, $id = 'id', $name = 'name')
 	{
 		// do some table foot work

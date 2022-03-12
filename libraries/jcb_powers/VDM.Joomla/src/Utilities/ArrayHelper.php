@@ -15,6 +15,8 @@ namespace VDM\Joomla\Utilities;
 
 /**
  * Some array tricks helper
+ * 
+ * @since  3.0.9
  */
 abstract class ArrayHelper
 {
@@ -24,6 +26,8 @@ abstract class ArrayHelper
 	 * @input	array   The array to check
 	 *
 	 * @returns bool/int  number of items in array on success
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function check($array, $removeEmptyString = false)
 	{
@@ -52,6 +56,8 @@ abstract class ArrayHelper
 	 * @input	array   The arrays you would like to merge
 	 *
 	 * @returns array on success
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function merge($arrays)
 	{

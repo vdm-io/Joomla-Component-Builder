@@ -15,6 +15,8 @@ namespace VDM\Joomla\Utilities\String;
 
 /**
  * Control the naming of a plugin
+ * 
+ * @since  3.0.9
  */
 abstract class PluginHelper
 {
@@ -25,6 +27,8 @@ abstract class PluginHelper
 	 * @input	string    $group   The group name
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function safeFolderName($codeName, $group)
 	{
@@ -46,6 +50,8 @@ abstract class PluginHelper
 	 * @input	string    $group   The group name
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function safeClassName($codeName, $group)
 	{
@@ -67,6 +73,8 @@ abstract class PluginHelper
 	 * @input	string    $group   The group name
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function safeInstallClassName($codeName, $group)
 	{
@@ -88,6 +96,8 @@ abstract class PluginHelper
 	 * @input	string    $group   The group name
 	 *
 	 * @returns string on success
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function safeLangPrefix($codeName, $group)
 	{

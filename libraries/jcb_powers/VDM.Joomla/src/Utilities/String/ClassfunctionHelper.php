@@ -18,16 +18,20 @@ use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Control the naming of a class and function
+ * 
+ * @since  3.0.9
  */
 abstract class ClassfunctionHelper
 {
 	/**
-	* Making class or function name safe
-	*
-	* @input	string       The name you would like to make safe
-	*
-	* @returns string on success
-	**/
+	 * Making class or function name safe
+	 *
+	 * @input	string       The name you would like to make safe
+	 *
+	 * @returns string on success
+	 * 
+	 * @since  3.0.9
+	 */
 	public static function safe($name)
 	{
 		// remove numbers if the first character is a number

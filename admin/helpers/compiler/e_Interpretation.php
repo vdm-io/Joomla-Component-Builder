@@ -29059,7 +29059,7 @@ function vdm_dkim() {
 			if (strpos($power->description, '/*') === false)
 			{
 				// make this description escaped
-				$power->description = '/**' . PHP_EOL . ' * ' . implode(' * ', explode(PHP_EOL, $power->description)) . PHP_EOL . ' */';
+				$power->description = '/**' . PHP_EOL . ' * ' . implode(PHP_EOL . ' * ', explode(PHP_EOL, $power->description)) . PHP_EOL . ' */';
 			}
 			$code[] = PHP_EOL . $power->description;
 		}

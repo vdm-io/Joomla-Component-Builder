@@ -18,16 +18,20 @@ use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Control the naming of a namespace helper
+ * 
+ * @since  3.0.9
  */
 abstract class NamespaceHelper
 {
 	/**
-	* Making namespace safe
-	*
-	* @input	string       The you would like to make safe
-	*
-	* @returns string on success
-	**/
+	 * Making namespace safe
+	 *
+	 * @input	string       The you would like to make safe
+	 *
+	 * @returns string on success
+	 * 
+	 * @since  3.0.9
+	 */
 	public static function safe($string)
 	{
 		// 0nly continue if we have a string

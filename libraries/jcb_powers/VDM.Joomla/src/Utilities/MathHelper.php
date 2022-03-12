@@ -15,6 +15,8 @@ namespace VDM\Joomla\Utilities;
 
 /**
  * Basic Math Helper
+ * 
+ * @since  3.0.9
  */
 abstract class MathHelper
 {
@@ -27,7 +29,8 @@ abstract class MathHelper
 	 * @param   int      $scale   The scale value
 	 *
 	 * @return int
-	 *
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function bc($type, $val1, $val2, $scale = 0)
 	{
@@ -76,7 +79,8 @@ abstract class MathHelper
 	 * @param   int      $scale   The scale value
 	 *
 	 * @return float
-	 *
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function sum($array, $scale = 4)
 	{

@@ -15,6 +15,8 @@ namespace VDM\Joomla\Utilities;
 
 /**
  * Some object tricks
+ * 
+ * @since  3.0.9
  */
 abstract class ObjectHelper
 {
@@ -24,6 +26,8 @@ abstract class ObjectHelper
 	 * @input	object   The object to check
 	 *
 	 * @returns bool true on success
+	 * 
+	 * @since  3.0.9
 	 */
 	public static function check($object)
 	{
