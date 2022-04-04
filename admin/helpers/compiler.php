@@ -18,6 +18,7 @@ use Joomla\CMS\Filesystem\Folder;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\MathHelper;
 
 // Use the component builder autoloader
@@ -1103,7 +1104,7 @@ class Compiler extends Infusion
 			      &$this->componentFolderName, &$this->componentData)
 		);
 		//create the zip file
-		if (ComponentbuilderHelper::zip(
+		if (FileHelper::zip(
 			$this->componentPath, $this->filepath['component']
 		))
 		{
@@ -1195,7 +1196,7 @@ class Compiler extends Infusion
 						      &$this->tempPath, &$module->zip_name, &$module)
 					);
 					//create the zip file
-					if (ComponentbuilderHelper::zip(
+					if (FileHelper::zip(
 						$module->folder_path,
 						$this->filepath['modules'][$module->id]
 					))
@@ -1289,7 +1290,7 @@ class Compiler extends Infusion
 						      &$this->tempPath, &$plugin->zip_name, &$plugin)
 					);
 					//create the zip file
-					if (ComponentbuilderHelper::zip(
+					if (FileHelper::zip(
 						$plugin->folder_path,
 						$this->filepath['plugins'][$plugin->id]
 					))

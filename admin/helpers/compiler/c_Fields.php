@@ -16,6 +16,7 @@ defined('_JEXEC') or die('Restricted access');
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\String\FieldHelper;
 
 /**
@@ -4167,7 +4168,7 @@ class Fields extends Structure
 				elseif ($property['name'] === 'validate')
 				{
 					// check if we have validate (validation rule set)
-					$xmlValue = ComponentbuilderHelper::getBetween(
+					$xmlValue = GetHelper::between(
 						$field['settings']->xml, 'validate="', '"'
 					);
 					if (StringHelper::check($xmlValue))
@@ -4183,7 +4184,7 @@ class Fields extends Structure
 				{
 					// get value & replace the placeholders
 					$xmlValue = $this->setPlaceholders(
-						ComponentbuilderHelper::getBetween(
+						GetHelper::between(
 							$field['settings']->xml, $property['name'] . '="',
 							'"'
 						), $placeholders
@@ -4208,7 +4209,7 @@ class Fields extends Structure
 					$fieldAttributes['custom'][$phpKey][$phpLine]
 						= $this->setDynamicValues(
 						ComponentbuilderHelper::openValidBase64(
-							ComponentbuilderHelper::getBetween(
+							GetHelper::between(
 								$field['settings']->xml,
 								$property['name'] . '="', '"'
 							)
@@ -4221,7 +4222,7 @@ class Fields extends Structure
 				{
 					// load the php for the custom field file
 					$fieldAttributes['custom']['prime_php']
-						= (int) ComponentbuilderHelper::getBetween(
+						= (int) GetHelper::between(
 						$field['settings']->xml, $property['name'] . '="', '"'
 					);
 				}
@@ -4229,7 +4230,7 @@ class Fields extends Structure
 				{
 					// load the class that is being extended
 					$fieldAttributes['custom']['extends']
-						= ComponentbuilderHelper::getBetween(
+						= GetHelper::between(
 						$field['settings']->xml, 'extends="', '"'
 					);
 				}
@@ -4239,7 +4240,7 @@ class Fields extends Structure
 					$fieldAttributes['custom']['view']
 						= StringHelper::safe(
 						$this->setPlaceholders(
-							ComponentbuilderHelper::getBetween(
+							GetHelper::between(
 								$field['settings']->xml, 'view="', '"'
 							), $placeholders
 						)
@@ -4251,7 +4252,7 @@ class Fields extends Structure
 					$fieldAttributes['custom']['views']
 						= StringHelper::safe(
 						$this->setPlaceholders(
-							ComponentbuilderHelper::getBetween(
+							GetHelper::between(
 								$field['settings']->xml, 'views="', '"'
 							), $placeholders
 						)
@@ -4262,7 +4263,7 @@ class Fields extends Structure
 					// load the component name & replace the placeholders
 					$fieldAttributes['custom']['component']
 						= $this->setPlaceholders(
-						ComponentbuilderHelper::getBetween(
+						GetHelper::between(
 							$field['settings']->xml, 'component="', '"'
 						), $placeholders
 					);
@@ -4272,7 +4273,7 @@ class Fields extends Structure
 					// load the main table that is queried & replace the placeholders
 					$fieldAttributes['custom']['table']
 						= $this->setPlaceholders(
-						ComponentbuilderHelper::getBetween(
+						GetHelper::between(
 							$field['settings']->xml, 'table="', '"'
 						), $placeholders
 					);
@@ -4282,7 +4283,7 @@ class Fields extends Structure
 					// load the text key
 					$fieldAttributes['custom']['text']
 						= StringHelper::safe(
-						ComponentbuilderHelper::getBetween(
+						GetHelper::between(
 							$field['settings']->xml, 'value_field="', '"'
 						)
 					);
@@ -4292,7 +4293,7 @@ class Fields extends Structure
 					// load the id key
 					$fieldAttributes['custom']['id']
 						= StringHelper::safe(
-						ComponentbuilderHelper::getBetween(
+						GetHelper::between(
 							$field['settings']->xml, 'key_field="', '"'
 						)
 					);
@@ -4309,7 +4310,7 @@ class Fields extends Structure
 				{
 					// load the button string value if found
 					$xmlValue = (string) StringHelper::safe(
-						ComponentbuilderHelper::getBetween(
+						GetHelper::between(
 							$field['settings']->xml, 'button="', '"'
 						)
 					);
@@ -4338,7 +4339,7 @@ class Fields extends Structure
 				}
 				elseif ($property['name'] === 'multiple')
 				{
-					$xmlValue = (string) ComponentbuilderHelper::getBetween(
+					$xmlValue = (string) GetHelper::between(
 						$field['settings']->xml, $property['name'] . '="', '"'
 					);
 					// add the multipal
@@ -4352,7 +4353,7 @@ class Fields extends Structure
 					&& ($typeName === 'note'
 						|| $typeName === 'spacer'))
 				{
-					$xmlValue = ComponentbuilderHelper::getBetween(
+					$xmlValue = GetHelper::between(
 						$field['settings']->xml, 'class="', '"'
 					);
 					// add the type class
@@ -4372,7 +4373,7 @@ class Fields extends Structure
 				{
 					// set the rest of the fields
 					$xmlValue = (string) $this->setPlaceholders(
-						ComponentbuilderHelper::getBetween(
+						GetHelper::between(
 							$field['settings']->xml, $property['name'] . '="',
 							'"'
 						), $placeholders
@@ -4473,7 +4474,7 @@ class Fields extends Structure
 				// validate that the default field is set
 				elseif ($property['name'] === 'default'
 					&& ($xmlValidateValue
-						= ComponentbuilderHelper::getBetween(
+						= GetHelper::between(
 						$field['settings']->xml, 'default="', '"', 'none-set'
 					)) !== 'none-set')
 				{
@@ -4511,7 +4512,7 @@ class Fields extends Structure
 			if (isset($fieldAttributes['name']))
 			{
 				// check if we have class value for the list view of this field
-				$listclass = ComponentbuilderHelper::getBetween(
+				$listclass = GetHelper::between(
 					$field['settings']->xml, 'listclass="', '"'
 				);
 				if (StringHelper::check($listclass))
@@ -4520,7 +4521,7 @@ class Fields extends Structure
 						= $listclass;
 				}
 				// check if we find reason to remove this field from being escaped
-				$escaped = ComponentbuilderHelper::getBetween(
+				$escaped = GetHelper::between(
 					$field['settings']->xml, 'escape="', '"'
 				);
 				if (StringHelper::check($escaped))
@@ -4529,7 +4530,7 @@ class Fields extends Structure
 						= $fieldAttributes['name'];
 				}
 				// check if we have display switch for dynamic placement
-				$display = ComponentbuilderHelper::getBetween(
+				$display = GetHelper::between(
 					$field['settings']->xml, 'display="', '"'
 				);
 				if (StringHelper::check($display))
@@ -4540,7 +4541,7 @@ class Fields extends Structure
 				if (!isset($fieldAttributes['validate']))
 				{
 					// check if we have validate (validation rule set)
-					$validationRule = ComponentbuilderHelper::getBetween(
+					$validationRule = GetHelper::between(
 						$field['settings']->xml, 'validate="', '"'
 					);
 					if (StringHelper::check($validationRule))
@@ -4753,7 +4754,7 @@ class Fields extends Structure
 				{
 					// get it from the field xml string
 					$listFieldName = (string) $this->setPlaceholders(
-						ComponentbuilderHelper::getBetween(
+						GetHelper::between(
 							$field['settings']->xml, 'label="',
 							'"'
 						), $this->placeholders
@@ -4954,7 +4955,7 @@ class Fields extends Structure
 			}
 			// get the xml extension name
 			$_extension = $this->setPlaceholders(
-				ComponentbuilderHelper::getBetween(
+				GetHelper::between(
 					$field['settings']->xml, 'extension="', '"'
 				), $this->placeholders
 			);

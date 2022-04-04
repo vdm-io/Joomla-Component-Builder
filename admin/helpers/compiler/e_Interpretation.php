@@ -18,6 +18,8 @@ use Joomla\CMS\Filesystem\Folder;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\MathHelper;
 
 /**
@@ -2389,7 +2391,7 @@ class Interpretation extends Fields
 		foreach ($params as $field)
 		{
 			// some switch to see if it should be added to front end params
-			$target = ComponentbuilderHelper::getBetween(
+			$target = GetHelper::between(
 				$field, 'display="', '"'
 			);
 			if (!StringHelper::check($target)
@@ -5548,12 +5550,10 @@ class Interpretation extends Fields
 			}
 			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
 			$this->fileContentDynamic[$viewCodeName][$this->hhh . $TARGET
-			. '_CUSTOM_BUTTONS_CONTROLLER' . $this->hhh]
-				= '';
+			. '_CUSTOM_BUTTONS_CONTROLLER' . $this->hhh] = '';
 			// set the custom buttons CUSTOM_BUTTONS_METHOD
 			$this->fileContentDynamic[$viewCodeName][$this->hhh . $TARGET
-			. '_CUSTOM_BUTTONS_METHOD' . $this->hhh]
-				= '';
+			. '_CUSTOM_BUTTONS_METHOD' . $this->hhh] = '';
 		}
 		elseif (3 == $type)
 		{
@@ -6456,7 +6456,7 @@ class Interpretation extends Fields
 					$path = '/' . trim($folder['path'], '/');
 					if (isset($folder['rename']) && 1 == $folder['rename'])
 					{
-						if ($_paths = ComponentbuilderHelper::getAllFilePaths(
+						if ($_paths = FileHelper::getPaths(
 							$this->componentPath . $path
 						))
 						{
@@ -6466,7 +6466,7 @@ class Interpretation extends Fields
 					else
 					{
 						$path = $path . '/' . trim($folder['folder'], '/');
-						if ($_paths = ComponentbuilderHelper::getAllFilePaths(
+						if ($_paths = FileHelper::getPaths(
 							$this->componentPath . $path
 						))
 						{
@@ -7309,7 +7309,7 @@ class Interpretation extends Fields
 				{
 					if (File::exists($file['path']))
 					{
-						$string            = ComponentbuilderHelper::getFileContents(
+						$string            = FileHelper::getContent(
 							$file['path']
 						);
 						$buket['static'][] = $this->getInbetweenStrings(
@@ -7326,7 +7326,7 @@ class Interpretation extends Fields
 							if (File::exists($doc['path']))
 							{
 								$string
-									            = ComponentbuilderHelper::getFileContents(
+									            = FileHelper::getContent(
 									$doc['path']
 								);
 								$buket[$view][] = $this->getInbetweenStrings(
@@ -17709,7 +17709,7 @@ class Interpretation extends Fields
 			elseif (ComponentbuilderHelper::fieldCheck($type, 'text'))
 			{
 				// check to get the key words if set
-				$keywords = ComponentbuilderHelper::getBetween(
+				$keywords = GetHelper::between(
 					$options, 'keywords="', '"'
 				);
 				if (StringHelper::check($keywords))
@@ -17730,7 +17730,7 @@ class Interpretation extends Fields
 					}
 				}
 				// check to ket string length if set
-				$length = ComponentbuilderHelper::getBetween(
+				$length = GetHelper::between(
 					$options, 'length="', '"'
 				);
 				if (StringHelper::check($length))
@@ -23212,7 +23212,7 @@ class Interpretation extends Fields
 		{
 			// get all the mothods that should load date to the view
 			$this->DashboardGetCustomData
-				= ComponentbuilderHelper::getAllBetween(
+				= GetHelper::allBetween(
 				$this->componentData->php_dashboard_methods,
 				'public function get', '()'
 			);
@@ -24274,10 +24274,10 @@ class Interpretation extends Fields
 		if (1 == $timer) // this is before the admin views are build
 		{
 			// start loading Global params
-			$autorName                = ComponentbuilderHelper::htmlEscape(
+			$autorName                = StringHelper::html(
 				$this->componentData->author
 			);
-			$autorEmail               = ComponentbuilderHelper::htmlEscape(
+			$autorEmail               = StringHelper::html(
 				$this->componentData->email
 			);
 			$this->extensionsParams[] = '"autorName":"' . $autorName
@@ -24366,13 +24366,13 @@ class Interpretation extends Fields
 						// set global params to db on install
 						$fieldName    = StringHelper::safe(
 							$this->setPlaceholders(
-								ComponentbuilderHelper::getBetween(
+								GetHelper::between(
 									$xmlField, 'name="', '"'
 								), $placeholders
 							)
 						);
 						$fieldDefault = $this->setPlaceholders(
-							ComponentbuilderHelper::getBetween(
+							GetHelper::between(
 								$xmlField, 'default="', '"'
 							), $placeholders
 						);
@@ -24486,7 +24486,7 @@ class Interpretation extends Fields
 					elseif (strpos($id_field, '_request_id') !== false)
 					{
 						// not loaded to a tab "view" name
-						$_viewRequest = ComponentbuilderHelper::getBetween(
+						$_viewRequest = GetHelper::between(
 							$id_field, 'name="', '_request_id'
 						);
 						$searchIdKe   = 'name="' . $_viewRequest
@@ -24514,7 +24514,7 @@ class Interpretation extends Fields
 					elseif (strpos($catid_field, '_request_catid') !== false)
 					{
 						// not loaded to a tab "view" name
-						$_viewRequestC = ComponentbuilderHelper::getBetween(
+						$_viewRequestC = GetHelper::between(
 							$catid_field, 'name="', '_request_catid'
 						);
 						$searchCatidKe = 'name="' . $_viewRequestC
@@ -24539,7 +24539,7 @@ class Interpretation extends Fields
 					elseif (strpos($field, '_menu"') !== false)
 					{
 						// not loaded to a tab "view" name
-						$_tabLower = ComponentbuilderHelper::getBetween(
+						$_tabLower = GetHelper::between(
 							$field, 'name="', '_menu"'
 						);
 						// set the values needed to insure route is done correclty
@@ -24561,7 +24561,7 @@ class Interpretation extends Fields
 
 	protected function setRequestValues($view, $field, $search, $target, $store)
 	{
-		$key = ComponentbuilderHelper::getBetween($field, $search, '"');
+		$key = GetHelper::between($field, $search, '"');
 		if (!StringHelper::check($key))
 		{
 			// is not having special var
@@ -24602,7 +24602,7 @@ class Interpretation extends Fields
 				$bucket = array();
 				foreach ($tabFields as $tabField)
 				{
-					$display = ComponentbuilderHelper::getBetween(
+					$display = GetHelper::between(
 						$tabField, 'display="', '"'
 					);
 					if (!StringHelper::check($display)
@@ -24908,7 +24908,7 @@ class Interpretation extends Fields
 				);
 				$cbWebsite = htmlspecialchars(
 					$contributor['website'], ENT_XML1, 'UTF-8'
-				); // ComponentbuilderHelper::htmlEscape($contributor['website']);
+				); // StringHelper::html($contributor['website']);
 				// load to the $fieldsets
 				$this->configFieldSets[] = $this->_t(2)
 					. '<field type="spacer" name="spacerContributor' . $counter

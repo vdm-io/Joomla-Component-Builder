@@ -18,6 +18,8 @@ use Joomla\CMS\Filesystem\Folder;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\FileHelper;
 
 
 /**
@@ -1136,7 +1138,7 @@ class Structure extends Get
 								// set file name
 								$fileName = basename($url['url']);
 								// get the file contents
-								$data = ComponentbuilderHelper::getFileContents(
+								$data = FileHelper::getContent(
 									$url['url']
 								);
 								// build sub path
@@ -1527,7 +1529,7 @@ class Structure extends Get
 								// set file name
 								$fileName = basename($url['url']);
 								// get the file contents
-								$data = ComponentbuilderHelper::getFileContents(
+								$data = FileHelper::getContent(
 									$url['url']
 								);
 								// build sub path
@@ -1672,7 +1674,7 @@ class Structure extends Get
 								// set file name
 								$fileName = basename($url['url']);
 								// get the file contents
-								$data = ComponentbuilderHelper::getFileContents(
+								$data = FileHelper::getContent(
 									$url['url']
 								);
 								// build sub path
@@ -1887,7 +1889,7 @@ class Structure extends Get
 	 */
 	public function writeFile($path, $data)
 	{
-		return ComponentbuilderHelper::writeFile($path, $data);
+		return FileHelper::write($path, $data);
 	}
 
 	/**
@@ -2591,7 +2593,7 @@ class Structure extends Get
 			'trim',
 			explode(
 				',',
-				ComponentbuilderHelper::getBetween(
+				GetHelper::between(
 					$multi_field['settings']->xml, 'fields="', '"'
 				)
 			)
@@ -2895,7 +2897,7 @@ class Structure extends Get
 		if (File::exists($custom_settings))
 		{
 			$version_data = json_decode(
-				ComponentbuilderHelper::getFileContents(
+				FileHelper::getContent(
 					$custom_settings
 				)
 			);
@@ -2903,7 +2905,7 @@ class Structure extends Get
 		else
 		{
 			$version_data = json_decode(
-				ComponentbuilderHelper::getFileContents(
+				FileHelper::getContent(
 					$this->templatePath . '/settings.json'
 				)
 			);

@@ -20,6 +20,7 @@ use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\String\FieldHelper;
 use VDM\Joomla\Utilities\String\TypeHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
@@ -181,6 +182,13 @@ class Get
 	 * @var      object
 	 */
 	public $componentData;
+
+	/**
+	 * The Switch to add Powers data
+	 *
+	 * @var      boolean
+	 */
+	protected $addPower;
 
 	/**
 	 * The Powers data
@@ -1044,6 +1052,10 @@ class Get
 					) == 1) ? true : false;
 				$this->debugLinenr = ((int) $config['debuglinenr'] == 0) ? false
 					: (((int) $config['debuglinenr'] == 1) ? true : $global);
+				// set if powers should be added to component (default is true)
+				$global         = true;
+				$this->addPower = (isset($config['powers']) && (int) $config['powers'] == 0)
+					? false : ((isset($config['powers']) && (int) $config['powers'] == 1) ? true : $global);
 				// set the current user
 				$this->user = JFactory::getUser();
 				// Get a db connection.
@@ -2853,14 +2865,14 @@ class Get
 								{
 									// load the field details
 									$required
-										      = ComponentbuilderHelper::getBetween(
+										      = GetHelper::between(
 										$fieldValues['settings']->xml,
 										'required="', '"'
 									);
 									$required = ($required === 'true'
 										|| $required === '1') ? 'yes' : 'no';
 									$filter
-										      = ComponentbuilderHelper::getBetween(
+										      = GetHelper::between(
 										$fieldValues['settings']->xml,
 										'filter="', '"'
 									);
@@ -2909,7 +2921,7 @@ class Get
 								if (!ComponentbuilderHelper::fieldCheck($type))
 								{
 									$conditionValue['match_extends']
-										= ComponentbuilderHelper::getBetween(
+										= GetHelper::between(
 										$fieldValue['settings']->xml,
 										'extends="', '"'
 									);
@@ -3850,7 +3862,7 @@ class Get
 				$field->xml = $this->setDynamicValues(json_decode($field->xml));
 
 				// check if we have validate (validation rule set)
-				$validationRule = ComponentbuilderHelper::getBetween(
+				$validationRule = GetHelper::between(
 					$field->xml, 'validate="', '"'
 				);
 				if (StringHelper::check($validationRule))
@@ -4403,7 +4415,7 @@ class Get
 				|| strtolower($type_name) === 'customuser')
 			{
 				$type = TypeHelper::safe(
-					ComponentbuilderHelper::getBetween(
+					GetHelper::between(
 						$field['settings']->xml, 'type="', '"'
 					)
 				);
@@ -4430,7 +4442,7 @@ class Get
 						else
 						{
 							$type = TypeHelper::safe(
-								ComponentbuilderHelper::getBetween(
+								GetHelper::between(
 									$field['settings']->xml, 'type="', '"'
 								)
 							);
@@ -4502,7 +4514,7 @@ class Get
 					if ($type_name === 'category')
 					{
 						// quick check if this is a category linked to view page
-						$requeSt_id = ComponentbuilderHelper::getBetween(
+						$requeSt_id = GetHelper::between(
 							$field['settings']->xml, 'name="', '"'
 						);
 						if (strpos($requeSt_id, '_request_id') !== false
@@ -4522,17 +4534,17 @@ class Get
 						{
 							// check if we should use another Text Name as this views name
 							$otherName  = $this->setPlaceholders(
-								ComponentbuilderHelper::getBetween(
+								GetHelper::between(
 									$field['settings']->xml, 'othername="', '"'
 								), $this->placeholders
 							);
 							$otherViews = $this->setPlaceholders(
-								ComponentbuilderHelper::getBetween(
+								GetHelper::between(
 									$field['settings']->xml, 'views="', '"'
 								), $this->placeholders
 							);
 							$otherView  = $this->setPlaceholders(
-								ComponentbuilderHelper::getBetween(
+								GetHelper::between(
 									$field['settings']->xml, 'view="', '"'
 								), $this->placeholders
 							);
@@ -4575,7 +4587,7 @@ class Get
 						// get value from xml
 						$xml = FieldHelper::safe(
 							$this->setPlaceholders(
-								ComponentbuilderHelper::getBetween(
+								GetHelper::between(
 									$field['settings']->xml, 'name="', '"'
 								), $this->placeholders
 							)
@@ -4880,7 +4892,7 @@ class Get
 								);
 								// get the table name
 								$_searchQuery
-									= ComponentbuilderHelper::getBetween(
+									= GetHelper::between(
 									$customQueryString, '$query->from(', ')'
 								);
 								if (StringHelper::check(
@@ -4889,7 +4901,7 @@ class Get
 									&& strpos($_searchQuery, '#__') !== false)
 								{
 									$_queryName
-										= ComponentbuilderHelper::getBetween(
+										= GetHelper::between(
 										$_searchQuery, '#__', "'"
 									);
 									if (!StringHelper::check(
@@ -4897,7 +4909,7 @@ class Get
 									))
 									{
 										$_queryName
-											= ComponentbuilderHelper::getBetween(
+											= GetHelper::between(
 											$_searchQuery, '#__', '"'
 										);
 									}
@@ -5898,10 +5910,10 @@ class Get
 		if (!ArrayHelper::check($templates))
 		{
 			// set the Template data
-			$temp1 = ComponentbuilderHelper::getAllBetween(
+			$temp1 = GetHelper::allBetween(
 				$default, "\$this->loadTemplate('", "')"
 			);
-			$temp2 = ComponentbuilderHelper::getAllBetween(
+			$temp2 = GetHelper::allBetween(
 				$default, '$this->loadTemplate("', '")'
 			);
 			if (ArrayHelper::check($temp1)
@@ -5957,10 +5969,10 @@ class Get
 		if (!ArrayHelper::check($layouts))
 		{
 			// set the Layout data
-			$lay1 = ComponentbuilderHelper::getAllBetween(
+			$lay1 = GetHelper::allBetween(
 				$default, "JLayoutHelper::render('", "',"
 			);
-			$lay2 = ComponentbuilderHelper::getAllBetween(
+			$lay2 = GetHelper::allBetween(
 				$default, 'JLayoutHelper::render("', '",'
 			);
 			if (ArrayHelper::check($lay1)
@@ -6557,10 +6569,10 @@ class Get
 			// first get the Joomla .JText._()
 			if (in_array('Joomla' . '.JText._(', $langStringTargets))
 			{
-				$jsTEXT[] = ComponentbuilderHelper::getAllBetween(
+				$jsTEXT[] = GetHelper::allBetween(
 					$content, "Joomla" . ".JText._('", "'"
 				);
-				$jsTEXT[] = ComponentbuilderHelper::getAllBetween(
+				$jsTEXT[] = GetHelper::allBetween(
 					$content, 'Joomla' . '.JText._("', '"'
 				);
 				// combine into one array
@@ -6580,10 +6592,10 @@ class Get
 			// now get the JText: :script()
 			if (in_array('JText:' . ':script(', $langStringTargets))
 			{
-				$scTEXT[] = ComponentbuilderHelper::getAllBetween(
+				$scTEXT[] = GetHelper::allBetween(
 					$content, "JText:" . ":script('", "'"
 				);
-				$scTEXT[] = ComponentbuilderHelper::getAllBetween(
+				$scTEXT[] = GetHelper::allBetween(
 					$content, 'JText:' . ':script("', '"'
 				);
 				// combine into one array
@@ -6601,10 +6613,10 @@ class Get
 			// now do the little trick for JustTEXT: :_('Just uppercase text');
 			if (in_array('JustTEXT:' . ':_(', $langStringTargets))
 			{
-				$langOnly[] = ComponentbuilderHelper::getAllBetween(
+				$langOnly[] = GetHelper::allBetween(
 					$content, "JustTEXT:" . ":_('", "')"
 				);
-				$langOnly[] = ComponentbuilderHelper::getAllBetween(
+				$langOnly[] = GetHelper::allBetween(
 					$content, 'JustTEXT:' . ':_("', '")'
 				);
 				// merge lang only
@@ -6620,10 +6632,10 @@ class Get
 				{
 					continue;
 				}
-				$langCheck[] = ComponentbuilderHelper::getAllBetween(
+				$langCheck[] = GetHelper::allBetween(
 					$content, $langStringTarget . "'", "'"
 				);
-				$langCheck[] = ComponentbuilderHelper::getAllBetween(
+				$langCheck[] = GetHelper::allBetween(
 					$content, $langStringTarget . '"', '"'
 				);
 			}
@@ -7316,7 +7328,7 @@ class Get
 			}
 			// target content
 			$bucket = array();
-			$found  = ComponentbuilderHelper::getAllBetween(
+			$found  = GetHelper::allBetween(
 				$string, '[EXTERNA' . 'LCODE=', ']'
 			);
 			if (ArrayHelper::check($found))
@@ -7421,7 +7433,7 @@ class Get
 		{
 			// get the data string (code)
 			$this->externalCodeString[$target_key]
-				= ComponentbuilderHelper::getFileContents($target_url);
+				= FileHelper::getContent($target_url);
 			// check if we must cut this
 			if (isset($this->externalCodeCutter[$target_key]) &&
 				$this->externalCodeCutter[$target_key])
@@ -7628,7 +7640,7 @@ class Get
 			}
 			// the ids found in this content
 			$bucket = array();
-			$found  = ComponentbuilderHelper::getAllBetween(
+			$found  = GetHelper::allBetween(
 				$string, '[CUSTO' . 'MCODE=', ']'
 			);
 			if (ArrayHelper::check($found))
@@ -8620,7 +8632,7 @@ class Get
 	 */
 	public function getPower($id)
 	{
-		if ($this->setPower($id))
+		if ($this->addPower && $this->setPower($id))
 		{
 			return $this->powers[$id];
 		}
@@ -8934,12 +8946,16 @@ class Get
 				return true;
 			}
 		}
-		// we failed to get the power
+		// we failed to get the power,
 		// so we raise an error message
-		$this->app->enqueueMessage(
-			JText::sprintf('<p>Power <b>id:%s</b> not found!</p>', $id),
-			'Error'
-		);
+		// only if id exist
+		if ($id > 0)
+		{
+			$this->app->enqueueMessage(
+				JText::sprintf('<p>Power <b>id:%s</b> not found!</p>', $id),
+				'Error'
+			);
+		}
 		// let's not try again
 		$this->statePowers[$id] = false;
 
@@ -9525,7 +9541,7 @@ class Get
 										&& isset($field['settings']))
 									{
 										if (($old_default
-												= ComponentbuilderHelper::getBetween(
+												= GetHelper::between(
 												$field['settings']->xml,
 												'default="', '"', false
 											)) !== false)
@@ -10470,7 +10486,7 @@ class Get
 										&& isset($field['settings']))
 									{
 										if (($old_default
-												= ComponentbuilderHelper::getBetween(
+												= GetHelper::between(
 												$field['settings']->xml,
 												'default="', '"', false
 											)) !== false)
@@ -11427,7 +11443,7 @@ class Get
 		if (strpos($script, 'HASHSTRING((((') !== false)
 		{
 			// get the strings
-			$values = ComponentbuilderHelper::getAllBetween(
+			$values = GetHelper::allBetween(
 				$script, 'HASHSTRING((((', '))))'
 			);
 			$locker = array();
@@ -11445,7 +11461,7 @@ class Get
 		if (strpos($script, 'HASHFILE((((') !== false)
 		{
 			// get the strings
-			$values = ComponentbuilderHelper::getAllBetween(
+			$values = GetHelper::allBetween(
 				$script, 'HASHFILE((((', '))))'
 			);
 			$locker = array();
@@ -11453,7 +11469,7 @@ class Get
 			foreach ($values as $path)
 			{
 				// we first get the file if it exist
-				if ($value = ComponentbuilderHelper::getFileContents($path))
+				if ($value = FileHelper::getContent($path))
 				{
 					// now we hash the file content
 					$locker['HASHFILE((((' . $path . '))))']
@@ -11487,7 +11503,7 @@ class Get
 		if (strpos($script, 'LOCKBASE64((((') !== false)
 		{
 			// get the strings
-			$values = ComponentbuilderHelper::getAllBetween(
+			$values = GetHelper::allBetween(
 				$script, 'LOCKBASE64((((', '))))'
 			);
 			$locker = array();
@@ -11642,14 +11658,14 @@ class Get
 	protected function guiCodeSearch(&$file, &$placeholders, &$today, &$target)
 	{
 		// get file content
-		$file_conent = ComponentbuilderHelper::getFileContents($file);
+		$file_conent = FileHelper::getContent($file);
 
 		$guiCode = array();
 		// we add a new search for the GUI CODE Blocks
-		$guiCode[] = ComponentbuilderHelper::getAllBetween(
+		$guiCode[] = GetHelper::allBetween(
 			$file_conent, '/***[JCB' . 'GUI<>', '/***[/JCBGUI' . '$$$$]***/'
 		);
-		$guiCode[] = ComponentbuilderHelper::getAllBetween(
+		$guiCode[] = GetHelper::allBetween(
 			$file_conent, '<!--[JCB' . 'GUI<>', '<!--[/JCBGUI' . '$$$$]-->'
 		);
 
@@ -11899,10 +11915,10 @@ class Get
 			// set language data
 			foreach ($langStringTargets as $langStringTarget)
 			{
-				$langCheck[] = ComponentbuilderHelper::getAllBetween(
+				$langCheck[] = GetHelper::allBetween(
 					$string, $langStringTarget . "'", "'"
 				);
-				$langCheck[] = ComponentbuilderHelper::getAllBetween(
+				$langCheck[] = GetHelper::allBetween(
 					$string, $langStringTarget . "'", "'"
 				);
 			}

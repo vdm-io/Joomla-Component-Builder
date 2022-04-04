@@ -556,5 +556,43 @@ trait Utilities
 		return FileHelper::write($path, $data);
 	}
 
+	/**
+	 * get all the file paths in folder and sub folders
+	 * 
+	 * @param   string  $folder     The local path to parse
+	 * @param   array   $fileTypes  The type of files to get
+	 *
+	 * @return  void
+	 *
+	 * @since  3.0.9
+	 *
+	 * @deprecated  4.0 - Use FileHelper::getPaths($folder, $fileTypes , $recurse, $full);
+	 */
+	public static function getAllFilePaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'), $recurse = true, $full = true)
+	{
+		return FileHelper::getPaths($folder, $fileTypes , $recurse, $full);
+	}
+
+	/**
+	 * Get the file path or url
+	 *
+	 * @param  string   $type              The (url/path) type to return
+	 * @param  string   $target            The Params Target name (if set)
+	 * @param  string   $fileType          The kind of filename to generate (if not set no file name is generated)
+	 * @param  string   $key               The key to adjust the filename (if not set ignored)
+	 * @param  string   $default           The default path if not set in Params (fallback path)
+	 * @param  bool     $createIfNotSet    The switch to create the folder if not found
+	 *
+	 * @return  string    On success the path or url is returned based on the type requested
+	 *
+	 * @since  3.0.9
+	 *
+	 * @deprecated  4.0 - Use FileHelper::getPath($type, $target, $fileType, $key, $default, $createIfNotSet);
+	 */
+	public static function getFilePath($type = 'path', $target = 'filepath', $fileType = null, $key = '', $default = '', $createIfNotSet = true)
+	{
+		return FileHelper::getPath($type, $target, $fileType, $key, $default, $createIfNotSet);
+	}
+
 }
 

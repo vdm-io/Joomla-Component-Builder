@@ -18,6 +18,7 @@ use Joomla\CMS\Filesystem\Folder;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\FileHelper;
 
 /**
  * Infusion class
@@ -2796,7 +2797,7 @@ class Infusion extends Interpretation
 				$xmlPath = $this->componentPath . '/' . $this->componentCodeName
 					. '.xml';
 				// get the content in xml
-				$componentXML = ComponentbuilderHelper::getFileContents(
+				$componentXML = FileHelper::getContent(
 					$xmlPath
 				);
 				// update the xml content
