@@ -283,9 +283,9 @@ abstract class FileHelper
 
 		// Get basic key
 		$basickey = 'Th!s_iS_n0t_sAfe_buT_b3tter_then_n0thiug';
-		if (method_exists('ComponentbuilderHelper', "getCryptKey")) 
+		if (method_exists('\ComponentbuilderHelper', "getCryptKey")) 
 		{
-			$basickey = ComponentbuilderHelper::getCryptKey('basic', $basickey);
+			$basickey = \ComponentbuilderHelper::getCryptKey('basic', $basickey);
 		}
 
 		// check the key

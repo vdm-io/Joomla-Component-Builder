@@ -104,6 +104,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				$this->removeOldComponentValues($item);
 				// load to global object
 				$this->smartBox['joomla_component'][$item->id] = $item;
+				// set the powers linked to this joomla component
+				$this->setSmartIDs($this->getValues($item->params, 'power', 'joomla_component_headers', null), 'power', false);
 				// add to pks
 				$pks[] = $item->id;
 			}
@@ -266,6 +268,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				$this->setLanguageTranslation($item->id);
 				// load to global object
 				$this->smartBox['joomla_component'][$item->id] = $item;
+				// set the powers linked to this joomla component
+				$this->setSmartIDs($this->getValues($item->params, 'power', 'joomla_component_headers', null), 'power', false);
 				// add to pks
 				$pks[] = $item->id;
 			}
@@ -402,7 +406,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			// add powers
 			if (isset($this->smartIDs['power']) && ComponentbuilderHelper::checkArray($this->smartIDs['power']))
 			{
-				$this->setData('power', array_values($this->smartIDs['power']), 'id');
+				$this->setData('power', array_values($this->smartIDs['power']), 'guid');
 			}
 			// set limiter
 			$limit = 0;
@@ -697,8 +701,24 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		$query->select(array('a.*'));
 		// From the componentbuilder_ANY table
 		$query->from($this->_db->quoteName('#__componentbuilder_'. $table, 'a'));
-		// set the where query
-		$query->where('a.'.$key.' IN (' . implode(',',$values) . ')');
+		// check if this is an array of integers 
+		if ($this->is_numeric($values))
+		{
+			// set the where query
+			$query->where('a.'.$key.' IN (' . implode(',', $values) . ')');
+		}
+		else
+		{
+			// set the where query
+			$query->where('a.'.$key.' IN (' . implode(',', array_map( function ($var) {
+				// check if already quoted
+				if (preg_match('/^(["\']).*\1$/m', $var))
+				{
+					return $var;
+				}
+				return $this->_db->quote($var);
+			}, $values)) . ')');
+		}
 		// Implement View Level Access
 		if (!$this->user->authorise('core.options', 'com_componentbuilder'))
 		{
@@ -806,19 +826,9 @@ class ComponentbuilderModelJoomla_components extends JModelList
 					if ('joomla_component' === $table)
 					{
 						// make sure old fields are not exported any more
-						unset($item->addconfig);
-						unset($item->addadmin_views);
-						unset($item->addcustom_admin_views);
-						unset($item->addsite_views);
-						unset($item->version_update);
-						unset($item->sql_tweak);
-						unset($item->addcustommenus);
-						unset($item->dashboard_tab);
-						unset($item->php_dashboard_methods);
-						unset($item->addfiles);
-						unset($item->addfolders);
-						// set the powers linked to this admin view
-						$this->setSmartIDs($this->getValues($item->params, 'power', 'joomla_component_headers', null), 'power');
+						$this->removeOldComponentValues($item);
+						// set the powers linked to this joomla component
+						$this->setSmartIDs($this->getValues($item->params, 'power', 'joomla_component_headers', null), 'power', false);
 					}
 					// actions to take before storing the item if table is admin_view
 					if ('admin_view' === $table)
@@ -844,6 +854,12 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						$this->moveIt($this->getValues($item->addfilesfullpath, 'subform', 'filepath', null), 'file', true);
 						// build full path folders
 						$this->moveIt($this->getValues($item->addfoldersfullpath, 'subform', 'folderpath', null), 'folder', true);
+					}
+					// actions to take if table is component_dashboard
+					if ('component_dashboard' === $table)
+					{
+						// set the powers linked to this dashboard
+						$this->setSmartIDs($this->getValues($item->params, 'power', 'component_dashboard_headers', null), 'power', false);
 					}
 					// actions to take if table is component_config
 					if ('component_config' === $table)
@@ -917,7 +933,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// add fields & conditions
 						$this->setSmartIDs($item->id, 'admin_view');
 						// set the powers linked to this admin view
-						$this->setSmartIDs($this->getValues($item->params, 'power', 'admin_view_headers', null), 'power');
+						$this->setSmartIDs($this->getValues($item->params, 'power', 'admin_view_headers', null), 'power', false);
 						// do not move anything if clone
 						if ('clone' !== $this->activeType)
 						{
@@ -1027,13 +1043,13 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						if ('site_view' === $table)
 						{
 							// set the powers linked to this admin view
-							$this->setSmartIDs($this->getValues($item->params, 'power', 'site_view_headers', null), 'power');
+							$this->setSmartIDs($this->getValues($item->params, 'power', 'site_view_headers', null), 'power', false);
 						}
 						// actions to take if table is custom_admin_view
 						elseif ('custom_admin_view' === $table)
 						{
 							// set the powers linked to this admin view
-							$this->setSmartIDs($this->getValues($item->params, 'power', 'custom_admin_view_headers', null), 'power');
+							$this->setSmartIDs($this->getValues($item->params, 'power', 'custom_admin_view_headers', null), 'power', false);
 						}
 					}
 					// actions to take if table is template and layout
@@ -1098,17 +1114,23 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						// add joomla_plugin_group
 						$this->setSmartIDs((int) $item->joomla_plugin_group, 'joomla_plugin_group');
 					}
+					// actions to take if table is dynamic_get
+					if ('dynamic_get' === $table)
+					{
+						// add dynamic_get_headers
+						$this->setSmartIDs($this->getValues($item->params, 'power', 'dynamic_get_headers', null), 'power', false);
+					}
 					// actions to take if table is power
 					if ('power' === $table)
 					{
 						// add the extended class (powers)
-						$this->setData('power', $item->extends, 'id');
+						$this->setData('power', $item->extends, 'guid');
 						// add implements interfaces (powers)
-						$this->setData('power', $item->implements, 'id');
+						$this->setData('power', $item->implements, 'guid');
 						// add use classes (powers)
-						$this->setData('power', $this->getValues($item->use_selection, 'subform', 'use'), 'id');
+						$this->setData('power', $this->getValues($item->use_selection, 'subform', 'use'), 'guid');
 						// add load classes (powers)
-						$this->setData('power', $this->getValues($item->load_selection, 'subform', 'load'), 'id');
+						$this->setData('power', $this->getValues($item->load_selection, 'subform', 'load'), 'guid');
 						// add property_selection
 						$this->setData('class_property', $this->getValues($item->property_selection, 'subform', 'property'), 'id');
 						// add class_method
@@ -1117,6 +1139,23 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				}
 			}
 		}
+	}
+
+	/**
+	 * Method to check if array has only numiric values
+	 *
+	 * @return bool
+	 **/
+	protected function is_numeric($array)
+	{
+		foreach ($array as $value)
+		{
+			if (!is_numeric($value))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -1202,8 +1241,21 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			{
 				// lock the data
 				$this->key = md5(implode('', $this->key));
-				$locker = new FOFEncryptAes($this->key, 128);
-				$data = $locker->encryptString($data);
+				// April 20, 2022 we moved away from FOF for good... sorry that it took this long
+				// $locker = new FOFEncryptAes($this->key, 128);
+				// $data = $locker->encryptString($data);
+				// load phpseclib <https://phpseclib.com/docs/symmetric>
+				if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib\Crypt\Rijndael)
+				{
+					// set the password
+					ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($this->key, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');
+					// lock the data
+					$data = base64_encode(ComponentbuilderHelper::crypt('AES', 'CBC')->encrypt($data));
+				}
+				else
+				{
+					return false;
+				}
 				// Set the key owner information
 				$this->info['getKeyFrom'] = array();
 				$this->info['getKeyFrom']['company'] = $this->info['source']['company'];
@@ -1227,12 +1279,16 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				// if we have multi links add them also
 				// we started adding this at v2.7.7
 				$this->info['key'] = true;
+				// we started adding this at v3.0.11 and v2.12.17
+				$this->info['phpseclib'] = true;
 			}
 			else
 			{
 				// we started adding this at v2.7.7
 				$this->info['key'] = false;
-				// Set the owner information
+				// we started adding this at v3.0.11 and v2.12.17
+				$this->info['phpseclib'] = false;
+				// base 64 encode the data
 				$data = base64_encode($data);
 			}
 			// set the path
@@ -1243,15 +1299,26 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				return false;
 			}
 			// set info data
-			$db = 'COM_COMPONENTBUILDER_SZDEQZDMVSMHBTRWFIFTYTSQFLVVXJTMTHREEJTWOIXM';
-			$locker = new FOFEncryptAes(base64_decode(JText::sprintf($db, 'VjR', 'WV0aE9k')), 128);
-			$info = $locker->encryptString(json_encode($this->info));
-			// set the path
-			$infoPath = $this->packagePath . '/info.vdm';
-			// write the db data to file in package
-			if (!ComponentbuilderHelper::writeFile($infoPath, wordwrap($info, 128, "\n", true)))
+			if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib\Crypt\Rijndael)
 			{
-					return false;
+				// set system password
+				$db = 'COM_COMPONENTBUILDER_SZDEQZDMVSMHBTRWFIFTYTSQFLVVXJTMTHREEJTWOIXM';
+				$password = base64_decode(JText::sprintf($db, 'VjR', 'WV0aE9k'));
+				// set the password
+				ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($password, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');
+				// lock the data
+				$info = base64_encode(ComponentbuilderHelper::crypt('AES', 'CBC')->encrypt(json_encode($this->info)));
+				// set the path
+				$infoPath = $this->packagePath . '/info.vdm';
+				// write the info data to file in package
+				if (!ComponentbuilderHelper::writeFile($infoPath, wordwrap($info, 128, "\n", true)))
+				{
+						return false;
+				}
+			}
+			else
+			{
+				return false;
 			}
 			// lock all files
 			$this->lockFiles();
@@ -1296,7 +1363,8 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		// lock the data if set
 		if (ComponentbuilderHelper::checkString($this->key) && strlen($this->key) == 32)
 		{
-			$locker = new FOFEncryptAes($this->key, 128);
+			// set secure password
+			ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($this->key, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');
 			// we must first store the current working directory
 			$joomla = getcwd();
 			// to avoid that it encrypt the db and info file again we must move per/folder
@@ -1309,7 +1377,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 				// go to the package sub folder if found
 				if (JFolder::exists($subPath))
 				{
-					$this->lock($subPath, $locker);
+					$this->lock($subPath);
 				}
 			}
 			// change back to working dir
@@ -1322,7 +1390,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 	*
 	* @return void
 	*/	
-	protected function lock(&$tmpPath, &$locker)
+	protected function lock(&$tmpPath)
 	{
 		// we are changing the working directory to the tmp path (important)
 		chdir($tmpPath);
@@ -1332,7 +1400,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 		foreach ($files as $file)
 		{
 			// write the encrypted string back to file
-			if (!ComponentbuilderHelper::writeFile($file, wordwrap($locker->encryptString(file_get_contents($file)), 128, "\n", true)))
+			if (!ComponentbuilderHelper::writeFile($file, wordwrap(base64_encode(ComponentbuilderHelper::crypt('AES', 'CBC')->encrypt(file_get_contents($file))), 128, "\n", true)))
 			{
 				// we should add error handler here in case file could not be locked
 			}
@@ -2141,7 +2209,7 @@ class ComponentbuilderModelJoomla_components extends JModelList
 			'name' => 'name'
 		),
 		// #__componentbuilder_power (v)
-		'class_method' => array(
+		'power' => array(
 			'search' => array('id', 'system_name', 'name', 'description', 'head', 'namespace', 'main_class_code'),
 			'views' => 'powers',
 			'not_base64' => array('description'),
@@ -2576,31 +2644,31 @@ class ComponentbuilderModelJoomla_components extends JModelList
 							continue;
 						}
 
+						// decode php_helper_both
+						$item->php_helper_both = base64_decode($item->php_helper_both);
+						// decode php_method_uninstall
+						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						// decode php_preflight_install
+						$item->php_preflight_install = base64_decode($item->php_preflight_install);
+						// decode css_admin
+						$item->css_admin = base64_decode($item->css_admin);
 						// decode php_admin_event
 						$item->php_admin_event = base64_decode($item->php_admin_event);
 						// decode php_site_event
 						$item->php_site_event = base64_decode($item->php_site_event);
-						// decode php_helper_both
-						$item->php_helper_both = base64_decode($item->php_helper_both);
-						// decode php_preflight_install
-						$item->php_preflight_install = base64_decode($item->php_preflight_install);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-						// decode css_admin
-						$item->css_admin = base64_decode($item->css_admin);
 						// decode php_postflight_install
 						$item->php_postflight_install = base64_decode($item->php_postflight_install);
 						// decode sql_uninstall
 						$item->sql_uninstall = base64_decode($item->sql_uninstall);
 						// decode php_helper_admin
 						$item->php_helper_admin = base64_decode($item->php_helper_admin);
-						// decode php_helper_site
-						$item->php_helper_site = base64_decode($item->php_helper_site);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 						{
 							// decrypt whmcs_key
 							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
 						}
+						// decode php_helper_site
+						$item->php_helper_site = base64_decode($item->php_helper_site);
 						// decode javascript
 						$item->javascript = base64_decode($item->javascript);
 						// decode css_site

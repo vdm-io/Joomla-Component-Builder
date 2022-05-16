@@ -60,7 +60,8 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				'copyright'
 			),
 			'above' => array(
-				'system_name'
+				'system_name',
+				'add_powers'
 			),
 			'under' => array(
 				'not_required'
@@ -88,6 +89,27 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				'css_admin',
 				'add_css_site',
 				'css_site'
+			)
+		),
+		'dynamic_integration' => array(
+			'left' => array(
+				'add_update_server',
+				'update_server_url',
+				'update_server_target',
+				'note_update_server_note_ftp',
+				'note_update_server_note_zip',
+				'note_update_server_note_other',
+				'update_server',
+				'add_sales_server',
+				'sales_server'
+			),
+			'right' => array(
+				'translation_tool',
+				'note_crowdin',
+				'crowdin_project_identifier',
+				'crowdin_project_api_key',
+				'crowdin_username',
+				'crowdin_account_api_key'
 			)
 		),
 		'readme' => array(
@@ -128,27 +150,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				'add_sql_uninstall',
 				'sql_uninstall',
 				'assets_table_fix'
-			)
-		),
-		'dynamic_integration' => array(
-			'left' => array(
-				'add_update_server',
-				'update_server_url',
-				'update_server_target',
-				'note_update_server_note_ftp',
-				'note_update_server_note_zip',
-				'note_update_server_note_other',
-				'update_server',
-				'add_sales_server',
-				'sales_server'
-			),
-			'right' => array(
-				'translation_tool',
-				'note_crowdin',
-				'crowdin_project_identifier',
-				'crowdin_project_api_key',
-				'crowdin_username',
-				'crowdin_account_api_key'
 			)
 		),
 		'dynamic_build_beta' => array(
@@ -341,6 +342,30 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 				$item->metadata = $registry->toArray();
 			}
 
+			if (!empty($item->php_helper_both))
+			{
+				// base64 Decode php_helper_both.
+				$item->php_helper_both = base64_decode($item->php_helper_both);
+			}
+
+			if (!empty($item->php_method_uninstall))
+			{
+				// base64 Decode php_method_uninstall.
+				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+			}
+
+			if (!empty($item->php_preflight_install))
+			{
+				// base64 Decode php_preflight_install.
+				$item->php_preflight_install = base64_decode($item->php_preflight_install);
+			}
+
+			if (!empty($item->css_admin))
+			{
+				// base64 Decode css_admin.
+				$item->css_admin = base64_decode($item->css_admin);
+			}
+
 			if (!empty($item->php_admin_event))
 			{
 				// base64 Decode php_admin_event.
@@ -351,30 +376,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			{
 				// base64 Decode php_site_event.
 				$item->php_site_event = base64_decode($item->php_site_event);
-			}
-
-			if (!empty($item->php_helper_both))
-			{
-				// base64 Decode php_helper_both.
-				$item->php_helper_both = base64_decode($item->php_helper_both);
-			}
-
-			if (!empty($item->php_preflight_install))
-			{
-				// base64 Decode php_preflight_install.
-				$item->php_preflight_install = base64_decode($item->php_preflight_install);
-			}
-
-			if (!empty($item->php_method_uninstall))
-			{
-				// base64 Decode php_method_uninstall.
-				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-			}
-
-			if (!empty($item->css_admin))
-			{
-				// base64 Decode css_admin.
-				$item->css_admin = base64_decode($item->css_admin);
 			}
 
 			if (!empty($item->php_postflight_install))
@@ -1408,6 +1409,30 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 			$data['addcontributors'] = '';
 		}
 
+		// Set the php_helper_both string to base64 string.
+		if (isset($data['php_helper_both']))
+		{
+			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
+		}
+
+		// Set the php_method_uninstall string to base64 string.
+		if (isset($data['php_method_uninstall']))
+		{
+			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
+		}
+
+		// Set the php_preflight_install string to base64 string.
+		if (isset($data['php_preflight_install']))
+		{
+			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
+		}
+
+		// Set the css_admin string to base64 string.
+		if (isset($data['css_admin']))
+		{
+			$data['css_admin'] = base64_encode($data['css_admin']);
+		}
+
 		// Set the php_admin_event string to base64 string.
 		if (isset($data['php_admin_event']))
 		{
@@ -1418,30 +1443,6 @@ class ComponentbuilderModelJoomla_component extends JModelAdmin
 		if (isset($data['php_site_event']))
 		{
 			$data['php_site_event'] = base64_encode($data['php_site_event']);
-		}
-
-		// Set the php_helper_both string to base64 string.
-		if (isset($data['php_helper_both']))
-		{
-			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
-		}
-
-		// Set the php_preflight_install string to base64 string.
-		if (isset($data['php_preflight_install']))
-		{
-			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
-		}
-
-		// Set the php_method_uninstall string to base64 string.
-		if (isset($data['php_method_uninstall']))
-		{
-			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
-		}
-
-		// Set the css_admin string to base64 string.
-		if (isset($data['css_admin']))
-		{
-			$data['css_admin'] = base64_encode($data['css_admin']);
 		}
 
 		// Set the php_postflight_install string to base64 string.

@@ -134,18 +134,20 @@
 			folder="editors"
 			filter="cmd"
 		/>
-		<!-- Github_access_token Field. Type: Text. (joomla) -->
+		<!-- Github_access_token Field. Type: Password. (joomla) -->
 		<field
-			type="text"
+			type="password"
 			name="github_access_token"
 			label="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_LABEL"
 			size="128"
-			maxlength="128"
+			default="secret"
 			description="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_DESCRIPTION"
-			class="text_area full-width"
+			message="Error! Please add token here."
+			class="text_area"
+			readonly="false"
+			disabled="false"
 			required="false"
 			filter="STRING"
-			message="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CONFIG_GITHUB_ACCESS_TOKEN_HINT"
 			autocomplete="off"
 		/>
@@ -662,6 +664,16 @@
 			label="COM_COMPONENTBUILDER_CONFIG_BASIC_KEY_LABEL"
 			description="COM_COMPONENTBUILDER_CONFIG_BASIC_KEY_DESC"
 			size="60"
+			default=""
+		/>
+		<field type="note" name="medium_key_note" class="alert alert-info" label="COM_COMPONENTBUILDER_CONFIG_MEDIUM_KEY_NOTE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_MEDIUM_KEY_NOTE_DESC" />
+		<field name="medium_key_path"
+			type="text"
+			label="COM_COMPONENTBUILDER_CONFIG_MEDIUM_KEY_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_MEDIUM_KEY_DESC"
+			size="160"
+			filter="PATH"
+			hint="/home/user/hiddenfolder123/"
 			default=""
 		/>
 	</fieldset>

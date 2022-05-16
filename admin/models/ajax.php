@@ -167,10 +167,36 @@ class ComponentbuilderModelAjax extends JModelList
 		{
 			// Get the encryption object.
 			$db = 'COM_COMPONENTBUILDER_VJRZDESSMHBTRWFIFTYTWVZEROAESFLVVXJTMTHREEJTWOIXM';
-			$opener = new FOFEncryptAes(base64_decode(JText::sprintf($db, 'QzdmV', '9kQ')), 128);
-			$info = rtrim($opener->decryptString($info), "\0");
+			$password = base64_decode(JText::sprintf($db, 'QzdmV', '9kQ'));
+			// we first use the new encryption
+			// load phpseclib <https://phpseclib.com/docs/symmetric>
+			$opened = false;
+			if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib\Crypt\Rijndael)
+			{
+				// load the system password
+				ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($password, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');
+				// open the info block
+				$_info = ComponentbuilderHelper::crypt('AES', 'CBC')->decrypt(base64_decode($info));
+				// check if we had success
+				if ($_info !== false)
+				{
+					$opened = true;
+				}
+			}
+			// check if we had success
+			if (!$opened && class_exists('FOFEncryptAes'))
+			{
+				$opener = new FOFEncryptAes($password, 128);
+				$_info = $opener->decryptString($info);
+				// check if we had success
+				if ($_info !== false)
+				{
+					$opened = true;
+					$_info = rtrim($_info, "\0");
+				}
+			}
 			// check if we have json
-			if (ComponentbuilderHelper::checkJson($info))
+			if ($opened && ComponentbuilderHelper::checkJson($_info))
 			{
 				$info = json_decode($info, true);
 				return array('owner' => ComponentbuilderHelper::getPackageOwnerDetailsDisplay($info, true), 'packages' => ComponentbuilderHelper::getPackageComponentsDetailsDisplay($info));
@@ -1065,7 +1091,7 @@ class ComponentbuilderModelAjax extends JModelList
 				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('params' => 'custom_admin_view_headers:power_', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW'),
 				array('table' => 'joomla_component', 'tables' => 'joomla_components', 'fields' => array('params' => 'joomla_component_headers:power_', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT'),
 				array('table' => 'component_dashboard', 'tables' => 'components_dashboard', 'fields' => array('params' => 'component_dashboard_headers:power_', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_COMPONENT_DASHBOARD', 'linked_name' => 'system_name'),
-				array('table' => 'power', 'tables' => 'powers', 'fields' => array('extends' => 'INT', 'implements' => 'ARRAY', 'use_selection' => 'use', 'load_selection' => 'load', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_POWER')
+				array('table' => 'power', 'tables' => 'powers', 'fields' => array('extends' => 'GUID', 'implements' => 'ARRAY', 'use_selection' => 'use', 'load_selection' => 'load', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_POWER')
 			)
 		);
 
@@ -1095,8 +1121,14 @@ class ComponentbuilderModelAjax extends JModelList
 				}
 				// make sure the ref is set
 				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'] . '&return=' . urlencode(base64_encode($return_url));
+				// specail treatment of powers
+				$guid = false;
+				if ('power' === $values['a_view'])
+				{
+					$guid = $values['a_guid'];
+				}
 				// get the linked to
-				if ($linked = $this->getLinkedTo($values['a_view'], $values['a_id']))
+				if ($linked = $this->getLinkedTo($values['a_view'], $values['a_id'], $guid))
 				{
 					// just return it for now a table
 					$table =  '<div class="control-group"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
@@ -1119,13 +1151,14 @@ class ComponentbuilderModelAjax extends JModelList
 	/**
 	 * Get Linked to Items
 	 * 
-	 * @param   string   $view  View that is being searched for
-	 * @param   int        $id     ID
+	 * @param   string      $view     View that is being searched for
+	 * @param   int           $id         ID
+	 * @param   string      $guid     GUID
 	 *
 	 * @return  array     Found items
 	 * 
 	 */
-	protected function getLinkedTo($view, $id)
+	protected function getLinkedTo($view, $id, $guid)
 	{
 		// reset bucket
 		$linked = array();
@@ -1174,6 +1207,14 @@ class ComponentbuilderModelAjax extends JModelList
 									$found = true;
 								}
 							}
+							elseif ('GUID' === $target)
+							{
+								// check if GUID match
+								if ($this->linkedGuid($guid, $item->{$key}))
+								{
+									$found = true;
+								}
+							}
 							else
 							{
 								// check if we have a json
@@ -1189,7 +1230,7 @@ class ComponentbuilderModelAjax extends JModelList
 										// check if ID match
 										foreach ($item->{$key} as $_id)
 										{
-											if ($_id == $id)
+											if ($_id == $id || $this->linkedGuid($guid, $_id))
 											{
 												$found = true;
 											}
@@ -1208,7 +1249,7 @@ class ComponentbuilderModelAjax extends JModelList
 												{
 													if ($_size == 2)
 													{
-														if (isset($row[$_target[0]]) && isset($row[$_target[0]][$_target[1]]) &&  $row[$_target[0]][$_target[1]] == $id)
+														if (isset($row[$_target[0]]) && isset($row[$_target[0]][$_target[1]]) && ($row[$_target[0]][$_target[1]] == $id || $this->linkedGuid($guid, $row[$_target[0]][$_target[1]])))
 														{
 															$found = true;
 														}
@@ -1217,7 +1258,7 @@ class ComponentbuilderModelAjax extends JModelList
 													{
 														foreach ($row[$_target[0]] as $_row)
 														{
-															if (!$found && isset($_row[$_target[2]]) && $_row[$_target[2]] == $id)
+															if (!$found && isset($_row[$_target[2]]) && ($_row[$_target[2]] == $id || $this->linkedGuid($guid, $_row[$_target[2]]))) 
 															{
 																$found = true;
 															}
@@ -1238,7 +1279,7 @@ class ComponentbuilderModelAjax extends JModelList
 													{
 														foreach ($row as $key => $_ids)
 														{
-															if (!$found && strpos($key, $_target[1]) !== false && in_array($id, $_ids))
+															if (!$found && strpos($key, $_target[1]) !== false && (in_array($id, $_ids) || $this->linkedGuid($guid, $_ids)))
 															{
 																$found = true;
 															}
@@ -1251,7 +1292,7 @@ class ComponentbuilderModelAjax extends JModelList
 										{
 											foreach ($item->{$key} as $row)
 											{
-												if (!$found && isset($row[$target]) && $row[$target] == $id)
+												if (!$found && isset($row[$target]) && ($row[$target] == $id || $this->linkedGuid($guid, $row[$target])))
 												{
 													$found = true;
 												}
@@ -1275,7 +1316,7 @@ class ComponentbuilderModelAjax extends JModelList
 										{
 											foreach ($_fields as $_field)
 											{
-												if ($_field == $id)
+												if ($_field == $id || $this->linkedGuid($guid, $_field))
 												{
 													$found = true;
 												}
@@ -1331,6 +1372,32 @@ class ComponentbuilderModelAjax extends JModelList
 		return false;
 	}
 
+	/**
+	 * Check if we have a GUID match
+	 * 
+	 * @param   string|bool       $guid        The active power guid
+	 * @param   string|array      $setGuid     The linked power guid
+	 *
+	 * @return  bool true if match is found
+	 * 
+	 */
+	protected function linkedGuid($guid, $setGuid): bool
+	{
+		// check if GUID is valid
+		if ($guid && ComponentbuilderHelper::validGUID($guid))
+		{
+			if (is_string($setGuid) && ComponentbuilderHelper::validGUID($setGuid) && $guid === $setGuid)
+			{
+				return true;
+			}
+			elseif (is_array($setGuid) && in_array($guid, $setGuid))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	protected $viewid = array();
 
 	protected function getViewID($call = 'table')
@@ -1356,13 +1423,13 @@ class ComponentbuilderModelAjax extends JModelList
 					}
 				}
 				// set GUID if found (TODO we will later move over to GUID)
-				// if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false && method_exists('ComponentbuilderHelper', 'validGUID'))
-				//{
-				//	if (ComponentbuilderHelper::validGUID($guid))
-				//	{
-				//		$this->viewid[$call]['a_guid'] = $guid;
-				//	}
-				//}
+				if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false && method_exists('ComponentbuilderHelper', 'validGUID'))
+				{
+					if (ComponentbuilderHelper::validGUID($guid))
+					{
+						$this->viewid[$call]['a_guid'] = $guid;
+					}
+				}
 				// set return if found
 				if (($return = ComponentbuilderHelper::get($vdm . '__return')) !== false)
 				{
@@ -1627,11 +1694,11 @@ class ComponentbuilderModelAjax extends JModelList
 				// set the key get value
 				$key_get_value = $values['a_id'];
 				// check if we have a GUID
-				if (isset($values['a_guid']))
-				{
-					$this->ref .= '&guid=' . (string) $values['a_guid'];
-					$key_get_value = $values['a_guid'];
-				}
+				//if (isset($values['a_guid']))
+				//{
+					//$this->ref .= '&guid=' . (string) $values['a_guid'];
+					//$key_get_value = $values['a_guid'];
+				//}
 				// load the results
 				$result = array();
 				// return field table
@@ -2703,7 +2770,7 @@ class ComponentbuilderModelAjax extends JModelList
 			'name' => 'name'
 		),
 		// #__componentbuilder_power (v)
-		'class_method' => array(
+		'power' => array(
 			'search' => array('id', 'system_name', 'name', 'description', 'head', 'namespace', 'main_class_code'),
 			'views' => 'powers',
 			'not_base64' => array('description'),

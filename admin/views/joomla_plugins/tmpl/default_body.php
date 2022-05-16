@@ -101,8 +101,8 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if ($this->user->authorise('class_extends.edit', 'com_componentbuilder.class_extends.' . (int)$item->class_extends)): ?>
-					<a href="index.php?option=com_componentbuilder&view=class_extendings&task=class_extends.edit&id=<?php echo $item->class_extends; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->class_extends_name); ?></a>
+				<?php if ($this->user->authorise('class_extends.edit', 'com_componentbuilder.class_extends.' . (int) $item->class_extends)): ?>
+					<a href="index.php?option=com_componentbuilder&view=class_extendings&task=class_extends.edit&id=<?php echo $item->class_extends_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->class_extends_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->class_extends_name); ?>
 				<?php endif; ?>
@@ -110,8 +110,8 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if ($this->user->authorise('core.edit', 'com_componentbuilder.joomla_plugin_group.' . (int)$item->joomla_plugin_group)): ?>
-					<a href="index.php?option=com_componentbuilder&view=joomla_plugin_groups&task=joomla_plugin_group.edit&id=<?php echo $item->joomla_plugin_group; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->joomla_plugin_group_name); ?></a>
+				<?php if ($this->user->authorise('core.edit', 'com_componentbuilder.joomla_plugin_group.' . (int) $item->joomla_plugin_group)): ?>
+					<a href="index.php?option=com_componentbuilder&view=joomla_plugin_groups&task=joomla_plugin_group.edit&id=<?php echo $item->joomla_plugin_group_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->joomla_plugin_group_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->joomla_plugin_group_name); ?>
 				<?php endif; ?>

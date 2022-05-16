@@ -89,12 +89,13 @@ class ComponentbuilderControllerCompiler extends JControllerAdmin
 			$addBackup = $jinput->post->get('backup', 0, 'INT');
 			$addRepo = $jinput->post->get('repository', 0, 'INT');
 			$addPlaceholders = $jinput->post->get('placeholders', 2, 'INT');
+			$addPowers = $jinput->post->get('powers', 2, 'INT');
 			$debugLinenr = $jinput->post->get('debuglinenr', 2, 'INT');
 			$minify = $jinput->post->get('minify', 2, 'INT');
 			// include component compiler
 			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/compiler.php';
 			$model = $this->getModel('compiler');
-			if ($model->builder($version, $componentId, $addBackup, $addRepo, $addPlaceholders, $debugLinenr, $minify))
+			if ($model->builder($version, $componentId, $addBackup, $addRepo, $addPlaceholders, $addPowers, $debugLinenr, $minify))
 			{
 				$cache = JFactory::getCache('mod_menu');
 				$cache->clean();

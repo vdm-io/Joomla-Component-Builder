@@ -6971,10 +6971,20 @@ class Interpretation extends Fields
 				// only add if no custom page link is found
 				if (!$has_pageslinks)
 				{
-					$this->placeholders[$this->bbb . 'PAGINATIONEND'
-					. $this->ddd]
-						.= PHP_EOL . $this->_t(2)
-						. '<?php echo $this->pagination->getPagesLinks(); ?>';
+					if ($this->target === 'custom_admin')
+					{
+						$this->placeholders[$this->bbb . 'PAGINATIONEND'
+						. $this->ddd]
+							.= PHP_EOL . $this->_t(2)
+							. '<?php echo $this->pagination->getListFooter(); ?>';
+					}
+					else
+					{
+						$this->placeholders[$this->bbb . 'PAGINATIONEND'
+						. $this->ddd]
+							.= PHP_EOL . $this->_t(2)
+							. '<?php echo $this->pagination->getPagesLinks(); ?>';
+					}
 				}
 				$this->placeholders[$this->bbb . 'PAGINATIONEND' . $this->ddd]
 					.= PHP_EOL . $this->_t(1) . '</div>';
@@ -6990,8 +7000,16 @@ class Interpretation extends Fields
 					= '<?php echo $this->pagination->getPagesCounter(); ?>';
 
 				// add pages links
-				$this->placeholders[$this->bbb . 'PAGESLINKS' . $this->ddd]
-					= '<?php echo $this->pagination->getPagesLinks(); ?>';
+				if ($this->target === 'custom_admin')
+				{
+					$this->placeholders[$this->bbb . 'PAGESLINKS' . $this->ddd]
+						= '<?php echo $this->pagination->getListFooter(); ?>';
+				}
+				else
+				{
+					$this->placeholders[$this->bbb . 'PAGESLINKS' . $this->ddd]
+						= '<?php echo $this->pagination->getPagesLinks(); ?>';
+				}
 
 				// build body
 				$body = array();
@@ -12071,10 +12089,19 @@ class Interpretation extends Fields
 			&& !$item['title']
 			&& isset($item['id_code']))
 		{
+			// build GUID link
+			if ($item['custom']['id'] !== 'id')
+			{
+				// link to that linked item
+				return 'index.php?option=' . $item['custom']['component'] . '&view='
+					. $item['custom']['views'] . '&task=' . $item['custom']['view']
+					. '.edit&id=<?php echo $item->' . $item['id_code'] . '_id; ?>'
+					. $ref;
+			}
 			// link to that linked item
 			return 'index.php?option=' . $item['custom']['component'] . '&view='
 				. $item['custom']['views'] . '&task=' . $item['custom']['view']
-				. '.edit&id=<?php echo $item->' . $item['id_code'] . '; ?>'
+				. '.edit&id=<?php echo $item->' . $item['id_code'] . '_id; ?>'
 				. $ref;
 		}
 		elseif (isset($item['custom'])
@@ -12156,16 +12183,37 @@ class Interpretation extends Fields
 					$this->permissionBuilder[$coreLink['core.edit']]
 				))
 			{
-				return $user . "->authorise('" . $coreLink['core.edit']
-					. "', 'com_" . $this->componentCodeName . "."
-					. $item['custom']['view'] . ".' . (int)\$item->"
-					. $item['id_code'] . ")";
+				// do this with GUID
+				if (isset($item['custom']['id']) && $item['custom']['id'] !== 'id')
+				{
+					return $user . "->authorise('" . $coreLink['core.edit']
+						. "', 'com_" . $this->componentCodeName . "."
+						. $item['custom']['view'] . ".' . (int) \$item->"
+						. $item['id_code'] . "_id)";
+				}
+				else
+				{
+					return $user . "->authorise('" . $coreLink['core.edit']
+						. "', 'com_" . $this->componentCodeName . "."
+						. $item['custom']['view'] . ".' . (int) \$item->"
+						. $item['id_code'] . ")";
+				}
 			}
-
-			// return default for this external item
-			return $user . "->authorise('core.edit', 'com_"
-				. $this->componentCodeName . "." . $item['custom']['view']
-				. ".' . (int)\$item->" . $item['id_code'] . ")";
+			// do not do this with GUID
+			if (isset($item['custom']['id']) && $item['custom']['id'] !== 'id')
+			{
+				// return default for this external item
+				return $user . "->authorise('core.edit', 'com_"
+					. $this->componentCodeName . "." . $item['custom']['view']
+					. ".' . (int) \$item->" . $item['id_code'] . "_id)";
+			}
+			else
+			{
+				// return default for this external item
+				return $user . "->authorise('core.edit', 'com_"
+					. $this->componentCodeName . "." . $item['custom']['view']
+					. ".' . (int) \$item->" . $item['id_code'] . ")";
+			}
 		}
 		elseif (isset($item['custom'])
 			&& ArrayHelper::check(
@@ -16188,23 +16236,52 @@ class Interpretation extends Fields
 								$filter['custom']['table'], 'w'
 							)
 						) . " table.";
-					// we want to at times just have the words and not the ids as well
-					if ($just_text)
+					// we must add some fix for none ID keys (I know this is horrible... but we need it)
+					// TODO we assume that all tables in admin has ids
+					if ($filter['custom']['id'] !== 'id')
 					{
-						$query .= PHP_EOL . $this->_t(2) . $tab
-							. "\$query->select(\$db->quoteName('"
-							. $filter['custom']['db'] . "."
-							. $filter['custom']['text'] . "','"
-							. $filter['code'] . "'));";
+						// we want to at times just have the words and not the ids as well
+						if ($just_text)
+						{
+							$query .= PHP_EOL . $this->_t(2) . $tab
+								. "\$query->select(\$db->quoteName(['"
+								. $filter['custom']['db'] . "."
+								. $filter['custom']['text'] . "','"
+								. $filter['custom']['db'] . ".id'],['"
+								. $filter['code'] . "','"
+								. $filter['code'] . "_id']));";
+						}
+						else
+						{
+							$query .= PHP_EOL . $this->_t(2) . $tab
+								. "\$query->select(\$db->quoteName(['"
+								. $filter['custom']['db'] . "."
+								. $filter['custom']['text'] . "','"
+								. $filter['custom']['db'] . ".id'],['"
+								. $filter['code'] . "_" . $filter['custom']['text']
+								. "','" . $filter['code'] . "_id']));";
+						}
 					}
 					else
 					{
-						$query .= PHP_EOL . $this->_t(2) . $tab
-							. "\$query->select(\$db->quoteName('"
-							. $filter['custom']['db'] . "."
-							. $filter['custom']['text'] . "','"
-							. $filter['code'] . "_" . $filter['custom']['text']
-							. "'));";
+						// we want to at times just have the words and not the ids as well
+						if ($just_text)
+						{
+							$query .= PHP_EOL . $this->_t(2) . $tab
+								. "\$query->select(\$db->quoteName('"
+								. $filter['custom']['db'] . "."
+								. $filter['custom']['text'] . "','"
+								. $filter['code'] . "'));";
+						}
+						else
+						{
+							$query .= PHP_EOL . $this->_t(2) . $tab
+								. "\$query->select(\$db->quoteName('"
+								. $filter['custom']['db'] . "."
+								. $filter['custom']['text'] . "','"
+								. $filter['code'] . "_" . $filter['custom']['text']
+								. "'));";
+						}
 					}
 					$query .= PHP_EOL . $this->_t(2) . $tab
 						. "\$query->join('LEFT', \$db->quoteName('"

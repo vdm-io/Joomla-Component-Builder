@@ -173,6 +173,20 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 				'0' => 'COM_COMPONENTBUILDER_NO');
 			// add to form
 			$form[] = ComponentbuilderHelper::getFieldObject($attributes, 2, $options);
+			// powers attributes
+			$attributes = array(
+				'type' => 'radio',
+				'name' => 'powers',
+				'label' => 'COM_COMPONENTBUILDER_ADD_POWERS',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_SHOULD_JCB_ADD_ANY_POWERS_THAT_ARE_CONNECTED_TO_THIS_COMPONENT_THIS_MAY_BE_HELPFUL_IF_YOU_ARE_LOADING_POWERS_VIA_ANOTHER_COMPONENT_AND_WOULD_LIKE_TO_AVOID_ADDING_IT_TO_BOTH_JUST_REMEMBER_THAT_IN_THIS_CASE_YOU_NEED_TO_LOAD_THE_POWERS_VIA_A_PLUGIN',
+				'default' => '2');
+			$options = array(
+				'2' => 'COM_COMPONENTBUILDER_GLOBAL',
+				'1' => 'COM_COMPONENTBUILDER_YES',
+				'0' => 'COM_COMPONENTBUILDER_NO');
+			// add to form
+			$form[] = ComponentbuilderHelper::getFieldObject($attributes, 2, $options);
 			// component attributes
 			$attributes = array(
 				'type' => 'list',

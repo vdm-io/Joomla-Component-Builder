@@ -15,6 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -188,7 +189,7 @@ class Get
 	 *
 	 * @var      boolean
 	 */
-	protected $addPower;
+	public $addPower;
 
 	/**
 	 * The Powers data
@@ -1053,7 +1054,10 @@ class Get
 				$this->debugLinenr = ((int) $config['debuglinenr'] == 0) ? false
 					: (((int) $config['debuglinenr'] == 1) ? true : $global);
 				// set if powers should be added to component (default is true)
-				$global         = true;
+				$global          = ((int) GetHelper::var(
+						'joomla_component', $this->componentID, 'id',
+						'add_powers'
+					) == 1) ? true : false;
 				$this->addPower = (isset($config['powers']) && (int) $config['powers'] == 0)
 					? false : ((isset($config['powers']) && (int) $config['powers'] == 1) ? true : $global);
 				// set the current user
@@ -6872,8 +6876,10 @@ class Get
 					// return the select query
 					return array('select'      => $querySelect,
 					             'from'        => $queryFrom,
-					             'name'        => $queryName, 'table' => $table,
-					             'type'        => $type, 'select_gets' => $gets,
+					             'name'        => $queryName,
+					             'table'       => $table,
+					             'type'        => $type,
+					             'select_gets' => $gets,
 					             'select_keys' => $keys);
 				}
 			}
@@ -8613,13 +8619,13 @@ class Get
 	 * @return void
 	 *
 	 */
-	protected function getPowers($ids)
+	protected function getPowers($guids)
 	{
-		if (ArrayHelper::check($ids, true))
+		if (ArrayHelper::check($guids, true))
 		{
-			foreach ($ids as $id)
+			foreach ($guids as $guid)
 			{
-				$this->getPower($id);
+				$this->getPower($guid);
 			}
 		}
 	}
@@ -8630,11 +8636,11 @@ class Get
 	 * @return mixed
 	 *
 	 */
-	public function getPower($id)
+	public function getPower($guid)
 	{
-		if ($this->addPower && $this->setPower($id))
+		if ($this->addPower && $this->setPower($guid))
 		{
-			return $this->powers[$id];
+			return $this->powers[$guid];
 		}
 
 		return false;
@@ -8646,14 +8652,14 @@ class Get
 	 * @return bool
 	 *
 	 */
-	protected function setPower($id)
+	protected function setPower($guid)
 	{
 		// check if we have been here before
-		if (isset($this->statePowers[$id]))
+		if (isset($this->statePowers[$guid]))
 		{
-			return $this->statePowers[$id];
+			return $this->statePowers[$guid];
 		}
-		elseif (is_numeric($id) && $id > 0)
+		elseif (GuidHelper::valid($guid))
 		{
 			// Create a new query object.
 			$query = $this->db->getQuery(true);
@@ -8661,20 +8667,20 @@ class Get
 			$query->select('a.*');
 			// from these tables
 			$query->from('#__componentbuilder_power AS a');
-			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
+			$query->where($this->db->quoteName('a.guid') . ' = ' . $this->db->quote($guid));
 			$this->db->setQuery($query);
 			$this->db->execute();
 			if ($this->db->getNumRows())
 			{
 				// make sure that in recursion we
 				// don't try to load this power again
-				$this->statePowers[$id] = true;
+				$this->statePowers[$guid] = true;
+				// get the power data
+				$power = $this->db->loadObject();
 				// we set the fix usr if needed
 				$fix_url
 					= '"index.php?option=com_componentbuilder&view=powers&task=power.edit&id='
-					. $id . '" target="_blank"';
-				// get the power data
-				$power = $this->db->loadObject();
+					. $power->id . '" target="_blank"';
 				// set some keys
 				$power->target_type = 'P0m3R!';
 				$power->key         = $power->id . '_' . $power->target_type;
@@ -8706,7 +8712,7 @@ class Get
 							$fix_url),
 						'Error'
 					);
-					$this->statePowers[$id] = false;
+					$this->statePowers[$guid] = false;
 
 					// we break out here
 					return false;
@@ -8728,7 +8734,7 @@ class Get
 								$fix_url),
 							'Error'
 						);
-						$this->statePowers[$id] = false;
+						$this->statePowers[$guid] = false;
 
 						// we break out here
 						return false;
@@ -8765,7 +8771,7 @@ class Get
 								$fix_url),
 							'Error'
 						);
-						$this->statePowers[$id] = false;
+						$this->statePowers[$guid] = false;
 
 						// we break out here
 						return false;
@@ -8845,7 +8851,7 @@ class Get
 							unset($power->implements_custom);
 						}
 						// does this extend existing
-						elseif ($implement >= 1)
+						elseif (GuidHelper::valid($implement))
 						{
 							// check if it was set
 							if ($this->setPower($implement))
@@ -8872,7 +8878,7 @@ class Get
 					unset($power->extends_custom);
 				}
 				// does this extend existing
-				elseif ($power->extends >= 1)
+				elseif (GuidHelper::valid($power->extends))
 				{
 					// check if it was set
 					if ($this->setPower($power->extends))
@@ -8884,7 +8890,7 @@ class Get
 					}
 				}
 				// set GUI mapper
-				$guiMapper = array('table' => 'power', 'id' => (int) $id, 'type' => 'php');
+				$guiMapper = array('table' => 'power', 'id' => (int) $power->id, 'type' => 'php');
 				// add the header script
 				if ($power->add_head == 1)
 				{
@@ -8941,23 +8947,23 @@ class Get
 					);
 				}
 				// store the power
-				$this->powers[$id] = $power;
+				$this->powers[$guid] = $power;
 
 				return true;
 			}
 		}
 		// we failed to get the power,
 		// so we raise an error message
-		// only if id exist
-		if ($id > 0)
+		// only if guid is valid
+		if (GuidHelper::valid($guid))
 		{
 			$this->app->enqueueMessage(
-				JText::sprintf('<p>Power <b>id:%s</b> not found!</p>', $id),
+				JText::sprintf('<p>Power <b>guid:%s</b> not found!</p>', $guid),
 				'Error'
 			);
 		}
 		// let's not try again
-		$this->statePowers[$id] = false;
+		$this->statePowers[$guid] = false;
 
 		return false;
 	}

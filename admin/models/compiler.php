@@ -202,13 +202,14 @@ class ComponentbuilderModelCompiler extends JModelList
 		return true;
 	}
 
-	public function builder($version, $id, $backup, $repo, $addPlaceholders, $debugLinenr, $minify) 
+	public function builder($version, $id, $backup, $repo, $addPlaceholders, $addPowers, $debugLinenr, $minify) 
 	{
 		$set['version'] = $version;
 		$set['component'] = $id;
 		$set['backup'] = $backup;
 		$set['repository'] = $repo;
 		$set['placeholders'] = $addPlaceholders;
+		$set['powers'] = $addPowers;
 		$set['debuglinenr'] = $debugLinenr;
 		$set['minify'] = $minify;
 		// run compiler

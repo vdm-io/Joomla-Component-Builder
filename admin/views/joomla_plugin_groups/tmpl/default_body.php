@@ -72,8 +72,8 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugin_groups&task=jo
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if ($this->user->authorise('class_extends.edit', 'com_componentbuilder.class_extends.' . (int)$item->class_extends)): ?>
-					<a href="index.php?option=com_componentbuilder&view=class_extendings&task=class_extends.edit&id=<?php echo $item->class_extends; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->class_extends_name); ?></a>
+				<?php if ($this->user->authorise('class_extends.edit', 'com_componentbuilder.class_extends.' . (int) $item->class_extends)): ?>
+					<a href="index.php?option=com_componentbuilder&view=class_extendings&task=class_extends.edit&id=<?php echo $item->class_extends_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->class_extends_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->class_extends_name); ?>
 				<?php endif; ?>

@@ -84,6 +84,8 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected $dir = false;
 	protected $target = false;
 	protected $newID = array();
+	protected $packageInfo = null;
+	protected $noopmaker;
 	protected $updateAfter = array('field' => array(), 'adminview' => array());
 	protected $divergedDataMover = array();
 	protected $fieldTypes = array();
@@ -151,7 +153,15 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$session->clear('package');
 					$session->clear('dataType');
 					$session->clear('hasPackage');
+					// before we clear this, we add it locally
+					$packageInfo = $session->get('smart_package_info', null);
+					// now clear it
 					$session->clear('smart_package_info');
+					// convert to an array if found
+					if ($packageInfo && ComponentbuilderHelper::checkJson($packageInfo))
+					{
+						$this->packageInfo = json_decode($packageInfo, true);
+					}
 					break;
 
 				default:
@@ -185,7 +195,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$session->clear('backto_VDM_IMPORT');
 					if ($back)
 					{
-						$this->app->setUserState('com_componentbuilder.redirect_url', 'index.php?option=com_componentbuilder&view='.$back);
+						$this->app->setUserState('com_componentbuilder.redirect_url', 'index.php?option=com_componentbuilder&view=' . $back);
 					}
 					$session->clear('backto_VDM_IMPORT');
 					return false;
@@ -335,18 +345,18 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					// load the data
 					if ($info = @file_get_contents($infoFile))
 					{
-						// remove all line breaks
-						$info = str_replace("\n", '', $info);
-						// make sure we have base64
-						if ($info === base64_encode(base64_decode($info, true)))
+						// Get the password.
+						$db = 'COM_COMPONENTBUILDER_SZDEQZDMVSMHBTRWFIFTYTSQFLVVXJTMTHREEJTWOIXM';
+						$password = base64_decode(JText::sprintf($db, 'VjR', 'WV0aE9k'));
+						// unlock the info data
+						if (($info = $this->unlock($info, $password, true)) !== false && ComponentbuilderHelper::checkJson($info))
 						{
-							// Get the encryption object.
-							$db = 'COM_COMPONENTBUILDER_VJRZDESSMHBTRWFIFTYTWVZEROAENINEKQFLVVXJTMTHREEJTWOIXM';
-							$opener = new FOFEncryptAes(base64_decode(JText::sprintf($db, 'QzdmV')), 128);
-							$info = rtrim($opener->decryptString($info), "\0");
+							// we only continue if info could be opened
 							$session->set('smart_package_info', $info);
 							return true;
 						}
+						// do not have check sum validation
+						$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWOWE_COULD_NOT_OPEN_THE_PACKAGEHTWOTHIS_COULD_BE_DUE_TO_THE_FOFENCRYPTION_THAT_IS_NO_LONGER_SUPPORTED_IN_JOOMLA_PLEASE_EXPORT_YOUR_PACKAGES_WITH_JCB_VTHREEZEROELEVENPRO_OR_VTWOONETWOSEVENTEENPUBLIC_OR_HIGHER_TO_BE_ABLE_TO_IMPORT_IT_INTO_THIS_VERSION_OF_JCB'), 'error');
 					}
 				}
 				ComponentbuilderHelper::removeFolder($this->dir);
@@ -656,24 +666,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected function extractData($data)
 	{
 		// remove all line breaks
-		$data = str_replace("\n", '', $data);
-		// make sure we have base64
-		if ($data === base64_encode(base64_decode($data, true)))
+		if (($data = $this->unlock($data, $this->sleutle)) !== false)
 		{
-			// open the data
-			if(ComponentbuilderHelper::checkString($this->sleutle) && strlen($this->sleutle) == 32)
-			{
-				// Get the encryption object.
-				$opener = new FOFEncryptAes($this->sleutle, 128);
-				$data = rtrim($opener->decryptString($data), "\0");
-			}
-			else
-			{
-				$data = base64_decode($data);
-			}
 			// final check if we have success
 			$data = @unserialize($data);
-			if ($data !== false)
+			if (ComponentbuilderHelper::checkArray($data))
 			{
 				// set the data global
 				$this->data = $data;
@@ -1005,7 +1002,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	}
 
 	/**
-	* Method to unlock all files
+	* Method to unlock all files in all folders of this package
 	*
 	* @return void
 	*/
@@ -1014,7 +1011,6 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// lock the data if set
 		if(ComponentbuilderHelper::checkString($this->sleutle) && strlen($this->sleutle) == 32)
 		{
-			$unlocker = new FOFEncryptAes($this->sleutle, 128);
 			// we must first store the current working directory
 			$joomla = getcwd();
 			// to avoid that it decrypt the db and info file again we must move per/folder
@@ -1026,7 +1022,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// go to the package sub folder if found
 				if (JFolder::exists($subPath))
 				{
-					$this->unlock($subPath, $unlocker);
+					$this->unLockFile($subPath);
 				}
 			}
 			// change back to working dir
@@ -1035,11 +1031,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	}
 
 	/**
-	* The Unlocker
+	* The unlocking files
 	*
 	* @return void
 	*/	
-	protected function unlock(&$tmpPath, &$unlocker)
+	protected function unLockFile(&$tmpPath)
 	{
 		// we are changing the working directory to the tmp path (important)
 		chdir($tmpPath);
@@ -1048,12 +1044,11 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// read in the file content
 		foreach ($files as $file)
 		{
-			// check that the string is base64
-			$data = str_replace("\n", '', file_get_contents($file));
-			if ($data === base64_encode(base64_decode($data, true)))
+			// open the file content
+			if (($data = $this->unlock(file_get_contents($file), $this->sleutle)) !== false)
 			{
 				// write the decrypted data back to file
-				if (!ComponentbuilderHelper::writeFile($file, rtrim($unlocker->decryptString($data), "\0")))
+				if (!ComponentbuilderHelper::writeFile($file, $data))
 				{
 					// in case file could not be unlocked
 					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_COULD_NOT_BE_UNLOCKED', $file), 'error');
@@ -1064,7 +1059,77 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 					$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_WAS_SUCCESSFULLY_UNLOCKED', $file),  'success');
 				}
 			}
+			else
+			{
+				// in case file could not be unlocked
+				$this->app->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_FILE_BSB_COULD_NOT_BE_UNLOCKED', $file), 'error');
+			}
 		}
+	}
+
+	/**
+	 * unlock data
+	 *
+	 * @param string $data      The data string
+	 * @param string $password  The key to unlock
+	 * @param bool   $force    Should we force phpseclib decryption
+	 *
+	 * @return  mixed the data, or false
+	 *
+	 * @since 3.0.11
+	 **/
+	protected function unlock(string $data, string $password, bool $force = false)
+	{
+		// remove all line breaks
+		$data = str_replace("\n", '', $data);
+		// make sure we have base64
+		if ($data === base64_encode(base64_decode($data, true)))
+		{
+			// open the data
+			if(ComponentbuilderHelper::checkString($password) && strlen($password) == 32)
+			{
+				// check if we should use the phpseclib decryption
+				$phpseclip = (isset($this->packageInfo['phpseclib']) && $this->packageInfo['phpseclib']) ? true : $force;
+				// load phpseclib <https://phpseclib.com/docs/symmetric>
+				if($phpseclip && ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib\Crypt\Rijndael)
+				{
+					// load the system password
+					ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($password, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');
+					// open the data block
+					$data = ComponentbuilderHelper::crypt('AES', 'CBC')->decrypt(base64_decode($data));
+					// check if we had success
+					if ($data !== false)
+					{
+						return $data;
+					}
+				}
+				// check if we had success
+				if (class_exists('FOFEncryptAes'))
+				{
+					// Get the encryption object.
+					if (!$this->noopmaker instanceof FOFEncryptAes)
+					{
+						$this->noopmaker = new FOFEncryptAes($password, 128);
+					}
+					// open the data block
+					$data = $this->noopmaker->decryptString($data);
+					// check if we had success
+					if ($data !== false)
+					{
+						return $data;
+					}
+					else
+					{
+						$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTWOWE_COULD_NOT_OPEN_THE_ENCRYPT_DATAHTWO_THIS_COULD_BE_DUE_TO_THE_FOFENCRYPTION_THAT_IS_NO_LONGER_SUPPORTED_IN_JOOMLABR_PLEASE_EXPORT_YOUR_PACKAGES_WITH_JCB_VTHREEZEROELEVENPRO_OR_VTWOONETWOSEVENTEENPUBLIC_OR_HIGHER_TO_BE_ABLE_TO_IMPORT_IT_INTO_THIS_VERSION_OF_JCB'), 'error');
+					}
+				}
+			}
+			else
+			{
+				return base64_decode($data);
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -1323,7 +1388,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				}
 				// get the power
 				$query = $this->_db->getQuery(true);
-				$query->select(array('a.id', 'a.extends', 'a.implements', 'a.use_selection', 'a.property_selection', 'a.method_selection'));
+				$query->select(array('a.id', 'a.property_selection', 'a.method_selection'));
 				$query->from($this->_db->quoteName('#__componentbuilder_power', 'a'));
 				$query->where($this->_db->quoteName('a.id') . ' = '. (int) $power);
 				// see if we get an item
@@ -1332,14 +1397,9 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				if ($this->_db->getNumRows())
 				{
 					$item = $this->_db->loadObject();
-					// now update extends
-					$item = $this->setNewID($item, 'extends', 'power', 'power');
-					// now update implements
-					$item = $this->setNewID($item, 'implements', 'power', 'power');
 					// subform fields to target
 					$updaterT = array(
 						// subformfield => array( field => type_value )
-						'use_selection' => array('use' => 'power'),
 						'property_selection' => array('property' => 'class_property'),
 						'method_selection' => array('method' => 'class_method')
 					);
@@ -1828,37 +1888,6 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				{
 					$item->system_name = $item->system_name.$this->postfix;
 				}
-				// param fields to target
-				if ($type === 'site_view')
-				{
-					$updaterP = array(
-						// param_field => field* => field_table
-						'site_view_headers' => array(
-							'power_site_view_model' => 'power',
-							'power_site_view' => 'power',
-							'power_site_view_controller' => 'power',
-							'power_site_views_model' => 'power',
-							'power_site_views' => 'power',
-							'power_site_views_controller' => 'power'
-						)
-					);
-				}
-				else
-				{
-					$updaterP = array(
-						// param_field => field* => field_table
-						'custom_admin_view_headers' => array(
-							'power_custom_admin_view_model' => 'power',
-							'power_custom_admin_view' => 'power',
-							'power_custom_admin_view_controller' => 'power',
-							'power_custom_admin_views_model' => 'power',
-							'power_custom_admin_views' => 'power',
-							'power_custom_admin_views_controller' => 'power'
-						)
-					);
-				}
-				// update the params ids
-				$this->updateParamIDs($item, $type, $updaterP);
 			break;
 			case 'admin_view':
 				// set the getters anchors
@@ -1911,14 +1940,6 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				// param fields to target
 				$updaterP = array(
 					// param_field => field* => field_table
-					'admin_view_headers' => array(
-						'power_admin_view_model' => 'power',
-						'power_admin_view' => 'power',
-						'power_admin_view_controller' => 'power',
-						'power_admin_views_model' => 'power',
-						'power_admin_views' => 'power',
-						'power_admin_views_controller' => 'power'
-					),
 					'fieldordering' => array(
 						'admin_ordering_fields.field' => 'field',
 						'linked_ordering_fields.field' => 'field'
@@ -2073,18 +2094,6 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 				);
 				// update the repeatable fields
 				$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
-				// param fields to target
-				$updaterP = array(
-					// param_field => field* => field_table
-					'joomla_component_headers' => array(
-						'power_admin_component' => 'power',
-						'power_site_component' => 'power',
-						'power_admin_helper' => 'power',
-						'power_site_helper' => 'power'
-					)
-				);
-				// update the params ids
-				$this->updateParamIDs($item, $type, $updaterP);
 				// if we can't merge add postfix to name
 				if ($this->postfix)
 				{
