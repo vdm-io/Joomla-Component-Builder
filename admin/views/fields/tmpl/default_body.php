@@ -73,7 +73,7 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 		<td class="nowrap">
 			<div class="name">
 				<?php if ($this->user->authorise('fieldtype.edit', 'com_componentbuilder.fieldtype.' . (int) $item->fieldtype)): ?>
-					<a href="index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.edit&id=<?php echo $item->fieldtype_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->fieldtype_name); ?></a>
+					<a href="index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.edit&id=<?php echo $item->fieldtype; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->fieldtype_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->fieldtype_name); ?>
 				<?php endif; ?>

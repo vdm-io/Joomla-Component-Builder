@@ -15,7 +15,7 @@ namespace VDM\Joomla\Utilities;
 
 use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Language\Language;
-use Joomla\CMS\Component\ComponentHelper;
+use VDM\Joomla\Utilities\Component\Helper;
 
 
 /**
@@ -220,7 +220,7 @@ abstract class StringHelper
 		if (!self::check(self::$langTag))
 		{
 			// get global value
-			self::$langTag = ComponentHelper::getParams('com_componentbuilder')->get('language', 'en-GB');
+			self::$langTag = Helper::getParams()->get('language', 'en-GB');
 		}
 
 		// Transliterate on the language requested

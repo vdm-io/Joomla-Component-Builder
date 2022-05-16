@@ -14,6 +14,7 @@ namespace VDM\Joomla\Utilities;
 
 
 use Joomla\CMS\Factory;
+use VDM\Joomla\Utilities\Component\Helper;
 
 
 /**
@@ -59,20 +60,20 @@ abstract class GuidHelper
 		if (function_exists('openssl_random_pseudo_bytes') === true)
 		{
 			$data = openssl_random_pseudo_bytes(16);
-			$data[6] = chr(ord($data[6]) & 0x0f | 0x40);    // set version to 0100
-			$data[8] = chr(ord($data[8]) & 0x3f | 0x80);    // set bits 6-7 to 10
+			$data[6] = chr( ord($data[6]) & 0x0f | 0x40);    // set version to 0100
+			$data[8] = chr( ord($data[8]) & 0x3f | 0x80);    // set bits 6-7 to 10
 			return $lbrace . vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4)) . $lbrace;
 		}
 
 		// Fallback (PHP 4.2+)
-		mt_srand((double)microtime() * 10000);
-		$charid = strtolower(md5(uniqid(rand(), true)));
+		mt_srand((double) microtime() * 10000);
+		$charid = strtolower( md5( uniqid( rand(), true)));
 		$hyphen = chr(45);                  // "-"
 		$guidv4 = $lbrace.
-			substr($charid,  0,  8).$hyphen.
-			substr($charid,  8,  4).$hyphen.
-			substr($charid, 12,  4).$hyphen.
-			substr($charid, 16,  4).$hyphen.
+			substr($charid,  0,  8). $hyphen.
+			substr($charid,  8,  4). $hyphen.
+			substr($charid, 12,  4). $hyphen.
+			substr($charid, 16,  4). $hyphen.
 			substr($charid, 20, 12).
 			$rbrace;
 		return $guidv4;
@@ -81,15 +82,16 @@ abstract class GuidHelper
 	/**
 	 * Validate the Globally Unique Identifier ( and check if table already has this identifier)
 	 *
-	 * @param string $guid
-	 * @param string $table
-	 * @param int      $id
+	 * @param string       $guid
+	 * @param string       $table
+	 * @param int            $id
+	 * @param string|null $component
 	 *
 	 * @return bool
 	 *
 	 * @since  3.0.9
 	 */
-	public static function valid($guid, $table = null, $id = 0)
+	public static function valid($guid, $table = null, $id = 0, $component = null)
 	{
 		// check if we have a string
 		if (self::validate($guid))
@@ -97,11 +99,16 @@ abstract class GuidHelper
 			// check if table already has this identifier
 			if (StringHelper::check($table))
 			{
+				// check that we have the component code name
+				if (!is_string($component))
+				{
+					$component = (string) Helper::getCode();
+				}
 				// Get the database object and a new query object.
 				$db = Factory::getDbo();
 				$query = $db->getQuery(true);
 				$query->select('COUNT(*)')
-					->from('#__componentbuilder_' . (string) $table)
+					->from('#__' . (string) $component . '_' . (string) $table)
 					->where($db->quoteName('guid') . ' = ' . $db->quote($guid));
 
 				// remove this item from the list
@@ -127,15 +134,16 @@ abstract class GuidHelper
 	/**
 	 * get the item by guid in a table
 	 *
-	 * @param string $guid
-	 * @param string $table
-	 * @param string/array $what
+	 * @param string           $guid
+	 * @param string           $table
+	 * @param string/array  $what
+	 * @param string|null    $component
 	 *
 	 * @return mix
 	 *
 	 * @since  3.0.9
 	 */
-	public static function item($guid, $table, $what = 'a.id')
+	public static function item($guid, $table, $what = 'a.id', $component = null)
 	{
 		// check if we have a string
 		if (self::validate($guid))
@@ -143,6 +151,11 @@ abstract class GuidHelper
 			// check if table already has this identifier
 			if (StringHelper::check($table))
 			{
+				// check that we have the component code name
+				if (!is_string($component))
+				{
+					$component = (string) Helper::getCode();
+				}
 				// Get the database object and a new query object.
 				$db = Factory::getDbo();
 				$query = $db->getQuery(true);
@@ -156,7 +169,7 @@ abstract class GuidHelper
 					$query->select($what);
 				}
 
-				$query->from($db->quoteName('#__componentbuilder_' . (string) $table, 'a'))
+				$query->from($db->quoteName('#__' . (string) $component . '_' . (string) $table, 'a'))
 					->where($db->quoteName('a.guid') . ' = ' . $db->quote($guid));
 
 				// Set and query the database.

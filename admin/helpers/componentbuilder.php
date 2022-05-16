@@ -76,11 +76,16 @@ use VDM\Joomla\Utilities;
 abstract class ComponentbuilderHelper
 {
 	/**
-	* Adding the utilities trait to this class
-	*
-	* @deprecated  4.0 - Check the trait methods for details, a legacy implementation
-	*/
+	 * Adding the utilities trait to this class
+	 *
+	 * @deprecated  4.0 - Check the trait methods for details, a legacy implementation
+	 */
 	use Utilities;
+
+	/**
+	 * get the Component Code Name
+	 */
+	public static $ComponentCodeName = 'componentbuilder';
 
 	/**
 	 * Composer Switch

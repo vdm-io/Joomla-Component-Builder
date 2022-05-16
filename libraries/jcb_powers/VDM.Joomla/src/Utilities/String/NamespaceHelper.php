@@ -47,10 +47,10 @@ abstract class NamespaceHelper
 			$string = str_replace('\\', '1', $string);
 
 			// remove all and keep only characters and [\] backslashes inside of the string
-			$string = trim(preg_replace("/[^A-Za-z1]/", '', $string), '1');
+			$string = trim( preg_replace("/[^A-Za-z1]/", '', $string), '1');
 
 			// place the [\] backslashes back
-			return trim(preg_replace("/1+/", '\\', $string));
+			return trim( preg_replace("/1+/", '\\', $string));
 		}
 		// not a string
 		return '';

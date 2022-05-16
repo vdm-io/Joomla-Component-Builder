@@ -14,6 +14,7 @@ namespace VDM\Joomla\Utilities;
 
 
 use Joomla\CMS\Factory;
+use VDM\Joomla\Utilities\Component\Helper;
 
 
 /**
@@ -37,11 +38,16 @@ abstract class GetHelper
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function var($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = 'componentbuilder')
+	public static function var($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = null)
 	{
-		if(!$where)
+		if(empty($where))
 		{
 			$where = Factory::getUser()->id;
+		}
+
+		if(empty($main))
+		{
+			$main = Helper::getCode();
 		}
 
 		// Get a db connection.
@@ -98,11 +104,16 @@ abstract class GetHelper
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function vars($table, $where = null, $whereString = 'user', $what = 'id', $operator = 'IN', $main = 'componentbuilder', $unique = true)
+	public static function vars($table, $where = null, $whereString = 'user', $what = 'id', $operator = 'IN', $main = null, $unique = true)
 	{
-		if(!$where)
+		if(empty($where))
 		{
 			$where = Factory::getUser()->id;
+		}
+
+		if(is_null($main))
+		{
+			$main = Helper::getCode();
 		}
 
 		if (!ArrayHelper::check($where) && $where > 0)

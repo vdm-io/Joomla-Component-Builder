@@ -15,6 +15,7 @@ namespace VDM\Joomla\Utilities\String;
 
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\Component\Helper;
 
 
 /**
@@ -47,7 +48,7 @@ abstract class FieldHelper
 		// get global value
 		if (self::$builder === false)
 		{
-			self::$builder = ComponentHelper::getParams('com_componentbuilder')->get('field_name_builder', 1);
+			self::$builder = Helper::getParams()->get('field_name_builder', 1);
 		}
 
 		// use the new convention

@@ -19,8 +19,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
-use Joomla\CMS\Component\ComponentHelper;
 use Joomla\Archive\Archive;
+use VDM\Joomla\Utilities\Component\Helper;
 
 
 /**
@@ -38,15 +38,6 @@ abstract class FileHelper
 	 * @since  3.0.9
 	 */
 	protected static $curlError = false;
-
-	/**
-	 * The component params
-	 *
-	 * @var    object
-	 *
-	 * @since  3.0.9
-	 */
-	protected static $params = false;
 
 	/**
 	 * The zipper method
@@ -260,11 +251,7 @@ abstract class FileHelper
 		}
 
 		// get the global settings
-		if (!ObjectHelper::check(self::$params))
-		{
-			self::$params = ComponentHelper::getParams('com_componentbuilder');
-		}
-		$filePath = self::$params->get($target, $default);
+		$filePath = Helper::getParams()->get($target, $default);
 
 		// check the file path (revert to default only of not a hidden file path)
 		if ('hiddenfilepath' !== $target && strpos($filePath, JPATH_SITE) === false)
@@ -283,9 +270,12 @@ abstract class FileHelper
 
 		// Get basic key
 		$basickey = 'Th!s_iS_n0t_sAfe_buT_b3tter_then_n0thiug';
-		if (method_exists('\ComponentbuilderHelper', "getCryptKey")) 
+		// get the component helper
+		$helper = Helper::get();
+		// check if method exist in helper class
+		if ($helper && Helper::methodExists('getCryptKey')) 
 		{
-			$basickey = \ComponentbuilderHelper::getCryptKey('basic', $basickey);
+			$basickey = $helper::getCryptKey('basic', $basickey);
 		}
 
 		// check the key
@@ -298,17 +288,17 @@ abstract class FileHelper
 		if (StringHelper::check($fileType))
 		{
 			// set the name
-			$fileName = trim(md5($type . $target . $basickey . $key) . '.' . trim($fileType, '.'));
+			$fileName = trim( md5($type . $target . $basickey . $key) . '.' . trim($fileType, '.'));
 		}
 		else
 		{
-			$fileName = trim(md5($type . $target . $basickey . $key)) . '.txt';
+			$fileName = trim( md5($type . $target . $basickey . $key)) . '.txt';
 		}
 
 		// return the url
 		if ('url' === $type)
 		{
-			if (strpos($filePath, JPATH_SITE) !== false)
+			if (\strpos($filePath, JPATH_SITE) !== false)
 			{
 				$filePath = trim( str_replace( JPATH_SITE, '', $filePath), '/');
 

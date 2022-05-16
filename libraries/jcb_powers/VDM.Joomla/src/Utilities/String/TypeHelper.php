@@ -15,6 +15,7 @@ namespace VDM\Joomla\Utilities\String;
 
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\Component\Helper;
 
 
 /**
@@ -34,18 +35,19 @@ abstract class TypeHelper
 	/**
 	 * Making field type name safe
 	 *
-	 * @input	string       The you would like to make safe
+	 * @param   String      $string     The you would like to make safe
+	 * @param   String      $option    The option for the component.
 	 *
 	 * @returns string on success
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function safe($string)
+	public static function safe($string, $option = null)
 	{
 		// get global value
 		if (self::$builder === false)
 		{
-			self::$builder = ComponentHelper::getParams('com_componentbuilder')->get('type_name_builder', 1);
+			self::$builder = Helper::getParams($option)->get('type_name_builder', 1);
 		}
 
 		// use the new convention

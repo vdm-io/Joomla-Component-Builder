@@ -26,6 +26,7 @@ use VDM\Joomla\Utilities\String\TypeHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Utilities\String\PluginHelper;
+use VDM\Joomla\Utilities\Component\Helper;
 
 
 /**
@@ -89,6 +90,9 @@ trait Utilities
 	 */
 	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true, $keepOnlyCharacters = true)
 	{
+		// set the local component option
+		self::setComponentOption();
+
 		return StringHelper::safe($string, $type, $spacer, $replaceNumbers, $keepOnlyCharacters);
 	}
 
@@ -123,6 +127,9 @@ trait Utilities
 	 */
 	public static function safeFieldName($string, $allcap = false, $spacer = '_')
 	{
+		// set the local component option
+		self::setComponentOption();
+
 		return FieldHelper::safe($string, $allcap, $spacer);
 	}
 
@@ -139,6 +146,9 @@ trait Utilities
 	 */
 	public static function safeTypeName($string)
 	{
+		// set the local component option
+		self::setComponentOption();
+
 		return TypeHelper::safe($string);
 	}
 
@@ -165,6 +175,9 @@ trait Utilities
 	 */
 	public static function transliterate($string)
 	{
+		// set the local component option
+		self::setComponentOption();
+
 		return StringHelper::transliterate($string);
 	}
 
@@ -175,6 +188,9 @@ trait Utilities
 	 */
 	public static function htmlEscape($var, $charset = 'UTF-8', $shorten = false, $length = 40)
 	{
+		// set the local component option
+		self::setComponentOption();
+
 		return StringHelper::html($var, $charset, $shorten, $length);
 	}
 
@@ -312,8 +328,11 @@ trait Utilities
 	 *
 	 * @deprecated  4.0 - Use GetHelper::var($table, $where, $whereString, $what, $operator, $main);
 	 */
-	public static function getVar($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = 'componentbuilder')
+	public static function getVar($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = null)
 	{
+		// set the local component option
+		self::setComponentOption();
+
 		return GetHelper::var($table, $where, $whereString, $what, $operator, $main);
 	}
 
@@ -334,8 +353,11 @@ trait Utilities
 	 *
 	 * @deprecated  4.0 - Use GetHelper::vars($table, $where, $whereString, $what, $operator, $main, $unique);
 	 */
-	public static function getVars($table, $where = null, $whereString = 'user', $what = 'id', $operator = 'IN', $main = 'componentbuilder', $unique = true)
+	public static function getVars($table, $where = null, $whereString = 'user', $what = 'id', $operator = 'IN', $main = null, $unique = true)
 	{
+		// set the local component option
+		self::setComponentOption();
+
 		return GetHelper::vars($table, $where, $whereString, $what, $operator, $main, $unique);
 	}
 
@@ -455,37 +477,45 @@ trait Utilities
 	/**
 	 * Validate the Globally Unique Identifier ( and check if table already has this identifier)
 	 *
-	 * @param string $guid
-	 * @param string $table
-	 * @param int      $id
+	 * @param string       $guid
+	 * @param string       $table
+	 * @param int            $id
+	 * @param string|null $component
 	 *
 	 * @return bool
 	 * 
 	 * @since  3.0.9
 	 *
-	 * @deprecated  4.0 - Use GuidHelper::valid($guid, $table, $id);
+	 * @deprecated  4.0 - Use GuidHelper::valid($guid, $table, $id, $component);
 	 */
-	public static function validGUID($guid, $table = null, $id = 0)
+	public static function validGUID($guid, $table = null, $id = 0, $component = null)
 	{
-		return GuidHelper::valid($guid, $table, $id);
+		// set the local component option
+		self::setComponentOption();
+
+		return GuidHelper::valid($guid, $table, $id, $component);
 	}
 
 	/**
 	 * get the ITEM of a GUID by table
 	 *
-	 * @param string $guid
-	 * @param string $table
-	 * @param string/array $what
+	 * @param string           $guid
+	 * @param string           $table
+	 * @param string/array  $what
+	 * @param string|null    $component
 	 *
 	 * @return mix
 	 * 
 	 * @since  3.0.9
 	 *
-	 * @deprecated  4.0 - Use GuidHelper::valid($guid, $table, $id);
+	 * @deprecated  4.0 - Use GuidHelper::valid($guid, $table, $id, $component);
 	 */
-	public static function getGUID($guid, $table, $what = 'a.id')
+	public static function getGUID($guid, $table, $what = 'a.id', $component = null)
 	{
-		return GuidHelper::item($guid, $table, $what);
+		// set the local component option
+		self::setComponentOption();
+
+		return GuidHelper::item($guid, $table, $what, $component);
 	}
 
 	/**
@@ -591,7 +621,33 @@ trait Utilities
 	 */
 	public static function getFilePath($type = 'path', $target = 'filepath', $fileType = null, $key = '', $default = '', $createIfNotSet = true)
 	{
+		// set the local component option
+		self::setComponentOption();
+
 		return FileHelper::getPath($type, $target, $fileType, $key, $default, $createIfNotSet);
+	}
+
+	/**
+	 * Set the component option
+	 *
+	 * @param   String|null       $option    The option for the component.
+	 *
+	 * @since  3.0.11
+	 */
+	public static function setComponentOption($option = null)
+	{
+		// set the local component option
+		if (empty($option))
+		{
+			if (empty(Helper::$option) && property_exists(__CLASS__, 'ComponentCodeName'))
+			{
+				Helper::$option = 'com_' . self::$ComponentCodeName;
+			}
+		}
+		else
+		{
+			Helper::$option = $option;
+		}
 	}
 
 }

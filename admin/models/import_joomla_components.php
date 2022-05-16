@@ -77,7 +77,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	public $postfix = false;
 	public $forceUpdate = 0;
 	public $hasKey = 0;
-	public $sleutle = null;
+	public $sleutle = '';
 	public $data = false;
 	public $app;
 
@@ -241,7 +241,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		// has a key
 		 $this->hasKey = $this->app->input->getInt('haskey', 0);
 		// die sleutle
-		$this->sleutle = $this->app->input->getString('sleutle', NULL);
+		$this->sleutle = $this->app->input->getString('sleutle', '');
 		// try to store/set data
 		if (!$this->setData($package))
 		{
@@ -349,7 +349,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 						$db = 'COM_COMPONENTBUILDER_SZDEQZDMVSMHBTRWFIFTYTSQFLVVXJTMTHREEJTWOIXM';
 						$password = base64_decode(JText::sprintf($db, 'VjR', 'WV0aE9k'));
 						// unlock the info data
-						if (($info = $this->unlock($info, $password, true)) !== false && ComponentbuilderHelper::checkJson($info))
+						if (($info = $this->decrypt($info, $password, true)) !== false && ComponentbuilderHelper::checkJson($info))
 						{
 							// we only continue if info could be opened
 							$session->set('smart_package_info', $info);
@@ -666,7 +666,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	protected function extractData($data)
 	{
 		// remove all line breaks
-		if (($data = $this->unlock($data, $this->sleutle)) !== false)
+		if (($data = $this->decrypt($data, $this->sleutle)) !== false)
 		{
 			// final check if we have success
 			$data = @unserialize($data);
@@ -1045,7 +1045,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 		foreach ($files as $file)
 		{
 			// open the file content
-			if (($data = $this->unlock(file_get_contents($file), $this->sleutle)) !== false)
+			if (($data = $this->decrypt(file_get_contents($file), $this->sleutle)) !== false)
 			{
 				// write the decrypted data back to file
 				if (!ComponentbuilderHelper::writeFile($file, $data))
@@ -1068,7 +1068,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	}
 
 	/**
-	 * unlock data
+	 * decrypt data
 	 *
 	 * @param string $data      The data string
 	 * @param string $password  The key to unlock
@@ -1078,7 +1078,7 @@ class ComponentbuilderModelImport_joomla_components extends JModelLegacy
 	 *
 	 * @since 3.0.11
 	 **/
-	protected function unlock(string $data, string $password, bool $force = false)
+	protected function decrypt(string $data, string $password, bool $force = false)
 	{
 		// remove all line breaks
 		$data = str_replace("\n", '', $data);

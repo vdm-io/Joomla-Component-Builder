@@ -1532,11 +1532,11 @@ class ComponentbuilderModelAjax extends JModelList
 					// set the key get value
 					$key_get_value = $values['a_id'];
 					// check if we have a GUID
-					if (isset($values['a_guid']))
-					{
-						$ref .= '&guid=' . (string) $values['a_guid'];
-						$key_get_value = $values['a_guid'];
-					}
+					//if (isset($values['a_guid']))
+					//{
+					//	$ref .= '&guid=' . (string) $values['a_guid'];
+					//	$key_get_value = $values['a_guid'];
+					//}
 					// get item id
 					if (($id = ComponentbuilderHelper::getVar($type, $key_get_value, $values['a_view'], 'id')) !== false && $id > 0)
 					{

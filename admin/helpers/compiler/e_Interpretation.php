@@ -12090,7 +12090,7 @@ class Interpretation extends Fields
 			&& isset($item['id_code']))
 		{
 			// build GUID link
-			if ($item['custom']['id'] !== 'id')
+			if (isset($item['custom']['id']) && $item['custom']['id'] !== 'id')
 			{
 				// link to that linked item
 				return 'index.php?option=' . $item['custom']['component'] . '&view='
@@ -12101,7 +12101,7 @@ class Interpretation extends Fields
 			// link to that linked item
 			return 'index.php?option=' . $item['custom']['component'] . '&view='
 				. $item['custom']['views'] . '&task=' . $item['custom']['view']
-				. '.edit&id=<?php echo $item->' . $item['id_code'] . '_id; ?>'
+				. '.edit&id=<?php echo $item->' . $item['id_code'] . '; ?>'
 				. $ref;
 		}
 		elseif (isset($item['custom'])
