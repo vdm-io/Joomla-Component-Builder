@@ -195,9 +195,9 @@ class ComponentbuilderViewServer extends JViewLegacy
 
 		// Add the CSS for Footable
 		$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-		$this->document->addStyleSheet(JURI::root() .'media/com_componentbuilder/footable-v3/css/footable.standalone.min.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
-		// Add the JavaScript for Footable (adding all funtions)
-		$this->document->addScript(JURI::root() .'media/com_componentbuilder/footable-v3/js/footable.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		JHtml::_('stylesheet', 'com_componentbuilder/footable-v3/css/footable.standalone.min.css', ['version' => 'auto']);
+		// Add the JavaScript for Footable (adding all functions)
+		JHtml::_('script', 'com_componentbuilder/footable-v3/js/footable.min.js', ['version' => 'auto']);
 
 		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
 		$this->document->addScriptDeclaration($footable);

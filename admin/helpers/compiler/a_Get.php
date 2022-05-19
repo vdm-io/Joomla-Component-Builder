@@ -8621,11 +8621,11 @@ class Get
 	 */
 	protected function getPowers($guids)
 	{
-		if (ArrayHelper::check($guids, true))
+		if (ArrayHelper::check($guids))
 		{
-			foreach ($guids as $guid)
+			foreach ($guids as $guid => $build)
 			{
-				$this->getPower($guid);
+				$this->getPower($guid, $build);
 			}
 		}
 	}
@@ -8636,9 +8636,9 @@ class Get
 	 * @return mixed
 	 *
 	 */
-	public function getPower($guid)
+	public function getPower($guid, $build = 0)
 	{
-		if ($this->addPower && $this->setPower($guid))
+		if (($this->addPower || $build == 1) && $this->setPower($guid))
 		{
 			return $this->powers[$guid];
 		}
@@ -8805,6 +8805,7 @@ class Get
 				}
 				// load use ids
 				$use = array();
+				$as = array();
 				// check if we have use selection
 				$power->use_selection = (isset($power->use_selection)
 					&& JsonHelper::check(
@@ -8812,7 +8813,10 @@ class Get
 					)) ? json_decode($power->use_selection, true) : null;
 				if ($power->use_selection)
 				{
-					$use = array_values(array_map(function ($u) {
+					$use = array_values(array_map(function ($u) use(&$as) {
+						// track the AS options
+						$as[$u['use']] = (string) $u['as'];
+						// return the guid
 						return $u['use'];
 					}, $power->use_selection));
 				}
@@ -8857,7 +8861,7 @@ class Get
 							if ($this->setPower($implement))
 							{
 								// get the name
-								$power->implement_names[] = $this->getPower($implement)->class_name;
+								$power->implement_names[] = $this->getPower($implement, 1)->class_name;
 								// add to use
 								$use[] = $implement;
 							}
@@ -8884,7 +8888,7 @@ class Get
 					if ($this->setPower($power->extends))
 					{
 						// get the name
-						$power->extends_name = $this->getPower($power->extends)->class_name;
+						$power->extends_name = $this->getPower($power->extends, 1)->class_name;
 						// add to use
 						$use[] = $power->extends;
 					}
@@ -8915,11 +8919,19 @@ class Get
 					{
 						if ($this->setPower($u))
 						{
-							$add_use = $this->getPower($u)->namespace;
+							$add_use = $this->getPower($u, 1)->namespace;
 							// check if it is already added manually, you know how some people are
 							if (strpos($power->head, $add_use) === false)
 							{
-								$power->head .= 'use ' . $add_use . ';' . PHP_EOL;
+								// check if it has an AS option
+								if (isset($as[$u]) && StringHelper::check($as[$u]) && $as[$u] !== 'default')
+								{
+									$power->head .= 'use ' . $add_use . ' as ' . $as[$u] . ';' . PHP_EOL;
+								}
+								else
+								{
+									$power->head .= 'use ' . $add_use . ';' . PHP_EOL;
+								}
 							}
 						}
 					}

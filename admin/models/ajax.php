@@ -1398,8 +1398,22 @@ class ComponentbuilderModelAjax extends JModelList
 		return false;
 	}
 
+	/**
+	 * The view persistence details
+	 *
+	 * @var	array
+	 * @since 3.0.13
+	 */
 	protected $viewid = array();
 
+	/**
+	 * Get the view details via the session
+	 *
+	 * @input	string  $call    The persistence key
+	 *
+	 * @return mixed
+	 * @since 3.0.13
+	 */
 	protected function getViewID($call = 'table')
 	{
 		if (!isset($this->viewid[$call]))
@@ -1422,7 +1436,7 @@ class ComponentbuilderModelAjax extends JModelList
 						);
 					}
 				}
-				// set GUID if found (TODO we will later move over to GUID)
+				// set GUID if found
 				if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false && method_exists('ComponentbuilderHelper', 'validGUID'))
 				{
 					if (ComponentbuilderHelper::validGUID($guid))

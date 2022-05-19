@@ -6217,21 +6217,12 @@ class Interpretation extends Fields
 			$chart[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " load the google chart js.";
 			$chart[] = $this->_t(2)
-				. "\$this->document->addScript(JURI::root(true) .'/media/com_"
-				. $this->componentCodeName . "/js/google.jsapi.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+				. "JHtml::_('script', 'com_"
+				. $this->componentCodeName . "/js/google.jsapi.js', ['version' => 'auto']);";
 			$chart[] = $this->_t(2)
-				. "\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/rgbcolor.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+				. "\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/rgbcolor.js', ['version' => 'auto']);";
 			$chart[] = $this->_t(2)
-				. "\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/canvg.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+				. "\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/canvg.js', ['version' => 'auto']);";
 
 			return implode(PHP_EOL, $chart);
 		}
@@ -6635,12 +6626,9 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
-				. "\$this->document->addStyleSheet(JURI::root(true) .'/media/com_"
+				. "JHtml::_('stylesheet', 'com_"
 				. $this->componentCodeName
-				. "/uikit-v2/css/uikit'.\$style.\$size.'.css', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+				. "/uikit-v2/css/uikit'.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "//" . $this->setLine(
 					__LINE__
@@ -6649,12 +6637,9 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
-				. "\$this->document->addScript(JURI::root(true) .'/media/com_"
+				. "JHtml::_('script', 'com_"
 				. $this->componentCodeName
-				. "/uikit-v2/js/uikit'.\$size.'.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+				. "/uikit-v2/js/uikit'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
 		}
 		// load the components need
@@ -6748,12 +6733,9 @@ class Interpretation extends Fields
 					__LINE__
 				) . " load the css.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
-				. "\$this->document->addStyleSheet(JURI::root(true) .'/media/com_"
+				. "JHtml::_('stylesheet', 'com_"
 				. $this->componentCodeName
-				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "//" . $this->setLine(
 					__LINE__
@@ -6767,15 +6749,9 @@ class Interpretation extends Fields
 					__LINE__
 				) . " load the js.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
-				. "\$this->document->addScript(JURI::root(true) .'/media/com_"
+				. "JHtml::_('script', 'com_"
 				. $this->componentCodeName
-				. "/uikit-v2/js/components/'.\$name.\$size.'.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);";
+				. "/uikit-v2/js/components/'.\$name.\$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(4) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(3) . "}";
@@ -6819,12 +6795,9 @@ class Interpretation extends Fields
 					__LINE__
 				) . " load the css.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
-				. "\$this->document->addStyleSheet(JURI::root(true) .'/media/com_"
+				. "JHtml::_('stylesheet', 'com_"
 				. $this->componentCodeName
-				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "//" . $this->setLine(
 					__LINE__
@@ -6838,7 +6811,7 @@ class Interpretation extends Fields
 					__LINE__
 				) . " load the js.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
-				. "\$this->document->addScript(JURI::root(true) .'/media/com_"
+				. "JHtml::_('script', JURI::root(true) .'/media/com_"
 				. $this->componentCodeName
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js', ("
 				. $this->fileContentStatic[$this->hhh . 'Component'
@@ -6873,12 +6846,9 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
-				. "\$this->document->addStyleSheet(JURI::root(true) .'/media/com_"
+				. "JHtml::_('stylesheet', 'com_"
 				. $this->componentCodeName
-				. "/uikit-v3/css/uikit'.\$size.'.css', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+				. "/uikit-v3/css/uikit'.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "//" . $this->setLine(
 					__LINE__
@@ -6887,19 +6857,13 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
-				. "\$this->document->addScript(JURI::root(true) .'/media/com_"
+				. "JHtml::_('script', 'com_"
 				. $this->componentCodeName
-				. "/uikit-v3/js/uikit'.\$size.'.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+				. "/uikit-v3/js/uikit'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
-				. "\$this->document->addScript(JURI::root(true) .'/media/com_"
+				. "JHtml::_('script', 'com_"
 				. $this->componentCodeName
-				. "/uikit-v3/js/uikit-icons'.\$size.'.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+				. "/uikit-v3/js/uikit-icons'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
 			if (2 == $this->uikit)
 			{
@@ -14146,12 +14110,9 @@ class Interpretation extends Fields
 					__LINE__
 				) . " Add the CSS for Footable.";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "\$this->document->addStyleSheet(JURI::root() .'media/com_"
+				. "JHtml::_('stylesheet', 'com_"
 				. $this->componentCodeName
-				. "/footable-v2/css/footable.core.min.css', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+				. "/footable-v2/css/footable.core.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 					__LINE__
 				) . " Use the Metro Style";
@@ -14159,12 +14120,9 @@ class Interpretation extends Fields
 				. "if (!isset(\$this->fooTableStyle) || 0 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL . $this->_t(2) . "{";
 			$foo .= PHP_EOL . $this->_t(3)
-				. "\$this->document->addStyleSheet(JURI::root() .'media/com_"
+				. "JHtml::_('stylesheet', 'com_"
 				. $this->componentCodeName
-				. "/footable-v2/css/footable.metro.min.css', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+				. "/footable-v2/css/footable.metro.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2) . "}";
 			$foo .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Use the Legacy Style.";
@@ -14172,43 +14130,28 @@ class Interpretation extends Fields
 				. "elseif (isset(\$this->fooTableStyle) && 1 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL . $this->_t(2) . "{";
 			$foo .= PHP_EOL . $this->_t(3)
-				. "\$this->document->addStyleSheet(JURI::root() .'media/com_"
+				. "JHtml::_('stylesheet', 'com_"
 				. $this->componentCodeName
-				. "/footable-v2/css/footable.standalone.min.css', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+				. "/footable-v2/css/footable.standalone.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2) . "}";
 			$foo .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
 					__LINE__
 				) . " Add the JavaScript for Footable";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "\$this->document->addScript(JURI::root() .'media/com_"
-				. $this->componentCodeName . "/footable-v2/js/footable.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+				. "JHtml::_('script', 'com_"
+				. $this->componentCodeName . "/footable-v2/js/footable.js', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "\$this->document->addScript(JURI::root() .'media/com_"
+				. "JHtml::_('script', 'com_"
 				. $this->componentCodeName
-				. "/footable-v2/js/footable.sort.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+				. "/footable-v2/js/footable.sort.js', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "\$this->document->addScript(JURI::root() .'media/com_"
+				. "JHtml::_('script', 'com_"
 				. $this->componentCodeName
-				. "/footable-v2/js/footable.filter.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+				. "/footable-v2/js/footable.filter.js', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "\$this->document->addScript(JURI::root() .'media/com_"
+				. "JHtml::_('script', 'com_"
 				. $this->componentCodeName
-				. "/footable-v2/js/footable.paginate.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+				. "/footable-v2/js/footable.paginate.js', ['version' => 'auto']);";
 			if ($init)
 			{
 				$foo .= PHP_EOL . PHP_EOL . $this->_t(2)
@@ -14232,21 +14175,15 @@ class Interpretation extends Fields
 			$foo .= PHP_EOL . $this->_t(2)
 				. "\$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "\$this->document->addStyleSheet(JURI::root() .'media/com_"
+				. "JHtml::_('stylesheet', 'com_"
 				. $this->componentCodeName
-				. "/footable-v3/css/footable.standalone.min.css', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');";
+				. "/footable-v3/css/footable.standalone.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
-				. " Add the JavaScript for Footable (adding all funtions)";
+				. " Add the JavaScript for Footable (adding all functions)";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "\$this->document->addScript(JURI::root() .'media/com_"
+				. "JHtml::_('script', 'com_"
 				. $this->componentCodeName
-				. "/footable-v3/js/footable.min.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');";
+				. "/footable-v3/js/footable.min.js', ['version' => 'auto']);";
 			if ($init)
 			{
 				$foo .= PHP_EOL . PHP_EOL . $this->_t(2)
