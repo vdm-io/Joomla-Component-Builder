@@ -13,12 +13,13 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\Utilities\ArrayHelper;
 
 /**
- * Componentbuilder Help Controller
+ * Componentbuilder Help Base Controller
  */
-class ComponentbuilderControllerHelp extends JControllerLegacy
+class ComponentbuilderControllerHelp extends BaseController
 {
 	public function __construct($config)
 	{

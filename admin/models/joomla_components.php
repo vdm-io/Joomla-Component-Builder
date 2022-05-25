@@ -13,12 +13,13 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 
 /**
- * Joomla_components Model
+ * Joomla_components List Model
  */
-class ComponentbuilderModelJoomla_components extends JModelList
+class ComponentbuilderModelJoomla_components extends ListModel
 {
 	public function __construct($config = array())
 	{
@@ -662,7 +663,10 @@ class ComponentbuilderModelJoomla_components extends JModelList
 						{
 							foreach ($val as $v)
 							{
-								$bucket[$v] = $v;
+								if (ComponentbuilderHelper::checkArray($v) && isset($v['power']))
+								{
+									$bucket[$v['power']] = $v['power'];
+								}
 							}
 						}
 					}

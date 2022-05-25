@@ -13,6 +13,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Table\Table;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
@@ -20,7 +21,7 @@ use Joomla\Utilities\ArrayHelper;
 /**
  * Custom_admin_views Table class
  */
-class ComponentbuilderTableCustom_admin_view extends JTable
+class ComponentbuilderTableCustom_admin_view extends Table
 {
 	/**
 	 * Ensure the params and metadata in json encoded in the bind method

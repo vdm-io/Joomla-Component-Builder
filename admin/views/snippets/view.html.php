@@ -13,10 +13,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\View\HtmlView;
+
 /**
- * Componentbuilder View class for the Snippets
+ * Componentbuilder Html View class for the Snippets
  */
-class ComponentbuilderViewSnippets extends JViewLegacy
+class ComponentbuilderViewSnippets extends HtmlView
 {
 	/**
 	 * Snippets view display method

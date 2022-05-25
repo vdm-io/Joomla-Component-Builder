@@ -13,10 +13,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\View\HtmlView;
+
 /**
- * Component_mysql_tweaks View class
+ * Component_mysql_tweaks Html View class
  */
-class ComponentbuilderViewComponent_mysql_tweaks extends JViewLegacy
+class ComponentbuilderViewComponent_mysql_tweaks extends HtmlView
 {
 	/**
 	 * display method of View

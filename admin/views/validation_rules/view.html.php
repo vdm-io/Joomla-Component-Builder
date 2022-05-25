@@ -13,10 +13,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\View\HtmlView;
+
 /**
- * Componentbuilder View class for the Validation_rules
+ * Componentbuilder Html View class for the Validation_rules
  */
-class ComponentbuilderViewValidation_rules extends JViewLegacy
+class ComponentbuilderViewValidation_rules extends HtmlView
 {
 	/**
 	 * Validation_rules view display method

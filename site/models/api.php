@@ -13,12 +13,13 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Model\ItemModel;
 use Joomla\Utilities\ArrayHelper;
 
 /**
- * Componentbuilder Api Model
+ * Componentbuilder Api Item Model
  */
-class ComponentbuilderModelApi extends JModelItem
+class ComponentbuilderModelApi extends ItemModel
 {
 	/**
 	 * Model context string.

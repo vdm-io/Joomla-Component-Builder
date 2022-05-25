@@ -13,12 +13,13 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Filesystem\File;
 
 /**
- * Componentbuilder View class for the Compiler
+ * Componentbuilder Html View class for the Compiler
  */
-class ComponentbuilderViewCompiler extends JViewLegacy
+class ComponentbuilderViewCompiler extends HtmlView
 {
 	// Overwriting JView display method
 	function display($tpl = null)
@@ -235,12 +236,12 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 		// The uikit css.
 		if ((!$HeaderCheck->css_loaded('uikit.min') || $uikit == 1) && $uikit != 2 && $uikit != 3)
 		{
-			JHtml::_('stylesheet', 'com_componentbuilder/uikit-v2/css/uikit'.$style.$size.'.css', ['version' => 'auto']);
+			JHtml::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit'.$style.$size.'.css', ['version' => 'auto']);
 		}
 		// The uikit js.
 		if ((!$HeaderCheck->js_loaded('uikit.min') || $uikit == 1) && $uikit != 2 && $uikit != 3)
 		{
-			JHtml::_('script', 'com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', ['version' => 'auto']);
+			JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', ['version' => 'auto']);
 		}
 
 		// Load the script to find all uikit components needed.
@@ -280,13 +281,13 @@ class ComponentbuilderViewCompiler extends JViewLegacy
 					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css'))
 					{
 						// load the css.
-						JHtml::_('stylesheet', 'com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css', ['version' => 'auto']);
+						JHtml::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css', ['version' => 'auto']);
 					}
 					// check if the JavaScript file exists.
 					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js'))
 					{
 						// load the js.
-						JHtml::_('script', 'com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);
+						JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);
 					}
 				}
 			}

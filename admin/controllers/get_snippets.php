@@ -13,14 +13,22 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
 
 /**
- * Get_snippets Controller
+ * Get_snippets Admin Controller
  */
-class ComponentbuilderControllerGet_snippets extends JControllerAdmin
+class ComponentbuilderControllerGet_snippets extends AdminController
 {
+	/**
+	 * The prefix to use with controller messages.
+	 *
+	 * @var    string
+	 * @since  1.6
+	 */
 	protected $text_prefix = 'COM_COMPONENTBUILDER_GET_SNIPPETS';
+
 	/**
 	 * Proxy for getModel.
 	 * @since	2.5
@@ -32,7 +40,7 @@ class ComponentbuilderControllerGet_snippets extends JControllerAdmin
 		return $model;
 	}
 
-        public function dashboard()
+	public function dashboard()
 	{
 		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder', false));
 		return;

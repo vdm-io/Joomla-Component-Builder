@@ -13,10 +13,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\View\HtmlView;
+
 /**
- * Fieldtype View class
+ * Fieldtype Html View class
  */
-class ComponentbuilderViewFieldtype extends JViewLegacy
+class ComponentbuilderViewFieldtype extends HtmlView
 {
 	/**
 	 * display method of View
@@ -197,9 +199,9 @@ class ComponentbuilderViewFieldtype extends JViewLegacy
 
 		// Add the CSS for Footable
 		$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-		JHtml::_('stylesheet', 'com_componentbuilder/footable-v3/css/footable.standalone.min.css', ['version' => 'auto']);
+		JHtml::_('stylesheet', 'media/com_componentbuilder/footable-v3/css/footable.standalone.min.css', ['version' => 'auto']);
 		// Add the JavaScript for Footable (adding all functions)
-		JHtml::_('script', 'com_componentbuilder/footable-v3/js/footable.min.js', ['version' => 'auto']);
+		JHtml::_('script', 'media/com_componentbuilder/footable-v3/js/footable.min.js', ['version' => 'auto']);
 
 		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
 		$this->document->addScriptDeclaration($footable);

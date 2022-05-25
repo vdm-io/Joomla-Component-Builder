@@ -13,10 +13,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\View\HtmlView;
+
 /**
- * Componentbuilder View class for the Admins_custom_tabs
+ * Componentbuilder Html View class for the Admins_custom_tabs
  */
-class ComponentbuilderViewAdmins_custom_tabs extends JViewLegacy
+class ComponentbuilderViewAdmins_custom_tabs extends HtmlView
 {
 	/**
 	 * Admins_custom_tabs view display method

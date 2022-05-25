@@ -13,12 +13,13 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 
 /**
- * Language_translations Model
+ * Language_translations List Model
  */
-class ComponentbuilderModelLanguage_translations extends JModelList
+class ComponentbuilderModelLanguage_translations extends ListModel
 {
 	public function __construct($config = array())
 	{

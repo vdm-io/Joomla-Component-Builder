@@ -13,10 +13,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\View\HtmlView;
+
 /**
- * Componentbuilder View class for the Api
+ * Componentbuilder Html View class for the Api
  */
-class ComponentbuilderViewApi extends JViewLegacy
+class ComponentbuilderViewApi extends HtmlView
 {
 	// Overwriting JView display method
 	function display($tpl = null)
@@ -70,12 +72,12 @@ class ComponentbuilderViewApi extends JViewLegacy
 		// The uikit css.
 		if ((!$HeaderCheck->css_loaded('uikit.min') || $uikit == 1) && $uikit != 2 && $uikit != 3)
 		{
-			JHtml::_('stylesheet', 'com_componentbuilder/uikit-v2/css/uikit'.$style.$size.'.css', ['version' => 'auto']);
+			JHtml::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit'.$style.$size.'.css', ['version' => 'auto']);
 		}
 		// The uikit js.
 		if ((!$HeaderCheck->js_loaded('uikit.min') || $uikit == 1) && $uikit != 2 && $uikit != 3)
 		{
-			JHtml::_('script', 'com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', ['version' => 'auto']);
+			JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', ['version' => 'auto']);
 		} 
 		// add the document default css file
 		$this->document->addStyleSheet(JURI::root(true) .'/components/com_componentbuilder/assets/css/api.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');

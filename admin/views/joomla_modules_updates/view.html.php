@@ -13,10 +13,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\View\HtmlView;
+
 /**
- * Componentbuilder View class for the Joomla_modules_updates
+ * Componentbuilder Html View class for the Joomla_modules_updates
  */
-class ComponentbuilderViewJoomla_modules_updates extends JViewLegacy
+class ComponentbuilderViewJoomla_modules_updates extends HtmlView
 {
 	/**
 	 * Joomla_modules_updates view display method

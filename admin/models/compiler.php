@@ -13,12 +13,13 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 
 /**
- * Componentbuilder Model for Compiler
+ * Componentbuilder List Model for Compiler
  */
-class ComponentbuilderModelCompiler extends JModelList
+class ComponentbuilderModelCompiler extends ListModel
 {
 	/**
 	 * Model user data.

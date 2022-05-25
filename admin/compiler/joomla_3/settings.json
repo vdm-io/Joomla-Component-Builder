@@ -64,8 +64,8 @@
 				"rename": false,
 				"type": "file"
 			},
-			"JControllerLegacy.php": {
-				"naam": "JControllerLegacy.php",
+			"BaseController.php": {
+				"naam": "BaseController.php",
 				"path": "c0mp0n3nt/admin",
 				"rename": "new",
 				"newName": "controller.php",
@@ -138,8 +138,8 @@
 				"newName": "route.php",
 				"type": "file"
 			},
-			"JControllerLegacySITE.php": {
-				"naam": "JControllerLegacySITE.php",
+			"BaseControllerSITE.php": {
+				"naam": "BaseControllerSITE.php",
 				"path": "c0mp0n3nt/site",
 				"rename": "new",
 				"newName": "controller.php",
@@ -232,14 +232,14 @@
 					"rename": "Helper_",
 					"type": "emailer"
 				},
-				"DASHJControllerAdmin.php": {
+				"AdminControllerDashboard.php": {
 					"path": "c0mp0n3nt/admin/controllers",
-					"rename": "DASHJControllerAdmin",
+					"rename": "AdminControllerDashboard",
 					"type": "dashboard"
 				},
-				"DASHJModelList.php": {
+				"ListModelDASH.php": {
 					"path": "c0mp0n3nt/admin/models",
-					"rename": "DASHJModelList",
+					"rename": "ListModelDASH",
 					"type": "dashboard"
 				},
 				"DASHJViewLagacy.php": {
@@ -289,19 +289,19 @@
 					"rename": false,
 					"type": "single"
 				},
-				"JModelAdmin.php": {
+				"AdminModel.php": {
 					"path": "c0mp0n3nt/admin/models",
-					"rename": "JModelAdmin",
+					"rename": "AdminModel",
 					"type": "single"
 				},
-				"JControllerForm.php": {
+				"FormController.php": {
 					"path": "c0mp0n3nt/admin/controllers",
-					"rename": "JControllerForm",
+					"rename": "FormController",
 					"type": "single"
 				},
-				"JTable.php": {
+				"Table.php": {
 					"path": "c0mp0n3nt/admin/tables",
-					"rename": "JTable",
+					"rename": "Table",
 					"type": "single"
 				},
 				"submitbutton.js": {
@@ -309,7 +309,7 @@
 					"rename": false,
 					"type": "single"
 				},
-				"JViewLegacy_edit.php": {
+				"HtmlView_edit.php": {
 					"path": "c0mp0n3nt/admin/views/VIEW",
 					"rename": "new",
 					"newName": "view.html.php",
@@ -320,14 +320,14 @@
 					"rename": "view",
 					"type": "single"
 				},
-				"JControllerAdmin.php": {
+				"AdminController.php": {
 					"path": "c0mp0n3nt/admin/controllers",
-					"rename": "JControllerAdmin",
+					"rename": "AdminController",
 					"type": "list"
 				},
-				"JModelList.php": {
+				"ListModel.php": {
 					"path": "c0mp0n3nt/admin/models",
-					"rename": "JModelList",
+					"rename": "ListModel",
 					"type": "list"
 				},
 				"views.css": {
@@ -335,7 +335,7 @@
 					"rename": "views",
 					"type": "list"
 				},
-				"JViewLegacy_list.php": {
+				"HtmlView_list.php": {
 					"path": "c0mp0n3nt/admin/views/VIEW",
 					"rename": "new",
 					"newName": "view.html.php",
@@ -446,31 +446,31 @@
 					"rename": "JFormFieldUser",
 					"type": "fielduser"
 				},
-				"JControllerLegacyAjax.php": {
+				"BaseControllerAjax.php": {
 					"path": "c0mp0n3nt/admin/controllers",
 					"rename": "new",
 					"newName": "ajax.json.php",
 					"type": "ajax"
 				},
-				"JModelListAjax.php": {
+				"ListModelAjax.php": {
 					"path": "c0mp0n3nt/admin/models",
 					"rename": "new",
 					"newName": "ajax.php",
 					"type": "ajax"
 				},
-				"JControllerLegacy_import.php": {
+				"BaseController_import.php": {
 					"path": "c0mp0n3nt/admin/controllers",
 					"rename": "new",
 					"newName": "import.php",
 					"type": "import"
 				},
-				"JModelLegacy_import.php": {
+				"BaseDatabaseModel_import.php": {
 					"path": "c0mp0n3nt/admin/models",
 					"rename": "new",
 					"newName": "import.php",
 					"type": "import"
 				},
-				"JViewLegacy_import.php": {
+				"HtmlView_import.php": {
 					"path": "c0mp0n3nt/admin/views/import",
 					"rename": "new",
 					"newName": "view.html.php",
@@ -482,17 +482,17 @@
 					"newName": "default.php",
 					"type": "import"
 				},
-				"JControllerLegacy_import_custom.php": {
+				"BaseController_import_custom.php": {
 					"path": "c0mp0n3nt/admin/controllers",
-					"rename": "JControllerLegacy_import_custom",
+					"rename": "BaseController_import_custom",
 					"type": "customimport"
 				},
-				"JModelLegacy_import_custom.php": {
+				"BaseDatabaseModel_import_custom.php": {
 					"path": "c0mp0n3nt/admin/models",
-					"rename": "JModelLegacy_import_custom",
+					"rename": "BaseDatabaseModel_import_custom",
 					"type": "customimport"
 				},
-				"JViewLegacy_import_custom.php": {
+				"HtmlView_import_custom.php": {
 					"path": "c0mp0n3nt/admin/views/VIEW",
 					"rename": "new",
 					"newName": "view.html.php",
@@ -504,7 +504,7 @@
 					"newName": "default.php",
 					"type": "customimport"
 				},
-				"JControllerLegacyHelp.php": {
+				"BaseControllerHelp.php": {
 					"path": "c0mp0n3nt/admin/controllers",
 					"rename": "new",
 					"newName": "help.php",
@@ -527,15 +527,15 @@
 				}
 			},
 			"site": {
-				"JViewLegacy_list_site.php": {
+				"HtmlView_list_site.php": {
 					"path": "c0mp0n3nt/site/views/VIEW",
 					"rename": "new",
 					"newName": "view.html.php",
 					"type": "list"
 				},
-				"JModelList_site.php": {
+				"ListModel_site.php": {
 					"path": "c0mp0n3nt/site/models",
-					"rename": "JModelList_site",
+					"rename": "ListModel_site",
 					"type": "list"
 				},
 				"views_site.css": {
@@ -549,7 +549,7 @@
 					"newName": "default.php",
 					"type": "list"
 				},
-				"JViewLegacy_site.php": {
+				"HtmlView_site.php": {
 					"path": "c0mp0n3nt/site/views/VIEW",
 					"rename": "new",
 					"newName": "view.html.php",
@@ -560,9 +560,9 @@
 					"rename": "view_site",
 					"type": "single"
 				},
-				"JModelItem_site.php": {
+				"ItemModel_site.php": {
 					"path": "c0mp0n3nt/site/models",
-					"rename": "JModelItem_site",
+					"rename": "ItemModel_site",
 					"type": "single"
 				},
 				"default_site.php": {
@@ -642,14 +642,14 @@
 					"newName": "edit.php",
 					"type": "edit"
 				},
-				"JModelAdmin_site.php": {
+				"AdminModel_site.php": {
 					"path": "c0mp0n3nt/site/models",
-					"rename": "JModelAdmin_site",
+					"rename": "AdminModel_site",
 					"type": "edit"
 				},
-				"JControllerForm_site.php": {
+				"FormController_site.php": {
 					"path": "c0mp0n3nt/site/controllers",
-					"rename": "JControllerForm_site",
+					"rename": "FormController_site",
 					"type": "edit"
 				},
 				"submitbutton.js": {
@@ -657,7 +657,7 @@
 					"rename": false,
 					"type": "edit"
 				},
-				"JViewLegacy_edit_site.php": {
+				"HtmlView_edit_site.php": {
 					"path": "c0mp0n3nt/site/views/VIEW",
 					"rename": "new",
 					"newName": "view.html.php",
@@ -668,27 +668,27 @@
 					"rename": "view_site_edit",
 					"type": "edit"
 				},
-				"JControllerLegacyAjaxSite.php": {
+				"BaseControllerAjaxSite.php": {
 					"path": "c0mp0n3nt/site/controllers",
 					"rename": "new",
 					"newName": "ajax.json.php",
 					"type": "ajax"
 				},
-				"JModelListAjaxSite.php": {
+				"ListModelAjaxSite.php": {
 					"path": "c0mp0n3nt/site/models",
 					"rename": "new",
 					"newName": "ajax.php",
 					"type": "ajax"
 				},
-				"JControllerLegacyHelp_site.php": {
+				"BaseControllerHelp_site.php": {
 					"path": "c0mp0n3nt/site/controllers",
 					"rename": "new",
 					"newName": "help.php",
 					"type": "help"
 				},
-				"JControllerForm_custom_site.php": {
+				"FormController_custom_site.php": {
 					"path": "c0mp0n3nt/site/controllers",
-					"rename": "JControllerForm_custom_site",
+					"rename": "FormController_custom_site",
 					"type": "custom_form"
 				},
 				"submitbutton_site.js": {
@@ -709,15 +709,15 @@
 				}
 			},
 			"custom_admin": {
-				"JViewLegacy_list_custom_admin.php": {
+				"HtmlView_list_custom_admin.php": {
 					"path": "c0mp0n3nt/admin/views/VIEW",
 					"rename": "new",
 					"newName": "view.html.php",
 					"type": "list"
 				},
-				"JModelList_custom_admin.php": {
+				"ListModel_custom_admin.php": {
 					"path": "c0mp0n3nt/admin/models",
-					"rename": "JModelList_custom_admin",
+					"rename": "ListModel_custom_admin",
 					"type": "list"
 				},
 				"default_list_custom_admin.php": {
@@ -726,9 +726,9 @@
 					"newName": "default.php",
 					"type": "list"
 				},
-				"JControllerAdmin_custom_admin.php": {
+				"AdminController_custom_admin.php": {
 					"path": "c0mp0n3nt/admin/controllers",
-					"rename": "JControllerAdmin_custom_admin",
+					"rename": "AdminController_custom_admin",
 					"type": "list"
 				},
 				"views_custom_admin.css": {
@@ -741,15 +741,15 @@
 					"rename": "view_custom_admin",
 					"type": "single"
 				},
-				"JViewLegacy_custom_admin.php": {
+				"HtmlView_custom_admin.php": {
 					"path": "c0mp0n3nt/admin/views/VIEW",
 					"rename": "new",
 					"newName": "view.html.php",
 					"type": "single"
 				},
-				"JModelItem_custom_admin.php": {
+				"ItemModel_custom_admin.php": {
 					"path": "c0mp0n3nt/admin/models",
-					"rename": "JModelItem_custom_admin",
+					"rename": "ItemModel_custom_admin",
 					"type": "single"
 				},
 				"default_custom_admin.php": {
@@ -758,9 +758,9 @@
 					"newName": "default.php",
 					"type": "single"
 				},
-				"JControllerLegacy_custom_admin.php": {
+				"BaseController_custom_admin.php": {
 					"path": "c0mp0n3nt/admin/controllers",
-					"rename": "JControllerLegacy_custom_admin",
+					"rename": "BaseController_custom_admin",
 					"type": "single"
 				},
 				"default_custom_admin_template.php": {

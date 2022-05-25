@@ -13,12 +13,13 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\Utilities\ArrayHelper;
 
 /**
- * Admin_view Controller
+ * Admin_view Form Controller
  */
-class ComponentbuilderControllerAdmin_view extends JControllerForm
+class ComponentbuilderControllerAdmin_view extends FormController
 {
 	/**
 	 * Current or most recently performed task.

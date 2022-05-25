@@ -13,12 +13,13 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 
 /**
- * Components_modules Model
+ * Components_modules List Model
  */
-class ComponentbuilderModelComponents_modules extends JModelList
+class ComponentbuilderModelComponents_modules extends ListModel
 {
 	public function __construct($config = array())
 	{

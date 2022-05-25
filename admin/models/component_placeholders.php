@@ -13,14 +13,15 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
 
 /**
- * Componentbuilder Component_placeholders Model
+ * Componentbuilder Component_placeholders Admin Model
  */
-class ComponentbuilderModelComponent_placeholders extends JModelAdmin
+class ComponentbuilderModelComponent_placeholders extends AdminModel
 {
 	/**
 	 * The tab layout fields array.

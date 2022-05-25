@@ -13,6 +13,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Table\Table;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
@@ -20,7 +21,7 @@ use Joomla\Utilities\ArrayHelper;
 /**
  * Snippet_types Table class
  */
-class ComponentbuilderTableSnippet_type extends JTable
+class ComponentbuilderTableSnippet_type extends Table
 {
 	/**
 	 * Ensure the params and metadata in json encoded in the bind method

@@ -13,12 +13,13 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 
 /**
- * Componentbuilder Ajax Model
+ * Componentbuilder Ajax List Model
  */
-class ComponentbuilderModelAjax extends JModelList
+class ComponentbuilderModelAjax extends ListModel
 {
 	protected $app_params;
 	
@@ -1086,11 +1087,11 @@ class ComponentbuilderModelAjax extends JModelList
 				array('table' => 'component_plugins', 'tables' => 'components_plugins', 'fields' => array('addjoomla_plugins' => 'plugin', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT', 'linked_name' => 'system_name')
 			),
 			'power' => array(
-				array('table' => 'admin_view', 'tables' => 'admin_views', 'fields' => array('params' => 'admin_view_headers:power_', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_ADMIN_VIEW'),
-				array('table' => 'site_view', 'tables' => 'site_views', 'fields' => array('params' => 'site_view_headers:power_', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_SITE_VIEW'),
-				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('params' => 'custom_admin_view_headers:power_', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW'),
-				array('table' => 'joomla_component', 'tables' => 'joomla_components', 'fields' => array('params' => 'joomla_component_headers:power_', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT'),
-				array('table' => 'component_dashboard', 'tables' => 'components_dashboard', 'fields' => array('params' => 'component_dashboard_headers:power_', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_COMPONENT_DASHBOARD', 'linked_name' => 'system_name'),
+				array('table' => 'admin_view', 'tables' => 'admin_views', 'fields' => array('params' => 'admin_view_headers:power_:power', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_ADMIN_VIEW'),
+				array('table' => 'site_view', 'tables' => 'site_views', 'fields' => array('params' => 'site_view_headers:power_:power', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_SITE_VIEW'),
+				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('params' => 'custom_admin_view_headers:power_:power', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW'),
+				array('table' => 'joomla_component', 'tables' => 'joomla_components', 'fields' => array('params' => 'joomla_component_headers:power_:power', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT'),
+				array('table' => 'component_dashboard', 'tables' => 'components_dashboard', 'fields' => array('params' => 'component_dashboard_headers:power_:power', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_COMPONENT_DASHBOARD', 'linked_name' => 'system_name'),
 				array('table' => 'power', 'tables' => 'powers', 'fields' => array('extends' => 'GUID', 'implements' => 'ARRAY', 'use_selection' => 'use', 'load_selection' => 'load', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_POWER')
 			)
 		);
@@ -1277,11 +1278,34 @@ class ComponentbuilderModelAjax extends JModelList
 												{
 													if (!$found && $field_name === $_target[0])
 													{
-														foreach ($row as $key => $_ids)
+														foreach ($row as $_key => $_ids)
 														{
-															if (!$found && strpos($key, $_target[1]) !== false && (in_array($id, $_ids) || $this->linkedGuid($guid, $_ids)))
+															if (!$found && strpos($_key, $_target[1]) !== false && (in_array($id, $_ids) || $this->linkedGuid($guid, $_ids)))
 															{
 																$found = true;
+															}
+														}
+													}
+												}
+											}
+											// check that we have an array and get the size
+											if (($_size = ComponentbuilderHelper::checkArray($_target)) == 3)
+											{
+												foreach ($item->{$key} as $field_name => $row)
+												{
+													if (!$found && $field_name === $_target[0])
+													{
+														foreach ($row as $_key => $_items)
+														{
+															if (!$found && strpos($_key, $_target[1]) !== false && is_array($_items) && count($_items) > 0)
+															{
+																foreach ($_items as $_item)
+																{
+																	if (!$found && isset($_item[$_target[2]]) && ($id == $_item[$_target[2]] || $this->linkedGuid($guid, $_item[$_target[2]])))
+																	{
+																		$found = true;
+																	}
+																}
 															}
 														}
 													}

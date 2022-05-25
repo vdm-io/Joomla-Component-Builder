@@ -1,0 +1,48 @@
+<?php
+/**
+ * @package    Joomla.Component.Builder
+ *
+ * @created    30th April, 2015
+ * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
+ * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+// No direct access to this file
+defined('_JEXEC') or die('Restricted access');
+?>
+###BOM###
+
+// No direct access to this file
+defined('_JEXEC') or die('Restricted access');###LICENSE_LOCKED_DEFINED###
+
+use Joomla\CMS\MVC\View\HtmlView;
+
+/**
+ * ###Component### ###View### Html View
+ */
+class ###Component###View###View### extends HtmlView
+{###IMPORT_DISPLAY_METHOD_CUSTOM###
+
+	/**
+	 * Setting the toolbar
+	 */
+	protected function addToolBar()
+	{
+		JToolBarHelper::title(JText::_('COM_###COMPONENT###_IMPORT_TITLE'), 'upload');
+		JHtmlSidebar::setAction('index.php?option=com_###component###&view=###view###');
+
+		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
+		{
+			JToolBarHelper::preferences('com_###component###');
+		}
+
+		// set help url for this view if found
+		$this->help_url = ###Component###Helper::getHelpUrl('###view###');
+		if (###Component###Helper::checkString($this->help_url))
+		{
+			   JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
+		}
+	}
+}

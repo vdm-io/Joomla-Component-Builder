@@ -13,12 +13,13 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
 
 /**
- * Admins_fields_conditions Controller
+ * Admins_fields_conditions Admin Controller
  */
-class ComponentbuilderControllerAdmins_fields_conditions extends JControllerAdmin
+class ComponentbuilderControllerAdmins_fields_conditions extends AdminController
 {
 	/**
 	 * The prefix to use with controller messages.

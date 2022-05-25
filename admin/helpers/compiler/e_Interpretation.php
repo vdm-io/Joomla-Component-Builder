@@ -6217,7 +6217,7 @@ class Interpretation extends Fields
 			$chart[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " load the google chart js.";
 			$chart[] = $this->_t(2)
-				. "JHtml::_('script', 'com_"
+				. "JHtml::_('script', 'media/com_"
 				. $this->componentCodeName . "/js/google.jsapi.js', ['version' => 'auto']);";
 			$chart[] = $this->_t(2)
 				. "\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/rgbcolor.js', ['version' => 'auto']);";
@@ -6626,7 +6626,7 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
-				. "JHtml::_('stylesheet', 'com_"
+				. "JHtml::_('stylesheet', 'media/com_"
 				. $this->componentCodeName
 				. "/uikit-v2/css/uikit'.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
@@ -6637,7 +6637,7 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
-				. "JHtml::_('script', 'com_"
+				. "JHtml::_('script', 'media/com_"
 				. $this->componentCodeName
 				. "/uikit-v2/js/uikit'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
@@ -6733,7 +6733,7 @@ class Interpretation extends Fields
 					__LINE__
 				) . " load the css.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
-				. "JHtml::_('stylesheet', 'com_"
+				. "JHtml::_('stylesheet', 'media/com_"
 				. $this->componentCodeName
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "}";
@@ -6749,7 +6749,7 @@ class Interpretation extends Fields
 					__LINE__
 				) . " load the js.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
-				. "JHtml::_('script', 'com_"
+				. "JHtml::_('script', 'media/com_"
 				. $this->componentCodeName
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "}";
@@ -6795,7 +6795,7 @@ class Interpretation extends Fields
 					__LINE__
 				) . " load the css.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
-				. "JHtml::_('stylesheet', 'com_"
+				. "JHtml::_('stylesheet', 'media/com_"
 				. $this->componentCodeName
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "}";
@@ -6811,15 +6811,9 @@ class Interpretation extends Fields
 					__LINE__
 				) . " load the js.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
-				. "JHtml::_('script', JURI::root(true) .'/media/com_"
+				. "JHtml::_('script', 'media/com_"
 				. $this->componentCodeName
-				. "/uikit-v2/js/components/'.\$name.\$size.'.js', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', ("
-				. $this->fileContentStatic[$this->hhh . 'Component'
-				. $this->hhh]
-				. "Helper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);";
+				. "/uikit-v2/js/components/'.\$name.\$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(4) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(3) . "}";
@@ -6846,7 +6840,7 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
-				. "JHtml::_('stylesheet', 'com_"
+				. "JHtml::_('stylesheet', 'media/com_"
 				. $this->componentCodeName
 				. "/uikit-v3/css/uikit'.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
@@ -6857,11 +6851,11 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
-				. "JHtml::_('script', 'com_"
+				. "JHtml::_('script', 'media/com_"
 				. $this->componentCodeName
 				. "/uikit-v3/js/uikit'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
-				. "JHtml::_('script', 'com_"
+				. "JHtml::_('script', 'media/com_"
 				. $this->componentCodeName
 				. "/uikit-v3/js/uikit-icons'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
@@ -14110,7 +14104,7 @@ class Interpretation extends Fields
 					__LINE__
 				) . " Add the CSS for Footable.";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "JHtml::_('stylesheet', 'com_"
+				. "JHtml::_('stylesheet', 'media/com_"
 				. $this->componentCodeName
 				. "/footable-v2/css/footable.core.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . PHP_EOL . $this->_t(2) . "//" . $this->setLine(
@@ -14120,7 +14114,7 @@ class Interpretation extends Fields
 				. "if (!isset(\$this->fooTableStyle) || 0 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL . $this->_t(2) . "{";
 			$foo .= PHP_EOL . $this->_t(3)
-				. "JHtml::_('stylesheet', 'com_"
+				. "JHtml::_('stylesheet', 'media/com_"
 				. $this->componentCodeName
 				. "/footable-v2/css/footable.metro.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2) . "}";
@@ -14130,7 +14124,7 @@ class Interpretation extends Fields
 				. "elseif (isset(\$this->fooTableStyle) && 1 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL . $this->_t(2) . "{";
 			$foo .= PHP_EOL . $this->_t(3)
-				. "JHtml::_('stylesheet', 'com_"
+				. "JHtml::_('stylesheet', 'media/com_"
 				. $this->componentCodeName
 				. "/footable-v2/css/footable.standalone.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2) . "}";
@@ -14138,18 +14132,18 @@ class Interpretation extends Fields
 					__LINE__
 				) . " Add the JavaScript for Footable";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "JHtml::_('script', 'com_"
+				. "JHtml::_('script', 'media/com_"
 				. $this->componentCodeName . "/footable-v2/js/footable.js', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "JHtml::_('script', 'com_"
+				. "JHtml::_('script', 'media/com_"
 				. $this->componentCodeName
 				. "/footable-v2/js/footable.sort.js', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "JHtml::_('script', 'com_"
+				. "JHtml::_('script', 'media/com_"
 				. $this->componentCodeName
 				. "/footable-v2/js/footable.filter.js', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "JHtml::_('script', 'com_"
+				. "JHtml::_('script', 'media/com_"
 				. $this->componentCodeName
 				. "/footable-v2/js/footable.paginate.js', ['version' => 'auto']);";
 			if ($init)
@@ -14175,13 +14169,13 @@ class Interpretation extends Fields
 			$foo .= PHP_EOL . $this->_t(2)
 				. "\$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "JHtml::_('stylesheet', 'com_"
+				. "JHtml::_('stylesheet', 'media/com_"
 				. $this->componentCodeName
 				. "/footable-v3/css/footable.standalone.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Add the JavaScript for Footable (adding all functions)";
 			$foo .= PHP_EOL . $this->_t(2)
-				. "JHtml::_('script', 'com_"
+				. "JHtml::_('script', 'media/com_"
 				. $this->componentCodeName
 				. "/footable-v3/js/footable.min.js', ['version' => 'auto']);";
 			if ($init)
@@ -22552,8 +22546,20 @@ class Interpretation extends Fields
 			case 'site.layout';
 			case 'dashboard.view';
 			case 'dashboard.view.html';
-			case 'dashboard.model';
-			case 'dashboard.controller';
+				break;
+			case 'site.view.model':
+			case 'custom.admin.view.model':
+				$headers[] = 'use Joomla\CMS\MVC\Model\ItemModel;';
+				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
+				break;
+			case 'admin.views.model':
+			case 'custom.admin.views.model':
+			case 'site.views.model':
+			case 'ajax.admin.model':
+			case 'ajax.site.model':
+			case 'dashboard.model':
+				$headers[] = 'use Joomla\CMS\MVC\Model\ListModel;';
+				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
 				break;
 			case 'admin.helper':
 			case 'site.helper':
@@ -22568,6 +22574,7 @@ class Interpretation extends Fields
 				break;
 			case 'admin.view.model':
 			case 'site.admin.view.model':
+				$headers[] = 'use Joomla\CMS\MVC\Model\AdminModel;';
 				$headers[] = 'use Joomla\Registry\Registry;';
 				$headers[] = 'use Joomla\String\StringHelper;';
 				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
@@ -22596,8 +22603,7 @@ class Interpretation extends Fields
 			case 'site.views.html':
 			case 'custom.admin.view.html':
 			case 'custom.admin.views.html':
-				// add a space
-				$headers = array('');
+				$headers[] = 'use Joomla\CMS\MVC\View\HtmlView;';
 				// load the file class if uikit is being loaded
 				if ((2 == $this->uikit || 1 == $this->uikit)
 					&& isset($this->uikitComp[$codeName])
@@ -22606,8 +22612,23 @@ class Interpretation extends Fields
 					))
 				{
 					$headers[] = 'use Joomla\CMS\Filesystem\File;';
-					$headers[] = '';
 				}
+				break;
+			case 'admin.view.controller':
+			case 'site.admin.view.controller':
+			case 'site.view.controller':
+				$headers[] = 'use Joomla\CMS\MVC\Controller\FormController;';
+				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
+				break;
+			case 'custom.admin.view.controller':
+				$headers[] = 'use Joomla\CMS\MVC\Controller\BaseController;';
+				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
+				break;
+			case 'admin.views.controller':
+			case 'custom.admin.views.controller':
+			case 'dashboard.controller':
+				$headers[] = 'use Joomla\CMS\MVC\Controller\AdminController;';
+				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
 				break;
 			default:
 				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
