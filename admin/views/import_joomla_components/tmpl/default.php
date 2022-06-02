@@ -360,16 +360,16 @@ jQuery(document).ready(function($)
 	// get all jcb packages
 	jQuery("#jcb_package option").each(function()
 	{
-		var key =  jQuery(this).val();
-		packages[key] = 'jcb';
+		var package =  jQuery(this).val();
+		packages[package] = 'jcb';
 	});
 <?php endif; ?>
 <?php if (isset($this->vdmPackages) && $this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)): ?>
 	// get all vdm packages
 	jQuery("#vdm_package option").each(function()
 	{
-		var key =  jQuery(this).val();
-		packages[key] = 'vdm';
+		var package =  jQuery(this).val();
+		packages[package] = 'vdm';
 	});
 <?php endif; ?>
 	// no start behind the scene getting of package info
@@ -377,20 +377,19 @@ jQuery(document).ready(function($)
 });
 
 function autoJCBpackageInfo(){
-	jQuery.each( packages, function( url, type ) {
-		var key = url.replace(/\W/g, '');
+	jQuery.each( packages, function( package, type ) {
 		// check if the values are local
-		var result = jQuery.jStorage.get('JCB-packages-details'+key, null);
-		if (!result && url.length > 0) {
-			 autoJCBpackageInfoAgain(url, key, type);
+		var result = jQuery.jStorage.get('JCB-packages-details' + package, null);
+		if (!result && package.length > 0) {
+			 autoJCBpackageInfoAgain(package, type);
 		}
 	});
 }
 
-function autoJCBpackageInfoAgain(url, key,type){
-	getJCBpackageInfo_server(url).done(function(result) {
+function autoJCBpackageInfoAgain(package, type){
+	getJCBpackageInfo_server(package).done(function(result) {
 		if(result.owner || result.packages){
-			jQuery.jStorage.set('JCB-packages-details'+key, result, {TTL: expire});
+			jQuery.jStorage.set('JCB-packages-details' + package, result, {TTL: expire});
 		}
 	});
 }
@@ -401,15 +400,14 @@ function getJCBpackageInfo(type){
 	jQuery('#noticeboard').show();
 	jQuery('#installer-import').hide();
 	// get value
-	var url = jQuery('#'+type+'_package').val();
-	if (url) {
-		var key = url.replace(/\W/g, '');
+	var package = jQuery('#'+type+'_package').val();
+	if (package) {
 		// check if the values are local
-		var result = jQuery.jStorage.get('JCB-packages-details'+key, null);
+		var result = jQuery.jStorage.get('JCB-packages-details'+package, null);
 		if (result) {
-			showJCBpackageInfo(result, key, type);
+			showJCBpackageInfo(result, package, type);
 		} else {
-			getJCBpackageInfoAgain(url, key, type);
+			getJCBpackageInfoAgain(package, type);
 		}
 	} else {
 		// hide spinner
@@ -424,17 +422,17 @@ function getJCBpackageInfo(type){
 	}
 }
 
-function getJCBpackageInfoAgain(url, key,type){
-	getJCBpackageInfo_server(url).done(function(result) {
-		showJCBpackageInfo(result, key,type);
+function getJCBpackageInfoAgain(package, type){
+	getJCBpackageInfo_server(package).done(function(result) {
+		showJCBpackageInfo(result, package, type);
 	});
 }
 
-function showJCBpackageInfo(result, key,type){
+function showJCBpackageInfo(result, package, type){
 	if(result.owner || result.packages){
 		jQuery('#'+type+'_packages_details').html(result.packages);
 		jQuery('#'+type+'_package_owner_details').html(result.owner);
-		jQuery.jStorage.set('JCB-packages-details'+key, result, {TTL: expire});
+		jQuery.jStorage.set('JCB-packages-details'+package, result, {TTL: expire});
 		// some display moves
 		jQuery('#'+type+'_packages_installer').removeClass('span12').addClass('span6');
 		jQuery('#'+type+'_packages_display').addClass('span6');
@@ -454,10 +452,10 @@ function showJCBpackageInfo(result, key,type){
 	jQuery('#installer-import').show();
 }
 
-function getJCBpackageInfo_server(url){
+function getJCBpackageInfo_server(package){
 	var getUrl = "index.php?option=com_componentbuilder&task=ajax.getJCBpackageInfo&format=json";
-	if(token.length > 0 && url.length > 0){
-		var request = 'token='+token+'&url=' + url;
+	if(token.length > 0 && package.length > 0){
+		var request = token + '=1&package=' + package;
 	}
 	return jQuery.ajax({
 		type: 'GET',
@@ -475,7 +473,7 @@ jQuery(document).ready(function () {
 	jQuery.get(noticeboard)
 	.success(function(board) { 
 		if (board.length > 5) {
-			jQuery(".noticeboard-md").html(marked(board));
+			jQuery(".noticeboard-md").html(marked.parse(board));
 			getIS(1,board).done(function(result) {
 				if (result){
 					jQuery(".vdm-new-notice").show();

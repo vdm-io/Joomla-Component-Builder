@@ -159,9 +159,10 @@ class ComponentbuilderModelAjax extends ListModel
 	/**
 	* 	get the JCB package info (html)
 	**/
-	public function getJCBpackageInfo($url)
+	public function getJCBpackageInfo($package)
 	{
 		// convert URL
+		$url = base64_decode($package);
 		$url = str_replace('.zip', '.info', $url);
 		// check if url exist
 		if ($info = ComponentbuilderHelper::getFileContents($url, false))
@@ -199,7 +200,7 @@ class ComponentbuilderModelAjax extends ListModel
 			// check if we have json
 			if ($opened && ComponentbuilderHelper::checkJson($_info))
 			{
-				$info = json_decode($info, true);
+				$info = json_decode($_info, true);
 				return array('owner' => ComponentbuilderHelper::getPackageOwnerDetailsDisplay($info, true), 'packages' => ComponentbuilderHelper::getPackageComponentsDetailsDisplay($info));
 			}
 		}

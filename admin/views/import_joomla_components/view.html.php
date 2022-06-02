@@ -57,7 +57,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 			$this->addToolbar();
 			$this->sidebar = JHtmlSidebar::render();
 			// add title to the page
-			JToolbarHelper::title(JText::_('COM_COMPONENTBUILDER_JCB_PACKAGE_IMPORT'),'upload');
+			JToolbarHelper::title(JText::_('COM_COMPONENTBUILDER_JCB_PACKAGE_IMPORT'), 'upload');
 			// add refesh button.
 			JToolBarHelper::custom('joomla_component.refresh', 'refresh', '', 'COM_COMPONENTBUILDER_REFRESH', false);
 		}
@@ -75,7 +75,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
  		$manageDirectories = $this->params->get('manage_jcb_package_directories', 2);
  		if ($manageDirectories == 2)
  		{
- 		 	$this->directories = array('vdm','jcb');
+ 		 	$this->directories = array('vdm', 'jcb');
  		}
  		elseif ($manageDirectories == 1)
  		{
@@ -122,7 +122,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jstorage.min.js');
 		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/strtotime.js');
 		// add marked library
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
+		$this->document->addScript(JURI::root() . "media/com_componentbuilder/js/marked.js");
 		// check if we should use browser storage
 		$setBrowserStorage = $this->params->get('set_browser_storage', null);
 		if ($setBrowserStorage)
@@ -369,7 +369,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				{
 					if (strpos($vdmListObject->path, '.zip') !== false)
 					{
-						$vdm_packageOptions[ComponentbuilderHelper::$vdmGithubPackageUrl.$vdmListObject->path] = $this->setPackageName($vdmListObject->path);
+						$vdm_packageOptions[base64_encode(ComponentbuilderHelper::$vdmGithubPackageUrl.$vdmListObject->path)] = $this->setPackageName($vdmListObject->path);
 						$load = true;
 					}
 				}
@@ -413,7 +413,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				{
 					if (strpos($jcbListObject->path, '.zip') !== false)
 					{
-						$jcb_packageOptions[ComponentbuilderHelper::$jcbGithubPackageUrl.$jcbListObject->path] = $this->setPackageName($jcbListObject->path);
+						$jcb_packageOptions[base64_encode(ComponentbuilderHelper::$jcbGithubPackageUrl.$jcbListObject->path)] = $this->setPackageName($jcbListObject->path);
 						$load = true;
 					}
 				}

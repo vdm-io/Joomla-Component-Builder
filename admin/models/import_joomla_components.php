@@ -143,6 +143,11 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 					break;
 
 				case 'url':
+					$url = JFactory::getApplication()->input->getString('import_url');
+					if ($url === base64_encode(base64_decode($url, true)))
+					{
+						JFactory::getApplication()->input->set('import_url', base64_decode($url));
+					}
 					$package = $this->_getPackageFromUrl();
 					break;
 

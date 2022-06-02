@@ -508,6 +508,8 @@ class Structure extends Get
 						$power->path
 					))
 				{
+					// activate dynamic folders
+					$this->setDynamicFolders();
 					// power path
 					$power->full_path        = $this->componentPath . '/'
 						. $power->path;
@@ -2257,23 +2259,8 @@ class Structure extends Get
 						&& StringHelper::check($checker[0])
 						&& !in_array($checker[0], $this->stdFolders))
 					{
-						// check if we should add the dynamic folder moving script to the installer script
-						if (!$this->setMoveFolders)
-						{
-							// add the setDynamicF0ld3rs() method to the install scipt.php file
-							$this->setMoveFolders = true;
-							// set message that this was done (will still add a tutorial link later)
-							$this->app->enqueueMessage(
-								JText::_(
-									'<hr /><h3>Dynamic folder(s) were detected.</h3>'
-								), 'Notice'
-							);
-							$this->app->enqueueMessage(
-								JText::sprintf(
-									'A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folder(s) are copied into the correct place when this component is installed!'
-								), 'Notice'
-							);
-						}
+						// activate dynamic folders
+						$this->setDynamicFolders();
 					}
 					elseif (count((array) $checker) == 2
 						&& StringHelper::check($checker[0]))
@@ -3205,6 +3192,30 @@ class Structure extends Get
 		}
 
 		return $version_data;
+	}
+
+	/**
+	 * Add the dynamic folders
+	 */
+	protected function setDynamicFolders()
+	{
+		// check if we should add the dynamic folder moving script to the installer script
+		if (!$this->setMoveFolders)
+		{
+			// add the setDynamicF0ld3rs() method to the install scipt.php file
+			$this->setMoveFolders = true;
+			// set message that this was done (will still add a tutorial link later)
+			$this->app->enqueueMessage(
+				JText::_(
+					'<hr /><h3>Dynamic folder(s) were detected.</h3>'
+				), 'Notice'
+			);
+			$this->app->enqueueMessage(
+				JText::sprintf(
+					'A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folder(s) are copied into the correct place when this component is installed!'
+				), 'Notice'
+			);
+		}
 	}
 
 	/**

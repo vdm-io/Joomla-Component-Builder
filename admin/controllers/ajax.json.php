@@ -257,10 +257,10 @@ class ComponentbuilderControllerAjax extends BaseController
 				case 'getJCBpackageInfo':
 					try
 					{
-						$urlValue = $jinput->get('url', NULL, 'STRING');
-						if($urlValue && $user->id != 0)
+						$packageValue = $jinput->get('package', NULL, 'BASE64');
+						if($packageValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getJCBpackageInfo($urlValue);
+							$result = $this->getModel('ajax')->getJCBpackageInfo($packageValue);
 						}
 						else
 						{

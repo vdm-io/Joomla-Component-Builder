@@ -109,7 +109,7 @@ abstract class StringHelper
 	{
 		if ($replaceNumbers === true)
 		{
-			// remove all numbers and replace with english text version (works well only up to millions)
+			// remove all numbers and replace with English text version (works well only up to millions)
 			$string = self::numbers($string);
 		}
 		// 0nly continue if we have a string
