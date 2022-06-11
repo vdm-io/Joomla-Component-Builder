@@ -313,5 +313,57 @@ abstract class FileHelper
 		return '/' . trim( $filePath, '/' ) . '/' . $fileName;
 	}
 
+	/**
+	 * Check if file exist
+	 *
+	 * @param  string   $path   The url/path to check
+	 *
+	 * @return  bool      If exist true
+	 *
+	 * @since  3.0.9
+	 */
+	public static function exists($path)
+	{
+		$exists = false;
+		// if this is a local path
+		if (strpos($path, 'http:') === false && strpos($path, 'https:') === false)
+		{
+			if (file_exists($path))
+			{
+				$exists = true;
+			}
+		}
+		// check if we can use curl
+		elseif (function_exists('curl_version'))
+		{
+			// initiate curl
+			$ch = curl_init($path);
+			// CURLOPT_NOBODY (do not return body)
+			curl_setopt($ch, CURLOPT_NOBODY, true);
+			// make call
+			$result = curl_exec($ch);
+			// check return value
+			if ($result !== false)
+			{
+				// get the http CODE
+				$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+				if ($statusCode !== 404)
+				{
+					$exists = true;
+				}
+			}
+			// close the connection
+			curl_close($ch);
+		}
+		elseif ($headers = @get_headers($path))
+		{
+			if(isset($headers[0]) && is_string($headers[0]) && strpos($headers[0],'404') === false)
+			{
+				$exists = true;
+			}
+		}
+		return $exists;
+	}
+
 }
 

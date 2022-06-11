@@ -628,6 +628,22 @@ trait Utilities
 	}
 
 	/**
+	 * Check if file exist
+	 *
+	 * @param  string   $path   The url/path to check
+	 *
+	 * @return  bool      If exist true
+	 *
+	 * @since  3.0.9
+	 *
+	 * @deprecated  4.0 - Use FileHelper::exists($path);
+	 */
+	public static function urlExists($path)
+	{
+		return FileHelper::exists($path);
+	}
+
+	/**
 	 * Set the component option
 	 *
 	 * @param   String|null       $option    The option for the component.
