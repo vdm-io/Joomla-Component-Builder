@@ -17,11 +17,11 @@ We have started a [**JCB forum**][forum] where you can post questions, about how
 
 [Tutorials]: https://www.youtube.com/playlist?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE
 [HelloWorld]: https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45
-[Wiki]: https://github.com/vdm-io/Joomla-Component-Builder/wiki
+[Wiki]: https://git.vdm.dev/joomla/Component-Builder/wiki
 [forum]: https://vdm.bz/jcb-forum
 [Security]: http://joomlacomponentbuilder.com/report-security-issues
 [Complaint]: http://joomlacomponentbuilder.com/community-complaint
-[Issue]: https://github.com/vdm-io/Joomla-Component-Builder/issues
+[Issue]: https://git.vdm.dev/joomla/Component-Builder/issues
 [VDM]: https://www.vdm.io/joomla-component-builder
-[guidelines]: https://github.com/vdm-io/Joomla-Component-Builder/blob/master/.github/CONTRIBUTING.md
+[guidelines]: https://git.vdm.dev/joomla/Component-Builder/src/branch/master/.github/CONTRIBUTING.md
 

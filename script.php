@@ -9422,7 +9422,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 3.1.2 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 3.1.3 Was Successful! Let us know if anything is not working as expected.</h3>';
 
 			// Set db if not set already.
 			if (!isset($db))

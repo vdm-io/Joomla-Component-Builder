@@ -3,13 +3,13 @@
 
 This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
- ![Component Builder image](https://git.vdm.dev/joomla/Component-Builder/raw/branch/staging/admin/assets/images/vdm-component.jpg "The Component Builder")
+ ![Component Builder image](https://git.vdm.dev/joomla/Component-Builder/raw/branch/master/admin/assets/images/jcb-banner.jpg "The Component Builder")
 
 The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will save you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (3.1.2) with **ALL** its features and **ALL** concepts totally open-source and free! 
+You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (3.1.3) with **ALL** its features and **ALL** concepts totally open-source and free! 
 
 > Watch Quick Build of a Hello World component in [JCB on Youtube](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -108,11 +108,11 @@ Where can you get support and help?
 + [Community Complaint](http://joomlacomponentbuilder.com/community-complaint)
 + [Open Issue On Gitea](https://git.vdm.dev/joomla/Component-Builder/issues) ^^
 
-Since [JCB](http://joomlacomponentbuilder.com) has [become a community](https://git.vdm.dev/joomla/Component-Builder/src/branch/staging/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/) is **no longer solely responsible** for support.
+Since [JCB](http://joomlacomponentbuilder.com) has [become a community](https://git.vdm.dev/joomla/Component-Builder/src/branch/master/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/) is **no longer solely responsible** for support.
 
 We have started a [**JCB forum**](https://vdm.bz/jcb-forum) where you can post questions, about how things work, or if you need some kind of help in relation to your development of your components.
 
-^^ Then if you run into any issues, related to the [JCB](http://joomlacomponentbuilder.com) code, like bugs, **start by searching** the (*open & closed*) issues over on Gitea, and if the issue has not been mentioned before, **then only** open a new issue, following the [community guidelines](https://git.vdm.dev/joomla/Component-Builder/src/branch/staging/.github/CONTRIBUTING.md).
+^^ Then if you run into any issues, related to the [JCB](https://git.vdm.dev/joomla/Component-Builder/issues) code, like bugs, **start by searching** the (*open & closed*) issues over on [Gitea](https://git.vdm.dev/joomla/Component-Builder/issues), and if the issue has not been mentioned before, **then only** open a new issue, following the [community guidelines](https://git.vdm.dev/joomla/Component-Builder/src/branch/master/.github/CONTRIBUTING.md).
 
 WHY GIVE IT AWAY LIKE THIS?
 ====================
@@ -141,12 +141,12 @@ TODO
 + *Name*: [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
 + *First Build*: 30th April, 2015
 + *Last Build*: 9th July, 2022
-+ *Version*: 3.1.2
++ *Version*: 3.1.3
 + *Copyright*: Copyright (C) 2015 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
 + *Line count*: **311259**
 + *Field count*: **2002**
-+ *File count*: **2049**
++ *File count*: **2050**
 + *Folder count*: **349**
 
 > This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](http://joomlacomponentbuilder.com).
