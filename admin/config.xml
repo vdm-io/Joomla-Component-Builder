@@ -134,6 +134,22 @@
 			folder="editors"
 			filter="cmd"
 		/>
+		<!-- Gitea_token Field. Type: Password. (joomla) -->
+		<field
+			type="password"
+			name="gitea_token"
+			label="COM_COMPONENTBUILDER_CONFIG_GITEA_TOKEN_LABEL"
+			size="128"
+			description="COM_COMPONENTBUILDER_CONFIG_GITEA_TOKEN_DESCRIPTION"
+			message="Error! Please add token here."
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="false"
+			filter="STRING"
+			hint="COM_COMPONENTBUILDER_CONFIG_GITEA_TOKEN_HINT"
+			autocomplete="off"
+		/>
 		<!-- Github_access_token Field. Type: Password. (joomla) -->
 		<field
 			type="password"
@@ -1074,6 +1090,20 @@
 		name="folder_paths_custom_config"
 		label="COM_COMPONENTBUILDER_CONFIG_FOLDER_PATHS">
 
+		<!-- Jcb_powers_path Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="jcb_powers_path"
+			label="COM_COMPONENTBUILDER_CONFIG_JCB_POWERS_PATH_LABEL"
+			size="70"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_CONFIG_JCB_POWERS_PATH_DESCRIPTION"
+			class="text_area"
+			filter="PATH"
+			message="COM_COMPONENTBUILDER_CONFIG_JCB_POWERS_PATH_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CONFIG_JCB_POWERS_PATH_HINT"
+			autocomplete="on"
+		/>
 		<!-- Note_compiler_folder_path Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_compiler_folder_path" label="COM_COMPONENTBUILDER_CONFIG_NOTE_COMPILER_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_COMPILER_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_compiler_folder_path" />
 		<!-- Compiler_folder_path Field. Type: Text. (joomla) -->

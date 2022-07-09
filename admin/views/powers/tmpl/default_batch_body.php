@@ -14,4 +14,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 ?>
-<?php echo $this->github->tagreleases; ?>
+
+<p><?php echo JText::_('COM_COMPONENTBUILDER_POWERS_BATCH_TIP'); ?></p>
+<?php echo $this->batchDisplay; ?>

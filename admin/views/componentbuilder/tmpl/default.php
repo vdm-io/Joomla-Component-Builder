@@ -51,47 +51,14 @@ defined('_JEXEC') or die('Restricted access');
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'issues', JText::_('Issues', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'notice_board', JText::_('Notice Board', true)); ?>
 		<div class="row-fluid">
 			<div class="span12">
-				<?php  echo JHtml::_('bootstrap.startAccordion', 'issues_accordian', array('active' => 'issues_one')); ?>
-					<?php  echo JHtml::_('bootstrap.addSlide', 'issues_accordian', 'The open issues on GitHub', 'issues_one'); ?>
-						<?php echo $this->loadTemplate('issues_the_open_issues_on_github');?>
-					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
-					<?php  echo JHtml::_('bootstrap.addSlide', 'issues_accordian', 'The closed issues on GitHub', 'issues_two'); ?>
-						<?php echo $this->loadTemplate('issues_the_closed_issues_on_github');?>
-					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
-				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
-			</div>
-		</div>
-		<?php echo JHtml::_('bootstrap.endTab'); ?>
-
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'releases', JText::_('Releases', true)); ?>
-		<div class="row-fluid">
-			<div class="span12">
-				<?php  echo JHtml::_('bootstrap.startAccordion', 'releases_accordian', array('active' => 'releases_one')); ?>
-					<?php  echo JHtml::_('bootstrap.addSlide', 'releases_accordian', 'Information', 'releases_one'); ?>
-						<?php echo $this->loadTemplate('releases_information');?>
-					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
-				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
-			</div>
-		</div>
-		<?php echo JHtml::_('bootstrap.endTab'); ?>
-
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'notice_board', JText::_('COM_COMPONENTBUILDER_NOTICE_BOARD', true)); ?>
-		<div class="row-fluid">
-			<div class="span10">
 				<?php  echo JHtml::_('bootstrap.startAccordion', 'notice_board_accordian', array('active' => 'notice_board_one')); ?>
 					<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'Vast Development Method', 'notice_board_one'); ?>
 						<?php echo $this->loadTemplate('notice_board_vast_development_method');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
-					<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'JCB Pro Membership', 'notice_board_two'); ?>
-						<?php echo $this->loadTemplate('notice_board_jcb_pro_membership');?>
-					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
-			</div>
-			<div class="span2">
-				<?php echo ComponentbuilderHelper::getDynamicContent('banner', '160-600'); ?>
 			</div>
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -109,5 +76,25 @@ defined('_JEXEC') or die('Restricted access');
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 	<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+
+<!--		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'notice_board', JText::_('COM_COMPONENTBUILDER_NOTICE_BOARD', true)); ?> -->
+<!--		<div class="row-fluid"> -->
+<!--			<div class="span10"> -->
+<!--				<?php  echo JHtml::_('bootstrap.startAccordion', 'notice_board_accordian', array('active' => 'notice_board_one')); ?> -->
+<!--					<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'Vast Development Method', 'notice_board_one'); ?> -->
+<!--						<?php echo $this->loadTemplate('notice_board_vast_development_method');?> -->
+<!--					<?php  echo JHtml::_('bootstrap.endSlide'); ?> -->
+<!--					<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'JCB Pro Membership', 'notice_board_two'); ?> -->
+<!--						<?php echo $this->loadTemplate('notice_board_jcb_pro_membership');?> -->
+<!--					<?php  echo JHtml::_('bootstrap.endSlide'); ?> -->
+<!--				<?php  echo JHtml::_('bootstrap.endAccordion'); ?> -->
+<!--			</div> -->
+<!--			<div class="span2"> -->
+<!--				<?php echo ComponentbuilderHelper::getDynamicContent('banner', '160-600'); ?> -->
+<!--			</div> -->
+<!--		</div> -->
+<!--		<?php echo JHtml::_('bootstrap.endTab'); ?> -->
+<!-- -->
+
 	</div>
 </div>

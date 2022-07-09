@@ -194,7 +194,6 @@
 			label="COM_COMPONENTBUILDER_HELP_DOCUMENT_URL_LABEL"
 			size="60"
 			maxlength="150"
-			default=""
 			description="COM_COMPONENTBUILDER_HELP_DOCUMENT_URL_DESCRIPTION"
 			class="text_area"
 			required="true"

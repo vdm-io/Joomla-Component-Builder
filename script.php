@@ -315,6 +315,92 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Power alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.power') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$power_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($power_found)
+		{
+			// Since there are load the needed  power type ids
+			$power_ids = $db->loadColumn();
+			// Remove Power from the content type table
+			$power_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.power') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($power_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Power items
+			$power_done = $db->execute();
+			if ($power_done)
+			{
+				// If successfully remove Power add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.power) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Power items from the contentitem tag map table
+			$power_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.power') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($power_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Power items
+			$power_done = $db->execute();
+			if ($power_done)
+			{
+				// If successfully remove Power add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.power) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Power items from the ucm content table
+			$power_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.power') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($power_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Power items
+			$power_done = $db->execute();
+			if ($power_done)
+			{
+				// If successfully removed Power add queued success message.
+				$app->enqueueMessage(JText::_('The (com_componentbuilder.power) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Power items are cleared from DB
+			foreach ($power_ids as $power_id)
+			{
+				// Remove Power items from the ucm base table
+				$power_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $power_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($power_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Power items
+				$db->execute();
+
+				// Remove Power items from the ucm history table
+				$power_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $power_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($power_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Power items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Admin_view alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_view') );
 		$db->setQuery($query);
@@ -4417,6 +4503,31 @@ class com_componentbuilderInstallerScript
 		{
 			$app = JFactory::getApplication();
 		}
+		// Remove Componentbuilder Power from the action_log_config table
+		$power_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.power') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($power_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.power
+		$power_action_log_config_done = $db->execute();
+		if ($power_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Power add queued success message.
+			$app->enqueueMessage(JText::_('The com_componentbuilder.power type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
 		// Remove Componentbuilder Admin_view from the action_log_config table
 		$admin_view_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_view') );
 		// Create a new query object.
@@ -6059,6 +6170,18 @@ class com_componentbuilderInstallerScript
 			// Set the object into the content types table.
 			$joomla_plugin_Inserted = $db->insertObject('#__content_types', $joomla_plugin);
 
+			// Create the power content type object.
+			$power = new stdClass();
+			$power->type_title = 'Componentbuilder Power';
+			$power->type_alias = 'com_componentbuilder.power';
+			$power->table = '{"special": {"dbtable": "#__componentbuilder_power","key": "id","type": "Power","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$power->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "main_class_code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","namespace":"namespace","type":"type","power_version":"power_version","main_class_code":"main_class_code","description":"description","add_head":"add_head","implements_custom":"implements_custom","implements":"implements","extends_custom":"extends_custom","extends":"extends","head":"head","guid":"guid","name":"name"}}';
+			$power->router = 'ComponentbuilderHelperRoute::getPowerRoute';
+			$power->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/power.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_head"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "implements","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"},{"sourceColumn": "extends","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$power_Inserted = $db->insertObject('#__content_types', $power);
+
 			// Create the admin_view content type object.
 			$admin_view = new stdClass();
 			$admin_view->type_title = 'Componentbuilder Admin_view';
@@ -6633,7 +6756,7 @@ class com_componentbuilderInstallerScript
 			{
 				$rule_length = $db->loadResult();
 				// Check the size of the rules column
-				if ($rule_length <= 94240)
+				if ($rule_length <= 96960)
 				{
 					// Fix the assets table rules column size
 					$fix_rules_size = "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control. Enlarged to MEDIUMTEXT by JCB';";
@@ -6708,6 +6831,23 @@ class com_componentbuilderInstallerScript
 
 			// Set the object into the action log config table.
 			$joomla_plugin_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the power action log config object.
+			$power_action_log_config = new stdClass();
+			$power_action_log_config->type_title = 'POWER';
+			$power_action_log_config->type_alias = 'com_componentbuilder.power';
+			$power_action_log_config->id_holder = 'id';
+			$power_action_log_config->title_holder = 'system_name';
+			$power_action_log_config->table_name = '#__componentbuilder_power';
+			$power_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$power_Inserted = $db->insertObject('#__action_log_config', $power_action_log_config);
 
 			// Set db if not set already.
 			if (!isset($db))
@@ -7549,6 +7689,35 @@ class com_componentbuilderInstallerScript
 			else
 			{
 				$joomla_plugin_Inserted = $db->insertObject('#__content_types', $joomla_plugin);
+			}
+
+			// Create the power content type object.
+			$power = new stdClass();
+			$power->type_title = 'Componentbuilder Power';
+			$power->type_alias = 'com_componentbuilder.power';
+			$power->table = '{"special": {"dbtable": "#__componentbuilder_power","key": "id","type": "Power","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$power->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "main_class_code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","namespace":"namespace","type":"type","power_version":"power_version","main_class_code":"main_class_code","description":"description","add_head":"add_head","implements_custom":"implements_custom","implements":"implements","extends_custom":"extends_custom","extends":"extends","head":"head","guid":"guid","name":"name"}}';
+			$power->router = 'ComponentbuilderHelperRoute::getPowerRoute';
+			$power->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/power.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_head"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "implements","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"},{"sourceColumn": "extends","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"}]}';
+
+			// Check if power type is already in content_type DB.
+			$power_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($power->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$power->type_id = $db->loadResult();
+				$power_Updated = $db->updateObject('#__content_types', $power, 'type_id');
+			}
+			else
+			{
+				$power_Inserted = $db->insertObject('#__content_types', $power);
 			}
 
 			// Create the admin_view content type object.
@@ -9254,7 +9423,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 2.13.1 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 3.1.2 Was Successful! Let us know if anything is not working as expected.</h3>';
 
 			// Set db if not set already.
 			if (!isset($db))
@@ -9379,6 +9548,40 @@ class com_componentbuilderInstallerScript
 			else
 			{
 				$joomla_plugin_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the power action log config object.
+			$power_action_log_config = new stdClass();
+			$power_action_log_config->id = null;
+			$power_action_log_config->type_title = 'POWER';
+			$power_action_log_config->type_alias = 'com_componentbuilder.power';
+			$power_action_log_config->id_holder = 'id';
+			$power_action_log_config->title_holder = 'system_name';
+			$power_action_log_config->table_name = '#__componentbuilder_power';
+			$power_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if power action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($power_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$power_action_log_config->id = $db->loadResult();
+				$power_action_log_config_Updated = $db->updateObject('#__action_log_config', $power_action_log_config, 'id');
+			}
+			else
+			{
+				$power_action_log_config_Inserted = $db->insertObject('#__action_log_config', $power_action_log_config);
 			}
 
 			// Set db if not set already.

@@ -2316,6 +2316,7 @@ class Infusion extends Interpretation
 			// remove all the power placeholders
 			$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_HELPER' . $this->hhh] = '';
 			$this->fileContentStatic[$this->hhh . 'SITE_POWER_HELPER' . $this->hhh] = '';
+			$this->fileContentStatic[$this->hhh . 'CUSTOM_POWER_AUTOLOADER' . $this->hhh] = '';
 			// infuse powers data if set
 			if (ArrayHelper::check($this->powers))
 			{

@@ -13,12 +13,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-
 // register this component namespace
 spl_autoload_register(function ($class) {
 	// project-specific base directories and namespace prefix
 	$search = array(
-		'libraries/jcb_powers/VDM.Joomla' => 'VDM\\Joomla'
+		'libraries/jcb_powers/VDM.Joomla' => 'VDM\\Joomla',
+		'libraries/jcb_powers/VDM.Gitea' => 'VDM\\Gitea'
 	);
 	// Start the search and load if found
 	$found = false;
@@ -3524,13 +3524,13 @@ abstract class ComponentbuilderHelper
 			'accesslevel', 'cachehandler', 'calendar', 'captcha', 'category', 'checkbox', 'checkboxes', 'chromestyle',
 			'color', 'combo', 'componentlayout', 'contentlanguage', 'contenttype', 'databaseconnection', 'components',
 			'editor', 'editors', 'email', 'file', 'file', 'filelist', 'folderlist', 'groupedlist', 'headertag', 'helpsite', 'hidden', 'imagelist',
-			'integer', 'language', 'list', 'media', 'menu', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition',
+			'integer', 'language', 'list', 'media', 'menu', 'modal_menu', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition',
 			'moduletag', 'note', 'number', 'password', 'plugins', 'predefinedlist', 'radio', 'range', 'repeatable', 'rules',
 			'sessionhandler', 'spacer', 'sql', 'subform', 'tag', 'tel', 'templatestyle', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
 		),
 		'plain' => array(
 			'cachehandler', 'calendar', 'checkbox', 'chromestyle', 'color', 'componentlayout', 'contenttype', 'editor', 'editors', 'captcha',
-			'email', 'file', 'headertag', 'helpsite', 'hidden', 'integer', 'language', 'media', 'menu', 'menuitem', 'meter', 'modulelayout', 'templatestyle',
+			'email', 'file', 'headertag', 'helpsite', 'hidden', 'integer', 'language', 'media', 'menu', 'modal_menu', 'menuitem', 'meter', 'modulelayout', 'templatestyle',
 			'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules', 'tag', 'tel', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
 		),
 		'option' => array(
@@ -6326,6 +6326,10 @@ abstract class ComponentbuilderHelper
 		if ($user->authorise('joomla_plugin.access', 'com_componentbuilder') && $user->authorise('joomla_plugin.submenu', 'com_componentbuilder'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_PLUGINS'), 'index.php?option=com_componentbuilder&view=joomla_plugins', $submenu === 'joomla_plugins');
+		}
+		if ($user->authorise('power.access', 'com_componentbuilder') && $user->authorise('power.submenu', 'com_componentbuilder'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_POWERS'), 'index.php?option=com_componentbuilder&view=powers', $submenu === 'powers');
 		}
 		if ($user->authorise('admin_view.access', 'com_componentbuilder') && $user->authorise('admin_view.submenu', 'com_componentbuilder'))
 		{

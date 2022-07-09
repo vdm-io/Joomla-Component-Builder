@@ -136,6 +136,11 @@ class ComponentbuilderViewJoomla_modules extends HtmlView
 			{
 				JToolbarHelper::trash('joomla_modules.trash');
 			}
+
+			if ($this->canDo->get('core.export') && $this->canDo->get('joomla_module.export'))
+			{
+				JToolBarHelper::custom('joomla_modules.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
+			}
 		}
 		if ($this->user->authorise('joomla_module.get_snippets', 'com_componentbuilder'))
 		{
@@ -146,6 +151,11 @@ class ComponentbuilderViewJoomla_modules extends HtmlView
 		{
 			// add Run Expansion button.
 			JToolBarHelper::custom('joomla_modules.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+		}
+
+		if ($this->canDo->get('core.import') && $this->canDo->get('joomla_module.import'))
+		{
+			JToolBarHelper::custom('joomla_modules.importData', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_DATA', false);
 		}
 
 		// set help url for this view if found

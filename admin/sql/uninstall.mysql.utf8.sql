@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS `#__componentbuilder_joomla_component`;
 DROP TABLE IF EXISTS `#__componentbuilder_joomla_module`;
 DROP TABLE IF EXISTS `#__componentbuilder_joomla_plugin`;
+DROP TABLE IF EXISTS `#__componentbuilder_power`;
 DROP TABLE IF EXISTS `#__componentbuilder_admin_view`;
 DROP TABLE IF EXISTS `#__componentbuilder_custom_admin_view`;
 DROP TABLE IF EXISTS `#__componentbuilder_site_view`;

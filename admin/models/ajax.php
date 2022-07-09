@@ -15,6 +15,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\Registry\Registry;
+use VDM\Gitea\Gitea;
 
 /**
  * Componentbuilder Ajax List Model
@@ -278,6 +280,60 @@ class ComponentbuilderModelAjax extends ListModel
 	protected function hasCurl()
 	{
 		return function_exists('curl_version');
+	}
+
+	public function getWiki($name = 'Home')
+	{
+		// get the token if set
+		$token = JComponentHelper::getParams('com_componentbuilder')->get('gitea_token', false);
+
+		// setup a registry
+		$options = new Registry;
+
+		// only add if token is set
+		if ($token)
+		{
+			$options->set('access.token', $token);
+		}
+
+		try
+		{
+			// get gitea object
+			$gitea = new Gitea($options);
+
+			// get the gitea wiki page TODO: we hard coded the page name
+			$page = $gitea->repo->wiki->getHtml('joomla', 'Component-Builder', 'Home');
+		}
+		catch (DomainException $e)
+		{
+			return $this->getTokenFromVDM($e->getMessage());
+		}
+		catch (InvalidArgumentException $e)
+		{
+			return $this->getTokenFromVDM($e->getMessage());
+		}
+		catch (Exception $e)
+		{
+			return $this->getTokenFromVDM($e->getMessage());
+		}
+
+		// get the html
+		if (isset($page))
+		{
+			return ['page' => $page];
+		}
+
+		return $this->getTokenFromVDM();
+	}
+
+	protected function getTokenFromVDM($message = null)
+	{
+		if ($message)
+		{
+			return ['error' => $message];
+		}
+
+		return ['error' => JText::_('COM_COMPONENTBUILDER_THE_WIKI_CAN_ONLY_BE_LOADED_WHEN_YOUR_JCB_SYSTEM_HAS_INTERNET_CONNECTION')];
 	}
 
 	// Used in joomla_module

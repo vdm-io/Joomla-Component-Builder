@@ -29128,32 +29128,33 @@ function vdm_dkim() {
 		{
 			// check if we are using a plugin
 			$use_plugin = isset($this->fileContentStatic[$this->hhh . 'PLUGIN_POWER_AUTOLOADER' . $this->hhh]);
-			// build the helper method
-			$helperMethod   = array();
+			// build the methods
+			$autoloadNotSiteMethod = array();
+			$autoloadMethod = array();
 			// add only if we are not using a plugin
 			$tab_space = 2;
 			if (!$use_plugin)
 			{
-				$helperMethod[] = PHP_EOL . PHP_EOL;
+				$autoloadNotSiteMethod[] = PHP_EOL . PHP_EOL;
 				$tab_space = 0;
 			}
 			elseif (!$loadSite)
 			{
 				// we add code to prevent this plugin from triggering on the site area
-				$helperMethod[] = PHP_EOL . $this->_t(2) . '//'
+				$autoloadNotSiteMethod[] = PHP_EOL . $this->_t(2) . '//'
 					. $this->setLine(__LINE__) . ' do not run the autoloader in the site area';
-				$helperMethod[] = $this->_t(2) . 'if ($this->app->isClient(\'site\'))';
-				$helperMethod[] = $this->_t(2) . '{';
-				$helperMethod[] = $this->_t(3) . 'return;';
-				$helperMethod[] = $this->_t(2) . '}' . PHP_EOL;
+				$autoloadNotSiteMethod[] = $this->_t(2) . 'if ($this->app->isClient(\'site\'))';
+				$autoloadNotSiteMethod[] = $this->_t(2) . '{';
+				$autoloadNotSiteMethod[] = $this->_t(3) . 'return;';
+				$autoloadNotSiteMethod[] = $this->_t(2) . '}' . PHP_EOL;
 			}
 			// we start building the spl_autoload_register function call
-			$helperMethod[] = $this->_t($tab_space) . '//'
+			$autoloadMethod[] = $this->_t($tab_space) . '//'
 				. $this->setLine(__LINE__) . ' register this component namespace';
-			$helperMethod[] = $this->_t($tab_space) . 'spl_autoload_register(function ($class) {';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
+			$autoloadMethod[] = $this->_t($tab_space) . 'spl_autoload_register(function ($class) {';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
 				. $this->setLine(__LINE__) . ' project-specific base directories and namespace prefix';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '$search = array(';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '$search = array(';
 			// ==== IMPORTANT NOTICE =====
 			// make sure the name space values are sorted from the longest string to the shortest
 			// so that the search do not mistakenly match a shorter namespace before a longer one
@@ -29175,74 +29176,78 @@ function vdm_dkim() {
 				// don't add the ending comma on last value
 				if ($size == $counter)
 				{
-					$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "'";
+					$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "'";
 				}
 				else
 				{
-					$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "',";
+					$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "',";
 				}
 				$counter++;
 			}
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . ');';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '// Start the search and load if found';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '$found = false;';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '$found_base_dir = "";';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '$found_len = 0;';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . 'foreach ($search as $base_dir => $prefix)';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '{';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . '//'
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . ');';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '// Start the search and load if found';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '$found = false;';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '$found_base_dir = "";';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '$found_len = 0;';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . 'foreach ($search as $base_dir => $prefix)';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '{';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . '//'
 				. $this->setLine(__LINE__) . ' does the class use the namespace prefix?';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . '$len = strlen($prefix);';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . 'if (strncmp($prefix, $class, $len) === 0)';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . '{';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . '//'
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . '$len = strlen($prefix);';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . 'if (strncmp($prefix, $class, $len) === 0)';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . '{';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(3) . '//'
 				. $this->setLine(__LINE__) . ' we have a match so load the values';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . '$found = true;';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . '$found_base_dir = $base_dir;';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . '$found_len = $len;';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . '//'
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(3) . '$found = true;';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(3) . '$found_base_dir = $base_dir;';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(3) . '$found_len = $len;';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(3) . '//'
 				. $this->setLine(__LINE__) . ' done here';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(3) . 'break;';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . '}';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '}';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(3) . 'break;';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . '}';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '}';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
 				. $this->setLine(__LINE__) . ' check if we found a match';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . 'if (!$found)';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '{';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . '//'
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . 'if (!$found)';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '{';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . '//'
 				. $this->setLine(__LINE__) . ' no, move to the next registered autoloader';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . 'return;';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '}';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . 'return;';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '}';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
 				. $this->setLine(__LINE__) . ' get the relative class name';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '$relative_class = substr($class, $found_len);';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '$relative_class = substr($class, $found_len);';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
 				. $this->setLine(__LINE__) . ' replace the namespace prefix with the base directory, replace namespace';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '// separators with directory separators in the relative class name, append';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '// with .php';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . "\$file = JPATH_ROOT . '/' . \$found_base_dir . '/src' . str_replace('\\\\', '/', \$relative_class) . '.php';";
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '// separators with directory separators in the relative class name, append';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '// with .php';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . "\$file = JPATH_ROOT . '/' . \$found_base_dir . '/src' . str_replace('\\\\', '/', \$relative_class) . '.php';";
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '//'
 				. $this->setLine(__LINE__) . ' if the file exists, require it';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . 'if (file_exists($file))';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '{';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(2) . 'require $file;';
-			$helperMethod[] = $this->_t($tab_space) . $this->_t(1) . '}';
-			$helperMethod[] = $this->_t($tab_space) . '});';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . 'if (file_exists($file))';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '{';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . 'require $file;';
+			$autoloadMethod[] = $this->_t($tab_space) . $this->_t(1) . '}';
+			$autoloadMethod[] = $this->_t($tab_space) . '});';
+			// create the method string
+			$autoloader = implode(PHP_EOL, $autoloadNotSiteMethod) . implode(PHP_EOL, $autoloadMethod);
 			// check if we are using a plugin
 			if ($use_plugin)
 			{
-				$this->fileContentStatic[$this->hhh . 'PLUGIN_POWER_AUTOLOADER' . $this->hhh] = PHP_EOL . implode(PHP_EOL, $helperMethod);
+				$this->fileContentStatic[$this->hhh . 'PLUGIN_POWER_AUTOLOADER' . $this->hhh] = PHP_EOL . $autoloader;
 			}
 			else
 			{
 				// load to events placeholders
-				$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_HELPER' . $this->hhh] .= implode(PHP_EOL, $helperMethod);
+				$this->fileContentStatic[$this->hhh . 'ADMIN_POWER_HELPER' . $this->hhh] .= $autoloader;
 				// load to site if needed
 				if ($loadSite)
 				{
-					$this->fileContentStatic[$this->hhh . 'SITE_POWER_HELPER' . $this->hhh] .= implode(PHP_EOL, $helperMethod);
+					$this->fileContentStatic[$this->hhh . 'SITE_POWER_HELPER' . $this->hhh] .= $autoloader;
 				}
 			}
+			// to add to custom files
+			$this->fileContentStatic[$this->hhh . 'CUSTOM_POWER_AUTOLOADER' . $this->hhh] .= PHP_EOL . implode(PHP_EOL, $autoloadMethod);
 		}
 	}
 

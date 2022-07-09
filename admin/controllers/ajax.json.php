@@ -35,6 +35,7 @@ class ComponentbuilderControllerAjax extends BaseController
 		$this->registerTask('isRead', 'ajax');
 		$this->registerTask('getComponentDetails', 'ajax');
 		$this->registerTask('getCronPath', 'ajax');
+		$this->registerTask('getWiki', 'ajax');
 		$this->registerTask('getJCBpackageInfo', 'ajax');
 		$this->registerTask('getCrowdinDetails', 'ajax');
 		$this->registerTask('getModuleCode', 'ajax');
@@ -220,6 +221,47 @@ class ComponentbuilderControllerAjax extends BaseController
 						if($getTypeValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getCronPath($getTypeValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getWiki':
+					try
+					{
+						$nameValue = $jinput->get('name', NULL, 'WORD');
+						if($nameValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getWiki($nameValue);
 						}
 						else
 						{

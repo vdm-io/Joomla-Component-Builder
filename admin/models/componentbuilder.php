@@ -15,6 +15,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\Registry\Registry;
+use VDM\Gitea\Gitea;
 
 /**
  * Componentbuilder List Model
@@ -29,7 +31,7 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 		$icons  = array();
 		// view groups array
 		$viewGroups = array(
-			'main' => array('png.compiler', 'png.joomla_components', 'png.joomla_modules', 'png.joomla_plugins', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.fields', 'png.fields.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_field', 'png.fieldtypes', 'png.fieldtypes.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_fieldtype', 'png.language_translations', 'png.servers', 'png.help_documents')
+			'main' => array('png.compiler', 'png.joomla_components', 'png.joomla_modules', 'png.joomla_plugins', 'png.powers', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_field', 'png.fieldtypes', 'png.fieldtypes.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_fieldtype', 'png.language_translations', 'png.servers', 'png.help_documents')
 		);
 		// view access array
 		$viewAccess = array(
@@ -52,6 +54,11 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 			'joomla_plugin.access' => 'joomla_plugin.access',
 			'joomla_plugins.submenu' => 'joomla_plugin.submenu',
 			'joomla_plugins.dashboard_list' => 'joomla_plugin.dashboard_list',
+			'power.create' => 'power.create',
+			'powers.access' => 'power.access',
+			'power.access' => 'power.access',
+			'powers.submenu' => 'power.submenu',
+			'powers.dashboard_list' => 'power.dashboard_list',
 			'admin_view.create' => 'admin_view.create',
 			'admin_views.access' => 'admin_view.access',
 			'admin_view.access' => 'admin_view.access',
@@ -118,6 +125,7 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 			'field.access' => 'field.access',
 			'fields.submenu' => 'field.submenu',
 			'fields.dashboard_list' => 'field.dashboard_list',
+			'field.dashboard_add' => 'field.dashboard_add',
 			'fieldtype.create' => 'fieldtype.create',
 			'fieldtypes.access' => 'fieldtype.access',
 			'fieldtype.access' => 'fieldtype.access',
@@ -403,118 +411,95 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 	}
 
 
-	public function getGithub()
+	public function getWiki()
 	{
-		// load jquery (not sure why... but else the timeago breaks)
-		JHtml::_('jquery.framework');
-		// get the document to load the scripts
+		// the call URL
+		$call_url = JUri::base() . 'index.php?option=com_componentbuilder&task=ajax.getWiki&format=json&raw=true&' . JSession::getFormToken() . '=1&name=Home';
 		$document = JFactory::getDocument();
-		$document->addScript(JURI::root() . "media/com_componentbuilder/js/timeago.js");
 		$document->addScriptDeclaration('
-		var urlToGetAllOpenIssues = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/issues?state=open&page=1&per_page=5";
-		var urlToGetAllClosedIssues = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/issues?state=closed&page=1&per_page=5";
-		var urlToGetAllReleases = "https://api.github.com/repos/vdm-io/Joomla-Component-Builder/releases?page=1&per_page=5";
-		jQuery(document).ready(function () {
-			jQuery.getJSON(urlToGetAllOpenIssues, function (openissues) {
-				jQuery("#openissues").html("");
-				jQuery.each(openissues, function (i, issue) {
-					// set time ago
-					var timeago = jQuery.timeago(new Date(issue.created_at)); 
-					jQuery("#openissues")
-            				.append("<h3><a href=\"" + issue.html_url + "\" target=\"_blank\">" + issue.title + "</a></h3>")
-					.append("<img alt=\"@" + issue.user.login + "\" style=\"vertical-align: baseline;\" src=\"" + issue.user.avatar_url +"&amp;s=60\" width=\"30\" height=\"30\"> ")
-            				.append("<em><a href=\"" + issue.user.html_url + "\" target=\"_blank\">" + issue.user.login + "</a> '.JText::_('COM_COMPONENTBUILDER_OPENED_THIS').' <a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_ISSUE').'-" + issue.number + "</a> (" + timeago + ")</em> ")
-            				.append(marked.parse(issue.body))
-            				.append("<a href=\"" + issue.html_url + "\" target=\"_blank\"><span class=\'icon-new-tab\'></span>'.JText::_('COM_COMPONENTBUILDER_RESPOND_TO_THIS_ISSUE_ON_GITHUB').'</a>...<hr />");
-    				});
-			});
-			jQuery.getJSON(urlToGetAllClosedIssues, function (closedissues) {
-				jQuery("#closedissues").html("");
-				jQuery.each(closedissues, function (i, issue) {
-					// set time ago
-					var timeago = jQuery.timeago(new Date(issue.created_at)); 
-					jQuery("#closedissues")
-            				.append("<h3><a href=\"" + issue.html_url + "\" target=\"_blank\">" + issue.title + "</a></h3>")
-					.append("<img alt=\"@" + issue.user.login + "\" style=\"vertical-align: baseline;\" src=\"" + issue.user.avatar_url +"&amp;s=60\" width=\"30\" height=\"30\"> ")
-            				.append("<em><a href=\"" + issue.user.html_url + "\" target=\"_blank\">" + issue.user.login + "</a> '.JText::_('COM_COMPONENTBUILDER_OPENED').' <a href=\"" + issue.html_url + "\" target=\"_blank\">'.JText::_('COM_COMPONENTBUILDER_ISSUE').'-" + issue.number + "</a> (" + timeago + ")</em>")
-            				.append(marked.parse(issue.body))
-            				.append("<a href=\"" + issue.html_url + "\" target=\"_blank\"><span class=\'icon-new-tab\'></span>'.JText::_('COM_COMPONENTBUILDER_REVIEW_THIS_ISSUE_ON_GITHUB').'</a>...<hr />");
-    				});
-			});
-			jQuery.getJSON(urlToGetAllReleases, function (tagreleases) {				
-				// set the update notice while we are at it
-				var activeVersion = tagreleases[0].tag_name.substring(1);
-				if (activeVersion === manifest.version) {
-					// local version is in sync with latest release
-					jQuery(".update-notice").html("<small><span style=\'color:green;\'><span class=\'icon-shield\'></span>'.JText::_('COM_COMPONENTBUILDER_UP_TO_DATE').'</span></small>");
-				} else {
-					// split versions in to array
-					var activeVersionArray = activeVersion.split(".");
-					var localVersionArray = manifest.version.split(".");					
-					if ((+localVersionArray[0] > +activeVersionArray[0]) || 
-					(+localVersionArray[0] == +activeVersionArray[0] && +localVersionArray[1] > +activeVersionArray[1]) || 
-					(+localVersionArray[0] == +activeVersionArray[0] && +localVersionArray[1] == +activeVersionArray[1] && +localVersionArray[2] > +activeVersionArray[2])) {
-						// local version head latest release
-						jQuery(".update-notice").html("<small><span style=\'color:#F7B033;\'><span class=\'icon-wrench\'></span>'.JText::_('COM_COMPONENTBUILDER_BETA_RELEASE').'</span></small>");
-					} else {
-						// local version behind latest release
-						jQuery(".update-notice").html("<small><span style=\'color:red;\'><span class=\'icon-warning-circle\'></span>'.JText::_('COM_COMPONENTBUILDER_OUT_OF_DATE').'</span></small>");
-					}
-				}
-				// set the taged releases
-				jQuery("#tagreleases").html("");
-				jQuery.each(tagreleases, function (i, tagrelease) {
-					// set active release
-					var activeNotice = "";
-					if (i === 0) {
-						var activeNotice = "<a class=\'btn btn-small btn-success\' href=\'https://github.com/vdm-io/Joomla-Component-Builder/releases/latest\'><span class=\'icon-shield icon-white\'></span> '.JText::_('COM_COMPONENTBUILDER_LATEST_RELEASE').'</a><br /><br />";
-					}
-					// set time ago
-					var timeago = jQuery.timeago(new Date(tagrelease.published_at)); 
-					jQuery("#tagreleases")
-            				.append("<h3><a href=\"" + tagrelease.html_url + "\" target=\"_blank\">" + tagrelease.name + "</a></h3>")
-					.append(activeNotice)
-					.append("<img alt=\"@" + tagrelease.author.login + "\" style=\"vertical-align: baseline;\" src=\"" + tagrelease.author.avatar_url +"&amp;s=60\" width=\"30\" height=\"30\"> ")
-            				.append("<em><a href=\"" + tagrelease.author.html_url + "\" target=\"_blank\">" + tagrelease.author.login + "</a> '.JText::_('COM_COMPONENTBUILDER_RELEASED_THIS').'<em> <b><span class=\'icon-tag-2\'></span>" + tagrelease.tag_name+ "</b> (" + timeago + ")")
-            				.append(marked.parse(tagrelease.body))
-            				.append(" <a class=\"hasTooltip\" href=\"" + tagrelease.assets[0].browser_download_url + "\" title=\"'.JText::_('COM_COMPONENTBUILDER_DOWNLOAD').' " + tagrelease.assets[0].name + "\" target=\"_self\"><span class=\'icon-download\'></span>" + tagrelease.assets[0].name + "</a> (<a class=\"hasTooltip\" href=\"" + tagrelease.assets[0].browser_download_url + "\" title=\"'.JText::_('COM_COMPONENTBUILDER_TOTAL_DOWNLOADS').'\"><small>" + tagrelease.assets[0].download_count + "</small></a>) ")
-            				.append("| <a href=\"" + tagrelease.html_url + "\" target=\"_blank\" title=\"'.JText::_('COM_COMPONENTBUILDER_OPEN').' " + tagrelease.name + " '.JText::_('COM_COMPONENTBUILDER_ON_GITHUB').'\"><span class=\'icon-new-tab\'></span>'.JText::_('COM_COMPONENTBUILDER_OPEN_ON_GITHUB').'</a>...<hr />");
-    				});
-			});
+		fetch("' . $call_url . '").then((response) => {
+			if (response.ok) {
+				return response.json();
+			}
+		}).then((result) => {
+			if (typeof result.page !== "undefined") {
+				document.getElementById("wiki-md").innerHTML = result.page;
+			} else if (typeof result.error !== "undefined") {
+				document.getElementById("wiki-md-error").innerHTML = result.error
+			}
 		});');
-		$create = '<div class="btn-group pull-right">
-					<a href="https://github.com/vdm-io/Joomla-Component-Builder/issues/new" class="btn btn-primary"  target="_blank">'.JText::_('COM_COMPONENTBUILDER_NEW_ISSUE').'</a>
-				</div></br >';
-		$moreopen = '<b><a href="https://github.com/vdm-io/Joomla-Component-Builder/issues" target="_blank">'.JText::_('COM_COMPONENTBUILDER_VIEW_MORE_ISSUES_ON_GITHUB').'</a>...</b> ';
-		$moreclosed = '<b><a href="https://github.com/vdm-io/Joomla-Component-Builder/issues?q=is%3Aissue+is%3Aclosed" target="_blank">'.JText::_('COM_COMPONENTBUILDER_VIEW_MORE_ISSUES_ON_GITHUB').'</a>...</b> ';
-		$viewissues = '<b><a href="https://github.com/vdm-io/Joomla-Component-Builder/releases" target="_blank">'.JText::_('COM_COMPONENTBUILDER_VIEW_MORE_RELEASES_ON_GITHUB').'</a>...</b> ';
 
-		return (object) array(
-				'openissues' => $create.'<div id="openissues">'.JText::_('COM_COMPONENTBUILDER_A_FEW_OPEN_ISSUES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$moreopen, 
-				'closedissues' => $create.'<div id="closedissues">'.JText::_('COM_COMPONENTBUILDER_A_FEW_CLOSED_ISSUES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$moreclosed,
-				'tagreleases' => '<div id="tagreleases">'.JText::_('COM_COMPONENTBUILDER_LAST_FEW_RELEASES_FROM_GITHUB_IS_LOADING').'.<span class="loading-dots">.</span></small></div>'.$viewissues
+		return '<div id="wiki-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div><div id="wiki-md-error" style="color: red"></div>';
+	}
+	
+
+	public function getGitea()
+	{
+		// get the document
+		$document = JFactory::getDocument();
+		// get the token if set
+		$token = JComponentHelper::getParams('com_componentbuilder')->get('gitea_token', false);
+		// only add if token is set
+		if ($token)
+		{
+			// setup a registry
+			$options = new Registry;
+			$options->set('access.token', $token);
+			// get the gitea http
+			try
+			{
+				// get gitea object
+				$gitea = new Gitea($options);
+				// get a list of all the repos tags
+				$tags = $gitea->repo->getListTags('joomla', 'Component-Builder');
+			}
+			catch (DomainException $m)
+			{
+				$token = false;
+			}
+			// get the document to load the scripts
+			if ($token && isset($tags[0]) && isset($tags[0]->name))
+			{
+				// download link of the latest version
+				$download = "https://git.vdm.dev/api/v1/repos/joomla/Component-Builder/archive/" . $tags[0]->name . ".zip?access_token=" . $token;
+				// load the JavaScript to the page
+				$document->addScriptDeclaration('
+				jQuery(document).ready(function () {
+					var activeVersion = "' . trim($tags[0]->name, 'vV') . '";
+					if (activeVersion === manifest.version) {
+						// local version is in sync with latest release
+						jQuery(".update-notice").html("<small><span style=\'color:green;\'><span class=\'icon-shield\'></span>' . JText::_('COM_COMPONENTBUILDER_UP_TO_DATE') . '</span></small>");
+					} else {
+						// split versions in to array
+						var activeVersionArray = activeVersion.split(".");
+						var localVersionArray = manifest.version.split(".");					
+						if ((+localVersionArray[0] > +activeVersionArray[0]) || 
+						(+localVersionArray[0] == +activeVersionArray[0] && +localVersionArray[1] > +activeVersionArray[1]) || 
+						(+localVersionArray[0] == +activeVersionArray[0] && +localVersionArray[1] == +activeVersionArray[1] && +localVersionArray[2] > +activeVersionArray[2])) {
+							// local version head latest release
+							jQuery(".update-notice").html("<small><span style=\'color:#F7B033;\'><span class=\'icon-wrench\'></span>' . JText::_('COM_COMPONENTBUILDER_BETA_RELEASE') . '</span></small>");
+						} else {
+							// local version behind latest release
+							jQuery(".update-notice").html("<small><span style=\'color:red;\'><span class=\'icon-warning-circle\'></span>' . JText::_('COM_COMPONENTBUILDER_OUT_OF_DATE') . '</span> <a style=\'color:green;\' href=\'' .
+								$download . '\' title=\'' . JText::_('COM_COMPONENTBUILDER_YOU_CAN_DIRECTLY_DOWNLOAD_THE_LATEST_UPDATE_OR_USE_THE_JOOMLA_UPDATE_AREA') . '\'>' .
+								JText::_('COM_COMPONENTBUILDER_DOWNLOAD_UPDATE') . '!</a></small>");
+						}
+					}
+				});');
+
+				return;
+			}
+		}
+		// the URL
+		$url = 'https://git.vdm.dev/user/settings/applications';
+		// give a notice to get the token
+		$document->addScriptDeclaration(
+			'jQuery(document).ready(function () {jQuery(".update-notice").html("<small><a style=\'color:#F7B033;\' href=\'' .
+			$url . '\' title=\'' . JText::_('COM_COMPONENTBUILDER_GET_TOKEN_FROM_VDM_FOR_UPDATES_AND_ADD_IT_TO_YOUR_GLOBAL_OPTIONS') . '\'>' .
+			JText::_('COM_COMPONENTBUILDER_GET_TOKEN') . '!</a></small>");});'
 		);
 	}
 
-	public function getWiki()
-	{
-		$document = JFactory::getDocument();
-		$document->addScriptDeclaration('
-		var gewiki = "https://raw.githubusercontent.com/wiki/vdm-io/Joomla-Component-Builder/Home.md";
-		jQuery(document).ready(function () {
-			jQuery.get(gewiki)
-			.success(function(wiki) { 
-				jQuery("#wiki-md").html(marked.parse(wiki));
-			})
-			.error(function(jqXHR, textStatus, errorThrown) { 
-				jQuery("#wiki-md").html("'.JText::_('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_LATTER').'");
-			});
-		});');
-
-		return '<div id="wiki-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
-	}
-
-	
 
 	public function getNoticeboard()
 	{
@@ -588,29 +573,6 @@ jQuery(document).ready( function($) {
 });');
 
 		return '<div id="noticeboard-md">'.JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
-	}
-
-	public function getProboard()
-	{
-		// get the document to load the scripts
-		$document = JFactory::getDocument();
-		$document->addScriptDeclaration('
-		var proboard = "https://vdm.bz/componentbuilder-pro-noticeboard-md";
-		jQuery(document).ready(function () {
-			jQuery.get(proboard)
-			.success(function(board) {
-				if (board.length > 5) {
-					jQuery("#proboard-md").html(marked.parse(board));
-				} else {
-					jQuery("#proboard-md").html("'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATTER').'");
-				}
-			})
-			.error(function(jqXHR, textStatus, errorThrown) { 
-				jQuery("#proboard-md").html("'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATTER').'");
-			});
-		});');
-
-		return '<div id="proboard-md">'.JText::_('COM_COMPONENTBUILDER_THE_PRO_BOARD_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
 
 	public function getReadme()

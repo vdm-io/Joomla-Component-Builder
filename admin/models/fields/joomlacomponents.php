@@ -36,7 +36,7 @@ class JFormFieldJoomlacomponents extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-		$db = JFactory::getDBO();
+				$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','components_system_name')));
 		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));

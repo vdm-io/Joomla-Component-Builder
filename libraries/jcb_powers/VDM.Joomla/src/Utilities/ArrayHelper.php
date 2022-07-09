@@ -76,5 +76,31 @@ abstract class ArrayHelper
 		return false;
 	}
 
+	/**
+	 * Check if arrays intersect
+	 *
+	 * @input	array   The first array
+	 * @input	array   The second array
+	 *
+	 * @returns bool  true if intersect else false
+	 * 
+	 * @since  3.1.1
+	 */
+	public static function intersect($a_array, $b_array)
+	{
+		// flip the second array
+		$b_array = array_flip($b_array);
+
+		// loop the first array
+		foreach ($a_array as $v)
+		{
+			if (isset($b_array[$v]))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
 
