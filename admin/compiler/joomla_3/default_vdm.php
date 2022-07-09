@@ -20,7 +20,7 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 <img alt="<?php echo JText::_('COM_###COMPONENT###'); ?>" src="components/com_###component###/assets/images/vdm-component.###COMP_IMAGE_TYPE###">
 <ul class="list-striped">
-	<li><b><?php echo JText::_('COM_###COMPONENT###_VERSION'); ?>:</b> <?php echo $this->manifest->version; ?>&nbsp;&nbsp;<span class="update-notice"></span></li>
+	<li><b><?php echo JText::_('COM_###COMPONENT###_VERSION'); ?>:</b> <?php echo $this->manifest->version; ?>&nbsp;&nbsp;<span class="update-notice" id="component-update-notice"></span></li>
 	<li><b><?php echo JText::_('COM_###COMPONENT###_DATE'); ?>:</b> <?php echo $this->manifest->creationDate; ?></li>
 	<li><b><?php echo JText::_('COM_###COMPONENT###_AUTHOR'); ?>:</b> <a href="mailto:<?php echo $this->manifest->authorEmail; ?>"><?php echo $this->manifest->author; ?></a></li>
 	<li><b><?php echo JText::_('COM_###COMPONENT###_WEBSITE'); ?>:</b> <a href="<?php echo $this->manifest->authorUrl; ?>" target="_blank"><?php echo $this->manifest->authorUrl; ?></a></li>

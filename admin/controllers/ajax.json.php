@@ -35,6 +35,7 @@ class ComponentbuilderControllerAjax extends BaseController
 		$this->registerTask('getComponentDetails', 'ajax');
 		$this->registerTask('getCronPath', 'ajax');
 		$this->registerTask('getWiki', 'ajax');
+		$this->registerTask('getVersion', 'ajax');
 		$this->registerTask('getJCBpackageInfo', 'ajax');
 		$this->registerTask('getCrowdinDetails', 'ajax');
 		$this->registerTask('getModuleCode', 'ajax');
@@ -261,6 +262,47 @@ class ComponentbuilderControllerAjax extends BaseController
 						if($nameValue && $user->id != 0)
 						{
 							$result = $this->getModel('ajax')->getWiki($nameValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getVersion':
+					try
+					{
+						$versionValue = $jinput->get('version', NULL, 'INT');
+						if($versionValue && $user->id != 0)
+						{
+							$result = $this->getModel('ajax')->getVersion($versionValue);
 						}
 						else
 						{

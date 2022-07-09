@@ -416,89 +416,25 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 		$call_url = JUri::base() . 'index.php?option=com_componentbuilder&task=ajax.getWiki&format=json&raw=true&' . JSession::getFormToken() . '=1&name=Home';
 		$document = JFactory::getDocument();
 		$document->addScriptDeclaration('
-		fetch("' . $call_url . '").then((response) => {
-			if (response.ok) {
-				return response.json();
-			}
-		}).then((result) => {
-			if (typeof result.page !== "undefined") {
-				document.getElementById("wiki-md").innerHTML = result.page;
-			} else if (typeof result.error !== "undefined") {
-				document.getElementById("wiki-md-error").innerHTML = result.error
-			}
-		});');
+		function getWikiPage(){
+
+			fetch("' . $call_url . '").then((response) => {
+				if (response.ok) {
+					return response.json();
+				}
+			}).then((result) => {
+				if (typeof result.page !== "undefined") {
+					document.getElementById("wiki-md").innerHTML = result.page;
+				} else if (typeof result.error !== "undefined") {
+					document.getElementById("wiki-md-error").innerHTML = result.error
+				}
+			});
+		}
+		setTimeout(getWikiPage, 1000);');
 
 		return '<div id="wiki-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div><div id="wiki-md-error" style="color: red"></div>';
 	}
 	
-
-	public function getGitea()
-	{
-		// get the document
-		$document = JFactory::getDocument();
-		// get the token if set
-		$token = JComponentHelper::getParams('com_componentbuilder')->get('gitea_token', false);
-		// only add if token is set
-		if ($token)
-		{
-			// setup a registry
-			$options = new Registry;
-			$options->set('access.token', $token);
-			// get the gitea http
-			try
-			{
-				// get gitea object
-				$gitea = new Gitea($options);
-				// get a list of all the repos tags
-				$tags = $gitea->repo->getListTags('joomla', 'Component-Builder');
-			}
-			catch (DomainException $m)
-			{
-				$token = false;
-			}
-			// get the document to load the scripts
-			if ($token && isset($tags[0]) && isset($tags[0]->name))
-			{
-				// download link of the latest version
-				$download = "https://git.vdm.dev/api/v1/repos/joomla/Component-Builder/archive/" . $tags[0]->name . ".zip?access_token=" . $token;
-				// load the JavaScript to the page
-				$document->addScriptDeclaration('
-				jQuery(document).ready(function () {
-					var activeVersion = "' . trim($tags[0]->name, 'vV') . '";
-					if (activeVersion === manifest.version) {
-						// local version is in sync with latest release
-						jQuery(".update-notice").html("<small><span style=\'color:green;\'><span class=\'icon-shield\'></span>' . JText::_('COM_COMPONENTBUILDER_UP_TO_DATE') . '</span></small>");
-					} else {
-						// split versions in to array
-						var activeVersionArray = activeVersion.split(".");
-						var localVersionArray = manifest.version.split(".");					
-						if ((+localVersionArray[0] > +activeVersionArray[0]) || 
-						(+localVersionArray[0] == +activeVersionArray[0] && +localVersionArray[1] > +activeVersionArray[1]) || 
-						(+localVersionArray[0] == +activeVersionArray[0] && +localVersionArray[1] == +activeVersionArray[1] && +localVersionArray[2] > +activeVersionArray[2])) {
-							// local version head latest release
-							jQuery(".update-notice").html("<small><span style=\'color:#F7B033;\'><span class=\'icon-wrench\'></span>' . JText::_('COM_COMPONENTBUILDER_BETA_RELEASE') . '</span></small>");
-						} else {
-							// local version behind latest release
-							jQuery(".update-notice").html("<small><span style=\'color:red;\'><span class=\'icon-warning-circle\'></span>' . JText::_('COM_COMPONENTBUILDER_OUT_OF_DATE') . '</span> <a style=\'color:green;\' href=\'' .
-								$download . '\' title=\'' . JText::_('COM_COMPONENTBUILDER_YOU_CAN_DIRECTLY_DOWNLOAD_THE_LATEST_UPDATE_OR_USE_THE_JOOMLA_UPDATE_AREA') . '\'>' .
-								JText::_('COM_COMPONENTBUILDER_DOWNLOAD_UPDATE') . '!</a></small>");
-						}
-					}
-				});');
-
-				return;
-			}
-		}
-		// the URL
-		$url = 'https://git.vdm.dev/user/settings/applications';
-		// give a notice to get the token
-		$document->addScriptDeclaration(
-			'jQuery(document).ready(function () {jQuery(".update-notice").html("<small><a style=\'color:#F7B033;\' href=\'' .
-			$url . '\' title=\'' . JText::_('COM_COMPONENTBUILDER_GET_TOKEN_FROM_VDM_FOR_UPDATES_AND_ADD_IT_TO_YOUR_GLOBAL_OPTIONS') . '\'>' .
-			JText::_('COM_COMPONENTBUILDER_GET_TOKEN') . '!</a></small>");});'
-		);
-	}
-
 
 	public function getNoticeboard()
 	{
@@ -591,4 +527,27 @@ jQuery(document).ready( function($) {
 
 		return '<div id="readme-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
+
+	public function getVersion()
+	{
+		// the call URL
+		$call_url = JUri::base() . 'index.php?option=com_componentbuilder&task=ajax.getVersion&format=json&raw=true&' . JSession::getFormToken() . '=1&version=1';
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration('
+		function getComponentVersionStatus() {
+			fetch("' . $call_url . '").then((response) => {
+				if (response.ok) {
+					return response.json();
+				}
+			}).then((result) => {
+				if (typeof result.notice !== "undefined") {
+					document.getElementById("component-update-notice").innerHTML = result.notice;
+				} else if (typeof result.error !== "undefined") {
+					document.getElementById("component-update-notice").innerHTML = result.error;
+				}
+			});
+		}
+		setTimeout(getComponentVersionStatus, 800);');
+	}
+
 }

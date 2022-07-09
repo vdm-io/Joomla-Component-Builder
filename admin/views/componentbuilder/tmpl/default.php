@@ -38,58 +38,50 @@ defined('_JEXEC') or die('Restricted access');
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'wiki', JText::_('Wiki', true)); ?>
+
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'wiki', JText::_('COM_COMPONENTBUILDER_WIKI', true)); ?>
 		<div class="row-fluid">
-			<div class="span12">
+			<div class="span10">
 				<?php  echo JHtml::_('bootstrap.startAccordion', 'wiki_accordian', array('active' => 'wiki_one')); ?>
 					<?php  echo JHtml::_('bootstrap.addSlide', 'wiki_accordian', 'Tutorials', 'wiki_one'); ?>
 						<?php echo $this->loadTemplate('wiki_tutorials');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
 			</div>
+            <div class="span2">
+				<?php echo ComponentbuilderHelper::getDynamicContent('banner', '160-600'); ?>
+            </div>
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'notice_board', JText::_('Notice Board', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'notice_board', JText::_('COM_COMPONENTBUILDER_NOTICE_BOARD', true)); ?>
 		<div class="row-fluid">
-			<div class="span12">
+			<div class="span10">
 				<?php  echo JHtml::_('bootstrap.startAccordion', 'notice_board_accordian', array('active' => 'notice_board_one')); ?>
 					<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'Vast Development Method', 'notice_board_one'); ?>
 						<?php echo $this->loadTemplate('notice_board_vast_development_method');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
 			</div>
+            <div class="span2">
+				<?php echo ComponentbuilderHelper::getDynamicContent('banner', '160-600'); ?>
+            </div>
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'readme', JText::_('Readme', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'readme', JText::_('COM_COMPONENTBUILDER_README', true)); ?>
 		<div class="row-fluid">
-			<div class="span12">
+			<div class="span10">
 				<?php  echo JHtml::_('bootstrap.startAccordion', 'readme_accordian', array('active' => 'readme_one')); ?>
 					<?php  echo JHtml::_('bootstrap.addSlide', 'readme_accordian', 'Information', 'readme_one'); ?>
 						<?php echo $this->loadTemplate('readme_information');?>
 					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
 				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
 			</div>
-		</div>
-		<?php echo JHtml::_('bootstrap.endTab'); ?>
-
-		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'notice_board', JText::_('COM_COMPONENTBUILDER_NOTICE_BOARD', true)); ?>
-        <div class="row-fluid">
-            <div class="span10">
-				<?php  echo JHtml::_('bootstrap.startAccordion', 'notice_board_accordian', array('active' => 'notice_board_one')); ?>
-				<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'Vast Development Method', 'notice_board_one'); ?>
-				<?php echo $this->loadTemplate('notice_board_vast_development_method');?>
-				<?php  echo JHtml::_('bootstrap.endSlide'); ?>
-				<?php  echo JHtml::_('bootstrap.addSlide', 'notice_board_accordian', 'JCB Pro Membership', 'notice_board_two'); ?>
-				<?php echo $this->loadTemplate('notice_board_jcb_pro_membership');?>
-				<?php  echo JHtml::_('bootstrap.endSlide'); ?>
-				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
-            </div>
             <div class="span2">
 				<?php echo ComponentbuilderHelper::getDynamicContent('banner', '160-600'); ?>
             </div>
-        </div>
+		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 	<?php echo JHtml::_('bootstrap.endTabSet'); ?>

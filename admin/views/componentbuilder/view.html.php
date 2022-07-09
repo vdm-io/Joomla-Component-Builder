@@ -29,9 +29,9 @@ class ComponentbuilderViewComponentbuilder extends JViewLegacy
 		$this->icons			= $this->get('Icons');
 		$this->contributors		= ComponentbuilderHelper::getContributors();
 		$this->wiki = $this->get('Wiki');
-		$this->gitea = $this->get('Gitea');
 		$this->noticeboard = $this->get('Noticeboard');
 		$this->readme = $this->get('Readme');
+		$this->version = $this->get('Version');
 		
 		// get the manifest details of the component
 		$this->manifest = ComponentbuilderHelper::manifest();

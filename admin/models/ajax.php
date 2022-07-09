@@ -305,15 +305,15 @@ class ComponentbuilderModelAjax extends ListModel
 		}
 		catch (DomainException $e)
 		{
-			return $this->getTokenFromVDM($e->getMessage());
+			return $this->getTokenForWiki($e->getMessage());
 		}
 		catch (InvalidArgumentException $e)
 		{
-			return $this->getTokenFromVDM($e->getMessage());
+			return $this->getTokenForWiki($e->getMessage());
 		}
 		catch (Exception $e)
 		{
-			return $this->getTokenFromVDM($e->getMessage());
+			return $this->getTokenForWiki($e->getMessage());
 		}
 
 		// get the html
@@ -322,10 +322,10 @@ class ComponentbuilderModelAjax extends ListModel
 			return ['page' => $page];
 		}
 
-		return $this->getTokenFromVDM();
+		return $this->getTokenForWiki();
 	}
 
-	protected function getTokenFromVDM($message = null)
+	protected function getTokenForWiki($message = null)
 	{
 		if ($message)
 		{
@@ -334,6 +334,93 @@ class ComponentbuilderModelAjax extends ListModel
 
 		return ['error' => JText::_('COM_COMPONENTBUILDER_THE_WIKI_CAN_ONLY_BE_LOADED_WHEN_YOUR_JCB_SYSTEM_HAS_INTERNET_CONNECTION')];
 	}
+
+	public function getVersion($version = null)
+	{
+		// get the token if set
+		$token = JComponentHelper::getParams('com_componentbuilder')->get('gitea_token', false);
+		// only add if token is set
+		if ($token)
+		{
+			// setup a registry
+			$options = new Registry;
+			$options->set('access.token', $token);
+			// get the gitea http
+			try
+			{
+				// get gitea object
+				$gitea = new Gitea($options);
+				// get a list of all the repos tags
+				$tags = $gitea->repo->getListTags('joomla', 'Component-Builder');
+			}
+			catch (DomainException $e)
+			{
+				return $this->getTokenForVersion($e->getMessage());
+			}
+			catch (InvalidArgumentException $e)
+			{
+				return $this->getTokenForVersion($e->getMessage());
+			}
+			catch (Exception $e)
+			{
+				return $this->getTokenForVersion($e->getMessage());
+			}
+			// do we have tags returned
+			if (isset($tags[0]) && isset($tags[0]->name))
+			{
+				// get the version
+				$manifest = ComponentbuilderHelper::manifest();
+				$local_version = (string) $manifest->version;
+				$current_version = trim($tags[0]->name, 'vV');
+
+				// now check if this version is out dated
+				if ($current_version === $local_version)
+				{
+					return ['notice' => '<small><span style="color:green;"><span class="icon-shield"></span>' . JText::_('COM_COMPONENTBUILDER_UP_TO_DATE') . '</span></small>'];
+				}
+				else
+				{
+					// check if this is beta version
+					$current_array = array_map(function ($v) { return (int) $v; }, (array) explode('.', $current_version));
+					$local_array = array_map(function ($v) { return (int) $v; }, (array) explode('.', $local_version));
+					if (($local_array[0] > $current_array[0]) || 
+						($local_array[0] == $current_array[0] && $local_array[1] > $current_array[1]) || 
+						($local_array[0] == $current_array[0] && $local_array[1] == $current_array[1] && $local_array[2] > $current_array[2]))
+					{
+						return ['notice' => '<small><span style="color:#F7B033;"><span class="icon-wrench"></span>' . JText::_('COM_COMPONENTBUILDER_BETA_RELEASE') . '</span></small>'];
+					}
+					else
+					{
+						// download link of the latest version
+						$download = "https://git.vdm.dev/api/v1/repos/joomla/Component-Builder/archive/" . $tags[0]->name . ".zip?access_token=" . $token;
+
+						return ['notice' => '<small><span style="color:red;"><span class="icon-warning-circle"></span>' . JText::_('COM_COMPONENTBUILDER_OUT_OF_DATE') . '!</span> <a style="color:green;"  href="' .
+							$download . '" title="' . JText::_('COM_COMPONENTBUILDER_YOU_CAN_DIRECTLY_DOWNLOAD_THE_LATEST_UPDATE_OR_USE_THE_JOOMLA_UPDATE_AREA') . '">' . JText::_('COM_COMPONENTBUILDER_DOWNLOAD_UPDATE') . '!</a></small>'];
+					}
+				}
+			}
+		}
+
+		return $this->getTokenForVersion();
+	}
+
+	protected function getTokenForVersion($message = null)
+	{
+		// the URL
+		$url = 'https://git.vdm.dev/user/settings/applications';
+		// create link
+		$a = '<small><a style="color:#F7B033;" href="' . $url . '" title="';
+		$a_ = '">';
+		$_a = '</a></small>';
+
+		if ($message)
+		{
+			return ['error' => $a . $message . $a_ . JText::_('COM_COMPONENTBUILDER_GET_TOKEN') . $_a];
+		}
+
+		return ['error' =>  $a . JText::_('COM_COMPONENTBUILDER_GET_TOKEN_FROM_VDM_TO_GET_UPDATE_NOTICE_AND_ADD_IT_TO_YOUR_GLOBAL_OPTIONS') . $a_ . JText::_('COM_COMPONENTBUILDER_GET_TOKEN') . $_a];
+	}
+
 
 	// Used in joomla_module
 	public function getModuleCode($data)
