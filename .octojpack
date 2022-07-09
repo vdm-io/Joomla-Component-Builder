@@ -20,7 +20,7 @@
     "author_url": "https://io.vdm.dev/",
     "description": "The Joomla Component Builder Package that bundles JCB Component and all the plugins and features available into one package for easy install and update of your JCB system.",
     "version_id": "com_componentbuilder",
-    "update_servers": "https://git.vdm.dev/joomla/Component-Builder/raw/branch/staging/componentbuilder_update_server.xml"
+    "update_servers": "https://git.vdm.dev/joomla/Component-Builder/raw/branch/master/componentbuilder_update_server.xml"
   },
   "repository": {
     "owner": "joomla",
