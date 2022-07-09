@@ -3,9 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -5619,10 +5618,10 @@ class com_componentbuilderInstallerScript
 		}
 		// little notice as after service, in case of bad experience with component.
 		echo '<h2>Did something go wrong? Are you disappointed?</h2>
-		<p>Please let me know at <a href="mailto:llewellyn@joomlacomponentbuilder.com">llewellyn@joomlacomponentbuilder.com</a>.
-		<br />We at Joomla Component Builder are committed to building extensions that performs proficiently! You can help us, really!
+		<p>Please let me know at <a href="mailto:joomla@vdm.io">joomla@vdm.io</a>.
+		<br />We at Vast Development Method are committed to building extensions that performs proficiently! You can help us, really!
 		<br />Send me your thoughts on improvements that is needed, trust me, I will be very grateful!
-		<br />Visit us at <a href="http://www.joomlacomponentbuilder.com" target="_blank">http://www.joomlacomponentbuilder.com</a> today!</p>';
+		<br />Visit us at <a href="https://dev.vdm.io" target="_blank">https://dev.vdm.io</a> today!</p>';
 	}
 
 	/**
@@ -6739,7 +6738,7 @@ class com_componentbuilderInstallerScript
 			$query = $db->getQuery(true);
 			// Field to update.
 			$fields = array(
-				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"llewellyn@joomlacomponentbuilder.com","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","builder_gif_size":"480-272","add_menu_prefix":"1","menu_prefix":"»","minify":"0","language":"en-GB","percentagelanguageadd":"30","assets_table_fix":"2","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","import_guid_only":"1","export_language_strings":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
+				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","builder_gif_size":"480-272","add_menu_prefix":"1","menu_prefix":"»","minify":"0","language":"en-GB","percentagelanguageadd":"30","assets_table_fix":"2","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","import_guid_only":"1","export_language_strings":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
 			);
 			// Condition.
 			$conditions = array(
@@ -6765,7 +6764,7 @@ class com_componentbuilderInstallerScript
 					$app->enqueueMessage(JText::_('The <b>#__assets</b> table rules column was resized to the MEDIUMTEXT datatype for the components possible large permission rules.'));
 				}
 			}
-			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
+			echo '<a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>';
 
@@ -9420,7 +9419,7 @@ class com_componentbuilderInstallerScript
 				$app->enqueueMessage('<p><b>Best Practice!</b><br />We have removed the internal JCB composer-vendor folder <b>/libraries/vdm_io/</b> and placed the targeted library (phpseclib) in its own folder <b>/libraries/phpseclib/</b>.</p>', 'Notice');
 			}
 
-			echo '<a target="_blank" href="http://www.joomlacomponentbuilder.com" title="Component Builder">
+			echo '<a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
 				<h3>Upgrade to Version 3.1.2 Was Successful! Let us know if anything is not working as expected.</h3>';

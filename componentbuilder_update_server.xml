@@ -5,7 +5,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.5.1</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.5.1/JCB_v2.5.1.zip</downloadurl>
 		</downloads>
@@ -13,7 +13,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -22,7 +22,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.5.2</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.5.4/JCB_v2.5.4.zip</downloadurl>
 		</downloads>
@@ -30,7 +30,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -39,7 +39,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.5.3</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.5.4/JCB_v2.5.4.zip</downloadurl>
 		</downloads>
@@ -47,7 +47,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -56,7 +56,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.5.5</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.5.5/JCB_v2.5.5.zip</downloadurl>
 		</downloads>
@@ -64,7 +64,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -73,7 +73,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.5.6</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.5.6/JCB_v2.5.6.zip</downloadurl>
 		</downloads>
@@ -81,7 +81,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -90,7 +90,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.5.7</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.5.8/JCB_v2.5.8.zip</downloadurl>
 		</downloads>
@@ -98,7 +98,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -107,7 +107,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.5.8</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.5.8/JCB_v2.5.8.zip</downloadurl>
 		</downloads>
@@ -115,7 +115,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -124,7 +124,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.6.3</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.6.3/JCB_v2.6.3.zip</downloadurl>
 		</downloads>
@@ -132,7 +132,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -141,7 +141,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.6.4</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.6.5/JCB_v2.6.5.zip</downloadurl>
 		</downloads>
@@ -149,7 +149,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -158,7 +158,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.6.5</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.6.5/JCB_v2.6.5.zip</downloadurl>
 		</downloads>
@@ -166,7 +166,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -175,7 +175,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.6.6</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.6.6/JCB_v2.6.6.zip</downloadurl>
 		</downloads>
@@ -183,7 +183,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -192,7 +192,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.6.9</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.6.9/JCB_v2.6.9.zip</downloadurl>
 		</downloads>
@@ -200,7 +200,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -209,7 +209,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.6.11</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.6.11/JCB_v2.6.11.zip</downloadurl>
 		</downloads>
@@ -217,7 +217,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -226,7 +226,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.6.12</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.6.12/JCB_v2.6.12.zip</downloadurl>
 		</downloads>
@@ -234,7 +234,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -243,7 +243,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.6.13</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.6.13/JCB_v2.6.13.zip</downloadurl>
 		</downloads>
@@ -251,7 +251,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -260,7 +260,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.6.14</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.6.14/JCB_v2.6.14.zip</downloadurl>
 		</downloads>
@@ -268,7 +268,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -277,7 +277,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.6.16</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.6.16/JCB_v2.6.16.zip</downloadurl>
 		</downloads>
@@ -285,7 +285,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -294,7 +294,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.6.17</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.6.17/JCB_v2.6.17.zip</downloadurl>
 		</downloads>
@@ -302,7 +302,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -311,7 +311,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.7.0</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.7.0/JCB_v2.7.0.zip</downloadurl>
 		</downloads>
@@ -319,7 +319,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -328,7 +328,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.7.5</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.7.5/JCB_v2.7.5.zip</downloadurl>
 		</downloads>
@@ -336,7 +336,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -345,7 +345,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.7.8</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.7.8/JCB_v2.7.8.zip</downloadurl>
 		</downloads>
@@ -353,7 +353,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -362,7 +362,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.7.9</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.7.9/JCB_v2.7.9.zip</downloadurl>
 		</downloads>
@@ -370,7 +370,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -379,7 +379,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.7.10</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.7.10/JCB_v2.7.10.zip</downloadurl>
 		</downloads>
@@ -387,7 +387,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -396,7 +396,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.8.1</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.8.2/JCB_v2.8.2.zip</downloadurl>
 		</downloads>
@@ -404,7 +404,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -413,7 +413,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.8.2</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.8.2/JCB_v2.8.2.zip</downloadurl>
 		</downloads>
@@ -421,7 +421,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -430,7 +430,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.8.5</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.8.5/JCB_v2.8.5.zip</downloadurl>
 		</downloads>
@@ -438,7 +438,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -447,7 +447,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.8.6</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.0/JCB_v2.9.0.zip</downloadurl>
 		</downloads>
@@ -455,7 +455,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -464,7 +464,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.8.7</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.0/JCB_v2.9.0.zip</downloadurl>
 		</downloads>
@@ -472,7 +472,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -481,7 +481,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.8.8</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.0/JCB_v2.9.0.zip</downloadurl>
 		</downloads>
@@ -489,7 +489,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -498,7 +498,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.8.9</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.0/JCB_v2.9.0.zip</downloadurl>
 		</downloads>
@@ -506,7 +506,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -515,7 +515,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.1</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.1/JCB_v2.9.1.zip</downloadurl>
 		</downloads>
@@ -523,7 +523,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -532,7 +532,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.4</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.7/JCB_v2.9.7.zip</downloadurl>
 		</downloads>
@@ -540,7 +540,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -549,7 +549,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.8</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.8/JCB_v2.9.8.zip</downloadurl>
 		</downloads>
@@ -557,7 +557,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -566,7 +566,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.9</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.10/JCB_v2.9.10.zip</downloadurl>
 		</downloads>
@@ -574,7 +574,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -583,7 +583,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.11</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.11/JCB_v2.9.11.zip</downloadurl>
 		</downloads>
@@ -591,7 +591,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -600,7 +600,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.12</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.12/JCB_v2.9.12.zip</downloadurl>
 		</downloads>
@@ -608,7 +608,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -617,7 +617,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.14</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.14/JCB_v2.9.14.zip</downloadurl>
 		</downloads>
@@ -625,7 +625,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -634,7 +634,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.15</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.18/JCB_v2.9.18.zip</downloadurl>
 		</downloads>
@@ -642,7 +642,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -651,7 +651,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.16</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.18/JCB_v2.9.18.zip</downloadurl>
 		</downloads>
@@ -659,7 +659,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -668,7 +668,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.18</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.18/JCB_v2.9.18.zip</downloadurl>
 		</downloads>
@@ -676,7 +676,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -685,7 +685,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.19</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.21/JCB_v2.9.21.zip</downloadurl>
 		</downloads>
@@ -693,7 +693,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -702,7 +702,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.21</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.9.21/JCB_v2.9.21.zip</downloadurl>
 		</downloads>
@@ -710,7 +710,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -719,7 +719,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.31</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.0/JCB_v2.10.0.zip</downloadurl>
 		</downloads>
@@ -727,7 +727,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -736,7 +736,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.32</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.0/JCB_v2.10.0.zip</downloadurl>
 		</downloads>
@@ -744,7 +744,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -753,7 +753,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.33</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.0/JCB_v2.10.0.zip</downloadurl>
 		</downloads>
@@ -761,7 +761,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -770,7 +770,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.34</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.0/JCB_v2.10.0.zip</downloadurl>
 		</downloads>
@@ -778,7 +778,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -787,7 +787,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.9.35</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.0/JCB_v2.10.0.zip</downloadurl>
 		</downloads>
@@ -795,7 +795,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -804,7 +804,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.10.1</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.1/JCB_v2.10.1.zip</downloadurl>
 		</downloads>
@@ -812,7 +812,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -821,7 +821,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.10.2</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.4/JCB_v2.10.4.zip</downloadurl>
 		</downloads>
@@ -829,7 +829,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -838,7 +838,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.10.5</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.5/JCB_v2.10.5.zip</downloadurl>
 		</downloads>
@@ -846,7 +846,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -855,7 +855,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.10.6</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.9/JCB_v2.10.9.zip</downloadurl>
 		</downloads>
@@ -863,7 +863,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -872,7 +872,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.10.7</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.9/JCB_v2.10.9.zip</downloadurl>
 		</downloads>
@@ -880,7 +880,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -889,7 +889,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.10.9</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.9/JCB_v2.10.9.zip</downloadurl>
 		</downloads>
@@ -897,7 +897,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -906,7 +906,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.10.10</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.11/JCB_v2.10.11.zip</downloadurl>
 		</downloads>
@@ -914,7 +914,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -923,7 +923,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.10.11</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.11/JCB_v2.10.11.zip</downloadurl>
 		</downloads>
@@ -931,7 +931,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -940,7 +940,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.10.12</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.10.13/JCB_v2.10.13.zip</downloadurl>
 		</downloads>
@@ -948,7 +948,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -957,7 +957,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.11.4</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.11.4/JCB_v2.11.4.zip</downloadurl>
 		</downloads>
@@ -965,7 +965,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -974,7 +974,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.11.5</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.11.7/JCB_v2.11.7.zip</downloadurl>
 		</downloads>
@@ -982,7 +982,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -991,7 +991,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.12.1</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.12.4/JCB_v2.12.4.zip</downloadurl>
 		</downloads>
@@ -999,7 +999,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -1008,7 +1008,7 @@
 		<element>com_componentbuilder</element>
 		<type>component</type>
 		<version>2.12.4</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/vdm-io/Joomla-Component-Builder/releases/download/v2.12.4/JCB_v2.12.4.zip</downloadurl>
 		</downloads>
@@ -1016,7 +1016,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -1026,7 +1026,7 @@
 		<type>package</type>
 		<client>site</client>
 		<version>2.12.10</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v2.12.10.zip</downloadurl>
 		</downloads>
@@ -1034,7 +1034,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -1044,7 +1044,7 @@
 		<type>package</type>
 		<client>site</client>
 		<version>2.12.16</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v2.12.16.zip</downloadurl>
 		</downloads>
@@ -1052,7 +1052,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -1062,7 +1062,7 @@
 		<type>component</type>
 		<client>site</client>
 		<version>2.13.1</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v2.13.1.zip</downloadurl>
 		</downloads>
@@ -1070,7 +1070,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 	<update>
@@ -1080,7 +1080,7 @@
 		<type>package</type>
 		<client>site</client>
 		<version>3.1.2</version>
-		<infourl title="Component Builder!">http://www.joomlacomponentbuilder.com</infourl>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v3.1.2.zip</downloadurl>
 		</downloads>
@@ -1088,7 +1088,7 @@
 			<tag>stable</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
-		<maintainerurl>http://www.joomlacomponentbuilder.com</maintainerurl>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
 </updates>

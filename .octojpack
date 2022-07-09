@@ -16,11 +16,11 @@
     "license": "GNU General Public License version 2; see LICENSE",
     "license_file": "LICENSE",
     "author": "Llewellyn van der Merwe",
-    "author_email": "llewellyn@joomlacomponentbuilder.com",
-    "author_url": "http://www.joomlacomponentbuilder.com/",
+    "author_email": "joomla@vdm.io",
+    "author_url": "https://io.vdm.dev/",
     "description": "The Joomla Component Builder Package that bundles JCB Component and all the plugins and features available into one package for easy install and update of your JCB system.",
     "version_id": "com_componentbuilder",
-    "update_servers": "https://io.vdm.dev/update/componentbuilder_public_update_server.xml"
+    "update_servers": "https://git.vdm.dev/joomla/Component-Builder/raw/branch/staging/componentbuilder_update_server.xml"
   },
   "repository": {
     "owner": "joomla",
@@ -38,104 +38,112 @@
       "repo": "plg_content_componentbuilderadminheaderstabs",
       "id": "ComponentBuilderAdminHeadersTabs",
       "type": "plugin",
-      "group": "content",
-      "mode": "releases"
+      "group": "content"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_content_componentbuildercomponentdashboardheaderstabs",
+      "id": "ComponentBuilderComponentDashboardHeadersTabs",
+      "type": "plugin",
+      "group": "content"
     },
     {
       "owner": "joomla",
       "repo": "plg_content_componentbuildercomponentheaderstabs",
       "id": "ComponentBuilderComponentHeadersTabs",
       "type": "plugin",
-      "group": "content",
-      "mode": "releases"
+      "group": "content"
     },
     {
       "owner": "joomla",
       "repo": "plg_content_componentbuildercustomadminheaderstabs",
       "id": "ComponentBuilderCustomAdminHeadersTabs",
       "type": "plugin",
-      "group": "content",
-      "mode": "releases"
+      "group": "content"
     },
     {
       "owner": "joomla",
       "repo": "plg_content_componentbuilderfieldorderingtabs",
       "id": "ComponentBuilderFieldOrderingTabs",
       "type": "plugin",
-      "group": "content",
-      "mode": "releases"
+      "group": "content"
     },
     {
       "owner": "joomla",
       "repo": "plg_content_componentbuilderlanguagetabs",
       "id": "ComponentBuilderLanguageTabs",
       "type": "plugin",
-      "group": "content",
-      "mode": "releases"
+      "group": "content"
     },
     {
       "owner": "joomla",
       "repo": "plg_content_componentbuilderprivacytabs",
       "id": "ComponentBuilderPrivacyTabs",
       "type": "plugin",
-      "group": "content",
-      "mode": "releases"
+      "group": "content"
     },
     {
       "owner": "joomla",
       "repo": "plg_content_componentbuildersiteheaderstabs",
       "id": "ComponentBuilderSiteHeadersTabs",
       "type": "plugin",
-      "group": "content",
-      "mode": "releases"
+      "group": "content"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_content_componentbuilderdynamicgetheaderstabs",
+      "id": "ComponentBuilderDynamicgetHeadersTabs",
+      "type": "plugin",
+      "group": "content"
     },
     {
       "owner": "joomla",
       "repo": "plg_extension_componentbuilderactionlogcompiler",
       "id": "ComponentBuilderActionLogCompiler",
       "type": "plugin",
-      "group": "extension",
-      "mode": "releases"
+      "group": "extension"
     },
     {
       "owner": "joomla",
       "repo": "plg_extension_componentbuilderexportcompiler",
       "id": "ComponentBuilderExportCompiler",
       "type": "plugin",
-      "group": "extension",
-      "mode": "releases"
+      "group": "extension"
     },
     {
       "owner": "joomla",
       "repo": "plg_extension_componentbuilderfieldorderingcompiler",
       "id": "ComponentBuilderFieldOrderingCompiler",
       "type": "plugin",
-      "group": "extension",
-      "mode": "releases"
+      "group": "extension"
     },
     {
       "owner": "joomla",
       "repo": "plg_extension_componentbuilderheaderscompiler",
       "id": "ComponentBuilderHeadersCompiler",
       "type": "plugin",
-      "group": "extension",
-      "mode": "releases"
+      "group": "extension"
     },
     {
       "owner": "joomla",
       "repo": "plg_extension_componentbuilderlanguagepackaging",
       "id": "ComponentBuilderLanguagePackaging",
       "type": "plugin",
-      "group": "extension",
-      "mode": "releases"
+      "group": "extension"
+    },
+    {
+      "owner": "joomla",
+      "repo": "plg_extension_componentbuilderpowersautoloadercompiler",
+      "id": "ComponentBuilderPowersAutoloaderCompiler",
+      "type": "plugin",
+      "group": "extension"
     },
     {
       "owner": "joomla",
       "repo": "plg_extension_componentbuilderprivacycompiler",
       "id": "ComponentBuilderPrivacyCompiler",
       "type": "plugin",
-      "group": "extension",
-      "mode": "releases"
+      "group": "extension"
     }
   ],
   "languages": [

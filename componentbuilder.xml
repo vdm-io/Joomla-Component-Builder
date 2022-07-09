@@ -3,8 +3,8 @@
 	<name>COM_COMPONENTBUILDER</name>
 	<creationDate>9th July, 2022</creationDate>
 	<author>Llewellyn van der Merwe</author>
-	<authorEmail>llewellyn@joomlacomponentbuilder.com</authorEmail>
-	<authorUrl>http://www.joomlacomponentbuilder.com</authorUrl>
+	<authorEmail>joomla@vdm.io</authorEmail>
+	<authorUrl>https://dev.vdm.io</authorUrl>
 	<copyright>Copyright (C) 2015 Vast Development Method. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<version>3.1.2</version>
@@ -14,7 +14,7 @@
 		<p>The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will save you lots of time and money. A real must have!</p>
-		<p>Created by <a href="http://www.joomlacomponentbuilder.com" target="_blank">Llewellyn van der Merwe</a><br /><small>Development started 30th April, 2015</small></p>
+		<p>Created by <a href="https://dev.vdm.io" target="_blank">Llewellyn van der Merwe</a><br /><small>Development started 30th April, 2015</small></p>
 	]]></description>
 
 	<!-- Runs on install; New in Joomla 1.5 -->
@@ -120,6 +120,6 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 
 	</administration>
 	<updateservers>
-		<server type="extension" enabled="1" element="com_componentbuilder" name="Component Builder">https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder/master/componentbuilder_update_server.xml</server>
+		<server type="extension" enabled="1" element="com_componentbuilder" name="Component Builder">https://git.vdm.dev/joomla/Component-Builder/raw/branch/staging/componentbuilder_update_server.xml</server>
 	</updateservers>
 </extension>

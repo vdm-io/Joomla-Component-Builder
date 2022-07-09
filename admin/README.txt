@@ -1,18 +1,15 @@
 
 # Joomla Component Builder ([JCB](http://joomlacomponentbuilder.com))
-[![GitHub release](https://img.shields.io/github/release/vdm-io/Joomla-Component-Builder.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
-[![Total Downloads](https://img.shields.io/github/downloads/vdm-io/Joomla-Component-Builder/total.svg)](https://github.com/vdm-io/Joomla-Component-Builder/releases)
-[![JCB Pro Members](https://opencollective.com/joomla-component-builder/tiers/jcb-pro/badge.svg?label=JCB+Pro&color=brightgreen)](#sponsors)
 
 This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
- ![Component Builder image](https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder/master/admin/assets/images/vdm-component.jpg "The Component Builder")
+ ![Component Builder image](https://git.vdm.dev/joomla/Component-Builder/raw/branch/staging/admin/assets/images/vdm-component.jpg "The Component Builder")
 
 The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will save you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [github](https://github.com/vdm-io/Joomla-Component-Builder/releases) is the latest release (3.1.2) with **ALL** its features and **ALL** concepts totally open-source and free! 
+You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (3.1.2) with **ALL** its features and **ALL** concepts totally open-source and free! 
 
 > Watch Quick Build of a Hello World component in [JCB on Youtube](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -105,17 +102,17 @@ Where can you get support and help?
 + [The JCB Tutorials](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE)
 + [German Basic Introduction](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wu0tDFxJtZFwW7AxA4JHQV7)
 + [Hello World Tutorial](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
-+ [The JCB! Wiki](https://github.com/vdm-io/Joomla-Component-Builder/wiki)
++ [The JCB! Wiki](https://git.vdm.dev/joomla/Component-Builder/wiki)
 + [Forum](https://vdm.bz/jcb-forum)
 + [Report a Security Issue](http://joomlacomponentbuilder.com/report-security-issues)
 + [Community Complaint](http://joomlacomponentbuilder.com/community-complaint)
-+ [Open Issue On Github](https://github.com/vdm-io/Joomla-Component-Builder/issues) ^^
++ [Open Issue On Gitea](https://git.vdm.dev/joomla/Component-Builder/issues) ^^
 
-Since [JCB](http://joomlacomponentbuilder.com) has [become a community](https://github.com/vdm-io/Joomla-Component-Builder/blob/staging/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/) is **no longer solely responsible** for support.
+Since [JCB](http://joomlacomponentbuilder.com) has [become a community](https://git.vdm.dev/joomla/Component-Builder/src/branch/staging/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/) is **no longer solely responsible** for support.
 
 We have started a [**JCB forum**](https://vdm.bz/jcb-forum) where you can post questions, about how things work, or if you need some kind of help in relation to your development of your components.
 
-^^ Then if you run into any issues, related to the [JCB](http://joomlacomponentbuilder.com) code, like bugs, **start by searching** the (*open & closed*) issues over on Github, and if the issue has not been mentioned before, **then only** open a new issue, following the [community guidelines](https://github.com/vdm-io/Joomla-Component-Builder/blob/master/.github/CONTRIBUTING.md).
+^^ Then if you run into any issues, related to the [JCB](http://joomlacomponentbuilder.com) code, like bugs, **start by searching** the (*open & closed*) issues over on Gitea, and if the issue has not been mentioned before, **then only** open a new issue, following the [community guidelines](https://git.vdm.dev/joomla/Component-Builder/src/branch/staging/.github/CONTRIBUTING.md).
 
 WHY GIVE IT AWAY LIKE THIS?
 ====================
@@ -128,7 +125,7 @@ Our idea was to almost let this tool serve as a cheat sheet to how things can be
 MAKING IT BETTER!
 ====================
 
-Get involved on the forums, and the GitHub issues, and you can even help us develop/improve the pipeline of [JCB](http://joomlacomponentbuilder.com) for continues delivery. We really want to see [JCB](http://joomlacomponentbuilder.com) remain the tool of choice for all [Joomla Component Development](https://extensions.joomla.org/extension/component-builder/) needs and ideas.
+Get involved on the forums, and the Gitea issues, and you can even help us develop/improve the pipeline of [JCB](http://joomlacomponentbuilder.com) for continues delivery. We really want to see [JCB](http://joomlacomponentbuilder.com) remain the tool of choice for all [Joomla Component Development](https://extensions.joomla.org/extension/component-builder/) needs and ideas.
 
 TODO
 ======
@@ -139,15 +136,15 @@ TODO
 
 # Build Details
 
-+ *Community*: [Joomla Component Builder](http://www.joomlacomponentbuilder.com)
-+ *Author*: [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
-+ *Name*: [Component Builder](https://github.com/vdm-io/Joomla-Component-Builder)
++ *Community*: [Vast Development Method](https://dev.vdm.io)
++ *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
++ *Name*: [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
 + *First Build*: 30th April, 2015
 + *Last Build*: 9th July, 2022
 + *Version*: 3.1.2
 + *Copyright*: Copyright (C) 2015 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **312818**
++ *Line count*: **311259**
 + *Field count*: **2002**
 + *File count*: **2049**
 + *Folder count*: **349**
