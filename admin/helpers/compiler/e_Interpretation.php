@@ -29397,13 +29397,13 @@ function vdm_dkim() {
 					. $function_name;
 				$script .= PHP_EOL . $this->_t(1) . ' *';
 				$script .= PHP_EOL . $this->_t(1)
-					. ' * @param   JAdapterInstance  $adapter  The object responsible for running this script';
+					. ' * @param   Joomla\CMS\Installer\InstallerAdapter  $adapter  The object responsible for running this script';
 				$script .= PHP_EOL . $this->_t(1) . ' *';
 				$script .= PHP_EOL . $this->_t(1)
 					. ' * @return  boolean  True on success';
 				$script .= PHP_EOL . $this->_t(1) . ' */';
 				$script .= PHP_EOL . $this->_t(1) . 'public function '
-					. $function_name . '(JAdapterInstance $adapter)';
+					. $function_name . '($adapter)';
 				$script .= PHP_EOL . $this->_t(1) . '{';
 				$script .= PHP_EOL . implode(PHP_EOL . PHP_EOL, $scripts);
 				// return true
@@ -29422,13 +29422,13 @@ function vdm_dkim() {
 				$script .= PHP_EOL . $this->_t(1)
 					. ' * @param   string  $route  Which action is happening (install|uninstall|discover_install|update)';
 				$script .= PHP_EOL . $this->_t(1)
-					. ' * @param   JAdapterInstance  $adapter  The object responsible for running this script';
+					. ' * @param   Joomla\CMS\Installer\InstallerAdapter  $adapter  The object responsible for running this script';
 				$script .= PHP_EOL . $this->_t(1) . ' *';
 				$script .= PHP_EOL . $this->_t(1)
 					. ' * @return  boolean  True on success';
 				$script .= PHP_EOL . $this->_t(1) . ' */';
 				$script .= PHP_EOL . $this->_t(1) . 'public function '
-					. $function_name . '($route, JAdapterInstance $adapter)';
+					. $function_name . '($route, $adapter)';
 				$script .= PHP_EOL . $this->_t(1) . '{';
 				$script .= PHP_EOL . $this->_t(2) . '//' . $this->setLine(
 						__LINE__
@@ -29475,10 +29475,10 @@ function vdm_dkim() {
 				$script .= PHP_EOL . $this->_t(1) . ' * Constructor';
 				$script .= PHP_EOL . $this->_t(1) . ' *';
 				$script .= PHP_EOL . $this->_t(1)
-					. ' * @param   JAdapterInstance  $adapter  The object responsible for running this script';
+					. ' * @param   Joomla\CMS\Installer\InstallerAdapter  $adapter  The object responsible for running this script';
 				$script .= PHP_EOL . $this->_t(1) . ' */';
 				$script .= PHP_EOL . $this->_t(1)
-					. 'public function __construct(JAdapterInstance $adapter)';
+					. 'public function __construct($adapter)';
 				$script .= PHP_EOL . $this->_t(1) . '{';
 				$script .= PHP_EOL . $scripts;
 				break;
