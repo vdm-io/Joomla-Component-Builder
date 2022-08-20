@@ -19,6 +19,7 @@ use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\FileHelper;
+use VDM\Joomla\Componentbuilder\Extension\InstallScript;
 
 /**
  * Infusion class
@@ -2393,7 +2394,7 @@ class Infusion extends Interpretation
 							// INSTALLCLASS
 							$this->fileContentDynamic[$module->key][$this->hhh
 							. 'INSTALLCLASS' . $this->hhh]
-								= $this->getExtensionInstallClass($module);
+								= (new InstallScript($module))->get();
 						}
 						// FIELDSET
 						if (isset($module->form_files)
@@ -2455,7 +2456,7 @@ class Infusion extends Interpretation
 							// INSTALLCLASS
 							$this->fileContentDynamic[$plugin->key][$this->hhh
 							. 'INSTALLCLASS' . $this->hhh]
-								= $this->getExtensionInstallClass($plugin);
+								= (new InstallScript($plugin))->get();
 						}
 						// FIELDSET
 						if (isset($plugin->form_files)
