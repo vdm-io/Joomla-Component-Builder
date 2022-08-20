@@ -131,8 +131,14 @@ class InstallScript
 	 * Constructor
 	 * @since 3.1.5
 	 */
-	public function __construct(object $extension)
+	public function __construct(object $extension, ?array $config = null)
 	{
+		// check if we have the debug switch TODO - move to global registry - singleton
+		if (isset($config['debug']))
+		{
+			$this->debug = $config['debug'];
+		}
+
 		// loop over methods and types
 		foreach ($this->methods as $method)
 		{

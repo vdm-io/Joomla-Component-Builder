@@ -2394,7 +2394,7 @@ class Infusion extends Interpretation
 							// INSTALLCLASS
 							$this->fileContentDynamic[$module->key][$this->hhh
 							. 'INSTALLCLASS' . $this->hhh]
-								= (new InstallScript($module))->get();
+								= (new InstallScript($module, ['debug' => $this->debugLinenr]))->get();
 						}
 						// FIELDSET
 						if (isset($module->form_files)
@@ -2456,7 +2456,7 @@ class Infusion extends Interpretation
 							// INSTALLCLASS
 							$this->fileContentDynamic[$plugin->key][$this->hhh
 							. 'INSTALLCLASS' . $this->hhh]
-								= (new InstallScript($plugin))->get();
+								= (new InstallScript($plugin, ['debug' => $this->debugLinenr]))->get();
 						}
 						// FIELDSET
 						if (isset($plugin->form_files)

@@ -20,6 +20,14 @@ namespace VDM\Joomla\Componentbuilder;
 trait Line
 {
 	/**
+	 * The debug switch
+	 *
+	 * @var     bool
+	 * @since 3.1.5
+	 */
+	protected bool $debug = false;
+
+	/**
 	 * Set the line number in comments
 	 *
 	 * @param   int  $nr  The line number
