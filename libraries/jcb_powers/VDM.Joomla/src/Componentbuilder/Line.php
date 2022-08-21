@@ -12,6 +12,9 @@
 namespace VDM\Joomla\Componentbuilder;
 
 
+use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
+
+
 /**
  * Add line comment
  * 
@@ -19,14 +22,6 @@ namespace VDM\Joomla\Componentbuilder;
  */
 trait Line
 {
-	/**
-	 * The debug switch
-	 *
-	 * @var     bool
-	 * @since 3.1.5
-	 */
-	protected bool $debug = false;
-
 	/**
 	 * Set the line number in comments
 	 *
@@ -37,7 +32,7 @@ trait Line
 	 */
 	private function setLine(int $nr): string
 	{
-		if ($this->debug)
+		if (Config::get('debug_line_nr', false))
 		{
 			return ' [' . get_called_class() . ' ' . $nr . ']';
 		}

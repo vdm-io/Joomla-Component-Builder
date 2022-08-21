@@ -27,6 +27,7 @@ use VDM\Joomla\Utilities\String\TypeHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Utilities\String\PluginHelper;
+use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
 
 /**
  * Get class as the main compilers class
@@ -38,6 +39,7 @@ class Get
 	 * The Joomla Version
 	 *
 	 * @var     string
+	 * @deprecated 4.0 Use Config::get('version');
 	 */
 	public $joomlaVersion;
 
@@ -118,6 +120,7 @@ class Get
 	 * The Compiler Path
 	 *
 	 * @var     object
+	 * @deprecated 4.0 Use Config::get('compiler_path');
 	 */
 	public $compilerPath;
 
@@ -125,6 +128,7 @@ class Get
 	 * The JCB Powers Path
 	 *
 	 * @var     object
+	 * @deprecated 4.0 Use Config::get('jcb_powers_path');
 	 */
 	public $jcbPowersPath;
 
@@ -132,6 +136,7 @@ class Get
 	 * Switch to add assets table fix
 	 *
 	 * @var     int
+	 * @deprecated 4.0 Use Config::get('add_assets_table_fix');
 	 */
 	public $addAssetsTableFix = 1;
 
@@ -153,6 +158,7 @@ class Get
 	 * Switch to add custom code placeholders
 	 *
 	 * @var     bool
+	 * @deprecated 4.0 Use Config::get('add_placeholders');
 	 */
 	public $addPlaceholders = false;
 
@@ -160,6 +166,7 @@ class Get
 	 * Switch to remove line breaks from language strings
 	 *
 	 * @var     bool
+	 * @deprecated 4.0 Use Config::get('remove_line_breaks');
 	 */
 	public $removeLineBreaks = false;
 
@@ -188,6 +195,7 @@ class Get
 	 * The Switch to add Powers data
 	 *
 	 * @var      boolean
+	 * @deprecated 4.0 Use Config::get('add_power');
 	 */
 	public $addPower;
 
@@ -334,6 +342,7 @@ class Get
 	 * The line numbers Switch
 	 *
 	 * @var      boolean
+	 * @deprecated 4.0 Use Config::get('debug_line_nr');
 	 */
 	public $debugLinenr = false;
 
@@ -348,6 +357,7 @@ class Get
 	 * The Placholder Language prefix
 	 *
 	 * @var      string
+	 * @deprecated 4.0 Use Config::get('lang_prefix');
 	 */
 	public $langPrefix;
 
@@ -371,6 +381,7 @@ class Get
 	 * The Main Languages
 	 *
 	 * @var      string
+	 * @deprecated 4.0 Use Config::get('lang_tag');
 	 */
 	public $langTag = 'en-GB';
 
@@ -427,13 +438,23 @@ class Get
 	 * The Component Code Name
 	 *
 	 * @var      string
+	 * @deprecated 4.0 Use Config::get('component_code_name');
 	 */
 	public $componentCodeName;
+
+	/**
+	 * The Component Context
+	 *
+	 * @var      string
+	 * @deprecated 4.0 Use Config::get('component_context');
+	 */
+	public $componentContext;
 
 	/**
 	 * The Component Code Name Length
 	 *
 	 * @var      int
+	 * @deprecated 4.0 Use Config::get('component_code_name_length');
 	 */
 	public $componentCodeNameLength;
 
@@ -441,6 +462,7 @@ class Get
 	 * The Component ID
 	 *
 	 * @var      int
+	 * @deprecated 4.0 Use Config::get('component_id');
 	 */
 	public $componentID;
 
@@ -668,6 +690,7 @@ class Get
 	 * 2 = SimpleXMLElement
 	 *
 	 * @var     int
+	 * @deprecated 4.0 Use Config::get('field_builder_type');
 	 */
 	public $fieldBuilderType;
 
@@ -880,6 +903,7 @@ class Get
 	 * Is minify Enabled
 	 *
 	 * @var    int
+	 * @deprecated 4.0 Use Config::get('minify');
 	 */
 	public $minify = 0;
 
@@ -887,6 +911,7 @@ class Get
 	 * Is Tidy Enabled
 	 *
 	 * @var    bool
+	 * @deprecated 4.0 Use Config::get('tidy');
 	 */
 	public $tidy = false;
 
@@ -929,210 +954,156 @@ class Get
 	 */
 	public function __construct($config = array())
 	{
-		if (isset($config) && count($config))
+		// we do not yet have this set as an option
+		$config['remove_line_breaks']
+			= 2; // 2 is global (use the components value)
+		// load application
+		$this->app = JFactory::getApplication();
+		// Set the params
+		$this->params = JComponentHelper::getParams('com_componentbuilder');
+		// get active plugins
+		if (($plugins = $this->params->get('compiler_plugin', false))
+			!== false)
 		{
-			// we do not yet have this set as an option
-			$config['remove_line_breaks']
-				= 2; // 2 is global (use the components value)
-			// load application
-			$this->app = JFactory::getApplication();
-			// Set the params
-			$this->params = JComponentHelper::getParams('com_componentbuilder');
-			// get active plugins
-			if (($plugins = $this->params->get('compiler_plugin', false))
-				!== false)
+			foreach ($plugins as $plugin)
 			{
-				foreach ($plugins as $plugin)
+				// get possible plugins
+				if (\JPluginHelper::isEnabled('extension', $plugin))
 				{
-					// get possible plugins
-					if (\JPluginHelper::isEnabled('extension', $plugin))
-					{
-						// Import the appropriate plugin group.
-						\JPluginHelper::importPlugin('extension', $plugin);
-						// activate events
-						$this->active_plugins = true;
-					}
+					// Import the appropriate plugin group.
+					\JPluginHelper::importPlugin('extension', $plugin);
+					// activate events
+					$this->active_plugins = true;
 				}
-			}
-			// Trigger Event: jcb_ce_onBeforeGet
-			$this->triggerEvent('jcb_ce_onBeforeGet', array(&$config, &$this));
-			// set the Joomla version
-			$this->joomlaVersion = $config['version'];
-			// set the minfy switch of the JavaScript
-			$this->minify = (isset($config['minify']) && $config['minify'] != 2)
-				? $config['minify'] : $this->params->get('minify', 0);
-			// set the global language
-			$this->langTag = $this->params->get('language', $this->langTag);
-			// also set the helper class langTag (for safeStrings)
-			ComponentbuilderHelper::$langTag = $this->langTag;
-			// setup the main language array
-			$this->languages['components'][$this->langTag] = array();
-			// check if we have Tidy enabled
-			$this->tidy = extension_loaded('Tidy');
-			// set the field type builder
-			$this->fieldBuilderType = $this->params->get(
-				'compiler_field_builder_type', 2
-			);
-			// check the field builder type logic
-			if (!$this->tidy && $this->fieldBuilderType == 2)
-			{
-				// we do not have the tidy extension set fall back to StringManipulation
-				$this->fieldBuilderType = 1;
-				// load the sugestion to use string manipulation
-				$this->app->enqueueMessage(
-					JText::_('<hr /><h3>Field Notice</h3>'), 'Notice'
-				);
-				$this->app->enqueueMessage(
-					JText::_(
-						'Since you do not have <b>Tidy</b> extentsion setup on your system, we could not use the SimpleXMLElement class. We instead used <b>string manipulation</b> to build all your fields, this is a faster method, you must inspect the xml files in your component package to see if you are satisfied with the result.<br />You can make this method your default by opening the global options of JCB and under the <b>Global</b> tab set the <b>Field Builder Type</b> to string manipulation.'
-					), 'Notice'
-				);
-			}
-			// load the compiler path
-			$this->compilerPath = $this->params->get(
-				'compiler_folder_path',
-				JPATH_COMPONENT_ADMINISTRATOR . '/compiler'
-			);
-			// load the jcb powers path
-			$this->jcbPowersPath = $this->params->get(
-				'jcb_powers_path',
-				'libraries/jcb_powers');
-			// set the component ID
-			$this->componentID = (int) $config['component'];
-			// set this components code name
-			if ($name_code = GetHelper::var(
-				'joomla_component', $this->componentID, 'id', 'name_code'
-			))
-			{
-				// set lang prefix
-				$this->langPrefix = 'COM_' . StringHelper::safe(
-						$name_code, 'U'
-					);
-				// set component code name
-				$this->componentCodeName = StringHelper::safe(
-					$name_code
-				);
-				// set component context
-				$this->componentContext = $this->componentCodeName . '.'
-					. $this->componentID;
-				// set the component name length
-				$this->componentCodeNameLength = strlen(
-					$this->componentCodeName
-				);
-				// add assets table fix
-				$global                  = (int) $this->params->get(
-					'assets_table_fix', 1
-				);
-				$this->addAssetsTableFix = (($add_assets_table_fix
-						= (int) GetHelper::var(
-						'joomla_component', $this->componentID, 'id',
-						'assets_table_fix'
-					)) == 3) ? $global : $add_assets_table_fix;
-				// set if language strings line breaks should be removed
-				$global                 = ((int) GetHelper::var(
-						'joomla_component', $this->componentID, 'id',
-						'remove_line_breaks'
-					) == 1) ? true : false;
-				$this->removeLineBreaks = ((int) $config['remove_line_breaks']
-					== 0)
-					? false
-					: (((int) $config['remove_line_breaks'] == 1) ? true
-						: $global);
-				// set if placeholders should be added to customcode
-				$global                = ((int) GetHelper::var(
-						'joomla_component', $this->componentID, 'id',
-						'add_placeholders'
-					) == 1) ? true : false;
-				$this->addPlaceholders = ((int) $config['placeholders'] == 0)
-					? false
-					: (((int) $config['placeholders'] == 1) ? true : $global);
-				// set if line numbers should be added to comments
-				$global            = ((int) GetHelper::var(
-						'joomla_component', $this->componentID, 'id',
-						'debug_linenr'
-					) == 1) ? true : false;
-				$this->debugLinenr = ((int) $config['debuglinenr'] == 0) ? false
-					: (((int) $config['debuglinenr'] == 1) ? true : $global);
-				// set if powers should be added to component (default is true)
-				$global          = ((int) GetHelper::var(
-						'joomla_component', $this->componentID, 'id',
-						'add_powers'
-					) == 1) ? true : false;
-				$this->addPower = (isset($config['powers']) && (int) $config['powers'] == 0)
-					? false : ((isset($config['powers']) && (int) $config['powers'] == 1) ? true : $global);
-				// set the current user
-				$this->user = JFactory::getUser();
-				// Get a db connection.
-				$this->db = JFactory::getDbo();
-				// get global placeholders
-				$this->globalPlaceholders = $this->getGlobalPlaceholders();
-				// check if this component is installed on the current website
-				if ($paths = $this->getLocalInstallPaths())
-				{
-					// start Automatic import of custom code
-					$today = JFactory::getDate()->toSql();
-					// get the custom code from installed files
-					$this->customCodeFactory($paths, $today);
-				}
-				// Trigger Event: jcb_ce_onBeforeGetComponentData
-				$this->triggerEvent(
-					'jcb_ce_onBeforeGetComponentData',
-					array(&$this->componentContext, &$this)
-				);
-				// get the component data
-				$this->componentData = $this->getComponentData();
-				// Trigger Event: jcb_ce_onAfterGetComponentData
-				$this->triggerEvent(
-					'jcb_ce_onAfterGetComponentData',
-					array(&$this->componentContext, &$this)
-				);
-				// make sure we have a version
-				if (strpos($this->componentData->component_version, '.')
-					=== false)
-				{
-					$this->componentData->component_version = '1.0.0';
-				}
-				// update the version
-				if (!isset($this->componentData->old_component_version)
-					&& (ArrayHelper::check($this->addSQL)
-						|| ArrayHelper::check(
-							$this->updateSQL
-						)))
-				{
-					// set the new version
-					$version = (array) explode(
-						'.', $this->componentData->component_version
-					);
-					// get last key
-					end($version);
-					$key = key($version);
-					// just increment the last
-					$version[$key]++;
-					// set the old version
-					$this->componentData->old_component_version
-						= $this->componentData->component_version;
-					// set the new version, and set update switch
-					$this->componentData->component_version = implode(
-						'.', $version
-					);
-				}
-				// get powers *+*+*+*+*+*+*+*PRO
-				$this->getPowers($this->linkedPowers);
-				// set the percentage when a language can be added
-				$this->percentageLanguageAdd = (int) $this->params->get(
-					'percentagelanguageadd', 50
-				);
-
-				// Trigger Event: jcb_ce_onBeforeGet
-				$this->triggerEvent(
-					'jcb_ce_onAfterGet', array(&$this->componentContext, &$this)
-				);
-
-				return true;
 			}
 		}
+		// Trigger Event: jcb_ce_onBeforeGet
+		$this->triggerEvent('jcb_ce_onBeforeGet', array(&$config, &$this));
+		// load the global config
+		Config::init($config);
+		// set the Joomla version @deprecated
+		$this->joomlaVersion = Config::get('version', 3);
+		// set the minfy switch of the JavaScript @deprecated
+		$this->minify = Config::get('minify', 0);
+		// set the global language @deprecated @deprecated
+		$this->langTag = Config::get('lang_tag', 'en-GB');
+		// also set the helper class langTag (for safeStrings)
+		ComponentbuilderHelper::$langTag = Config::get('lang_tag', 'en-GB');
+		// setup the main language array
+		$this->languages['components'][Config::get('lang_tag', 'en-GB')] = array();
+		// check if we have Tidy enabled @deprecated
+		$this->tidy = Config::get('tidy', false);
+		// set the field type builder @deprecated
+		$this->fieldBuilderType = Config::get('field_builder_type', 2);
+		// check the field builder type logic
+		if (!Config::get('tidy', false) && Config::get('field_builder_type', 2) == 2)
+		{
+			// we do not have the tidy extension set fall back to StringManipulation
+			$this->fieldBuilderType = 1;
+			// load the sugestion to use string manipulation
+			$this->app->enqueueMessage(
+				JText::_('<hr /><h3>Field Notice</h3>'), 'Notice'
+			);
+			$this->app->enqueueMessage(
+				JText::_(
+					'Since you do not have <b>Tidy</b> extentsion setup on your system, we could not use the SimpleXMLElement class. We instead used <b>string manipulation</b> to build all your fields, this is a faster method, you must inspect the xml files in your component package to see if you are satisfied with the result.<br />You can make this method your default by opening the global options of JCB and under the <b>Global</b> tab set the <b>Field Builder Type</b> to string manipulation.'
+				), 'Notice'
+			);
+		}
+		Config::set('field_builder_type', $this->fieldBuilderType);
+		// load the compiler path @deprecated
+		$this->compilerPath = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler');
+		// load the jcb powers path @deprecated
+		$this->jcbPowersPath = Config::get('jcb_powers_path', 'libraries/jcb_powers');
+		// set the component ID @deprecated
+		$this->componentID = Config::get('component_id');
+		// set lang prefix @deprecated
+		$this->langPrefix = Config::get('lang_prefix');
+		// set component code name @deprecated
+		$this->componentCodeName = Config::get('component_code_name');
+		// set component context @deprecated
+		$this->componentContext = Config::get('component_context');
+		// set the component name length @deprecated
+		$this->componentCodeNameLength = Config::get('component_code_name_length');
+		// add assets table fix @deprecated
+		$this->addAssetsTableFix = Config::get('add_assets_table_fix');
+		// set if language strings line breaks should be removed @deprecated
+		$this->removeLineBreaks = Config::get('remove_line_breaks');
+		// set if placeholders should be added to customcode @deprecated
+		$this->addPlaceholders = Config::get('add_placeholders', false);
+		// set if line numbers should be added to comments @deprecated
+		$this->debugLinenr = Config::get('debug_line_nr', false);
+		// set if powers should be added to component (default is true) @deprecated
+		$this->addPower = Config::get('add_power', true);
+		// set the current user
+		$this->user = JFactory::getUser();
+		// Get a db connection.
+		$this->db = JFactory::getDbo();
+		// get global placeholders
+		$this->globalPlaceholders = $this->getGlobalPlaceholders();
+		// check if this component is installed on the current website
+		if ($paths = $this->getLocalInstallPaths())
+		{
+			// start Automatic import of custom code
+			$today = JFactory::getDate()->toSql();
+			// get the custom code from installed files
+			$this->customCodeFactory($paths, $today);
+		}
+		// Trigger Event: jcb_ce_onBeforeGetComponentData
+		$this->triggerEvent(
+			'jcb_ce_onBeforeGetComponentData',
+			array(&$this->componentContext, &$this)
+		);
+		// get the component data
+		$this->componentData = $this->getComponentData();
+		// Trigger Event: jcb_ce_onAfterGetComponentData
+		$this->triggerEvent(
+			'jcb_ce_onAfterGetComponentData',
+			array(&$this->componentContext, &$this)
+		);
+		// make sure we have a version
+		if (strpos($this->componentData->component_version, '.')
+			=== false)
+		{
+			$this->componentData->component_version = '1.0.0';
+		}
+		// update the version
+		if (!isset($this->componentData->old_component_version)
+			&& (ArrayHelper::check($this->addSQL)
+				|| ArrayHelper::check(
+					$this->updateSQL
+				)))
+		{
+			// set the new version
+			$version = (array) explode(
+				'.', $this->componentData->component_version
+			);
+			// get last key
+			end($version);
+			$key = key($version);
+			// just increment the last
+			$version[$key]++;
+			// set the old version
+			$this->componentData->old_component_version
+				= $this->componentData->component_version;
+			// set the new version, and set update switch
+			$this->componentData->component_version = implode(
+				'.', $version
+			);
+		}
+		// get powers *+*+*+*+*+*+*+*PRO
+		$this->getPowers($this->linkedPowers);
+		// set the percentage when a language can be added
+		$this->percentageLanguageAdd = (int) $this->params->get(
+			'percentagelanguageadd', 50
+		);
 
-		return false;
+		// Trigger Event: jcb_ce_onBeforeGet
+		$this->triggerEvent(
+			'jcb_ce_onAfterGet', array(&$this->componentContext, &$this)
+		);
+
+		return true;
 	}
 
 	/**
@@ -1159,7 +1130,7 @@ class Get
 	 */
 	private function setLine($nr)
 	{
-		if ($this->debugLinenr)
+		if (Config::get('debug_line_nr', false))
 		{
 			return ' [Get ' . $nr . ']';
 		}
@@ -1231,14 +1202,14 @@ class Get
 		}
 		// set component place holders
 		$bucket[$this->hhh . 'component' . $this->hhh]
-			                                             = $this->componentCodeName;
+			                                             = Config::get('component_code_name');
 		$bucket[$this->hhh . 'Component' . $this->hhh]
 			                                             = StringHelper::safe(
-			$this->componentCodeName, 'F'
+			Config::get('component_code_name'), 'F'
 		);
 		$bucket[$this->hhh . 'COMPONENT' . $this->hhh]
 			                                             = StringHelper::safe(
-			$this->componentCodeName, 'U'
+			Config::get('component_code_name'), 'U'
 		);
 		$bucket[$this->bbb . 'component' . $this->ddd]   = $bucket[$this->hhh
 		. 'component' . $this->hhh];
@@ -1246,12 +1217,12 @@ class Get
 		. 'Component' . $this->hhh];
 		$bucket[$this->bbb . 'COMPONENT' . $this->ddd]   = $bucket[$this->hhh
 		. 'COMPONENT' . $this->hhh];
-		$bucket[$this->hhh . 'LANG_PREFIX' . $this->hhh] = $this->langPrefix;
+		$bucket[$this->hhh . 'LANG_PREFIX' . $this->hhh] = Config::get('lang_prefix');
 		$bucket[$this->bbb . 'LANG_PREFIX' . $this->ddd] = $bucket[$this->hhh
 		. 'LANG_PREFIX' . $this->hhh];
 		// get the current components overides
 		if (($_placeholders = GetHelper::var(
-				'component_placeholders', $this->componentID,
+				'component_placeholders', Config::get('component_id'),
 				'joomla_component', 'addplaceholders'
 			)) !== false
 			&& JsonHelper::check($_placeholders))
@@ -1336,7 +1307,7 @@ class Get
 			);
 		}
 		$query->where(
-			$this->db->quoteName('a.id') . ' = ' . (int) $this->componentID
+			$this->db->quoteName('a.id') . ' = ' . (int) Config::get('component_id')
 		);
 
 		// Trigger Event: jcb_ce_onBeforeQueryComponentData
@@ -1365,36 +1336,36 @@ class Get
 				                                 'val'   => (int) $component->addadmin_views_id,
 				                                 'key'   => 'id'),
 				'addconfig'             => array('table' => 'component_config',
-				                                 'val'   => (int) $this->componentID,
+				                                 'val'   => (int) Config::get('component_id'),
 				                                 'key'   => 'joomla_component'),
 				'addcustom_admin_views' => array('table' => 'component_custom_admin_views',
-				                                 'val'   => (int) $this->componentID,
+				                                 'val'   => (int) Config::get('component_id'),
 				                                 'key'   => 'joomla_component'),
 				'addcustommenus'        => array('table' => 'component_custom_admin_menus',
-				                                 'val'   => (int) $this->componentID,
+				                                 'val'   => (int) Config::get('component_id'),
 				                                 'key'   => 'joomla_component'),
 				'addfiles'              => array('table' => 'component_files_folders',
-				                                 'val'   => (int) $this->componentID,
+				                                 'val'   => (int) Config::get('component_id'),
 				                                 'key'   => 'joomla_component'),
 				'addfolders'            => array('table' => 'component_files_folders',
-				                                 'val'   => (int) $this->componentID,
+				                                 'val'   => (int) Config::get('component_id'),
 				                                 'key'   => 'joomla_component'),
 				'addsite_views'         => array('table' => 'component_site_views',
-				                                 'val'   => (int) $this->componentID,
+				                                 'val'   => (int) Config::get('component_id'),
 				                                 'key'   => 'joomla_component'),
 				'dashboard_tab'         => array('table' => 'component_dashboard',
-				                                 'val'   => (int) $this->componentID,
+				                                 'val'   => (int) Config::get('component_id'),
 				                                 'key'   => 'joomla_component'),
 				'sql_tweak'             => array('table' => 'component_mysql_tweaks',
-				                                 'val'   => (int) $this->componentID,
+				                                 'val'   => (int) Config::get('component_id'),
 				                                 'key'   => 'joomla_component'),
 				'version_update'        => array('table' => 'component_updates',
-				                                 'val'   => (int) $this->componentID,
+				                                 'val'   => (int) Config::get('component_id'),
 				                                 'key'   => 'joomla_component')
 			),
 			'table'  => 'joomla_component',
 			'key'    => 'id',
-			'val'    => (int) $this->componentID
+			'val'    => (int) Config::get('component_id')
 		);
 		// repeatable fields to update
 		$searchRepeatables = array(
@@ -1793,7 +1764,7 @@ class Get
 			'component_admin_views', $component->addadmin_views_id
 		);
 		$old_component   = $this->getHistoryWatch(
-			'joomla_component', $this->componentID
+			'joomla_component', Config::get('component_id')
 		);
 		if ($old_component || $old_admin_views)
 		{
@@ -1834,7 +1805,7 @@ class Get
 
 		// set GUI mapper
 		$guiMapper = array('table' => 'joomla_component',
-		                   'id'    => (int) $this->componentID,
+		                   'id'    => (int) Config::get('component_id'),
 		                   'field' => 'javascript', 'type' => 'js');
 
 		// add_javascript
@@ -2044,11 +2015,11 @@ class Get
 		// bom
 		if (StringHelper::check($component->bom))
 		{
-			$this->bomPath = $this->compilerPath . '/' . $component->bom;
+			$this->bomPath = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/' . $component->bom;
 		}
 		else
 		{
-			$this->bomPath = $this->compilerPath . '/default.txt';
+			$this->bomPath = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/default.txt';
 		}
 		unset($component->bom);
 		// README
@@ -2228,10 +2199,10 @@ class Get
 	{
 		if ($addPrefix
 			&& !isset(
-				$this->langContent[$target][$this->langPrefix . '_' . $language]
+				$this->langContent[$target][Config::get('lang_prefix') . '_' . $language]
 			))
 		{
-			$this->langContent[$target][$this->langPrefix . '_' . $language]
+			$this->langContent[$target][Config::get('lang_prefix') . '_' . $language]
 				= $this->fixLangString($string);
 		}
 		elseif (!isset($this->langContent[$target][$language]))
@@ -2252,7 +2223,7 @@ class Get
 	 */
 	public function fixLangString(&$string)
 	{
-		if ($this->removeLineBreaks)
+		if (Config::get('remove_line_breaks'))
 		{
 			return trim(str_replace(array(PHP_EOL, "\r", "\n"), '', $string));
 		}
@@ -2353,7 +2324,7 @@ class Get
 			}
 
 			// check the length of the view name (+5 for com_ and _)
-			$name_length = $this->componentCodeNameLength + strlen(
+			$name_length = Config::get('component_code_name_length') + strlen(
 					$view->name_single_code
 				) + 5;
 			// when the name is larger then 49 we need to add the assets table name fix
@@ -2475,7 +2446,7 @@ class Get
 								$tab['name']
 							)) ? $tab['name'] : 'Tab';
 						// set lang
-						$tab['lang'] = $this->langPrefix . '_'
+						$tab['lang'] = Config::get('lang_prefix') . '_'
 							. StringHelper::safe(
 								$tab['view'], 'U'
 							) . '_' . StringHelper::safe(
@@ -3013,7 +2984,7 @@ class Get
 							// confirm it should really make the over ride
 							if ('default' !== $check_column_name)
 							{
-								$column_name_lang = $this->langPrefix . '_'
+								$column_name_lang = Config::get('lang_prefix') . '_'
 									. StringHelper::safe(
 										$view->name_list_code, 'U'
 									) . '_'
@@ -5843,7 +5814,7 @@ class Get
 				// remove watch
 				if (isset($version_note['component'])
 					&& ($key = array_search(
-						$this->componentID, $version_note['component']
+						Config::get('component_id'), $version_note['component']
 					)) !== false)
 				{
 					// last version that was used to build/compile
@@ -5859,9 +5830,9 @@ class Get
 				break;
 			case 1:
 				// add watch
-				if (!in_array($this->componentID, $version_note['component']))
+				if (!in_array(Config::get('component_id'), $version_note['component']))
 				{
-					$version_note['component'][] = $this->componentID;
+					$version_note['component'][] = Config::get('component_id');
 				}
 				else
 				{
@@ -6713,7 +6684,7 @@ class Get
 			return false;
 		}
 		// build lang key
-		$keyLang = $this->langPrefix . '_' . StringHelper::safe(
+		$keyLang = Config::get('lang_prefix') . '_' . StringHelper::safe(
 				$string, 'U'
 			);
 		// set the language string
@@ -6751,7 +6722,7 @@ class Get
 			elseif ('view' === $type)
 			{
 				$view      = $this->getViewTableName($asset);
-				$table     = '#__' . $this->componentCodeName . '_' . $view;
+				$table     = '#__' . Config::get('component_code_name') . '_' . $view;
 				$queryName = $view;
 			}
 			// just get all values from table if * is found
@@ -8027,7 +7998,7 @@ class Get
 		$counterUpdate = 0;
 		$today         = JFactory::getDate()->toSql();
 		foreach (
-			$this->languages[$target][$this->langTag] as $area => $placeholders
+			$this->languages[$target][Config::get('lang_tag', 'en-GB')] as $area => $placeholders
 		)
 		{
 			foreach ($placeholders as $placeholder => $string)
@@ -8638,7 +8609,7 @@ class Get
 	 */
 	public function getPower($guid, $build = 0)
 	{
-		if (($this->addPower || $build == 1) && $this->setPower($guid))
+		if ((Config::get('add_power', true) || $build == 1) && $this->setPower($guid))
 		{
 			return $this->powers[$guid];
 		}
@@ -8799,7 +8770,7 @@ class Get
 							}, $src_array));
 					}
 					// now we set the paths
-					$power->path_jcb    = $this->jcbPowersPath;
+					$power->path_jcb    = Config::get('jcb_powers_path', 'libraries/jcb_powers');
 					$power->path_parent = $power->path_jcb . '/' . $prefix_folder;
 					$power->path        = $power->path_parent . '/src' . $sub_folder;
 				}
@@ -8815,7 +8786,14 @@ class Get
 				{
 					$use = array_values(array_map(function ($u) use(&$as) {
 						// track the AS options
-						$as[$u['use']] = (string) $u['as'];
+						if (empty($u['as']))
+						{
+							$as[$u['use']] = 'default';
+						}
+						else
+						{
+							$as[$u['use']] = (string) $u['as'];
+						}
 						// return the guid
 						return $u['use'];
 					}, $power->use_selection));
@@ -9056,7 +9034,7 @@ class Get
 	protected function getModuleIDs()
 	{
 		if (($addjoomla_modules = GetHelper::var(
-				'component_modules', $this->componentID, 'joomla_component',
+				'component_modules', Config::get('component_id'), 'joomla_component',
 				'addjoomla_modules'
 			)) !== false)
 		{
@@ -9156,7 +9134,7 @@ class Get
 				// tweak system to set stuff to the module domain
 				$_backup_target     = $this->target;
 				$_backup_lang       = $this->lang;
-				$_backup_langPrefix = $this->langPrefix;
+				$_backup_langPrefix = Config::get('lang_prefix');
 				// set some keys
 				$module->target_type = 'M0dU|3';
 				$module->key         = $module->id . '_' . $module->target_type;
@@ -9178,7 +9156,6 @@ class Get
 					// default is site area
 					$module->target_client = 'site';
 				}
-				unset($module->target);
 				// set GUI mapper
 				$guiMapper = array('table' => 'joomla_module',
 				                   'id'    => (int) $id, 'type' => 'php');
@@ -9191,14 +9168,17 @@ class Get
 					= ClassfunctionHelper::safe(
 					$module->name
 				);
+				// alias of code name
+				$module->class_name = $module->code_name;
 				// set official name
 				$module->official_name = StringHelper::safe(
 					$module->name, 'W'
 				);
 				// set langPrefix
 				$this->langPrefix = 'MOD_' . strtoupper($module->code_name);
+				Config::set('lang_prefix', $this->langPrefix);
 				// set lang prefix
-				$module->lang_prefix = $this->langPrefix;
+				$module->lang_prefix = Config::get('lang_prefix');
 				// set module class name
 				$module->class_helper_name = 'Mod' . ucfirst($module->code_name)
 					. 'Helper';
@@ -9213,14 +9193,14 @@ class Get
 				// set the zip name
 				$module->zip_name = $module->folder_name . '_v' . str_replace(
 						'.', '_', $module->module_version
-					) . '__J' . $this->joomlaVersion;
+					) . '__J' . Config::get('version', 3);
 				// set module file name
 				$module->file_name = $module->folder_name;
 				// set module context
 				$module->context = $module->file_name . '.' . $module->id;
 				// set official_name lang strings
 				$this->setLangContent(
-					$module->key, $this->langPrefix, $module->official_name
+					$module->key, Config::get('lang_prefix'), $module->official_name
 				);
 				// set some placeholder for this module
 				$this->placeholders[$this->bbb . 'Module_name' . $this->ddd]
@@ -9860,6 +9840,7 @@ class Get
 				$this->target     = $_backup_target;
 				$this->lang       = $_backup_lang;
 				$this->langPrefix = $_backup_langPrefix;
+				Config::set('lang_prefix', $_backup_langPrefix);
 
 				unset(
 					$this->placeholders[$this->bbb . 'Module_name' . $this->ddd]
@@ -9894,7 +9875,7 @@ class Get
 	{
 		$xml = '<?xml version="1.0" encoding="utf-8"?>';
 		$xml .= PHP_EOL . '<extension type="module" version="'
-			. $this->joomlaVersions[$this->joomlaVersion]['xml_version'] . '" client="'
+			. $this->joomlaVersions[Config::get('version', 3)]['xml_version'] . '" client="'
 			. $module->target_client . '" method="upgrade">';
 		$xml .= PHP_EOL . $this->_t(1) . '<name>' . $module->lang_prefix
 			. '</name>';
@@ -9969,7 +9950,7 @@ class Get
 	protected function getPluginIDs()
 	{
 		if (($addjoomla_plugins = GetHelper::var(
-				'component_plugins', $this->componentID, 'joomla_component',
+				'component_plugins', Config::get('component_id'), 'joomla_component',
 				'addjoomla_plugins'
 			)) !== false)
 		{
@@ -10159,7 +10140,7 @@ class Get
 				// tweak system to set stuff to the plugin domain
 				$_backup_target     = $this->target;
 				$_backup_lang       = $this->lang;
-				$_backup_langPrefix = $this->langPrefix;
+				$_backup_langPrefix = Config::get('lang_prefix');
 				// set some keys
 				$plugin->target_type = 'P|uG!n';
 				$plugin->key         = $plugin->id . '_' . $plugin->target_type;
@@ -10193,8 +10174,9 @@ class Get
 						$plugin->code_name,
 						$plugin->group
 				);
+				Config::set('lang_prefix', $this->langPrefix);
 				// set lang prefix
-				$plugin->lang_prefix = $this->langPrefix;
+				$plugin->lang_prefix = Config::get('lang_prefix');
 				// set plugin class name
 				$plugin->class_name
 					= PluginHelper::safeClassName(
@@ -10216,14 +10198,14 @@ class Get
 				// set the zip name
 				$plugin->zip_name = $plugin->folder_name . '_v' . str_replace(
 						'.', '_', $plugin->plugin_version
-					) . '__J' . $this->joomlaVersion;
+					) . '__J' . Config::get('version', 3);
 				// set plugin file name
 				$plugin->file_name = strtolower($plugin->code_name);
 				// set plugin context
 				$plugin->context = $plugin->folder_name . '.' . $plugin->id;
 				// set official_name lang strings
 				$this->setLangContent(
-					$plugin->key, $this->langPrefix, $plugin->official_name
+					$plugin->key, Config::get('lang_prefix'), $plugin->official_name
 				);
 				// set some placeholder for this plugin
 				$this->placeholders[$this->bbb . 'Plugin_name' . $this->ddd]
@@ -10764,6 +10746,7 @@ class Get
 				$this->target     = $_backup_target;
 				$this->lang       = $_backup_lang;
 				$this->langPrefix = $_backup_langPrefix;
+				Config::set('lang_prefix', $_backup_langPrefix);
 
 				unset(
 					$this->placeholders[$this->bbb . 'Plugin_name' . $this->ddd]
@@ -10818,7 +10801,7 @@ class Get
 	{
 		$xml = '<?xml version="1.0" encoding="utf-8"?>';
 		$xml .= PHP_EOL . '<extension type="plugin" version="'
-			. $this->joomlaVersions[$this->joomlaVersion]['xml_version'] . '" group="'
+			. $this->joomlaVersions[Config::get('version', 3)]['xml_version'] . '" group="'
 			. strtolower($plugin->group) . '" method="upgrade">';
 		$xml .= PHP_EOL . $this->_t(1) . '<name>' . $plugin->lang_prefix
 			. '</name>';
@@ -10971,16 +10954,16 @@ class Get
 			$this->globalPlaceholders
 		);
 		$placeholders[StringHelper::safe(
-			$this->componentCodeName, 'F'
+			Config::get('component_code_name'), 'F'
 		) . 'Helper::']
 		                                                 = $this->bbb
 			. 'Component' . $this->ddd . 'Helper::';
 		$placeholders['COM_' . StringHelper::safe(
-			$this->componentCodeName, 'U'
+			Config::get('component_code_name'), 'U'
 		)]
 		                                                 = 'COM_' . $this->bbb
 			. 'COMPONENT' . $this->ddd;
-		$placeholders['com_' . $this->componentCodeName] = 'com_' . $this->bbb
+		$placeholders['com_' . Config::get('component_code_name')] = 'com_' . $this->bbb
 			. 'component' . $this->ddd;
 		// putt the last first
 		$placeholders = array_reverse($placeholders, true);
@@ -11326,7 +11309,7 @@ class Get
 							);  // 'comment_type'
 							$this->newCustomCode[$pointer[$targetKey]][]
 								= $this->db->quote(
-								(int) $this->componentID
+								(int) Config::get('component_id')
 							); // 'component'
 							$this->newCustomCode[$pointer[$targetKey]][]
 								= $this->db->quote(
@@ -11383,7 +11366,7 @@ class Get
 								. $this->db->quote($commentType);
 							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
 								= $this->db->quoteName('component') . ' = '
-								. $this->db->quote($this->componentID);
+								. $this->db->quote(Config::get('component_id'));
 							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
 								= $this->db->quoteName('from_line') . ' = '
 								. $this->db->quote($lineNumber);
@@ -11557,7 +11540,7 @@ class Get
 	{
 		if (StringHelper::check($string))
 		{
-			if ($this->addPlaceholders
+			if (Config::get('add_placeholders', false)
 				&& $this->canAddGuiCodePlaceholder(
 					$string
 				)
@@ -11893,15 +11876,16 @@ class Get
 			if (strpos($target, 'module') !== false)
 			{
 				// backup lang prefix
-				$_tmp_lang_prefix = $this->langPrefix;
+				$_tmp_lang_prefix = Config::get('lang_prefix');
 				// set the new lang prefix
 				$this->langPrefix = strtoupper(
 					str_replace('module', 'mod', $target)
 				);
+				Config::set('lang_prefix', $this->langPrefix);
 				// now set the lang
-				if (isset($this->langKeys[$this->langPrefix]))
+				if (isset($this->langKeys[Config::get('lang_prefix')]))
 				{
-					$this->lang = $this->langKeys[$this->langPrefix];
+					$this->lang = $this->langKeys[Config::get('lang_prefix')];
 				}
 				else
 				{
@@ -11911,15 +11895,16 @@ class Get
 			elseif (strpos($target, 'plugin') !== false)
 			{
 				// backup lang prefix
-				$_tmp_lang_prefix = $this->langPrefix;
+				$_tmp_lang_prefix = Config::get('lang_prefix');
 				// set the new lang prefix
 				$this->langPrefix = strtoupper(
 					str_replace('plugin', 'plg', $target)
 				);
+				Config::set('lang_prefix', $this->langPrefix);
 				// now set the lang
-				if (isset($this->langKeys[$this->langPrefix]))
+				if (isset($this->langKeys[Config::get('lang_prefix')]))
 				{
-					$this->lang = $this->langKeys[$this->langPrefix];
+					$this->lang = $this->langKeys[Config::get('lang_prefix')];
 				}
 				else
 				{
@@ -11956,7 +11941,7 @@ class Get
 						continue;
 					}
 					// build lang key
-					$keyLang = $this->langPrefix . '_' . $_keyLang;
+					$keyLang = Config::get('lang_prefix') . '_' . $_keyLang;
 					// set lang content string
 					$this->setLangContent($this->lang, $keyLang, $lang);
 					// reverse the placeholders
@@ -11979,6 +11964,7 @@ class Get
 			if (isset($_tmp_lang_prefix))
 			{
 				$this->langPrefix = $_tmp_lang_prefix;
+				Config::set('lang_prefix', $_tmp_lang_prefix);
 			}
 		}
 
@@ -12072,7 +12058,7 @@ class Get
 		{
 			case 11:
 				//***[REPLACED$$$$]***//**1**/
-				if ($this->addPlaceholders === true)
+				if (Config::get('add_placeholders', false) === true)
 				{
 					return array(
 						'start' => '/***[REPLACED$$$$]***//**' . $id . '**/',
@@ -12087,7 +12073,7 @@ class Get
 				break;
 			case 12:
 				//***[INSERTED$$$$]***//**1**/
-				if ($this->addPlaceholders === true)
+				if (Config::get('add_placeholders', false) === true)
 				{
 					return array(
 						'start' => '/***[INSERTED$$$$]***//**' . $id . '**/',
@@ -12102,7 +12088,7 @@ class Get
 				break;
 			case 21:
 				//<!--[REPLACED$$$$]--><!--1-->
-				if ($this->addPlaceholders === true)
+				if (Config::get('add_placeholders', false) === true)
 				{
 					return array(
 						'start' => '<!--[REPLACED$$$$]--><!--' . $id . '-->',
@@ -12117,7 +12103,7 @@ class Get
 				break;
 			case 22:
 				//<!--[INSERTED$$$$]--><!--1-->
-				if ($this->addPlaceholders === true)
+				if (Config::get('add_placeholders', false) === true)
 				{
 					return array(
 						'start' => '<!--[INSERTED$$$$]--><!--' . $id . '-->',
@@ -12152,15 +12138,15 @@ class Get
 		$localPaths = array();
 		// admin path
 		$localPaths['admin'] = JPATH_ADMINISTRATOR . '/components/com_'
-			. $this->componentCodeName;
+			. Config::get('component_code_name');
 		// site path
 		$localPaths['site'] = JPATH_ROOT . '/components/com_'
-			. $this->componentCodeName;
+			. Config::get('component_code_name');
 		// media path
 		$localPaths['media'] = JPATH_ROOT . '/media/com_'
-			. $this->componentCodeName;
+			. Config::get('component_code_name');
 		// power path
-		$localPaths['power'] = JPATH_ROOT . '/' . $this->jcbPowersPath;
+		$localPaths['power'] = JPATH_ROOT . '/' . Config::get('jcb_powers_path', 'libraries/jcb_powers');
 		// lets also go over the REPOS (TODO)
 		// Painfull but we need to folder paths for the linked modules
 		if (($module_ids = $this->getModuleIDs()) !== false)

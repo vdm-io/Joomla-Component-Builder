@@ -20,6 +20,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Componentbuilder\Extension\InstallScript;
+use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
 
 /**
  * Infusion class
@@ -55,7 +56,7 @@ class Infusion extends Interpretation
 	 */
 	private function setLine($nr)
 	{
-		if ($this->debugLinenr)
+		if (Config::get('debug_line_nr', false))
 		{
 			return ' [Infusion ' . $nr . ']';
 		}
@@ -189,7 +190,7 @@ class Infusion extends Interpretation
 
 			// set the joomla target xml version
 			$this->fileContentStatic[$this->hhh . 'XMLVERSION' . $this->hhh]
-				= $this->joomlaVersions[$this->joomlaVersion]['xml_version'];
+				= $this->joomlaVersions[Config::get('version', 3)]['xml_version'];
 
 			// Component_name
 			$this->fileContentStatic[$this->hhh . 'Component_name' . $this->hhh]
@@ -440,7 +441,7 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$nameSingleCode][$this->hhh
 					. 'FIELDSETS' . $this->hhh]
 						= $this->setFieldSet(
-						$view, $this->componentCodeName,
+						$view, Config::get('component_code_name'),
 						$nameSingleCode,
 						$nameListCode
 					);
@@ -774,7 +775,7 @@ class Infusion extends Interpretation
 						. 'AUTOCHECKIN' . $this->hhh]
 							= $this->setAutoCheckin(
 							$nameSingleCode,
-							$this->componentCodeName
+							Config::get('component_code_name')
 						);
 						// CHECKINCALL <<<DYNAMIC>>>
 						$this->fileContentDynamic[$nameListCode][$this->hhh
@@ -1038,7 +1039,7 @@ class Infusion extends Interpretation
 						&& StringHelper::check($footerScript))
 					{
 						// only minfy if no php is added to the footer script
-						if ($this->minify
+						if (Config::get('minify', 0)
 							&& strpos($footerScript, '<?php') === false)
 						{
 							// minfy the script
@@ -1333,12 +1334,12 @@ class Infusion extends Interpretation
 					// add to lang array
 					$this->setLangContent(
 						$this->lang,
-						$this->langPrefix . '_' . $view['settings']->CODE,
+						Config::get('lang_prefix') . '_' . $view['settings']->CODE,
 						$view['settings']->name
 					);
 					$this->setLangContent(
 						$this->lang,
-						$this->langPrefix . '_' . $view['settings']->CODE
+						Config::get('lang_prefix') . '_' . $view['settings']->CODE
 						. '_DESC', $view['settings']->description
 					);
 					// ICOMOON <<<DYNAMIC>>>
@@ -1677,47 +1678,47 @@ class Infusion extends Interpretation
 				// DASHBOARDVIEW
 				$this->fileContentStatic[$this->hhh . 'DASHBOARDVIEW'
 				. $this->hhh]
-					= $this->componentCodeName;
+					= Config::get('component_code_name');
 
 				// DASHBOARDICONS
-				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				$this->fileContentDynamic[Config::get('component_code_name')][$this->hhh
 				. 'DASHBOARDICONS' . $this->hhh]
 					= $this->setDashboardIcons();
 
 				// DASHBOARDICONACCESS
-				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				$this->fileContentDynamic[Config::get('component_code_name')][$this->hhh
 				. 'DASHBOARDICONACCESS' . $this->hhh]
 					= $this->setDashboardIconAccess();
 
 				// DASH_MODEL_METHODS
-				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				$this->fileContentDynamic[Config::get('component_code_name')][$this->hhh
 				. 'DASH_MODEL_METHODS' . $this->hhh]
 					= $this->setDashboardModelMethods();
 
 				// DASH_GET_CUSTOM_DATA
-				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				$this->fileContentDynamic[Config::get('component_code_name')][$this->hhh
 				. 'DASH_GET_CUSTOM_DATA' . $this->hhh]
 					= $this->setDashboardGetCustomData();
 
 				// DASH_DISPLAY_DATA
-				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				$this->fileContentDynamic[Config::get('component_code_name')][$this->hhh
 				. 'DASH_DISPLAY_DATA' . $this->hhh]
 					= $this->setDashboardDisplayData();
 
 				// DASH_VIEW_HEADER
-				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				$this->fileContentDynamic[Config::get('component_code_name')][$this->hhh
 				. 'DASH_VIEW_HEADER' . $this->hhh]
 					= $this->setFileHeader('dashboard.view', 'dashboard');
 				// DASH_VIEW_HTML_HEADER
-				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				$this->fileContentDynamic[Config::get('component_code_name')][$this->hhh
 				. 'DASH_VIEW_HTML_HEADER' . $this->hhh]
 					= $this->setFileHeader('dashboard.view.html', 'dashboard');
 				// DASH_MODEL_HEADER
-				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				$this->fileContentDynamic[Config::get('component_code_name')][$this->hhh
 				. 'DASH_MODEL_HEADER' . $this->hhh]
 					= $this->setFileHeader('dashboard.model', 'dashboard');
 				// DASH_CONTROLLER_HEADER
-				$this->fileContentDynamic[$this->componentCodeName][$this->hhh
+				$this->fileContentDynamic[Config::get('component_code_name')][$this->hhh
 				. 'DASH_CONTROLLER_HEADER' . $this->hhh]
 					= $this->setFileHeader('dashboard.controller', 'dashboard');
 			}
@@ -2018,12 +2019,12 @@ class Infusion extends Interpretation
 					// add to lang array
 					$this->setLangContent(
 						'site',
-						$this->langPrefix . '_' . $view['settings']->CODE,
+						Config::get('lang_prefix') . '_' . $view['settings']->CODE,
 						$view['settings']->name
 					);
 					$this->setLangContent(
 						'site',
-						$this->langPrefix . '_' . $view['settings']->CODE
+						Config::get('lang_prefix') . '_' . $view['settings']->CODE
 						. '_DESC', $view['settings']->description
 					);
 					// SITE_CUSTOM_METHODS <<<DYNAMIC>>>
@@ -2351,7 +2352,7 @@ class Infusion extends Interpretation
 			// tweak system to set stuff to the module domain
 			$_backup_target     = $this->target;
 			$_backup_lang       = $this->lang;
-			$_backup_langPrefix = $this->langPrefix;
+			$_backup_langPrefix = Config::get('lang_prefix');
 			// infuse module data if set
 			if (ArrayHelper::check($this->joomlaModules))
 			{
@@ -2367,6 +2368,7 @@ class Infusion extends Interpretation
 						$this->target     = $module->key;
 						$this->lang       = $module->key;
 						$this->langPrefix = $module->lang_prefix;
+						Config::set('lang_prefix', $module->lang_prefix);
 						// MODCODE
 						$this->fileContentDynamic[$module->key][$this->hhh
 						. 'MODCODE' . $this->hhh]
@@ -2394,7 +2396,7 @@ class Infusion extends Interpretation
 							// INSTALLCLASS
 							$this->fileContentDynamic[$module->key][$this->hhh
 							. 'INSTALLCLASS' . $this->hhh]
-								= (new InstallScript($module, ['debug' => $this->debugLinenr]))->get();
+								= (new InstallScript($module))->get();
 						}
 						// FIELDSET
 						if (isset($module->form_files)
@@ -2446,6 +2448,7 @@ class Infusion extends Interpretation
 						$this->target     = $plugin->key;
 						$this->lang       = $plugin->key;
 						$this->langPrefix = $plugin->lang_prefix;
+						Config::set('lang_prefix', $plugin->lang_prefix);
 						// MAINCLASS
 						$this->fileContentDynamic[$plugin->key][$this->hhh
 						. 'MAINCLASS' . $this->hhh]
@@ -2456,7 +2459,7 @@ class Infusion extends Interpretation
 							// INSTALLCLASS
 							$this->fileContentDynamic[$plugin->key][$this->hhh
 							. 'INSTALLCLASS' . $this->hhh]
-								= (new InstallScript($plugin, ['debug' => $this->debugLinenr]))->get();
+								= (new InstallScript($plugin))->get();
 						}
 						// FIELDSET
 						if (isset($plugin->form_files)
@@ -2497,6 +2500,7 @@ class Infusion extends Interpretation
 			$this->target     = $_backup_target;
 			$this->lang       = $_backup_lang;
 			$this->langPrefix = $_backup_langPrefix;
+			Config::set('lang_prefix', $_backup_langPrefix);
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent
 			$this->triggerEvent(
 				'jcb_ce_onAfterBuildFilesContent',
@@ -2649,20 +2653,20 @@ class Infusion extends Interpretation
 		if ($this->setLangAdmin())
 		{
 			$values[]                = array_values(
-				$this->languages['components'][$this->langTag]['admin']
+				$this->languages['components'][Config::get('lang_tag', 'en-GB')]['admin']
 			);
 			$mainLangLoader['admin'] = count(
-				$this->languages['components'][$this->langTag]['admin']
+				$this->languages['components'][Config::get('lang_tag', 'en-GB')]['admin']
 			);
 		}
 		// check the admin system lang is set
 		if ($this->setLangAdminSys())
 		{
 			$values[]                   = array_values(
-				$this->languages['components'][$this->langTag]['adminsys']
+				$this->languages['components'][Config::get('lang_tag', 'en-GB')]['adminsys']
 			);
 			$mainLangLoader['adminsys'] = count(
-				$this->languages['components'][$this->langTag]['adminsys']
+				$this->languages['components'][Config::get('lang_tag', 'en-GB')]['adminsys']
 			);
 		}
 		// check the site lang is set
@@ -2670,10 +2674,10 @@ class Infusion extends Interpretation
 			&& $this->setLangSite())
 		{
 			$values[]               = array_values(
-				$this->languages['components'][$this->langTag]['site']
+				$this->languages['components'][Config::get('lang_tag', 'en-GB')]['site']
 			);
 			$mainLangLoader['site'] = count(
-				$this->languages['components'][$this->langTag]['site']
+				$this->languages['components'][Config::get('lang_tag', 'en-GB')]['site']
 			);
 		}
 		// check the site system lang is set
@@ -2681,19 +2685,19 @@ class Infusion extends Interpretation
 			&& $this->setLangSiteSys())
 		{
 			$values[]                  = array_values(
-				$this->languages['components'][$this->langTag]['sitesys']
+				$this->languages['components'][Config::get('lang_tag', 'en-GB')]['sitesys']
 			);
 			$mainLangLoader['sitesys'] = count(
-				$this->languages['components'][$this->langTag]['sitesys']
+				$this->languages['components'][Config::get('lang_tag', 'en-GB')]['sitesys']
 			);
 		}
 		$values = array_unique(ArrayHelper::merge($values));
 		// get the other lang strings if there is any
 		$this->multiLangString = $this->getMultiLangStrings($values);
 		// update insert the current lang in to DB
-		$this->setLangPlaceholders($values, $this->componentID);
+		$this->setLangPlaceholders($values, Config::get('component_id'));
 		// remove old unused language strings
-		$this->purgeLanuageStrings($values, $this->componentID);
+		$this->purgeLanuageStrings($values, Config::get('component_id'));
 		// path to INI file
 		$getPAth = $this->templatePath . '/en-GB.com_admin.ini';
 		// Trigger Event: jcb_ce_onBeforeBuildAllLangFiles
@@ -2730,7 +2734,7 @@ class Infusion extends Interpretation
 						$t = '.sys';
 					}
 					// build the file name
-					$file_name = $tag . '.com_' . $this->componentCodeName . $t
+					$file_name = $tag . '.com_' . Config::get('component_code_name') . $t
 						. '.ini';
 					// check if language should be added
 					if ($this->shouldLanguageBeAdded(
@@ -2796,7 +2800,7 @@ class Infusion extends Interpretation
 						= implode(PHP_EOL . $this->_t(2), $langXML['site']);
 				}
 				// build xml path
-				$xmlPath = $this->componentPath . '/' . $this->componentCodeName
+				$xmlPath = $this->componentPath . '/' . Config::get('component_code_name')
 					. '.xml';
 				// get the content in xml
 				$componentXML = FileHelper::getContent(

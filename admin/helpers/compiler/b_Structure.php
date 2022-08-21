@@ -20,6 +20,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\FileHelper;
+use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
 
 
 /**
@@ -403,22 +404,22 @@ class Structure extends Get
 			// run global updater
 			ComponentbuilderHelper::runGlobalUpdater();
 			// set the template path
-			$this->templatePath = $this->compilerPath . '/joomla_'
-				. $this->joomlaVersions[$this->joomlaVersion]['folder_key'];
+			$this->templatePath = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/joomla_'
+				. $this->joomlaVersions[Config::get('version', 3)]['folder_key'];
 			// set some default names
 			$this->componentSalesName  = 'com_'
 				. $this->componentData->sales_name . '__J'
-				. $this->joomlaVersion;
+				. Config::get('version', 3);
 			$this->componentBackupName = 'com_'
 				. $this->componentData->sales_name . '_v' . str_replace(
 					'.', '_', $this->componentData->component_version
-				) . '__J' . $this->joomlaVersion;
+				) . '__J' . Config::get('version', 3);
 			$this->componentFolderName = 'com_'
 				. $this->componentData->name_code . '_v' . str_replace(
 					'.', '_', $this->componentData->component_version
-				) . '__J' . $this->joomlaVersion;
+				) . '__J' . Config::get('version', 3);
 			// set component folder path
-			$this->componentPath = $this->compilerPath . '/'
+			$this->componentPath = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
 				. $this->componentFolderName;
 			// set the template path for custom
 			$this->templatePathCustom = $this->params->get(
@@ -475,7 +476,7 @@ class Structure extends Get
 	 */
 	private function setLine($nr)
 	{
-		if ($this->debugLinenr)
+		if (Config::get('debug_line_nr', false))
 		{
 			return ' [Structure ' . $nr . ']';
 		}
@@ -618,7 +619,7 @@ class Structure extends Get
 					))
 				{
 					// module path
-					$module->folder_path = $this->compilerPath . '/'
+					$module->folder_path = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
 						. $module->folder_name;
 					// set the module paths
 					$this->dynamicPaths[$module->key] = $module->folder_path;
@@ -920,11 +921,11 @@ class Structure extends Get
 								$xml .= PHP_EOL . '<form';
 								$xml .= PHP_EOL . $this->_t(1)
 									. 'addrulepath="/administrator/components/com_'
-									. $this->componentCodeName
+									. Config::get('component_code_name')
 									. '/models/rules"';
 								$xml .= PHP_EOL . $this->_t(1)
 									. 'addfieldpath="/administrator/components/com_'
-									. $this->componentCodeName
+									. Config::get('component_code_name')
 									. '/models/fields"';
 								$xml .= PHP_EOL . '>';
 							}
@@ -1095,7 +1096,7 @@ class Structure extends Get
 					$this->createFolder($module->folder_path . '/language');
 					// also create the lang tag folder
 					$this->createFolder(
-						$module->folder_path . '/language/' . $this->langTag
+						$module->folder_path . '/language/' . Config::get('lang_tag', 'en-GB')
 					);
 					// check if this lib has files
 					if (isset($module->files)
@@ -1199,7 +1200,7 @@ class Structure extends Get
 					))
 				{
 					// plugin path
-					$plugin->folder_path = $this->compilerPath . '/'
+					$plugin->folder_path = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
 						. $plugin->folder_name;
 					// set the plugin paths
 					$this->dynamicPaths[$plugin->key] = $plugin->folder_path;
@@ -1300,7 +1301,7 @@ class Structure extends Get
 							$xml = '<?xml version="1.0" encoding="utf-8"?>';
 							$xml .= PHP_EOL . '<!--' . $this->setLine(__LINE__)
 								. ' default paths of ' . $file
-								. ' form points to ' . $this->componentCodeName
+								. ' form points to ' . Config::get('component_code_name')
 								. ' -->';
 							// search if we must add the component path
 							$add_component_path = false;
@@ -1329,11 +1330,11 @@ class Structure extends Get
 								$xml .= PHP_EOL . '<form';
 								$xml .= PHP_EOL . $this->_t(1)
 									. 'addrulepath="/administrator/components/com_'
-									. $this->componentCodeName
+									. Config::get('component_code_name')
 									. '/models/rules"';
 								$xml .= PHP_EOL . $this->_t(1)
 									. 'addfieldpath="/administrator/components/com_'
-									. $this->componentCodeName
+									. Config::get('component_code_name')
 									. '/models/fields"';
 								$xml .= PHP_EOL . '>';
 							}
@@ -1486,7 +1487,7 @@ class Structure extends Get
 					$this->createFolder($plugin->folder_path . '/language');
 					// also creat the lang tag folder path
 					$this->createFolder(
-						$plugin->folder_path . '/language/' . $this->langTag
+						$plugin->folder_path . '/language/' . Config::get('lang_tag', 'en-GB')
 					);
 					// check if this lib has files
 					if (isset($plugin->files)
@@ -2071,7 +2072,7 @@ class Structure extends Get
 			$this->joomlaVersionData->move->static
 		))
 		{
-			$codeName = $this->componentCodeName;
+			$codeName = Config::get('component_code_name');
 			// TODO needs more looking at this must be dynamic actually
 			$this->notNew[] = 'LICENSE.txt';
 			// do license check
@@ -2879,7 +2880,7 @@ class Structure extends Get
 	private function setJoomlaVersionData()
 	{
 		// option to load other settings
-		$custom_settings = $this->templatePath . '/settings_' . $this->componentCodeName . '.json';
+		$custom_settings = $this->templatePath . '/settings_' . Config::get('component_code_name') . '.json';
 		// set the version data
 		if (File::exists($custom_settings))
 		{

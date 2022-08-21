@@ -18,6 +18,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\String\FieldHelper;
+use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
 
 /**
  * Compiler class
@@ -378,7 +379,7 @@ class Fields extends Structure
 	 */
 	private function setLine($nr)
 	{
-		if ($this->debugLinenr)
+		if (Config::get('debug_line_nr', false))
 		{
 			return ' [Fields ' . $nr . ']';
 		}
@@ -415,9 +416,9 @@ class Fields extends Structure
 				$this->accessBuilder[$nameSingleCode] = $nameListCode;
 			}
 			// main lang prefix
-			$langView  = $this->langPrefix . '_'
+			$langView  = Config::get('lang_prefix') . '_'
 				. $this->placeholders[$this->hhh . 'VIEW' . $this->hhh];
-			$langViews = $this->langPrefix . '_'
+			$langViews = Config::get('lang_prefix') . '_'
 				. $this->placeholders[$this->hhh . 'VIEWS' . $this->hhh];
 			// set default lang
 			$this->setLangContent(
@@ -570,7 +571,7 @@ class Fields extends Structure
 				. $view['settings']->name_single . " to customise the alias."
 			);
 			// check what type of field builder to use
-			if ($this->fieldBuilderType == 1)
+			if (Config::get('field_builder_type', 2) == 1)
 			{
 				// build field set using string manipulation
 				return $this->stringFieldSet(
@@ -1586,7 +1587,7 @@ class Fields extends Structure
 		&$nameSingleCode, &$nameListCode, &$placeholders, &$dbkey, $build
 	) {
 		// set default return
-		if ($this->fieldBuilderType == 1)
+		if (Config::get('field_builder_type', 2) == 1)
 		{
 			// string manipulation
 			$dynamicField = '';
@@ -1831,7 +1832,7 @@ class Fields extends Structure
 	) {
 		// check the field builder type
 		$xmlField = '';
-		if ($this->fieldBuilderType == 1)
+		if (Config::get('field_builder_type', 2) == 1)
 		{
 			// string manipulation
 			$xmlField = $this->setDynamicField(
@@ -1891,7 +1892,7 @@ class Fields extends Structure
 		// count the dynamic fields created
 		$this->fieldCount++;
 		// check what type of field builder to use
-		if ($this->fieldBuilderType == 1)
+		if (Config::get('field_builder_type', 2) == 1)
 		{
 			// build field set using string manipulation
 			return $this->stringSetField(
@@ -4962,7 +4963,7 @@ class Fields extends Structure
 			// if they left out the extension for some reason
 			if (!StringHelper::check($_extension))
 			{
-				$_extension = 'com_' . $this->componentCodeName . '.'
+				$_extension = 'com_' . Config::get('component_code_name') . '.'
 					. $otherView;
 			}
 			// check the context (does our target match)
@@ -5168,7 +5169,7 @@ class Fields extends Structure
 				= $options;
 		}
 		// main lang filter prefix
-		$lang_filter_ = $this->langPrefix . '_FILTER_';
+		$lang_filter_ = Config::get('lang_prefix') . '_FILTER_';
 		// build the sort values
 		if ($dbSwitch && (isset($field['sort']) && $field['sort'] == 1)
 			&& ($listSwitch || $listJoin)
@@ -5359,10 +5360,10 @@ class Fields extends Structure
 						$data['custom']['component']
 					)) ? StringHelper::safe(
 					$data['custom']['component']
-				) : 'com_' . $this->componentCodeName,
+				) : 'com_' . Config::get('component_code_name'),
 				// set the generic values
 				$this->bbb . 'component'
-				. $this->ddd                          => $this->componentCodeName,
+				. $this->ddd                          => Config::get('component_code_name'),
 				$this->bbb . 'Component'
 				. $this->ddd                          => $this->fileContentStatic[$this->hhh
 				. 'Component' . $this->hhh],
@@ -5622,7 +5623,7 @@ class Fields extends Structure
 					// temp holder for name
 					$tempName = $data['custom']['label'] . ' Group';
 					// set lang
-					$groupLangName = $this->langPrefix . '_'
+					$groupLangName = Config::get('lang_prefix') . '_'
 						. FieldHelper::safe(
 							$tempName, true
 						);
@@ -5751,14 +5752,14 @@ class Fields extends Structure
 				$target, 'filter'
 			);
 			// the search language string
-			$lang_search = $this->langPrefix . '_FILTER_SEARCH';
+			$lang_search = Config::get('lang_prefix') . '_FILTER_SEARCH';
 			// and to translation
 			$this->setLangContent(
 				$this->lang, $lang_search, 'Search'
 				. StringHelper::safe($nameListCode, 'w')
 			);
 			// the search description language string
-			$lang_search_desc = $this->langPrefix . '_FILTER_SEARCH_'
+			$lang_search_desc = Config::get('lang_prefix') . '_FILTER_SEARCH_'
 				. strtoupper($nameListCode);
 			// and to translation
 			$this->setLangContent(
@@ -5784,13 +5785,13 @@ class Fields extends Structure
 			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
 			{
 				// the published language string
-				$lang_published = $this->langPrefix . '_FILTER_PUBLISHED';
+				$lang_published = Config::get('lang_prefix') . '_FILTER_PUBLISHED';
 				// and to translation
 				$this->setLangContent(
 					$this->lang, $lang_published, 'Status'
 				);
 				// the published description language string
-				$lang_published_desc = $this->langPrefix . '_FILTER_PUBLISHED_'
+				$lang_published_desc = Config::get('lang_prefix') . '_FILTER_PUBLISHED_'
 					. strtoupper($nameListCode);
 				// and to translation
 				$this->setLangContent(
@@ -6134,7 +6135,7 @@ class Fields extends Structure
 			&& StringHelper::check($fieldData['views']))
 		{
 			// set local component
-			$local_component = "com_" . $this->componentCodeName;
+			$local_component = "com_" . Config::get('component_code_name');
 			// check that the component value is set
 			if (!isset($fieldData['component'])
 				|| !StringHelper::check(
@@ -6316,7 +6317,7 @@ class Fields extends Structure
 				. " build Create button";
 			$addButton[] = $this->_t(4)
 				. "\$button[] = '<a id=\"'.\$button_code_name.'Create\" class=\"btn btn-small btn-success hasTooltip\" title=\"'.JText:"
-				. ":sprintf('" . $this->langPrefix
+				. ":sprintf('" . Config::get('lang_prefix')
 				. "_CREATE_NEW_S', \$button_label).'\" style=\"border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;\"";
 			$addButton[] = $this->_t(5) . "href=\"index.php?option="
 				. $fieldData['component'] . "&amp;view=" . $fieldData['view']
@@ -6352,7 +6353,7 @@ class Fields extends Structure
 				. " build edit button";
 			$addButton[] = $this->_t(4)
 				. "\$button[] = '<a id=\"'.\$button_code_name.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.JText:"
-				. ":sprintf('" . $this->langPrefix
+				. ":sprintf('" . Config::get('lang_prefix')
 				. "_EDIT_S', \$button_label).'\" style=\"display: none; padding: 4px 4px 4px 7px;\" href=\"#\" >";
 			$addButton[] = $this->_t(5)
 				. "<span class=\"icon-edit\"></span></a>';";
@@ -6443,7 +6444,7 @@ class Fields extends Structure
 			$dom->getElementsByTagName($nodename)->item(0)
 		);
 		// make sure Tidy is enabled
-		if ($this->tidy)
+		if (Config::get('tidy', false))
 		{
 			$tidy = new Tidy();
 			$tidy->parseString(

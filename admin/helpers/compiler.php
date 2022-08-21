@@ -20,6 +20,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\MathHelper;
+use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
 
 // Use the component builder autoloader
 ComponentbuilderHelper::autoLoader();
@@ -183,7 +184,7 @@ class Compiler extends Infusion
 					'because more then %s&#37; of the strings have been translated.',
 					$this->percentageLanguageAdd
 				);
-				if ($this->debugLinenr)
+				if (Config::get('debug_line_nr', false))
 				{
 					$whyAddedLang = JText::_(
 						'because the debugging mode is on. (debug line numbers)'
@@ -214,12 +215,12 @@ class Compiler extends Infusion
 				'The <b>SQL</b> fix updates the #__assets table\'s column size on installation of the component and reverses it back to the Joomla default on uninstall of the component.'
 			);
 			// set assets table rules column notice
-			if ($this->addAssetsTableFix)
+			if (Config::get('add_assets_table_fix'))
 			{
 				$this->app->enqueueMessage(
 					JText::_('<hr /><h3>Assets Table Notice</h3>'), 'Notice'
 				);
-				$asset_table_fix_type = ($this->addAssetsTableFix == 2)
+				$asset_table_fix_type = (Config::get('add_assets_table_fix') == 2)
 					? 'intelligent' : 'sql';
 				$this->app->enqueueMessage(
 					JText::sprintf(
@@ -244,7 +245,7 @@ class Compiler extends Infusion
 				);
 			}
 			// set assets table name column warning if not set
-			if (!$this->addAssetsTableFix && $this->addAssetsTableNameFix)
+			if (!Config::get('add_assets_table_fix') && $this->addAssetsTableNameFix)
 			{
 				// only add if not already added
 				if ($this->accessSize < 30)
@@ -322,7 +323,7 @@ class Compiler extends Infusion
 					// add the mismatching issues
 					foreach ($mismatch as $string)
 					{
-						$constant = $this->langPrefix . '_'
+						$constant = Config::get('lang_prefix') . '_'
 							. StringHelper::safe($string, 'U');
 						$this->app->enqueueMessage(
 							JText::sprintf(
@@ -374,7 +375,7 @@ class Compiler extends Infusion
 	 */
 	private function setLine($nr)
 	{
-		if ($this->debugLinenr)
+		if (Config::get('debug_line_nr', false))
 		{
 			return ' [Compiler ' . $nr . ']';
 		}
@@ -994,7 +995,7 @@ class Compiler extends Infusion
 			// set the repo path
 			$repoFullPath = $this->repoPath . '/com_'
 				. $this->componentData->sales_name . '__joomla_'
-				. $this->joomlaVersion;
+				. Config::get('version', 3);
 			// Trigger Event: jcb_ce_onBeforeUpdateRepo
 			$this->triggerEvent(
 				'jcb_ce_onBeforeUpdateRepo',
@@ -1025,7 +1026,7 @@ class Compiler extends Infusion
 						// set the repo path
 						$repoFullPath = $this->repoPath . '/'
 							. $module->folder_name . '__joomla_'
-							. $this->joomlaVersion;
+							. Config::get('version', 3);
 						// Trigger Event: jcb_ce_onBeforeUpdateRepo
 						$this->triggerEvent(
 							'jcb_ce_onBeforeUpdateRepo',
@@ -1062,7 +1063,7 @@ class Compiler extends Infusion
 						// set the repo path
 						$repoFullPath = $this->repoPath . '/'
 							. $plugin->folder_name . '__joomla_'
-							. $this->joomlaVersion;
+							. Config::get('version', 3);
 						// Trigger Event: jcb_ce_onBeforeUpdateRepo
 						$this->triggerEvent(
 							'jcb_ce_onBeforeUpdateRepo',

@@ -21,6 +21,7 @@ use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\MathHelper;
+use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
 
 /**
  * Compiler class
@@ -265,7 +266,7 @@ class Interpretation extends Fields
 	 */
 	private function setLine($nr)
 	{
-		if ($this->debugLinenr)
+		if (Config::get('debug_line_nr', false))
 		{
 			return ' [Interpretation ' . $nr . ']';
 		}
@@ -282,7 +283,7 @@ class Interpretation extends Fields
 			&& $this->componentData->add_email_helper)
 		{
 			// set email helper in place with component name
-			$component = $this->componentCodeName;
+			$component = Config::get('component_code_name');
 			$Component = $this->fileContentStatic[$this->hhh . 'Component'
 			. $this->hhh];
 			$target    = array('admin' => 'emailer');
@@ -455,7 +456,7 @@ class Interpretation extends Fields
 		$bool[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
 			. " Get the global params";
 		$bool[] = $this->_t(2) . "\$params = JComponentHelper::getParams('com_"
-			. $this->componentCodeName . "', true);";
+			. Config::get('component_code_name') . "', true);";
 		$bool[] = $this->_t(2)
 			. "\$whmcs_key = \$params->get('whmcs_key', null);";
 		$bool[] = $this->_t(2) . "if (\$whmcs_key)";
@@ -464,7 +465,7 @@ class Interpretation extends Fields
 			. " load the file";
 		$bool[] = $this->_t(3)
 			. "JLoader::import( 'whmcs', JPATH_ADMINISTRATOR .'/components/com_"
-			. $this->componentCodeName . "');";
+			. Config::get('component_code_name') . "');";
 		$bool[] = $this->_t(3) . "\$the = new WHMCS(\$whmcs_key);";
 		$bool[] = $this->_t(3) . "\$this->" . $globalbool . " = \$the->_is;";
 		$bool[] = $this->_t(3) . "return \$this->" . $globalbool . ";";
@@ -495,7 +496,7 @@ class Interpretation extends Fields
 			. " Get the global params";
 		$helper[] = $this->_t(2)
 			. "\$params = JComponentHelper::getParams('com_"
-			. $this->componentCodeName . "', true);";
+			. Config::get('component_code_name') . "', true);";
 		$helper[] = $this->_t(2)
 			. "\$whmcs_key = \$params->get('whmcs_key', null);";
 		$helper[] = $this->_t(2) . "if (\$whmcs_key)";
@@ -504,7 +505,7 @@ class Interpretation extends Fields
 			. " load the file";
 		$helper[] = $this->_t(3)
 			. "JLoader::import( 'whmcs', JPATH_ADMINISTRATOR .'/components/com_"
-			. $this->componentCodeName . "');";
+			. Config::get('component_code_name') . "');";
 		$helper[] = $this->_t(3) . "\$the = new WHMCS(\$whmcs_key);";
 		$helper[] = $this->_t(3) . "return \$the->_is;";
 		$helper[] = $this->_t(2) . "}";
@@ -884,7 +885,7 @@ class Interpretation extends Fields
 					= PHP_EOL . $this->_t(3) . "<filename>whmcs.php</filename>";
 			}
 			// get component name
-			$component = $this->componentCodeName;
+			$component = Config::get('component_code_name');
 			// set the getCryptKey function to the helper class
 			$function = array();
 			// start building the getCryptKey function/class method
@@ -1191,7 +1192,7 @@ class Interpretation extends Fields
 			$updateServer[] = PHP_EOL . $this->_t(1) . "<updateservers>";
 			$updateServer[] = $this->_t(2)
 				. '<server type="extension" enabled="1" element="com_'
-				. $this->componentCodeName . '" name="'
+				. Config::get('component_code_name') . '" name="'
 				. $this->fileContentStatic[$this->hhh . 'Component_name'
 				. $this->hhh] . '">' . $this->componentData->update_server_url
 				. '</server>';
@@ -1220,14 +1221,14 @@ class Interpretation extends Fields
 			}
 			// update the joomla component table
 			$newJ       = array();
-			$newJ['id'] = (int) $this->componentID;
+			$newJ['id'] = (int) Config::get('component_id');
 			$newJ['component_version']
 			            = $this->componentData->component_version;
 			// update the component with the new dynamic SQL
 			$modelJ = ComponentbuilderHelper::getModel('joomla_component');
 			$modelJ->save($newJ); // <-- to insure the history is also updated
 			// reset the watch here
-			$this->getHistoryWatch('joomla_component', $this->componentID);
+			$this->getHistoryWatch('joomla_component', Config::get('component_id'));
 
 			// update the component update table
 			$newU = array();
@@ -1238,7 +1239,7 @@ class Interpretation extends Fields
 			}
 			else
 			{
-				$newU['joomla_component'] = (int) $this->componentID;
+				$newU['joomla_component'] = (int) Config::get('component_id');
 			}
 			$newU['version_update'] = json_encode($buket);
 			// update the component with the new dynamic SQL
@@ -1378,7 +1379,7 @@ class Interpretation extends Fields
 			&& $this->componentData->update_server_target != 3)
 		{
 			// we set the defaults
-			$u_element = 'com_' . $this->componentCodeName;
+			$u_element = 'com_' . Config::get('component_code_name');
 			$u_server_type = 'component';
 			$u_state = 'stable';
 			$u_target_version = '3.*';
@@ -1515,7 +1516,7 @@ class Interpretation extends Fields
 		$help[] = $this->_t(2) . "\$query	= \$db->getQuery(true);";
 		$help[] = $this->_t(2)
 			. "\$query->select(array('a.id','a.groups','a.target','a.type','a.article','a.url'));";
-		$help[] = $this->_t(2) . "\$query->from('#__" . $this->componentCodeName
+		$help[] = $this->_t(2) . "\$query->from('#__" . Config::get('component_code_name')
 			. "_help_document AS a');";
 		$help[] = $this->_t(2) . "\$query->where('a." . $target
 			. " = '.\$db->quote(\$view));";
@@ -1586,7 +1587,7 @@ class Interpretation extends Fields
 		$help[] = $this->_t(1) . "{";
 		$help[] = $this->_t(2) . "\$token = JSession::getFormToken();";
 		$help[] = $this->_t(2) . "return 'index.php?option=com_"
-			. $this->componentCodeName
+			. Config::get('component_code_name')
 			. "&task=help.getText&id=' . (int) \$id . '&token=' . \$token;";
 		$help[] = $this->_t(1) . "}";
 
@@ -1938,7 +1939,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2) . "\$lang = JFactory::getLanguage();";
 			$method[] = $this->_t(2) . "\$extension = 'com_users';";
 			$method[] = $this->_t(2) . "\$base_dir = JPATH_SITE;";
-			$method[] = $this->_t(2) . "\$language_tag = '" . $this->langTag
+			$method[] = $this->_t(2) . "\$language_tag = '" . Config::get('lang_tag', 'en-GB')
 				. "';";
 			$method[] = $this->_t(2) . "\$reload = true;";
 			$method[] = $this->_t(2)
@@ -2157,7 +2158,7 @@ class Interpretation extends Fields
 			$method[] = $this->_t(2) . "\$lang = JFactory::getLanguage();";
 			$method[] = $this->_t(2) . "\$extension = 'com_users';";
 			$method[] = $this->_t(2) . "\$base_dir = JPATH_ADMINISTRATOR;";
-			$method[] = $this->_t(2) . "\$language_tag = '" . $this->langTag
+			$method[] = $this->_t(2) . "\$language_tag = '" . Config::get('lang_tag', 'en-GB')
 				. "';";
 			$method[] = $this->_t(2) . "\$reload = true;";
 			$method[] = $this->_t(2)
@@ -2224,7 +2225,7 @@ class Interpretation extends Fields
 		{
 			// set the lang
 			$lang = StringHelper::safe(
-				'com_' . $this->componentCodeName . '_menu_'
+				'com_' . Config::get('component_code_name') . '_menu_'
 				. $nameSingleCode,
 				'U'
 			);
@@ -2274,7 +2275,7 @@ class Interpretation extends Fields
 		{
 			// set the lang
 			$lang = StringHelper::safe(
-				'com_' . $this->componentCodeName . '_menu_'
+				'com_' . Config::get('component_code_name') . '_menu_'
 				. $view['settings']->code, 'U'
 			);
 			$this->setLangContent(
@@ -2306,10 +2307,10 @@ class Interpretation extends Fields
 				$xml .= PHP_EOL . $this->_t(2) . '<fieldset name="request"';
 				$xml .= PHP_EOL . $this->_t(3)
 					. 'addrulepath="/administrator/components/com_'
-					. $this->componentCodeName . '/models/rules"';
+					. Config::get('component_code_name') . '/models/rules"';
 				$xml .= PHP_EOL . $this->_t(3)
 					. 'addfieldpath="/administrator/components/com_'
-					. $this->componentCodeName . '/models/fields">';
+					. Config::get('component_code_name') . '/models/fields">';
 				if (isset($this->hasIdRequest[$view['settings']->code])
 					&& ArrayHelper::check(
 						$this->hasIdRequest[$view['settings']->code]
@@ -2360,10 +2361,10 @@ class Interpretation extends Fields
 						. $this->hhh] . '"';
 					$xml .= PHP_EOL . $this->_t(3)
 						. 'addrulepath="/administrator/components/com_'
-						. $this->componentCodeName . '/models/rules"';
+						. Config::get('component_code_name') . '/models/rules"';
 					$xml .= PHP_EOL . $this->_t(3)
 						. 'addfieldpath="/administrator/components/com_'
-						. $this->componentCodeName . '/models/fields">';
+						. Config::get('component_code_name') . '/models/fields">';
 					$xml .= implode($this->_t(3), $params);
 					$xml .= PHP_EOL . $this->_t(2) . '</fieldset>';
 					$xml .= PHP_EOL . $this->_t(1) . '</fields>';
@@ -2921,7 +2922,7 @@ class Interpretation extends Fields
 		. $this->hhh];
 		// set context
 		$context = (isset($get['context'])) ? $get['context'] : $code;
-		$context = 'com_' . $this->componentCodeName . '.' . $context;
+		$context = 'com_' . Config::get('component_code_name') . '.' . $context;
 		// load parms builder only once
 		$params = false;
 		foreach ($checker as $field => $array)
@@ -3595,7 +3596,7 @@ class Interpretation extends Fields
 					)
 					. " redirect away to the default view if no access allowed.";
 				$redirectString  = "JRoute::_('index.php?option=com_"
-					. $this->componentCodeName . "&view="
+					. Config::get('component_code_name') . "&view="
 					. $this->fileContentStatic[$this->hhh . 'SITE_DEFAULT_VIEW'
 					. $this->hhh] . "')";
 			}
@@ -3611,7 +3612,7 @@ class Interpretation extends Fields
 				) . " check if this user has permission to access item";
 			$accessCheck[] = $this->_t(2) . "if (!" . $userString
 				. "->authorise('site." . $view['settings']->code
-				. ".access', 'com_" . $this->componentCodeName . "'))";
+				. ".access', 'com_" . Config::get('component_code_name') . "'))";
 			$accessCheck[] = $this->_t(2) . "{";
 			$accessCheck[] = $this->_t(3)
 				. "\$app = JFactory::getApplication();";
@@ -3779,7 +3780,7 @@ class Interpretation extends Fields
 						. 'SITE_DEFAULT_VIEW' . $this->hhh] != $code)
 					{
 						$redirectString = "JRoute::_('index.php?option=com_"
-							. $this->componentCodeName . "&view="
+							. Config::get('component_code_name') . "&view="
 							. $this->fileContentStatic[$this->hhh
 							. 'SITE_DEFAULT_VIEW' . $this->hhh] . "')";
 					}
@@ -3794,7 +3795,7 @@ class Interpretation extends Fields
 				{
 					$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2)
 						. "\$app->redirect('index.php?option=com_"
-						. $this->componentCodeName . "');";
+						. Config::get('component_code_name') . "');";
 				}
 				$getItem .= PHP_EOL . $this->_t(1) . $tab . $this->_t(2)
 					. "return false;";
@@ -4078,7 +4079,7 @@ class Interpretation extends Fields
 						. $this->setLine(__LINE__) . " Get the global params";
 					$main .= PHP_EOL . $this->_t(2)
 						. "\$globalParams = JComponentHelper::getParams('com_"
-						. $this->componentCodeName . "', true);";
+						. Config::get('component_code_name') . "', true);";
 					// set php before listquery
 					if (isset($view->add_php_getlistquery)
 						&& $view->add_php_getlistquery == 1
@@ -5291,7 +5292,7 @@ class Interpretation extends Fields
 					{
 						// TODO the onContentPrepare already gets triggered on the fields of its relation
 						// $method .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__) . " onContentPrepare Event Trigger.";
-						// $method .= PHP_EOL . $this->_t(2) . "\$dispatcher->trigger('onContentPrepare', array ('com_" . $this->componentCodeName . ".article', &\$this->item, &\$this->params, 0));";
+						// $method .= PHP_EOL . $this->_t(2) . "\$dispatcher->trigger('onContentPrepare', array ('com_" . Config::get('component_code_name') . ".article', &\$this->item, &\$this->params, 0));";
 					}
 					else
 					{
@@ -5301,7 +5302,7 @@ class Interpretation extends Fields
 						$method .= PHP_EOL . $this->_t(3)
 							. "\$results = \$dispatcher->trigger('"
 							. $plugin_event . "', array('com_"
-							. $this->componentCodeName . "."
+							. Config::get('component_code_name') . "."
 							. $view['settings']->context
 							. "', &\$this->item, &\$params, 0));";
 						$method .= PHP_EOL . $this->_t(3)
@@ -5675,7 +5676,7 @@ class Interpretation extends Fields
 								. "if (\$this->user->authorise('"
 								. $viewCodeName
 								. "." . $keyCode . "', 'com_"
-								. $this->componentCodeName . "'))";
+								. Config::get('component_code_name') . "'))";
 						}
 						else
 						{
@@ -5714,7 +5715,7 @@ class Interpretation extends Fields
 									1
 								) . $tab . "if (\$this->user->authorise('"
 								. $viewCodeName . "." . $keyCode . "', 'com_"
-								. $this->componentCodeName . "'))";
+								. Config::get('component_code_name') . "'))";
 							$this->onlyFunctionButton[$viewsCodeName][]
 								= $this->_t(
 									1
@@ -5748,7 +5749,7 @@ class Interpretation extends Fields
 								. "if (\$this->user->authorise('"
 								. $viewCodeName
 								. "." . $keyCode . "', 'com_"
-								. $this->componentCodeName . "'))";
+								. Config::get('component_code_name') . "'))";
 							$buttons[] = $this->_t(1) . $tab . $this->_t(1)
 								. "{";
 							$buttons[] = $this->_t(1) . $tab . $this->_t(2)
@@ -5984,13 +5985,13 @@ class Interpretation extends Fields
 			// set path
 			if ('site' === $this->target)
 			{
-				$path = '/components/com_' . $this->componentCodeName
+				$path = '/components/com_' . Config::get('component_code_name')
 					. '/assets/js/' . $view['settings']->code . '.js';
 			}
 			else
 			{
 				$path = '/administrator/components/com_'
-					. $this->componentCodeName . '/assets/js/'
+					. Config::get('component_code_name') . '/assets/js/'
 					. $view['settings']->code . '.js';
 			}
 			// add script to file
@@ -6218,7 +6219,7 @@ class Interpretation extends Fields
 				. " load the google chart js.";
 			$chart[] = $this->_t(2)
 				. "JHtml::_('script', 'media/com_"
-				. $this->componentCodeName . "/js/google.jsapi.js', ['version' => 'auto']);";
+				. Config::get('component_code_name') . "/js/google.jsapi.js', ['version' => 'auto']);";
 			$chart[] = $this->_t(2)
 				. "\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/rgbcolor.js', ['version' => 'auto']);";
 			$chart[] = $this->_t(2)
@@ -6267,7 +6268,7 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Initialize the header checker.";
 			$setter .= PHP_EOL . $this->_t(2) . "\$HeaderCheck = new "
-				. $this->componentCodeName . "HeaderCheck;";
+				. Config::get('component_code_name') . "HeaderCheck;";
 		}
 		// check if this view should get libraries
 		if (isset($this->libManager[$this->target][$code])
@@ -6553,7 +6554,7 @@ class Interpretation extends Fields
 			&& strpos($root, '/site/') === false)
 		{
 			return str_replace(
-				'/media/', '/media/com_' . $this->componentCodeName . '/', $root
+				'/media/', '/media/com_' . Config::get('component_code_name') . '/', $root
 			);
 		}
 		elseif (strpos($root, '/media/') === false
@@ -6562,7 +6563,7 @@ class Interpretation extends Fields
 		{
 			return str_replace(
 				'/admin/',
-				'/administrator/components/com_' . $this->componentCodeName
+				'/administrator/components/com_' . Config::get('component_code_name')
 				. '/', $root
 			);
 		}
@@ -6571,7 +6572,7 @@ class Interpretation extends Fields
 			&& strpos($root, '/site/') !== false)
 		{
 			return str_replace(
-				'/site/', '/components/com_' . $this->componentCodeName . '/',
+				'/site/', '/components/com_' . Config::get('component_code_name') . '/',
 				$root
 			);
 		}
@@ -6627,7 +6628,7 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
 				. "JHtml::_('stylesheet', 'media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v2/css/uikit'.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "//" . $this->setLine(
@@ -6638,7 +6639,7 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
 				. "JHtml::_('script', 'media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v2/js/uikit'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
 		}
@@ -6726,7 +6727,7 @@ class Interpretation extends Fields
 				) . " check if the CSS file exists.";
 			$setter .= PHP_EOL . $tabV . $this->_t(5)
 				. "if (File::exists(JPATH_ROOT.'/media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(6) . "//" . $this->setLine(
@@ -6734,7 +6735,7 @@ class Interpretation extends Fields
 				) . " load the css.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
 				. "JHtml::_('stylesheet', 'media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "//" . $this->setLine(
@@ -6742,7 +6743,7 @@ class Interpretation extends Fields
 				) . " check if the JavaScript file exists.";
 			$setter .= PHP_EOL . $tabV . $this->_t(5)
 				. "if (File::exists(JPATH_ROOT.'/media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(6) . "//" . $this->setLine(
@@ -6750,7 +6751,7 @@ class Interpretation extends Fields
 				) . " load the js.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
 				. "JHtml::_('script', 'media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(4) . "}";
@@ -6788,7 +6789,7 @@ class Interpretation extends Fields
 				) . " check if the CSS file exists.";
 			$setter .= PHP_EOL . $tabV . $this->_t(5)
 				. "if (File::exists(JPATH_ROOT.'/media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(6) . "//" . $this->setLine(
@@ -6796,7 +6797,7 @@ class Interpretation extends Fields
 				) . " load the css.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
 				. "JHtml::_('stylesheet', 'media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "//" . $this->setLine(
@@ -6804,7 +6805,7 @@ class Interpretation extends Fields
 				) . " check if the JavaScript file exists.";
 			$setter .= PHP_EOL . $tabV . $this->_t(5)
 				. "if (File::exists(JPATH_ROOT.'/media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(6) . "//" . $this->setLine(
@@ -6812,7 +6813,7 @@ class Interpretation extends Fields
 				) . " load the js.";
 			$setter .= PHP_EOL . $tabV . $this->_t(6)
 				. "JHtml::_('script', 'media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(5) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(4) . "}";
@@ -6841,7 +6842,7 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
 				. "JHtml::_('stylesheet', 'media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v3/css/uikit'.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "//" . $this->setLine(
@@ -6852,11 +6853,11 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "{";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
 				. "JHtml::_('script', 'media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v3/js/uikit'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(3)
 				. "JHtml::_('script', 'media/com_"
-				. $this->componentCodeName
+				. Config::get('component_code_name')
 				. "/uikit-v3/js/uikit-icons'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . $this->_t(2) . "}";
 			if (2 == $this->uikit)
@@ -7066,7 +7067,7 @@ class Interpretation extends Fields
 					if ('site' === $this->target)
 					{
 						return '<form action="<?php echo JRoute::_(\'index.php?option=com_'
-							. $this->componentCodeName
+							. Config::get('component_code_name')
 							. '\'); ?>" method="post" name="adminForm" id="adminForm">'
 							. PHP_EOL;
 					}
@@ -7075,14 +7076,14 @@ class Interpretation extends Fields
 						if ($gettype == 2)
 						{
 							return '<form action="<?php echo JRoute::_(\'index.php?option=com_'
-								. $this->componentCodeName . '&view=' . $view
+								. Config::get('component_code_name') . '&view=' . $view
 								. '\'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">'
 								. PHP_EOL;
 						}
 						else
 						{
 							return '<form action="<?php echo JRoute::_(\'index.php?option=com_'
-								. $this->componentCodeName . '&view=' . $view
+								. Config::get('component_code_name') . '&view=' . $view
 								. '\' . $urlId); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">'
 								. PHP_EOL;
 						}
@@ -7557,7 +7558,7 @@ class Interpretation extends Fields
 		// get component name
 		$Component = $this->fileContentStatic[$this->hhh . 'Component'
 		. $this->hhh];
-		$component = $this->componentCodeName;
+		$component = Config::get('component_code_name');
 		// check if there was script added before modeling of data
 		$script .= $this->getCustomScriptBuilder(
 			'php_before_save', $view, PHP_EOL . PHP_EOL
@@ -7756,7 +7757,7 @@ class Interpretation extends Fields
 		// reset
 		$oserver = "";
 		// set component name
-		$component = $this->componentCodeName;
+		$component = Config::get('component_code_name');
 		// add the tags observer
 		if (isset($this->tagsBuilder[$view])
 			&& StringHelper::check($this->tagsBuilder[$view]))
@@ -7805,7 +7806,7 @@ class Interpretation extends Fields
 			))
 		{
 			// set component name
-			$component = $this->componentCodeName;
+			$component = Config::get('component_code_name');
 			// reset
 			$dbStuff = array();
 			// start loading the content type data
@@ -7932,7 +7933,7 @@ class Interpretation extends Fields
 		$script = $this->setComponentToContentTypes('install');
 
 		// set the component name
-		$component = $this->componentCodeName;
+		$component = Config::get('component_code_name');
 
 		// add the assets table update for permissions rules
 		if (isset($this->assetsRules)
@@ -8064,7 +8065,7 @@ class Interpretation extends Fields
 				. $this->fileContentStatic[$this->hhh . 'Component_name'
 				. $this->hhh] . '">';
 			$script .= PHP_EOL . $this->_t(4) . '<img src="components/com_'
-				. $this->componentCodeName . '/assets/images/vdm-component.'
+				. Config::get('component_code_name') . '/assets/images/vdm-component.'
 				. $this->componentImageType . '"/>';
 			$script .= PHP_EOL . $this->_t(4) . '</a>';
 			$script .= PHP_EOL . $this->_t(4) . "<h3>Upgrade to Version "
@@ -8091,7 +8092,7 @@ class Interpretation extends Fields
 				$this->uninstallScriptBuilder
 			))
 		{
-			$component = $this->componentCodeName;
+			$component = Config::get('component_code_name');
 			// start loading the data to delet
 			$script .= PHP_EOL . $this->_t(2) . "//" . $this->setLine(__LINE__)
 				. " Get Application object";
@@ -8574,7 +8575,7 @@ class Interpretation extends Fields
 		// column size is varchar(5120)
 
 		// check if we should add the intelligent fix treatment for the assets table
-		if ($this->addAssetsTableFix == 2)
+		if (Config::get('add_assets_table_fix') == 2)
 		{
 			// get the type we will convert to
 			$data_type = ($this->accessWorseCase > 64000) ? "MEDIUMTEXT"
@@ -8621,7 +8622,7 @@ class Interpretation extends Fields
 	protected function getAssetsTableIntelligentUninstall()
 	{
 		// check if we should add the intelligent uninstall treatment for the assets table
-		if ($this->addAssetsTableFix == 2)
+		if (Config::get('add_assets_table_fix') == 2)
 		{
 			// the if statement about $rule_length
 			$codeIF = "\$rule_length < 5120";
@@ -9000,7 +9001,7 @@ class Interpretation extends Fields
 			$routeHelper[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Create the link";
 			$routeHelper[] = $this->_t(3) . "\$link = 'index.php?option=com_"
-				. $this->componentCodeName . "&view=" . $nameSingleCode
+				. Config::get('component_code_name') . "&view=" . $nameSingleCode
 				. "&id='. \$id;";
 			$routeHelper[] = $this->_t(2) . "}";
 			$routeHelper[] = $this->_t(2) . "else";
@@ -9014,7 +9015,7 @@ class Interpretation extends Fields
 			$routeHelper[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
 				. " Create the link but don't add the id.";
 			$routeHelper[] = $this->_t(3) . "\$link = 'index.php?option=com_"
-				. $this->componentCodeName . "&view=" . $nameSingleCode
+				. Config::get('component_code_name') . "&view=" . $nameSingleCode
 				. "';";
 			$routeHelper[] = $this->_t(2) . "}";
 			if ('category' != $nameSingleCode
@@ -9024,7 +9025,7 @@ class Interpretation extends Fields
 				$routeHelper[] = $this->_t(2) . "{";
 				$routeHelper[] = $this->_t(3)
 					. "\$categories = JCategories::getInstance('"
-					. $this->componentCodeName . "." . $nameListCode . "');";
+					. Config::get('component_code_name') . "." . $nameListCode . "');";
 				$routeHelper[] = $this->_t(3)
 					. "\$category = \$categories->get(\$catid);";
 				$routeHelper[] = $this->_t(3) . "if (\$category)";
@@ -9120,7 +9121,7 @@ class Interpretation extends Fields
 							if (isset($get['selection']['table']))
 							{
 								$viewTable = str_replace(
-									'#__' . $this->componentCodeName . '_', '',
+									'#__' . Config::get('component_code_name') . '_', '',
 									$get['selection']['table']
 								);
 							}
@@ -9977,7 +9978,7 @@ class Interpretation extends Fields
 			$fixUnique[] = $this->_t(4) . "}";
 			$fixUnique[] = PHP_EOL . $this->_t(4)
 				. "\$table = JTable::getInstance('" . $nameSingleCode . "', '"
-				. $this->componentCodeName . "Table');";
+				. Config::get('component_code_name') . "Table');";
 			if ($setCategory && count($titles) == 1)
 			{
 				$fixUnique[] = PHP_EOL . $this->_t(4)
@@ -10701,7 +10702,7 @@ class Interpretation extends Fields
 			// also check if the developer will allow this
 			// the access actions length must be checked before this
 			// only add this option if set to SQL fix
-			if ($this->addAssetsTableFix == 1)
+			if (Config::get('add_assets_table_fix') == 1)
 			{
 				// 400 actions worse case is larger the 65535 characters
 				if ($this->accessSize > 400)
@@ -10718,7 +10719,7 @@ class Interpretation extends Fields
 						. "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control. Enlarged to MEDIUMTEXT by JCB';";
 				}
 				// smaller then 400 makes TEXT large enough
-				elseif ($this->addAssetsTableFix == 1)
+				elseif (Config::get('add_assets_table_fix') == 1)
 				{
 					$db .= PHP_EOL;
 					$db .= PHP_EOL . '--';
@@ -10737,7 +10738,7 @@ class Interpretation extends Fields
 			// also check if the developer will allow this
 			// the config length must be checked before this
 			// only add this option if set to SQL fix
-			if ($this->addAssetsTableFix && $this->addAssetsTableNameFix)
+			if (Config::get('add_assets_table_fix') && $this->addAssetsTableNameFix)
 			{
 				$db .= PHP_EOL;
 				$db .= PHP_EOL . '--';
@@ -10786,7 +10787,7 @@ class Interpretation extends Fields
 		// check if this component used larger rules
 		// now revert them back on uninstall
 		// only add this option if set to SQL fix
-		if ($this->addAssetsTableFix == 1)
+		if (Config::get('add_assets_table_fix') == 1)
 		{
 			// https://github.com/joomla/joomla-cms/blob/3.10.0-alpha3/installation/sql/mysql/joomla.sql#L22
 			// Checked 1st December 2020 (let us know if this changes)
@@ -10805,7 +10806,7 @@ class Interpretation extends Fields
 		// check if this component used larger names
 		// now revert them back on uninstall
 		// only add this option if set to SQL fix
-		if ($this->addAssetsTableFix == 1 && $this->addAssetsTableNameFix)
+		if (Config::get('add_assets_table_fix') == 1 && $this->addAssetsTableNameFix)
 		{
 			// https://github.com/joomla/joomla-cms/blob/3.10.0-alpha3/installation/sql/mysql/joomla.sql#L20
 			// Checked 1st December 2020 (let us know if this changes)
@@ -11102,7 +11103,7 @@ class Interpretation extends Fields
 			// sort the strings
 			ksort($this->langContent['admin']);
 			// load to global languages
-			$this->languages['components'][$this->langTag]['admin']
+			$this->languages['components'][Config::get('lang_tag', 'en-GB')]['admin']
 				= $this->langContent['admin'];
 			// remove tmp array
 			unset($this->langContent['admin']);
@@ -11197,7 +11198,7 @@ class Interpretation extends Fields
 			// sort the strings
 			ksort($this->langContent['site']);
 			// load to global languages
-			$this->languages['components'][$this->langTag]['site']
+			$this->languages['components'][Config::get('lang_tag', 'en-GB')]['site']
 				= $this->langContent['site'];
 			// remove tmp array
 			unset($this->langContent['site']);
@@ -11254,7 +11255,7 @@ class Interpretation extends Fields
 			// sort strings
 			ksort($this->langContent['sitesys']);
 			// load to global languages
-			$this->languages['components'][$this->langTag]['sitesys']
+			$this->languages['components'][Config::get('lang_tag', 'en-GB')]['sitesys']
 				= $this->langContent['sitesys'];
 			// remove tmp array
 			unset($this->langContent['sitesys']);
@@ -11300,7 +11301,7 @@ class Interpretation extends Fields
 			// sort strings
 			ksort($this->langContent['adminsys']);
 			// load to global languages
-			$this->languages['components'][$this->langTag]['adminsys']
+			$this->languages['components'][Config::get('lang_tag', 'en-GB')]['adminsys']
 				= $this->langContent['adminsys'];
 			// remove tmp array
 			unset($this->langContent['adminsys']);
@@ -16972,7 +16973,7 @@ class Interpretation extends Fields
 			                 = '';
 		}
 		// minfy the script
-		if ($this->minify && isset($list_fileScript)
+		if (Config::get('minify', 0) && isset($list_fileScript)
 			&& StringHelper::check($list_fileScript))
 		{
 			// minify the fielScript javscript
@@ -16981,7 +16982,7 @@ class Interpretation extends Fields
 			$list_fileScript = $minifier->minify();
 		}
 		// minfy the script
-		if ($this->minify && isset($fileScript)
+		if (Config::get('minify', 0) && isset($fileScript)
 			&& StringHelper::check($fileScript))
 		{
 			// minify the fielScript javscript
@@ -16990,7 +16991,7 @@ class Interpretation extends Fields
 			$fileScript = $minifier->minify();
 		}
 		// minfy the script
-		if ($this->minify && isset($footerScript)
+		if (Config::get('minify', 0) && isset($footerScript)
 			&& StringHelper::check($footerScript))
 		{
 			// minify the footerScript javscript
@@ -27688,6 +27689,7 @@ function vdm_dkim() {
 				// since we have less than 30 actions
 				// we do not need the fix for this component
 				$this->addAssetsTableFix = 0;
+				Config::set('add_assets_table_fix', $this->addAssetsTableFix);
 			}
 			else
 			{
@@ -28389,8 +28391,8 @@ function vdm_dkim() {
 			$this->multiLangString = $this->getMultiLangStrings($values);
 			// start the modules language bucket (must rest every time)
 			$this->languages['modules']                 = array();
-			$this->languages['modules'][$this->langTag] = array();
-			$this->languages['modules'][$this->langTag]['all']
+			$this->languages['modules'][Config::get('lang_tag', 'en-GB')] = array();
+			$this->languages['modules'][Config::get('lang_tag', 'en-GB')]['all']
 			                                            = $this->langContent[$module->key];
 			unset($this->langContent[$module->key]);
 			// update insert the current lang in to DB
@@ -28774,8 +28776,8 @@ function vdm_dkim() {
 			$this->multiLangString = $this->getMultiLangStrings($values);
 			// start the plugins language bucket (must rest every time)
 			$this->languages['plugins']                 = array();
-			$this->languages['plugins'][$this->langTag] = array();
-			$this->languages['plugins'][$this->langTag]['all']
+			$this->languages['plugins'][Config::get('lang_tag', 'en-GB')] = array();
+			$this->languages['plugins'][Config::get('lang_tag', 'en-GB')]['all']
 			                                            = $this->langContent[$plugin->key];
 			unset($this->langContent[$plugin->key]);
 			// update insert the current lang in to DB
@@ -29176,11 +29178,11 @@ function vdm_dkim() {
 				// don't add the ending comma on last value
 				if ($size == $counter)
 				{
-					$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "'";
+					$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . "'" . Config::get('jcb_powers_path', 'libraries/jcb_powers') . "/$base_dir' => '" . implode('\\\\', $prefix) . "'";
 				}
 				else
 				{
-					$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . "'$this->jcbPowersPath/$base_dir' => '" . implode('\\\\', $prefix) . "',";
+					$autoloadMethod[] = $this->_t($tab_space) . $this->_t(2) . "'" . Config::get('jcb_powers_path', 'libraries/jcb_powers') . "/$base_dir' => '" . implode('\\\\', $prefix) . "',";
 				}
 				$counter++;
 			}
@@ -29281,8 +29283,8 @@ function vdm_dkim() {
 	                                      &$file_name
 	)
 	{
-		// only log messages for none $this->langTag translations
-		if ($this->langTag !== $tag)
+		// only log messages for none Config::get('lang_tag', 'en-GB') translations
+		if (Config::get('lang_tag', 'en-GB') !== $tag)
 		{
 			$langStringNr  = count($languageStrings);
 			$langStringSum = MathHelper::bc(
@@ -29295,7 +29297,7 @@ function vdm_dkim() {
 				. $tag . ' translated)'
 				: '(strings ' . $tag . ' translated)';
 			// force load if debug lines are added
-			if (!$this->debugLinenr)
+			if (!Config::get('debug_line_nr', false))
 			{
 				// check if we should install this translation
 				if ($percentage < $this->percentageLanguageAdd)
@@ -29303,7 +29305,7 @@ function vdm_dkim() {
 					// dont add
 					$this->langNot[$file_name] = '<b>'
 						. $total . '</b>(total '
-						. $this->langTag . ' strings) only <b>'
+						. Config::get('lang_tag', 'en-GB') . ' strings) only <b>'
 						. $langStringNr . '</b>' . $stringNAme
 						. ' = ' . $percentage;
 
@@ -29313,7 +29315,7 @@ function vdm_dkim() {
 			// show if it was added as well
 			$this->langSet[$file_name] = '<b>'
 				. $total . '</b>(total '
-				. $this->langTag . ' strings) and <b>'
+				. Config::get('lang_tag', 'en-GB') . ' strings) and <b>'
 				. $langStringNr . '</b>' . $stringNAme . ' = '
 				. $percentage;
 		}
