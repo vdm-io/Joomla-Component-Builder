@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ItemModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 
 /**
  * Componentbuilder Api Item Model
@@ -193,14 +194,14 @@ class ComponentbuilderModelApi extends ItemModel
 	public function compileInstall($component)
 	{
 		$values = array(
-			'version' => 3,
-			'install' => 1,
-			'component' => 0,
+			'joomla_version' => 3,
+			'install' => 0,
+			'component_id' => 0,
 			'backup' => 0,
 			'repository' => 0,
-			'placeholders' => 2,
-			'debuglinenr' => 2,
-			'minify' => 2
+			'add_placeholders' => 0,
+			'debug_line_nr' => 0,
+			'minify' => 0
 		);
 		// set the values
 		foreach ($values as $key => $val)
@@ -211,16 +212,18 @@ class ComponentbuilderModelApi extends ItemModel
 			}
 		}
 		// make sure we have a component
-		if (isset($values['component']) && $values['component'] > 1)
+		if (isset($values['component_id']) && $values['component_id'] > 1)
 		{
 			// make sure the component is published
-			$published = ComponentbuilderHelper::getVar('joomla_component', (int) $values['component'], 'id', 'published');
+			$published = ComponentbuilderHelper::getVar('joomla_component', (int) $values['component_id'], 'id', 'published');
 			// make sure the component is checked in
-			$checked_out = ComponentbuilderHelper::getVar('joomla_component', (int) $values['component'], 'id', 'checked_out');
+			$checked_out = ComponentbuilderHelper::getVar('joomla_component', (int) $values['component_id'], 'id', 'checked_out');
 			if (1 == $published && $checked_out == 0)
 			{
+				// load the config values
+				CFactory::_('Config')->loadArray($values, true);
 				// start up Compiler
-				$this->compiler = new Compiler($values);
+				$this->compiler = new Compiler();
 				if($this->compiler)
 				{
 					// component was compiled
@@ -228,12 +231,12 @@ class ComponentbuilderModelApi extends ItemModel
 					// get compiler model to run the installer
 					$model = ComponentbuilderHelper::getModel('compiler', JPATH_COMPONENT_ADMINISTRATOR);
 					// now install components
-					if (1 == $values['install'] && $model->install($this->compiler->componentFolderName.'.zip'))
+					if (1 == CFactory::_('Config')->install && $model->install($this->compiler->componentFolderName.'.zip'))
 					{
 						// component was installed
 						$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_SUCCESSFULLY_INSTALLED_AND_REMOVED_FROM_TEMP_FOLDER', $this->compiler->componentFolderName);
 					}
-					elseif (1 != $values['install'])
+					elseif (1 != CFactory::_('Config')->install)
 					{
 						jimport('joomla.filesystem.file');
 						$config = JFactory::getConfig();

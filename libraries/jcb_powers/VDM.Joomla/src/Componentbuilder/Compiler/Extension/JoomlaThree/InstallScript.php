@@ -9,41 +9,29 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Extension;
+namespace VDM\Joomla\Componentbuilder\Compiler\Extension\JoomlaThree;
 
 
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\InstallInterface;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Componentbuilder\Line;
-use VDM\Joomla\Componentbuilder\Tab;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\GetScriptInterface;
 
 
 /**
  * Loading the Extension Installation Script Class
  * 
- * @since 3.1.5
+ * @since 3.2.0
  */
-class InstallScript
+class InstallScript implements GetScriptInterface
 {
-	/**
-	 * The Line numbering Methods
-	 *
-	 * @since 3.1.5
-	 */
-	use Line;
-
-	/**
-	 * The Tab Adding Method
-	 *
-	 * @since 3.1.5
-	 */
-	use Tab;
-
 	/**
 	 * The extension
 	 *
-	 * @var     object
-	 * @since 3.1.5
+	 * @var     InstallInterface|Object
+	 * @since 3.2.0
 	 */
 	protected object $extension;
 
@@ -51,7 +39,7 @@ class InstallScript
 	 * The methods
 	 *
 	 * @var     array
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected array $methods = ['php_script', 'php_preflight', 'php_postflight', 'php_method'];
 
@@ -59,7 +47,7 @@ class InstallScript
 	 * The types
 	 *
 	 * @var     array
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected array $types = ['construct', 'install', 'update', 'uninstall', 'discover_install'];
 
@@ -67,7 +55,7 @@ class InstallScript
 	 * The construct bucket
 	 *
 	 * @var     array
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected array $construct = [];
 
@@ -75,7 +63,7 @@ class InstallScript
 	 * The install bucket
 	 *
 	 * @var     array
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected array $install = [];
 
@@ -83,7 +71,7 @@ class InstallScript
 	 * The update bucket
 	 *
 	 * @var     array
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected array $update = [];
 
@@ -91,7 +79,7 @@ class InstallScript
 	 * The uninstall bucket
 	 *
 	 * @var     array
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected array $uninstall = [];
 
@@ -99,7 +87,7 @@ class InstallScript
 	 * The preflight switch
 	 *
 	 * @var     bool
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected bool $preflightActive = false;
 
@@ -107,7 +95,7 @@ class InstallScript
 	 * The preflight bucket
 	 *
 	 * @var     array
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected array $preflightBucket = ['install' => [], 'uninstall' => [], 'discover_install' => [], 'update' => []];
 
@@ -115,7 +103,7 @@ class InstallScript
 	 * The postflight switch
 	 *
 	 * @var     bool
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected bool $postflightActive = false;
 
@@ -123,15 +111,19 @@ class InstallScript
 	 * The postflight bucket
 	 *
 	 * @var     array
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected array $postflightBucket = ['install' => [], 'uninstall' => [], 'discover_install' => [], 'update' => []];
 
 	/**
-	 * Constructor
-	 * @since 3.1.5
+	 * get install script
+	 *
+	 * @param   Object       $extension     The extension object
+	 *
+	 * @return  string
+	 * @since 3.2.0
 	 */
-	public function __construct(object $extension)
+	public function get(object $extension): string
 	{
 		// loop over methods and types
 		foreach ($this->methods as $method)
@@ -163,16 +155,7 @@ class InstallScript
 		}
 
 		$this->extension = $extension;
-	}
 
-	/**
-	 * get install script
-	 *
-	 * @return  string
-	 * @since 3.1.5
-	 */
-	public function get(): string
-	{
 		// return the class
 		return $this->build();
 	}
@@ -181,7 +164,7 @@ class InstallScript
 	 * build the install class
 	 *
 	 * @return  string
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected function build(): string
 	{
@@ -216,12 +199,13 @@ class InstallScript
 	 * get install script head
 	 *
 	 * @return  string
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected function head(): string
 	{
 		// get the extension
 		$extension = $this->extension;
+
 		// start build
 		$script = PHP_EOL . '/**';
 		$script .= PHP_EOL . ' * ' . $extension->official_name
@@ -239,7 +223,7 @@ class InstallScript
 	 * get constructor
 	 *
 	 * @return  string
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected function construct(): string
 	{
@@ -250,18 +234,18 @@ class InstallScript
 		}
 
 		// the __construct script
-		$script = PHP_EOL . PHP_EOL . $this->_t(1) . '/**';
-		$script .= PHP_EOL . $this->_t(1) . ' * Constructor';
-		$script .= PHP_EOL . $this->_t(1) . ' *';
-		$script .= PHP_EOL . $this->_t(1)
+		$script = PHP_EOL . PHP_EOL . Indent::_(1) . '/**';
+		$script .= PHP_EOL . Indent::_(1) . ' * Constructor';
+		$script .= PHP_EOL . Indent::_(1) . ' *';
+		$script .= PHP_EOL . Indent::_(1)
 			. ' * @param   Joomla\CMS\Installer\InstallerAdapter  $adapter  The object responsible for running this script';
-		$script .= PHP_EOL . $this->_t(1) . ' */';
-		$script .= PHP_EOL . $this->_t(1)
+		$script .= PHP_EOL . Indent::_(1) . ' */';
+		$script .= PHP_EOL . Indent::_(1)
 			. 'public function __construct($adapter)';
-		$script .= PHP_EOL . $this->_t(1) . '{';
+		$script .= PHP_EOL . Indent::_(1) . '{';
 		$script .= PHP_EOL . implode(PHP_EOL . PHP_EOL, $this->construct);
 		// close the function
-		$script .= PHP_EOL . $this->_t(1) . '}';
+		$script .= PHP_EOL . Indent::_(1) . '}';
 
 		return $script;
 	}
@@ -272,7 +256,7 @@ class InstallScript
 	 * @param   string  $name   the method being called
 	 *
 	 * @return  string
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected function main(string $name): string
 	{
@@ -282,26 +266,26 @@ class InstallScript
 			return '';
 		}
 		// load the install method
-		$script = PHP_EOL . PHP_EOL . $this->_t(1) . '/**';
-		$script .= PHP_EOL . $this->_t(1) . " * Called on $name";
-		$script .= PHP_EOL . $this->_t(1) . ' *';
-		$script .= PHP_EOL . $this->_t(1)
+		$script = PHP_EOL . PHP_EOL . Indent::_(1) . '/**';
+		$script .= PHP_EOL . Indent::_(1) . " * Called on $name";
+		$script .= PHP_EOL . Indent::_(1) . ' *';
+		$script .= PHP_EOL . Indent::_(1)
 			. ' * @param   Joomla\CMS\Installer\InstallerAdapter  $adapter  The object responsible for running this script';
-		$script .= PHP_EOL . $this->_t(1) . ' *';
-		$script .= PHP_EOL . $this->_t(1)
+		$script .= PHP_EOL . Indent::_(1) . ' *';
+		$script .= PHP_EOL . Indent::_(1)
 			. ' * @return  boolean  True on success';
-		$script .= PHP_EOL . $this->_t(1) . ' */';
-		$script .= PHP_EOL . $this->_t(1) . 'public function '
+		$script .= PHP_EOL . Indent::_(1) . ' */';
+		$script .= PHP_EOL . Indent::_(1) . 'public function '
 			. $name . '($adapter)';
-		$script .= PHP_EOL . $this->_t(1) . '{';
+		$script .= PHP_EOL . Indent::_(1) . '{';
 		$script .= PHP_EOL . implode(PHP_EOL . PHP_EOL, $this->{$name});
 		// return true
 		if ('uninstall' !== $name)
 		{
-			$script .= PHP_EOL . $this->_t(2) . 'return true;';
+			$script .= PHP_EOL . Indent::_(2) . 'return true;';
 		}
 		// close the function
-		$script .= PHP_EOL . $this->_t(1) . '}';
+		$script .= PHP_EOL . Indent::_(1) . '}';
 
 		return $script;
 	}
@@ -312,7 +296,7 @@ class InstallScript
 	 * @param   string  $name   the method being called
 	 *
 	 * @return  string
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
 	protected function flight(string $name): string
 	{
@@ -323,42 +307,40 @@ class InstallScript
 		}
 
 		// the pre/post function types
-		$script = PHP_EOL . PHP_EOL . $this->_t(1) . '/**';
-		$script .= PHP_EOL . $this->_t(1)
+		$script = PHP_EOL . PHP_EOL . Indent::_(1) . '/**';
+		$script .= PHP_EOL . Indent::_(1)
 			. ' * Called before any type of action';
-		$script .= PHP_EOL . $this->_t(1) . ' *';
-		$script .= PHP_EOL . $this->_t(1)
+		$script .= PHP_EOL . Indent::_(1) . ' *';
+		$script .= PHP_EOL . Indent::_(1)
 			. ' * @param   string  $route  Which action is happening (install|uninstall|discover_install|update)';
-		$script .= PHP_EOL . $this->_t(1)
+		$script .= PHP_EOL . Indent::_(1)
 			. ' * @param   Joomla\CMS\Installer\InstallerAdapter  $adapter  The object responsible for running this script';
-		$script .= PHP_EOL . $this->_t(1) . ' *';
-		$script .= PHP_EOL . $this->_t(1)
+		$script .= PHP_EOL . Indent::_(1) . ' *';
+		$script .= PHP_EOL . Indent::_(1)
 			. ' * @return  boolean  True on success';
-		$script .= PHP_EOL . $this->_t(1) . ' */';
-		$script .= PHP_EOL . $this->_t(1) . 'public function '
+		$script .= PHP_EOL . Indent::_(1) . ' */';
+		$script .= PHP_EOL . Indent::_(1) . 'public function '
 			. $name . '($route, $adapter)';
-		$script .= PHP_EOL . $this->_t(1) . '{';
-		$script .= PHP_EOL . $this->_t(2) . '//' . $this->setLine(
-				__LINE__
-			) . ' get application';
-		$script .= PHP_EOL . $this->_t(2)
+		$script .= PHP_EOL . Indent::_(1) . '{';
+		$script .= PHP_EOL . Indent::_(2) . '//' . Line::_(__Line__, __Class__)
+			. ' get application';
+		$script .= PHP_EOL . Indent::_(2)
 			. '$app = JFactory::getApplication();' . PHP_EOL;
 
 		// add the default version check (TODO) must make this dynamic
 		if ('preflight' === $name)
 		{
-			$script .= PHP_EOL . $this->_t(2) . '//' . $this->setLine(
-					__LINE__
-				) . ' the default for both install and update';
-			$script .= PHP_EOL . $this->_t(2)
+			$script .= PHP_EOL . Indent::_(2) . '//' . Line::_(__Line__, __Class__)
+				.' the default for both install and update';
+			$script .= PHP_EOL . Indent::_(2)
 				. '$jversion = new JVersion();';
-			$script .= PHP_EOL . $this->_t(2)
+			$script .= PHP_EOL . Indent::_(2)
 				. "if (!\$jversion->isCompatible('3.8.0'))";
-			$script .= PHP_EOL . $this->_t(2) . '{';
-			$script .= PHP_EOL . $this->_t(3)
+			$script .= PHP_EOL . Indent::_(2) . '{';
+			$script .= PHP_EOL . Indent::_(3)
 				. "\$app->enqueueMessage('Please upgrade to at least Joomla! 3.8.0 before continuing!', 'error');";
-			$script .= PHP_EOL . $this->_t(3) . 'return false;';
-			$script .= PHP_EOL . $this->_t(2) . '}' . PHP_EOL;
+			$script .= PHP_EOL . Indent::_(3) . 'return false;';
+			$script .= PHP_EOL . Indent::_(2) . '}' . PHP_EOL;
 		}
 
 		// now add the scripts
@@ -367,22 +349,23 @@ class InstallScript
 			if (ArrayHelper::check($_script))
 			{
 				// set the if and script
-				$script .= PHP_EOL . $this->_t(2) . "if ('" . $route
+				$script .= PHP_EOL . Indent::_(2) . "if ('" . $route
 					. "' === \$route)";
-				$script .= PHP_EOL . $this->_t(2) . '{';
+				$script .= PHP_EOL . Indent::_(2) . '{';
 				$script .= PHP_EOL . implode(
 						PHP_EOL . PHP_EOL, $_script
 					);
-				$script .= PHP_EOL . $this->_t(2) . '}' . PHP_EOL;
+				$script .= PHP_EOL . Indent::_(2) . '}' . PHP_EOL;
 			}
 		}
 
 		// return true
-		$script .= PHP_EOL . $this->_t(2) . 'return true;';
+		$script .= PHP_EOL . Indent::_(2) . 'return true;';
 		// close the function
-		$script .= PHP_EOL . $this->_t(1) . '}';
+		$script .= PHP_EOL . Indent::_(1) . '}';
 
 		return $script;
 	}
+
 }
 

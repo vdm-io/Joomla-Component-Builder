@@ -202,18 +202,10 @@ class ComponentbuilderModelCompiler extends ListModel
 		return true;
 	}
 
-	public function builder($version, $id, $backup, $repo, $addPlaceholders, $addPowers, $debugLinenr, $minify) 
+	public function builder() 
 	{
-		$set['version'] = $version;
-		$set['component'] = $id;
-		$set['backup'] = $backup;
-		$set['repository'] = $repo;
-		$set['placeholders'] = $addPlaceholders;
-		$set['powers'] = $addPowers;
-		$set['debuglinenr'] = $debugLinenr;
-		$set['minify'] = $minify;
 		// run compiler
-		$this->compiler = new Compiler($set);
+		$this->compiler = new Compiler();
 		if($this->compiler)
 		{
 			return true;

@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 
 /**
  * Compiler Admin Controller
@@ -89,20 +90,10 @@ class ComponentbuilderControllerCompiler extends AdminController
 		// currently only those with admin access can compile a component
 		if($user->authorise('core.manage', 'com_componentbuilder'))
 		{
-			// get the post values
-			$jinput = JFactory::getApplication()->input;
-			$componentId = $jinput->post->get('component', 0, 'INT');
-			$version = $jinput->post->get('version', 0, 'INT');
-			$addBackup = $jinput->post->get('backup', 0, 'INT');
-			$addRepo = $jinput->post->get('repository', 0, 'INT');
-			$addPlaceholders = $jinput->post->get('placeholders', 2, 'INT');
-			$addPowers = $jinput->post->get('powers', 2, 'INT');
-			$debugLinenr = $jinput->post->get('debuglinenr', 2, 'INT');
-			$minify = $jinput->post->get('minify', 2, 'INT');
 			// include component compiler
 			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/compiler.php';
 			$model = $this->getModel('compiler');
-			if ($model->builder($version, $componentId, $addBackup, $addRepo, $addPlaceholders, $addPowers, $debugLinenr, $minify))
+			if ($model->builder())
 			{
 				$cache = JFactory::getCache('mod_menu');
 				$cache->clean();
@@ -123,7 +114,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 			$redirect_url = $app->getUserState('com_componentbuilder.redirect_url');
 			// get system messages
 			$message = $app->getUserState('com_componentbuilder.message');
-			if (empty($redirect_url) && $componentId > 0)
+			if (empty($redirect_url) && CFactory::_('Config')->component_id > 0)
 			{
 				// start new message
 				$message = array();

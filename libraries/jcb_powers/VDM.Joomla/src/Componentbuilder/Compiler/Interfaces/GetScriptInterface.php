@@ -9,35 +9,24 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder;
-
-
-use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
+namespace VDM\Joomla\Componentbuilder\Compiler\Interfaces;
 
 
 /**
- * Add line comment
+ * The functions a get script should have
  * 
- * @since 3.1.5
+ * @since 3.2.0
  */
-trait Line
+interface GetScriptInterface
 {
 	/**
-	 * Set the line number in comments
+	 * get code to use
 	 *
-	 * @param   int  $nr  The line number
+	 * @param   Object       $code     The code object
 	 *
 	 * @return  string
-	 * @since 3.1.5
+	 * @since 3.2.0
 	 */
-	private function setLine(int $nr): string
-	{
-		if (Config::get('debug_line_nr', false))
-		{
-			return ' [' . get_called_class() . ' ' . $nr . ']';
-		}
-
-		return '';
-	}
+	public function get(object $extension): string;
 }
 

@@ -930,11 +930,11 @@
 			min="1"
 			showon="development_method:2">
 			<form hidden="true" name="list_expansion_modal" repeat="true">
-				<!-- Component Field. Type: Joomlacomponent. (custom) -->
+				<!-- Component_id Field. Type: Joomlacomponent. (custom) -->
 				<field
 					type="joomlacomponent"
-					name="component"
-					label="COM_COMPONENTBUILDER_CONFIG_COMPONENT_LABEL"
+					name="component_id"
+					label="COM_COMPONENTBUILDER_CONFIG_COMPONENT_ID_LABEL"
 					class="list_class"
 					multiple="false"
 					default="0"
@@ -973,14 +973,14 @@
 					description="COM_COMPONENTBUILDER_CONFIG_REPOSITORY_DESCRIPTION"
 					class="inputbox"
 				/>
-				<!-- Placeholders Field. Type: Checkbox. (joomla) -->
+				<!-- Add_placeholders Field. Type: Checkbox. (joomla) -->
 				<field
 					type="checkbox"
-					name="placeholders"
-					label="COM_COMPONENTBUILDER_CONFIG_PLACEHOLDERS_LABEL"
+					name="add_placeholders"
+					label="COM_COMPONENTBUILDER_CONFIG_ADD_PLACEHOLDERS_LABEL"
 					value="1"
 					default=""
-					description="COM_COMPONENTBUILDER_CONFIG_PLACEHOLDERS_DESCRIPTION"
+					description="COM_COMPONENTBUILDER_CONFIG_ADD_PLACEHOLDERS_DESCRIPTION"
 					class="inputbox"
 				/>
 			</form>

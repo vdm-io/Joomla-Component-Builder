@@ -33,7 +33,7 @@ Joomla.submitbutton = function(task, key)
 	if (task == ''){
 		return false;
 	} else {
-		var component = jQuery('#component').val();
+		var component = jQuery('#component_id').val();
 		var isValid = true;
 		
 		if(component == '' && task == 'compiler.compiler'){
@@ -56,7 +56,7 @@ Joomla.submitbutton = function(task, key)
 			// some ui movements
 			if (task == 'compiler.compiler'){
 				// get the component name
-				let component_name = jQuery("#component option:selected").text();
+				let component_name = jQuery("#component_id option:selected").text();
 				// set the component name
 				jQuery(".component-name").text(component_name);
 				// wait a little since to much is happening...
@@ -189,9 +189,9 @@ jQuery('<div id="compiling"></div>')
 // token 
 var token = '<?= JSession::getFormToken() ?>';
 var all_is_good = '<?= JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IS_NO_NOTICE_AT_THIS_TIME') ?>';
-jQuery('#compilerForm').on('change', '#component',function (e)
+jQuery('#compilerForm').on('change', '#component_id',function (e)
 {
-	var component = jQuery('#component').val();
+	var component = jQuery('#component_id').val();
 	if(component == "") {
 		jQuery('#component-details').html("<?= $selectNotice ?>");
 		jQuery("#noticeboard").show();

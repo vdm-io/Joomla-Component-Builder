@@ -133,7 +133,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 			// placeholders attributes
 			$attributes = array(
 				'type' => 'radio',
-				'name' => 'placeholders',
+				'name' => 'add_placeholders',
 				'label' => 'COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS',
 				'class' => 'btn-group btn-group-yesno',
 				'description' => 'COM_COMPONENTBUILDER_SHOULD_JCB_INSERT_THE_CUSTOM_CODE_PLACEHOLDERS_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_CUSTOM_CODE',
@@ -148,7 +148,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 			// debuglinenr attributes
 			$attributes = array(
 				'type' => 'radio',
-				'name' => 'debuglinenr',
+				'name' => 'debug_line_nr',
 				'label' => 'COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS',
 				'class' => 'btn-group btn-group-yesno',
 				'description' => 'COM_COMPONENTBUILDER_ADD_CORRESPONDING_LINE_NUMBERS_TO_THE_DYNAMIC_COMMENTS_SO_TO_SEE_WHERE_IN_THE_COMPILER_THE_LINES_OF_CODE_WAS_BUILD_THIS_WILL_HELP_IF_YOU_NEED_TO_GET_MORE_TECHNICAL_WITH_AN_ISSUE_ON_GITHUB_OR_EVEN_FOR_YOUR_OWN_DEBUGGING',
@@ -190,7 +190,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 			// component attributes
 			$attributes = array(
 				'type' => 'list',
-				'name' => 'component',
+				'name' => 'component_id',
 				'label' => 'COM_COMPONENTBUILDER_COMPONENTS',
 				'class' => 'list_class',
 				'description' => 'COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_TO_COMPILE',

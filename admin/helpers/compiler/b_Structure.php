@@ -20,7 +20,10 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\FileHelper;
-use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 
 
 /**
@@ -28,6 +31,7 @@ use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
  */
 class Structure extends Get
 {
+
 
 	/**
 	 * The folder counter
@@ -370,56 +374,50 @@ class Structure extends Get
 	/**
 	 * Constructor
 	 */
-	public function __construct($config = array())
+	public function __construct()
 	{
 		// first we run the perent constructor
-		if (parent::__construct($config))
+		if (parent::__construct())
 		{
 			// set the standard admin file
 			$this->stdRootFiles[] = $this->componentData->name_code . '.php';
 			// set incase no extra admin folder are loaded
-			$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FOLDERS'
-			. $this->hhh]
+			$this->fileContentStatic[Placefix::_h('EXSTRA_ADMIN_FOLDERS')]
 				= '';
 			// set incase no extra site folder are loaded
-			$this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FOLDERS'
-			. $this->hhh]
+			$this->fileContentStatic[Placefix::_h('EXSTRA_SITE_FOLDERS')]
 				= '';
 			// set incase no extra media folder are loaded
-			$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FOLDERS'
-			. $this->hhh]
+			$this->fileContentStatic[Placefix::_h('EXSTRA_MEDIA_FOLDERS')]
 				= '';
 			// set incase no extra admin files are loaded
-			$this->fileContentStatic[$this->hhh . 'EXSTRA_ADMIN_FILES'
-			. $this->hhh]
+			$this->fileContentStatic[Placefix::_h('EXSTRA_ADMIN_FILES')]
 				= '';
 			// set incase no extra site files are loaded
-			$this->fileContentStatic[$this->hhh . 'EXSTRA_SITE_FILES'
-			. $this->hhh]
+			$this->fileContentStatic[Placefix::_h('EXSTRA_SITE_FILES')]
 				= '';
 			// set incase no extra media files are loaded
-			$this->fileContentStatic[$this->hhh . 'EXSTRA_MEDIA_FILES'
-			. $this->hhh]
+			$this->fileContentStatic[Placefix::_h('EXSTRA_MEDIA_FILES')]
 				= '';
 			// run global updater
 			ComponentbuilderHelper::runGlobalUpdater();
 			// set the template path
-			$this->templatePath = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/joomla_'
-				. $this->joomlaVersions[Config::get('version', 3)]['folder_key'];
+			$this->templatePath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/joomla_'
+				. $this->joomlaVersions[CFactory::_('Config')->joomla_version]['folder_key'];
 			// set some default names
 			$this->componentSalesName  = 'com_'
 				. $this->componentData->sales_name . '__J'
-				. Config::get('version', 3);
+				. CFactory::_('Config')->joomla_version;
 			$this->componentBackupName = 'com_'
 				. $this->componentData->sales_name . '_v' . str_replace(
 					'.', '_', $this->componentData->component_version
-				) . '__J' . Config::get('version', 3);
+				) . '__J' . CFactory::_('Config')->joomla_version;
 			$this->componentFolderName = 'com_'
 				. $this->componentData->name_code . '_v' . str_replace(
 					'.', '_', $this->componentData->component_version
-				) . '__J' . Config::get('version', 3);
+				) . '__J' . CFactory::_('Config')->joomla_version;
 			// set component folder path
-			$this->componentPath = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
+			$this->componentPath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
 				. $this->componentFolderName;
 			// set the template path for custom
 			$this->templatePathCustom = $this->params->get(
@@ -438,7 +436,7 @@ class Structure extends Get
 			// set the Joomla Version Data
 			$this->joomlaVersionData = $this->setJoomlaVersionData();
 			// Trigger Event: jcb_ce_onAfterSetJoomlaVersionData
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onAfterSetJoomlaVersionData',
 				array(&$this->componentContext, &$this->joomlaVersionData)
 			);
@@ -467,24 +465,6 @@ class Structure extends Get
 	}
 
 	/**
-	 * Set the line number in comments
-	 *
-	 * @param   int  $nr  The line number
-	 *
-	 * @return  string
-	 *
-	 */
-	private function setLine($nr)
-	{
-		if (Config::get('debug_line_nr', false))
-		{
-			return ' [Structure ' . $nr . ']';
-		}
-
-		return '';
-	}
-
-	/**
 	 * Build the Powers files, folders
 	 *
 	 * @return  void
@@ -492,16 +472,20 @@ class Structure extends Get
 	 */
 	private function buildPowers()
 	{
-		if (ArrayHelper::check($this->powers))
+		if (ArrayHelper::check(CFactory::_('Power')->active))
 		{
+			// for plugin event TODO change event api signatures
+			$this->powers = CFactory::_('Power')->active;
 			// Trigger Event: jcb_ce_onBeforeSetModules
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onBeforeBuildPowers',
 				array(&$this->componentContext, &$this->powers)
 			);
+			// for plugin event TODO change event api signatures
+			CFactory::_('Power')->active = $this->powers;
 			// we track the creation of htaccess files
 			$htaccess = array();
-			foreach ($this->powers as $power)
+			foreach (CFactory::_('Power')->active as $power)
 			{
 				if (ObjectHelper::check($power)
 					&& isset($power->path)
@@ -533,8 +517,8 @@ class Structure extends Get
 					$this->writeFile(
 						$fileDetails['path'],
 						'<?php' . PHP_EOL . '// A POWER FILE' .
-						PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
-						PHP_EOL . $this->hhh . 'POWERCODE' . $this->hhh
+						PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
+						PHP_EOL . Placefix::_h('POWERCODE')
 					);
 					$this->newFiles[$power->key][] = $fileDetails;
 					// count the file created
@@ -606,7 +590,7 @@ class Structure extends Get
 		if (ArrayHelper::check($this->joomlaModules))
 		{
 			// Trigger Event: jcb_ce_onBeforeSetModules
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onBeforeBuildModules',
 				array(&$this->componentContext, &$this->joomlaModules)
 			);
@@ -619,7 +603,7 @@ class Structure extends Get
 					))
 				{
 					// module path
-					$module->folder_path = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
+					$module->folder_path = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
 						. $module->folder_name;
 					// set the module paths
 					$this->dynamicPaths[$module->key] = $module->folder_path;
@@ -635,11 +619,11 @@ class Structure extends Get
 					$this->writeFile(
 						$fileDetails['path'],
 						'<?php' . PHP_EOL . '// main modfile' .
-						PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
+						PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
 						PHP_EOL . '// No direct access to this file' . PHP_EOL .
 						"defined('_JEXEC') or die('Restricted access');"
 						. PHP_EOL .
-						$this->hhh . 'MODCODE' . $this->hhh
+						Placefix::_h('MODCODE')
 					);
 					$this->newFiles[$module->key][] = $fileDetails;
 					// count the file created
@@ -654,7 +638,7 @@ class Structure extends Get
 						$this->writeFile(
 							$fileDetails['path'],
 							'<?php' . PHP_EOL . '// get data file' .
-							PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL
+							PHP_EOL . Placefix::_h('BOM') . PHP_EOL
 							.
 							PHP_EOL . '// No direct access to this file'
 							. PHP_EOL .
@@ -666,7 +650,7 @@ class Structure extends Get
 							' */' . PHP_EOL .
 							"class " . $module->class_data_name
 							. ' extends \JObject' . PHP_EOL .
-							"{" . $this->hhh . 'DYNAMICGETS' . $this->hhh . "}"
+							"{" . Placefix::_h('DYNAMICGETS') . "}"
 							. PHP_EOL
 						);
 						$this->newFiles[$module->key][] = $fileDetails;
@@ -683,13 +667,13 @@ class Structure extends Get
 						$this->writeFile(
 							$fileDetails['path'],
 							'<?php' . PHP_EOL . '// helper file' .
-							PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL
+							PHP_EOL . Placefix::_h('BOM') . PHP_EOL
 							.
 							PHP_EOL . '// No direct access to this file'
 							. PHP_EOL .
 							"defined('_JEXEC') or die('Restricted access');"
 							. PHP_EOL .
-							$this->hhh . 'HELPERCODE' . $this->hhh
+							Placefix::_h('HELPERCODE')
 						);
 						$this->newFiles[$module->key][] = $fileDetails;
 						// count the file created
@@ -717,11 +701,11 @@ class Structure extends Get
 					$this->writeFile(
 						$fileDetails['path'],
 						'<?php' . PHP_EOL . '// default tmpl' .
-						PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
+						PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
 						PHP_EOL . '// No direct access to this file' . PHP_EOL .
 						"defined('_JEXEC') or die('Restricted access');"
 						. PHP_EOL .
-						$this->hhh . 'MODDEFAULT' . $this->hhh
+						Placefix::_h('MODDEFAULT')
 					);
 					$this->newFiles[$module->key][] = $fileDetails;
 					// count the file created
@@ -736,13 +720,13 @@ class Structure extends Get
 						$this->writeFile(
 							$fileDetails['path'],
 							'<?php' . PHP_EOL . '// Script template' .
-							PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL
+							PHP_EOL . Placefix::_h('BOM') . PHP_EOL
 							.
 							PHP_EOL . '// No direct access to this file'
 							. PHP_EOL .
 							"defined('_JEXEC') or die('Restricted access');"
 							. PHP_EOL .
-							$this->hhh . 'INSTALLCLASS' . $this->hhh
+							Placefix::_h('INSTALLCLASS')
 						);
 						$this->newFiles[$module->key][] = $fileDetails;
 						// count the file created
@@ -789,16 +773,16 @@ class Structure extends Get
 							                     'zip'  => 'mod_admin.css');
 							$this->writeFile(
 								$fileDetails['path'],
-								$this->hhh . 'BOM' . $this->hhh . PHP_EOL
+								Placefix::_h('BOM') . PHP_EOL
 								. PHP_EOL . $css
 							);
 							$this->newFiles[$module->key][] = $fileDetails;
 							// count the file created
 							$this->fileCount++;
 							// add the field script
-							$field_script_bucket[] = $this->_t(2) . "//"
-								. $this->setLine(__LINE__) . " Custom CSS";
-							$field_script_bucket[] = $this->_t(2)
+							$field_script_bucket[] = Indent::_(2) . "//"
+								. Line::_(__Line__, __Class__) . " Custom CSS";
+							$field_script_bucket[] = Indent::_(2)
 								. "\$document->addStyleSheet('" . $target_path
 								. "/modules/" . $module->folder_name
 								. "/css/mod_admin.css', ['version' => 'auto', 'relative' => true]);";
@@ -824,16 +808,16 @@ class Structure extends Get
 							                     'zip'  => 'mod_admin.js');
 							$this->writeFile(
 								$fileDetails['path'],
-								$this->hhh . 'BOM' . $this->hhh . PHP_EOL
+								Placefix::_h('BOM') . PHP_EOL
 								. PHP_EOL . $javascript
 							);
 							$this->newFiles[$module->key][] = $fileDetails;
 							// count the file created
 							$this->fileCount++;
 							// add the field script
-							$field_script_bucket[] = $this->_t(2) . "//"
-								. $this->setLine(__LINE__) . " Custom JS";
-							$field_script_bucket[] = $this->_t(2)
+							$field_script_bucket[] = Indent::_(2) . "//"
+								. Line::_(__Line__, __Class__) . " Custom JS";
+							$field_script_bucket[] = Indent::_(2)
 								. "\$document->addScript('" . $target_path
 								. "/modules/" . $module->folder_name
 								. "/js/mod_admin.js', ['version' => 'auto', 'relative' => true]);";
@@ -890,7 +874,7 @@ class Structure extends Get
 								                     . '.xml');
 							// build basic XML
 							$xml = '<?xml version="1.0" encoding="utf-8"?>';
-							$xml .= PHP_EOL . '<!--' . $this->setLine(__LINE__)
+							$xml .= PHP_EOL . '<!--' . Line::_(__Line__, __Class__)
 								. ' default paths of ' . $file
 								. ' form points to ' . $this->componentCodeName
 								. ' -->';
@@ -919,13 +903,13 @@ class Structure extends Get
 							if ($add_component_path)
 							{
 								$xml .= PHP_EOL . '<form';
-								$xml .= PHP_EOL . $this->_t(1)
+								$xml .= PHP_EOL . Indent::_(1)
 									. 'addrulepath="/administrator/components/com_'
-									. Config::get('component_code_name')
+									. CFactory::_('Config')->component_code_name
 									. '/models/rules"';
-								$xml .= PHP_EOL . $this->_t(1)
+								$xml .= PHP_EOL . Indent::_(1)
 									. 'addfieldpath="/administrator/components/com_'
-									. Config::get('component_code_name')
+									. CFactory::_('Config')->component_code_name
 									. '/models/fields"';
 								$xml .= PHP_EOL . '>';
 							}
@@ -948,7 +932,7 @@ class Structure extends Get
 										$field_name_inner = $field_names[1];
 									}
 								}
-								$xml .= PHP_EOL . $this->_t(1)
+								$xml .= PHP_EOL . Indent::_(1)
 									. '<fields name="' . $field_name_outer
 									. '">';
 								foreach ($fieldsets as $fieldset => $field)
@@ -1002,30 +986,30 @@ class Structure extends Get
 										|| isset($module->add_field_path[$file . $field_name . $fieldset]))
 									{
 
-										$xml .= PHP_EOL . $this->_t(1) . '<!--'
-											. $this->setLine(__LINE__) . ' default paths of '
+										$xml .= PHP_EOL . Indent::_(1) . '<!--'
+											. Line::_(__Line__, __Class__) . ' default paths of '
 											. $fieldset . ' fieldset points to the module -->';
 
-										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
+										$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
 											. $fieldset . '" label="' . $label . '"';
 
 										if (isset($module->add_rule_path[$file . $field_name . $fieldset]))
 										{
-											$xml .= PHP_EOL . $this->_t(2)
+											$xml .= PHP_EOL . Indent::_(2)
 												. 'addrulepath="' . $module->add_rule_path[$file . $field_name . $fieldset] . '"';
 										}
 
 										if (isset($module->add_field_path[$file . $field_name . $fieldset]))
 										{
-											$xml .= PHP_EOL . $this->_t(2)
+											$xml .= PHP_EOL . Indent::_(2)
 												. 'addfieldpath="' . $module->add_field_path[$file . $field_name . $fieldset] . '"';
 										}
 
-										$xml .= PHP_EOL . $this->_t(1) . '>';
+										$xml .= PHP_EOL . Indent::_(1) . '>';
 									}
 									else
 									{
-										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
+										$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
 											. $fieldset . '" label="' . $label . '">';
 									}
 									// check if we have an inner field set
@@ -1033,25 +1017,25 @@ class Structure extends Get
 										$field_name_inner
 									))
 									{
-										$xml .= PHP_EOL . $this->_t(1)
+										$xml .= PHP_EOL . Indent::_(1)
 											. '<fields name="'
 											. $field_name_inner . '">';
 									}
 									// add the placeholder of the fields
-									$xml .= $this->hhh . 'FIELDSET_' . $file
-										. $field_name . $fieldset . $this->hhh;
+									$xml .= Placefix::_h('FIELDSET_' . $file
+										. $field_name . $fieldset );
 									// check if we have an inner field set
 									if (StringHelper::check(
 										$field_name_inner
 									))
 									{
-										$xml .= PHP_EOL . $this->_t(1)
+										$xml .= PHP_EOL . Indent::_(1)
 											. '</fields>';
 									}
-									$xml .= PHP_EOL . $this->_t(1)
+									$xml .= PHP_EOL . Indent::_(1)
 										. '</fieldset>';
 								}
-								$xml .= PHP_EOL . $this->_t(1) . '</fields>';
+								$xml .= PHP_EOL . Indent::_(1) . '</fields>';
 							}
 							$xml .= PHP_EOL . '</form>';
 							// add xml to file
@@ -1096,7 +1080,7 @@ class Structure extends Get
 					$this->createFolder($module->folder_path . '/language');
 					// also create the lang tag folder
 					$this->createFolder(
-						$module->folder_path . '/language/' . Config::get('lang_tag', 'en-GB')
+						$module->folder_path . '/language/' . CFactory::_('Config')->get('lang_tag', 'en-GB')
 					);
 					// check if this lib has files
 					if (isset($module->files)
@@ -1187,7 +1171,7 @@ class Structure extends Get
 		if (ArrayHelper::check($this->joomlaPlugins))
 		{
 			// Trigger Event: jcb_ce_onBeforeSetPlugins
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onBeforeBuildPlugins',
 				array(&$this->componentContext, &$this->joomlaPlugins)
 			);
@@ -1200,7 +1184,7 @@ class Structure extends Get
 					))
 				{
 					// plugin path
-					$plugin->folder_path = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
+					$plugin->folder_path = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
 						. $plugin->folder_name;
 					// set the plugin paths
 					$this->dynamicPaths[$plugin->key] = $plugin->folder_path;
@@ -1216,11 +1200,11 @@ class Structure extends Get
 					$this->writeFile(
 						$fileDetails['path'],
 						'<?php' . PHP_EOL . '// Plugin main class template' .
-						PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL .
+						PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
 						PHP_EOL . '// No direct access to this file' . PHP_EOL .
 						"defined('_JEXEC') or die('Restricted access');"
 						. PHP_EOL .
-						$this->hhh . 'MAINCLASS' . $this->hhh
+						Placefix::_h('MAINCLASS')
 					);
 					$this->newFiles[$plugin->key][] = $fileDetails;
 					// count the file created
@@ -1247,13 +1231,13 @@ class Structure extends Get
 						$this->writeFile(
 							$fileDetails['path'],
 							'<?php' . PHP_EOL . '// Script template' .
-							PHP_EOL . $this->hhh . 'BOM' . $this->hhh . PHP_EOL
+							PHP_EOL . Placefix::_h('BOM') . PHP_EOL
 							.
 							PHP_EOL . '// No direct access to this file'
 							. PHP_EOL .
 							"defined('_JEXEC') or die('Restricted access');"
 							. PHP_EOL .
-							$this->hhh . 'INSTALLCLASS' . $this->hhh
+							Placefix::_h('INSTALLCLASS')
 						);
 						$this->newFiles[$plugin->key][] = $fileDetails;
 						// count the file created
@@ -1299,9 +1283,9 @@ class Structure extends Get
 								                     . '.xml');
 							// biuld basic XML
 							$xml = '<?xml version="1.0" encoding="utf-8"?>';
-							$xml .= PHP_EOL . '<!--' . $this->setLine(__LINE__)
+							$xml .= PHP_EOL . '<!--' . Line::_(__Line__, __Class__)
 								. ' default paths of ' . $file
-								. ' form points to ' . Config::get('component_code_name')
+								. ' form points to ' . CFactory::_('Config')->component_code_name
 								. ' -->';
 							// search if we must add the component path
 							$add_component_path = false;
@@ -1328,13 +1312,13 @@ class Structure extends Get
 							if ($add_component_path)
 							{
 								$xml .= PHP_EOL . '<form';
-								$xml .= PHP_EOL . $this->_t(1)
+								$xml .= PHP_EOL . Indent::_(1)
 									. 'addrulepath="/administrator/components/com_'
-									. Config::get('component_code_name')
+									. CFactory::_('Config')->component_code_name
 									. '/models/rules"';
-								$xml .= PHP_EOL . $this->_t(1)
+								$xml .= PHP_EOL . Indent::_(1)
 									. 'addfieldpath="/administrator/components/com_'
-									. Config::get('component_code_name')
+									. CFactory::_('Config')->component_code_name
 									. '/models/fields"';
 								$xml .= PHP_EOL . '>';
 							}
@@ -1357,7 +1341,7 @@ class Structure extends Get
 										$field_name_inner = $field_names[1];
 									}
 								}
-								$xml .= PHP_EOL . $this->_t(1)
+								$xml .= PHP_EOL . Indent::_(1)
 									. '<fields name="' . $field_name_outer
 									. '">';
 								foreach ($fieldsets as $fieldset => $field)
@@ -1393,30 +1377,30 @@ class Structure extends Get
 									if (isset($plugin->add_rule_path[$file . $field_name . $fieldset])
 										|| isset($plugin->add_field_path[$file . $field_name . $fieldset]))
 									{
-										$xml .= PHP_EOL . $this->_t(1) . '<!--'
-											. $this->setLine(__LINE__) . ' default paths of '
+										$xml .= PHP_EOL . Indent::_(1) . '<!--'
+											. Line::_(__Line__, __Class__) . ' default paths of '
 											. $fieldset . ' fieldset points to the plugin -->';
 
-										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
+										$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
 											. $fieldset . '" label="' . $label . '"';
 
 										if (isset($plugin->add_rule_path[$file . $field_name . $fieldset]))
 										{
-											$xml .= PHP_EOL . $this->_t(2)
+											$xml .= PHP_EOL . Indent::_(2)
 												. 'addrulepath="' . $plugin->add_rule_path[$file . $field_name . $fieldset] . '"';
 										}
 
 										if (isset($plugin->add_field_path[$file . $field_name . $fieldset]))
 										{
-											$xml .= PHP_EOL . $this->_t(2)
+											$xml .= PHP_EOL . Indent::_(2)
 												. 'addfieldpath="' . $plugin->add_field_path[$file . $field_name . $fieldset] . '"';
 										}
 
-										$xml .= PHP_EOL . $this->_t(1) . '>';
+										$xml .= PHP_EOL . Indent::_(1) . '>';
 									}
 									else
 									{
-										$xml .= PHP_EOL . $this->_t(1) . '<fieldset name="'
+										$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
 											. $fieldset . '" label="' . $label . '">';
 									}
 									// check if we have an inner field set
@@ -1424,25 +1408,25 @@ class Structure extends Get
 										$field_name_inner
 									))
 									{
-										$xml .= PHP_EOL . $this->_t(1)
+										$xml .= PHP_EOL . Indent::_(1)
 											. '<fields name="'
 											. $field_name_inner . '">';
 									}
 									// add the placeholder of the fields
-									$xml .= $this->hhh . 'FIELDSET_' . $file
-										. $field_name . $fieldset . $this->hhh;
+									$xml .= Placefix::_h('FIELDSET_' . $file
+										. $field_name . $fieldset );
 									// check if we have an inner field set
 									if (StringHelper::check(
 										$field_name_inner
 									))
 									{
-										$xml .= PHP_EOL . $this->_t(1)
+										$xml .= PHP_EOL . Indent::_(1)
 											. '</fields>';
 									}
-									$xml .= PHP_EOL . $this->_t(1)
+									$xml .= PHP_EOL . Indent::_(1)
 										. '</fieldset>';
 								}
-								$xml .= PHP_EOL . $this->_t(1) . '</fields>';
+								$xml .= PHP_EOL . Indent::_(1) . '</fields>';
 							}
 							$xml .= PHP_EOL . '</form>';
 							// add xml to file
@@ -1487,7 +1471,7 @@ class Structure extends Get
 					$this->createFolder($plugin->folder_path . '/language');
 					// also creat the lang tag folder path
 					$this->createFolder(
-						$plugin->folder_path . '/language/' . Config::get('lang_tag', 'en-GB')
+						$plugin->folder_path . '/language/' . CFactory::_('Config')->get('lang_tag', 'en-GB')
 					);
 					// check if this lib has files
 					if (isset($plugin->files)
@@ -1603,7 +1587,7 @@ class Structure extends Get
 		if (ArrayHelper::check($this->libraries))
 		{
 			// Trigger Event: jcb_ce_onBeforeSetLibraries
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onBeforeSetLibraries',
 				array(&$this->componentContext, &$this->libraries)
 			);
@@ -1712,9 +1696,8 @@ class Structure extends Get
 						if ($addLocalFolder)
 						{
 							// add folder to xml of media folders
-							$this->fileContentStatic[$this->hhh
-							. 'EXSTRA_MEDIA_FOLDERS' . $this->hhh]
-								.= PHP_EOL . $this->_t(2) . "<folder>"
+							$this->fileContentStatic[Placefix::_h('EXSTRA_MEDIA_FOLDERS')]
+								.= PHP_EOL . Indent::_(2) . "<folder>"
 								. $libFolder . "</folder>";
 						}
 					}
@@ -2072,7 +2055,7 @@ class Structure extends Get
 			$this->joomlaVersionData->move->static
 		))
 		{
-			$codeName = Config::get('component_code_name');
+			$codeName = CFactory::_('Config')->component_code_name;
 			// TODO needs more looking at this must be dynamic actually
 			$this->notNew[] = 'LICENSE.txt';
 			// do license check
@@ -2289,16 +2272,16 @@ class Structure extends Get
 						if ($add_to_extra)
 						{
 							// set the tab
-							$eTab = $this->_t(2);
+							$eTab = Indent::_(2);
 							if ('admin' === $checker[0])
 							{
-								$eTab = $this->_t(3);
+								$eTab = Indent::_(3);
 							}
 							// set the xml file
-							$this->fileContentStatic[$this->hhh . 'EXSTRA_'
+							$this->fileContentStatic[Placefix::_h('EXSTRA_'
 							. StringHelper::safe(
 								$checker[0], 'U'
-							) . '_' . $eNAME . $this->hhh]
+							) . '_' . $eNAME)]
 								.= PHP_EOL . $eTab . "<" . $ename . ">"
 								. $checker[1] . "</" . $ename . ">";
 						}
@@ -2348,24 +2331,18 @@ class Structure extends Get
 					{
 						$target
 							    = array('admin' => $view['settings']->name_list);
-						$config = array($this->hhh . 'CREATIONDATE'
-						                . $this->hhh => $created,
-						                $this->hhh . 'BUILDDATE'
-						                . $this->hhh => $modified,
-						                $this->hhh . 'VERSION'
-						                . $this->hhh => $view['settings']->version);
+						$config = array(Placefix::_h('CREATIONDATE') => $created,
+						                Placefix::_h('BUILDDATE') => $modified,
+						                Placefix::_h('VERSION') => $view['settings']->version);
 						$this->buildDynamique($target, 'list', false, $config);
 					}
 					if ($view['settings']->name_single != 'null')
 					{
 						$target
 							    = array('admin' => $view['settings']->name_single);
-						$config = array($this->hhh . 'CREATIONDATE'
-						                . $this->hhh => $created,
-						                $this->hhh . 'BUILDDATE'
-						                . $this->hhh => $modified,
-						                $this->hhh . 'VERSION'
-						                . $this->hhh => $view['settings']->version);
+						$config = array(Placefix::_h('CREATIONDATE') => $created,
+						                Placefix::_h('BUILDDATE') => $modified,
+						                Placefix::_h('VERSION') => $view['settings']->version);
 						$this->buildDynamique(
 							$target, 'single', false, $config
 						);
@@ -2379,12 +2356,9 @@ class Structure extends Get
 						// setup the front site edit-view files
 						$target
 							    = array('site' => $view['settings']->name_single);
-						$config = array($this->hhh . 'CREATIONDATE'
-						                . $this->hhh => $created,
-						                $this->hhh . 'BUILDDATE'
-						                . $this->hhh => $modified,
-						                $this->hhh . 'VERSION'
-						                . $this->hhh => $view['settings']->version);
+						$config = array(Placefix::_h('CREATIONDATE') => $created,
+						                Placefix::_h('BUILDDATE') => $modified,
+						                Placefix::_h('VERSION') => $view['settings']->version);
 						$this->buildDynamique($target, 'edit', false, $config);
 					}
 				}
@@ -2416,24 +2390,18 @@ class Structure extends Get
 				{
 					// set list view
 					$target = array('site' => $view['settings']->code);
-					$config = array($this->hhh . 'CREATIONDATE'
-					                . $this->hhh => $created,
-					                $this->hhh . 'BUILDDATE'
-					                . $this->hhh => $modified,
-					                $this->hhh . 'VERSION'
-					                . $this->hhh => $view['settings']->version);
+					$config = array(Placefix::_h('CREATIONDATE') => $created,
+					                Placefix::_h('BUILDDATE') => $modified,
+					                Placefix::_h('VERSION') => $view['settings']->version);
 					$this->buildDynamique($target, 'list', false, $config);
 				}
 				elseif ($view['settings']->main_get->gettype == 1)
 				{
 					// set single view
 					$target = array('site' => $view['settings']->code);
-					$config = array($this->hhh . 'CREATIONDATE'
-					                . $this->hhh => $created,
-					                $this->hhh . 'BUILDDATE'
-					                . $this->hhh => $modified,
-					                $this->hhh . 'VERSION'
-					                . $this->hhh => $view['settings']->version);
+					$config = array(Placefix::_h('CREATIONDATE') => $created,
+					                Placefix::_h('BUILDDATE') => $modified,
+					                Placefix::_h('VERSION') => $view['settings']->version);
 					$this->buildDynamique($target, 'single', false, $config);
 				}
 			}
@@ -2456,24 +2424,18 @@ class Structure extends Get
 				{
 					// set list view$view
 					$target = array('custom_admin' => $view['settings']->code);
-					$config = array($this->hhh . 'CREATIONDATE'
-					                . $this->hhh => $created,
-					                $this->hhh . 'BUILDDATE'
-					                . $this->hhh => $modified,
-					                $this->hhh . 'VERSION'
-					                . $this->hhh => $view['settings']->version);
+					$config = array(Placefix::_h('CREATIONDATE') => $created,
+					                Placefix::_h('BUILDDATE') => $modified,
+					                Placefix::_h('VERSION') => $view['settings']->version);
 					$this->buildDynamique($target, 'list', false, $config);
 				}
 				elseif ($view['settings']->main_get->gettype == 1)
 				{
 					// set single view
 					$target = array('custom_admin' => $view['settings']->code);
-					$config = array($this->hhh . 'CREATIONDATE'
-					                . $this->hhh => $created,
-					                $this->hhh . 'BUILDDATE'
-					                . $this->hhh => $modified,
-					                $this->hhh . 'VERSION'
-					                . $this->hhh => $view['settings']->version);
+					$config = array(Placefix::_h('CREATIONDATE') => $created,
+					                Placefix::_h('BUILDDATE') => $modified,
+					                Placefix::_h('VERSION') => $view['settings']->version);
 					$this->buildDynamique($target, 'single', false, $config);
 				}
 			}
@@ -2880,7 +2842,7 @@ class Structure extends Get
 	private function setJoomlaVersionData()
 	{
 		// option to load other settings
-		$custom_settings = $this->templatePath . '/settings_' . Config::get('component_code_name') . '.json';
+		$custom_settings = $this->templatePath . '/settings_' . CFactory::_('Config')->component_code_name . '.json';
 		// set the version data
 		if (File::exists($custom_settings))
 		{
@@ -3123,8 +3085,8 @@ class Structure extends Get
 					'//', '/', $custom['file']
 				);
 				// update the dynamic component name placholders in file names
-				$custom['path'] = $this->setPlaceholders(
-					$custom['path'], $this->placeholders
+				$custom['path'] = CFactory::_('Placeholder')->update(
+					$custom['path'], CFactory::_('Placeholder')->active
 				);
 				// get the path info
 				$pathInfo = pathinfo($custom['path']);
@@ -3263,10 +3225,10 @@ class Structure extends Get
 	 */
 	protected function updateDynamicPath($path)
 	{
-		return $this->setPlaceholders(
-			$this->setPlaceholders(
+		return CFactory::_('Placeholder')->update(
+			CFactory::_('Placeholder')->update(
 				$path, ComponentbuilderHelper::$constantPaths
-			), $this->placeholders
+			), CFactory::_('Placeholder')->active
 		);
 	}
 

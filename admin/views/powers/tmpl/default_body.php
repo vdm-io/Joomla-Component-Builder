@@ -71,7 +71,7 @@ $edit = "index.php?option=com_componentbuilder&view=powers&task=power.edit";
 			</div>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->namespace); ?>
+			<?php echo $item->namespace; ?>
 		</td>
 		<td class="hidden-phone">
 			<div><?php echo JText::_('COM_COMPONENTBUILDER_TYPE'); ?>: 
@@ -80,7 +80,8 @@ $edit = "index.php?option=com_componentbuilder&view=powers&task=power.edit";
 				<a href="index.php?option=com_componentbuilder&view=powers&task=power.edit&id=<?php echo $item->extends_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->extends_name); ?></a>
 			<?php else: ?>
 				<?php echo $this->escape($item->extends_name); ?>
-			<?php endif; ?><?php endif; ?>
+			<?php endif; ?><?php elseif ($item->extends === '-1') : ?><br /><?php echo JText::_('COM_COMPONENTBUILDER_EXTENDS'); ?>: 
+			<?php echo $this->escape($item->extends_custom); ?><?php endif; ?>
 			</div>
 		</td>
 		<td class="hidden-phone">

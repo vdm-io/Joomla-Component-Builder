@@ -27,7 +27,10 @@ use VDM\Joomla\Utilities\String\TypeHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Utilities\String\PluginHelper;
-use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 
 /**
  * Get class as the main compilers class
@@ -39,7 +42,7 @@ class Get
 	 * The Joomla Version
 	 *
 	 * @var     string
-	 * @deprecated 4.0 Use Config::get('version');
+	 * @deprecated 3.3 Use CFactory::_('Config')->joomla_version;
 	 */
 	public $joomlaVersion;
 
@@ -57,6 +60,7 @@ class Get
 	 * The hash placeholder
 	 *
 	 * @var     string
+	 * @deprecated 3.3 Use Placefix::h();
 	 */
 	public $hhh = '#' . '#' . '#';
 
@@ -64,6 +68,7 @@ class Get
 	 * The open bracket placeholder
 	 *
 	 * @var     string
+	 * @deprecated 3.3 Use Placefix::b();
 	 */
 	public $bbb = '[' . '[' . '[';
 
@@ -71,6 +76,7 @@ class Get
 	 * The close bracket placeholder
 	 *
 	 * @var     string
+	 * @deprecated 3.3 Use Placefix::d();
 	 */
 	public $ddd = ']' . ']' . ']';
 
@@ -106,6 +112,7 @@ class Get
 	 * The global placeholders
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Component.Placeholder')->get();
 	 */
 	public $globalPlaceholders = array();
 
@@ -113,6 +120,7 @@ class Get
 	 * The placeholders
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Placeholder')->active[];
 	 */
 	public $placeholders = array();
 
@@ -120,7 +128,7 @@ class Get
 	 * The Compiler Path
 	 *
 	 * @var     object
-	 * @deprecated 4.0 Use Config::get('compiler_path');
+	 * @deprecated 3.3 Use CFactory::_('Config')->compiler_path;
 	 */
 	public $compilerPath;
 
@@ -128,7 +136,7 @@ class Get
 	 * The JCB Powers Path
 	 *
 	 * @var     object
-	 * @deprecated 4.0 Use Config::get('jcb_powers_path');
+	 * @deprecated 3.3 Use CFactory::_('Config')->jcb_powers_path;
 	 */
 	public $jcbPowersPath;
 
@@ -136,7 +144,7 @@ class Get
 	 * Switch to add assets table fix
 	 *
 	 * @var     int
-	 * @deprecated 4.0 Use Config::get('add_assets_table_fix');
+	 * @deprecated 3.3 Use CFactory::_('Config')->add_assets_table_fix;
 	 */
 	public $addAssetsTableFix = 1;
 
@@ -158,7 +166,7 @@ class Get
 	 * Switch to add custom code placeholders
 	 *
 	 * @var     bool
-	 * @deprecated 4.0 Use Config::get('add_placeholders');
+	 * @deprecated 3.3 Use CFactory::_('Config')->add_placeholders;
 	 */
 	public $addPlaceholders = false;
 
@@ -166,7 +174,7 @@ class Get
 	 * Switch to remove line breaks from language strings
 	 *
 	 * @var     bool
-	 * @deprecated 4.0 Use Config::get('remove_line_breaks');
+	 * @deprecated 3.3 Use CFactory::_('Config')->remove_line_breaks;
 	 */
 	public $removeLineBreaks = false;
 
@@ -174,6 +182,7 @@ class Get
 	 * The placeholders for custom code keys
 	 *
 	 * @var     array
+	 * @deprecated 3.3
 	 */
 	protected $customCodeKeyPlacholders
 		= array(
@@ -195,7 +204,7 @@ class Get
 	 * The Switch to add Powers data
 	 *
 	 * @var      boolean
-	 * @deprecated 4.0 Use Config::get('add_power');
+	 * @deprecated 3.3 Use CFactory::_('Config')->add_power;
 	 */
 	public $addPower;
 
@@ -203,6 +212,7 @@ class Get
 	 * The Powers data
 	 *
 	 * @var      array
+	 * @deprecated 3.3 Use CFactory::_('Power')->active;
 	 */
 	public $powers = array();
 
@@ -210,6 +220,7 @@ class Get
 	 * The state of all Powers
 	 *
 	 * @var      array
+	 * @deprecated 3.3
 	 */
 	public $statePowers = array();
 
@@ -279,6 +290,7 @@ class Get
 	 * The custom code to be added
 	 *
 	 * @var      array
+	 * @deprecated 3.3 Use CFactory::_('Customcode')->active
 	 */
 	public $customCode;
 
@@ -286,6 +298,7 @@ class Get
 	 * The custom code to be added
 	 *
 	 * @var      array
+	 * @deprecated 3.3
 	 */
 	protected $customCodeData = array();
 
@@ -293,6 +306,7 @@ class Get
 	 * The function name memory ids
 	 *
 	 * @var      array
+	 * @deprecated 3.3 Use CFactory::_('Customcode')->functionNameMemory
 	 */
 	public $functionNameMemory = array();
 
@@ -300,6 +314,7 @@ class Get
 	 * The custom code for local memory
 	 *
 	 * @var      array
+	 * @deprecated 3.3 Use CFactory::_('Customcode')->memory
 	 */
 	public $customCodeMemory = array();
 
@@ -328,6 +343,7 @@ class Get
 	 * The external code/string to be added
 	 *
 	 * @var      array
+	 * @deprecated 3.3
 	 */
 	protected $externalCodeString = array();
 
@@ -335,6 +351,7 @@ class Get
 	 * The external code/string cutter
 	 *
 	 * @var      array
+	 * @deprecated 3.3
 	 */
 	protected $externalCodeCutter = array();
 
@@ -342,7 +359,7 @@ class Get
 	 * The line numbers Switch
 	 *
 	 * @var      boolean
-	 * @deprecated 4.0 Use Config::get('debug_line_nr');
+	 * @deprecated 3.3 Use CFactory::_('Config')->debug_line_nr;
 	 */
 	public $debugLinenr = false;
 
@@ -357,7 +374,7 @@ class Get
 	 * The Placholder Language prefix
 	 *
 	 * @var      string
-	 * @deprecated 4.0 Use Config::get('lang_prefix');
+	 * @deprecated 3.3 Use CFactory::_('Config')->lang_prefix;
 	 */
 	public $langPrefix;
 
@@ -365,6 +382,7 @@ class Get
 	 * The Language content
 	 *
 	 * @var      array
+	 * @deprecated 3.3
 	 */
 	public $langContent = array();
 
@@ -381,7 +399,7 @@ class Get
 	 * The Main Languages
 	 *
 	 * @var      string
-	 * @deprecated 4.0 Use Config::get('lang_tag');
+	 * @deprecated 3.3 Use CFactory::_('Config')->lang_tag;
 	 */
 	public $langTag = 'en-GB';
 
@@ -410,6 +428,7 @@ class Get
 	 * The Language JS matching check
 	 *
 	 * @var      array
+	 * @deprecated 3.3 Use CFactory::_('Language.Extractor')->langMismatch;
 	 */
 	public $langMismatch = array();
 
@@ -417,6 +436,7 @@ class Get
 	 * The Language SC matching check
 	 *
 	 * @var      array
+	 * @deprecated 3.3 Use CFactory::_('Language.Extractor')->langMatch;
 	 */
 	public $langMatch = array();
 
@@ -424,6 +444,7 @@ class Get
 	 * The Language string targets
 	 *
 	 * @var      array
+	 * @deprecated 3.3 Use CFactory::_('Config')->lang_string_targets;
 	 */
 	public $langStringTargets
 		= array(
@@ -438,7 +459,7 @@ class Get
 	 * The Component Code Name
 	 *
 	 * @var      string
-	 * @deprecated 4.0 Use Config::get('component_code_name');
+	 * @deprecated 3.3 Use CFactory::_('Config')->component_code_name;
 	 */
 	public $componentCodeName;
 
@@ -446,7 +467,7 @@ class Get
 	 * The Component Context
 	 *
 	 * @var      string
-	 * @deprecated 4.0 Use Config::get('component_context');
+	 * @deprecated 3.3 Use CFactory::_('Config')->component_context;
 	 */
 	public $componentContext;
 
@@ -454,7 +475,7 @@ class Get
 	 * The Component Code Name Length
 	 *
 	 * @var      int
-	 * @deprecated 4.0 Use Config::get('component_code_name_length');
+	 * @deprecated 3.3 Use CFactory::_('Config')->component_code_name_length;
 	 */
 	public $componentCodeNameLength;
 
@@ -462,7 +483,7 @@ class Get
 	 * The Component ID
 	 *
 	 * @var      int
-	 * @deprecated 4.0 Use Config::get('component_id');
+	 * @deprecated 3.3 Use CFactory::_('Config')->component_id;
 	 */
 	public $componentID;
 
@@ -582,6 +603,7 @@ class Get
 	 * The Language target
 	 *
 	 * @var     string
+	 * @deprecated 3.3 Use CFactory::_('Config')->lang_target;
 	 */
 	public $lang = 'admin';
 
@@ -589,6 +611,7 @@ class Get
 	 * The lang keys for extentions
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Language.Extractor')->langKeys;
 	 */
 	public $langKeys = array();
 
@@ -596,6 +619,7 @@ class Get
 	 * The Build target Switch
 	 *
 	 * @var     string
+	 * @deprecated 3.3 Use CFactory::_('Config')->build_target;
 	 */
 	public $target;
 
@@ -690,7 +714,7 @@ class Get
 	 * 2 = SimpleXMLElement
 	 *
 	 * @var     int
-	 * @deprecated 4.0 Use Config::get('field_builder_type');
+	 * @deprecated 3.3 Use CFactory::_('Config')->field_builder_type;
 	 */
 	public $fieldBuilderType;
 
@@ -903,7 +927,7 @@ class Get
 	 * Is minify Enabled
 	 *
 	 * @var    int
-	 * @deprecated 4.0 Use Config::get('minify');
+	 * @deprecated 3.3 Use CFactory::_('Config')->minify;
 	 */
 	public $minify = 0;
 
@@ -911,7 +935,7 @@ class Get
 	 * Is Tidy Enabled
 	 *
 	 * @var    bool
-	 * @deprecated 4.0 Use Config::get('tidy');
+	 * @deprecated 3.3 Use CFactory::_('Config')->tidy;
 	 */
 	public $tidy = false;
 
@@ -943,17 +967,11 @@ class Get
 	public $mysqlTableSetting = array();
 
 	/**
-	 * event plugin trigger switch
-	 *
-	 * @var    boolean
-	 */
-	protected $active_plugins = false;
-
-	/**
 	 * Constructor
 	 */
-	public function __construct($config = array())
+	public function __construct()
 	{
+		echo '<pre>';
 		// we do not yet have this set as an option
 		$config['remove_line_breaks']
 			= 2; // 2 is global (use the components value)
@@ -961,42 +979,24 @@ class Get
 		$this->app = JFactory::getApplication();
 		// Set the params
 		$this->params = JComponentHelper::getParams('com_componentbuilder');
-		// get active plugins
-		if (($plugins = $this->params->get('compiler_plugin', false))
-			!== false)
-		{
-			foreach ($plugins as $plugin)
-			{
-				// get possible plugins
-				if (\JPluginHelper::isEnabled('extension', $plugin))
-				{
-					// Import the appropriate plugin group.
-					\JPluginHelper::importPlugin('extension', $plugin);
-					// activate events
-					$this->active_plugins = true;
-				}
-			}
-		}
 		// Trigger Event: jcb_ce_onBeforeGet
-		$this->triggerEvent('jcb_ce_onBeforeGet', array(&$config, &$this));
-		// load the global config
-		Config::init($config);
+		CFactory::_J('Event')->trigger('jcb_ce_onBeforeGet', array(&$config, &$this));
 		// set the Joomla version @deprecated
-		$this->joomlaVersion = Config::get('version', 3);
+		$this->joomlaVersion = CFactory::_('Config')->joomla_version;
 		// set the minfy switch of the JavaScript @deprecated
-		$this->minify = Config::get('minify', 0);
+		$this->minify = CFactory::_('Config')->get('minify', 0);
 		// set the global language @deprecated @deprecated
-		$this->langTag = Config::get('lang_tag', 'en-GB');
+		$this->langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
 		// also set the helper class langTag (for safeStrings)
-		ComponentbuilderHelper::$langTag = Config::get('lang_tag', 'en-GB');
+		ComponentbuilderHelper::$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
 		// setup the main language array
-		$this->languages['components'][Config::get('lang_tag', 'en-GB')] = array();
+		$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = array();
 		// check if we have Tidy enabled @deprecated
-		$this->tidy = Config::get('tidy', false);
+		$this->tidy = CFactory::_('Config')->get('tidy', false);
 		// set the field type builder @deprecated
-		$this->fieldBuilderType = Config::get('field_builder_type', 2);
+		$this->fieldBuilderType = CFactory::_('Config')->get('field_builder_type', 2);
 		// check the field builder type logic
-		if (!Config::get('tidy', false) && Config::get('field_builder_type', 2) == 2)
+		if (!CFactory::_('Config')->get('tidy', false) && CFactory::_('Config')->get('field_builder_type', 2) == 2)
 		{
 			// we do not have the tidy extension set fall back to StringManipulation
 			$this->fieldBuilderType = 1;
@@ -1010,37 +1010,37 @@ class Get
 				), 'Notice'
 			);
 		}
-		Config::set('field_builder_type', $this->fieldBuilderType);
+		CFactory::_('Config')->set('field_builder_type', $this->fieldBuilderType);
 		// load the compiler path @deprecated
-		$this->compilerPath = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler');
+		$this->compilerPath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler');
 		// load the jcb powers path @deprecated
-		$this->jcbPowersPath = Config::get('jcb_powers_path', 'libraries/jcb_powers');
+		$this->jcbPowersPath = CFactory::_('Config')->get('jcb_powers_path', 'libraries/jcb_powers');
 		// set the component ID @deprecated
-		$this->componentID = Config::get('component_id');
+		$this->componentID = CFactory::_('Config')->component_id;
 		// set lang prefix @deprecated
-		$this->langPrefix = Config::get('lang_prefix');
+		$this->langPrefix = CFactory::_('Config')->lang_prefix;
 		// set component code name @deprecated
-		$this->componentCodeName = Config::get('component_code_name');
+		$this->componentCodeName = CFactory::_('Config')->component_code_name;
 		// set component context @deprecated
-		$this->componentContext = Config::get('component_context');
+		$this->componentContext = CFactory::_('Config')->component_context;
 		// set the component name length @deprecated
-		$this->componentCodeNameLength = Config::get('component_code_name_length');
+		$this->componentCodeNameLength = CFactory::_('Config')->component_code_name_length;
 		// add assets table fix @deprecated
-		$this->addAssetsTableFix = Config::get('add_assets_table_fix');
+		$this->addAssetsTableFix = CFactory::_('Config')->add_assets_table_fix;
 		// set if language strings line breaks should be removed @deprecated
-		$this->removeLineBreaks = Config::get('remove_line_breaks');
+		$this->removeLineBreaks = CFactory::_('Config')->remove_line_breaks;
 		// set if placeholders should be added to customcode @deprecated
-		$this->addPlaceholders = Config::get('add_placeholders', false);
+		$this->addPlaceholders = CFactory::_('Config')->get('add_placeholders', false);
 		// set if line numbers should be added to comments @deprecated
-		$this->debugLinenr = Config::get('debug_line_nr', false);
+		$this->debugLinenr = CFactory::_('Config')->get('debug_line_nr', false);
 		// set if powers should be added to component (default is true) @deprecated
-		$this->addPower = Config::get('add_power', true);
+		$this->addPower = CFactory::_('Config')->get('add_power', true);
 		// set the current user
 		$this->user = JFactory::getUser();
 		// Get a db connection.
 		$this->db = JFactory::getDbo();
-		// get global placeholders
-		$this->globalPlaceholders = $this->getGlobalPlaceholders();
+		// get global placeholders @deprecated
+		$this->globalPlaceholders = CFactory::_('Component.Placeholder')->get();
 		// check if this component is installed on the current website
 		if ($paths = $this->getLocalInstallPaths())
 		{
@@ -1050,14 +1050,14 @@ class Get
 			$this->customCodeFactory($paths, $today);
 		}
 		// Trigger Event: jcb_ce_onBeforeGetComponentData
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onBeforeGetComponentData',
 			array(&$this->componentContext, &$this)
 		);
 		// get the component data
 		$this->componentData = $this->getComponentData();
 		// Trigger Event: jcb_ce_onAfterGetComponentData
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onAfterGetComponentData',
 			array(&$this->componentContext, &$this)
 		);
@@ -1092,14 +1092,14 @@ class Get
 			);
 		}
 		// get powers *+*+*+*+*+*+*+*PRO
-		$this->getPowers($this->linkedPowers);
+		CFactory::_('Power')->load($this->linkedPowers);
 		// set the percentage when a language can be added
 		$this->percentageLanguageAdd = (int) $this->params->get(
 			'percentagelanguageadd', 50
 		);
 
 		// Trigger Event: jcb_ce_onBeforeGet
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onAfterGet', array(&$this->componentContext, &$this)
 		);
 
@@ -1121,123 +1121,28 @@ class Get
 	}
 
 	/**
-	 * Set the line number in comments
-	 *
-	 * @param   int  $nr  The line number
-	 *
-	 * @return  void
-	 *
-	 */
-	private function setLine($nr)
-	{
-		if (Config::get('debug_line_nr', false))
-		{
-			return ' [Get ' . $nr . ']';
-		}
-
-		return '';
-	}
-
-	/**
 	 * Trigger events
 	 *
 	 * @param   string  $event  The event to trigger
 	 * @param   mix     $data   The values to pass to the event/plugin
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3 Use CFactory::_J('Event')->trigger($event, $data);
 	 */
 	public function triggerEvent($event, $data)
 	{
-		// only exicute if plugins were loaded (active)
-		if ($this->active_plugins)
-		{
-			// Get the dispatcher.
-			$dispatcher = \JEventDispatcher::getInstance();
-
-			// Trigger this compiler event.
-			$results = $dispatcher->trigger($event, $data);
-
-			// Check for errors encountered while trigger the event
-			if (count((array) $results) && in_array(false, $results, true))
-			{
-				// Get the last error.
-				$error = $dispatcher->getError();
-
-				if (!($error instanceof \Exception))
-				{
-					throw new \Exception($error);
-				}
-			}
-		}
+		return CFactory::_J('Event')->trigger($event, $data);
 	}
 
 	/**
 	 * get all System Placeholders
 	 *
 	 * @return  array The global placeholders
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Component.Placeholder')->get();
 	 */
 	public function getGlobalPlaceholders()
 	{
-		// reset bucket
-		$bucket = array();
-		// Create a new query object.
-		$query = $this->db->getQuery(true);
-		$query->select($this->db->quoteName(array('a.target', 'a.value')));
-		// from these tables
-		$query->from('#__componentbuilder_placeholder AS a');
-		// Reset the query using our newly populated query object.
-		$this->db->setQuery($query);
-		// Load the items
-		$this->db->execute();
-		if ($this->db->getNumRows())
-		{
-			$bucket = $this->db->loadAssocList('target', 'value');
-			// open all the code
-			foreach ($bucket as $key => &$code)
-			{
-				$code = base64_decode($code);
-			}
-		}
-		// set component place holders
-		$bucket[$this->hhh . 'component' . $this->hhh]
-			                                             = Config::get('component_code_name');
-		$bucket[$this->hhh . 'Component' . $this->hhh]
-			                                             = StringHelper::safe(
-			Config::get('component_code_name'), 'F'
-		);
-		$bucket[$this->hhh . 'COMPONENT' . $this->hhh]
-			                                             = StringHelper::safe(
-			Config::get('component_code_name'), 'U'
-		);
-		$bucket[$this->bbb . 'component' . $this->ddd]   = $bucket[$this->hhh
-		. 'component' . $this->hhh];
-		$bucket[$this->bbb . 'Component' . $this->ddd]   = $bucket[$this->hhh
-		. 'Component' . $this->hhh];
-		$bucket[$this->bbb . 'COMPONENT' . $this->ddd]   = $bucket[$this->hhh
-		. 'COMPONENT' . $this->hhh];
-		$bucket[$this->hhh . 'LANG_PREFIX' . $this->hhh] = Config::get('lang_prefix');
-		$bucket[$this->bbb . 'LANG_PREFIX' . $this->ddd] = $bucket[$this->hhh
-		. 'LANG_PREFIX' . $this->hhh];
-		// get the current components overides
-		if (($_placeholders = GetHelper::var(
-				'component_placeholders', Config::get('component_id'),
-				'joomla_component', 'addplaceholders'
-			)) !== false
-			&& JsonHelper::check($_placeholders))
-		{
-			$_placeholders = json_decode($_placeholders, true);
-			if (ArrayHelper::check($_placeholders))
-			{
-				foreach ($_placeholders as $row)
-				{
-					$bucket[$row['target']] = $row['value'];
-				}
-			}
-		}
-
-		return $bucket;
+		return CFactory::_('Component.Placeholder')->get();
 	}
 
 	/**
@@ -1307,11 +1212,11 @@ class Get
 			);
 		}
 		$query->where(
-			$this->db->quoteName('a.id') . ' = ' . (int) Config::get('component_id')
+			$this->db->quoteName('a.id') . ' = ' . (int) CFactory::_('Config')->component_id
 		);
 
 		// Trigger Event: jcb_ce_onBeforeQueryComponentData
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onBeforeQueryComponentData',
 			array(&$this->componentContext, &$this->componentID, &$query,
 				&$this->db)
@@ -1324,7 +1229,7 @@ class Get
 		$component = $this->db->loadObject();
 
 		// Trigger Event: jcb_ce_onBeforeModelComponentData
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onBeforeModelComponentData',
 			array(&$this->componentContext, &$component)
 		);
@@ -1336,36 +1241,36 @@ class Get
 				                                 'val'   => (int) $component->addadmin_views_id,
 				                                 'key'   => 'id'),
 				'addconfig'             => array('table' => 'component_config',
-				                                 'val'   => (int) Config::get('component_id'),
+				                                 'val'   => (int) CFactory::_('Config')->component_id,
 				                                 'key'   => 'joomla_component'),
 				'addcustom_admin_views' => array('table' => 'component_custom_admin_views',
-				                                 'val'   => (int) Config::get('component_id'),
+				                                 'val'   => (int) CFactory::_('Config')->component_id,
 				                                 'key'   => 'joomla_component'),
 				'addcustommenus'        => array('table' => 'component_custom_admin_menus',
-				                                 'val'   => (int) Config::get('component_id'),
+				                                 'val'   => (int) CFactory::_('Config')->component_id,
 				                                 'key'   => 'joomla_component'),
 				'addfiles'              => array('table' => 'component_files_folders',
-				                                 'val'   => (int) Config::get('component_id'),
+				                                 'val'   => (int) CFactory::_('Config')->component_id,
 				                                 'key'   => 'joomla_component'),
 				'addfolders'            => array('table' => 'component_files_folders',
-				                                 'val'   => (int) Config::get('component_id'),
+				                                 'val'   => (int) CFactory::_('Config')->component_id,
 				                                 'key'   => 'joomla_component'),
 				'addsite_views'         => array('table' => 'component_site_views',
-				                                 'val'   => (int) Config::get('component_id'),
+				                                 'val'   => (int) CFactory::_('Config')->component_id,
 				                                 'key'   => 'joomla_component'),
 				'dashboard_tab'         => array('table' => 'component_dashboard',
-				                                 'val'   => (int) Config::get('component_id'),
+				                                 'val'   => (int) CFactory::_('Config')->component_id,
 				                                 'key'   => 'joomla_component'),
 				'sql_tweak'             => array('table' => 'component_mysql_tweaks',
-				                                 'val'   => (int) Config::get('component_id'),
+				                                 'val'   => (int) CFactory::_('Config')->component_id,
 				                                 'key'   => 'joomla_component'),
 				'version_update'        => array('table' => 'component_updates',
-				                                 'val'   => (int) Config::get('component_id'),
+				                                 'val'   => (int) CFactory::_('Config')->component_id,
 				                                 'key'   => 'joomla_component')
 			),
 			'table'  => 'joomla_component',
 			'key'    => 'id',
-			'val'    => (int) Config::get('component_id')
+			'val'    => (int) CFactory::_('Config')->component_id
 		);
 		// repeatable fields to update
 		$searchRepeatables = array(
@@ -1390,7 +1295,7 @@ class Get
 		// load the global placeholders
 		if (ArrayHelper::check($this->globalPlaceholders))
 		{
-			$this->placeholders = $this->globalPlaceholders;
+			CFactory::_('Placeholder')->active = $this->globalPlaceholders;
 		}
 
 		// set component sales name
@@ -1542,8 +1447,8 @@ class Get
 			? json_decode($component->addadmin_views, true) : null;
 		if (ArrayHelper::check($component->addadmin_views))
 		{
-			$this->lang   = 'admin';
-			$this->target = 'admin';
+			CFactory::_('Config')->lang_target = 'admin';
+			CFactory::_('Config')->build_target = 'admin';
 			// sort the views according to order
 			usort(
 				$component->addadmin_views, function ($a, $b) {
@@ -1586,7 +1491,7 @@ class Get
 						&& $array['edit_create_site_view'] > 0)
 					{
 						$this->siteEditView[$array['adminview']] = true;
-						$this->lang                              = 'both';
+						CFactory::_('Config')->lang_target = 'both';
 					}
 					// set the import/export option for this view
 					if (isset($array['port']) && $array['port']
@@ -1636,8 +1541,8 @@ class Get
 			? json_decode($component->addsite_views, true) : null;
 		if (ArrayHelper::check($component->addsite_views))
 		{
-			$this->lang   = 'site';
-			$this->target = 'site';
+			CFactory::_('Config')->lang_target = 'site';
+			CFactory::_('Config')->build_target = 'site';
 			// build the site_views settings
 			$component->site_views = array_map(
 				function ($array) {
@@ -1675,8 +1580,8 @@ class Get
 			$component->addcustom_admin_views
 		))
 		{
-			$this->lang   = 'admin';
-			$this->target = 'custom_admin';
+			CFactory::_('Config')->lang_target = 'admin';
+			CFactory::_('Config')->build_target = 'custom_admin';
 			// build the custom_admin_views settings
 			$component->custom_admin_views = array_map(
 				function ($array) {
@@ -1764,7 +1669,7 @@ class Get
 			'component_admin_views', $component->addadmin_views_id
 		);
 		$old_component   = $this->getHistoryWatch(
-			'joomla_component', Config::get('component_id')
+			'joomla_component', CFactory::_('Config')->component_id
 		);
 		if ($old_component || $old_admin_views)
 		{
@@ -1805,7 +1710,7 @@ class Get
 
 		// set GUI mapper
 		$guiMapper = array('table' => 'joomla_component',
-		                   'id'    => (int) Config::get('component_id'),
+		                   'id'    => (int) CFactory::_('Config')->component_id,
 		                   'field' => 'javascript', 'type' => 'js');
 
 		// add_javascript
@@ -1849,7 +1754,7 @@ class Get
 			unset($component->{'css_' . $area});
 		}
 		// set the lang target
-		$this->lang = 'admin';
+		CFactory::_('Config')->lang_target = 'admin';
 		// add PHP in ADMIN
 		$addScriptMethods = array('php_preflight', 'php_postflight',
 			'php_method');
@@ -1892,7 +1797,7 @@ class Get
 				$component->php_helper_admin
 			))
 		{
-			$this->lang = 'admin';
+			CFactory::_('Config')->lang_target = 'admin';
 			// update GUI mapper
 			$guiMapper['field']  = 'php_helper_admin';
 			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
@@ -1914,7 +1819,7 @@ class Get
 		if ($component->add_admin_event == 1
 			&& StringHelper::check($component->php_admin_event))
 		{
-			$this->lang = 'admin';
+			CFactory::_('Config')->lang_target = 'admin';
 			// update GUI mapper field
 			$guiMapper['field'] = 'php_admin_event';
 			$this->setCustomScriptBuilder(
@@ -1934,7 +1839,7 @@ class Get
 		if ($component->add_php_helper_both == 1
 			&& StringHelper::check($component->php_helper_both))
 		{
-			$this->lang = 'both';
+			CFactory::_('Config')->lang_target = 'both';
 			// update GUI mapper field
 			$guiMapper['field']  = 'php_helper_both';
 			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
@@ -1955,7 +1860,7 @@ class Get
 		if ($component->add_php_helper_site == 1
 			&& StringHelper::check($component->php_helper_site))
 		{
-			$this->lang = 'site';
+			CFactory::_('Config')->lang_target = 'site';
 			// update GUI mapper field
 			$guiMapper['field']  = 'php_helper_site';
 			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
@@ -1977,7 +1882,7 @@ class Get
 		if ($component->add_site_event == 1
 			&& StringHelper::check($component->php_site_event))
 		{
-			$this->lang = 'site';
+			CFactory::_('Config')->lang_target = 'site';
 			// update GUI mapper field
 			$guiMapper['field'] = 'php_site_event';
 			$this->setCustomScriptBuilder(
@@ -2015,17 +1920,17 @@ class Get
 		// bom
 		if (StringHelper::check($component->bom))
 		{
-			$this->bomPath = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/' . $component->bom;
+			$this->bomPath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/' . $component->bom;
 		}
 		else
 		{
-			$this->bomPath = Config::get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/default.txt';
+			$this->bomPath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/default.txt';
 		}
 		unset($component->bom);
 		// README
 		if ($component->addreadme)
 		{
-			$component->readme = $this->setDynamicValues(
+			$component->readme = CFactory::_('Customcode')->add(
 				base64_decode($component->readme)
 			);
 		}
@@ -2035,8 +1940,8 @@ class Get
 		}
 
 		// set lang now
-		$nowLang    = $this->lang;
-		$this->lang = 'admin';
+		$nowLang    = CFactory::_('Config')->lang_target;
+		CFactory::_('Config')->lang_target = 'admin';
 		// dashboard methods
 		$component->dashboard_tab = (isset($component->dashboard_tab)
 			&& JsonHelper::check($component->dashboard_tab))
@@ -2045,7 +1950,7 @@ class Get
 		{
 			$component->dashboard_tab = array_map(
 				function ($array) {
-					$array['html'] = $this->setDynamicValues($array['html']);
+					$array['html'] = CFactory::_('Customcode')->add($array['html']);
 
 					return $array;
 				}, array_values($component->dashboard_tab)
@@ -2062,8 +1967,8 @@ class Get
 			))
 		{
 			// load the php for the dashboard model
-			$component->php_dashboard_methods = $this->setGuiCodePlaceholder(
-				$this->setDynamicValues(
+			$component->php_dashboard_methods = CFactory::_('Customcode.Gui')->set(
+				CFactory::_('Customcode')->add(
 					base64_decode($component->php_dashboard_methods)
 				),
 				array(
@@ -2078,7 +1983,7 @@ class Get
 			$component->php_dashboard_methods = '';
 		}
 		// reset back to nowlang
-		$this->lang = $nowLang;
+		CFactory::_('Config')->lang_target = $nowLang;
 
 		// add the update/sales server FTP details if that is the expected protocol
 		$serverArray = array('update_server', 'sales_server');
@@ -2173,7 +2078,7 @@ class Get
 		unset($component->addjoomla_plugins);
 
 		// Trigger Event: jcb_ce_onAfterModelComponentData
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onAfterModelComponentData',
 			array(&$this->componentContext, &$component)
 		);
@@ -2191,26 +2096,14 @@ class Get
 	 * @param   boolean  $addPrefix  The switch to add langPrefix
 	 *
 	 * @return  void
+	 * @deprecated 3.3 Use CFactory::_('Language')->set($target, $language, $string, $addPrefix);
 	 *
 	 */
 	public function setLangContent($target, $language, $string,
 	                               $addPrefix = false
 	)
 	{
-		if ($addPrefix
-			&& !isset(
-				$this->langContent[$target][Config::get('lang_prefix') . '_' . $language]
-			))
-		{
-			$this->langContent[$target][Config::get('lang_prefix') . '_' . $language]
-				= $this->fixLangString($string);
-		}
-		elseif (!isset($this->langContent[$target][$language]))
-		{
-			$this->langContent[$target][$language] = $this->fixLangString(
-				$string
-			);
-		}
+		CFactory::_('Language')->set($target, $language, $string, $addPrefix);
 	}
 
 	/**
@@ -2219,11 +2112,12 @@ class Get
 	 * @param   string  $string  The language string
 	 *
 	 * @return  string
+	 * @deprecated 3.3
 	 *
 	 */
 	public function fixLangString(&$string)
 	{
-		if (Config::get('remove_line_breaks'))
+		if (CFactory::_('Config')->remove_line_breaks)
 		{
 			return trim(str_replace(array(PHP_EOL, "\r", "\n"), '', $string));
 		}
@@ -2294,7 +2188,7 @@ class Get
 			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
 			// Trigger Event: jcb_ce_onBeforeQueryViewData
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onBeforeQueryViewData',
 				array(&$this->componentContext, &$id, &$query, &$this->db)
 			);
@@ -2324,7 +2218,7 @@ class Get
 			}
 
 			// check the length of the view name (+5 for com_ and _)
-			$name_length = Config::get('component_code_name_length') + strlen(
+			$name_length = CFactory::_('Config')->component_code_name_length + strlen(
 					$view->name_single_code
 				) + 5;
 			// when the name is larger then 49 we need to add the assets table name fix
@@ -2373,44 +2267,48 @@ class Get
 				                                                       = false;
 			$this->customScriptBuilder['token'][$view->name_list_code] = false;
 			// set some placeholders
-			$this->placeholders[$this->hhh . 'view' . $this->hhh]
+			CFactory::_('Placeholder')->active[Placefix::_h('view')]
 				= $view->name_single_code;
-			$this->placeholders[$this->hhh . 'views' . $this->hhh]
+			CFactory::_('Placeholder')->active[Placefix::_h('views')]
 				= $view->name_list_code;
-			$this->placeholders[$this->hhh . 'View' . $this->hhh]
+			CFactory::_('Placeholder')->active[Placefix::_h('View')]
 				= StringHelper::safe(
 				$view->name_single, 'F'
 			);
-			$this->placeholders[$this->hhh . 'Views' . $this->hhh]
+			CFactory::_('Placeholder')->active[Placefix::_h('Views')]
 				= StringHelper::safe(
 				$view->name_list, 'F'
 			);
-			$this->placeholders[$this->hhh . 'VIEW' . $this->hhh]
+			CFactory::_('Placeholder')->active[Placefix::_h('VIEW')]
 				= StringHelper::safe(
 				$view->name_single, 'U'
 			);
-			$this->placeholders[$this->hhh . 'VIEWS' . $this->hhh]
+			CFactory::_('Placeholder')->active[Placefix::_h('VIEWS')]
 				= StringHelper::safe(
 				$view->name_list, 'U'
 			);
-			$this->placeholders[$this->bbb . 'view' . $this->ddd]
-				= $this->placeholders[$this->hhh . 'view' . $this->hhh];
-			$this->placeholders[$this->bbb . 'views' . $this->ddd]
-				= $this->placeholders[$this->hhh . 'views' . $this->hhh];
-			$this->placeholders[$this->bbb . 'View' . $this->ddd]
-				= $this->placeholders[$this->hhh . 'View' . $this->hhh];
-			$this->placeholders[$this->bbb . 'Views' . $this->ddd]
-				= $this->placeholders[$this->hhh . 'Views' . $this->hhh];
-			$this->placeholders[$this->bbb . 'VIEW' . $this->ddd]
-				= $this->placeholders[$this->hhh . 'VIEW' . $this->hhh];
-			$this->placeholders[$this->bbb . 'VIEWS' . $this->ddd]
-				= $this->placeholders[$this->hhh . 'VIEWS' . $this->hhh];
+			CFactory::_('Placeholder')->active[Placefix::_('view')]
+				= CFactory::_('Placeholder')->active[Placefix::_h('view')];
+			CFactory::_('Placeholder')->active[Placefix::_('views')]
+				= CFactory::_('Placeholder')->active[Placefix::_h('views')];
+			CFactory::_('Placeholder')->active[Placefix::_('View')]
+				= CFactory::_('Placeholder')->active[Placefix::_h('View')];
+			CFactory::_('Placeholder')->active[Placefix::_('Views')]
+				= CFactory::_('Placeholder')->active[Placefix::_h('Views')];
+			CFactory::_('Placeholder')->active[Placefix::_('VIEW')]
+				= CFactory::_('Placeholder')->active[Placefix::_h('VIEW')];
+			CFactory::_('Placeholder')->active[Placefix::_('VIEWS')]
+				= CFactory::_('Placeholder')->active[Placefix::_h('VIEWS')];
 
+			// for plugin event TODO change event api signatures
+			$this->placeholders = CFactory::_('Placeholder')->active;
 			// Trigger Event: jcb_ce_onBeforeModelViewData
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onBeforeModelViewData',
 				array(&$this->componentContext, &$view, &$this->placeholders)
 			);
+			// for plugin event TODO change event api signatures
+			CFactory::_('Placeholder')->active = $this->placeholders;
 
 			// add the tables
 			$view->addtables = (isset($view->addtables)
@@ -2436,9 +2334,9 @@ class Get
 						// set the view name
 						$tab['view'] = $view->name_single_code;
 						// load the dynamic data
-						$tab['html'] = $this->setPlaceholders(
-							$this->setDynamicValues($tab['html']),
-							$this->placeholders
+						$tab['html'] = CFactory::_('Placeholder')->update(
+							CFactory::_('Customcode')->add($tab['html']),
+							CFactory::_('Placeholder')->active
 						);
 						// set the tab name
 						$tab['name'] = (isset($tab['name'])
@@ -2446,13 +2344,13 @@ class Get
 								$tab['name']
 							)) ? $tab['name'] : 'Tab';
 						// set lang
-						$tab['lang'] = Config::get('lang_prefix') . '_'
+						$tab['lang'] = CFactory::_('Config')->lang_prefix . '_'
 							. StringHelper::safe(
 								$tab['view'], 'U'
 							) . '_' . StringHelper::safe(
 								$tab['name'], 'U'
 							);
-						$this->setLangContent(
+						CFactory::_('Language')->set(
 							'both', $tab['lang'], $tab['name']
 						);
 						// set code name
@@ -2464,7 +2362,7 @@ class Get
 						if (isset($tab['permission'])
 							&& $tab['permission'] == 1)
 						{
-							$_tab = $this->_t(1);
+							$_tab = Indent::_(1);
 						}
 						// check if the php of the tab is set, if not load it now
 						if (strpos($tab['html'], 'bootstrap.addTab') === false
@@ -2472,31 +2370,31 @@ class Get
 							=== false)
 						{
 							// add the tab
-							$tmp = PHP_EOL . $_tab . $this->_t(1)
+							$tmp = PHP_EOL . $_tab . Indent::_(1)
 								. "<?php echo JHtml::_('bootstrap.addTab', '"
 								. $tab['view'] . "Tab', '" . $tab['code']
 								. "', JText::_('" . $tab['lang']
 								. "', true)); ?>";
-							$tmp .= PHP_EOL . $_tab . $this->_t(2)
+							$tmp .= PHP_EOL . $_tab . Indent::_(2)
 								. '<div class="row-fluid form-horizontal-desktop">';
-							$tmp .= PHP_EOL . $_tab . $this->_t(3)
+							$tmp .= PHP_EOL . $_tab . Indent::_(3)
 								. '<div class="span12">';
-							$tmp .= PHP_EOL . $_tab . $this->_t(4) . implode(
-									PHP_EOL . $_tab . $this->_t(4),
+							$tmp .= PHP_EOL . $_tab . Indent::_(4) . implode(
+									PHP_EOL . $_tab . Indent::_(4),
 									(array) explode(PHP_EOL, trim($tab['html']))
 								);
-							$tmp .= PHP_EOL . $_tab . $this->_t(3) . '</div>';
-							$tmp .= PHP_EOL . $_tab . $this->_t(2) . '</div>';
-							$tmp .= PHP_EOL . $_tab . $this->_t(1)
+							$tmp .= PHP_EOL . $_tab . Indent::_(3) . '</div>';
+							$tmp .= PHP_EOL . $_tab . Indent::_(2) . '</div>';
+							$tmp .= PHP_EOL . $_tab . Indent::_(1)
 								. "<?php echo JHtml::_('bootstrap.endTab'); ?>";
 							// update html
 							$tab['html'] = $tmp;
 						}
 						else
 						{
-							$tab['html'] = PHP_EOL . $_tab . $this->_t(1)
+							$tab['html'] = PHP_EOL . $_tab . Indent::_(1)
 								. implode(
-									PHP_EOL . $_tab . $this->_t(1),
+									PHP_EOL . $_tab . Indent::_(1),
 									(array) explode(PHP_EOL, trim($tab['html']))
 								);
 						}
@@ -2504,12 +2402,12 @@ class Get
 						if (isset($tab['permission'])
 							&& $tab['permission'] == 1)
 						{
-							$tmp = PHP_EOL . $this->_t(1)
+							$tmp = PHP_EOL . Indent::_(1)
 								. "<?php if (\$this->canDo->get('"
 								. $tab['view'] . "." . $tab['code']
 								. ".viewtab')) : ?>";
 							$tmp .= $tab['html'];
-							$tmp .= PHP_EOL . $this->_t(1) . "<?php endif; ?>";
+							$tmp .= PHP_EOL . Indent::_(1) . "<?php endif; ?>";
 							// update html
 							$tab['html'] = $tmp;
 							// set lang for permissions
@@ -2518,19 +2416,17 @@ class Get
 							$tab['lang_permission_desc'] = $tab['lang']
 								. '_TAB_PERMISSION_DESC';
 							$tab['lang_permission_title']
-							                             = $this->placeholders[$this->hhh
-								. 'Views' . $this->hhh] . ' View '
+							                             = CFactory::_('Placeholder')->active[Placefix::_h('Views')] . ' View '
 								. $tab['name'] . ' Tab';
-							$this->setLangContent(
+							CFactory::_('Language')->set(
 								'both', $tab['lang_permission'],
 								$tab['lang_permission_title']
 							);
-							$this->setLangContent(
+							CFactory::_('Language')->set(
 								'both', $tab['lang_permission_desc'],
 								'Allow the users in this group to view '
 								. $tab['name'] . ' Tab of '
-								. $this->placeholders[$this->hhh . 'views'
-								. $this->hhh]
+								. CFactory::_('Placeholder')->active[Placefix::_h('views')]
 							);
 							// set the sort key
 							$tab['sortKey']
@@ -2712,7 +2608,7 @@ class Get
 								$tmpfield['settings'] = new stdClass();
 								// convert the xml json string to normal string
 								$tmpfield['settings']->xml
-									= $this->setDynamicValues(
+									= CFactory::_('Customcode')->add(
 									json_decode(
 										$field['settings']->history->xml
 									)
@@ -2944,7 +2840,7 @@ class Get
 								$relationsValue['set']
 							))
 						{
-							$relationsValue['set'] = $this->setDynamicValues(
+							$relationsValue['set'] = CFactory::_('Customcode')->add(
 								$relationsValue['set']
 							);
 						}
@@ -2984,14 +2880,14 @@ class Get
 							// confirm it should really make the over ride
 							if ('default' !== $check_column_name)
 							{
-								$column_name_lang = Config::get('lang_prefix') . '_'
+								$column_name_lang = CFactory::_('Config')->lang_prefix . '_'
 									. StringHelper::safe(
 										$view->name_list_code, 'U'
 									) . '_'
 									. StringHelper::safe(
 										$relationsValue['column_name'], 'U'
 									);
-								$this->setLangContent(
+								CFactory::_('Language')->set(
 									'admin', $column_name_lang,
 									$relationsValue['column_name']
 								);
@@ -3019,10 +2915,10 @@ class Get
 			}
 			unset($view->addlinked_views);
 			// set the lang target
-			$this->lang = 'admin';
+			CFactory::_('Config')->lang_target = 'admin';
 			if (isset($this->siteEditView[$id]))
 			{
-				$this->lang = 'both';
+				CFactory::_('Config')->lang_target = 'both';
 			}
 			// set GUI mapper
 			$guiMapper = array('table' => 'admin_view', 'id' => (int) $id,
@@ -3147,8 +3043,8 @@ class Get
 						// set field
 						$guiMapper['field'] = $button_code_field;
 						$view->{$button_code_field}
-						                    = $this->setGuiCodePlaceholder(
-							$this->setDynamicValues(
+						                    = CFactory::_('Customcode.Gui')->set(
+							CFactory::_('Customcode')->add(
 								base64_decode($view->{$button_code_field})
 							),
 							$guiMapper
@@ -3364,25 +3260,29 @@ class Get
 				unset($view->{'mysql_table_' . $_mysqlTableKey});
 			}
 
+			// for plugin event TODO change event api signatures
+			$this->placeholders = CFactory::_('Placeholder')->active;
 			// Trigger Event: jcb_ce_onAfterModelViewData
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onAfterModelViewData',
 				array(&$this->componentContext, &$view, &$this->placeholders)
 			);
+			// for plugin event TODO change event api signatures
+			CFactory::_('Placeholder')->active = $this->placeholders;
 
 			// clear placeholders
-			unset($this->placeholders[$this->hhh . 'view' . $this->hhh]);
-			unset($this->placeholders[$this->hhh . 'views' . $this->hhh]);
-			unset($this->placeholders[$this->hhh . 'View' . $this->hhh]);
-			unset($this->placeholders[$this->hhh . 'Views' . $this->hhh]);
-			unset($this->placeholders[$this->hhh . 'VIEW' . $this->hhh]);
-			unset($this->placeholders[$this->hhh . 'VIEWS' . $this->hhh]);
-			unset($this->placeholders[$this->bbb . 'view' . $this->ddd]);
-			unset($this->placeholders[$this->bbb . 'views' . $this->ddd]);
-			unset($this->placeholders[$this->bbb . 'View' . $this->ddd]);
-			unset($this->placeholders[$this->bbb . 'Views' . $this->ddd]);
-			unset($this->placeholders[$this->bbb . 'VIEW' . $this->ddd]);
-			unset($this->placeholders[$this->bbb . 'VIEWS' . $this->ddd]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_h('view')]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_h('views')]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_h('View')]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_h('Views')]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_h('VIEW')]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_h('VIEWS')]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_('view')]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_('views')]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_('View')]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_('Views')]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_('VIEW')]);
+			unset(CFactory::_('Placeholder')->active[Placefix::_('VIEWS')]);
 
 			// store this view to class object
 			$this->_adminViewData[$id] = $view;
@@ -3411,7 +3311,7 @@ class Get
 		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
 		// Trigger Event: jcb_ce_onBeforeQueryCustomViewData
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onBeforeQueryCustomViewData',
 			array(&$this->componentContext, &$id, &$table, &$query, &$this->db)
 		);
@@ -3428,14 +3328,14 @@ class Get
 		$view->Code = StringHelper::safe($view->code, 'F');
 		$view->CODE = StringHelper::safe($view->code, 'U');
 		// Trigger Event: jcb_ce_onBeforeModelCustomViewData
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onBeforeModelCustomViewData',
 			array(&$this->componentContext, &$view, &$id, &$table)
 		);
 
 		if ($table === 'site_view')
 		{
-			$this->lang = 'site';
+			CFactory::_('Config')->lang_target = 'site';
 			// repeatable fields to update
 			$searchRepeatables = array(
 				// repeatablefield => checker
@@ -3445,7 +3345,7 @@ class Get
 		}
 		else
 		{
-			$this->lang = 'admin';
+			CFactory::_('Config')->lang_target = 'admin';
 			// repeatable fields to update
 			$searchRepeatables = array(
 				// repeatablefield => checker
@@ -3468,8 +3368,8 @@ class Get
 		                   'field' => 'default', 'type' => 'html');
 
 		// set the default data
-		$view->default = $this->setGuiCodePlaceholder(
-			$this->setDynamicValues(base64_decode($view->default)),
+		$view->default = CFactory::_('Customcode.Gui')->set(
+			CFactory::_('Customcode')->add(base64_decode($view->default)),
 			$guiMapper
 		);
 		// load context if not set
@@ -3486,13 +3386,13 @@ class Get
 			$view->context = StringHelper::safe($view->context);
 		}
 		// load the library
-		if (!isset($this->libManager[$this->target]))
+		if (!isset($this->libManager[CFactory::_('Config')->build_target]))
 		{
-			$this->libManager[$this->target] = array();
+			$this->libManager[CFactory::_('Config')->build_target] = array();
 		}
-		if (!isset($this->libManager[$this->target][$view->code]))
+		if (!isset($this->libManager[CFactory::_('Config')->build_target][$view->code]))
 		{
-			$this->libManager[$this->target][$view->code] = array();
+			$this->libManager[CFactory::_('Config')->build_target][$view->code] = array();
 		}
 		// make sure json become array
 		if (JsonHelper::check($view->libraries))
@@ -3504,27 +3404,27 @@ class Get
 		{
 			foreach ($view->libraries as $library)
 			{
-				if (!isset($this->libManager[$this->target][$view->code][$library]))
+				if (!isset($this->libManager[CFactory::_('Config')->build_target][$view->code][$library]))
 				{
 					if ($this->getMediaLibrary((int) $library))
 					{
-						$this->libManager[$this->target][$view->code][(int) $library]
+						$this->libManager[CFactory::_('Config')->build_target][$view->code][(int) $library]
 							= true;
 					}
 				}
 			}
 		}
 		elseif (is_numeric($view->libraries)
-			&& !isset($this->libManager[$this->target][$view->code][(int) $view->libraries]))
+			&& !isset($this->libManager[CFactory::_('Config')->build_target][$view->code][(int) $view->libraries]))
 		{
 			if ($this->getMediaLibrary((int) $view->libraries))
 			{
-				$this->libManager[$this->target][$view->code][(int) $view->libraries]
+				$this->libManager[CFactory::_('Config')->build_target][$view->code][(int) $view->libraries]
 					= true;
 			}
 		}
 		// setup template array
-		$this->templateData[$this->target][$view->code] = array();
+		$this->templateData[CFactory::_('Config')->build_target][$view->code] = array();
 		// setup template and layout data
 		$this->setTemplateAndLayoutData($view->default, $view->code);
 		// insure the uikit components are loaded
@@ -3540,13 +3440,13 @@ class Get
 			);
 		}
 		// check for footable
-		if (!isset($this->footableScripts[$this->target][$view->code])
-			|| !$this->footableScripts[$this->target][$view->code])
+		if (!isset($this->footableScripts[CFactory::_('Config')->build_target][$view->code])
+			|| !$this->footableScripts[CFactory::_('Config')->build_target][$view->code])
 		{
 			$foundFoo = $this->getFootableScripts($view->default);
 			if ($foundFoo)
 			{
-				$this->footableScripts[$this->target][$view->code] = true;
+				$this->footableScripts[CFactory::_('Config')->build_target][$view->code] = true;
 			}
 			if ($foundFoo && !$this->footableScripts)
 			{
@@ -3554,13 +3454,13 @@ class Get
 			}
 		}
 		// check for get module
-		if (!isset($this->getModule[$this->target][$view->code])
-			|| !$this->getModule[$this->target][$view->code])
+		if (!isset($this->getModule[CFactory::_('Config')->build_target][$view->code])
+			|| !$this->getModule[CFactory::_('Config')->build_target][$view->code])
 		{
 			$found = $this->getGetModule($view->default);
 			if ($found)
 			{
-				$this->getModule[$this->target][$view->code] = true;
+				$this->getModule[CFactory::_('Config')->build_target][$view->code] = true;
 			}
 		}
 		// set the main get data
@@ -3589,8 +3489,8 @@ class Get
 				{
 					// set field
 					$guiMapper['field'] = $scripter;
-					$view->$scripter    = $this->setGuiCodePlaceholder(
-						$this->setDynamicValues(
+					$view->$scripter    = CFactory::_('Customcode.Gui')->set(
+						CFactory::_('Customcode')->add(
 							base64_decode($view->$scripter)
 						),
 						$guiMapper
@@ -3598,7 +3498,7 @@ class Get
 				}
 				else
 				{
-					$view->$scripter = $this->setDynamicValues(
+					$view->$scripter = CFactory::_('Customcode')->add(
 						base64_decode($view->$scripter)
 					);
 				}
@@ -3618,13 +3518,13 @@ class Get
 				$this->setTemplateAndLayoutData($view->$scripter, $view->code);
 
 				// check for footable
-				if (!isset($this->footableScripts[$this->target][$view->code])
-					|| !$this->footableScripts[$this->target][$view->code])
+				if (!isset($this->footableScripts[CFactory::_('Config')->build_target][$view->code])
+					|| !$this->footableScripts[CFactory::_('Config')->build_target][$view->code])
 				{
 					$foundFoo = $this->getFootableScripts($view->$scripter);
 					if ($foundFoo)
 					{
-						$this->footableScripts[$this->target][$view->code]
+						$this->footableScripts[CFactory::_('Config')->build_target][$view->code]
 							= true;
 					}
 					if ($foundFoo && !$this->footable)
@@ -3633,13 +3533,13 @@ class Get
 					}
 				}
 				// check for google chart
-				if (!isset($this->googleChart[$this->target][$view->code])
-					|| !$this->googleChart[$this->target][$view->code])
+				if (!isset($this->googleChart[CFactory::_('Config')->build_target][$view->code])
+					|| !$this->googleChart[CFactory::_('Config')->build_target][$view->code])
 				{
 					$found = $this->getGoogleChart($view->$scripter);
 					if ($found)
 					{
-						$this->googleChart[$this->target][$view->code] = true;
+						$this->googleChart[CFactory::_('Config')->build_target][$view->code] = true;
 					}
 					if ($found && !$this->googlechart)
 					{
@@ -3647,13 +3547,13 @@ class Get
 					}
 				}
 				// check for get module
-				if (!isset($this->getModule[$this->target][$view->code])
-					|| !$this->getModule[$this->target][$view->code])
+				if (!isset($this->getModule[CFactory::_('Config')->build_target][$view->code])
+					|| !$this->getModule[CFactory::_('Config')->build_target][$view->code])
 				{
 					$found = $this->getGetModule($view->$scripter);
 					if ($found)
 					{
-						$this->getModule[$this->target][$view->code] = true;
+						$this->getModule[CFactory::_('Config')->build_target][$view->code] = true;
 					}
 				}
 			}
@@ -3662,7 +3562,7 @@ class Get
 		if (isset($view->add_php_ajax) && $view->add_php_ajax == 1)
 		{
 			// ajax target (since we only have two options really)
-			if ('site' === $this->target)
+			if ('site' === CFactory::_('Config')->build_target)
 			{
 				$target = 'site';
 			}
@@ -3702,7 +3602,7 @@ class Get
 			if ($setAjax)
 			{
 				// turn on ajax area
-				if ('site' === $this->target)
+				if ('site' === CFactory::_('Config')->build_target)
 				{
 					$this->addSiteAjax = true;
 				}
@@ -3729,8 +3629,8 @@ class Get
 				{
 					// set field
 					$guiMapper['field']         = $button_code_field;
-					$view->{$button_code_field} = $this->setGuiCodePlaceholder(
-						$this->setDynamicValues(
+					$view->{$button_code_field} = CFactory::_('Customcode.Gui')->set(
+						CFactory::_('Customcode')->add(
 							base64_decode($view->{$button_code_field})
 						),
 						$guiMapper
@@ -3749,7 +3649,7 @@ class Get
 		}
 
 		// Trigger Event: jcb_ce_onAfterModelCustomViewData
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onAfterModelCustomViewData',
 			array(&$this->componentContext, &$view)
 		);
@@ -3795,7 +3695,7 @@ class Get
 			);
 
 			// Trigger Event: jcb_ce_onBeforeQueryFieldData
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onBeforeQueryFieldData',
 				array(&$this->componentContext, &$id, &$query, &$this->db)
 			);
@@ -3809,7 +3709,7 @@ class Get
 				$field = $this->db->loadObject();
 
 				// Trigger Event: jcb_ce_onBeforeModelFieldData
-				$this->triggerEvent(
+				CFactory::_J('Event')->trigger(
 					'jcb_ce_onBeforeModelFieldData',
 					array(&$this->componentContext, &$field)
 				);
@@ -3834,7 +3734,7 @@ class Get
 				);
 
 				// load the values form params
-				$field->xml = $this->setDynamicValues(json_decode($field->xml));
+				$field->xml = CFactory::_('Customcode')->add(json_decode($field->xml));
 
 				// check if we have validate (validation rule set)
 				$validationRule = GetHelper::between(
@@ -3871,13 +3771,13 @@ class Get
 								{
 									// open and set the validation rule
 									$this->validationRules[$validationRule]
-										= $this->setGuiCodePlaceholder(
-										$this->setPlaceholders(
-											$this->setDynamicValues(
+										= CFactory::_('Customcode.Gui')->set(
+										CFactory::_('Placeholder')->update(
+											CFactory::_('Customcode')->add(
 												base64_decode(
 													$this->validationRules[$validationRule]
 												)
-											), $this->placeholders
+											), CFactory::_('Placeholder')->active
 										),
 										array(
 											'table' => 'validation_rule',
@@ -3951,12 +3851,12 @@ class Get
 							$field->initiator_on_save_model
 						);
 						$field->initiator_save     = explode(
-							PHP_EOL, $this->setPlaceholders(
-							$this->setDynamicValues(
+							PHP_EOL, CFactory::_('Placeholder')->update(
+							CFactory::_('Customcode')->add(
 								base64_decode(
 									$field->initiator_on_save_model
 								)
-							), $this->placeholders
+							), CFactory::_('Placeholder')->active
 						)
 						);
 					}
@@ -3968,28 +3868,28 @@ class Get
 							$field->initiator_on_get_model
 						);
 						$field->initiator_get     = explode(
-							PHP_EOL, $this->setPlaceholders(
-							$this->setDynamicValues(
+							PHP_EOL, CFactory::_('Placeholder')->update(
+							CFactory::_('Customcode')->add(
 								base64_decode(
 									$field->initiator_on_get_model
 								)
-							), $this->placeholders
+							), CFactory::_('Placeholder')->active
 						)
 						);
 					}
 					// set the field modeling
 					$field->model_field['save'] = explode(
-						PHP_EOL, $this->setPlaceholders(
-						$this->setDynamicValues(
+						PHP_EOL, CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add(
 							base64_decode($field->on_save_model_field)
-						), $this->placeholders
+						), CFactory::_('Placeholder')->active
 					)
 					);
 					$field->model_field['get']  = explode(
-						PHP_EOL, $this->setPlaceholders(
-						$this->setDynamicValues(
+						PHP_EOL, CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add(
 							base64_decode($field->on_get_model_field)
-						), $this->placeholders
+						), CFactory::_('Placeholder')->active
 					)
 					);
 					// remove the original values
@@ -4000,7 +3900,7 @@ class Get
 				$field->history = $this->getHistoryWatch('field', $id);
 
 				// Trigger Event: jcb_ce_onAfterModelFieldData
-				$this->triggerEvent(
+				CFactory::_J('Event')->trigger(
 					'jcb_ce_onAfterModelFieldData',
 					array(&$this->componentContext, &$field)
 				);
@@ -4496,8 +4396,8 @@ class Get
 							|| strpos($requeSt_id, '_request_catid') !== false)
 						{
 							// keep it then, don't change
-							$name = $this->setPlaceholders(
-								$requeSt_id, $this->placeholders
+							$name = CFactory::_('Placeholder')->update(
+								$requeSt_id, CFactory::_('Placeholder')->active
 							);
 						}
 						else
@@ -4508,20 +4408,20 @@ class Get
 						if (StringHelper::check($listViewName))
 						{
 							// check if we should use another Text Name as this views name
-							$otherName  = $this->setPlaceholders(
+							$otherName  = CFactory::_('Placeholder')->update(
 								GetHelper::between(
 									$field['settings']->xml, 'othername="', '"'
-								), $this->placeholders
+								), CFactory::_('Placeholder')->active
 							);
-							$otherViews = $this->setPlaceholders(
+							$otherViews = CFactory::_('Placeholder')->update(
 								GetHelper::between(
 									$field['settings']->xml, 'views="', '"'
-								), $this->placeholders
+								), CFactory::_('Placeholder')->active
 							);
-							$otherView  = $this->setPlaceholders(
+							$otherView  = CFactory::_('Placeholder')->update(
 								GetHelper::between(
 									$field['settings']->xml, 'view="', '"'
-								), $this->placeholders
+								), CFactory::_('Placeholder')->active
 							);
 							// This is to link other view category
 							if (StringHelper::check($otherName)
@@ -4561,10 +4461,10 @@ class Get
 					{
 						// get value from xml
 						$xml = FieldHelper::safe(
-							$this->setPlaceholders(
+							CFactory::_('Placeholder')->update(
 								GetHelper::between(
 									$field['settings']->xml, 'name="', '"'
-								), $this->placeholders
+								), CFactory::_('Placeholder')->active
 							)
 						);
 						// check if a value was found
@@ -4701,7 +4601,7 @@ class Get
 					foreach ($results as $_nr => &$result)
 					{
 						// Trigger Event: jcb_ce_onBeforeModelDynamicGetData
-						$this->triggerEvent(
+						CFactory::_J('Event')->trigger(
 							'jcb_ce_onBeforeModelDynamicGetData',
 							array(&$this->componentContext, &$result, &$result->id, &$view_code, &$context)
 						);
@@ -4716,8 +4616,8 @@ class Get
 							// set GUI mapper field
 							$guiMapper['field'] = 'php_calculation';
 							$result->php_calculation
-							                    = $this->setGuiCodePlaceholder(
-								$this->setDynamicValues(
+							                    = CFactory::_('Customcode.Gui')->set(
+								CFactory::_('Customcode')->add(
 									base64_decode($result->php_calculation)
 								),
 								$guiMapper
@@ -4734,8 +4634,8 @@ class Get
 							// set GUI mapper field
 							$guiMapper['field'] = 'php_router_parse';
 							$result->php_router_parse
-							                    = $this->setGuiCodePlaceholder(
-								$this->setDynamicValues(
+							                    = CFactory::_('Customcode.Gui')->set(
+								CFactory::_('Customcode')->add(
 									base64_decode($result->php_router_parse)
 								),
 								$guiMapper
@@ -4770,7 +4670,7 @@ class Get
 									$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
 									$this->setCustomScriptBuilder(
 										$result->{$script},
-										$this->target . '_' . $script,
+										CFactory::_('Config')->build_target . '_' . $script,
 										$view_code,
 										false,
 										$guiMapper,
@@ -4790,8 +4690,8 @@ class Get
 									$guiMapper['prefix'] = PHP_EOL;
 									// only for custom gets
 									$result->{$script}
-										= $this->setGuiCodePlaceholder(
-										$this->setDynamicValues(
+										= CFactory::_('Customcode.Gui')->set(
+										CFactory::_('Customcode')->add(
 											base64_decode($result->{$script})
 										),
 										$guiMapper
@@ -4859,8 +4759,8 @@ class Get
 								$guiMapper['field'] = 'php_custom_get';
 								// get the custom query
 								$customQueryString
-									= $this->setGuiCodePlaceholder(
-									$this->setDynamicValues(
+									= CFactory::_('Customcode.Gui')->set(
+									CFactory::_('Customcode')->add(
 										base64_decode($result->php_custom_get)
 									),
 									$guiMapper
@@ -4989,12 +4889,12 @@ class Get
 												|| isset($_part_of_a[$join_field[0]])
 												|| isset($_part_of_a[$on_field[0]]))
 											{
-												$this->siteMainGet[$this->target][$view_code][$option['as']]
+												$this->siteMainGet[CFactory::_('Config')->build_target][$view_code][$option['as']]
 													= $option['as'];
 											}
 											else
 											{
-												$this->siteDynamicGet[$this->target][$view_code][$option['as']][$join_field[1]]
+												$this->siteDynamicGet[CFactory::_('Config')->build_target][$view_code][$option['as']][$join_field[1]]
 													= $on_field[0];
 											}
 										}
@@ -5003,7 +4903,7 @@ class Get
 											$result->custom_get[] = $option;
 											if ($on_field[0] != 'a')
 											{
-												$this->siteDynamicGet[$this->target][$view_code][$option['as']][$join_field[1]]
+												$this->siteDynamicGet[CFactory::_('Config')->build_target][$view_code][$option['as']][$join_field[1]]
 													= $on_field[0];
 											}
 										}
@@ -5089,12 +4989,12 @@ class Get
 												|| isset($_part_of_a[$join_field[0]])
 												|| isset($_part_of_a[$on_field[0]]))
 											{
-												$this->siteMainGet[$this->target][$view_code][$option1['as']]
+												$this->siteMainGet[CFactory::_('Config')->build_target][$view_code][$option1['as']]
 													= $option1['as'];
 											}
 											else
 											{
-												$this->siteDynamicGet[$this->target][$view_code][$option1['as']][$join_field[1]]
+												$this->siteDynamicGet[CFactory::_('Config')->build_target][$view_code][$option1['as']][$join_field[1]]
 													= $on_field[0];
 											}
 										}
@@ -5103,7 +5003,7 @@ class Get
 											$result->custom_get[] = $option1;
 											if ($on_field[0] != 'a')
 											{
-												$this->siteDynamicGet[$this->target][$view_code][$option1['as']][$join_field[1]]
+												$this->siteDynamicGet[CFactory::_('Config')->build_target][$view_code][$option1['as']][$join_field[1]]
 													= $on_field[0];
 											}
 										}
@@ -5127,10 +5027,10 @@ class Get
 										$option2['operator']
 											            = $operatorArray[$option2['operator']];
 										$option2['state_key']
-											            = $this->setPlaceholders(
-											$this->setDynamicValues(
+											            = CFactory::_('Placeholder')->update(
+											CFactory::_('Customcode')->add(
 												$option2['state_key']
-											), $this->placeholders
+											), CFactory::_('Placeholder')->active
 										);
 										$option2['key'] = $result->key;
 									}
@@ -5216,7 +5116,7 @@ class Get
 							$result->plugin_events = '';
 						}
 						// Trigger Event: jcb_ce_onAfterModelDynamicGetData
-						$this->triggerEvent(
+						CFactory::_J('Event')->trigger(
 							'jcb_ce_onAfterModelDynamicGetData',
 							array(&$this->componentContext, &$result, &$result->id, &$view_code, &$context)
 						);
@@ -5294,7 +5194,7 @@ class Get
 		// prep the script string
 		if ($base64 && $dynamic)
 		{
-			$script = $this->setDynamicValues(base64_decode($script));
+			$script = CFactory::_('Customcode')->add(base64_decode($script));
 		}
 		elseif ($base64)
 		{
@@ -5302,7 +5202,7 @@ class Get
 		}
 		elseif ($dynamic) // this does not happen (just incase)
 		{
-			$script = $this->setDynamicValues($script);
+			$script = CFactory::_('Customcode')->add($script);
 		}
 		// check if we still have a string
 		if (StringHelper::check($script))
@@ -5310,7 +5210,7 @@ class Get
 			// now load the placeholder snippet if needed
 			if ($base64 || $dynamic)
 			{
-				$script = $this->setGuiCodePlaceholder($script, $config);
+				$script = CFactory::_('Customcode.Gui')->set($script, $config);
 			}
 			// add Dynamic HASHING option of a file/string
 			$script = $this->setDynamicHASHING($script);
@@ -5395,8 +5295,8 @@ class Get
 			}
 			// load the actual script
 			$script .= $prefix . str_replace(
-					array_keys($this->placeholders),
-					array_values($this->placeholders),
+					array_keys(CFactory::_('Placeholder')->active),
+					array_values(CFactory::_('Placeholder')->active),
 					$this->customScriptBuilder[$first][$second]
 				) . $sufix;
 			// clear some memory
@@ -5814,7 +5714,7 @@ class Get
 				// remove watch
 				if (isset($version_note['component'])
 					&& ($key = array_search(
-						Config::get('component_id'), $version_note['component']
+						CFactory::_('Config')->component_id, $version_note['component']
 					)) !== false)
 				{
 					// last version that was used to build/compile
@@ -5830,9 +5730,9 @@ class Get
 				break;
 			case 1:
 				// add watch
-				if (!in_array(Config::get('component_id'), $version_note['component']))
+				if (!in_array(CFactory::_('Config')->component_id, $version_note['component']))
 				{
-					$version_note['component'][] = Config::get('component_id');
+					$version_note['component'][] = CFactory::_('Config')->component_id;
 				}
 				else
 				{
@@ -5913,9 +5813,9 @@ class Get
 		{
 			foreach ($templates as $template)
 			{
-				if (!isset($this->templateData[$this->target][$view])
+				if (!isset($this->templateData[CFactory::_('Config')->build_target][$view])
 					|| !array_key_exists(
-						$template, $this->templateData[$this->target][$view]
+						$template, $this->templateData[CFactory::_('Config')->build_target][$view]
 					))
 				{
 					$data = $this->getDataWithAlias(
@@ -5924,7 +5824,7 @@ class Get
 					if (ArrayHelper::check($data))
 					{
 						// load it to the template data array
-						$this->templateData[$this->target][$view][$template]
+						$this->templateData[CFactory::_('Config')->build_target][$view][$template]
 							= $data;
 						// call self to get child data
 						$again[] = array($data['html'], $view);
@@ -5933,7 +5833,7 @@ class Get
 				}
 				// check if we have the template set (and nothing yet found)
 				if (!$found
-					&& isset($this->templateData[$this->target][$view][$template]))
+					&& isset($this->templateData[CFactory::_('Config')->build_target][$view][$template]))
 				{
 					// something was found
 					$found = true;
@@ -5972,27 +5872,27 @@ class Get
 		{
 			// get the other target if both
 			$_target = null;
-			if ($this->lang === 'both')
+			if (CFactory::_('Config')->lang_target === 'both')
 			{
-				$_target = ($this->target === 'admin') ? 'site' : 'admin';
+				$_target = (CFactory::_('Config')->build_target === 'admin') ? 'site' : 'admin';
 			}
 			foreach ($layouts as $layout)
 			{
-				if (!isset($this->layoutData[$this->target])
+				if (!isset($this->layoutData[CFactory::_('Config')->build_target])
 					|| !ArrayHelper::check(
-						$this->layoutData[$this->target]
+						$this->layoutData[CFactory::_('Config')->build_target]
 					)
 					|| !array_key_exists(
-						$layout, $this->layoutData[$this->target]
+						$layout, $this->layoutData[CFactory::_('Config')->build_target]
 					))
 				{
 					$data = $this->getDataWithAlias($layout, 'layout', $view);
 					if (ArrayHelper::check($data))
 					{
 						// load it to the layout data array
-						$this->layoutData[$this->target][$layout] = $data;
+						$this->layoutData[CFactory::_('Config')->build_target][$layout] = $data;
 						// check if other target is set
-						if ($this->lang === 'both' && $_target)
+						if (CFactory::_('Config')->lang_target === 'both' && $_target)
 						{
 							$this->layoutData[$_target][$layout] = $data;
 						}
@@ -6002,7 +5902,7 @@ class Get
 					}
 				}
 				// check if we have the layout set (and nothing yet found)
-				if (!$found && isset($this->layoutData[$this->target][$layout]))
+				if (!$found && isset($this->layoutData[CFactory::_('Config')->build_target][$layout]))
 				{
 					// something was found
 					$found = true;
@@ -6060,8 +5960,8 @@ class Get
 			$this->db->quoteName('a.id') . ' = ' . (int) $ID
 		);
 		// get the other target if both
-		$_targets = array($this->target);
-		if ($this->lang === 'both')
+		$_targets = array(CFactory::_('Config')->build_target);
+		if (CFactory::_('Config')->lang_target === 'both')
 		{
 			$_targets = array('site', 'admin');
 		}
@@ -6073,8 +5973,8 @@ class Get
 		if ($row->add_php_view == 1
 			&& StringHelper::check($row->php_view))
 		{
-			$php_view = $this->setGuiCodePlaceholder(
-				$this->setDynamicValues(base64_decode($row->php_view)),
+			$php_view = CFactory::_('Customcode.Gui')->set(
+				CFactory::_('Customcode')->add(base64_decode($row->php_view)),
 				array(
 					'table' => $table,
 					'field' => 'php_view',
@@ -6082,8 +5982,8 @@ class Get
 					'type'  => 'php')
 			);
 		}
-		$contnent = $this->setGuiCodePlaceholder(
-			$this->setDynamicValues(base64_decode($row->{$table})),
+		$contnent = CFactory::_('Customcode.Gui')->set(
+			CFactory::_('Customcode')->add(base64_decode($row->{$table})),
 			array(
 				'table' => $table,
 				'field' => $table,
@@ -6188,7 +6088,7 @@ class Get
 
 		return array(
 			'id'       => $row->id,
-			'html'     => $this->setGuiCodePlaceholder(
+			'html'     => CFactory::_('Customcode.Gui')->set(
 				$contnent,
 				array(
 					'table' => $table,
@@ -6197,7 +6097,7 @@ class Get
 					'type'  => 'html'
 				)
 			),
-			'php_view' => $this->setGuiCodePlaceholder(
+			'php_view' => CFactory::_('Customcode.Gui')->set(
 				$php_view,
 				array(
 					'table' => $table,
@@ -6460,8 +6360,8 @@ class Get
 							$library->php_setdocument
 						))
 					{
-						$library->document = $this->setGuiCodePlaceholder(
-							$this->setDynamicValues(
+						$library->document = CFactory::_('Customcode.Gui')->set(
+							CFactory::_('Customcode')->add(
 								base64_decode($library->php_setdocument)
 							),
 							array(
@@ -6515,156 +6415,11 @@ class Get
 	 * @param   string  $content  The content
 	 *
 	 * @return  string The content with the updated Language place holder
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Language.Extractor')->engine($content)
 	 */
 	public function setLangStrings($content)
 	{
-		// get targets to search for
-		$langStringTargets = array_filter(
-			$this->langStringTargets, function ($get) use ($content) {
-			if (strpos($content, $get) !== false)
-			{
-				return true;
-			}
-
-			return false;
-		}
-		);
-		// check if we should continue
-		if (ArrayHelper::check($langStringTargets))
-		{
-			// insure string is not broken
-			$content = $this->setPlaceholders($content, $this->placeholders);
-			// reset some buckets
-			$langHolders = array();
-			$langCheck   = array();
-			$langOnly    = array();
-			$jsTEXT      = array();
-			$scTEXT      = array();
-			// first get the Joomla .JText._()
-			if (in_array('Joomla' . '.JText._(', $langStringTargets))
-			{
-				$jsTEXT[] = GetHelper::allBetween(
-					$content, "Joomla" . ".JText._('", "'"
-				);
-				$jsTEXT[] = GetHelper::allBetween(
-					$content, 'Joomla' . '.JText._("', '"'
-				);
-				// combine into one array
-				$jsTEXT = ArrayHelper::merge($jsTEXT);
-				// we need to add a check to insure these JavaScript lang matchup
-				if (ArrayHelper::check(
-					$jsTEXT
-				)) //<-- not really needed hmmm
-				{
-					// load the JS text to mismatch array
-					$langCheck[]        = $jsTEXT;
-					$this->langMismatch = ArrayHelper::merge(
-						array($jsTEXT, $this->langMismatch)
-					);
-				}
-			}
-			// now get the JText: :script()
-			if (in_array('JText:' . ':script(', $langStringTargets))
-			{
-				$scTEXT[] = GetHelper::allBetween(
-					$content, "JText:" . ":script('", "'"
-				);
-				$scTEXT[] = GetHelper::allBetween(
-					$content, 'JText:' . ':script("', '"'
-				);
-				// combine into one array
-				$scTEXT = ArrayHelper::merge($scTEXT);
-				// we need to add a check to insure these JavaScript lang matchup
-				if (ArrayHelper::check($scTEXT))
-				{
-					// load the Script text to match array
-					$langCheck[]     = $scTEXT;
-					$this->langMatch = ArrayHelper::merge(
-						array($scTEXT, $this->langMatch)
-					);
-				}
-			}
-			// now do the little trick for JustTEXT: :_('Just uppercase text');
-			if (in_array('JustTEXT:' . ':_(', $langStringTargets))
-			{
-				$langOnly[] = GetHelper::allBetween(
-					$content, "JustTEXT:" . ":_('", "')"
-				);
-				$langOnly[] = GetHelper::allBetween(
-					$content, 'JustTEXT:' . ':_("', '")'
-				);
-				// merge lang only
-				$langOnly = ArrayHelper::merge($langOnly);
-			}
-			// set language data
-			foreach ($langStringTargets as $langStringTarget)
-			{
-				// need some special treatment here
-				if ($langStringTarget === 'Joomla' . '.JText._('
-					|| $langStringTarget === 'JText:' . ':script('
-					|| $langStringTarget === 'JustTEXT:' . ':_(')
-				{
-					continue;
-				}
-				$langCheck[] = GetHelper::allBetween(
-					$content, $langStringTarget . "'", "'"
-				);
-				$langCheck[] = GetHelper::allBetween(
-					$content, $langStringTarget . '"', '"'
-				);
-			}
-			// the normal loading of the language strings
-			$langCheck = ArrayHelper::merge($langCheck);
-			if (ArrayHelper::check(
-				$langCheck
-			)) //<-- not really needed hmmm
-			{
-				foreach ($langCheck as $string)
-				{
-					if ($keyLang = $this->setLang($string))
-					{
-						// load the language targets
-						foreach ($langStringTargets as $langStringTarget)
-						{
-							// need some special treatment here
-							if ($langStringTarget === 'JustTEXT:' . ':_(')
-							{
-								continue;
-							}
-							$langHolders[$langStringTarget . "'" . $string
-							. "'"]
-								= $langStringTarget . "'" . $keyLang . "'";
-							$langHolders[$langStringTarget . '"' . $string
-							. '"']
-								= $langStringTarget . '"' . $keyLang . '"';
-						}
-					}
-				}
-			}
-			// the uppercase loading only (for arrays and other tricks)
-			if (ArrayHelper::check($langOnly))
-			{
-				foreach ($langOnly as $string)
-				{
-					if ($keyLang = $this->setLang($string))
-					{
-						// load the language targets
-						$langHolders["JustTEXT:" . ":_('" . $string . "')"]
-							= "'" . $keyLang . "'";
-						$langHolders['JustTEXT:' . ':_("' . $string . '")']
-							= '"' . $keyLang . '"';
-					}
-				}
-			}
-			// only continue if we have value to replace
-			if (ArrayHelper::check($langHolders))
-			{
-				$content = $this->setPlaceholders($content, $langHolders);
-			}
-		}
-
-		return $content;
+		return CFactory::_('Language.Extractor')->engine($content);
 	}
 
 	/**
@@ -6673,24 +6428,11 @@ class Get
 	 * @param   string  $string  The plan text string (English)
 	 *
 	 * @return  string   The key language string (all uppercase)
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Language')->key($string);
 	 */
 	public function setLang($string)
 	{
-		// this is there to insure we dont break already added Language strings
-		if (StringHelper::safe($string, 'U', '_', false, false)
-			=== $string)
-		{
-			return false;
-		}
-		// build lang key
-		$keyLang = Config::get('lang_prefix') . '_' . StringHelper::safe(
-				$string, 'U'
-			);
-		// set the language string
-		$this->setLangContent($this->lang, $keyLang, $string);
-
-		return $keyLang;
+		return CFactory::_('Language')->key($string);
 	}
 
 	/**
@@ -6722,7 +6464,7 @@ class Get
 			elseif ('view' === $type)
 			{
 				$view      = $this->getViewTableName($asset);
-				$table     = '#__' . Config::get('component_code_name') . '_' . $view;
+				$table     = '#__' . CFactory::_('Config')->component_code_name . '_' . $view;
 				$queryName = $view;
 			}
 			// just get all values from table if * is found
@@ -6836,9 +6578,9 @@ class Get
 					else
 					{
 						$querySelect = '$query->select($db->quoteName('
-							. PHP_EOL . $this->_t(3) . 'array(' . implode(
+							. PHP_EOL . Indent::_(3) . 'array(' . implode(
 								',', $gets
-							) . '),' . PHP_EOL . $this->_t(3) . 'array('
+							) . '),' . PHP_EOL . Indent::_(3) . 'array('
 							. implode(',', $keys) . ')));';
 					}
 					$queryFrom = '$db->quoteName(' . $this->db->quote($table)
@@ -7042,11 +6784,10 @@ class Get
 					// start building the MySql dump
 					$dump = "--";
 					$dump .= PHP_EOL . "-- Dumping data for table `#__"
-						. $this->bbb . "component" . $this->ddd . "_" . $view
+						. Placefix::_( "component" ) . "_" . $view
 						. "`";
 					$dump .= PHP_EOL . "--";
-					$dump .= PHP_EOL . PHP_EOL . "INSERT INTO `#__" . $this->bbb
-						. "component" . $this->ddd . "_" . $view . "` (";
+					$dump .= PHP_EOL . PHP_EOL . "INSERT INTO `#__" . Placefix::_("component" ) . "_" . $view . "` (";
 					foreach ($data as $line)
 					{
 						$comaSet = 0;
@@ -7147,12 +6888,12 @@ class Get
 	 */
 	public function uniqueCode($code)
 	{
-		if (!isset($this->uniquecodes[$this->target])
+		if (!isset($this->uniquecodes[CFactory::_('Config')->build_target])
 			|| !in_array(
-				$code, $this->uniquecodes[$this->target]
+				$code, $this->uniquecodes[CFactory::_('Config')->build_target]
 			))
 		{
-			$this->uniquecodes[$this->target][] = $code;
+			$this->uniquecodes[CFactory::_('Config')->build_target][] = $code;
 
 			return $code;
 		}
@@ -7262,25 +7003,11 @@ class Get
 	 *                           dynamic build values if it gets broken
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Customcode')->add($string, $debug);
 	 */
 	public function setDynamicValues($string, $debug = 0)
 	{
-		if (StringHelper::check($string))
-		{
-			$string = $this->setLangStrings(
-				$this->setCustomCodeData(
-					$this->setExternalCodeString($string, $debug), $debug
-				)
-			);
-		}
-		// if debug
-		if ($debug)
-		{
-			jexit();
-		}
-
-		return $string;
+		return CFactory::_('Customcode')->add($string, $debug);
 	}
 
 	/**
@@ -7290,94 +7017,11 @@ class Get
 	 * @param   int     $debug   The switch to debug the update
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Customcode.External')->set($string, $debug);
 	 */
 	public function setExternalCodeString($string, $debug = 0)
 	{
-		// check if content has custom code placeholder
-		if (strpos($string, '[EXTERNA' . 'LCODE=') !== false)
-		{
-			// if debug
-			if ($debug)
-			{
-				echo 'External Code String:';
-				var_dump($string);
-			}
-			// target content
-			$bucket = array();
-			$found  = GetHelper::allBetween(
-				$string, '[EXTERNA' . 'LCODE=', ']'
-			);
-			if (ArrayHelper::check($found))
-			{
-				// build local bucket
-				foreach ($found as $target)
-				{
-					// check for cutting sequence
-					// example: >{3|4
-					// will cut 3 rows at top and 4 rows at bottom
-					// if the external code has 8 or more lines
-					if (($pos = strpos($target, '>{')) !== false)
-					{
-						// the length
-						$target_len = strlen($target);
-						// where to cut
-						$cutting = $target_len - $pos;
-						// get the sequence
-						$sequence = substr($target, "-$cutting");
-						// remove from the URL
-						$target_url = str_replace($sequence, '', $target);
-						// set the cut key for this target if not set
-						$this->externalCodeCutter[trim($target)] = str_replace('>{', '', $sequence);
-					}
-					else
-					{
-						$target_url = $target;
-					}
-					// check if the target is valid URL or path
-					if ((!filter_var($target_url, FILTER_VALIDATE_URL) === false
-							&& ComponentbuilderHelper::urlExists($target_url))
-						|| (JPath::clean($target_url) === $target_url
-							&& File::exists($target_url)))
-					{
-						$this->getExternalCodeString($target, $bucket);
-					}
-					// give notice that target is not a valid url/path
-					else
-					{
-						// set key
-						$key = '[EXTERNA' . 'LCODE=' . $target . ']';
-						// set the notice
-						$this->app->enqueueMessage(
-							JText::_(
-								'<hr /><h3>External Code Warning</h3>'
-							), 'Warning'
-						);
-						$this->app->enqueueMessage(
-							JText::sprintf(
-								'The <b>%s</b> is not a valid url/path!',
-								$key
-							), 'Warning'
-						);
-						// remove the placeholder
-						$bucket[$key] = '';
-					}
-				}
-				// now update local string if bucket has values
-				if (ArrayHelper::check($bucket))
-				{
-					$string = $this->setPlaceholders($string, $bucket);
-				}
-			}
-			// if debug
-			if ($debug)
-			{
-				echo 'External Code String After Update:';
-				var_dump($string);
-			}
-		}
-
-		return $string;
+		return CFactory::_('Customcode.External')->set($string, $debug);
 	}
 
 	/**
@@ -7387,161 +7031,19 @@ class Get
 	 * @param   array   $bucket  The Placeholders bucket
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function getExternalCodeString($target, &$bucket)
 	{
-		// set URL key
-		$target_key = trim($target);
-		// set key
-		$key = '[EXTERNA' . 'LCODE=' . $target . ']';
-		// remove the cut sequence from the url
-		if (isset($this->externalCodeCutter[$target_key]))
-		{
-			// remove from the URL
-			$target_url = trim(str_replace('>{' . $this->externalCodeCutter[$target_key], '', $target));
-		}
-		else
-		{
-			$target_url = trim($target);
-		}
-		// check if we already fetched this
-		if (!isset($this->externalCodeString[$target_key]))
-		{
-			// get the data string (code)
-			$this->externalCodeString[$target_key]
-				= FileHelper::getContent($target_url);
-			// check if we must cut this
-			if (isset($this->externalCodeCutter[$target_key]) &&
-				$this->externalCodeCutter[$target_key])
-			{
-				$this->externalCodeString[$target_key] = $this->cutExternalCodeString(
-					$this->externalCodeString[$target_key],
-					$this->externalCodeCutter[$target_key],
-					$key
-				);
-			}
-			// did we get any value
-			if (StringHelper::check(
-				$this->externalCodeString[$target_key]
-			))
-			{
-				// check for changes
-				$live_hash = md5($this->externalCodeString[$target_key]);
-				// check if it exists local
-				if ($hash = GetHelper::var(
-					'external_code', $target_key, 'target', 'hash'
-				))
-				{
-					// must be an admin make a change to use EXTERNAL code (we may add a custom access switch - use ADMIN for now)
-					if ($hash !== $live_hash && $this->user->authorise(
-						'core.admin', 'com_componentbuilder'
-					))
-					{
-						// update the hash since it changed
-						$object         = new stdClass();
-						$object->target = $target_key;
-						$object->hash   = $live_hash;
-						// update local hash
-						$this->db->updateObject(
-							'#__componentbuilder_external_code', $object,
-							'target'
-						);
-						// give notice of the change
-						$this->app->enqueueMessage(
-							JText::_('<hr /><h3>External Code Warning</h3>'),
-							'Warning'
-						);
-						$this->app->enqueueMessage(
-							JText::sprintf(
-								'The code/string from <b>%s</b> has been <b>changed</b> since the last compilation. Please investigate to ensure the changes are safe! <b>Should you not expect this change to the external code/string being added, then this is a serious issue! and requires immediate attention!</b> Do not ignore this warning as it will only show <b>once</b>.',
-								$key
-							), 'Warning'
-						);
-					}
-					elseif ($hash !== $live_hash)
-					{
-						// set the notice
-						$this->app->enqueueMessage(
-							JText::_('<hr /><h3>External Code Error</h3>'),
-							'Error'
-						);
-						$this->app->enqueueMessage(
-							JText::sprintf(
-								'%s, we detected a change in <b>EXTERNALCODE</b>, but you do not have permission to allow this change so <b>%s</b> was removed from the compilation. Please contact your system administrator for more info!<br /><small>(admin access required)</small>',
-								$this->user->get('name'), $key
-							), 'Error'
-						);
-						// remove the code/string
-						$this->externalCodeString[$target_key] = '';
-					}
-				}
-				// only an admin can add new EXTERNAL code (we may add a custom access switch - use ADMIN for now)
-				elseif ($this->user->authorise(
-					'core.admin', 'com_componentbuilder'
-				))
-				{
-					// add the hash to track changes
-					$object         = new stdClass();
-					$object->target = $target_key;
-					$object->hash   = $live_hash;
-					// insert local hash
-					$this->db->insertObject(
-						'#__componentbuilder_external_code', $object
-					);
-					// give notice the first time this is added
-					$this->app->enqueueMessage(
-						JText::_('<hr /><h3>External Code Notice</h3>'),
-						'Warning'
-					);
-					$this->app->enqueueMessage(
-						JText::sprintf(
-							'The code/string from <b>%s</b> has been added for the <b>first time</b>. Please <i>investigate</i> to ensure the correct code/string was used! <b>Should you not know about this NEW external code/string being added, then this is a serious danger! and requires immediate attention!</b> Do not ignore this warning as it will only show <b>once</b>.',
-							$key
-						), 'Warning'
-					);
-				}
-				else
-				{
-					// set the notice
-					$this->app->enqueueMessage(
-						JText::_('<hr /><h3>External Code Error</h3>'),
-						'Error'
-					);
-					$this->app->enqueueMessage(
-						JText::sprintf(
-							'%s, we detected <b>NEW EXTERNALCODE</b>, but you do not have permission to allow this new code/string so <b>%s</b> was removed from the compilation. Please contact you system administrator for more info!<br /><small>(admin access required)</small>',
-							$this->user->get('name'), $key
-						), 'Error'
-					);
-					// remove the code/string
-					$this->externalCodeString[$target_key] = '';
-				}
-			}
-			else
-			{
-				// set notice that we could not get a valid string from the target
-				$this->app->enqueueMessage(
-					JText::_('<hr /><h3>External Code Warning</h3>'), 'Error'
-				);
-				$this->app->enqueueMessage(
-					JText::sprintf(
-						'The <b>%s</b> returned an invalid string!', $key
-					), 'Error'
-				);
-			}
-		}
-		// add to local bucket
-		if (isset($this->externalCodeString[$target_key]))
-		{
-			// update the placeholder with the external code string
-			$bucket[$key] = $this->externalCodeString[$target_key];
-		}
-		else
-		{
-			// remove the placeholder
-			$bucket[$key] = '';
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::_('<hr /><h3>External Code Warning</h3>'), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::_(
+				'Use of a deprecated method (getExternalCodeString)!'
+			), 'Error'
+		);
 	}
 
 	/**
@@ -7552,41 +7054,17 @@ class Get
 	 * @param   string  $key       The content key
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function cutExternalCodeString($string, $sequence, $key)
 	{
-		// we first break the string up in rows
-		$rows = (array) explode(PHP_EOL, $string);
-		// get the cutting sequence
-		$cutter = (array) explode('|', $sequence);
-		// we only continue if we have more rows than we have to cut
-		if (array_sum($cutter) < ArrayHelper::check($rows))
-		{
-			// remove the rows at the bottom if needed
-			if (isset($cutter[1]) && $cutter[1] > 0)
-			{
-				array_splice($rows, "-$cutter[1]");
-			}
-			// remove the rows at the top if needed
-			if ($cutter[0] > 0)
-			{
-				$rows = array_splice($rows, $cutter[0]);
-			}
-
-			// return the remaining rows
-			return implode(PHP_EOL, $rows);
-		}
-
-		// we set an error message about too few lines to cut
+		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::_('<hr /><h3>External Code Notice</h3>'),
-			'Error'
+			JText::_('<hr /><h3>External Code Warning</h3>'), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
-				'The <b>%s</b> cut sequence failed on the returned external code/string as more lines has to be cut then was found in the code/string. We have completely removed the code. Please check this code/string!',
-				$key
+			JText::_(
+				'Use of a deprecated method (cutExternalCodeString)!'
 			), 'Error'
 		);
 
@@ -7600,182 +7078,11 @@ class Get
 	 * @param   int     $debug   The switch to debug the update
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Customcode')->set($string, $debug, $not);
 	 */
 	public function setCustomCodeData($string, $debug = 0, $not = null)
 	{
-		// insure the code is loaded
-		$loaded = false;
-		// check if content has custom code place holder
-		if (strpos($string, '[CUSTO' . 'MCODE=') !== false)
-		{
-			// if debug
-			if ($debug)
-			{
-				echo 'Custom Code String:';
-				var_dump($string);
-			}
-			// the ids found in this content
-			$bucket = array();
-			$found  = GetHelper::allBetween(
-				$string, '[CUSTO' . 'MCODE=', ']'
-			);
-			if (ArrayHelper::check($found))
-			{
-				foreach ($found as $key)
-				{
-					// if debug
-					if ($debug)
-					{
-						echo '$key before update:';
-						var_dump($key);
-					}
-					// check if we have args
-					if (is_numeric($key))
-					{
-						$id = (int) $key;
-					}
-					elseif (StringHelper::check($key)
-						&& strpos(
-							$key, '+'
-						) === false)
-					{
-						$getFuncName = trim($key);
-						if (!isset($this->functionNameMemory[$getFuncName]))
-						{
-							if (!$found_local = GetHelper::var(
-								'custom_code', $getFuncName, 'function_name',
-								'id'
-							))
-							{
-								continue;
-							}
-							$this->functionNameMemory[$getFuncName]
-								= $found_local;
-						}
-						$id = (int) $this->functionNameMemory[$getFuncName];
-					}
-					elseif (StringHelper::check($key)
-						&& strpos(
-							$key, '+'
-						) !== false)
-					{
-						$array = explode('+', $key);
-						// set ID
-						if (is_numeric($array[0]))
-						{
-							$id = (int) $array[0];
-						}
-						elseif (StringHelper::check($array[0]))
-						{
-							$getFuncName = trim($array[0]);
-							if (!isset($this->functionNameMemory[$getFuncName]))
-							{
-								if (!$found_local
-									= GetHelper::var(
-									'custom_code', $getFuncName,
-									'function_name', 'id'
-								))
-								{
-									continue;
-								}
-								$this->functionNameMemory[$getFuncName]
-									= $found_local;
-							}
-							$id = (int) $this->functionNameMemory[$getFuncName];
-						}
-						else
-						{
-							continue;
-						}
-						// load args for this ID
-						if (isset($array[1]))
-						{
-							if (!isset($this->customCodeData[$id]['args']))
-							{
-								$this->customCodeData[$id]['args'] = array();
-							}
-							// only load if not already loaded
-							if (!isset($this->customCodeData[$id]['args'][$key]))
-							{
-								if (strpos($array[1], ',') !== false)
-								{
-									// update the function values with the custom code key placholdres (this allow the use of [] + and , in the values)
-									$this->customCodeData[$id]['args'][$key]
-										= array_map(
-										function ($_key) {
-											return $this->setPlaceholders(
-												$_key,
-												$this->customCodeKeyPlacholders
-											);
-										}, (array) explode(',', $array[1])
-									);
-								}
-								elseif (StringHelper::check(
-									$array[1]
-								))
-								{
-									$this->customCodeData[$id]['args'][$key]
-										= array();
-									// update the function values with the custom code key placholdres (this allow the use of [] + and , in the values)
-									$this->customCodeData[$id]['args'][$key][]
-										= $this->setPlaceholders(
-										$array[1],
-										$this->customCodeKeyPlacholders
-									);
-								}
-							}
-						}
-					}
-					else
-					{
-						continue;
-					}
-					// make sure to remove the not if set
-					if ($not && is_numeric($not) && $not > 0 && $not == $id)
-					{
-						continue;
-					}
-					$bucket[$id] = $id;
-				}
-			}
-			// if debug
-			if ($debug)
-			{
-				echo 'Bucket:';
-				var_dump($bucket);
-			}
-			// check if any custom code placeholders where found
-			if (ArrayHelper::check($bucket))
-			{
-				$_tmpLang = $this->lang;
-				// insure we add the langs to both site and admin
-				$this->lang = 'both';
-				// now load the code to memory
-				$loaded = $this->getCustomCode($bucket, false, $debug);
-				// revert lang to current setting
-				$this->lang = $_tmpLang;
-			}
-			// if debug
-			if ($debug)
-			{
-				echo 'Loaded:';
-				var_dump($loaded);
-			}
-			// when the custom code is loaded
-			if ($loaded === true)
-			{
-				$string = $this->insertCustomCode($bucket, $string, $debug);
-			}
-			// if debug
-			if ($debug)
-			{
-				echo 'Custom Code String After Update:';
-				var_dump($string);
-			}
-		}
-
-		return $string;
+		return CFactory::_('Customcode')->set($string, $debug, $not);
 	}
 
 	/**
@@ -7785,29 +7092,21 @@ class Get
 	 * @param   int     $debug   The switch to debug the update
 	 *
 	 * @return  string on success
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function insertCustomCode($ids, $string, $debug = 0)
 	{
-		$code = array();
-		// load the code
-		foreach ($ids as $id)
-		{
-			$this->buildCustomCodePlaceholders(
-				$this->customCodeMemory[$id], $code, $debug
-			);
-		}
-		// if debug
-		if ($debug)
-		{
-			echo 'Place holders to Update String:';
-			var_dump($code);
-			echo 'Custom Code String Before Update:';
-			var_dump($string);
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::_('<hr /><h3>External Code Warning</h3>'), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::_(
+				'Use of a deprecated method (insertCustomCode)!'
+			), 'Error'
+		);
 
-		// now update the string
-		return $this->setPlaceholders($string, $code);
+		return '';
 	}
 
 	/**
@@ -7817,73 +7116,21 @@ class Get
 	 * @param   int     $debug   The switch to debug the update
 	 *
 	 * @return  string on success
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function buildCustomCodePlaceholders($item, &$code, $debug = 0)
 	{
-		// check if there is args for this code
-		if (isset($this->customCodeData[$item['id']]['args'])
-			&& ArrayHelper::check(
-				$this->customCodeData[$item['id']]['args']
-			))
-		{
-			// since we have args we cant update this code via IDE (TODO)
-			$placeholder = $this->getPlaceHolder(3, null);
-			// if debug
-			if ($debug)
-			{
-				echo 'Custom Code Placeholders:';
-				var_dump($placeholder);
-			}
-			// we have args and so need to load each
-			foreach (
-				$this->customCodeData[$item['id']]['args'] as $key => $args
-			)
-			{
-				$this->setThesePlaceHolders('arg', $args);
-				// if debug
-				if ($debug)
-				{
-					echo 'Custom Code Global Placholders:';
-					var_dump($this->placeholders);
-				}
-				$code['[CUSTOM' . 'CODE=' . $key . ']'] = $placeholder['start']
-					. PHP_EOL . $this->setPlaceholders(
-						$item['code'], $this->placeholders
-					) . $placeholder['end'];
-			}
-			// always clear the args
-			$this->clearFromPlaceHolders('arg');
-		}
-		else
-		{
-			if (($keyPlaceholder = array_search(
-					$item['id'], $this->functionNameMemory
-				)) === false)
-			{
-				$keyPlaceholder = $item['id'];
-			}
-			// check what type of place holders we should load here
-			$placeholderType = (int) $item['comment_type'] . '2';
-			if (stripos($item['code'], $this->bbb . 'view') !== false
-				|| stripos($item['code'], $this->bbb . 'sview') !== false
-				|| stripos($item['code'], $this->bbb . 'arg') !== false)
-			{
-				// if view is being set dynamicly then we can't update this code via IDE (TODO)
-				$placeholderType = 3;
-			}
-			// if now ars were found, clear it
-			$this->clearFromPlaceHolders('arg');
-			// load args for this code
-			$placeholder = $this->getPlaceHolder(
-				$placeholderType, $item['id']
-			);
-			$code['[CUSTOM' . 'CODE=' . $keyPlaceholder . ']']
-			             = $placeholder['start'] . PHP_EOL
-				. $this->setPlaceholders(
-					$item['code'], $this->placeholders
-				) . $placeholder['end'];
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::_('<hr /><h3>External Code Warning</h3>'), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::_(
+				'Use of a deprecated method (buildCustomCodePlaceholders)!'
+			), 'Error'
+		);
+
+		return '';
 	}
 
 	/**
@@ -7893,21 +7140,12 @@ class Get
 	 * @param   array   $values  The values to add
 	 *
 	 * @return  void
+	 * @deprecated 3.3 Use CFactory::_('Placeholder')->setType($key, $values);
 	 */
 	public function setThesePlaceHolders($key, $values)
 	{
-		// aways fist reset these
-		$this->clearFromPlaceHolders($key);
-		if (ArrayHelper::check($values))
-		{
-			$number = 0;
-			foreach ($values as $value)
-			{
-				$this->placeholders[$this->bbb . $key . $number . $this->ddd]
-					= $value;
-				$number++;
-			}
-		}
+		// use the new container class
+		CFactory::_('Placeholder')->setType($key, $values);
 	}
 
 	/**
@@ -7916,16 +7154,12 @@ class Get
 	 * @param   string  $like  The main string for placeholder key
 	 *
 	 * @return  void
+	 * @deprecated 3.3 Use CFactory::_('Placeholder')->clearType($key);
 	 */
 	public function clearFromPlaceHolders($like)
 	{
-		foreach ($this->placeholders as $something => $value)
-		{
-			if (stripos($something, $like) !== false)
-			{
-				unset($this->placeholders[$something]);
-			}
-		}
+		// use the new container class
+		CFactory::_('Placeholder')->clearType($like);
 	}
 
 	/**
@@ -7998,7 +7232,7 @@ class Get
 		$counterUpdate = 0;
 		$today         = JFactory::getDate()->toSql();
 		foreach (
-			$this->languages[$target][Config::get('lang_tag', 'en-GB')] as $area => $placeholders
+			$this->languages[$target][CFactory::_('Config')->get('lang_tag', 'en-GB')] as $area => $placeholders
 		)
 		{
 			foreach ($placeholders as $placeholder => $string)
@@ -8455,130 +7689,40 @@ class Get
 	/**
 	 * get the custom code from the system
 	 *
-	 * @return  void
+	 * @param   array|null     $ids           The custom code ides if known
+	 * @param   int|null       $setLang       The set lang switch
+	 * @param   int            $debug         The switch to debug the update
 	 *
+	 * @return  void
+	 * @deprecated 3.3 Use CFactory::_('Customcode')->load($ids, $setLang, $debug);
 	 */
-	public function getCustomCode($ids = null, $setLang = true, $debug = 0)
+	public function getCustomCode(?array $ids = null, bool $setLang = true, int $debug = 0)
 	{
-		// should the result be stored in memory
-		$loadInMemory = false;
-		// Create a new query object.
-		$query = $this->db->getQuery(true);
-		$query->from(
-			$this->db->quoteName('#__componentbuilder_custom_code', 'a')
-		);
+		CFactory::_('Customcode')->load($ids, $setLang, $debug);
+	}
+
+	/**
+	 * check if we already have these ids in local memory
+	 *
+	 * @return  void
+	 * @deprecated 3.3
+	 */
+	protected function checkCustomCodeMemory($ids)
+	{
+		// reset custom code
+		CFactory::_('Customcode')->active = array();
+		foreach ($ids as $pointer => $id)
+		{
+			if (isset(CFactory::_('Customcode')->memory[$id]))
+			{
+				CFactory::_('Customcode')->active[] = CFactory::_('Customcode')->memory[$id];
+				unset($ids[$pointer]);
+			}
+		}
+		// check if any ids left to fetch
 		if (ArrayHelper::check($ids))
 		{
-			if ($idArray = $this->checkCustomCodeMemory($ids))
-			{
-				$query->select(
-					$this->db->quoteName(
-						array('a.id', 'a.code', 'a.comment_type')
-					)
-				);
-				$query->where(
-					$this->db->quoteName('a.id') . ' IN (' . implode(
-						',', $idArray
-					) . ')'
-				);
-				$query->where(
-					$this->db->quoteName('a.target') . ' = 2'
-				); // <--- to load the correct target
-				$loadInMemory = true;
-			}
-			else
-			{
-				// all values are already in memory continue
-				return true;
-			}
-		}
-		else
-		{
-			$query->select(
-				$this->db->quoteName(
-					array('a.id', 'a.code', 'a.comment_type', 'a.component',
-						'a.from_line', 'a.hashtarget', 'a.hashendtarget',
-						'a.path', 'a.to_line', 'a.type')
-				)
-			);
-			$query->where(
-				$this->db->quoteName('a.component') . ' = '
-				. (int) $this->componentData->id
-			);
-			$query->where(
-				$this->db->quoteName('a.target') . ' = 1'
-			); // <--- to load the correct target
-			$query->order(
-				$this->db->quoteName('a.from_line') . ' ASC'
-			); // <--- insure we always add code from top of file
-			// reset custom code
-			$this->customCode = array();
-		}
-		$query->where($this->db->quoteName('a.published') . ' >= 1');
-		$this->db->setQuery($query);
-		$this->db->execute();
-		if ($this->db->getNumRows())
-		{
-			$bucket = $this->db->loadAssocList('id');
-			// open the code
-			foreach ($bucket as $nr => &$customCode)
-			{
-				$customCode['code'] = base64_decode($customCode['code']);
-				// always insure that the external code is loaded
-				$customCode['code'] = $this->setExternalCodeString(
-					$customCode['code']
-				);
-				// set the lang only if needed
-				if ($setLang)
-				{
-					$customCode['code'] = $this->setLangStrings(
-						$customCode['code']
-					);
-				}
-				// check for more custom code (since this is a custom code placeholder)
-				else
-				{
-					$customCode['code'] = $this->setCustomCodeData(
-						$customCode['code'], $debug, $nr
-					);
-				}
-				// build the hash array
-				if (isset($customCode['hashtarget']))
-				{
-					$customCode['hashtarget'] = explode(
-						"__", $customCode['hashtarget']
-					);
-					// is this a replace code, set end has array
-					if ($customCode['type'] == 1
-						&& strpos(
-							$customCode['hashendtarget'], '__'
-						) !== false)
-					{
-						$customCode['hashendtarget'] = explode(
-							"__", $customCode['hashendtarget']
-						);
-						// NOW see if this is an end of page target (TODO not sure if the string is always d41d8cd98f00b204e9800998ecf8427e)
-						// I know this fix is not air-tight, but it should work as the value of an empty line when md5'ed is ^^^^
-						// Then if the line number is only >>>one<<< it is almost always end of the page.
-						// So I am using those two values to detect end of page replace ending, to avoid mismatching the ending target hash.
-						if ($customCode['hashendtarget'][0] == 1
-							&& 'd41d8cd98f00b204e9800998ecf8427e'
-							=== $customCode['hashendtarget'][1])
-						{
-							// unset since this will force the replacement unto end of page.
-							unset($customCode['hashendtarget']);
-						}
-					}
-				}
-			}
-			// load this code into memory if needed
-			if ($loadInMemory === true)
-			{
-				$this->customCodeMemory = $this->customCodeMemory + $bucket;
-			}
-			$this->customCode = array_merge($this->customCode, $bucket);
-
-			return true;
+			return $ids;
 		}
 
 		return false;
@@ -8588,374 +7732,43 @@ class Get
 	 * get all the powers linkd to this component
 	 *
 	 * @return void
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Power')->load($guids);
 	 */
 	protected function getPowers($guids)
 	{
-		if (ArrayHelper::check($guids))
-		{
-			foreach ($guids as $guid => $build)
-			{
-				$this->getPower($guid, $build);
-			}
-		}
+		CFactory::_('Power')->load($guids);
 	}
 
 	/**
 	 * get a power linkd to this component
 	 *
 	 * @return mixed
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Power')->get($guid, $build);
 	 */
 	public function getPower($guid, $build = 0)
 	{
-		if ((Config::get('add_power', true) || $build == 1) && $this->setPower($guid))
-		{
-			return $this->powers[$guid];
-		}
-
-		return false;
+		CFactory::_('Power')->get($guid, $build);
 	}
 
 	/**
 	 * set a power linkd to this component
 	 *
 	 * @return bool
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function setPower($guid)
 	{
-		// check if we have been here before
-		if (isset($this->statePowers[$guid]))
-		{
-			return $this->statePowers[$guid];
-		}
-		elseif (GuidHelper::valid($guid))
-		{
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::_('<hr /><h3>Power building error</h3>'), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::_(
+				'Use of a deprecated method (setPower)!'
+			), 'Error'
+		);
 
-			$query->select('a.*');
-			// from these tables
-			$query->from('#__componentbuilder_power AS a');
-			$query->where($this->db->quoteName('a.guid') . ' = ' . $this->db->quote($guid));
-			$this->db->setQuery($query);
-			$this->db->execute();
-			if ($this->db->getNumRows())
-			{
-				// make sure that in recursion we
-				// don't try to load this power again
-				$this->statePowers[$guid] = true;
-				// get the power data
-				$power = $this->db->loadObject();
-				// we set the fix usr if needed
-				$fix_url
-					= '"index.php?option=com_componentbuilder&view=powers&task=power.edit&id='
-					. $power->id . '" target="_blank"';
-				// set some keys
-				$power->target_type = 'P0m3R!';
-				$power->key         = $power->id . '_' . $power->target_type;
-				// now set the name
-				$power->name = $this->setPlaceholders(
-					$this->setDynamicValues($power->name),
-					$this->placeholders
-				);
-				// now set the code_name and class name
-				$power->code_name = $power->class_name = ClassfunctionHelper::safe(
-					$power->name
-				);
-				// set official name
-				$power->official_name = StringHelper::safe(
-					$power->name, 'W'
-				);
-				// set namespace
-				$power->namespace = $this->setPlaceholders(
-					$power->namespace, $this->placeholders
-				);
-				// validate namespace
-				if (strpos($power->namespace, '\\') === false)
-				{
-					// we raise an error message
-					$this->app->enqueueMessage(
-						JText::sprintf('<h3>%s namespace error (%s)</h3><p>You must at-least have two sections in your namespace, you just have one. This is an unacceptable action, please see <a href=%s >psr-4</a> for more info.</p><p>This %s was therefore removed, <a href=%s>click here</a> to fix this issue.</p>',
-							ucfirst($power->type), $power->name, $power->namespace,
-							'"https://www.php-fig.org/psr/psr-4/" target="_blank"', $power->type,
-							$fix_url),
-						'Error'
-					);
-					$this->statePowers[$guid] = false;
-
-					// we break out here
-					return false;
-				}
-				else
-				{
-					// setup the path array
-					$path_array = (array) explode('\\', $power->namespace);
-					// make sure all sub folders in src dir is set and remove all characters that will not work in folders naming
-					$power->namespace = NamespaceHelper::safe(str_replace('.', '\\', $power->namespace));
-					// make sure it has two or more
-					if (ArrayHelper::check($path_array) <= 1)
-					{
-						// we raise an error message
-						$this->app->enqueueMessage(
-							JText::sprintf('<h3>%s namespace error (%s)</h3><p>You must at-least have two sections in your namespace, you just have one (%s). This is an unacceptable action, please see <a href=%s >psr-4</a> for more info.</p><p>This %s was therefore removed, <a href=%s>click here</a> to fix this issue.</p>',
-								ucfirst($power->type), $power->name, $power->namespace,
-								'"https://www.php-fig.org/psr/psr-4/" target="_blank"', $power->type,
-								$fix_url),
-							'Error'
-						);
-						$this->statePowers[$guid] = false;
-
-						// we break out here
-						return false;
-					}
-					// get the file and class name (the last value in array)
-					$file_name = array_pop($path_array);
-					// src array bucket
-					$src_array = array();
-					// do we have src folders
-					if (strpos($file_name, '.') !== false)
-					{
-						// we have src folders in the namespace
-						$src_array = (array) explode('.', $file_name);
-						// get the file and class name (the last value in array)
-						$power->file_name = array_pop($src_array);
-						// namespace array
-						$namespace_array = array_merge($path_array, $src_array);
-					}
-					else
-					{
-						// set the file name
-						$power->file_name = $file_name;
-						// namespace array
-						$namespace_array = $path_array;
-					}
-					// the last value is the same as the class name
-					if ($power->file_name !== $power->class_name)
-					{
-						// we raise an error message
-						$this->app->enqueueMessage(
-							JText::sprintf('<p>%s naming mismatch error (%s)</p><p>The %s name is <b>%s</b> and the ending file name in the namespace is <b>%s</b>. This is bad convention, please see <a href=%s >psr-4</a> for more info.</p><p><a href=%s>Click here</a> to fix this issue.</p>',
-								ucfirst($power->type), $power->name, $power->type, $power->class_name, $power->file_name,
-								'"https://www.php-fig.org/psr/psr-4/" target="_blank"',
-								$fix_url),
-							'Error'
-						);
-						$this->statePowers[$guid] = false;
-
-						// we break out here
-						return false;
-					}
-					// make sure the arrays are namespace safe
-					$path_array      = array_map(function ($val) {
-						return NamespaceHelper::safe($val);
-					}, $path_array);
-					$namespace_array = array_map(function ($val) {
-						return NamespaceHelper::safe($val);
-					}, $namespace_array);
-					// set the actual class namespace
-					$power->_namespace = implode('\\', $namespace_array);
-					// prefix values
-					$power->_namespace_prefix = $path_array;
-					// get the parent folder (the first value in array)
-					$prefix_folder = implode('.', $path_array);
-					// make sub folders if still found
-					$sub_folder = '';
-					if (ArrayHelper::check($src_array))
-					{
-						// make sure the arrays are namespace safe
-						$sub_folder = '/' . implode('/', array_map(function ($val) {
-								return NamespaceHelper::safe($val);
-							}, $src_array));
-					}
-					// now we set the paths
-					$power->path_jcb    = Config::get('jcb_powers_path', 'libraries/jcb_powers');
-					$power->path_parent = $power->path_jcb . '/' . $prefix_folder;
-					$power->path        = $power->path_parent . '/src' . $sub_folder;
-				}
-				// load use ids
-				$use = array();
-				$as = array();
-				// check if we have use selection
-				$power->use_selection = (isset($power->use_selection)
-					&& JsonHelper::check(
-						$power->use_selection
-					)) ? json_decode($power->use_selection, true) : null;
-				if ($power->use_selection)
-				{
-					$use = array_values(array_map(function ($u) use(&$as) {
-						// track the AS options
-						if (empty($u['as']))
-						{
-							$as[$u['use']] = 'default';
-						}
-						else
-						{
-							$as[$u['use']] = (string) $u['as'];
-						}
-						// return the guid
-						return $u['use'];
-					}, $power->use_selection));
-				}
-				// check if we have load selection
-				$power->load_selection = (isset($power->load_selection)
-					&& JsonHelper::check(
-						$power->load_selection
-					)) ? json_decode($power->load_selection, true) : null;
-				if ($power->load_selection)
-				{
-					// load use ids
-					array_map(function ($l) {
-						// just load it directly and be done with it
-						return $this->setPower($l['load']);
-					}, $power->load_selection);
-				}
-				// see if we have implements
-				$power->implement_names = array();
-				// does this implement
-				$power->implements = (isset($power->implements)
-					&& JsonHelper::check(
-						$power->implements
-					)) ? json_decode($power->implements, true) : null;
-				if ($power->implements)
-				{
-					foreach ($power->implements as $implement)
-					{
-						if ($implement == -1
-							&& StringHelper::check($power->implements_custom))
-						{
-							$power->implement_names[] = $this->setPlaceholders(
-								$this->setDynamicValues($power->implements_custom),
-								$this->placeholders
-							);
-							// just add this once
-							unset($power->implements_custom);
-						}
-						// does this extend existing
-						elseif (GuidHelper::valid($implement))
-						{
-							// check if it was set
-							if ($this->setPower($implement))
-							{
-								// get the name
-								$power->implement_names[] = $this->getPower($implement, 1)->class_name;
-								// add to use
-								$use[] = $implement;
-							}
-						}
-					}
-				}
-				// does this extend something
-				$power->extends_name = null;
-				// we first check for custom extending options
-				if ($power->extends == -1
-					&& StringHelper::check($power->extends_custom))
-				{
-					$power->extends_name = $this->setPlaceholders(
-						$this->setDynamicValues($power->extends_custom),
-						$this->placeholders
-					);
-					// just add once
-					unset($power->extends_custom);
-				}
-				// does this extend existing
-				elseif (GuidHelper::valid($power->extends))
-				{
-					// check if it was set
-					if ($this->setPower($power->extends))
-					{
-						// get the name
-						$power->extends_name = $this->getPower($power->extends, 1)->class_name;
-						// add to use
-						$use[] = $power->extends;
-					}
-				}
-				// set GUI mapper
-				$guiMapper = array('table' => 'power', 'id' => (int) $power->id, 'type' => 'php');
-				// add the header script
-				if ($power->add_head == 1)
-				{
-					// set GUI mapper field
-					$guiMapper['field'] = 'head';
-					// base64 Decode code
-					$power->head = $this->setGuiCodePlaceholder(
-							$this->setPlaceholders(
-								$this->setDynamicValues(
-									base64_decode(
-										$power->head
-									)
-								), $this->placeholders
-							),
-							$guiMapper
-						) . PHP_EOL;
-				}
-				// now add all the extra use statements
-				if (ArrayHelper::check($use))
-				{
-					foreach (array_unique($use) as $u)
-					{
-						if ($this->setPower($u))
-						{
-							$add_use = $this->getPower($u, 1)->namespace;
-							// check if it is already added manually, you know how some people are
-							if (strpos($power->head, $add_use) === false)
-							{
-								// check if it has an AS option
-								if (isset($as[$u]) && StringHelper::check($as[$u]) && $as[$u] !== 'default')
-								{
-									$power->head .= 'use ' . $add_use . ' as ' . $as[$u] . ';' . PHP_EOL;
-								}
-								else
-								{
-									$power->head .= 'use ' . $add_use . ';' . PHP_EOL;
-								}
-							}
-						}
-					}
-				}
-				// now set the description
-				$power->description = (StringHelper::check($power->description)) ? $this->setPlaceholders(
-					$this->setDynamicValues($power->description),
-					$this->placeholders
-				) : '';
-				// add the main code if set
-				if (StringHelper::check($power->main_class_code))
-				{
-					// set GUI mapper field
-					$guiMapper['field'] = 'main_class_code';
-					// base64 Decode code
-					$power->main_class_code = $this->setGuiCodePlaceholder(
-						$this->setPlaceholders(
-							$this->setDynamicValues(
-								base64_decode(
-									$power->main_class_code
-								)
-							), $this->placeholders
-						),
-						$guiMapper
-					);
-				}
-				// store the power
-				$this->powers[$guid] = $power;
-
-				return true;
-			}
-		}
-		// we failed to get the power,
-		// so we raise an error message
-		// only if guid is valid
-		if (GuidHelper::valid($guid))
-		{
-			$this->app->enqueueMessage(
-				JText::sprintf('<p>Power <b>guid:%s</b> not found!</p>', $guid),
-				'Error'
-			);
-		}
-		// let's not try again
-		$this->statePowers[$guid] = false;
-
-		return false;
+		return '';
 	}
 
 	/**
@@ -8993,8 +7806,8 @@ class Get
 				// get the module data
 				$module = $this->db->loadObject();
 				// update the name if it has dynamic values
-				$module->name = $this->setPlaceholders(
-					$this->setDynamicValues($module->name),
+				$module->name = CFactory::_('Placeholder')->update(
+					CFactory::_('Customcode')->add($module->name),
 					$this->globalPlaceholders
 				);
 				// set safe class function name
@@ -9005,7 +7818,7 @@ class Get
 				// set module folder name
 				$module->folder_name = 'mod_' . strtolower($module->code_name);
 				// set the lang key
-				$this->langKeys[strtoupper($module->folder_name)] = $module->id
+				CFactory::_('Language.Extractor')->langKeys[strtoupper($module->folder_name)] = $module->id
 					. '_M0dU|3';
 				// return the path
 				if ($module->target == 2)
@@ -9034,7 +7847,7 @@ class Get
 	protected function getModuleIDs()
 	{
 		if (($addjoomla_modules = GetHelper::var(
-				'component_modules', Config::get('component_id'), 'joomla_component',
+				'component_modules', CFactory::_('Config')->component_id, 'joomla_component',
 				'addjoomla_modules'
 			)) !== false)
 		{
@@ -9132,15 +7945,15 @@ class Get
 				// get the module data
 				$module = $this->db->loadObject();
 				// tweak system to set stuff to the module domain
-				$_backup_target     = $this->target;
-				$_backup_lang       = $this->lang;
-				$_backup_langPrefix = Config::get('lang_prefix');
+				$_backup_target     = CFactory::_('Config')->build_target;
+				$_backup_lang       = CFactory::_('Config')->lang_target;
+				$_backup_langPrefix = CFactory::_('Config')->lang_prefix;
 				// set some keys
 				$module->target_type = 'M0dU|3';
 				$module->key         = $module->id . '_' . $module->target_type;
 				// update to point to module
-				$this->target = $module->key;
-				$this->lang   = $module->key;
+				CFactory::_('Config')->build_target = $module->key;
+				CFactory::_('Config')->lang_target = $module->key;
 				// set version if not set
 				if (empty($module->module_version))
 				{
@@ -9160,8 +7973,8 @@ class Get
 				$guiMapper = array('table' => 'joomla_module',
 				                   'id'    => (int) $id, 'type' => 'php');
 				// update the name if it has dynamic values
-				$module->name = $this->setPlaceholders(
-					$this->setDynamicValues($module->name), $this->placeholders
+				$module->name = CFactory::_('Placeholder')->update(
+					CFactory::_('Customcode')->add($module->name), CFactory::_('Placeholder')->active
 				);
 				// set safe class function name
 				$module->code_name
@@ -9176,9 +7989,9 @@ class Get
 				);
 				// set langPrefix
 				$this->langPrefix = 'MOD_' . strtoupper($module->code_name);
-				Config::set('lang_prefix', $this->langPrefix);
+				CFactory::_('Config')->set('lang_prefix', $this->langPrefix);
 				// set lang prefix
-				$module->lang_prefix = Config::get('lang_prefix');
+				$module->lang_prefix = CFactory::_('Config')->lang_prefix;
 				// set module class name
 				$module->class_helper_name = 'Mod' . ucfirst($module->code_name)
 					. 'Helper';
@@ -9193,29 +8006,29 @@ class Get
 				// set the zip name
 				$module->zip_name = $module->folder_name . '_v' . str_replace(
 						'.', '_', $module->module_version
-					) . '__J' . Config::get('version', 3);
+					) . '__J' . CFactory::_('Config')->joomla_version;
 				// set module file name
 				$module->file_name = $module->folder_name;
 				// set module context
 				$module->context = $module->file_name . '.' . $module->id;
 				// set official_name lang strings
-				$this->setLangContent(
-					$module->key, Config::get('lang_prefix'), $module->official_name
+				CFactory::_('Language')->set(
+					$module->key, CFactory::_('Config')->lang_prefix, $module->official_name
 				);
 				// set some placeholder for this module
-				$this->placeholders[$this->bbb . 'Module_name' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('Module_name')]
 					= $module->official_name;
-				$this->placeholders[$this->bbb . 'Module' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('Module')]
 					= ucfirst(
 					$module->code_name
 				);
-				$this->placeholders[$this->bbb . 'module' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('module')]
 					= strtolower(
 					$module->code_name
 				);
-				$this->placeholders[$this->bbb . 'module.version' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('module.version')]
 					= $module->module_version;
-				$this->placeholders[$this->bbb . 'module_version' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('module_version')]
 					= str_replace(
 					'.', '_', $module->module_version
 				);
@@ -9229,11 +8042,11 @@ class Get
 				}
 				else
 				{
-					$module->description = $this->setPlaceholders(
-						$this->setDynamicValues($module->description),
-						$this->placeholders
+					$module->description = CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add($module->description),
+						CFactory::_('Placeholder')->active
 					);
-					$this->setLangContent(
+					CFactory::_('Language')->set(
 						$module->key, $module->lang_prefix . '_DESCRIPTION',
 						$module->description
 					);
@@ -9251,16 +8064,16 @@ class Get
 					. JFactory::getDate($module->created)->format("jS F, Y")
 					. "</small></p>";
 				// set xml description
-				$this->setLangContent(
+				CFactory::_('Language')->set(
 					$module->key, $module->lang_prefix . '_XML_DESCRIPTION',
 					$module->xml_description
 				);
 				// update the readme if set
 				if ($module->addreadme == 1 && !empty($module->readme))
 				{
-					$module->readme = $this->setPlaceholders(
-						$this->setDynamicValues(base64_decode($module->readme)),
-						$this->placeholders
+					$module->readme = CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add(base64_decode($module->readme)),
+						CFactory::_('Placeholder')->active
 					);
 				}
 				else
@@ -9297,13 +8110,13 @@ class Get
 						$guiMapper['field'] = 'class_helper_header';
 						// base64 Decode code
 						$module->class_helper_header = PHP_EOL
-							. $this->setGuiCodePlaceholder(
-								$this->setPlaceholders(
-									$this->setDynamicValues(
+							. CFactory::_('Customcode.Gui')->set(
+								CFactory::_('Placeholder')->update(
+									CFactory::_('Customcode')->add(
 										base64_decode(
 											$module->class_helper_header
 										)
-									), $this->placeholders
+									), CFactory::_('Placeholder')->active
 								),
 								$guiMapper
 							) . PHP_EOL;
@@ -9316,11 +8129,11 @@ class Get
 					// set GUI mapper field
 					$guiMapper['field'] = 'class_helper_code';
 					// base64 Decode code
-					$module->class_helper_code = $this->setGuiCodePlaceholder(
-						$this->setPlaceholders(
-							$this->setDynamicValues(
+					$module->class_helper_code = CFactory::_('Customcode.Gui')->set(
+						CFactory::_('Placeholder')->update(
+							CFactory::_('Customcode')->add(
 								base64_decode($module->class_helper_code)
-							), $this->placeholders
+							), CFactory::_('Placeholder')->active
 						),
 						$guiMapper
 					);
@@ -9346,11 +8159,11 @@ class Get
 				{
 					// set GUI mapper field
 					$guiMapper['field'] = 'mod_code';
-					$module->mod_code   = $this->setGuiCodePlaceholder(
-						$this->setPlaceholders(
-							$this->setDynamicValues(
+					$module->mod_code   = CFactory::_('Customcode.Gui')->set(
+						CFactory::_('Placeholder')->update(
+							CFactory::_('Customcode')->add(
 								base64_decode($module->mod_code)
-							), $this->placeholders
+							), CFactory::_('Placeholder')->active
 						),
 						$guiMapper
 					);
@@ -9374,11 +8187,11 @@ class Get
 				{
 					// set GUI mapper field
 					$guiMapper['field']     = 'default_header';
-					$module->default_header = $this->setGuiCodePlaceholder(
-						$this->setPlaceholders(
-							$this->setDynamicValues(
+					$module->default_header = CFactory::_('Customcode.Gui')->set(
+						CFactory::_('Placeholder')->update(
+							CFactory::_('Customcode')->add(
 								base64_decode($module->default_header)
-							), $this->placeholders
+							), CFactory::_('Placeholder')->active
 						),
 						$guiMapper
 					);
@@ -9394,11 +8207,11 @@ class Get
 					// set GUI mapper field
 					$guiMapper['field'] = 'default';
 					$guiMapper['type']  = 'html';
-					$module->default    = $this->setGuiCodePlaceholder(
-						$this->setPlaceholders(
-							$this->setDynamicValues(
+					$module->default    = CFactory::_('Customcode.Gui')->set(
+						CFactory::_('Placeholder')->update(
+							CFactory::_('Customcode')->add(
 								base64_decode($module->default)
-							), $this->placeholders
+							), CFactory::_('Placeholder')->active
 						),
 						$guiMapper
 					);
@@ -9520,7 +8333,7 @@ class Get
 								))
 							{
 								$module->fieldsets_label[$unique]
-									= $this->setLang($form['label']);
+									= CFactory::_('Language')->key($form['label']);
 							}
 							// build the fields
 							$form['fields'] = array_map(
@@ -9676,13 +8489,13 @@ class Get
 					unset($module->{'add' . $addTarget});
 				}
 				// load the library
-				if (!isset($this->libManager[$this->target]))
+				if (!isset($this->libManager[CFactory::_('Config')->build_target]))
 				{
-					$this->libManager[$this->target] = array();
+					$this->libManager[CFactory::_('Config')->build_target] = array();
 				}
-				if (!isset($this->libManager[$this->target][$module->code_name]))
+				if (!isset($this->libManager[CFactory::_('Config')->build_target][$module->code_name]))
 				{
-					$this->libManager[$this->target][$module->code_name]
+					$this->libManager[CFactory::_('Config')->build_target][$module->code_name]
 						= array();
 				}
 				// make sure json become array
@@ -9695,22 +8508,22 @@ class Get
 				{
 					foreach ($module->libraries as $library)
 					{
-						if (!isset($this->libManager[$this->target][$module->code_name][$library]))
+						if (!isset($this->libManager[CFactory::_('Config')->build_target][$module->code_name][$library]))
 						{
 							if ($this->getMediaLibrary((int) $library))
 							{
-								$this->libManager[$this->target][$module->code_name][(int) $library]
+								$this->libManager[CFactory::_('Config')->build_target][$module->code_name][(int) $library]
 									= true;
 							}
 						}
 					}
 				}
 				elseif (is_numeric($module->libraries)
-					&& !isset($this->libManager[$this->target][$module->code_name][(int) $module->libraries]))
+					&& !isset($this->libManager[CFactory::_('Config')->build_target][$module->code_name][(int) $module->libraries]))
 				{
 					if ($this->getMediaLibrary((int) $module->libraries))
 					{
-						$this->libManager[$this->target][$module->code_name][(int) $module->libraries]
+						$this->libManager[CFactory::_('Config')->build_target][$module->code_name][(int) $module->libraries]
 							= true;
 					}
 				}
@@ -9741,14 +8554,14 @@ class Get
 							$guiMapper['field']         = $scriptMethod . '_'
 								. $scriptType;
 							$module->{$scriptMethod . '_' . $scriptType}
-							                            = $this->setGuiCodePlaceholder(
-								$this->setPlaceholders(
-									$this->setDynamicValues(
+							                            = CFactory::_('Customcode.Gui')->set(
+								CFactory::_('Placeholder')->update(
+									CFactory::_('Customcode')->add(
 										base64_decode(
 											$module->{$scriptMethod . '_'
 											. $scriptType}
 										)
-									), $this->placeholders
+									), CFactory::_('Placeholder')->active
 								),
 								$guiMapper
 							);
@@ -9767,9 +8580,9 @@ class Get
 				if ($module->add_sql == 1
 					&& StringHelper::check($module->sql))
 				{
-					$module->sql = $this->setPlaceholders(
-						$this->setDynamicValues(base64_decode($module->sql)),
-						$this->placeholders
+					$module->sql = CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add(base64_decode($module->sql)),
+						CFactory::_('Placeholder')->active
 					);
 				}
 				else
@@ -9783,10 +8596,10 @@ class Get
 						$module->sql_uninstall
 					))
 				{
-					$module->sql_uninstall = $this->setPlaceholders(
-						$this->setDynamicValues(
+					$module->sql_uninstall = CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add(
 							base64_decode($module->sql_uninstall)
-						), $this->placeholders
+						), CFactory::_('Placeholder')->active
 					);
 				}
 				else
@@ -9800,9 +8613,9 @@ class Get
 						$module->update_server_url
 					))
 				{
-					$module->update_server_url = $this->setPlaceholders(
-						$this->setDynamicValues($module->update_server_url),
-						$this->placeholders
+					$module->update_server_url = CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add($module->update_server_url),
+						CFactory::_('Placeholder')->active
 					);
 				}
 				// add the update/sales server FTP details if that is the expected protocol
@@ -9837,23 +8650,21 @@ class Get
 				// update_server_xml_file_name
 
 				// rest globals
-				$this->target     = $_backup_target;
-				$this->lang       = $_backup_lang;
+				CFactory::_('Config')->build_target = $_backup_target;
+				CFactory::_('Config')->lang_target = $_backup_lang;
 				$this->langPrefix = $_backup_langPrefix;
-				Config::set('lang_prefix', $_backup_langPrefix);
+				CFactory::_('Config')->set('lang_prefix', $_backup_langPrefix);
 
 				unset(
-					$this->placeholders[$this->bbb . 'Module_name' . $this->ddd]
+					CFactory::_('Placeholder')->active[Placefix::_('Module_name')]
 				);
-				unset($this->placeholders[$this->bbb . 'Module' . $this->ddd]);
-				unset($this->placeholders[$this->bbb . 'module' . $this->ddd]);
+				unset(CFactory::_('Placeholder')->active[Placefix::_('Module')]);
+				unset(CFactory::_('Placeholder')->active[Placefix::_('module')]);
 				unset(
-					$this->placeholders[$this->bbb . 'module.version'
-					. $this->ddd]
+					CFactory::_('Placeholder')->active[Placefix::_('module.version')]
 				);
 				unset(
-					$this->placeholders[$this->bbb . 'module_version'
-					. $this->ddd]
+					CFactory::_('Placeholder')->active[Placefix::_('module_version')]
 				);
 
 				$this->joomlaModules[$id] = $module;
@@ -9875,27 +8686,21 @@ class Get
 	{
 		$xml = '<?xml version="1.0" encoding="utf-8"?>';
 		$xml .= PHP_EOL . '<extension type="module" version="'
-			. $this->joomlaVersions[Config::get('version', 3)]['xml_version'] . '" client="'
+			. $this->joomlaVersions[CFactory::_('Config')->joomla_version]['xml_version'] . '" client="'
 			. $module->target_client . '" method="upgrade">';
-		$xml .= PHP_EOL . $this->_t(1) . '<name>' . $module->lang_prefix
+		$xml .= PHP_EOL . Indent::_(1) . '<name>' . $module->lang_prefix
 			. '</name>';
-		$xml .= PHP_EOL . $this->_t(1) . '<creationDate>' . $this->hhh
-			. 'BUILDDATE' . $this->hhh . '</creationDate>';
-		$xml .= PHP_EOL . $this->_t(1) . '<author>' . $this->hhh . 'AUTHOR'
-			. $this->hhh . '</author>';
-		$xml .= PHP_EOL . $this->_t(1) . '<authorEmail>' . $this->hhh
-			. 'AUTHOREMAIL' . $this->hhh . '</authorEmail>';
-		$xml .= PHP_EOL . $this->_t(1) . '<authorUrl>' . $this->hhh
-			. 'AUTHORWEBSITE' . $this->hhh . '</authorUrl>';
-		$xml .= PHP_EOL . $this->_t(1) . '<copyright>' . $this->hhh
-			. 'COPYRIGHT' . $this->hhh . '</copyright>';
-		$xml .= PHP_EOL . $this->_t(1) . '<license>' . $this->hhh . 'LICENSE'
-			. $this->hhh . '</license>';
-		$xml .= PHP_EOL . $this->_t(1) . '<version>' . $module->module_version
+		$xml .= PHP_EOL . Indent::_(1) . '<creationDate>' . Placefix::_h('BUILDDATE') . '</creationDate>';
+		$xml .= PHP_EOL . Indent::_(1) . '<author>' . Placefix::_h('AUTHOR') . '</author>';
+		$xml .= PHP_EOL . Indent::_(1) . '<authorEmail>' . Placefix::_h('AUTHOREMAIL') . '</authorEmail>';
+		$xml .= PHP_EOL . Indent::_(1) . '<authorUrl>' . Placefix::_h('AUTHORWEBSITE') . '</authorUrl>';
+		$xml .= PHP_EOL . Indent::_(1) . '<copyright>' . Placefix::_h('COPYRIGHT') . '</copyright>';
+		$xml .= PHP_EOL . Indent::_(1) . '<license>' . Placefix::_h('LICENSE') . '</license>';
+		$xml .= PHP_EOL . Indent::_(1) . '<version>' . $module->module_version
 			. '</version>';
-		$xml .= PHP_EOL . $this->_t(1) . '<description>' . $module->lang_prefix
+		$xml .= PHP_EOL . Indent::_(1) . '<description>' . $module->lang_prefix
 			. '_XML_DESCRIPTION</description>';
-		$xml .= $this->hhh . 'MAINXML' . $this->hhh;
+		$xml .= Placefix::_h('MAINXML');
 		$xml .= PHP_EOL . '</extension>';
 
 		return $xml;
@@ -9910,8 +8715,8 @@ class Get
 	public function getModAdminVvvvvvvdm($fieldScriptBucket)
 	{
 		$form_field_class   = array();
-		$form_field_class[] = $this->hhh . 'BOM' . $this->hhh . PHP_EOL;
-		$form_field_class[] = "//" . $this->setLine(__LINE__)
+		$form_field_class[] = Placefix::_h('BOM') . PHP_EOL;
+		$form_field_class[] = "//" . Line::_(__Line__, __Class__)
 			. " No direct access to this file";
 		$form_field_class[] = "defined('_JEXEC') or die('Restricted access');";
 		$form_field_class[] = PHP_EOL . "use Joomla\CMS\Form\FormField;";
@@ -9919,23 +8724,23 @@ class Get
 		$form_field_class[] = PHP_EOL
 			. "class JFormFieldModadminvvvvvvvdm extends FormField";
 		$form_field_class[] = "{";
-		$form_field_class[] = $this->_t(1)
+		$form_field_class[] = Indent::_(1)
 			. "protected \$type = 'modadminvvvvvvvdm';";
-		$form_field_class[] = PHP_EOL . $this->_t(1)
+		$form_field_class[] = PHP_EOL . Indent::_(1)
 			. "protected function getLabel()";
-		$form_field_class[] = $this->_t(1) . "{";
-		$form_field_class[] = $this->_t(2) . "return;";
-		$form_field_class[] = $this->_t(1) . "}";
-		$form_field_class[] = PHP_EOL . $this->_t(1)
+		$form_field_class[] = Indent::_(1) . "{";
+		$form_field_class[] = Indent::_(2) . "return;";
+		$form_field_class[] = Indent::_(1) . "}";
+		$form_field_class[] = PHP_EOL . Indent::_(1)
 			. "protected function getInput()";
-		$form_field_class[] = $this->_t(1) . "{";
-		$form_field_class[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+		$form_field_class[] = Indent::_(1) . "{";
+		$form_field_class[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Get the document";
-		$form_field_class[] = $this->_t(2)
+		$form_field_class[] = Indent::_(2)
 			. "\$document = Factory::getDocument();";
 		$form_field_class[] = implode(PHP_EOL, $fieldScriptBucket);
-		$form_field_class[] = $this->_t(2) . "return; // noting for now :)";
-		$form_field_class[] = $this->_t(1) . "}";
+		$form_field_class[] = Indent::_(2) . "return; // noting for now :)";
+		$form_field_class[] = Indent::_(1) . "}";
 		$form_field_class[] = "}";
 
 		return implode(PHP_EOL, $form_field_class);
@@ -9950,7 +8755,7 @@ class Get
 	protected function getPluginIDs()
 	{
 		if (($addjoomla_plugins = GetHelper::var(
-				'component_plugins', Config::get('component_id'), 'joomla_component',
+				'component_plugins', CFactory::_('Config')->component_id, 'joomla_component',
 				'addjoomla_plugins'
 			)) !== false)
 		{
@@ -10027,8 +8832,8 @@ class Get
 				// get the plugin data
 				$plugin = $this->db->loadObject();
 				// update the name if it has dynamic values
-				$plugin->name = $this->setPlaceholders(
-					$this->setDynamicValues($plugin->name),
+				$plugin->name = CFactory::_('Placeholder')->update(
+					CFactory::_('Customcode')->add($plugin->name),
 					$this->globalPlaceholders
 				);
 				// update the name if it has dynamic values
@@ -10041,7 +8846,7 @@ class Get
 				// set plugin file name
 				$plugin->file_name = strtolower($plugin->code_name);
 				// set the lang key
-				$this->langKeys['PLG_' . strtoupper(
+				CFactory::_('Language.Extractor')->langKeys['PLG_' . strtoupper(
 					$plugin->group . '_' . $plugin->file_name
 				)]
 					= $plugin->id . '_P|uG!n';
@@ -10138,15 +8943,15 @@ class Get
 				// get the plugin data
 				$plugin = $this->db->loadObject();
 				// tweak system to set stuff to the plugin domain
-				$_backup_target     = $this->target;
-				$_backup_lang       = $this->lang;
-				$_backup_langPrefix = Config::get('lang_prefix');
+				$_backup_target     = CFactory::_('Config')->build_target;
+				$_backup_lang       = CFactory::_('Config')->lang_target;
+				$_backup_langPrefix = CFactory::_('Config')->lang_prefix;
 				// set some keys
 				$plugin->target_type = 'P|uG!n';
 				$plugin->key         = $plugin->id . '_' . $plugin->target_type;
 				// update to point to plugin
-				$this->target = $plugin->key;
-				$this->lang   = $plugin->key;
+				CFactory::_('Config')->build_target = $plugin->key;
+				CFactory::_('Config')->lang_target = $plugin->key;
 				// set version if not set
 				if (empty($plugin->plugin_version))
 				{
@@ -10156,8 +8961,8 @@ class Get
 				$guiMapper = array('table' => 'joomla_plugin',
 				                   'id'    => (int) $id, 'type' => 'php');
 				// update the name if it has dynamic values
-				$plugin->name = $this->setPlaceholders(
-					$this->setDynamicValues($plugin->name), $this->placeholders
+				$plugin->name = CFactory::_('Placeholder')->update(
+					CFactory::_('Customcode')->add($plugin->name), CFactory::_('Placeholder')->active
 				);
 				// update the name if it has dynamic values
 				$plugin->code_name
@@ -10174,9 +8979,9 @@ class Get
 						$plugin->code_name,
 						$plugin->group
 				);
-				Config::set('lang_prefix', $this->langPrefix);
+				CFactory::_('Config')->set('lang_prefix', $this->langPrefix);
 				// set lang prefix
-				$plugin->lang_prefix = Config::get('lang_prefix');
+				$plugin->lang_prefix = CFactory::_('Config')->lang_prefix;
 				// set plugin class name
 				$plugin->class_name
 					= PluginHelper::safeClassName(
@@ -10198,46 +9003,46 @@ class Get
 				// set the zip name
 				$plugin->zip_name = $plugin->folder_name . '_v' . str_replace(
 						'.', '_', $plugin->plugin_version
-					) . '__J' . Config::get('version', 3);
+					) . '__J' . CFactory::_('Config')->joomla_version;
 				// set plugin file name
 				$plugin->file_name = strtolower($plugin->code_name);
 				// set plugin context
 				$plugin->context = $plugin->folder_name . '.' . $plugin->id;
 				// set official_name lang strings
-				$this->setLangContent(
-					$plugin->key, Config::get('lang_prefix'), $plugin->official_name
+				CFactory::_('Language')->set(
+					$plugin->key, CFactory::_('Config')->lang_prefix, $plugin->official_name
 				);
 				// set some placeholder for this plugin
-				$this->placeholders[$this->bbb . 'Plugin_name' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('Plugin_name')]
 					= $plugin->official_name;
-				$this->placeholders[$this->hhh . 'PLUGIN_NAME' . $this->hhh]
+				CFactory::_('Placeholder')->active[Placefix::_h('PLUGIN_NAME')]
 					= $plugin->official_name;
-				$this->placeholders[$this->bbb . 'Plugin' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('Plugin')]
 					= ucfirst(
 					$plugin->code_name
 				);
-				$this->placeholders[$this->bbb . 'plugin' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('plugin')]
 					= strtolower(
 					$plugin->code_name
 				);
-				$this->placeholders[$this->bbb . 'Plugin_group' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('Plugin_group')]
 					= ucfirst(
 					$plugin->group
 				);
-				$this->placeholders[$this->bbb . 'plugin_group' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('plugin_group')]
 					= strtolower(
 					$plugin->group
 				);
-				$this->placeholders[$this->bbb . 'plugin.version' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('plugin.version')]
 					= $plugin->plugin_version;
-				$this->placeholders[$this->hhh . 'VERSION' . $this->hhh]
+				CFactory::_('Placeholder')->active[Placefix::_h('VERSION')]
 					= $plugin->plugin_version;
-				$this->placeholders[$this->bbb . 'plugin_version' . $this->ddd]
+				CFactory::_('Placeholder')->active[Placefix::_('plugin_version')]
 					= str_replace(
 					'.', '_', $plugin->plugin_version
 				);
 				// set description
-				$this->placeholders[$this->hhh . 'DESCRIPTION' . $this->hhh]
+				CFactory::_('Placeholder')->active[Placefix::_h('DESCRIPTION')]
 					= '';
 				if (!isset($plugin->description)
 					|| !StringHelper::check(
@@ -10248,16 +9053,16 @@ class Get
 				}
 				else
 				{
-					$plugin->description = $this->setPlaceholders(
-						$this->setDynamicValues($plugin->description),
-						$this->placeholders
+					$plugin->description = CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add($plugin->description),
+						CFactory::_('Placeholder')->active
 					);
-					$this->setLangContent(
+					CFactory::_('Language')->set(
 						$plugin->key, $plugin->lang_prefix . '_DESCRIPTION',
 						$plugin->description
 					);
 					// set description
-					$this->placeholders[$this->hhh . 'DESCRIPTION' . $this->hhh]
+					CFactory::_('Placeholder')->active[Placefix::_h('DESCRIPTION')]
 						                 = $plugin->description;
 					$plugin->description = '<p>' . $plugin->description
 						. '</p>';
@@ -10273,16 +9078,16 @@ class Get
 					. JFactory::getDate($plugin->created)->format("jS F, Y")
 					. "</small></p>";
 				// set xml discription
-				$this->setLangContent(
+				CFactory::_('Language')->set(
 					$plugin->key, $plugin->lang_prefix . '_XML_DESCRIPTION',
 					$plugin->xml_description
 				);
 				// update the readme if set
 				if ($plugin->addreadme == 1 && !empty($plugin->readme))
 				{
-					$plugin->readme = $this->setPlaceholders(
-						$this->setDynamicValues(base64_decode($plugin->readme)),
-						$this->placeholders
+					$plugin->readme = CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add(base64_decode($plugin->readme)),
+						CFactory::_('Placeholder')->active
 					);
 				}
 				else
@@ -10296,11 +9101,11 @@ class Get
 					// set GUI mapper field
 					$guiMapper['field'] = 'main_class_code';
 					// base64 Decode main_class_code.
-					$plugin->main_class_code = $this->setGuiCodePlaceholder(
-						$this->setPlaceholders(
-							$this->setDynamicValues(
+					$plugin->main_class_code = CFactory::_('Customcode.Gui')->set(
+						CFactory::_('Placeholder')->update(
+							CFactory::_('Customcode')->add(
 								base64_decode($plugin->main_class_code)
-							), $this->placeholders
+							), CFactory::_('Placeholder')->active
 						),
 						$guiMapper
 					);
@@ -10311,11 +9116,11 @@ class Get
 					// set GUI mapper field
 					$guiMapper['field'] = 'head';
 					// base64 Decode head.
-					$plugin->head = $this->setGuiCodePlaceholder(
-						$this->setPlaceholders(
-							$this->setDynamicValues(
+					$plugin->head = CFactory::_('Customcode.Gui')->set(
+						CFactory::_('Placeholder')->update(
+							CFactory::_('Customcode')->add(
 								base64_decode($plugin->head)
-							), $this->placeholders
+							), CFactory::_('Placeholder')->active
 						),
 						$guiMapper
 					);
@@ -10323,11 +9128,11 @@ class Get
 				elseif (!empty($plugin->class_head))
 				{
 					// base64 Decode head.
-					$plugin->head = $this->setGuiCodePlaceholder(
-						$this->setPlaceholders(
-							$this->setDynamicValues(
+					$plugin->head = CFactory::_('Customcode.Gui')->set(
+						CFactory::_('Placeholder')->update(
+							CFactory::_('Customcode')->add(
 								base64_decode($plugin->class_head)
-							), $this->placeholders
+							), CFactory::_('Placeholder')->active
 						),
 						array(
 							'table' => 'class_extends',
@@ -10341,11 +9146,11 @@ class Get
 				if (!empty($plugin->comment))
 				{
 					// base64 Decode comment.
-					$plugin->comment = $this->setGuiCodePlaceholder(
-						$this->setPlaceholders(
-							$this->setDynamicValues(
+					$plugin->comment = CFactory::_('Customcode.Gui')->set(
+						CFactory::_('Placeholder')->update(
+							CFactory::_('Customcode')->add(
 								base64_decode($plugin->comment)
-							), $this->placeholders
+							), CFactory::_('Placeholder')->active
 						),
 						array(
 							'table' => 'class_extends',
@@ -10443,7 +9248,7 @@ class Get
 								))
 							{
 								$plugin->fieldsets_label[$unique]
-									= $this->setLang($form['label']);
+									= CFactory::_('Language')->key($form['label']);
 							}
 							// check for extra rule paths
 							if (isset($form['addrulepath'])
@@ -10647,14 +9452,14 @@ class Get
 							$guiMapper['field']         = $scriptMethod . '_'
 								. $scriptType;
 							$plugin->{$scriptMethod . '_' . $scriptType}
-							                            = $this->setGuiCodePlaceholder(
-								$this->setPlaceholders(
-									$this->setDynamicValues(
+							                            = CFactory::_('Customcode.Gui')->set(
+								CFactory::_('Placeholder')->update(
+									CFactory::_('Customcode')->add(
 										base64_decode(
 											$plugin->{$scriptMethod . '_'
 											. $scriptType}
 										)
-									), $this->placeholders
+									), CFactory::_('Placeholder')->active
 								),
 								$guiMapper
 							);
@@ -10673,9 +9478,9 @@ class Get
 				if ($plugin->add_sql == 1
 					&& StringHelper::check($plugin->sql))
 				{
-					$plugin->sql = $this->setPlaceholders(
-						$this->setDynamicValues(base64_decode($plugin->sql)),
-						$this->placeholders
+					$plugin->sql = CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add(base64_decode($plugin->sql)),
+						CFactory::_('Placeholder')->active
 					);
 				}
 				else
@@ -10689,10 +9494,10 @@ class Get
 						$plugin->sql_uninstall
 					))
 				{
-					$plugin->sql_uninstall = $this->setPlaceholders(
-						$this->setDynamicValues(
+					$plugin->sql_uninstall = CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add(
 							base64_decode($plugin->sql_uninstall)
-						), $this->placeholders
+						), CFactory::_('Placeholder')->active
 					);
 				}
 				else
@@ -10706,9 +9511,9 @@ class Get
 						$plugin->update_server_url
 					))
 				{
-					$plugin->update_server_url = $this->setPlaceholders(
-						$this->setDynamicValues($plugin->update_server_url),
-						$this->placeholders
+					$plugin->update_server_url = CFactory::_('Placeholder')->update(
+						CFactory::_('Customcode')->add($plugin->update_server_url),
+						CFactory::_('Placeholder')->active
 					);
 				}
 				// add the update/sales server FTP details if that is the expected protocol
@@ -10743,43 +9548,36 @@ class Get
 				// update_server_xml_file_name
 
 				// rest globals
-				$this->target     = $_backup_target;
-				$this->lang       = $_backup_lang;
+				CFactory::_('Config')->build_target = $_backup_target;
+				CFactory::_('Config')->lang_target = $_backup_lang;
 				$this->langPrefix = $_backup_langPrefix;
-				Config::set('lang_prefix', $_backup_langPrefix);
+				CFactory::_('Config')->set('lang_prefix', $_backup_langPrefix);
 
 				unset(
-					$this->placeholders[$this->bbb . 'Plugin_name' . $this->ddd]
+					CFactory::_('Placeholder')->active[Placefix::_('Plugin_name')]
 				);
-				unset($this->placeholders[$this->bbb . 'Plugin' . $this->ddd]);
-				unset($this->placeholders[$this->bbb . 'plugin' . $this->ddd]);
+				unset(CFactory::_('Placeholder')->active[Placefix::_('Plugin')]);
+				unset(CFactory::_('Placeholder')->active[Placefix::_('plugin')]);
 				unset(
-					$this->placeholders[$this->bbb . 'Plugin_group'
-					. $this->ddd]
-				);
-				unset(
-					$this->placeholders[$this->bbb . 'plugin_group'
-					. $this->ddd]
+					CFactory::_('Placeholder')->active[Placefix::_('Plugin_group')]
 				);
 				unset(
-					$this->placeholders[$this->bbb . 'plugin.version'
-					. $this->ddd]
+					CFactory::_('Placeholder')->active[Placefix::_('plugin_group')]
 				);
 				unset(
-					$this->placeholders[$this->bbb . 'plugin_version'
-					. $this->ddd]
+					CFactory::_('Placeholder')->active[Placefix::_('plugin.version')]
 				);
 				unset(
-					$this->placeholders[$this->hhh . 'VERSION'
-					. $this->hhh]
+					CFactory::_('Placeholder')->active[Placefix::_('plugin_version')]
 				);
 				unset(
-					$this->placeholders[$this->hhh . 'DESCRIPTION'
-					. $this->hhh]
+					CFactory::_('Placeholder')->active[Placefix::_h('VERSION')]
 				);
 				unset(
-					$this->placeholders[$this->hhh . 'PLUGIN_NAME'
-					. $this->hhh]
+					CFactory::_('Placeholder')->active[Placefix::_h('DESCRIPTION')]
+				);
+				unset(
+					CFactory::_('Placeholder')->active[Placefix::_h('PLUGIN_NAME')]
 				);
 
 				$this->joomlaPlugins[$id] = $plugin;
@@ -10801,57 +9599,24 @@ class Get
 	{
 		$xml = '<?xml version="1.0" encoding="utf-8"?>';
 		$xml .= PHP_EOL . '<extension type="plugin" version="'
-			. $this->joomlaVersions[Config::get('version', 3)]['xml_version'] . '" group="'
+			. $this->joomlaVersions[CFactory::_('Config')->joomla_version]['xml_version'] . '" group="'
 			. strtolower($plugin->group) . '" method="upgrade">';
-		$xml .= PHP_EOL . $this->_t(1) . '<name>' . $plugin->lang_prefix
+		$xml .= PHP_EOL . Indent::_(1) . '<name>' . $plugin->lang_prefix
 			. '</name>';
-		$xml .= PHP_EOL . $this->_t(1) . '<creationDate>' . $this->hhh
-			. 'BUILDDATE' . $this->hhh . '</creationDate>';
-		$xml .= PHP_EOL . $this->_t(1) . '<author>' . $this->hhh . 'AUTHOR'
-			. $this->hhh . '</author>';
-		$xml .= PHP_EOL . $this->_t(1) . '<authorEmail>' . $this->hhh
-			. 'AUTHOREMAIL' . $this->hhh . '</authorEmail>';
-		$xml .= PHP_EOL . $this->_t(1) . '<authorUrl>' . $this->hhh
-			. 'AUTHORWEBSITE' . $this->hhh . '</authorUrl>';
-		$xml .= PHP_EOL . $this->_t(1) . '<copyright>' . $this->hhh
-			. 'COPYRIGHT' . $this->hhh . '</copyright>';
-		$xml .= PHP_EOL . $this->_t(1) . '<license>' . $this->hhh . 'LICENSE'
-			. $this->hhh . '</license>';
-		$xml .= PHP_EOL . $this->_t(1) . '<version>' . $plugin->plugin_version
+		$xml .= PHP_EOL . Indent::_(1) . '<creationDate>' . Placefix::_h('BUILDDATE') . '</creationDate>';
+		$xml .= PHP_EOL . Indent::_(1) . '<author>' . Placefix::_h('AUTHOR') . '</author>';
+		$xml .= PHP_EOL . Indent::_(1) . '<authorEmail>' . Placefix::_h('AUTHOREMAIL') . '</authorEmail>';
+		$xml .= PHP_EOL . Indent::_(1) . '<authorUrl>' . Placefix::_h('AUTHORWEBSITE') . '</authorUrl>';
+		$xml .= PHP_EOL . Indent::_(1) . '<copyright>' . Placefix::_h('COPYRIGHT') . '</copyright>';
+		$xml .= PHP_EOL . Indent::_(1) . '<license>' . Placefix::_h('LICENSE') . '</license>';
+		$xml .= PHP_EOL . Indent::_(1) . '<version>' . $plugin->plugin_version
 			. '</version>';
-		$xml .= PHP_EOL . $this->_t(1) . '<description>' . $plugin->lang_prefix
+		$xml .= PHP_EOL . Indent::_(1) . '<description>' . $plugin->lang_prefix
 			. '_XML_DESCRIPTION</description>';
-		$xml .= $this->hhh . 'MAINXML' . $this->hhh;
+		$xml .= Placefix::_h('MAINXML');
 		$xml .= PHP_EOL . '</extension>';
 
 		return $xml;
-	}
-
-	/**
-	 * check if we already have these ids in local memory
-	 *
-	 * @return  void
-	 *
-	 */
-	protected function checkCustomCodeMemory($ids)
-	{
-		// reset custom code
-		$this->customCode = array();
-		foreach ($ids as $pointer => $id)
-		{
-			if (isset($this->customCodeMemory[$id]))
-			{
-				$this->customCode[] = $this->customCodeMemory[$id];
-				unset($ids[$pointer]);
-			}
-		}
-		// check if any ids left to fetch
-		if (ArrayHelper::check($ids))
-		{
-			return $ids;
-		}
-
-		return false;
 	}
 
 	/**
@@ -10954,17 +9719,14 @@ class Get
 			$this->globalPlaceholders
 		);
 		$placeholders[StringHelper::safe(
-			Config::get('component_code_name'), 'F'
+			CFactory::_('Config')->component_code_name, 'F'
 		) . 'Helper::']
-		                                                 = $this->bbb
-			. 'Component' . $this->ddd . 'Helper::';
+		                                                 = Placefix::_('Component') . 'Helper::';
 		$placeholders['COM_' . StringHelper::safe(
-			Config::get('component_code_name'), 'U'
+			CFactory::_('Config')->component_code_name, 'U'
 		)]
-		                                                 = 'COM_' . $this->bbb
-			. 'COMPONENT' . $this->ddd;
-		$placeholders['com_' . Config::get('component_code_name')] = 'com_' . $this->bbb
-			. 'component' . $this->ddd;
+		                                                 = 'COM_' . Placefix::_('COMPONENT');
+		$placeholders['com_' . CFactory::_('Config')->component_code_name] = 'com_' . Placefix::_('component');
 		// putt the last first
 		$placeholders = array_reverse($placeholders, true);
 
@@ -11034,7 +9796,7 @@ class Get
 	)
 	{
 		// we add a new search for the GUI CODE Blocks
-		$this->guiCodeSearch($file, $placeholders, $today, $target);
+		CFactory::_('Customcode.Gui')->search($file, $placeholders, $today, $target);
 		// reset each time per file
 		$loadEndFingerPrint = false;
 		$endFingerPrint     = array();
@@ -11120,7 +9882,7 @@ class Get
 								(int) $lineNumber
 							);   // 'toline'
 							// first reverse engineer this code block
-							$c0de = $this->reversePlaceholders(
+							$c0de = CFactory::_('Placeholder.Reverse')->engine(
 								implode('', $codeBucket[$pointer[$targetKey]]),
 								$placeholders, $target
 							);
@@ -11143,7 +9905,7 @@ class Get
 								= $this->db->quoteName('to_line') . ' = '
 								. $this->db->quote($lineNumber);
 							// first reverse engineer this code block
-							$c0de = $this->reversePlaceholders(
+							$c0de = CFactory::_('Placeholder.Reverse')->engine(
 								implode('', $codeBucket[$pointer[$targetKey]]),
 								$placeholders, $target,
 								$this->existingCustomCode[$pointer[$targetKey]]['id']
@@ -11309,7 +10071,7 @@ class Get
 							);  // 'comment_type'
 							$this->newCustomCode[$pointer[$targetKey]][]
 								= $this->db->quote(
-								(int) Config::get('component_id')
+								(int) CFactory::_('Config')->component_id
 							); // 'component'
 							$this->newCustomCode[$pointer[$targetKey]][]
 								= $this->db->quote(
@@ -11366,7 +10128,7 @@ class Get
 								. $this->db->quote($commentType);
 							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
 								= $this->db->quoteName('component') . ' = '
-								. $this->db->quote(Config::get('component_id'));
+								. $this->db->quote(CFactory::_('Config')->component_id);
 							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
 								= $this->db->quoteName('from_line') . ' = '
 								. $this->db->quote($lineNumber);
@@ -11456,7 +10218,7 @@ class Get
 			}
 
 			// update the script
-			return $this->setPlaceholders($script, $locker);
+			return CFactory::_('Placeholder')->update($script, $locker);
 		}
 		// check if we should hash a file
 		if (strpos($script, 'HASHFILE((((') !== false)
@@ -11485,7 +10247,7 @@ class Get
 			}
 
 			// update the script
-			return $this->setPlaceholders($script, $locker);
+			return CFactory::_('Placeholder')->update($script, $locker);
 		}
 
 		return $script;
@@ -11513,15 +10275,15 @@ class Get
 			{
 				$locker['LOCKBASE64((((' . $value . '))))']
 					= "base64_decode( preg_replace('/\s+/', ''," .
-					PHP_EOL . $this->_t(2) . "'" .
+					PHP_EOL . Indent::_(2) . "'" .
 					wordwrap(
-						base64_encode($value), 64, PHP_EOL . $this->_t(2), true
+						base64_encode($value), 64, PHP_EOL . Indent::_(2), true
 					) .
 					"'))";
 			}
 
 			// update the script
-			return $this->setPlaceholders($script, $locker);
+			return CFactory::_('Placeholder')->update($script, $locker);
 		}
 
 		return $script;
@@ -11534,93 +10296,11 @@ class Get
 	 * @param   array   $config  The placeholder config values
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Customcode.Gui')->set($string, $config);
 	 */
 	public function setGuiCodePlaceholder($string, $config)
 	{
-		if (StringHelper::check($string))
-		{
-			if (Config::get('add_placeholders', false)
-				&& $this->canAddGuiCodePlaceholder(
-					$string
-				)
-				&& ArrayHelper::check($config)
-				&& isset($config['table'])
-				&& StringHelper::check($config['table'])
-				&& isset($config['field'])
-				&& StringHelper::check($config['field'])
-				&& isset($config['type'])
-				&& StringHelper::check($config['type'])
-				&& isset($config['id'])
-				&& is_numeric($config['id']))
-			{
-				// if we have a key we must get the ID
-				if (isset($config['key'])
-					&& StringHelper::check($config['key'])
-					&& $config['key'] !== 'id')
-				{
-					if (($id = GetHelper::var(
-							$config['table'], $config['id'], $config['key'],
-							'id'
-						)) !== false
-						&& is_numeric($id))
-					{
-						$config['id'] = $id;
-					}
-					else
-					{
-						// we must give a error message to inform the user of this issue. (should never happen)
-						$this->app->enqueueMessage(
-							JText::sprintf(
-								'ID mismatch was detected with the %s.%s.%s.%s GUI code field. So the placeholder was not set.',
-								$config['table'], $config['field'],
-								$config['key'], $config['id']
-							), 'Error'
-						);
-						// check some config
-						if (!isset($config['prefix']))
-						{
-							$config['prefix'] = '';
-						}
-
-						return $config['prefix'] . $string;
-					}
-				}
-				// check some config
-				if (!isset($config['prefix']))
-				{
-					$config['prefix'] = PHP_EOL;
-				}
-				// add placheolder based on type of code
-				switch (strtolower($config['type']))
-				{
-					// adding with html commenting
-					case 'html':
-						$front = $config['prefix'] . '<!--' . '[JCBGUI.';
-						$sufix = '$$$$]-->' . PHP_EOL;
-						$back  = '<!--[/JCBGUI' . $sufix;
-						break;
-					// adding with php commenting
-					default:
-						$front = $config['prefix'] . '/***' . '[JCBGUI.';
-						$sufix = '$$$$]***/' . PHP_EOL;
-						$back  = '/***[/JCBGUI' . $sufix;
-						break;
-				}
-
-				return $front . $config['table'] . '.' . $config['field'] . '.'
-					. $config['id'] . '.' . $sufix . $string . $back;
-			}
-			// check some config
-			if (!isset($config['prefix']))
-			{
-				$config['prefix'] = '';
-			}
-
-			return $config['prefix'] . $string;
-		}
-
-		return $string;
+		return CFactory::_('Customcode.Gui')->set($string, $config);
 	}
 
 	/**
@@ -11630,7 +10310,7 @@ class Get
 	 * @param   string  $code  The code to check
 	 *
 	 * @return  boolean  true if GUI code placeholders can be added
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function canAddGuiCodePlaceholder(&$code)
 	{
@@ -11654,59 +10334,11 @@ class Get
 	 * @param   string  $target        The target path type
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Customcode.Gui')->search($file, $placeholders, $today, $target);
 	 */
 	protected function guiCodeSearch(&$file, &$placeholders, &$today, &$target)
 	{
-		// get file content
-		$file_conent = FileHelper::getContent($file);
-
-		$guiCode = array();
-		// we add a new search for the GUI CODE Blocks
-		$guiCode[] = GetHelper::allBetween(
-			$file_conent, '/***[JCB' . 'GUI<>', '/***[/JCBGUI' . '$$$$]***/'
-		);
-		$guiCode[] = GetHelper::allBetween(
-			$file_conent, '<!--[JCB' . 'GUI<>', '<!--[/JCBGUI' . '$$$$]-->'
-		);
-
-		if (($guiCode = ArrayHelper::merge($guiCode)) !== false
-			&& ArrayHelper::check($guiCode, true))
-		{
-			foreach ($guiCode as $code)
-			{
-				$first_line = strtok($code, PHP_EOL);
-				// get the GUI target details
-				$query = explode('.', trim($first_line, '.'));
-				// only continue if we have 3 values in the query
-				if (is_array($query) && count($query) >= 3)
-				{
-					// cleanup the newlines around the code
-					$code = trim(str_replace($first_line, '', $code), PHP_EOL)
-						. PHP_EOL;
-					// set the ID
-					$id = (int) $query[2];
-					// make the field name save
-					$field = FieldHelper::safe($query[1]);
-					// make the table name save
-					$table = StringHelper::safe($query[0]);
-					// reverse placeholder as much as we can
-					$code = $this->reversePlaceholders(
-						$code, $placeholders, $target, $id, $field, $table
-					);
-					// update the GUI/Tables/Database
-					$object           = new stdClass();
-					$object->id       = $id;
-					$object->{$field} = base64_encode(
-						$code
-					); // (TODO) this may not always work...
-					// update the value in GUI
-					$this->db->updateObject(
-						'#__componentbuilder_' . (string) $table, $object, 'id'
-					);
-				}
-			}
-		}
+		CFactory::_('Customcode.Gui')->search($file, $placeholders, $today, $target);
 	}
 
 	/**
@@ -11820,24 +10452,14 @@ class Get
 	 * @param   string  $table         The table name
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Placeholder.Reverse')->engine($string, $placeholders, $target, $id, $field, $table);
 	 */
 	protected function reversePlaceholders($string, &$placeholders, &$target,
 	                                       $id = null, $field = 'code', $table = 'custom_code'
 	)
 	{
-		// get local code if set
-		if ($id > 0
-			&& $code = base64_decode(
-				GetHelper::var($table, $id, 'id', $field)
-			))
-		{
-			$string = $this->setReverseLangPlaceholders(
-				$string, $code, $target
-			);
-		}
-
-		return $this->setPlaceholders($string, $placeholders, 2);
+		// use the new container class
+		CFactory::_('Placeholder.Reverse')->engine($string, $placeholders, $target, $id, $field, $table);
 	}
 
 	/**
@@ -11848,7 +10470,7 @@ class Get
 	 * @param   string  $target        The target path type
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3 See $this->reversePlaceholders();
 	 */
 	protected function setReverseLangPlaceholders($updateString, $string,
 	                                              &$target
@@ -11871,49 +10493,49 @@ class Get
 			// start lang holder
 			$langHolders = array();
 			// set the lang for both since we don't know what area is being targeted
-			$_tmp = $this->lang;
+			$_tmp = CFactory::_('Config')->lang_target;
 			// set the lang based on target
 			if (strpos($target, 'module') !== false)
 			{
 				// backup lang prefix
-				$_tmp_lang_prefix = Config::get('lang_prefix');
+				$_tmp_lang_prefix = CFactory::_('Config')->lang_prefix;
 				// set the new lang prefix
 				$this->langPrefix = strtoupper(
 					str_replace('module', 'mod', $target)
 				);
-				Config::set('lang_prefix', $this->langPrefix);
+				CFactory::_('Config')->set('lang_prefix', $this->langPrefix);
 				// now set the lang
-				if (isset($this->langKeys[Config::get('lang_prefix')]))
+				if (isset(CFactory::_('Language.Extractor')->langKeys[CFactory::_('Config')->lang_prefix]))
 				{
-					$this->lang = $this->langKeys[Config::get('lang_prefix')];
+					CFactory::_('Config')->lang_target = CFactory::_('Language.Extractor')->langKeys[CFactory::_('Config')->lang_prefix];
 				}
 				else
 				{
-					$this->lang = 'module';
+					CFactory::_('Config')->lang_target = 'module';
 				}
 			}
 			elseif (strpos($target, 'plugin') !== false)
 			{
 				// backup lang prefix
-				$_tmp_lang_prefix = Config::get('lang_prefix');
+				$_tmp_lang_prefix = CFactory::_('Config')->lang_prefix;
 				// set the new lang prefix
 				$this->langPrefix = strtoupper(
 					str_replace('plugin', 'plg', $target)
 				);
-				Config::set('lang_prefix', $this->langPrefix);
+				CFactory::_('Config')->set('lang_prefix', $this->langPrefix);
 				// now set the lang
-				if (isset($this->langKeys[Config::get('lang_prefix')]))
+				if (isset(CFactory::_('Language.Extractor')->langKeys[CFactory::_('Config')->lang_prefix]))
 				{
-					$this->lang = $this->langKeys[Config::get('lang_prefix')];
+					CFactory::_('Config')->lang_target = CFactory::_('Language.Extractor')->langKeys[CFactory::_('Config')->lang_prefix];
 				}
 				else
 				{
-					$this->lang = 'plugin';
+					CFactory::_('Config')->lang_target = 'plugin';
 				}
 			}
 			else
 			{
-				$this->lang = 'both';
+				CFactory::_('Config')->lang_target = 'both';
 			}
 			// set language data
 			foreach ($langStringTargets as $langStringTarget)
@@ -11941,9 +10563,9 @@ class Get
 						continue;
 					}
 					// build lang key
-					$keyLang = Config::get('lang_prefix') . '_' . $_keyLang;
+					$keyLang = CFactory::_('Config')->lang_prefix . '_' . $_keyLang;
 					// set lang content string
-					$this->setLangContent($this->lang, $keyLang, $lang);
+					CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $keyLang, $lang);
 					// reverse the placeholders
 					foreach ($langStringTargets as $langStringTarget)
 					{
@@ -11954,17 +10576,17 @@ class Get
 					}
 				}
 				// return the found placeholders
-				$updateString = $this->setPlaceholders(
+				$updateString = CFactory::_('Placeholder')->update(
 					$updateString, $langHolders
 				);
 			}
 			// reset the lang
-			$this->lang = $_tmp;
+			CFactory::_('Config')->lang_target = $_tmp;
 			// also rest the lang prefix if set
 			if (isset($_tmp_lang_prefix))
 			{
 				$this->langPrefix = $_tmp_lang_prefix;
-				Config::set('lang_prefix', $_tmp_lang_prefix);
+				CFactory::_('Config')->set('lang_prefix', $_tmp_lang_prefix);
 			}
 		}
 
@@ -11984,63 +10606,12 @@ class Get
 	 * 3 -> Remove placeholders not in data string
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Placeholder')->update($data, $placeholder, $action);
 	 */
 	public function setPlaceholders($data, &$placeholder, $action = 1)
 	{
-		// make sure the placeholders is an array
-		if (!ArrayHelper::check($placeholder))
-		{
-			// This is an error, (TODO) actualy we need to add a kind of log here to know that this happened
-			return $data;
-		}
-		// continue with the work of replacement
-		if (1 == $action) // <-- just replace (default)
-		{
-			return str_replace(
-				array_keys($placeholder), array_values($placeholder), $data
-			);
-		}
-		elseif (2 == $action) // <-- check if data string has placeholders
-		{
-			$replace = false;
-			foreach ($placeholder as $key => $val)
-			{
-				if (strpos($data, $key) !== false)
-				{
-					$replace = true;
-					break;
-				}
-			}
-			// only replace if the data has these placeholder values
-			if ($replace === true)
-			{
-
-				return str_replace(
-					array_keys($placeholder), array_values($placeholder), $data
-				);
-			}
-		}
-		elseif (3 == $action) // <-- remove placeholders not in data string
-		{
-			$replace = $placeholder;
-			foreach ($replace as $key => $val)
-			{
-				if (strpos($data, $key) === false)
-				{
-					unset($replace[$key]);
-				}
-			}
-			// only replace if the data has these placeholder values
-			if (ArrayHelper::check($replace))
-			{
-				return str_replace(
-					array_keys($replace), array_values($replace), $data
-				);
-			}
-		}
-
-		return $data;
+		// use the new container class
+		CFactory::_('Placeholder')->update($data, $placeholder, $action);
 	}
 
 	/**
@@ -12050,80 +10621,11 @@ class Get
 	 * @param   int  $id    The code id in the system
 	 *
 	 * @return  array    on success
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Placeholder')->keys($type, $id);
 	 */
 	public function getPlaceHolder($type, $id)
 	{
-		switch ($type)
-		{
-			case 11:
-				//***[REPLACED$$$$]***//**1**/
-				if (Config::get('add_placeholders', false) === true)
-				{
-					return array(
-						'start' => '/***[REPLACED$$$$]***//**' . $id . '**/',
-						'end'   => '/***[/REPLACED$$$$]***/');
-				}
-				else
-				{
-					return array(
-						'start' => "",
-						'end'   => "");
-				}
-				break;
-			case 12:
-				//***[INSERTED$$$$]***//**1**/
-				if (Config::get('add_placeholders', false) === true)
-				{
-					return array(
-						'start' => '/***[INSERTED$$$$]***//**' . $id . '**/',
-						'end'   => '/***[/INSERTED$$$$]***/');
-				}
-				else
-				{
-					return array(
-						'start' => "",
-						'end'   => "");
-				}
-				break;
-			case 21:
-				//<!--[REPLACED$$$$]--><!--1-->
-				if (Config::get('add_placeholders', false) === true)
-				{
-					return array(
-						'start' => '<!--[REPLACED$$$$]--><!--' . $id . '-->',
-						'end'   => '<!--[/REPLACED$$$$]-->');
-				}
-				else
-				{
-					return array(
-						'start' => "",
-						'end'   => "");
-				}
-				break;
-			case 22:
-				//<!--[INSERTED$$$$]--><!--1-->
-				if (Config::get('add_placeholders', false) === true)
-				{
-					return array(
-						'start' => '<!--[INSERTED$$$$]--><!--' . $id . '-->',
-						'end'   => '<!--[/INSERTED$$$$]-->');
-				}
-				else
-				{
-					return array(
-						'start' => "",
-						'end'   => " ");
-				}
-				break;
-			case 3:
-				return array(
-					'start' => "",
-					'end'   => "");
-				break;
-		}
-
-		return false;
+		return CFactory::_('Placeholder')->keys($type, $id);
 	}
 
 	/**
@@ -12138,15 +10640,15 @@ class Get
 		$localPaths = array();
 		// admin path
 		$localPaths['admin'] = JPATH_ADMINISTRATOR . '/components/com_'
-			. Config::get('component_code_name');
+			. CFactory::_('Config')->component_code_name;
 		// site path
 		$localPaths['site'] = JPATH_ROOT . '/components/com_'
-			. Config::get('component_code_name');
+			. CFactory::_('Config')->component_code_name;
 		// media path
 		$localPaths['media'] = JPATH_ROOT . '/media/com_'
-			. Config::get('component_code_name');
+			. CFactory::_('Config')->component_code_name;
 		// power path
-		$localPaths['power'] = JPATH_ROOT . '/' . Config::get('jcb_powers_path', 'libraries/jcb_powers');
+		$localPaths['power'] = JPATH_ROOT . '/' . CFactory::_('Config')->get('jcb_powers_path', 'libraries/jcb_powers');
 		// lets also go over the REPOS (TODO)
 		// Painfull but we need to folder paths for the linked modules
 		if (($module_ids = $this->getModuleIDs()) !== false)

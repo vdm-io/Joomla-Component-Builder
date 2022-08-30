@@ -20,7 +20,10 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\MathHelper;
-use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 
 // Use the component builder autoloader
 ComponentbuilderHelper::autoLoader();
@@ -30,6 +33,8 @@ ComponentbuilderHelper::autoLoader();
  */
 class Compiler extends Infusion
 {
+
+
 	/**
 	 * The Temp path
 	 *
@@ -75,13 +80,13 @@ class Compiler extends Infusion
 		// to check the compiler speed
 		$this->time_start = microtime(true);
 		// first we run the perent constructors
-		if (parent::__construct($config))
+		if (parent::__construct())
 		{
 			// set temp directory
 			$comConfig      = JFactory::getConfig();
 			$this->tempPath = $comConfig->get('tmp_path');
 			// set some folder paths in relation to distribution
-			if ($config['backup'])
+			if (CFactory::_('Config')->backup)
 			{
 				$this->backupPath         = $this->params->get(
 					'backup_folder_path', $this->tempPath
@@ -89,7 +94,7 @@ class Compiler extends Infusion
 				$this->dynamicIntegration = true;
 			}
 			// set local repos switch
-			if ($config['repository'])
+			if (CFactory::_('Config')->repository)
 			{
 				$this->repoPath = $this->params->get('git_folder_path', null);
 			}
@@ -100,8 +105,7 @@ class Compiler extends Infusion
 				$this->removeFolder($this->componentPath . '/site');
 				// clear form component xml
 				$xmlPath        = $this->componentPath . '/'
-					. $this->fileContentStatic[$this->hhh . 'component'
-					. $this->hhh] . '.xml';
+					. $this->fileContentStatic[Placefix::_h('component')] . '.xml';
 				$componentXML   = ComponentbuilderHelper::getFileContents(
 					$xmlPath
 				);
@@ -119,7 +123,7 @@ class Compiler extends Infusion
 				$this->writeFile($xmlPath, $componentXML);
 			}
 			// Trigger Event: jcb_ce_onBeforeUpdateFiles
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onBeforeUpdateFiles',
 				array(&$this->componentContext, &$this)
 			);
@@ -129,15 +133,15 @@ class Compiler extends Infusion
 				return false;
 			}
 			// Trigger Event: jcb_ce_onBeforeGetCustomCode
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onBeforeGetCustomCode',
 				array(&$this->componentContext, &$this)
 			);
 			// now insert into the new files
-			if ($this->getCustomCode())
+			if (CFactory::_('Customcode')->load())
 			{
 				// Trigger Event: jcb_ce_onBeforeAddCustomCode
-				$this->triggerEvent(
+				CFactory::_J('Event')->trigger(
 					'jcb_ce_onBeforeAddCustomCode',
 					array(&$this->componentContext, &$this)
 				);
@@ -145,7 +149,7 @@ class Compiler extends Infusion
 				$this->addCustomCode();
 			}
 			// Trigger Event: jcb_ce_onBeforeSetLangFileData
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onBeforeSetLangFileData',
 				array(&$this->componentContext, &$this)
 			);
@@ -184,7 +188,7 @@ class Compiler extends Infusion
 					'because more then %s&#37; of the strings have been translated.',
 					$this->percentageLanguageAdd
 				);
-				if (Config::get('debug_line_nr', false))
+				if (CFactory::_('Config')->get('debug_line_nr', false))
 				{
 					$whyAddedLang = JText::_(
 						'because the debugging mode is on. (debug line numbers)'
@@ -215,12 +219,12 @@ class Compiler extends Infusion
 				'The <b>SQL</b> fix updates the #__assets table\'s column size on installation of the component and reverses it back to the Joomla default on uninstall of the component.'
 			);
 			// set assets table rules column notice
-			if (Config::get('add_assets_table_fix'))
+			if (CFactory::_('Config')->add_assets_table_fix)
 			{
 				$this->app->enqueueMessage(
 					JText::_('<hr /><h3>Assets Table Notice</h3>'), 'Notice'
 				);
-				$asset_table_fix_type = (Config::get('add_assets_table_fix') == 2)
+				$asset_table_fix_type = (CFactory::_('Config')->add_assets_table_fix == 2)
 					? 'intelligent' : 'sql';
 				$this->app->enqueueMessage(
 					JText::sprintf(
@@ -245,7 +249,7 @@ class Compiler extends Infusion
 				);
 			}
 			// set assets table name column warning if not set
-			if (!Config::get('add_assets_table_fix') && $this->addAssetsTableNameFix)
+			if (!CFactory::_('Config')->add_assets_table_fix && $this->addAssetsTableNameFix)
 			{
 				// only add if not already added
 				if ($this->accessSize < 30)
@@ -282,18 +286,18 @@ class Compiler extends Infusion
 			// if there are plugins zip them
 			$this->zipPlugins();
 			// do lang mismatch check
-			if (ArrayHelper::check($this->langMismatch))
+			if (ArrayHelper::check(CFactory::_('Language.Extractor')->langMismatch))
 			{
-				if (ArrayHelper::check($this->langMatch))
+				if (ArrayHelper::check(CFactory::_('Language.Extractor')->langMatch))
 				{
 					$mismatch = array_diff(
-						array_unique($this->langMismatch),
-						array_unique($this->langMatch)
+						array_unique(CFactory::_('Language.Extractor')->langMismatch),
+						array_unique(CFactory::_('Language.Extractor')->langMatch)
 					);
 				}
 				else
 				{
-					$mismatch = array_unique($this->langMismatch);
+					$mismatch = array_unique(CFactory::_('Language.Extractor')->langMismatch);
 				}
 				// set a notice if we have a mismatch
 				if (isset($mismatch)
@@ -323,7 +327,7 @@ class Compiler extends Infusion
 					// add the mismatching issues
 					foreach ($mismatch as $string)
 					{
-						$constant = Config::get('lang_prefix') . '_'
+						$constant = CFactory::_('Config')->lang_prefix . '_'
 							. StringHelper::safe($string, 'U');
 						$this->app->enqueueMessage(
 							JText::sprintf(
@@ -363,24 +367,6 @@ class Compiler extends Infusion
 		}
 
 		return false;
-	}
-
-	/**
-	 * Set the line number in comments
-	 *
-	 * @param   int  $nr  The line number
-	 *
-	 * @return  void
-	 *
-	 */
-	private function setLine($nr)
-	{
-		if (Config::get('debug_line_nr', false))
-		{
-			return ' [Compiler ' . $nr . ']';
-		}
-
-		return '';
 	}
 
 	/**
@@ -598,9 +584,9 @@ class Compiler extends Infusion
 				}
 			}
 			// do powers if found
-			if (ArrayHelper::check($this->powers))
+			if (ArrayHelper::check(CFactory::_('Power')->active))
 			{
-				foreach ($this->powers as $power)
+				foreach (CFactory::_('Power')->active as $power)
 				{
 					if (ObjectHelper::check($power)
 						&& isset($this->newFiles[$power->key])
@@ -641,12 +627,12 @@ class Compiler extends Infusion
 	protected function setFileContent(&$name, &$path, &$bom, $view = null)
 	{
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onBeforeSetFileContent',
 			array(&$this->componentContext, &$name, &$path, &$bom, &$view)
 		);
 		// set the file name
-		$this->fileContentStatic[$this->hhh . 'FILENAME' . $this->hhh] = $name;
+		$this->fileContentStatic[Placefix::_h('FILENAME')] = $name;
 		// check if the file should get PHP opening
 		$php = '';
 		if (ComponentbuilderHelper::checkFileType($name, 'php'))
@@ -656,35 +642,35 @@ class Compiler extends Infusion
 		// get content of the file
 		$string = ComponentbuilderHelper::getFileContents($path);
 		// Trigger Event: jcb_ce_onGetFileContents
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onGetFileContents',
 			array(&$this->componentContext, &$string, &$name, &$path, &$bom,
 			      &$view)
 		);
 		// see if we should add a BOM
-		if (strpos($string, $this->hhh . 'BOM' . $this->hhh) !== false)
+		if (strpos($string, Placefix::_h('BOM')) !== false)
 		{
 			list($wast, $code) = explode(
-				$this->hhh . 'BOM' . $this->hhh, $string
+				Placefix::_h('BOM'), $string
 			);
 			$string = $php . $bom . $code;
 		}
 		// set the answer
-		$answer = $this->setPlaceholders($string, $this->fileContentStatic, 3);
+		$answer = CFactory::_('Placeholder')->update($string, $this->fileContentStatic, 3);
 		// set the dynamic answer
 		if ($view)
 		{
-			$answer = $this->setPlaceholders(
+			$answer = CFactory::_('Placeholder')->update(
 				$answer, $this->fileContentDynamic[$view], 3
 			);
 		}
 		// check if this file needs extra care :)
 		if (isset($this->updateFileContent[$path]))
 		{
-			$answer = $this->setDynamicValues($answer);
+			$answer = CFactory::_('Customcode')->add($answer);
 		}
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onBeforeWriteFileContent',
 			array(&$this->componentContext, &$answer, &$name, &$path, &$bom,
 			      &$view)
@@ -805,7 +791,7 @@ class Compiler extends Infusion
 		{
 			foreach ($data['config'] as $key => $value)
 			{
-				if ($this->hhh . 'VERSION' . $this->hhh === $key)
+				if (Placefix::_h('VERSION') === $key)
 				{
 					// hmm we sould in some way make it known that this version number
 					// is not in relation the the project but to the file only... any ideas?
@@ -825,14 +811,14 @@ class Compiler extends Infusion
 			return true;
 		}
 		// else insure to reset to global
-		$this->fileContentStatic[$this->hhh . 'CREATIONDATE' . $this->hhh]
-			= $this->fileContentStatic[$this->hhh . 'CREATIONDATE' . $this->hhh
+		$this->fileContentStatic[Placefix::_h('CREATIONDATE')]
+			= $this->fileContentStatic[Placefix::_h('CREATIONDATE')
 		. 'GLOBAL'];
-		$this->fileContentStatic[$this->hhh . 'BUILDDATE' . $this->hhh]
-			= $this->fileContentStatic[$this->hhh . 'BUILDDATE' . $this->hhh
+		$this->fileContentStatic[Placefix::_h('BUILDDATE')]
+			= $this->fileContentStatic[Placefix::_h('BUILDDATE')
 		. 'GLOBAL'];
-		$this->fileContentStatic[$this->hhh . 'VERSION' . $this->hhh]
-			= $this->fileContentStatic[$this->hhh . 'VERSION' . $this->hhh
+		$this->fileContentStatic[Placefix::_h('VERSION')]
+			= $this->fileContentStatic[Placefix::_h('VERSION')
 		. 'GLOBAL'];
 	}
 
@@ -898,9 +884,9 @@ class Compiler extends Infusion
 	{
 		// set readme data if not set already
 		if (!isset(
-				$this->fileContentStatic[$this->hhh . 'LINE_COUNT' . $this->hhh]
+				$this->fileContentStatic[Placefix::_h('LINE_COUNT')]
 			)
-			|| $this->fileContentStatic[$this->hhh . 'LINE_COUNT' . $this->hhh]
+			|| $this->fileContentStatic[Placefix::_h('LINE_COUNT')]
 			!= $this->lineCount)
 		{
 			$this->buildReadMeData();
@@ -908,7 +894,7 @@ class Compiler extends Infusion
 		// get the file
 		$string = ComponentbuilderHelper::getFileContents($path);
 		// update the file
-		$answer = $this->setPlaceholders($string, $this->fileContentStatic);
+		$answer = CFactory::_('Placeholder')->update($string, $this->fileContentStatic);
 		// add to zip array
 		$this->writeFile($path, $answer);
 	}
@@ -916,71 +902,71 @@ class Compiler extends Infusion
 	private function buildReadMeData()
 	{
 		// set some defaults
-		$this->fileContentStatic[$this->hhh . 'LINE_COUNT' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('LINE_COUNT')]
 			= $this->lineCount;
-		$this->fileContentStatic[$this->hhh . 'FIELD_COUNT' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('FIELD_COUNT')]
 			= $this->fieldCount;
-		$this->fileContentStatic[$this->hhh . 'FILE_COUNT' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('FILE_COUNT')]
 			= $this->fileCount;
-		$this->fileContentStatic[$this->hhh . 'FOLDER_COUNT' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('FOLDER_COUNT')]
 			= $this->folderCount;
-		$this->fileContentStatic[$this->hhh . 'PAGE_COUNT' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('PAGE_COUNT')]
 			= $this->pageCount;
-		$this->fileContentStatic[$this->hhh . 'folders' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('folders')]
 			= $this->folderSeconds;
-		$this->fileContentStatic[$this->hhh . 'foldersSeconds' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('foldersSeconds')]
 			= $this->folderSeconds;
-		$this->fileContentStatic[$this->hhh . 'files' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('files')]
 			= $this->fileSeconds;
-		$this->fileContentStatic[$this->hhh . 'filesSeconds' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('filesSeconds')]
 			= $this->fileSeconds;
-		$this->fileContentStatic[$this->hhh . 'lines' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('lines')]
 			= $this->lineSeconds;
-		$this->fileContentStatic[$this->hhh . 'linesSeconds' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('linesSeconds')]
 			= $this->lineSeconds;
-		$this->fileContentStatic[$this->hhh . 'seconds' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('seconds')]
 			= $this->actualSeconds;
-		$this->fileContentStatic[$this->hhh . 'actualSeconds' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('actualSeconds')]
 			= $this->actualSeconds;
-		$this->fileContentStatic[$this->hhh . 'totalHours' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('totalHours')]
 			= $this->totalHours;
-		$this->fileContentStatic[$this->hhh . 'totalDays' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('totalDays')]
 			= $this->totalDays;
-		$this->fileContentStatic[$this->hhh . 'debugging' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('debugging')]
 			= $this->secondsDebugging;
-		$this->fileContentStatic[$this->hhh . 'secondsDebugging' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('secondsDebugging')]
 			= $this->secondsDebugging;
-		$this->fileContentStatic[$this->hhh . 'planning' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('planning')]
 			= $this->secondsPlanning;
-		$this->fileContentStatic[$this->hhh . 'secondsPlanning' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('secondsPlanning')]
 			= $this->secondsPlanning;
-		$this->fileContentStatic[$this->hhh . 'mapping' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('mapping')]
 			= $this->secondsMapping;
-		$this->fileContentStatic[$this->hhh . 'secondsMapping' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('secondsMapping')]
 			= $this->secondsMapping;
-		$this->fileContentStatic[$this->hhh . 'office' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('office')]
 			= $this->secondsOffice;
-		$this->fileContentStatic[$this->hhh . 'secondsOffice' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('secondsOffice')]
 			= $this->secondsOffice;
-		$this->fileContentStatic[$this->hhh . 'actualTotalHours' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('actualTotalHours')]
 			= $this->actualTotalHours;
-		$this->fileContentStatic[$this->hhh . 'actualTotalDays' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('actualTotalDays')]
 			= $this->actualTotalDays;
-		$this->fileContentStatic[$this->hhh . 'debuggingHours' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('debuggingHours')]
 			= $this->debuggingHours;
-		$this->fileContentStatic[$this->hhh . 'planningHours' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('planningHours')]
 			= $this->planningHours;
-		$this->fileContentStatic[$this->hhh . 'mappingHours' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('mappingHours')]
 			= $this->mappingHours;
-		$this->fileContentStatic[$this->hhh . 'officeHours' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('officeHours')]
 			= $this->officeHours;
-		$this->fileContentStatic[$this->hhh . 'actualHoursSpent' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('actualHoursSpent')]
 			= $this->actualHoursSpent;
-		$this->fileContentStatic[$this->hhh . 'actualDaysSpent' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('actualDaysSpent')]
 			= $this->actualDaysSpent;
-		$this->fileContentStatic[$this->hhh . 'projectWeekTime' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('projectWeekTime')]
 			= $this->projectWeekTime;
-		$this->fileContentStatic[$this->hhh . 'projectMonthTime' . $this->hhh]
+		$this->fileContentStatic[Placefix::_h('projectMonthTime')]
 			= $this->projectMonthTime;
 	}
 
@@ -995,9 +981,9 @@ class Compiler extends Infusion
 			// set the repo path
 			$repoFullPath = $this->repoPath . '/com_'
 				. $this->componentData->sales_name . '__joomla_'
-				. Config::get('version', 3);
+				. CFactory::_('Config')->get('version', 3);
 			// Trigger Event: jcb_ce_onBeforeUpdateRepo
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onBeforeUpdateRepo',
 				array(&$this->componentContext, &$this->componentPath,
 				      &$repoFullPath, &$this->componentData)
@@ -1007,7 +993,7 @@ class Compiler extends Infusion
 			// set the new data
 			Folder::copy($this->componentPath, $repoFullPath, '', true);
 			// Trigger Event: jcb_ce_onAfterUpdateRepo
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onAfterUpdateRepo',
 				array(&$this->componentContext, &$this->componentPath,
 				      &$repoFullPath, &$this->componentData)
@@ -1026,9 +1012,9 @@ class Compiler extends Infusion
 						// set the repo path
 						$repoFullPath = $this->repoPath . '/'
 							. $module->folder_name . '__joomla_'
-							. Config::get('version', 3);
+							. CFactory::_('Config')->get('version', 3);
 						// Trigger Event: jcb_ce_onBeforeUpdateRepo
-						$this->triggerEvent(
+						CFactory::_J('Event')->trigger(
 							'jcb_ce_onBeforeUpdateRepo',
 							array(&$module_context, &$module->folder_path,
 							      &$repoFullPath, &$module)
@@ -1042,7 +1028,7 @@ class Compiler extends Infusion
 							$module->folder_path, $repoFullPath, '', true
 						);
 						// Trigger Event: jcb_ce_onAfterUpdateRepo
-						$this->triggerEvent(
+						CFactory::_J('Event')->trigger(
 							'jcb_ce_onAfterUpdateRepo',
 							array(&$module_context, &$module->folder_path,
 							      &$repoFullPath, &$module)
@@ -1063,9 +1049,9 @@ class Compiler extends Infusion
 						// set the repo path
 						$repoFullPath = $this->repoPath . '/'
 							. $plugin->folder_name . '__joomla_'
-							. Config::get('version', 3);
+							. CFactory::_('Config')->get('version', 3);
 						// Trigger Event: jcb_ce_onBeforeUpdateRepo
-						$this->triggerEvent(
+						CFactory::_J('Event')->trigger(
 							'jcb_ce_onBeforeUpdateRepo',
 							array(&$plugin_context, &$plugin->folder_path,
 							      &$repoFullPath, &$plugin)
@@ -1079,7 +1065,7 @@ class Compiler extends Infusion
 							$plugin->folder_path, $repoFullPath, '', true
 						);
 						// Trigger Event: jcb_ce_onAfterUpdateRepo
-						$this->triggerEvent(
+						CFactory::_J('Event')->trigger(
 							'jcb_ce_onAfterUpdateRepo',
 							array(&$plugin_context, &$plugin->folder_path,
 							      &$repoFullPath, &$plugin)
@@ -1098,7 +1084,7 @@ class Compiler extends Infusion
 		$this->filepath['component'] = $this->tempPath . '/'
 			. $this->filepath['component-folder'] . '.zip';
 		// Trigger Event: jcb_ce_onBeforeZipComponent
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onBeforeZipComponent',
 			array(&$this->componentContext, &$this->componentPath,
 			      &$this->filepath['component'], &$this->tempPath,
@@ -1113,7 +1099,7 @@ class Compiler extends Infusion
 			if ($this->backupPath && $this->dynamicIntegration)
 			{
 				// Trigger Event: jcb_ce_onBeforeBackupZip
-				$this->triggerEvent(
+				CFactory::_J('Event')->trigger(
 					'jcb_ce_onBeforeBackupZip', array(&$this->componentContext,
 					                                  &$this->filepath['component'],
 					                                  &$this->tempPath,
@@ -1135,7 +1121,7 @@ class Compiler extends Infusion
 				if (isset($this->componentData->sales_server))
 				{
 					// Trigger Event: jcb_ce_onBeforeMoveToServer
-					$this->triggerEvent(
+					CFactory::_J('Event')->trigger(
 						'jcb_ce_onBeforeMoveToServer',
 						array(&$this->componentContext,
 						      &$this->filepath['component'], &$this->tempPath,
@@ -1151,7 +1137,7 @@ class Compiler extends Infusion
 				}
 			}
 			// Trigger Event: jcb_ce_onAfterZipComponent
-			$this->triggerEvent(
+			CFactory::_J('Event')->trigger(
 				'jcb_ce_onAfterZipComponent',
 				array(&$this->componentContext, &$this->filepath['component'],
 				      &$this->tempPath, &$this->componentFolderName,
@@ -1190,7 +1176,7 @@ class Compiler extends Infusion
 					$this->filepath['modules'][$module->id] = $this->tempPath
 						. '/' . $module->zip_name . '.zip';
 					// Trigger Event: jcb_ce_onBeforeZipModule
-					$this->triggerEvent(
+					CFactory::_J('Event')->trigger(
 						'jcb_ce_onBeforeZipModule',
 						array(&$module_context, &$module->folder_path,
 						      &$this->filepath['modules'][$module->id],
@@ -1207,7 +1193,7 @@ class Compiler extends Infusion
 						{
 							$__module_context = 'module.' . $module_context;
 							// Trigger Event: jcb_ce_onBeforeBackupZip
-							$this->triggerEvent(
+							CFactory::_J('Event')->trigger(
 								'jcb_ce_onBeforeBackupZip',
 								array(&$__module_context,
 								      &$this->filepath['modules'][$module->id],
@@ -1229,7 +1215,7 @@ class Compiler extends Infusion
 							if (isset($module->sales_server))
 							{
 								// Trigger Event: jcb_ce_onBeforeMoveToServer
-								$this->triggerEvent(
+								CFactory::_J('Event')->trigger(
 									'jcb_ce_onBeforeMoveToServer',
 									array(&$__module_context,
 									      &$this->filepath['modules'][$module->id],
@@ -1246,7 +1232,7 @@ class Compiler extends Infusion
 							}
 						}
 						// Trigger Event: jcb_ce_onAfterZipModule
-						$this->triggerEvent(
+						CFactory::_J('Event')->trigger(
 							'jcb_ce_onAfterZipModule', array(&$module_context,
 							                                 &$this->filepath['modules'][$module->id],
 							                                 &$this->tempPath,
@@ -1284,7 +1270,7 @@ class Compiler extends Infusion
 					$this->filepath['plugins'][$plugin->id] = $this->tempPath
 						. '/' . $plugin->zip_name . '.zip';
 					// Trigger Event: jcb_ce_onBeforeZipPlugin
-					$this->triggerEvent(
+					CFactory::_J('Event')->trigger(
 						'jcb_ce_onBeforeZipPlugin',
 						array(&$plugin_context, &$plugin->folder_path,
 						      &$this->filepath['plugins'][$plugin->id],
@@ -1301,7 +1287,7 @@ class Compiler extends Infusion
 						{
 							$__plugin_context = 'plugin.' . $plugin_context;
 							// Trigger Event: jcb_ce_onBeforeBackupZip
-							$this->triggerEvent(
+							CFactory::_J('Event')->trigger(
 								'jcb_ce_onBeforeBackupZip',
 								array(&$__plugin_context,
 								      &$this->filepath['plugins'][$plugin->id],
@@ -1323,7 +1309,7 @@ class Compiler extends Infusion
 							if (isset($plugin->sales_server))
 							{
 								// Trigger Event: jcb_ce_onBeforeMoveToServer
-								$this->triggerEvent(
+								CFactory::_J('Event')->trigger(
 									'jcb_ce_onBeforeMoveToServer',
 									array(&$__plugin_context,
 									      &$this->filepath['plugins'][$plugin->id],
@@ -1340,7 +1326,7 @@ class Compiler extends Infusion
 							}
 						}
 						// Trigger Event: jcb_ce_onAfterZipPlugin
-						$this->triggerEvent(
+						CFactory::_J('Event')->trigger(
 							'jcb_ce_onAfterZipPlugin', array(&$plugin_context,
 							                                 &$this->filepath['plugins'][$plugin->id],
 							                                 &$this->tempPath,
@@ -1358,9 +1344,9 @@ class Compiler extends Infusion
 	protected function addCustomCode()
 	{
 		// reset all these
-		$this->clearFromPlaceHolders('view');
-		$this->clearFromPlaceHolders('arg');
-		foreach ($this->customCode as $nr => $target)
+		CFactory::_('Placeholder')->clearType('view');
+		CFactory::_('Placeholder')->clearType('arg');
+		foreach (CFactory::_('Customcode')->active as $nr => $target)
 		{
 			// reset each time per custom code
 			$fingerPrint = array();
@@ -1471,13 +1457,13 @@ class Compiler extends Infusion
 					}
 					if ($found)
 					{
-						$placeholder = $this->getPlaceHolder(
+						$placeholder = CFactory::_('Placeholder')->keys(
 							(int) $target['comment_type'] . $target['type'],
 							$target['id']
 						);
 						$data        = $placeholder['start'] . PHP_EOL
-							. $this->setPlaceholders(
-								$target['code'], $this->placeholders
+							. CFactory::_('Placeholder')->update(
+								$target['code'], CFactory::_('Placeholder')->active
 							) . $placeholder['end'] . PHP_EOL;
 						if ($target['type'] == 2)
 						{
@@ -1566,7 +1552,7 @@ class Compiler extends Infusion
 				$_commentType . PHP_EOL . $commentType, $code
 			) . $_commentType . PHP_EOL;
 		// get place holders
-		$placeholder = $this->getPlaceHolder(
+		$placeholder = CFactory::_('Placeholder')->keys(
 			(int) $target['comment_type'] . $target['type'], $target['id']
 		);
 		// build the data

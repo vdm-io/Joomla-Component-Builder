@@ -158,6 +158,8 @@ class ComponentbuilderModelPowers extends ListModel
 					continue;
 				}
 
+				// remove dots
+				$item->namespace = str_replace('.','\\', $item->namespace);
 			}
 		}
 

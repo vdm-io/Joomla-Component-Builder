@@ -18,13 +18,17 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\String\FieldHelper;
-use VDM\Joomla\Componentbuilder\Factory\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 
 /**
  * Compiler class
  */
 class Fields extends Structure
 {
+
 
 	/**
 	 * Metadate Switch
@@ -370,24 +374,6 @@ class Fields extends Structure
 	public $movedPublishingFields = array();
 
 	/**
-	 * Set the line number in comments
-	 *
-	 * @param   int  $nr  The line number
-	 *
-	 * @return  void
-	 *
-	 */
-	private function setLine($nr)
-	{
-		if (Config::get('debug_line_nr', false))
-		{
-			return ' [Fields ' . $nr . ']';
-		}
-
-		return '';
-	}
-
-	/**
 	 * set the Field set of a view
 	 *
 	 * @param   array   $view            The view data
@@ -416,162 +402,162 @@ class Fields extends Structure
 				$this->accessBuilder[$nameSingleCode] = $nameListCode;
 			}
 			// main lang prefix
-			$langView  = Config::get('lang_prefix') . '_'
-				. $this->placeholders[$this->hhh . 'VIEW' . $this->hhh];
-			$langViews = Config::get('lang_prefix') . '_'
-				. $this->placeholders[$this->hhh . 'VIEWS' . $this->hhh];
+			$langView  = CFactory::_('Config')->lang_prefix . '_'
+				. CFactory::_('Placeholder')->active[Placefix::_h('VIEW')];
+			$langViews = CFactory::_('Config')->lang_prefix . '_'
+				. CFactory::_('Placeholder')->active[Placefix::_h('VIEWS')];
 			// set default lang
-			$this->setLangContent(
-				$this->lang, $langView, $view['settings']->name_single
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView, $view['settings']->name_single
 			);
-			$this->setLangContent(
-				$this->lang, $langViews, $view['settings']->name_list
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews, $view['settings']->name_list
 			);
 			// set global item strings
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_ARCHIVED',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_ARCHIVED',
 				"%s " . $view['settings']->name_list . " archived."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_ARCHIVED_1',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_ARCHIVED_1',
 				"%s " . $view['settings']->name_single . " archived."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_CHECKED_IN_0',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_CHECKED_IN_0',
 				"No " . $view['settings']->name_single
 				. " successfully checked in."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_CHECKED_IN_1',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_CHECKED_IN_1',
 				"%d " . $view['settings']->name_single
 				. " successfully checked in."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_CHECKED_IN_MORE',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_CHECKED_IN_MORE',
 				"%d " . $view['settings']->name_list
 				. " successfully checked in."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_DELETED',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_DELETED',
 				"%s " . $view['settings']->name_list . " deleted."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_DELETED_1',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_DELETED_1',
 				"%s " . $view['settings']->name_single . " deleted."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_FEATURED',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_FEATURED',
 				"%s " . $view['settings']->name_list . " featured."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_FEATURED_1',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_FEATURED_1',
 				"%s " . $view['settings']->name_single . " featured."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_PUBLISHED',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_PUBLISHED',
 				"%s " . $view['settings']->name_list . " published."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_PUBLISHED_1',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_PUBLISHED_1',
 				"%s " . $view['settings']->name_single . " published."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_TRASHED',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_TRASHED',
 				"%s " . $view['settings']->name_list . " trashed."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_TRASHED_1',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_TRASHED_1',
 				"%s " . $view['settings']->name_single . " trashed."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_UNFEATURED',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_UNFEATURED',
 				"%s " . $view['settings']->name_list . " unfeatured."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_UNFEATURED_1',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_UNFEATURED_1',
 				"%s " . $view['settings']->name_single . " unfeatured."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_UNPUBLISHED',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_UNPUBLISHED',
 				"%s " . $view['settings']->name_list . " unpublished."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_UNPUBLISHED_1',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_UNPUBLISHED_1',
 				"%s " . $view['settings']->name_single . " unpublished."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_FAILED_PUBLISHING',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_FAILED_PUBLISHING',
 				"%s " . $view['settings']->name_list . " failed publishing."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_N_ITEMS_FAILED_PUBLISHING_1',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_N_ITEMS_FAILED_PUBLISHING_1',
 				"%s " . $view['settings']->name_single . " failed publishing."
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_BATCH_OPTIONS',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_BATCH_OPTIONS',
 				"Batch process the selected " . $view['settings']->name_list
 			);
-			$this->setLangContent(
-				$this->lang, $langViews . '_BATCH_TIP',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langViews . '_BATCH_TIP',
 				"All changes will be applied to all selected "
 				. $view['settings']->name_list
 			);
 			// set some basic defaults
-			$this->setLangContent(
-				$this->lang, $langView . '_ERROR_UNIQUE_ALIAS',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_ERROR_UNIQUE_ALIAS',
 				"Another " . $view['settings']->name_single
 				. " has the same alias."
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_CREATED_DATE_LABEL', "Created Date"
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_CREATED_DATE_LABEL', "Created Date"
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_CREATED_DATE_DESC',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_CREATED_DATE_DESC',
 				"The date this " . $view['settings']->name_single
 				. " was created."
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_MODIFIED_DATE_LABEL', "Modified Date"
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_MODIFIED_DATE_LABEL', "Modified Date"
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_MODIFIED_DATE_DESC',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_MODIFIED_DATE_DESC',
 				"The date this " . $view['settings']->name_single
 				. " was modified."
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_CREATED_BY_LABEL', "Created By"
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_CREATED_BY_LABEL', "Created By"
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_CREATED_BY_DESC',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_CREATED_BY_DESC',
 				"The user that created this " . $view['settings']->name_single
 				. "."
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_MODIFIED_BY_LABEL', "Modified By"
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_MODIFIED_BY_LABEL', "Modified By"
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_MODIFIED_BY_DESC',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_MODIFIED_BY_DESC',
 				"The last user that modified this "
 				. $view['settings']->name_single . "."
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_ORDERING_LABEL', "Ordering"
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_ORDERING_LABEL', "Ordering"
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_VERSION_LABEL', "Version"
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_VERSION_LABEL', "Version"
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_VERSION_DESC',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_VERSION_DESC',
 				"A count of the number of times this "
 				. $view['settings']->name_single . " has been revised."
 			);
-			$this->setLangContent(
-				$this->lang, $langView . '_SAVE_WARNING',
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $langView . '_SAVE_WARNING',
 				"Alias already existed so a number was added at the end. You can re-edit the "
 				. $view['settings']->name_single . " to customise the alias."
 			);
 			// check what type of field builder to use
-			if (Config::get('field_builder_type', 2) == 1)
+			if (CFactory::_('Config')->get('field_builder_type', 2) == 1)
 			{
 				// build field set using string manipulation
 				return $this->stringFieldSet(
@@ -612,7 +598,7 @@ class Fields extends Structure
 		$readOnly = false;
 		if ($view['settings']->type == 2)
 		{
-			$readOnly = $this->_t(3) . 'readonly="true"' . PHP_EOL . $this->_t(
+			$readOnly = Indent::_(3) . 'readonly="true"' . PHP_EOL . Indent::_(
 					3
 				) . 'disabled="true"';
 		}
@@ -620,133 +606,141 @@ class Fields extends Structure
 		$dynamicFields = '';
 		// set the custom table key
 		$dbkey = 'g';
+		// for plugin event TODO change event api signatures
+		$this->placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onBeforeBuildFields
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onBeforeBuildFields',
 			array(&$this->componentContext, &$dynamicFields, &$readOnly,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
 			      &$nameListCode, &$this->placeholders, &$langView,
 			      &$langViews)
 		);
+		// for plugin event TODO change event api signatures
+		CFactory::_('Placeholder')->active = $this->placeholders;
 		// TODO we should add the global and local view switch if field for front end
 		foreach ($view['settings']->fields as $field)
 		{
 			$dynamicFields .= $this->setDynamicField(
 				$field, $view, $view['settings']->type, $langView,
-				$nameSingleCode, $nameListCode, $this->placeholders, $dbkey,
+				$nameSingleCode, $nameListCode, CFactory::_('Placeholder')->active, $dbkey,
 				true
 			);
 		}
+		// for plugin event TODO change event api signatures
+		$this->placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onAfterBuildFields
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onAfterBuildFields',
 			array(&$this->componentContext, &$dynamicFields, &$readOnly,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
 			      &$nameListCode, &$this->placeholders, &$langView,
 			      &$langViews)
 		);
+		// for plugin event TODO change event api signatures
+		CFactory::_('Placeholder')->active = $this->placeholders;
 		// set the default fields
 		$fieldSet   = array();
 		$fieldSet[] = '<fieldset name="details">';
-		$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+		$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 			. " Default Fields. -->";
-		$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+		$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 			. " Id Field. Type: Text (joomla) -->";
 		// if id is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['id']))
 		{
-			$fieldSet[] = $this->_t(2) . "<field";
-			$fieldSet[] = $this->_t(3) . "name=" . '"id"';
-			$fieldSet[] = $this->_t(3)
+			$fieldSet[] = Indent::_(2) . "<field";
+			$fieldSet[] = Indent::_(3) . "name=" . '"id"';
+			$fieldSet[] = Indent::_(3)
 				. 'type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"';
-			$fieldSet[] = $this->_t(3)
+			$fieldSet[] = Indent::_(3)
 				. 'description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"';
-			$fieldSet[] = $this->_t(3) . 'readonly="true"';
-			$fieldSet[] = $this->_t(2) . "/>";
+			$fieldSet[] = Indent::_(3) . 'readonly="true"';
+			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if created is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['created']))
 		{
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Date Created Field. Type: Calendar (joomla) -->";
-			$fieldSet[] = $this->_t(2) . "<field";
-			$fieldSet[] = $this->_t(3) . "name=" . '"created"';
-			$fieldSet[] = $this->_t(3) . "type=" . '"calendar"';
-			$fieldSet[] = $this->_t(3) . "label=" . '"' . $langView
+			$fieldSet[] = Indent::_(2) . "<field";
+			$fieldSet[] = Indent::_(3) . "name=" . '"created"';
+			$fieldSet[] = Indent::_(3) . "type=" . '"calendar"';
+			$fieldSet[] = Indent::_(3) . "label=" . '"' . $langView
 				. '_CREATED_DATE_LABEL"';
-			$fieldSet[] = $this->_t(3) . "description=" . '"' . $langView
+			$fieldSet[] = Indent::_(3) . "description=" . '"' . $langView
 				. '_CREATED_DATE_DESC"';
-			$fieldSet[] = $this->_t(3) . "size=" . '"22"';
+			$fieldSet[] = Indent::_(3) . "size=" . '"22"';
 			if ($readOnly)
 			{
 				$fieldSet[] = $readOnly;
 			}
-			$fieldSet[] = $this->_t(3) . "format=" . '"%Y-%m-%d %H:%M:%S"';
-			$fieldSet[] = $this->_t(3) . "filter=" . '"user_utc"';
-			$fieldSet[] = $this->_t(2) . "/>";
+			$fieldSet[] = Indent::_(3) . "format=" . '"%Y-%m-%d %H:%M:%S"';
+			$fieldSet[] = Indent::_(3) . "filter=" . '"user_utc"';
+			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if created_by is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['created_by']))
 		{
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " User Created Field. Type: User (joomla) -->";
-			$fieldSet[] = $this->_t(2) . "<field";
-			$fieldSet[] = $this->_t(3) . "name=" . '"created_by"';
-			$fieldSet[] = $this->_t(3) . "type=" . '"user"';
-			$fieldSet[] = $this->_t(3) . "label=" . '"' . $langView
+			$fieldSet[] = Indent::_(2) . "<field";
+			$fieldSet[] = Indent::_(3) . "name=" . '"created_by"';
+			$fieldSet[] = Indent::_(3) . "type=" . '"user"';
+			$fieldSet[] = Indent::_(3) . "label=" . '"' . $langView
 				. '_CREATED_BY_LABEL"';
 			if ($readOnly)
 			{
 				$fieldSet[] = $readOnly;
 			}
-			$fieldSet[] = $this->_t(3) . "description=" . '"' . $langView
+			$fieldSet[] = Indent::_(3) . "description=" . '"' . $langView
 				. '_CREATED_BY_DESC"';
-			$fieldSet[] = $this->_t(2) . "/>";
+			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if published is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['published']))
 		{
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Published Field. Type: List (joomla) -->";
-			$fieldSet[] = $this->_t(2) . "<field name="
+			$fieldSet[] = Indent::_(2) . "<field name="
 				. '"published" type="list" label="JSTATUS"';
-			$fieldSet[] = $this->_t(3) . "description="
+			$fieldSet[] = Indent::_(3) . "description="
 				. '"JFIELD_PUBLISHED_DESC" class="chzn-color-state"';
 			if ($readOnly)
 			{
 				$fieldSet[] = $readOnly;
 			}
-			$fieldSet[] = $this->_t(3) . "filter="
+			$fieldSet[] = Indent::_(3) . "filter="
 				. '"intval" size="1" default="1" >';
-			$fieldSet[] = $this->_t(3) . "<option value=" . '"1">';
-			$fieldSet[] = $this->_t(4) . "JPUBLISHED</option>";
-			$fieldSet[] = $this->_t(3) . "<option value=" . '"0">';
-			$fieldSet[] = $this->_t(4) . "JUNPUBLISHED</option>";
-			$fieldSet[] = $this->_t(3) . "<option value=" . '"2">';
-			$fieldSet[] = $this->_t(4) . "JARCHIVED</option>";
-			$fieldSet[] = $this->_t(3) . "<option value=" . '"-2">';
-			$fieldSet[] = $this->_t(4) . "JTRASHED</option>";
-			$fieldSet[] = $this->_t(2) . "</field>";
+			$fieldSet[] = Indent::_(3) . "<option value=" . '"1">';
+			$fieldSet[] = Indent::_(4) . "JPUBLISHED</option>";
+			$fieldSet[] = Indent::_(3) . "<option value=" . '"0">';
+			$fieldSet[] = Indent::_(4) . "JUNPUBLISHED</option>";
+			$fieldSet[] = Indent::_(3) . "<option value=" . '"2">';
+			$fieldSet[] = Indent::_(4) . "JARCHIVED</option>";
+			$fieldSet[] = Indent::_(3) . "<option value=" . '"-2">';
+			$fieldSet[] = Indent::_(4) . "JTRASHED</option>";
+			$fieldSet[] = Indent::_(2) . "</field>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if modified is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['modified']))
 		{
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Date Modified Field. Type: Calendar (joomla) -->";
-			$fieldSet[] = $this->_t(2)
+			$fieldSet[] = Indent::_(2)
 				. '<field name="modified" type="calendar" class="readonly"';
-			$fieldSet[] = $this->_t(3) . 'label="' . $langView
+			$fieldSet[] = Indent::_(3) . 'label="' . $langView
 				. '_MODIFIED_DATE_LABEL" description="' . $langView
 				. '_MODIFIED_DATE_DESC"';
-			$fieldSet[] = $this->_t(3)
+			$fieldSet[] = Indent::_(3)
 				. 'size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />';
 			// count the static field created
 			$this->fieldCount++;
@@ -754,18 +748,18 @@ class Fields extends Structure
 		// if modified_by is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['modified_by']))
 		{
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " User Modified Field. Type: User (joomla) -->";
-			$fieldSet[] = $this->_t(2)
+			$fieldSet[] = Indent::_(2)
 				. '<field name="modified_by" type="user"';
-			$fieldSet[] = $this->_t(3) . 'label="' . $langView
+			$fieldSet[] = Indent::_(3) . 'label="' . $langView
 				. '_MODIFIED_BY_LABEL"';
-			$fieldSet[] = $this->_t(3) . "description=" . '"' . $langView
+			$fieldSet[] = Indent::_(3) . "description=" . '"' . $langView
 				. '_MODIFIED_BY_DESC"';
-			$fieldSet[] = $this->_t(3) . 'class="readonly"';
-			$fieldSet[] = $this->_t(3) . 'readonly="true"';
-			$fieldSet[] = $this->_t(3) . 'filter="unset"';
-			$fieldSet[] = $this->_t(2) . "/>";
+			$fieldSet[] = Indent::_(3) . 'class="readonly"';
+			$fieldSet[] = Indent::_(3) . 'readonly="true"';
+			$fieldSet[] = Indent::_(3) . 'filter="unset"';
+			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -776,62 +770,62 @@ class Fields extends Structure
 			)
 			&& !isset($this->fieldsNames[$nameSingleCode]['access']))
 		{
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Access Field. Type: Accesslevel (joomla) -->";
-			$fieldSet[] = $this->_t(2) . '<field name="access"';
-			$fieldSet[] = $this->_t(3) . 'type="accesslevel"';
-			$fieldSet[] = $this->_t(3) . 'label="JFIELD_ACCESS_LABEL"';
-			$fieldSet[] = $this->_t(3) . 'description="JFIELD_ACCESS_DESC"';
-			$fieldSet[] = $this->_t(3) . 'default="1"';
+			$fieldSet[] = Indent::_(2) . '<field name="access"';
+			$fieldSet[] = Indent::_(3) . 'type="accesslevel"';
+			$fieldSet[] = Indent::_(3) . 'label="JFIELD_ACCESS_LABEL"';
+			$fieldSet[] = Indent::_(3) . 'description="JFIELD_ACCESS_DESC"';
+			$fieldSet[] = Indent::_(3) . 'default="1"';
 			if ($readOnly)
 			{
 				$fieldSet[] = $readOnly;
 			}
-			$fieldSet[] = $this->_t(3) . 'required="false"';
-			$fieldSet[] = $this->_t(2) . "/>";
+			$fieldSet[] = Indent::_(3) . 'required="false"';
+			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if ordering is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['ordering']))
 		{
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Ordering Field. Type: Numbers (joomla) -->";
-			$fieldSet[] = $this->_t(2) . "<field";
-			$fieldSet[] = $this->_t(3) . 'name="ordering"';
-			$fieldSet[] = $this->_t(3) . 'type="number"';
-			$fieldSet[] = $this->_t(3) . 'class="inputbox validate-ordering"';
-			$fieldSet[] = $this->_t(3) . 'label="' . $langView
+			$fieldSet[] = Indent::_(2) . "<field";
+			$fieldSet[] = Indent::_(3) . 'name="ordering"';
+			$fieldSet[] = Indent::_(3) . 'type="number"';
+			$fieldSet[] = Indent::_(3) . 'class="inputbox validate-ordering"';
+			$fieldSet[] = Indent::_(3) . 'label="' . $langView
 				. '_ORDERING_LABEL' . '"';
-			$fieldSet[] = $this->_t(3) . 'description=""';
-			$fieldSet[] = $this->_t(3) . 'default="0"';
-			$fieldSet[] = $this->_t(3) . 'size="6"';
+			$fieldSet[] = Indent::_(3) . 'description=""';
+			$fieldSet[] = Indent::_(3) . 'default="0"';
+			$fieldSet[] = Indent::_(3) . 'size="6"';
 			if ($readOnly)
 			{
 				$fieldSet[] = $readOnly;
 			}
-			$fieldSet[] = $this->_t(3) . 'required="false"';
-			$fieldSet[] = $this->_t(2) . "/>";
+			$fieldSet[] = Indent::_(3) . 'required="false"';
+			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
 		// if version is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['version']))
 		{
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Version Field. Type: Text (joomla) -->";
-			$fieldSet[] = $this->_t(2) . "<field";
-			$fieldSet[] = $this->_t(3) . 'name="version"';
-			$fieldSet[] = $this->_t(3) . 'type="text"';
-			$fieldSet[] = $this->_t(3) . 'class="readonly"';
-			$fieldSet[] = $this->_t(3) . 'label="' . $langView
+			$fieldSet[] = Indent::_(2) . "<field";
+			$fieldSet[] = Indent::_(3) . 'name="version"';
+			$fieldSet[] = Indent::_(3) . 'type="text"';
+			$fieldSet[] = Indent::_(3) . 'class="readonly"';
+			$fieldSet[] = Indent::_(3) . 'label="' . $langView
 				. '_VERSION_LABEL"';
-			$fieldSet[] = $this->_t(3) . 'description="' . $langView
+			$fieldSet[] = Indent::_(3) . 'description="' . $langView
 				. '_VERSION_DESC"';
-			$fieldSet[] = $this->_t(3) . 'size="6"';
-			$fieldSet[] = $this->_t(3) . 'readonly="true"';
-			$fieldSet[] = $this->_t(3) . 'filter="unset"';
-			$fieldSet[] = $this->_t(2) . "/>";
+			$fieldSet[] = Indent::_(3) . 'size="6"';
+			$fieldSet[] = Indent::_(3) . 'readonly="true"';
+			$fieldSet[] = Indent::_(3) . 'filter="unset"';
+			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 		}
@@ -844,36 +838,36 @@ class Fields extends Structure
 			// metakey
 			if (!isset($this->fieldsNames[$nameSingleCode]['metakey']))
 			{
-				$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+				$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 					. " Metakey Field. Type: Textarea (joomla) -->";
-				$fieldSet[] = $this->_t(2) . "<field";
-				$fieldSet[] = $this->_t(3) . 'name="metakey"';
-				$fieldSet[] = $this->_t(3) . 'type="textarea"';
-				$fieldSet[] = $this->_t(3)
+				$fieldSet[] = Indent::_(2) . "<field";
+				$fieldSet[] = Indent::_(3) . 'name="metakey"';
+				$fieldSet[] = Indent::_(3) . 'type="textarea"';
+				$fieldSet[] = Indent::_(3)
 					. 'label="JFIELD_META_KEYWORDS_LABEL"';
-				$fieldSet[] = $this->_t(3)
+				$fieldSet[] = Indent::_(3)
 					. 'description="JFIELD_META_KEYWORDS_DESC"';
-				$fieldSet[] = $this->_t(3) . 'rows="3"';
-				$fieldSet[] = $this->_t(3) . 'cols="30"';
-				$fieldSet[] = $this->_t(2) . "/>";
+				$fieldSet[] = Indent::_(3) . 'rows="3"';
+				$fieldSet[] = Indent::_(3) . 'cols="30"';
+				$fieldSet[] = Indent::_(2) . "/>";
 				// count the static field created
 				$this->fieldCount++;
 			}
 			// metadesc
 			if (!isset($this->fieldsNames[$nameSingleCode]['metadesc']))
 			{
-				$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+				$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 					. " Metadesc Field. Type: Textarea (joomla) -->";
-				$fieldSet[] = $this->_t(2) . "<field";
-				$fieldSet[] = $this->_t(3) . 'name="metadesc"';
-				$fieldSet[] = $this->_t(3) . 'type="textarea"';
-				$fieldSet[] = $this->_t(3)
+				$fieldSet[] = Indent::_(2) . "<field";
+				$fieldSet[] = Indent::_(3) . 'name="metadesc"';
+				$fieldSet[] = Indent::_(3) . 'type="textarea"';
+				$fieldSet[] = Indent::_(3)
 					. 'label="JFIELD_META_DESCRIPTION_LABEL"';
-				$fieldSet[] = $this->_t(3)
+				$fieldSet[] = Indent::_(3)
 					. 'description="JFIELD_META_DESCRIPTION_DESC"';
-				$fieldSet[] = $this->_t(3) . 'rows="3"';
-				$fieldSet[] = $this->_t(3) . 'cols="30"';
-				$fieldSet[] = $this->_t(2) . "/>";
+				$fieldSet[] = Indent::_(3) . 'rows="3"';
+				$fieldSet[] = Indent::_(3) . 'cols="30"';
+				$fieldSet[] = Indent::_(2) . "/>";
 				// count the static field created
 				$this->fieldCount++;
 			}
@@ -886,21 +880,21 @@ class Fields extends Structure
 			// set the field/tab name
 			$field_name = "title";
 			$tab_name   = "publishing";
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Was added due to Permissions JS needing a Title field -->";
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Let us know at gh-629 should this change -->";
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " https://github.com/vdm-io/Joomla-Component-Builder/issues/629#issuecomment-750117235 -->";
 			// at this point we know that we must add a hidden title field
 			// and make sure it does not get stored to the database
-			$fieldSet[] = $this->_t(2) . "<field";
-			$fieldSet[] = $this->_t(3) . "name=" . '"' . $field_name . '"';
-			$fieldSet[] = $this->_t(3)
+			$fieldSet[] = Indent::_(2) . "<field";
+			$fieldSet[] = Indent::_(3) . "name=" . '"' . $field_name . '"';
+			$fieldSet[] = Indent::_(3)
 				. 'type="hidden"';
-			$fieldSet[] = $this->_t(3) . 'default="' . $component . ' '
+			$fieldSet[] = Indent::_(3) . 'default="' . $component . ' '
 				. $nameSingleCode . '"';
-			$fieldSet[] = $this->_t(2) . "/>";
+			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
 			$this->fieldCount++;
 			// setup needed field values for layout
@@ -916,11 +910,11 @@ class Fields extends Structure
 		// load the dynamic fields now
 		if (StringHelper::check($dynamicFields))
 		{
-			$fieldSet[] = $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Dynamic Fields. -->" . $dynamicFields;
 		}
 		// close fieldset
-		$fieldSet[] = $this->_t(1) . "</fieldset>";
+		$fieldSet[] = Indent::_(1) . "</fieldset>";
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$nameSingleCode])
 			&& StringHelper::check(
@@ -931,72 +925,72 @@ class Fields extends Structure
 				|| !isset($this->fieldsNames[$nameSingleCode]['rights'])
 				|| !isset($this->fieldsNames[$nameSingleCode]['author']))
 			{
-				$fieldSet[] = PHP_EOL . $this->_t(1) . "<!--" . $this->setLine(
-						__LINE__
+				$fieldSet[] = PHP_EOL . Indent::_(1) . "<!--" . Line::_(
+						__LINE__,__CLASS__
 					) . " Metadata Fields. -->";
-				$fieldSet[] = $this->_t(1) . "<fields"
+				$fieldSet[] = Indent::_(1) . "<fields"
 					. ' name="metadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
-				$fieldSet[] = $this->_t(2) . '<fieldset name="vdmmetadata"';
-				$fieldSet[] = $this->_t(3)
+				$fieldSet[] = Indent::_(2) . '<fieldset name="vdmmetadata"';
+				$fieldSet[] = Indent::_(3)
 					. 'label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
 				// robots
 				if (!isset($this->fieldsNames[$nameSingleCode]['robots']))
 				{
-					$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(
-							__LINE__
+					$fieldSet[] = Indent::_(3) . "<!--" . Line::_(
+							__LINE__,__CLASS__
 						) . " Robots Field. Type: List (joomla) -->";
-					$fieldSet[] = $this->_t(3) . '<field name="robots"';
-					$fieldSet[] = $this->_t(4) . 'type="list"';
-					$fieldSet[] = $this->_t(4)
+					$fieldSet[] = Indent::_(3) . '<field name="robots"';
+					$fieldSet[] = Indent::_(4) . 'type="list"';
+					$fieldSet[] = Indent::_(4)
 						. 'label="JFIELD_METADATA_ROBOTS_LABEL"';
-					$fieldSet[] = $this->_t(4)
+					$fieldSet[] = Indent::_(4)
 						. 'description="JFIELD_METADATA_ROBOTS_DESC" >';
-					$fieldSet[] = $this->_t(4)
+					$fieldSet[] = Indent::_(4)
 						. '<option value="">JGLOBAL_USE_GLOBAL</option>';
-					$fieldSet[] = $this->_t(4)
+					$fieldSet[] = Indent::_(4)
 						. '<option value="index, follow">JGLOBAL_INDEX_FOLLOW</option>';
-					$fieldSet[] = $this->_t(4)
+					$fieldSet[] = Indent::_(4)
 						. '<option value="noindex, follow">JGLOBAL_NOINDEX_FOLLOW</option>';
-					$fieldSet[] = $this->_t(4)
+					$fieldSet[] = Indent::_(4)
 						. '<option value="index, nofollow">JGLOBAL_INDEX_NOFOLLOW</option>';
-					$fieldSet[] = $this->_t(4)
+					$fieldSet[] = Indent::_(4)
 						. '<option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>';
-					$fieldSet[] = $this->_t(3) . '</field>';
+					$fieldSet[] = Indent::_(3) . '</field>';
 					// count the static field created
 					$this->fieldCount++;
 				}
 				// author
 				if (!isset($this->fieldsNames[$nameSingleCode]['author']))
 				{
-					$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(
-							__LINE__
+					$fieldSet[] = Indent::_(3) . "<!--" . Line::_(
+							__LINE__,__CLASS__
 						) . " Author Field. Type: Text (joomla) -->";
-					$fieldSet[] = $this->_t(3) . '<field name="author"';
-					$fieldSet[] = $this->_t(4) . 'type="text"';
-					$fieldSet[] = $this->_t(4)
+					$fieldSet[] = Indent::_(3) . '<field name="author"';
+					$fieldSet[] = Indent::_(4) . 'type="text"';
+					$fieldSet[] = Indent::_(4)
 						. 'label="JAUTHOR" description="JFIELD_METADATA_AUTHOR_DESC"';
-					$fieldSet[] = $this->_t(4) . 'size="20"';
-					$fieldSet[] = $this->_t(3) . "/>";
+					$fieldSet[] = Indent::_(4) . 'size="20"';
+					$fieldSet[] = Indent::_(3) . "/>";
 					// count the static field created
 					$this->fieldCount++;
 				}
 				// rights
 				if (!isset($this->fieldsNames[$nameSingleCode]['rights']))
 				{
-					$fieldSet[] = $this->_t(3) . "<!--" . $this->setLine(
-							__LINE__
+					$fieldSet[] = Indent::_(3) . "<!--" . Line::_(
+							__LINE__,__CLASS__
 						) . " Rights Field. Type: Textarea (joomla) -->";
-					$fieldSet[] = $this->_t(3)
+					$fieldSet[] = Indent::_(3)
 						. '<field name="rights" type="textarea" label="JFIELD_META_RIGHTS_LABEL"';
-					$fieldSet[] = $this->_t(4)
+					$fieldSet[] = Indent::_(4)
 						. 'description="JFIELD_META_RIGHTS_DESC" required="false" filter="string"';
-					$fieldSet[] = $this->_t(4) . 'cols="30" rows="2"';
-					$fieldSet[] = $this->_t(3) . "/>";
+					$fieldSet[] = Indent::_(4) . 'cols="30" rows="2"';
+					$fieldSet[] = Indent::_(3) . "/>";
 					// count the static field created
 					$this->fieldCount++;
 				}
-				$fieldSet[] = $this->_t(2) . "</fieldset>";
-				$fieldSet[] = $this->_t(1) . "</fields>";
+				$fieldSet[] = Indent::_(2) . "</fieldset>";
+				$fieldSet[] = Indent::_(1) . "</fields>";
 			}
 		}
 
@@ -1031,41 +1025,49 @@ class Fields extends Structure
 		$dynamicFieldsXML = array();
 		// set the custom table key
 		$dbkey = 'g';
+		// for plugin event TODO change event api signatures
+		$this->placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onBeforeBuildFields
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onBeforeBuildFields',
 			array(&$this->componentContext, &$dynamicFieldsXML, &$readOnlyXML,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
 			      &$nameListCode, &$this->placeholders, &$langView,
 			      &$langViews)
 		);
+		// for plugin event TODO change event api signatures
+		CFactory::_('Placeholder')->active = $this->placeholders;
 		// TODO we should add the global and local view switch if field for front end
 		foreach ($view['settings']->fields as $field)
 		{
 			$dynamicFieldsXML[] = $this->setDynamicField(
 				$field, $view, $view['settings']->type, $langView,
-				$nameSingleCode, $nameListCode, $this->placeholders, $dbkey,
+				$nameSingleCode, $nameListCode, CFactory::_('Placeholder')->active, $dbkey,
 				true
 			);
 		}
+		// for plugin event TODO change event api signatures
+		$this->placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onAfterBuildFields
-		$this->triggerEvent(
+		CFactory::_J('Event')->trigger(
 			'jcb_ce_onAfterBuildFields',
 			array(&$this->componentContext, &$dynamicFieldsXML, &$readOnlyXML,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
 			      &$nameListCode, &$this->placeholders, &$langView,
 			      &$langViews)
 		);
+		// for plugin event TODO change event api signatures
+		CFactory::_('Placeholder')->active = $this->placeholders;
 		// set the default fields
 		$XML         = new simpleXMLElement('<a/>');
 		$fieldSetXML = $XML->addChild('fieldset');
 		$fieldSetXML->addAttribute('name', 'details');
 		ComponentbuilderHelper::xmlComment(
-			$fieldSetXML, $this->setLine(__LINE__) . " Default Fields."
+			$fieldSetXML, Line::_(__Line__, __Class__) . " Default Fields."
 		);
 		ComponentbuilderHelper::xmlComment(
 			$fieldSetXML,
-			$this->setLine(__LINE__) . " Id Field. Type: Text (joomla)"
+			Line::_(__Line__, __Class__) . " Id Field. Type: Text (joomla)"
 		);
 		// if id is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['id']))
@@ -1099,7 +1101,7 @@ class Fields extends Structure
 			);
 			$attributes = array_merge($attributes, $readOnlyXML);
 			ComponentbuilderHelper::xmlComment(
-				$fieldSetXML, $this->setLine(__LINE__)
+				$fieldSetXML, Line::_(__Line__, __Class__)
 				. " Date Created Field. Type: Calendar (joomla)"
 			);
 			$fieldXML = $fieldSetXML->addChild('field');
@@ -1118,7 +1120,7 @@ class Fields extends Structure
 			);
 			$attributes = array_merge($attributes, $readOnlyXML);
 			ComponentbuilderHelper::xmlComment(
-				$fieldSetXML, $this->setLine(__LINE__)
+				$fieldSetXML, Line::_(__Line__, __Class__)
 				. " User Created Field. Type: User (joomla)"
 			);
 			$fieldXML = $fieldSetXML->addChild('field');
@@ -1136,7 +1138,7 @@ class Fields extends Structure
 			);
 			$attributes = array_merge($attributes, $readOnlyXML);
 			ComponentbuilderHelper::xmlComment(
-				$fieldSetXML, $this->setLine(__LINE__)
+				$fieldSetXML, Line::_(__Line__, __Class__)
 				. " Published Field. Type: List (joomla)"
 			);
 			$fieldXML = $fieldSetXML->addChild('field');
@@ -1168,7 +1170,7 @@ class Fields extends Structure
 				'filter'      => 'user_utc'
 			);
 			ComponentbuilderHelper::xmlComment(
-				$fieldSetXML, $this->setLine(__LINE__)
+				$fieldSetXML, Line::_(__Line__, __Class__)
 				. " Date Modified Field. Type: Calendar (joomla)"
 			);
 			$fieldXML = $fieldSetXML->addChild('field');
@@ -1189,7 +1191,7 @@ class Fields extends Structure
 				'filter'      => 'unset'
 			);
 			ComponentbuilderHelper::xmlComment(
-				$fieldSetXML, $this->setLine(__LINE__)
+				$fieldSetXML, Line::_(__Line__, __Class__)
 				. " User Modified Field. Type: User (joomla)"
 			);
 			$fieldXML = $fieldSetXML->addChild('field');
@@ -1214,7 +1216,7 @@ class Fields extends Structure
 			);
 			$attributes = array_merge($attributes, $readOnlyXML);
 			ComponentbuilderHelper::xmlComment(
-				$fieldSetXML, $this->setLine(__LINE__)
+				$fieldSetXML, Line::_(__Line__, __Class__)
 				. " Access Field. Type: Accesslevel (joomla)"
 			);
 			$fieldXML = $fieldSetXML->addChild('field');
@@ -1237,7 +1239,7 @@ class Fields extends Structure
 			);
 			$attributes = array_merge($attributes, $readOnlyXML);
 			ComponentbuilderHelper::xmlComment(
-				$fieldSetXML, $this->setLine(__LINE__)
+				$fieldSetXML, Line::_(__Line__, __Class__)
 				. " Ordering Field. Type: Numbers (joomla)"
 			);
 			$fieldXML = $fieldSetXML->addChild('field');
@@ -1260,7 +1262,7 @@ class Fields extends Structure
 			);
 			ComponentbuilderHelper::xmlComment(
 				$fieldSetXML,
-				$this->setLine(__LINE__) . " Version Field. Type: Text (joomla)"
+				Line::_(__Line__, __Class__) . " Version Field. Type: Text (joomla)"
 			);
 			$fieldXML = $fieldSetXML->addChild('field');
 			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
@@ -1285,7 +1287,7 @@ class Fields extends Structure
 					'cols'        => 30
 				);
 				ComponentbuilderHelper::xmlComment(
-					$fieldSetXML, $this->setLine(__LINE__)
+					$fieldSetXML, Line::_(__Line__, __Class__)
 					. " Metakey Field. Type: Textarea (joomla)"
 				);
 				$fieldXML = $fieldSetXML->addChild('field');
@@ -1302,7 +1304,7 @@ class Fields extends Structure
 				$attributes['label']       = 'JFIELD_META_DESCRIPTION_LABEL';
 				$attributes['description'] = 'JFIELD_META_DESCRIPTION_DESC';
 				ComponentbuilderHelper::xmlComment(
-					$fieldSetXML, $this->setLine(__LINE__)
+					$fieldSetXML, Line::_(__Line__, __Class__)
 					. " Metadesc Field. Type: Textarea (joomla)"
 				);
 				$fieldXML = $fieldSetXML->addChild('field');
@@ -1329,17 +1331,17 @@ class Fields extends Structure
 			);
 			ComponentbuilderHelper::xmlComment(
 				$fieldSetXML,
-				$this->setLine(__LINE__)
+				Line::_(__Line__, __Class__)
 				. " Was added due to Permissions JS needing a Title field"
 			);
 			ComponentbuilderHelper::xmlComment(
 				$fieldSetXML,
-				$this->setLine(__LINE__)
+				Line::_(__Line__, __Class__)
 				. " Let us know at gh-629 should this change"
 			);
 			ComponentbuilderHelper::xmlComment(
 				$fieldSetXML,
-				$this->setLine(__LINE__)
+				Line::_(__Line__, __Class__)
 				. " https://github.com/vdm-io/Joomla-Component-Builder/issues/629#issuecomment-750117235"
 			);
 			$fieldXML = $fieldSetXML->addChild('field');
@@ -1360,7 +1362,7 @@ class Fields extends Structure
 		if (count((array) $dynamicFieldsXML))
 		{
 			ComponentbuilderHelper::xmlComment(
-				$fieldSetXML, $this->setLine(__LINE__) . " Dynamic Fields."
+				$fieldSetXML, Line::_(__Line__, __Class__) . " Dynamic Fields."
 			);
 			foreach ($dynamicFieldsXML as $dynamicfield)
 			{
@@ -1378,7 +1380,7 @@ class Fields extends Structure
 				|| !isset($this->fieldsNames[$nameSingleCode]['rights']))
 			{
 				ComponentbuilderHelper::xmlComment(
-					$fieldSetXML, $this->setLine(__LINE__) . " Metadata Fields"
+					$fieldSetXML, Line::_(__Line__, __Class__) . " Metadata Fields"
 				);
 				$fieldsXML = $fieldSetXML->addChild('fields');
 				$fieldsXML->addAttribute('name', 'metadata');
@@ -1394,7 +1396,7 @@ class Fields extends Structure
 				if (!isset($this->fieldsNames[$nameSingleCode]['robots']))
 				{
 					ComponentbuilderHelper::xmlComment(
-						$fieldsFieldSetXML, $this->setLine(__LINE__)
+						$fieldsFieldSetXML, Line::_(__Line__, __Class__)
 						. " Robots Field. Type: List (joomla)"
 					);
 					$robots     = $fieldsFieldSetXML->addChild('field');
@@ -1427,7 +1429,7 @@ class Fields extends Structure
 				if (!isset($this->fieldsNames[$nameSingleCode]['author']))
 				{
 					ComponentbuilderHelper::xmlComment(
-						$fieldsFieldSetXML, $this->setLine(__LINE__)
+						$fieldsFieldSetXML, Line::_(__Line__, __Class__)
 						. " Author Field. Type: Text (joomla)"
 					);
 					$author     = $fieldsFieldSetXML->addChild('field');
@@ -1448,7 +1450,7 @@ class Fields extends Structure
 				if (!isset($this->fieldsNames[$nameSingleCode]['rights']))
 				{
 					ComponentbuilderHelper::xmlComment(
-						$fieldsFieldSetXML, $this->setLine(__LINE__)
+						$fieldsFieldSetXML, Line::_(__Line__, __Class__)
 						. " Rights Field. Type: Textarea (joomla)"
 					);
 					$rights     = $fieldsFieldSetXML->addChild('field');
@@ -1587,7 +1589,7 @@ class Fields extends Structure
 		&$nameSingleCode, &$nameListCode, &$placeholders, &$dbkey, $build
 	) {
 		// set default return
-		if (Config::get('field_builder_type', 2) == 1)
+		if (CFactory::_('Config')->get('field_builder_type', 2) == 1)
 		{
 			// string manipulation
 			$dynamicField = '';
@@ -1832,7 +1834,7 @@ class Fields extends Structure
 	) {
 		// check the field builder type
 		$xmlField = '';
-		if (Config::get('field_builder_type', 2) == 1)
+		if (CFactory::_('Config')->get('field_builder_type', 2) == 1)
 		{
 			// string manipulation
 			$xmlField = $this->setDynamicField(
@@ -1854,10 +1856,10 @@ class Fields extends Structure
 				$xmlField = dom_import_simplexml(
 					$newxmlField->fieldXML
 				);
-				$xmlField = PHP_EOL . $this->_t(2) . "<!--"
-					. $this->setLine(__LINE__) . " "
+				$xmlField = PHP_EOL . Indent::_(2) . "<!--"
+					. Line::_(__Line__, __Class__) . " "
 					. $newxmlField->comment . ' -->' . PHP_EOL
-					. $this->_t(1) . $this->xmlPrettyPrint(
+					. Indent::_(1) . $this->xmlPrettyPrint(
 						$xmlField, 'field'
 					);
 			}
@@ -1892,7 +1894,7 @@ class Fields extends Structure
 		// count the dynamic fields created
 		$this->fieldCount++;
 		// check what type of field builder to use
-		if (Config::get('field_builder_type', 2) == 1)
+		if (CFactory::_('Config')->get('field_builder_type', 2) == 1)
 		{
 			// build field set using string manipulation
 			return $this->stringSetField(
@@ -1938,19 +1940,19 @@ class Fields extends Structure
 		if ($setType === 'option')
 		{
 			// now add to the field set
-			$field     .= PHP_EOL . $this->_t(1) . $taber . $this->_t(1)
-				. "<!--" . $this->setLine(__LINE__) . " " . ucfirst($name)
+			$field     .= PHP_EOL . Indent::_(1) . $taber . Indent::_(1)
+				. "<!--" . Line::_(__Line__, __Class__) . " " . ucfirst($name)
 				. " Field. Type: " . StringHelper::safe(
 					$typeName, 'F'
 				) . ". (joomla) -->";
-			$field     .= PHP_EOL . $this->_t(1) . $taber . $this->_t(1)
+			$field     .= PHP_EOL . Indent::_(1) . $taber . Indent::_(1)
 				. "<field";
 			$optionSet = '';
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$field .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1)
+					$field .= PHP_EOL . Indent::_(2) . $taber . Indent::_(1)
 						. $property . '="' . $value . '"';
 				}
 				elseif ($property === 'option')
@@ -1982,13 +1984,13 @@ class Fields extends Structure
 											$valueKeyArray[0], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[0]
 									);
 									// now add group label
 									$groups_[$valueKeyArray[1]] = PHP_EOL
-										. $this->_t(1) . $taber . $this->_t(2)
+										. Indent::_(1) . $taber . Indent::_(2)
 										. '<group label="' . $langValue . '">';
 									// set order
 									$order_['group' . $valueKeyArray[1]]
@@ -2006,16 +2008,16 @@ class Fields extends Structure
 											$valueKeyArray[1], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[1]
 									);
 									// now add to option set
 									$grouped_['group'][$valueKeyArray[2]][]
-										= PHP_EOL . $this->_t(1) . $taber
-										. $this->_t(3) . '<option value="'
+										= PHP_EOL . Indent::_(1) . $taber
+										. Indent::_(3) . '<option value="'
 										. $valueKeyArray[0] . '">' . PHP_EOL
-										. $this->_t(1) . $taber . $this->_t(4)
+										. Indent::_(1) . $taber . Indent::_(4)
 										. $langValue . '</option>';
 									$optionArray[$valueKeyArray[0]]
 										= $langValue;
@@ -2030,16 +2032,16 @@ class Fields extends Structure
 											$valueKeyArray[1], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[1]
 									);
 									// now add to option set
 									$grouped_['option'][$valueKeyArray[0]]
-										= PHP_EOL . $this->_t(1) . $taber
-										. $this->_t(2) . '<option value="'
+										= PHP_EOL . Indent::_(1) . $taber
+										. Indent::_(2) . '<option value="'
 										. $valueKeyArray[0] . '">' . PHP_EOL
-										. $this->_t(1) . $taber . $this->_t(3)
+										. Indent::_(1) . $taber . Indent::_(3)
 										. $langValue . '</option>';
 									$optionArray[$valueKeyArray[0]]
 										= $langValue;
@@ -2056,15 +2058,15 @@ class Fields extends Structure
 										$option, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $option
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $option
 								);
 								// now add to option set
 								$grouped_['option'][$option] = PHP_EOL
-									. $this->_t(1) . $taber . $this->_t(2)
+									. Indent::_(1) . $taber . Indent::_(2)
 									. '<option value="' . $option . '">'
-									. PHP_EOL . $this->_t(1) . $taber
-									. $this->_t(3) . $langValue . '</option>';
+									. PHP_EOL . Indent::_(1) . $taber
+									. Indent::_(3) . $langValue . '</option>';
 								$optionArray[$option]        = $langValue;
 								// set order
 								$order_['option' . $option] = $option;
@@ -2096,8 +2098,8 @@ class Fields extends Structure
 								unset($groups_[$_id]);
 								unset($grouped_[$key_][$_id]);
 								// close the group
-								$optionSet .= PHP_EOL . $this->_t(1) . $taber
-									. $this->_t(2) . '</group>';
+								$optionSet .= PHP_EOL . Indent::_(1) . $taber
+									. Indent::_(2) . '</group>';
 							}
 							elseif (isset($grouped_[$key_][$_id])
 								&& StringHelper::check(
@@ -2123,14 +2125,14 @@ class Fields extends Structure
 										$t, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $t
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $t
 								);
 								// now add to option set
-								$optionSet       .= PHP_EOL . $this->_t(1)
-									. $taber . $this->_t(2) . '<option value="'
-									. $v . '">' . PHP_EOL . $this->_t(1)
-									. $taber . $this->_t(3) . $langValue
+								$optionSet       .= PHP_EOL . Indent::_(1)
+									. $taber . Indent::_(2) . '<option value="'
+									. $v . '">' . PHP_EOL . Indent::_(1)
+									. $taber . Indent::_(3) . $langValue
 									. '</option>';
 								$optionArray[$v] = $langValue;
 							}
@@ -2142,14 +2144,14 @@ class Fields extends Structure
 										$option, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $option
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $option
 								);
 								// now add to option set
-								$optionSet            .= PHP_EOL . $this->_t(2)
-									. $taber . $this->_t(1) . '<option value="'
-									. $option . '">' . PHP_EOL . $this->_t(2)
-									. $taber . $this->_t(2) . $langValue
+								$optionSet            .= PHP_EOL . Indent::_(2)
+									. $taber . Indent::_(1) . '<option value="'
+									. $option . '">' . PHP_EOL . Indent::_(2)
+									. $taber . Indent::_(2) . $langValue
 									. '</option>';
 								$optionArray[$option] = $langValue;
 							}
@@ -2167,11 +2169,11 @@ class Fields extends Structure
 									$t, true
 								);
 							// add to lang array
-							$this->setLangContent($this->lang, $langValue, $t);
+							CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langValue, $t);
 							// now add to option set
-							$optionSet       .= PHP_EOL . $this->_t(2) . $taber
-								. $this->_t(1) . '<option value="' . $v . '">'
-								. PHP_EOL . $this->_t(2) . $taber . $this->_t(2)
+							$optionSet       .= PHP_EOL . Indent::_(2) . $taber
+								. Indent::_(1) . '<option value="' . $v . '">'
+								. PHP_EOL . Indent::_(2) . $taber . Indent::_(2)
 								. $langValue . '</option>';
 							$optionArray[$v] = $langValue;
 						}
@@ -2183,14 +2185,14 @@ class Fields extends Structure
 									$value, true
 								);
 							// add to lang array
-							$this->setLangContent(
-								$this->lang, $langValue, $value
+							CFactory::_('Language')->set(
+								CFactory::_('Config')->lang_target, $langValue, $value
 							);
 							// now add to option set
-							$optionSet           .= PHP_EOL . $this->_t(2)
-								. $taber . $this->_t(1) . '<option value="'
-								. $value . '">' . PHP_EOL . $this->_t(2)
-								. $taber . $this->_t(2) . $langValue
+							$optionSet           .= PHP_EOL . Indent::_(2)
+								. $taber . Indent::_(1) . '<option value="'
+								. $value . '">' . PHP_EOL . Indent::_(2)
+								. $taber . Indent::_(2) . $langValue
 								. '</option>';
 							$optionArray[$value] = $langValue;
 						}
@@ -2201,54 +2203,54 @@ class Fields extends Structure
 			if (StringHelper::check($optionSet))
 			{
 				$field .= '>';
-				$field .= PHP_EOL . $this->_t(3) . $taber . "<!--"
-					. $this->setLine(__LINE__) . " Option Set. -->";
+				$field .= PHP_EOL . Indent::_(3) . $taber . "<!--"
+					. Line::_(__Line__, __Class__) . " Option Set. -->";
 				$field .= $optionSet;
-				$field .= PHP_EOL . $this->_t(2) . $taber . "</field>";
+				$field .= PHP_EOL . Indent::_(2) . $taber . "</field>";
 			}
 			// if no options found and must have a list of options
 			elseif (ComponentbuilderHelper::fieldCheck($typeName, 'list'))
 			{
 				$optionArray = false;
-				$field       .= PHP_EOL . $this->_t(2) . $taber . "/>";
-				$field       .= PHP_EOL . $this->_t(2) . $taber . "<!--"
-					. $this->setLine(__LINE__)
+				$field       .= PHP_EOL . Indent::_(2) . $taber . "/>";
+				$field       .= PHP_EOL . Indent::_(2) . $taber . "<!--"
+					. Line::_(__Line__, __Class__)
 					. " No Manual Options Were Added In Field Settings. -->"
 					. PHP_EOL;
 			}
 			else
 			{
 				$optionArray = false;
-				$field       .= PHP_EOL . $this->_t(2) . $taber . "/>";
+				$field       .= PHP_EOL . Indent::_(2) . $taber . "/>";
 			}
 		}
 		elseif ($setType === 'plain')
 		{
 			// now add to the field set
-			$field .= PHP_EOL . $this->_t(2) . $taber . "<!--" . $this->setLine(
-					__LINE__
+			$field .= PHP_EOL . Indent::_(2) . $taber . "<!--" . Line::_(
+					__LINE__,__CLASS__
 				) . " " . ucfirst($name) . " Field. Type: "
 				. StringHelper::safe($typeName, 'F')
 				. ". (joomla) -->";
-			$field .= PHP_EOL . $this->_t(2) . $taber . "<field";
+			$field .= PHP_EOL . Indent::_(2) . $taber . "<field";
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$field .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1)
+					$field .= PHP_EOL . Indent::_(2) . $taber . Indent::_(1)
 						. $property . '="' . $value . '"';
 				}
 			}
-			$field .= PHP_EOL . $this->_t(2) . $taber . "/>";
+			$field .= PHP_EOL . Indent::_(2) . $taber . "/>";
 		}
 		elseif ($setType === 'spacer')
 		{
 			// now add to the field set
-			$field .= PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(__LINE__)
+			$field .= PHP_EOL . Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " " . ucfirst($name) . " Field. Type: "
 				. StringHelper::safe($typeName, 'F')
 				. ". A None Database Field. (joomla) -->";
-			$field .= PHP_EOL . $this->_t(2) . "<field";
+			$field .= PHP_EOL . Indent::_(2) . "<field";
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
@@ -2264,25 +2266,25 @@ class Fields extends Structure
 			if ($typeName === 'repeatable')
 			{
 				// now add to the field set
-				$field     .= PHP_EOL . $this->_t(2) . "<!--" . $this->setLine(
-						__LINE__
+				$field     .= PHP_EOL . Indent::_(2) . "<!--" . Line::_(
+						__LINE__,__CLASS__
 					) . " " . ucfirst($name) . " Field. Type: "
 					. StringHelper::safe($typeName, 'F')
 					. ". (joomla) -->";
-				$field     .= PHP_EOL . $this->_t(2) . "<field";
+				$field     .= PHP_EOL . Indent::_(2) . "<field";
 				$fieldsSet = array();
 				foreach ($fieldAttributes as $property => $value)
 				{
 					if ($property != 'fields')
 					{
-						$field .= PHP_EOL . $this->_t(3) . $property . '="'
+						$field .= PHP_EOL . Indent::_(3) . $property . '="'
 							. $value . '"';
 					}
 				}
 				$field .= ">";
-				$field .= PHP_EOL . $this->_t(3) . '<fields name="'
+				$field .= PHP_EOL . Indent::_(3) . '<fields name="'
 					. $fieldAttributes['name'] . '_fields" label="">';
-				$field .= PHP_EOL . $this->_t(4)
+				$field .= PHP_EOL . Indent::_(4)
 					. '<fieldset hidden="true" name="'
 					. $fieldAttributes['name'] . '_modal" repeat="true">';
 				if (strpos($fieldAttributes['fields'], ',') !== false)
@@ -2335,7 +2337,7 @@ class Fields extends Structure
 							$r_multiple  = false;
 							$r_langLabel = '';
 							// add the tabs needed
-							$r_taber = $this->_t(3);
+							$r_taber = Indent::_(3);
 							// get field values
 							$r_fieldValues = $this->setFieldAttributes(
 								$fieldData, $view, $r_name, $r_typeName,
@@ -2385,8 +2387,8 @@ class Fields extends Structure
 											$r_name, true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $r_listLangName,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $r_listLangName,
 										StringHelper::safe(
 											$r_name, 'W'
 										)
@@ -2424,31 +2426,31 @@ class Fields extends Structure
 						}
 					}
 				}
-				$field .= PHP_EOL . $this->_t(4) . "</fieldset>";
-				$field .= PHP_EOL . $this->_t(3) . "</fields>";
-				$field .= PHP_EOL . $this->_t(2) . "</field>";
+				$field .= PHP_EOL . Indent::_(4) . "</fieldset>";
+				$field .= PHP_EOL . Indent::_(3) . "</fields>";
+				$field .= PHP_EOL . Indent::_(2) . "</field>";
 			}
 			// set the subform fields (it is a repeatable without the modal) 
 			elseif ($typeName === 'subform')
 			{
 				// now add to the field set
-				$field     .= PHP_EOL . $this->_t(2) . $taber . "<!--"
-					. $this->setLine(__LINE__) . " " . ucfirst($name)
+				$field     .= PHP_EOL . Indent::_(2) . $taber . "<!--"
+					. Line::_(__Line__, __Class__) . " " . ucfirst($name)
 					. " Field. Type: " . StringHelper::safe(
 						$typeName, 'F'
 					) . ". (joomla) -->";
-				$field     .= PHP_EOL . $this->_t(2) . $taber . "<field";
+				$field     .= PHP_EOL . Indent::_(2) . $taber . "<field";
 				$fieldsSet = array();
 				foreach ($fieldAttributes as $property => $value)
 				{
 					if ($property != 'fields')
 					{
-						$field .= PHP_EOL . $this->_t(3) . $taber . $property
+						$field .= PHP_EOL . Indent::_(3) . $taber . $property
 							. '="' . $value . '"';
 					}
 				}
 				$field .= ">";
-				$field .= PHP_EOL . $this->_t(3) . $taber
+				$field .= PHP_EOL . Indent::_(3) . $taber
 					. '<form hidden="true" name="list_'
 					. $fieldAttributes['name'] . '_modal" repeat="true">';
 				if (strpos($fieldAttributes['fields'], ',') !== false)
@@ -2501,7 +2503,7 @@ class Fields extends Structure
 							$r_multiple  = false;
 							$r_langLabel = '';
 							// add the tabs needed
-							$r_taber = $this->_t(2) . $taber;
+							$r_taber = Indent::_(2) . $taber;
 							// get field values
 							$r_fieldValues = $this->setFieldAttributes(
 								$fieldData, $view, $r_name, $r_typeName,
@@ -2576,8 +2578,8 @@ class Fields extends Structure
 											$r_name, true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $r_listLangName,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $r_listLangName,
 										StringHelper::safe(
 											$r_name, 'W'
 										)
@@ -2615,26 +2617,26 @@ class Fields extends Structure
 						}
 					}
 				}
-				$field .= PHP_EOL . $this->_t(3) . $taber . "</form>";
-				$field .= PHP_EOL . $this->_t(2) . $taber . "</field>";
+				$field .= PHP_EOL . Indent::_(3) . $taber . "</form>";
+				$field .= PHP_EOL . Indent::_(2) . $taber . "</field>";
 			}
 		}
 		elseif ($setType === 'custom')
 		{
 			// now add to the field set
-			$field     .= PHP_EOL . $this->_t(2) . $taber . "<!--"
-				. $this->setLine(
-					__LINE__
+			$field     .= PHP_EOL . Indent::_(2) . $taber . "<!--"
+				. Line::_(
+					__LINE__,__CLASS__
 				) . " " . ucfirst($name) . " Field. Type: "
 				. StringHelper::safe($typeName, 'F')
 				. ". (custom) -->";
-			$field     .= PHP_EOL . $this->_t(2) . $taber . "<field";
+			$field     .= PHP_EOL . Indent::_(2) . $taber . "<field";
 			$optionSet = '';
 			foreach ($fieldAttributes as $property => $value)
 			{
 				if ($property != 'option')
 				{
-					$field .= PHP_EOL . $this->_t(2) . $taber . $this->_t(1)
+					$field .= PHP_EOL . Indent::_(2) . $taber . Indent::_(1)
 						. $property . '="' . $value . '"';
 				}
 				elseif ($property === 'option')
@@ -2666,13 +2668,13 @@ class Fields extends Structure
 											$valueKeyArray[0], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[0]
 									);
 									// now add group label
 									$groups_[$valueKeyArray[1]] = PHP_EOL
-										. $this->_t(1) . $taber . $this->_t(2)
+										. Indent::_(1) . $taber . Indent::_(2)
 										. '<group label="' . $langValue . '">';
 									// set order
 									$order_['group' . $valueKeyArray[1]]
@@ -2690,16 +2692,16 @@ class Fields extends Structure
 											$valueKeyArray[1], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[1]
 									);
 									// now add to option set
 									$grouped_['group'][$valueKeyArray[2]][]
-										= PHP_EOL . $this->_t(1) . $taber
-										. $this->_t(3) . '<option value="'
+										= PHP_EOL . Indent::_(1) . $taber
+										. Indent::_(3) . '<option value="'
 										. $valueKeyArray[0] . '">' . PHP_EOL
-										. $this->_t(1) . $taber . $this->_t(4)
+										. Indent::_(1) . $taber . Indent::_(4)
 										. $langValue . '</option>';
 									$optionArray[$valueKeyArray[0]]
 										= $langValue;
@@ -2714,16 +2716,16 @@ class Fields extends Structure
 											$valueKeyArray[1], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[1]
 									);
 									// now add to option set
 									$grouped_['option'][$valueKeyArray[0]]
-										= PHP_EOL . $this->_t(1) . $taber
-										. $this->_t(2) . '<option value="'
+										= PHP_EOL . Indent::_(1) . $taber
+										. Indent::_(2) . '<option value="'
 										. $valueKeyArray[0] . '">' . PHP_EOL
-										. $this->_t(1) . $taber . $this->_t(3)
+										. Indent::_(1) . $taber . Indent::_(3)
 										. $langValue . '</option>';
 									$optionArray[$valueKeyArray[0]]
 										= $langValue;
@@ -2740,15 +2742,15 @@ class Fields extends Structure
 										$option, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $option
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $option
 								);
 								// now add to option set
 								$grouped_['option'][$option] = PHP_EOL
-									. $this->_t(1) . $taber . $this->_t(2)
+									. Indent::_(1) . $taber . Indent::_(2)
 									. '<option value="' . $option . '">'
-									. PHP_EOL . $this->_t(1) . $taber
-									. $this->_t(3) . $langValue . '</option>';
+									. PHP_EOL . Indent::_(1) . $taber
+									. Indent::_(3) . $langValue . '</option>';
 								$optionArray[$option]        = $langValue;
 								// set order
 								$order_['option' . $option] = $option;
@@ -2780,8 +2782,8 @@ class Fields extends Structure
 								unset($groups_[$_id]);
 								unset($grouped_[$key_][$_id]);
 								// close the group
-								$optionSet .= PHP_EOL . $this->_t(1) . $taber
-									. $this->_t(2) . '</group>';
+								$optionSet .= PHP_EOL . Indent::_(1) . $taber
+									. Indent::_(2) . '</group>';
 							}
 							elseif (isset($grouped_[$key_][$_id])
 								&& StringHelper::check(
@@ -2807,14 +2809,14 @@ class Fields extends Structure
 										$t, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $t
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $t
 								);
 								// now add to option set
-								$optionSet       .= PHP_EOL . $this->_t(1)
-									. $taber . $this->_t(2) . '<option value="'
-									. $v . '">' . PHP_EOL . $this->_t(1)
-									. $taber . $this->_t(3) . $langValue
+								$optionSet       .= PHP_EOL . Indent::_(1)
+									. $taber . Indent::_(2) . '<option value="'
+									. $v . '">' . PHP_EOL . Indent::_(1)
+									. $taber . Indent::_(3) . $langValue
 									. '</option>';
 								$optionArray[$v] = $langValue;
 							}
@@ -2826,14 +2828,14 @@ class Fields extends Structure
 										$option, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $option
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $option
 								);
 								// now add to option set
-								$optionSet            .= PHP_EOL . $this->_t(2)
-									. $taber . $this->_t(1) . '<option value="'
-									. $option . '">' . PHP_EOL . $this->_t(2)
-									. $taber . $this->_t(2) . $langValue
+								$optionSet            .= PHP_EOL . Indent::_(2)
+									. $taber . Indent::_(1) . '<option value="'
+									. $option . '">' . PHP_EOL . Indent::_(2)
+									. $taber . Indent::_(2) . $langValue
 									. '</option>';
 								$optionArray[$option] = $langValue;
 							}
@@ -2851,11 +2853,11 @@ class Fields extends Structure
 									$t, true
 								);
 							// add to lang array
-							$this->setLangContent($this->lang, $langValue, $t);
+							CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langValue, $t);
 							// now add to option set
-							$optionSet       .= PHP_EOL . $this->_t(2) . $taber
-								. $this->_t(1) . '<option value="' . $v . '">'
-								. PHP_EOL . $this->_t(2) . $taber . $this->_t(2)
+							$optionSet       .= PHP_EOL . Indent::_(2) . $taber
+								. Indent::_(1) . '<option value="' . $v . '">'
+								. PHP_EOL . Indent::_(2) . $taber . Indent::_(2)
 								. $langValue . '</option>';
 							$optionArray[$v] = $langValue;
 						}
@@ -2867,14 +2869,14 @@ class Fields extends Structure
 									$value, true
 								);
 							// add to lang array
-							$this->setLangContent(
-								$this->lang, $langValue, $value
+							CFactory::_('Language')->set(
+								CFactory::_('Config')->lang_target, $langValue, $value
 							);
 							// now add to option set
-							$optionSet           .= PHP_EOL . $this->_t(2)
-								. $taber . $this->_t(1) . '<option value="'
-								. $value . '">' . PHP_EOL . $this->_t(2)
-								. $taber . $this->_t(2) . $langValue
+							$optionSet           .= PHP_EOL . Indent::_(2)
+								. $taber . Indent::_(1) . '<option value="'
+								. $value . '">' . PHP_EOL . Indent::_(2)
+								. $taber . Indent::_(2) . $langValue
 								. '</option>';
 							$optionArray[$value] = $langValue;
 						}
@@ -2885,25 +2887,25 @@ class Fields extends Structure
 			if (StringHelper::check($optionSet))
 			{
 				$field .= '>';
-				$field .= PHP_EOL . $this->_t(3) . $taber . "<!--"
-					. $this->setLine(__LINE__) . " Option Set. -->";
+				$field .= PHP_EOL . Indent::_(3) . $taber . "<!--"
+					. Line::_(__Line__, __Class__) . " Option Set. -->";
 				$field .= $optionSet;
-				$field .= PHP_EOL . $this->_t(2) . $taber . "</field>";
+				$field .= PHP_EOL . Indent::_(2) . $taber . "</field>";
 			}
 			// if no options found and must have a list of options
 			elseif (ComponentbuilderHelper::fieldCheck($typeName, 'list'))
 			{
 				$optionArray = false;
-				$field       .= PHP_EOL . $this->_t(2) . $taber . "/>";
-				$field       .= PHP_EOL . $this->_t(2) . $taber . "<!--"
-					. $this->setLine(__LINE__)
+				$field       .= PHP_EOL . Indent::_(2) . $taber . "/>";
+				$field       .= PHP_EOL . Indent::_(2) . $taber . "<!--"
+					. Line::_(__Line__, __Class__)
 					. " No Manual Options Were Added In Field Settings. -->"
 					. PHP_EOL;
 			}
 			else
 			{
 				$optionArray = false;
-				$field       .= PHP_EOL . $this->_t(2) . $taber . "/>";
+				$field       .= PHP_EOL . Indent::_(2) . $taber . "/>";
 			}
 			// incase the field is in the config and has not been set
 			if ('config' === $nameSingleCode && 'configs' === $nameListCode
@@ -2955,7 +2957,7 @@ class Fields extends Structure
 		{
 			// now add to the field set
 			$field->fieldXML = new SimpleXMLElement('<field/>');
-			$field->comment  = $this->setLine(__LINE__) . " " . ucfirst($name)
+			$field->comment  = Line::_(__Line__, __Class__) . " " . ucfirst($name)
 				. " Field. Type: " . StringHelper::safe(
 					$typeName, 'F'
 				) . ". (joomla)";
@@ -2970,7 +2972,7 @@ class Fields extends Structure
 				{
 					ComponentbuilderHelper::xmlComment(
 						$field->fieldXML,
-						$this->setLine(__LINE__) . " Option Set."
+						Line::_(__Line__, __Class__) . " Option Set."
 					);
 					if (strtolower($typeName) === 'groupedlist'
 						&& strpos(
@@ -2998,8 +3000,8 @@ class Fields extends Structure
 											$valueKeyArray[0], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[0]
 									);
 									// now add group label
@@ -3020,8 +3022,8 @@ class Fields extends Structure
 											$valueKeyArray[1], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[1]
 									);
 									// now add to option set
@@ -3041,8 +3043,8 @@ class Fields extends Structure
 											$valueKeyArray[1], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[1]
 									);
 									// now add to option set
@@ -3064,8 +3066,8 @@ class Fields extends Structure
 										$option, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $option
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $option
 								);
 								// now add to option set
 								$grouped_['option'][$option]
@@ -3143,8 +3145,8 @@ class Fields extends Structure
 										$t, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $t
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $t
 								);
 								// now add to option set
 								$optionXML->addAttribute('value', $v);
@@ -3158,8 +3160,8 @@ class Fields extends Structure
 										$option, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $option
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $option
 								);
 								// now add to option set
 								$optionXML->addAttribute('value', $option);
@@ -3181,7 +3183,7 @@ class Fields extends Structure
 									$t, true
 								);
 							// add to lang array
-							$this->setLangContent($this->lang, $langValue, $t);
+							CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langValue, $t);
 							// now add to option set
 							$optionXML->addAttribute('value', $v);
 							$optionArray[$v] = $langValue;
@@ -3194,8 +3196,8 @@ class Fields extends Structure
 									$value, true
 								);
 							// add to lang array
-							$this->setLangContent(
-								$this->lang, $langValue, $value
+							CFactory::_('Language')->set(
+								CFactory::_('Config')->lang_target, $langValue, $value
 							);
 							// now add to option set
 							$optionXML->addAttribute('value', $value);
@@ -3210,7 +3212,7 @@ class Fields extends Structure
 				&& ComponentbuilderHelper::fieldCheck($typeName, 'list'))
 			{
 				ComponentbuilderHelper::xmlComment(
-					$field->fieldXML, $this->setLine(__LINE__)
+					$field->fieldXML, Line::_(__Line__, __Class__)
 					. " No Manual Options Were Added In Field Settings."
 				);
 			}
@@ -3219,7 +3221,7 @@ class Fields extends Structure
 		{
 			// now add to the field set
 			$field->fieldXML = new SimpleXMLElement('<field/>');
-			$field->comment  = $this->setLine(__LINE__) . " " . ucfirst($name)
+			$field->comment  = Line::_(__Line__, __Class__) . " " . ucfirst($name)
 				. " Field. Type: " . StringHelper::safe(
 					$typeName, 'F'
 				) . ". (joomla)";
@@ -3236,7 +3238,7 @@ class Fields extends Structure
 		{
 			// now add to the field set
 			$field->fieldXML = new SimpleXMLElement('<field/>');
-			$field->comment  = $this->setLine(__LINE__) . " " . ucfirst($name)
+			$field->comment  = Line::_(__Line__, __Class__) . " " . ucfirst($name)
 				. " Field. Type: " . StringHelper::safe(
 					$typeName, 'F'
 				) . ". A None Database Field. (joomla)";
@@ -3256,7 +3258,7 @@ class Fields extends Structure
 			{
 				// now add to the field set
 				$field->fieldXML = new SimpleXMLElement('<field/>');
-				$field->comment  = $this->setLine(__LINE__) . " " . ucfirst(
+				$field->comment  = Line::_(__Line__, __Class__) . " " . ucfirst(
 						$name
 					) . " Field. Type: " . StringHelper::safe(
 						$typeName, 'F'
@@ -3381,8 +3383,8 @@ class Fields extends Structure
 											$r_name, true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $r_listLangName,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $r_listLangName,
 										StringHelper::safe(
 											$r_name, 'W'
 										)
@@ -3427,7 +3429,7 @@ class Fields extends Structure
 			{
 				// now add to the field set
 				$field->fieldXML = new SimpleXMLElement('<field/>');
-				$field->comment  = $this->setLine(__LINE__) . " " . ucfirst(
+				$field->comment  = Line::_(__Line__, __Class__) . " " . ucfirst(
 						$name
 					) . " Field. Type: " . StringHelper::safe(
 						$typeName, 'F'
@@ -3594,8 +3596,8 @@ class Fields extends Structure
 												$r_name, true
 											);
 										// add to lang array
-										$this->setLangContent(
-											$this->lang, $r_listLangName,
+										CFactory::_('Language')->set(
+											CFactory::_('Config')->lang_target, $r_listLangName,
 											StringHelper::safe(
 												$r_name, 'W'
 											)
@@ -3641,7 +3643,7 @@ class Fields extends Structure
 		{
 			// now add to the field set
 			$field->fieldXML = new SimpleXMLElement('<field/>');
-			$field->comment  = $this->setLine(__LINE__) . " " . ucfirst($name)
+			$field->comment  = Line::_(__Line__, __Class__) . " " . ucfirst($name)
 				. " Field. Type: " . StringHelper::safe(
 					$typeName, 'F'
 				) . ". (custom)";
@@ -3655,7 +3657,7 @@ class Fields extends Structure
 				{
 					ComponentbuilderHelper::xmlComment(
 						$field->fieldXML,
-						$this->setLine(__LINE__) . " Option Set."
+						Line::_(__Line__, __Class__) . " Option Set."
 					);
 					if (strtolower($typeName) === 'groupedlist'
 						&& strpos(
@@ -3683,8 +3685,8 @@ class Fields extends Structure
 											$valueKeyArray[0], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[0]
 									);
 									// now add group label
@@ -3705,8 +3707,8 @@ class Fields extends Structure
 											$valueKeyArray[1], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[1]
 									);
 									// now add to option set
@@ -3726,8 +3728,8 @@ class Fields extends Structure
 											$valueKeyArray[1], true
 										);
 									// add to lang array
-									$this->setLangContent(
-										$this->lang, $langValue,
+									CFactory::_('Language')->set(
+										CFactory::_('Config')->lang_target, $langValue,
 										$valueKeyArray[1]
 									);
 									// now add to option set
@@ -3749,8 +3751,8 @@ class Fields extends Structure
 										$option, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $option
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $option
 								);
 								// now add to option set
 								$grouped_['option'][$option]
@@ -3828,8 +3830,8 @@ class Fields extends Structure
 										$t, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $t
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $t
 								);
 								// now add to option set
 								$optionXML->addAttribute('value', $v);
@@ -3843,8 +3845,8 @@ class Fields extends Structure
 										$option, true
 									);
 								// add to lang array
-								$this->setLangContent(
-									$this->lang, $langValue, $option
+								CFactory::_('Language')->set(
+									CFactory::_('Config')->lang_target, $langValue, $option
 								);
 								// now add to option set
 								$optionXML->addAttribute('value', $option);
@@ -3866,7 +3868,7 @@ class Fields extends Structure
 									$t, true
 								);
 							// add to lang array
-							$this->setLangContent($this->lang, $langValue, $t);
+							CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langValue, $t);
 							// now add to option set
 							$optionXML->addAttribute('value', $v);
 							$optionArray[$v] = $langValue;
@@ -3879,8 +3881,8 @@ class Fields extends Structure
 									$value, true
 								);
 							// add to lang array
-							$this->setLangContent(
-								$this->lang, $langValue, $value
+							CFactory::_('Language')->set(
+								CFactory::_('Config')->lang_target, $langValue, $value
 							);
 							// now add to option set
 							$optionXML->addAttribute('value', $value);
@@ -4164,7 +4166,7 @@ class Fields extends Structure
 				elseif ($property['name'] === 'name')
 				{
 					// get the actual field name
-					$xmlValue = $this->setPlaceholders($name, $placeholders);
+					$xmlValue = CFactory::_('Placeholder')->update($name, $placeholders);
 				}
 				elseif ($property['name'] === 'validate')
 				{
@@ -4184,7 +4186,7 @@ class Fields extends Structure
 					|| $property['name'] === 'formsource')
 				{
 					// get value & replace the placeholders
-					$xmlValue = $this->setPlaceholders(
+					$xmlValue = CFactory::_('Placeholder')->update(
 						GetHelper::between(
 							$field['settings']->xml, $property['name'] . '="',
 							'"'
@@ -4208,7 +4210,7 @@ class Fields extends Structure
 					);
 					// load the php for the custom field file
 					$fieldAttributes['custom'][$phpKey][$phpLine]
-						= $this->setDynamicValues(
+						= CFactory::_('Customcode')->add(
 						ComponentbuilderHelper::openValidBase64(
 							GetHelper::between(
 								$field['settings']->xml,
@@ -4240,7 +4242,7 @@ class Fields extends Structure
 					// load the view name & replace the placeholders
 					$fieldAttributes['custom']['view']
 						= StringHelper::safe(
-						$this->setPlaceholders(
+						CFactory::_('Placeholder')->update(
 							GetHelper::between(
 								$field['settings']->xml, 'view="', '"'
 							), $placeholders
@@ -4252,7 +4254,7 @@ class Fields extends Structure
 					// load the views name & replace the placeholders
 					$fieldAttributes['custom']['views']
 						= StringHelper::safe(
-						$this->setPlaceholders(
+						CFactory::_('Placeholder')->update(
 							GetHelper::between(
 								$field['settings']->xml, 'views="', '"'
 							), $placeholders
@@ -4263,7 +4265,7 @@ class Fields extends Structure
 				{
 					// load the component name & replace the placeholders
 					$fieldAttributes['custom']['component']
-						= $this->setPlaceholders(
+						= CFactory::_('Placeholder')->update(
 						GetHelper::between(
 							$field['settings']->xml, 'component="', '"'
 						), $placeholders
@@ -4273,7 +4275,7 @@ class Fields extends Structure
 				{
 					// load the main table that is queried & replace the placeholders
 					$fieldAttributes['custom']['table']
-						= $this->setPlaceholders(
+						= CFactory::_('Placeholder')->update(
 						GetHelper::between(
 							$field['settings']->xml, 'table="', '"'
 						), $placeholders
@@ -4373,7 +4375,7 @@ class Fields extends Structure
 				else
 				{
 					// set the rest of the fields
-					$xmlValue = (string) $this->setPlaceholders(
+					$xmlValue = (string) CFactory::_('Placeholder')->update(
 						GetHelper::between(
 							$field['settings']->xml, $property['name'] . '="',
 							'"'
@@ -4399,7 +4401,7 @@ class Fields extends Structure
 						}
 					}
 					// replace placeholders
-					$xmlValue = $this->setPlaceholders(
+					$xmlValue = CFactory::_('Placeholder')->update(
 						$xmlValue, $placeholders
 					);
 					// insure custom lables dont get messed up
@@ -4413,7 +4415,7 @@ class Fields extends Structure
 							$name . ' ' . $property['name'], true
 						);
 					// add to lang array
-					$this->setLangContent($this->lang, $langValue, $xmlValue);
+					CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langValue, $xmlValue);
 					// use lang value
 					$xmlValue = $langValue;
 				}
@@ -4502,7 +4504,7 @@ class Fields extends Structure
 							)) !== $confirmation)
 						{
 							$fieldAttributes['custom'][$phpKey][$phpLine]
-								= $this->setDynamicValues(
+								= CFactory::_('Customcode')->add(
 								ComponentbuilderHelper::openValidBase64($value)
 							);
 						}
@@ -4735,8 +4737,8 @@ class Fields extends Structure
 			// set field name
 			$listFieldName = StringHelper::safe($tempName, 'W');
 			// add to lang array
-			$this->setLangContent(
-				$this->lang, $listLangName, $listFieldName
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $listLangName, $listFieldName
 			);
 		}
 		else
@@ -4746,19 +4748,19 @@ class Fields extends Structure
 			{
 				$listLangName = $langLabel;
 				// get field label from the lang label
-				if (isset($this->langContent[$this->lang][$langLabel]))
+				if (CFactory::_('Language')->exist(CFactory::_('Config')->lang_target, $langLabel))
 				{
 					$listFieldName
-						= $this->langContent[$this->lang][$langLabel];
+						= CFactory::_('Language')->get(CFactory::_('Config')->lang_target, $langLabel);
 				}
 				else
 				{
 					// get it from the field xml string
-					$listFieldName = (string) $this->setPlaceholders(
+					$listFieldName = (string) CFactory::_('Placeholder')->update(
 						GetHelper::between(
 							$field['settings']->xml, 'label="',
 							'"'
-						), $this->placeholders
+						), CFactory::_('Placeholder')->active
 					);
 				}
 				// make sure there is no html in the list field name
@@ -4772,8 +4774,8 @@ class Fields extends Structure
 				// set field name
 				$listFieldName = StringHelper::safe($name, 'W');
 				// add to lang array
-				$this->setLangContent(
-					$this->lang, $listLangName, $listFieldName
+				CFactory::_('Language')->set(
+					CFactory::_('Config')->lang_target, $listLangName, $listFieldName
 				);
 			}
 		}
@@ -4955,15 +4957,15 @@ class Fields extends Structure
 				$otherView  = $nameSingleCode;
 			}
 			// get the xml extension name
-			$_extension = $this->setPlaceholders(
+			$_extension = CFactory::_('Placeholder')->update(
 				GetHelper::between(
 					$field['settings']->xml, 'extension="', '"'
-				), $this->placeholders
+				), CFactory::_('Placeholder')->active
 			);
 			// if they left out the extension for some reason
 			if (!StringHelper::check($_extension))
 			{
-				$_extension = 'com_' . Config::get('component_code_name') . '.'
+				$_extension = 'com_' . CFactory::_('Config')->component_code_name . '.'
 					. $otherView;
 			}
 			// check the context (does our target match)
@@ -5169,7 +5171,7 @@ class Fields extends Structure
 				= $options;
 		}
 		// main lang filter prefix
-		$lang_filter_ = Config::get('lang_prefix') . '_FILTER_';
+		$lang_filter_ = CFactory::_('Config')->lang_prefix . '_FILTER_';
 		// build the sort values
 		if ($dbSwitch && (isset($field['sort']) && $field['sort'] == 1)
 			&& ($listSwitch || $listJoin)
@@ -5191,8 +5193,8 @@ class Fields extends Structure
 						$filter_name_asc, 'U'
 					);
 				// and to translation
-				$this->setLangContent(
-					$this->lang, $filter_name_asc_lang, $filter_name_asc
+				CFactory::_('Language')->set(
+					CFactory::_('Config')->lang_target, $filter_name_asc_lang, $filter_name_asc
 				);
 				// set the language strings for descending
 				$filter_name_desc      = $listFieldName . ' descending';
@@ -5201,8 +5203,8 @@ class Fields extends Structure
 						$filter_name_desc, 'U'
 					);
 				// and to translation
-				$this->setLangContent(
-					$this->lang, $filter_name_desc_lang, $filter_name_desc
+				CFactory::_('Language')->set(
+					CFactory::_('Config')->lang_target, $filter_name_desc_lang, $filter_name_desc
 				);
 			}
 			$this->sortBuilder[$nameListCode][] = array('type'      => $typeName,
@@ -5251,8 +5253,8 @@ class Fields extends Structure
 						$filter_name_select, 'U'
 					);
 				// and to translation
-				$this->setLangContent(
-					$this->lang, $filter_name_select_lang, $filter_name_select
+				CFactory::_('Language')->set(
+					CFactory::_('Config')->lang_target, $filter_name_select_lang, $filter_name_select
 				);
 			}
 
@@ -5330,52 +5332,42 @@ class Fields extends Structure
 			}
 			// set tab and break replacements
 			$tabBreak = array(
-				'\t' => $this->_t(1),
+				'\t' => Indent::_(1),
 				'\n' => PHP_EOL
 			);
 			// set the [[[PLACEHOLDER]]] options
 			$replace = array(
-				$this->bbb . 'JPREFIX' . $this->ddd   => $jprefix,
-				$this->bbb . 'TABLE'
-				. $this->ddd                          => (isset($data['custom']['table']))
+				Placefix::_('JPREFIX')   => $jprefix,
+				Placefix::_('TABLE')                          => (isset($data['custom']['table']))
 					? $data['custom']['table'] : '',
-				$this->bbb . 'ID'
-				. $this->ddd                          => (isset($data['custom']['id']))
+				Placefix::_('ID')                          => (isset($data['custom']['id']))
 					? $data['custom']['id'] : '',
-				$this->bbb . 'TEXT'
-				. $this->ddd                          => (isset($data['custom']['text']))
+				Placefix::_('TEXT')                          => (isset($data['custom']['text']))
 					? $data['custom']['text'] : '',
-				$this->bbb . 'CODE_TEXT'
-				. $this->ddd                          => (isset($data['code'], $data['custom']['text']))
+				Placefix::_('CODE_TEXT')                          => (isset($data['code'], $data['custom']['text']))
 					? $data['code'] . '_' . $data['custom']['text'] : '',
-				$this->bbb . 'CODE' . $this->ddd      => (isset($data['code']))
+				Placefix::_('CODE')      => (isset($data['code']))
 					? $data['code'] : '',
-				$this->bbb . 'view_type' . $this->ddd => $nameSingleCode
+				Placefix::_('view_type') => $nameSingleCode
 					. '_' . $data['type'],
-				$this->bbb . 'type' . $this->ddd      => (isset($data['type']))
+				Placefix::_('type')      => (isset($data['type']))
 					? $data['type'] : '',
-				$this->bbb . 'com_component'
-				. $this->ddd                          => (isset($data['custom']['component'])
+				Placefix::_('com_component')                          => (isset($data['custom']['component'])
 					&& StringHelper::check(
 						$data['custom']['component']
 					)) ? StringHelper::safe(
 					$data['custom']['component']
-				) : 'com_' . Config::get('component_code_name'),
+				) : 'com_' . CFactory::_('Config')->component_code_name,
 				// set the generic values
-				$this->bbb . 'component'
-				. $this->ddd                          => Config::get('component_code_name'),
-				$this->bbb . 'Component'
-				. $this->ddd                          => $this->fileContentStatic[$this->hhh
-				. 'Component' . $this->hhh],
-				$this->bbb . 'view'
-				. $this->ddd                          => (isset($data['custom']['view'])
+				Placefix::_('component')                          => CFactory::_('Config')->component_code_name,
+				Placefix::_('Component')                          => $this->fileContentStatic[Placefix::_h('Component')],
+				Placefix::_('view')                          => (isset($data['custom']['view'])
 					&& StringHelper::check(
 						$data['custom']['view']
 					)) ? StringHelper::safe(
 					$data['custom']['view']
 				) : $nameSingleCode,
-				$this->bbb . 'views'
-				. $this->ddd                          => (isset($data['custom']['views'])
+				Placefix::_('views')                          => (isset($data['custom']['views'])
 					&& StringHelper::check(
 						$data['custom']['views']
 					)) ? StringHelper::safe(
@@ -5387,8 +5379,8 @@ class Fields extends Structure
 			{
 				// update the key value
 				$replacekey = str_replace(
-					array($this->bbb, $this->ddd),
-					array($this->hhh, $this->hhh), $replacekey
+					array(Placefix::b(), Placefix::d()),
+					array(Placefix::h(), Placefix::h()), $replacekey
 				);
 				// now set the value
 				$replace[$replacekey] = $replacevalue;
@@ -5407,18 +5399,15 @@ class Fields extends Structure
 			// start loading the field type
 			$this->fileContentDynamic['customfield_' . $data['type']] = array();
 			// JPREFIX <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh
-			. 'JPREFIX' . $this->hhh]
+			$this->fileContentDynamic['customfield_' . $data['type']][Placefix::_h('JPREFIX')]
 				= $jprefix;
 			// Type <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh
-			. 'Type' . $this->hhh]
+			$this->fileContentDynamic['customfield_' . $data['type']][Placefix::_h('Type')]
 				= StringHelper::safe(
 				$data['custom']['type'], 'F'
 			);
 			// type <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']][$this->hhh
-			. 'type' . $this->hhh]
+			$this->fileContentDynamic['customfield_' . $data['type']][Placefix::_h('type')]
 				= StringHelper::safe($data['custom']['type']);
 			// is this a own custom field
 			if (isset($data['custom']['own_custom']))
@@ -5450,26 +5439,26 @@ class Fields extends Structure
 				// JFORM_TYPE_HEADER <<<DYNAMIC>>>
 				$add_default_header = true;
 				$this->fileContentDynamic['customfield_'
-				. $data['type']][$this->hhh . 'JFORM_TYPE_HEADER' . $this->hhh]
-				                    = "//" . $this->setLine(
-						__LINE__
+				. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')]
+				                    = "//" . Line::_(
+						__LINE__,__CLASS__
 					) . " Import the " . $JFORM_extends
 					. " field type classes needed";
 				// JFORM_extens <<<DYNAMIC>>>
 				$this->fileContentDynamic['customfield_'
-				. $data['type']][$this->hhh . 'JFORM_extends' . $this->hhh]
+				. $data['type']][Placefix::_h('JFORM_extends')]
 					= $JFORM_extends;
 				// JFORM_EXTENDS <<<DYNAMIC>>>
 				$this->fileContentDynamic['customfield_'
-				. $data['type']][$this->hhh . 'JFORM_EXTENDS' . $this->hhh]
+				. $data['type']][Placefix::_h('JFORM_EXTENDS')]
 					= StringHelper::safe(
 					$data['custom']['extends'], 'F'
 				);
 				// JFORM_TYPE_PHP <<<DYNAMIC>>>
 				$this->fileContentDynamic['customfield_'
-				. $data['type']][$this->hhh . 'JFORM_TYPE_PHP' . $this->hhh]
-					= PHP_EOL . PHP_EOL . $this->_t(1) . "//" . $this->setLine(
-						__LINE__
+				. $data['type']][Placefix::_h('JFORM_TYPE_PHP')]
+					= PHP_EOL . PHP_EOL . Indent::_(1) . "//" . Line::_(
+						__LINE__,__CLASS__
 					) . " A " . $data['custom']['own_custom'] . " Field";
 				// load the other PHP options
 				foreach (ComponentbuilderHelper::$phpFieldArray as $x)
@@ -5486,7 +5475,7 @@ class Fields extends Structure
 						{
 							if (StringHelper::check($code))
 							{
-								$phpBucket .= PHP_EOL . $this->setPlaceholders(
+								$phpBucket .= PHP_EOL . CFactory::_('Placeholder')->update(
 										$code, $tabBreak
 									);
 							}
@@ -5495,9 +5484,8 @@ class Fields extends Structure
 						if ('HEADER' === $x)
 						{
 							$this->fileContentDynamic['customfield_'
-							. $data['type']][$this->hhh . 'JFORM_TYPE_HEADER'
-							. $this->hhh]
-								.= PHP_EOL . $this->setPlaceholders(
+							. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')]
+								.= PHP_EOL . CFactory::_('Placeholder')->update(
 									$phpBucket, $replace
 								);
 							// stop default headers from loading
@@ -5507,9 +5495,8 @@ class Fields extends Structure
 						{
 							// JFORM_TYPE_PHP <<<DYNAMIC>>>
 							$this->fileContentDynamic['customfield_'
-							. $data['type']][$this->hhh . 'JFORM_TYPE_PHP'
-							. $this->hhh]
-								.= PHP_EOL . $this->setPlaceholders(
+							. $data['type']][Placefix::_h('JFORM_TYPE_PHP')]
+								.= PHP_EOL . CFactory::_('Placeholder')->update(
 									$phpBucket, $replace
 								);
 						}
@@ -5519,25 +5506,21 @@ class Fields extends Structure
 				if ($add_default_header)
 				{
 					$this->fileContentDynamic['customfield_'
-					. $data['type']][$this->hhh . 'JFORM_TYPE_HEADER'
-					. $this->hhh]
+					. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')]
 						.= PHP_EOL . "jimport('joomla.form.helper');";
 					$this->fileContentDynamic['customfield_'
-					. $data['type']][$this->hhh . 'JFORM_TYPE_HEADER'
-					. $this->hhh]
+					. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')]
 						.= PHP_EOL . "JFormHelper::loadFieldClass('"
 						. $JFORM_extends . "');";
 				}
 				// check the the JFormHelper::loadFieldClass(..) was set
 				elseif (strpos(
 						$this->fileContentDynamic['customfield_'
-						. $data['type']][$this->hhh . 'JFORM_TYPE_HEADER'
-						. $this->hhh], 'JFormHelper::loadFieldClass('
+						. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')], 'JFormHelper::loadFieldClass('
 					) === false)
 				{
 					$this->fileContentDynamic['customfield_'
-					. $data['type']][$this->hhh . 'JFORM_TYPE_HEADER'
-					. $this->hhh]
+					. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')]
 						.= PHP_EOL . "JFormHelper::loadFieldClass('"
 						. $JFORM_extends . "');";
 				}
@@ -5564,19 +5547,19 @@ class Fields extends Structure
 						{
 							if ($line == 1)
 							{
-								$phpCode .= $this->setPlaceholders(
+								$phpCode .= CFactory::_('Placeholder')->update(
 									$code, $tabBreak
 								);
 							}
 							else
 							{
-								$phpCode .= PHP_EOL . $this->_t(2)
-									. $this->setPlaceholders($code, $tabBreak);
+								$phpCode .= PHP_EOL . Indent::_(2)
+									. CFactory::_('Placeholder')->update($code, $tabBreak);
 							}
 						}
 					}
 					// replace the placholders
-					$phpCode = $this->setPlaceholders($phpCode, $replace);
+					$phpCode = CFactory::_('Placeholder')->update($phpCode, $replace);
 				}
 				// catch empty stuff
 				if (!StringHelper::check($phpCode))
@@ -5599,21 +5582,21 @@ class Fields extends Structure
 							{
 								if ($line == 1)
 								{
-									$phpxCode .= $this->setPlaceholders(
+									$phpxCode .= CFactory::_('Placeholder')->update(
 										$code, $tabBreak
 									);
 								}
 								else
 								{
-									$phpxCode .= PHP_EOL . $this->_t(2)
-										. $this->setPlaceholders(
+									$phpxCode .= PHP_EOL . Indent::_(2)
+										. CFactory::_('Placeholder')->update(
 											$code, $tabBreak
 										);
 								}
 							}
 						}
 						// replace the placholders
-						$phpxCode = $this->setPlaceholders($phpxCode, $replace);
+						$phpxCode = CFactory::_('Placeholder')->update($phpxCode, $replace);
 					}
 					// catch empty stuff
 					if (!StringHelper::check($phpxCode))
@@ -5623,39 +5606,36 @@ class Fields extends Structure
 					// temp holder for name
 					$tempName = $data['custom']['label'] . ' Group';
 					// set lang
-					$groupLangName = Config::get('lang_prefix') . '_'
+					$groupLangName = CFactory::_('Config')->lang_prefix . '_'
 						. FieldHelper::safe(
 							$tempName, true
 						);
 					// add to lang array
-					$this->setLangContent(
-						$this->lang, $groupLangName,
+					CFactory::_('Language')->set(
+						CFactory::_('Config')->lang_target, $groupLangName,
 						StringHelper::safe($tempName, 'W')
 					);
 					// build the Group Control
 					$this->setGroupControl[$data['type']] = $groupLangName;
 					// JFORM_GETGROUPS_PHP <<<DYNAMIC>>>
 					$this->fileContentDynamic['customfield_'
-					. $data['type']][$this->hhh . 'JFORM_GETGROUPS_PHP'
-					. $this->hhh]
+					. $data['type']][Placefix::_h('JFORM_GETGROUPS_PHP')]
 						= $phpCode;
 					// JFORM_GETEXCLUDED_PHP <<<DYNAMIC>>>
 					$this->fileContentDynamic['customfield_'
-					. $data['type']][$this->hhh . 'JFORM_GETEXCLUDED_PHP'
-					. $this->hhh]
+					. $data['type']][Placefix::_h('JFORM_GETEXCLUDED_PHP')]
 						= $phpxCode;
 				}
 				else
 				{
 					// JFORM_GETOPTIONS_PHP <<<DYNAMIC>>>
 					$this->fileContentDynamic['customfield_'
-					. $data['type']][$this->hhh . 'JFORM_GETOPTIONS_PHP'
-					. $this->hhh]
+					. $data['type']][Placefix::_h('JFORM_GETOPTIONS_PHP')]
 						= $phpCode;
 				}
 				// type <<<DYNAMIC>>>
 				$this->fileContentDynamic['customfield_'
-				. $data['type']][$this->hhh . 'ADD_BUTTON' . $this->hhh]
+				. $data['type']][Placefix::_h('ADD_BUTTON')]
 					= $this->setAddButtonToListField($data['custom']);
 			}
 		}
@@ -5690,7 +5670,7 @@ class Fields extends Structure
 		);
 		// set tab and break replacements
 		$tabBreak = array(
-			'\t' => $this->_t(1),
+			'\t' => Indent::_(1),
 			'\n' => PHP_EOL
 		);
 		// load the other PHP options
@@ -5708,7 +5688,7 @@ class Fields extends Structure
 				{
 					if (StringHelper::check($code))
 					{
-						$phpBucket .= PHP_EOL . $this->setPlaceholders(
+						$phpBucket .= PHP_EOL . CFactory::_('Placeholder')->update(
 								$code, $tabBreak
 							);
 					}
@@ -5752,65 +5732,65 @@ class Fields extends Structure
 				$target, 'filter'
 			);
 			// the search language string
-			$lang_search = Config::get('lang_prefix') . '_FILTER_SEARCH';
+			$lang_search = CFactory::_('Config')->lang_prefix . '_FILTER_SEARCH';
 			// and to translation
-			$this->setLangContent(
-				$this->lang, $lang_search, 'Search'
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $lang_search, 'Search'
 				. StringHelper::safe($nameListCode, 'w')
 			);
 			// the search description language string
-			$lang_search_desc = Config::get('lang_prefix') . '_FILTER_SEARCH_'
+			$lang_search_desc = CFactory::_('Config')->lang_prefix . '_FILTER_SEARCH_'
 				. strtoupper($nameListCode);
 			// and to translation
-			$this->setLangContent(
-				$this->lang, $lang_search_desc, 'Search the '
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $lang_search_desc, 'Search the '
 				. StringHelper::safe($nameSingleCode, 'w')
 				. ' items. Prefix with ID: to search for an item by ID.'
 			);
 			// now build the XML
 			$field_filter_sets   = array();
-			$field_filter_sets[] = $this->_t(1) . '<fields name="filter">';
+			$field_filter_sets[] = Indent::_(1) . '<fields name="filter">';
 			// we first add the search
-			$field_filter_sets[] = $this->_t(2) . '<field';
-			$field_filter_sets[] = $this->_t(3) . 'type="text"';
-			$field_filter_sets[] = $this->_t(3) . 'name="search"';
-			$field_filter_sets[] = $this->_t(3) . 'inputmode="search"';
-			$field_filter_sets[] = $this->_t(3)
+			$field_filter_sets[] = Indent::_(2) . '<field';
+			$field_filter_sets[] = Indent::_(3) . 'type="text"';
+			$field_filter_sets[] = Indent::_(3) . 'name="search"';
+			$field_filter_sets[] = Indent::_(3) . 'inputmode="search"';
+			$field_filter_sets[] = Indent::_(3)
 				. 'label="' . $lang_search . '"';
-			$field_filter_sets[] = $this->_t(3)
+			$field_filter_sets[] = Indent::_(3)
 				. 'description="' . $lang_search_desc . '"';
-			$field_filter_sets[] = $this->_t(3) . 'hint="JSEARCH_FILTER"';
-			$field_filter_sets[] = $this->_t(2) . '/>';
+			$field_filter_sets[] = Indent::_(3) . 'hint="JSEARCH_FILTER"';
+			$field_filter_sets[] = Indent::_(2) . '/>';
 			// add the published filter if published is not set
 			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
 			{
 				// the published language string
-				$lang_published = Config::get('lang_prefix') . '_FILTER_PUBLISHED';
+				$lang_published = CFactory::_('Config')->lang_prefix . '_FILTER_PUBLISHED';
 				// and to translation
-				$this->setLangContent(
-					$this->lang, $lang_published, 'Status'
+				CFactory::_('Language')->set(
+					CFactory::_('Config')->lang_target, $lang_published, 'Status'
 				);
 				// the published description language string
-				$lang_published_desc = Config::get('lang_prefix') . '_FILTER_PUBLISHED_'
+				$lang_published_desc = CFactory::_('Config')->lang_prefix . '_FILTER_PUBLISHED_'
 					. strtoupper($nameListCode);
 				// and to translation
-				$this->setLangContent(
-					$this->lang, $lang_published_desc, 'Status options for '
+				CFactory::_('Language')->set(
+					CFactory::_('Config')->lang_target, $lang_published_desc, 'Status options for '
 					. StringHelper::safe($nameListCode, 'w')
 				);
-				$field_filter_sets[] = $this->_t(2) . '<field';
-				$field_filter_sets[] = $this->_t(3) . 'type="status"';
-				$field_filter_sets[] = $this->_t(3) . 'name="published"';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(2) . '<field';
+				$field_filter_sets[] = Indent::_(3) . 'type="status"';
+				$field_filter_sets[] = Indent::_(3) . 'name="published"';
+				$field_filter_sets[] = Indent::_(3)
 					. 'label="' . $lang_published . '"';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(3)
 					. 'description="' . $lang_published_desc . '"';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(3)
 					. 'onchange="this.form.submit();"';
-				$field_filter_sets[] = $this->_t(2) . '>';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(2) . '>';
+				$field_filter_sets[] = Indent::_(3)
 					. '<option value="">JOPTION_SELECT_PUBLISHED</option>';
-				$field_filter_sets[] = $this->_t(2) . '</field>';
+				$field_filter_sets[] = Indent::_(2) . '</field>';
 			}
 			// add the category if found
 			if (isset($this->categoryBuilder[$nameListCode])
@@ -5821,24 +5801,24 @@ class Fields extends Structure
 				&& isset($this->categoryBuilder[$nameListCode]['filter'])
 				&& $this->categoryBuilder[$nameListCode]['filter'] >= 1)
 			{
-				$field_filter_sets[] = $this->_t(2) . '<field';
-				$field_filter_sets[] = $this->_t(3) . 'type="category"';
-				$field_filter_sets[] = $this->_t(3) . 'name="category_id"';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(2) . '<field';
+				$field_filter_sets[] = Indent::_(3) . 'type="category"';
+				$field_filter_sets[] = Indent::_(3) . 'name="category_id"';
+				$field_filter_sets[] = Indent::_(3)
 					. 'label="' . $this->categoryBuilder[$nameListCode]['name']
 					. '"';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(3)
 					. 'description="JOPTION_FILTER_CATEGORY_DESC"';
-				$field_filter_sets[] = $this->_t(3) . 'multiple="true"';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(3) . 'multiple="true"';
+				$field_filter_sets[] = Indent::_(3)
 					. 'class="multipleCategories"';
-				$field_filter_sets[] = $this->_t(3) . 'extension="'
+				$field_filter_sets[] = Indent::_(3) . 'extension="'
 					. $this->categoryBuilder[$nameListCode]['extension'] . '"';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(3)
 					. 'onchange="this.form.submit();"';
 				// TODO NOT SURE IF THIS SHOULD BE STATIC
-				$field_filter_sets[] = $this->_t(3) . 'published="0,1,2"';
-				$field_filter_sets[] = $this->_t(2) . '/>';
+				$field_filter_sets[] = Indent::_(3) . 'published="0,1,2"';
+				$field_filter_sets[] = Indent::_(2) . '/>';
 			}
 			// add the access filter if this view has access
 			// and if access manually is not set
@@ -5848,19 +5828,19 @@ class Fields extends Structure
 				)
 				&& !isset($this->fieldsNames[$nameSingleCode]['access']))
 			{
-				$field_filter_sets[] = $this->_t(2) . '<field';
-				$field_filter_sets[] = $this->_t(3) . 'type="accesslevel"';
-				$field_filter_sets[] = $this->_t(3) . 'name="access"';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(2) . '<field';
+				$field_filter_sets[] = Indent::_(3) . 'type="accesslevel"';
+				$field_filter_sets[] = Indent::_(3) . 'name="access"';
+				$field_filter_sets[] = Indent::_(3)
 					. 'label="JFIELD_ACCESS_LABEL"';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(3)
 					. 'description="JFIELD_ACCESS_DESC"';
-				$field_filter_sets[] = $this->_t(3) . 'multiple="true"';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(3) . 'multiple="true"';
+				$field_filter_sets[] = Indent::_(3)
 					. 'class="multipleAccessLevels"';
-				$field_filter_sets[] = $this->_t(3)
+				$field_filter_sets[] = Indent::_(3)
 					. 'onchange="this.form.submit();"';
-				$field_filter_sets[] = $this->_t(2) . '/>';
+				$field_filter_sets[] = Indent::_(2) . '/>';
 			}
 			// now add the dynamic fields
 			if (isset($this->filterBuilder[$nameListCode])
@@ -5872,14 +5852,14 @@ class Fields extends Structure
 				{
 					if ($filter['type'] != 'category')
 					{
-						$field_filter_sets[] = $this->_t(2) . '<field';
+						$field_filter_sets[] = Indent::_(2) . '<field';
 						// if this is a custom field
 						if (ArrayHelper::check(
 							$filter['custom']
 						))
 						{
 							// we use the field type from the custom field
-							$field_filter_sets[] = $this->_t(3) . 'type="'
+							$field_filter_sets[] = Indent::_(3) . 'type="'
 								. $filter['type'] . '"';
 							// set css classname of this field
 							$filter['class'] = ucfirst($filter['type']);
@@ -5887,38 +5867,38 @@ class Fields extends Structure
 						else
 						{
 							// we use the filter field type that was build
-							$field_filter_sets[] = $this->_t(3) . 'type="'
+							$field_filter_sets[] = Indent::_(3) . 'type="'
 								. $filter['filter_type'] . '"';
 							// set css classname of this field
 							$filter['class'] = ucfirst($filter['filter_type']);
 						}
-						$field_filter_sets[] = $this->_t(3) . 'name="'
+						$field_filter_sets[] = Indent::_(3) . 'name="'
 							. $filter['code'] . '"';
-						$field_filter_sets[] = $this->_t(3) . 'label="'
+						$field_filter_sets[] = Indent::_(3) . 'label="'
 							. $filter['label'] . '"';
 						// if this is a multi field
 						if ($filter['multi'] == 2)
 						{
-							$field_filter_sets[] = $this->_t(3)
+							$field_filter_sets[] = Indent::_(3)
 								. 'class="multiple'
 								. $filter['class'] . '"';
-							$field_filter_sets[] = $this->_t(3)
+							$field_filter_sets[] = Indent::_(3)
 								. 'multiple="true"';
 						}
 						else
 						{
-							$field_filter_sets[] = $this->_t(3)
+							$field_filter_sets[] = Indent::_(3)
 								. 'multiple="false"';
 						}
-						$field_filter_sets[] = $this->_t(3)
+						$field_filter_sets[] = Indent::_(3)
 							. 'onchange="this.form.submit();"';
-						$field_filter_sets[] = $this->_t(2) . '/>';
+						$field_filter_sets[] = Indent::_(2) . '/>';
 					}
 				}
 			}
-			$field_filter_sets[] = $this->_t(2)
+			$field_filter_sets[] = Indent::_(2)
 				. '<input type="hidden" name="form_submited" value="1"/>';
-			$field_filter_sets[] = $this->_t(1) . '</fields>';
+			$field_filter_sets[] = Indent::_(1) . '</fields>';
 
 			// now update the file
 			return implode(PHP_EOL, $field_filter_sets);
@@ -5946,30 +5926,30 @@ class Fields extends Structure
 			$donelist = array('ordering' => true, 'id' => true);
 			// now build the XML
 			$list_sets   = array();
-			$list_sets[] = $this->_t(1) . '<fields name="list">';
-			$list_sets[] = $this->_t(2) . '<field';
-			$list_sets[] = $this->_t(3) . 'name="fullordering"';
-			$list_sets[] = $this->_t(3) . 'type="list"';
-			$list_sets[] = $this->_t(3)
+			$list_sets[] = Indent::_(1) . '<fields name="list">';
+			$list_sets[] = Indent::_(2) . '<field';
+			$list_sets[] = Indent::_(3) . 'name="fullordering"';
+			$list_sets[] = Indent::_(3) . 'type="list"';
+			$list_sets[] = Indent::_(3)
 				. 'label="COM_CONTENT_LIST_FULL_ORDERING"';
-			$list_sets[] = $this->_t(3)
+			$list_sets[] = Indent::_(3)
 				. 'description="COM_CONTENT_LIST_FULL_ORDERING_DESC"';
-			$list_sets[] = $this->_t(3) . 'onchange="this.form.submit();"';
+			$list_sets[] = Indent::_(3) . 'onchange="this.form.submit();"';
 			// add dynamic ordering (Admin view)
 			$default_ordering = $this->getListViewDefaultOrdering(
 				$nameListCode
 			);
 			// set the default ordering
-			$list_sets[] = $this->_t(3) . 'default="'
+			$list_sets[] = Indent::_(3) . 'default="'
 				. $default_ordering['name'] . ' '
 				. $default_ordering['direction'] . '"';
-			$list_sets[] = $this->_t(3) . 'validate="options"';
-			$list_sets[] = $this->_t(2) . '>';
-			$list_sets[] = $this->_t(3)
+			$list_sets[] = Indent::_(3) . 'validate="options"';
+			$list_sets[] = Indent::_(2) . '>';
+			$list_sets[] = Indent::_(3)
 				. '<option value="">JGLOBAL_SORT_BY</option>';
-			$list_sets[] = $this->_t(3)
+			$list_sets[] = Indent::_(3)
 				. '<option value="a.ordering ASC">JGRID_HEADING_ORDERING_ASC</option>';
-			$list_sets[] = $this->_t(3)
+			$list_sets[] = Indent::_(3)
 				. '<option value="a.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>';
 			// add the published filter if published is not set
 			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
@@ -5977,9 +5957,9 @@ class Fields extends Structure
 				// add to done list
 				$donelist['published'] = true;
 				// add to xml :)
-				$list_sets[] = $this->_t(3)
+				$list_sets[] = Indent::_(3)
 					. '<option value="a.published ASC">JSTATUS_ASC</option>';
-				$list_sets[] = $this->_t(3)
+				$list_sets[] = Indent::_(3)
 					. '<option value="a.published DESC">JSTATUS_DESC</option>';
 			}
 
@@ -5995,10 +5975,10 @@ class Fields extends Structure
 					{
 						if ($filter['type'] === 'category')
 						{
-							$list_sets[] = $this->_t(3)
+							$list_sets[] = Indent::_(3)
 								. '<option value="category_title ASC">'
 								. $filter['lang_asc'] . '</option>';
-							$list_sets[] = $this->_t(3)
+							$list_sets[] = Indent::_(3)
 								. '<option value="category_title DESC">'
 								. $filter['lang_desc'] . '</option>';
 						}
@@ -6006,21 +5986,21 @@ class Fields extends Structure
 							$filter['custom']
 						))
 						{
-							$list_sets[] = $this->_t(3) . '<option value="'
+							$list_sets[] = Indent::_(3) . '<option value="'
 								. $filter['custom']['db'] . '.'
 								. $filter['custom']['text'] . ' ASC">'
 								. $filter['lang_asc'] . '</option>';
-							$list_sets[] = $this->_t(3) . '<option value="'
+							$list_sets[] = Indent::_(3) . '<option value="'
 								. $filter['custom']['db'] . '.'
 								. $filter['custom']['text'] . ' DESC">'
 								. $filter['lang_desc'] . '</option>';
 						}
 						else
 						{
-							$list_sets[] = $this->_t(3) . '<option value="a.'
+							$list_sets[] = Indent::_(3) . '<option value="a.'
 								. $filter['code'] . ' ASC">'
 								. $filter['lang_asc'] . '</option>';
-							$list_sets[] = $this->_t(3) . '<option value="a.'
+							$list_sets[] = Indent::_(3) . '<option value="a.'
 								. $filter['code'] . ' DESC">'
 								. $filter['lang_desc'] . '</option>';
 						}
@@ -6030,23 +6010,23 @@ class Fields extends Structure
 				}
 			}
 
-			$list_sets[] = $this->_t(3)
+			$list_sets[] = Indent::_(3)
 				. '<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>';
-			$list_sets[] = $this->_t(3)
+			$list_sets[] = Indent::_(3)
 				. '<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>';
-			$list_sets[] = $this->_t(2) . '</field>' . PHP_EOL;
+			$list_sets[] = Indent::_(2) . '</field>' . PHP_EOL;
 
-			$list_sets[] = $this->_t(2) . '<field';
-			$list_sets[] = $this->_t(3) . 'name="limit"';
-			$list_sets[] = $this->_t(3) . 'type="limitbox"';
-			$list_sets[] = $this->_t(3) . 'label="COM_CONTENT_LIST_LIMIT"';
-			$list_sets[] = $this->_t(3)
+			$list_sets[] = Indent::_(2) . '<field';
+			$list_sets[] = Indent::_(3) . 'name="limit"';
+			$list_sets[] = Indent::_(3) . 'type="limitbox"';
+			$list_sets[] = Indent::_(3) . 'label="COM_CONTENT_LIST_LIMIT"';
+			$list_sets[] = Indent::_(3)
 				. 'description="COM_CONTENT_LIST_LIMIT_DESC"';
-			$list_sets[] = $this->_t(3) . 'class="input-mini"';
-			$list_sets[] = $this->_t(3) . 'default="25"';
-			$list_sets[] = $this->_t(3) . 'onchange="this.form.submit();"';
-			$list_sets[] = $this->_t(2) . '/>';
-			$list_sets[] = $this->_t(1) . '</fields>';
+			$list_sets[] = Indent::_(3) . 'class="input-mini"';
+			$list_sets[] = Indent::_(3) . 'default="25"';
+			$list_sets[] = Indent::_(3) . 'onchange="this.form.submit();"';
+			$list_sets[] = Indent::_(2) . '/>';
+			$list_sets[] = Indent::_(1) . '</fields>';
 
 			return implode(PHP_EOL, $list_sets);
 		}
@@ -6082,29 +6062,25 @@ class Fields extends Structure
 				= array();
 			// JPREFIX <<DYNAMIC>>>
 			$this->fileContentDynamic['customfilterfield_'
-			. $filter['filter_type']][$this->hhh
-			. 'JPREFIX' . $this->hhh]
+			. $filter['filter_type']][Placefix::_h('JPREFIX')]
 				= 'J';
 			// Type <<<DYNAMIC>>>
 			$this->fileContentDynamic['customfilterfield_'
-			. $filter['filter_type']][$this->hhh
-			. 'Type' . $this->hhh]
+			. $filter['filter_type']][Placefix::_h('Type')]
 				= StringHelper::safe(
 				$filter['filter_type'], 'F'
 			);
 			// type <<<DYNAMIC>>>
 			$this->fileContentDynamic['customfilterfield_'
-			. $filter['filter_type']][$this->hhh
-			. 'type' . $this->hhh]
+			. $filter['filter_type']][Placefix::_h('type')]
 				= StringHelper::safe($filter['filter_type']);
 			// JFORM_GETOPTIONS_PHP <<<DYNAMIC>>>
 			$this->fileContentDynamic['customfilterfield_'
-			. $filter['filter_type']][$this->hhh . 'JFORM_GETOPTIONS_PHP'
-			. $this->hhh]
+			. $filter['filter_type']][Placefix::_h('JFORM_GETOPTIONS_PHP')]
 				= $getOptions;
 			// ADD_BUTTON <<<DYNAMIC>>>
 			$this->fileContentDynamic['customfilterfield_'
-			. $filter['filter_type']][$this->hhh . 'ADD_BUTTON' . $this->hhh]
+			. $filter['filter_type']][Placefix::_h('ADD_BUTTON')]
 				= '';
 			// now build the custom filter field type file
 			$target = array('admin' => 'customfilterfield');
@@ -6135,7 +6111,7 @@ class Fields extends Structure
 			&& StringHelper::check($fieldData['views']))
 		{
 			// set local component
-			$local_component = "com_" . Config::get('component_code_name');
+			$local_component = "com_" . CFactory::_('Config')->component_code_name;
 			// check that the component value is set
 			if (!isset($fieldData['component'])
 				|| !StringHelper::check(
@@ -6153,13 +6129,13 @@ class Fields extends Structure
 				$fieldData['component'] = "com_" . $fieldData['component'];
 			}
 			// make sure the component is update if # # # or [ [ [ component placeholder is used
-			if (strpos($fieldData['component'], $this->hhh) !== false
+			if (strpos($fieldData['component'], Placefix::h()) !== false
 				|| strpos(
-					$fieldData['component'], $this->bbb
+					$fieldData['component'], Placefix::b()
 				) !== false) // should not be needed... but
 			{
-				$fieldData['component'] = $this->setPlaceholders(
-					$fieldData['component'], $this->placeholders
+				$fieldData['component'] = CFactory::_('Placeholder')->update(
+					$fieldData['component'], CFactory::_('Placeholder')->active
 				);
 			}
 			// get core permissions
@@ -6184,112 +6160,112 @@ class Fields extends Structure
 			}
 			// start building the add buttons/s
 			$addButton   = array();
-			$addButton[] = PHP_EOL . PHP_EOL . $this->_t(1) . "/**";
-			$addButton[] = $this->_t(1) . " * Override to add new button";
-			$addButton[] = $this->_t(1) . " *";
-			$addButton[] = $this->_t(1)
+			$addButton[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
+			$addButton[] = Indent::_(1) . " * Override to add new button";
+			$addButton[] = Indent::_(1) . " *";
+			$addButton[] = Indent::_(1)
 				. " * @return  string  The field input markup.";
-			$addButton[] = $this->_t(1) . " *";
-			$addButton[] = $this->_t(1) . " * @since   3.2";
-			$addButton[] = $this->_t(1) . " */";
-			$addButton[] = $this->_t(1) . "protected function getInput()";
-			$addButton[] = $this->_t(1) . "{";
-			$addButton[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(1) . " *";
+			$addButton[] = Indent::_(1) . " * @since   3.2";
+			$addButton[] = Indent::_(1) . " */";
+			$addButton[] = Indent::_(1) . "protected function getInput()";
+			$addButton[] = Indent::_(1) . "{";
+			$addButton[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " see if we should add buttons";
-			$addButton[] = $this->_t(2)
+			$addButton[] = Indent::_(2)
 				. "\$set_button = \$this->getAttribute('button');";
-			$addButton[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " get html";
-			$addButton[] = $this->_t(2) . "\$html = parent::getInput();";
-			$addButton[] = $this->_t(2) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(2) . "\$html = parent::getInput();";
+			$addButton[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " if true set button";
-			$addButton[] = $this->_t(2) . "if (\$set_button === 'true')";
-			$addButton[] = $this->_t(2) . "{";
-			$addButton[] = $this->_t(3) . "\$button = array();";
-			$addButton[] = $this->_t(3) . "\$script = array();";
-			$addButton[] = $this->_t(3)
+			$addButton[] = Indent::_(2) . "if (\$set_button === 'true')";
+			$addButton[] = Indent::_(2) . "{";
+			$addButton[] = Indent::_(3) . "\$button = array();";
+			$addButton[] = Indent::_(3) . "\$script = array();";
+			$addButton[] = Indent::_(3)
 				. "\$button_code_name = \$this->getAttribute('name');";
-			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " get the input from url";
-			$addButton[] = $this->_t(3) . "\$app = JFactory::getApplication();";
-			$addButton[] = $this->_t(3) . "\$jinput = \$app->input;";
-			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(3) . "\$app = JFactory::getApplication();";
+			$addButton[] = Indent::_(3) . "\$jinput = \$app->input;";
+			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " get the view name & id";
-			$addButton[] = $this->_t(3)
+			$addButton[] = Indent::_(3)
 				. "\$values = \$jinput->getArray(array(";
-			$addButton[] = $this->_t(4) . "'id' => 'int',";
-			$addButton[] = $this->_t(4) . "'view' => 'word'";
-			$addButton[] = $this->_t(3) . "));";
-			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(4) . "'id' => 'int',";
+			$addButton[] = Indent::_(4) . "'view' => 'word'";
+			$addButton[] = Indent::_(3) . "));";
+			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " check if new item";
-			$addButton[] = $this->_t(3) . "\$ref = '';";
-			$addButton[] = $this->_t(3) . "\$refJ = '';";
+			$addButton[] = Indent::_(3) . "\$ref = '';";
+			$addButton[] = Indent::_(3) . "\$refJ = '';";
 			if ($refLoad)
 			{
-				$addButton[] = $this->_t(3)
+				$addButton[] = Indent::_(3)
 					. "if (!is_null(\$values['id']) && strlen(\$values['view']))";
-				$addButton[] = $this->_t(3) . "{";
-				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+				$addButton[] = Indent::_(3) . "{";
+				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " only load referral if not new item.";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$ref = '&amp;ref=' . \$values['view'] . '&amp;refid=' . \$values['id'];";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$refJ = '&ref=' . \$values['view'] . '&refid=' . \$values['id'];";
-				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " get the return value.";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$_uri = (string) JUri::getInstance();";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$_return = urlencode(base64_encode(\$_uri));";
-				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " load return value.";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$ref .= '&amp;return=' . \$_return;";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$refJ .= '&return=' . \$_return;";
-				$addButton[] = $this->_t(3) . "}";
+				$addButton[] = Indent::_(3) . "}";
 			}
 			else
 			{
-				$addButton[] = $this->_t(3)
+				$addButton[] = Indent::_(3)
 					. "if (!is_null(\$values['id']) && strlen(\$values['view']))";
-				$addButton[] = $this->_t(3) . "{";
-				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+				$addButton[] = Indent::_(3) . "{";
+				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " only load field details if not new item.";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$ref = '&amp;field=' . \$values['view'] . '&amp;field_id=' . \$values['id'];";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$refJ = '&field=' . \$values['view'] . '&field_id=' . \$values['id'];";
-				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " get the return value.";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$_uri = (string) JUri::getInstance();";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$_return = urlencode(base64_encode(\$_uri));";
-				$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " load return value.";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$ref = '&amp;return=' . \$_return;";
-				$addButton[] = $this->_t(4)
+				$addButton[] = Indent::_(4)
 					. "\$refJ = '&return=' . \$_return;";
-				$addButton[] = $this->_t(3) . "}";
+				$addButton[] = Indent::_(3) . "}";
 			}
-			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " get button label";
-			$addButton[] = $this->_t(3)
+			$addButton[] = Indent::_(3)
 				. "\$button_label = trim(\$button_code_name);";
-			$addButton[] = $this->_t(3)
+			$addButton[] = Indent::_(3)
 				. "\$button_label = preg_replace('/_+/', ' ', \$button_label);";
-			$addButton[] = $this->_t(3)
+			$addButton[] = Indent::_(3)
 				. "\$button_label = preg_replace('/\s+/', ' ', \$button_label);";
-			$addButton[] = $this->_t(3)
+			$addButton[] = Indent::_(3)
 				. "\$button_label = preg_replace(\"/[^A-Za-z ]/\", '', \$button_label);";
-			$addButton[] = $this->_t(3)
+			$addButton[] = Indent::_(3)
 				. "\$button_label = ucfirst(strtolower(\$button_label));";
-			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " get user object";
-			$addButton[] = $this->_t(3) . "\$user = JFactory::getUser();";
-			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(3) . "\$user = JFactory::getUser();";
+			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " only add if user allowed to create " . $fieldData['view'];
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.create'])
@@ -6302,30 +6278,30 @@ class Fields extends Structure
 					$this->permissionBuilder['global'][$core['core.create']]
 				))
 			{
-				$addButton[] = $this->_t(3) . "if (\$user->authorise('"
+				$addButton[] = Indent::_(3) . "if (\$user->authorise('"
 					. $core['core.create'] . "', '" . $component
 					. "') && \$app->isAdmin()) // TODO for now only in admin area.";
 			}
 			else
 			{
-				$addButton[] = $this->_t(3)
+				$addButton[] = Indent::_(3)
 					. "if (\$user->authorise('core.create', '" . $component
 					. "') && \$app->isAdmin()) // TODO for now only in admin area.";
 			}
-			$addButton[] = $this->_t(3) . "{";
-			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(3) . "{";
+			$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " build Create button";
-			$addButton[] = $this->_t(4)
+			$addButton[] = Indent::_(4)
 				. "\$button[] = '<a id=\"'.\$button_code_name.'Create\" class=\"btn btn-small btn-success hasTooltip\" title=\"'.JText:"
-				. ":sprintf('" . Config::get('lang_prefix')
+				. ":sprintf('" . CFactory::_('Config')->lang_prefix
 				. "_CREATE_NEW_S', \$button_label).'\" style=\"border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;\"";
-			$addButton[] = $this->_t(5) . "href=\"index.php?option="
+			$addButton[] = Indent::_(5) . "href=\"index.php?option="
 				. $fieldData['component'] . "&amp;view=" . $fieldData['view']
 				. "&amp;layout=edit'.\$ref.'\" >";
-			$addButton[] = $this->_t(5)
+			$addButton[] = Indent::_(5)
 				. "<span class=\"icon-new icon-white\"></span></a>';";
-			$addButton[] = $this->_t(3) . "}";
-			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(3) . "}";
+			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " only add if user allowed to edit " . $fieldData['view'];
 			// check if the item has permissions.
 			if ($coreLoad && isset($core['core.edit'])
@@ -6338,88 +6314,88 @@ class Fields extends Structure
 					$this->permissionBuilder['global'][$core['core.edit']]
 				))
 			{
-				$addButton[] = $this->_t(3) . "if (\$user->authorise('"
+				$addButton[] = Indent::_(3) . "if (\$user->authorise('"
 					. $core['core.edit'] . "', '" . $component
 					. "') && \$app->isAdmin()) // TODO for now only in admin area.";
 			}
 			else
 			{
-				$addButton[] = $this->_t(3)
+				$addButton[] = Indent::_(3)
 					. "if (\$user->authorise('core.edit', '" . $component
 					. "') && \$app->isAdmin()) // TODO for now only in admin area.";
 			}
-			$addButton[] = $this->_t(3) . "{";
-			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(3) . "{";
+			$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " build edit button";
-			$addButton[] = $this->_t(4)
+			$addButton[] = Indent::_(4)
 				. "\$button[] = '<a id=\"'.\$button_code_name.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.JText:"
-				. ":sprintf('" . Config::get('lang_prefix')
+				. ":sprintf('" . CFactory::_('Config')->lang_prefix
 				. "_EDIT_S', \$button_label).'\" style=\"display: none; padding: 4px 4px 4px 7px;\" href=\"#\" >";
-			$addButton[] = $this->_t(5)
+			$addButton[] = Indent::_(5)
 				. "<span class=\"icon-edit\"></span></a>';";
-			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " build script";
-			$addButton[] = $this->_t(4) . "\$script[] = \"";
-			$addButton[] = $this->_t(5) . "jQuery(document).ready(function() {";
-			$addButton[] = $this->_t(6)
+			$addButton[] = Indent::_(4) . "\$script[] = \"";
+			$addButton[] = Indent::_(5) . "jQuery(document).ready(function() {";
+			$addButton[] = Indent::_(6)
 				. "jQuery('#adminForm').on('change', '#jform_\".\$button_code_name.\"',function (e) {";
-			$addButton[] = $this->_t(7) . "e.preventDefault();";
-			$addButton[] = $this->_t(7)
+			$addButton[] = Indent::_(7) . "e.preventDefault();";
+			$addButton[] = Indent::_(7)
 				. "var \".\$button_code_name.\"Value = jQuery('#jform_\".\$button_code_name.\"').val();";
-			$addButton[] = $this->_t(7)
+			$addButton[] = Indent::_(7)
 				. "\".\$button_code_name.\"Button(\".\$button_code_name.\"Value);";
-			$addButton[] = $this->_t(6) . "});";
-			$addButton[] = $this->_t(6)
+			$addButton[] = Indent::_(6) . "});";
+			$addButton[] = Indent::_(6)
 				. "var \".\$button_code_name.\"Value = jQuery('#jform_\".\$button_code_name.\"').val();";
-			$addButton[] = $this->_t(6)
+			$addButton[] = Indent::_(6)
 				. "\".\$button_code_name.\"Button(\".\$button_code_name.\"Value);";
-			$addButton[] = $this->_t(5) . "});";
-			$addButton[] = $this->_t(5)
+			$addButton[] = Indent::_(5) . "});";
+			$addButton[] = Indent::_(5)
 				. "function \".\$button_code_name.\"Button(value) {";
-			$addButton[] = $this->_t(6)
+			$addButton[] = Indent::_(6)
 				. "if (value > 0) {"; // TODO not ideal since value may not be an (int)
-			$addButton[] = $this->_t(7) . "// hide the create button";
-			$addButton[] = $this->_t(7)
+			$addButton[] = Indent::_(7) . "// hide the create button";
+			$addButton[] = Indent::_(7)
 				. "jQuery('#\".\$button_code_name.\"Create').hide();";
-			$addButton[] = $this->_t(7) . "// show edit button";
-			$addButton[] = $this->_t(7)
+			$addButton[] = Indent::_(7) . "// show edit button";
+			$addButton[] = Indent::_(7)
 				. "jQuery('#\".\$button_code_name.\"Edit').show();";
-			$addButton[] = $this->_t(7) . "var url = 'index.php?option="
+			$addButton[] = Indent::_(7) . "var url = 'index.php?option="
 				. $fieldData['component'] . "&view=" . $fieldData['views']
 				. "&task=" . $fieldData['view']
 				. ".edit&id='+value+'\".\$refJ.\"';"; // TODO this value may not be the ID
-			$addButton[] = $this->_t(7)
+			$addButton[] = Indent::_(7)
 				. "jQuery('#\".\$button_code_name.\"Edit').attr('href', url);";
-			$addButton[] = $this->_t(6) . "} else {";
-			$addButton[] = $this->_t(7) . "// show the create button";
-			$addButton[] = $this->_t(7)
+			$addButton[] = Indent::_(6) . "} else {";
+			$addButton[] = Indent::_(7) . "// show the create button";
+			$addButton[] = Indent::_(7)
 				. "jQuery('#\".\$button_code_name.\"Create').show();";
-			$addButton[] = $this->_t(7) . "// hide edit button";
-			$addButton[] = $this->_t(7)
+			$addButton[] = Indent::_(7) . "// hide edit button";
+			$addButton[] = Indent::_(7)
 				. "jQuery('#\".\$button_code_name.\"Edit').hide();";
-			$addButton[] = $this->_t(6) . "}";
-			$addButton[] = $this->_t(5) . "}\";";
-			$addButton[] = $this->_t(3) . "}";
-			$addButton[] = $this->_t(3) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(6) . "}";
+			$addButton[] = Indent::_(5) . "}\";";
+			$addButton[] = Indent::_(3) . "}";
+			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " check if button was created for " . $fieldData['view']
 				. " field.";
-			$addButton[] = $this->_t(3)
+			$addButton[] = Indent::_(3)
 				. "if (is_array(\$button) && count(\$button) > 0)";
-			$addButton[] = $this->_t(3) . "{";
-			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(3) . "{";
+			$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Load the needed script.";
-			$addButton[] = $this->_t(4)
+			$addButton[] = Indent::_(4)
 				. "\$document = JFactory::getDocument();";
-			$addButton[] = $this->_t(4)
+			$addButton[] = Indent::_(4)
 				. "\$document->addScriptDeclaration(implode(' ',\$script));";
-			$addButton[] = $this->_t(4) . "//" . $this->setLine(__LINE__)
+			$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " return the button attached to input field.";
-			$addButton[] = $this->_t(4)
+			$addButton[] = Indent::_(4)
 				. "return '<div class=\"input-append\">' .\$html . implode('',\$button).'</div>';";
-			$addButton[] = $this->_t(3) . "}";
-			$addButton[] = $this->_t(2) . "}";
-			$addButton[] = $this->_t(2) . "return \$html;";
-			$addButton[] = $this->_t(1) . "}";
+			$addButton[] = Indent::_(3) . "}";
+			$addButton[] = Indent::_(2) . "}";
+			$addButton[] = Indent::_(2) . "return \$html;";
+			$addButton[] = Indent::_(1) . "}";
 
 			return implode(PHP_EOL, $addButton);
 		}
@@ -6444,7 +6420,7 @@ class Fields extends Structure
 			$dom->getElementsByTagName($nodename)->item(0)
 		);
 		// make sure Tidy is enabled
-		if (Config::get('tidy', false))
+		if (CFactory::_('Config')->get('tidy', false))
 		{
 			$tidy = new Tidy();
 			$tidy->parseString(
