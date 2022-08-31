@@ -648,6 +648,7 @@ class Get
 	 * The Custom Script Builder
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Customcode.Dispenser')->hub;
 	 */
 	public $customScriptBuilder = array();
 
@@ -1716,17 +1717,17 @@ class Get
 		// add_javascript
 		if ($component->add_javascript == 1)
 		{
-			$this->setCustomScriptBuilder(
+			CFactory::_('Customcode.Dispenser')->set(
 				$component->javascript,
 				'component_js',
-				false,
-				false,
+				null,
+				null,
 				$guiMapper
 			);
 		}
 		else
 		{
-			$this->customScriptBuilder['component_js'] = '';
+			CFactory::_('Customcode.Dispenser')->hub['component_js'] = '';
 		}
 		unset($component->javascript);
 
@@ -1742,14 +1743,14 @@ class Get
 					$component->{'css_' . $area}
 				))
 			{
-				$this->setCustomScriptBuilder(
+				CFactory::_('Customcode.Dispenser')->set(
 					$component->{'css_' . $area},
 					'component_css_' . $area
 				);
 			}
 			else
 			{
-				$this->customScriptBuilder['component_css_' . $area] = '';
+				CFactory::_('Customcode.Dispenser')->hub['component_css_' . $area] = '';
 			}
 			unset($component->{'css_' . $area});
 		}
@@ -1776,17 +1777,17 @@ class Get
 				{
 					// set GUI mapper field
 					$guiMapper['field'] = $scriptMethod . '_' . $scriptType;
-					$this->setCustomScriptBuilder(
+					CFactory::_('Customcode.Dispenser')->set(
 						$component->{$scriptMethod . '_' . $scriptType},
 						$scriptMethod,
 						$scriptType,
-						false,
+						null,
 						$guiMapper
 					);
 				}
 				else
 				{
-					$this->customScriptBuilder[$scriptMethod][$scriptType] = '';
+					CFactory::_('Customcode.Dispenser')->hub[$scriptMethod][$scriptType] = '';
 				}
 				unset($component->{$scriptMethod . '_' . $scriptType});
 			}
@@ -1801,18 +1802,18 @@ class Get
 			// update GUI mapper
 			$guiMapper['field']  = 'php_helper_admin';
 			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
-			$this->setCustomScriptBuilder(
+			CFactory::_('Customcode.Dispenser')->set(
 				$component->php_helper_admin,
 				'component_php_helper_admin',
-				false,
-				false,
+				null,
+				null,
 				$guiMapper
 			);
 			unset($guiMapper['prefix']);
 		}
 		else
 		{
-			$this->customScriptBuilder['component_php_helper_admin'] = '';
+			CFactory::_('Customcode.Dispenser')->hub['component_php_helper_admin'] = '';
 		}
 		unset($component->php_helper);
 		// add_admin_event
@@ -1822,17 +1823,17 @@ class Get
 			CFactory::_('Config')->lang_target = 'admin';
 			// update GUI mapper field
 			$guiMapper['field'] = 'php_admin_event';
-			$this->setCustomScriptBuilder(
+			CFactory::_('Customcode.Dispenser')->set(
 				$component->php_admin_event,
 				'component_php_admin_event',
-				false,
-				false,
+				null,
+				null,
 				$guiMapper
 			);
 		}
 		else
 		{
-			$this->customScriptBuilder['component_php_admin_event'] = '';
+			CFactory::_('Customcode.Dispenser')->hub['component_php_admin_event'] = '';
 		}
 		unset($component->php_admin_event);
 		// add_php_helper_both
@@ -1843,18 +1844,18 @@ class Get
 			// update GUI mapper field
 			$guiMapper['field']  = 'php_helper_both';
 			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
-			$this->setCustomScriptBuilder(
+			CFactory::_('Customcode.Dispenser')->set(
 				$component->php_helper_both,
 				'component_php_helper_both',
-				false,
-				false,
+				null,
+				null,
 				$guiMapper
 			);
 			unset($guiMapper['prefix']);
 		}
 		else
 		{
-			$this->customScriptBuilder['component_php_helper_both'] = '';
+			CFactory::_('Customcode.Dispenser')->hub['component_php_helper_both'] = '';
 		}
 		// add_php_helper_site
 		if ($component->add_php_helper_site == 1
@@ -1864,18 +1865,18 @@ class Get
 			// update GUI mapper field
 			$guiMapper['field']  = 'php_helper_site';
 			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
-			$this->setCustomScriptBuilder(
+			CFactory::_('Customcode.Dispenser')->set(
 				$component->php_helper_site,
 				'component_php_helper_site',
-				false,
-				false,
+				null,
+				null,
 				$guiMapper
 			);
 			unset($guiMapper['prefix']);
 		}
 		else
 		{
-			$this->customScriptBuilder['component_php_helper_site'] = '';
+			CFactory::_('Customcode.Dispenser')->hub['component_php_helper_site'] = '';
 		}
 		unset($component->php_helper);
 		// add_site_event
@@ -1885,23 +1886,23 @@ class Get
 			CFactory::_('Config')->lang_target = 'site';
 			// update GUI mapper field
 			$guiMapper['field'] = 'php_site_event';
-			$this->setCustomScriptBuilder(
+			CFactory::_('Customcode.Dispenser')->set(
 				$component->php_site_event,
 				'component_php_site_event',
-				false,
-				false,
+				null,
+				null,
 				$guiMapper
 			);
 		}
 		else
 		{
-			$this->customScriptBuilder['component_php_site_event'] = '';
+			CFactory::_('Customcode.Dispenser')->hub['component_php_site_event'] = '';
 		}
 		unset($component->php_site_event);
 		// add_sql
 		if ($component->add_sql == 1)
 		{
-			$this->setCustomScriptBuilder(
+			CFactory::_('Customcode.Dispenser')->set(
 				$component->sql,
 				'sql',
 				'component_sql'
@@ -1911,7 +1912,7 @@ class Get
 		// add_sql_uninstall
 		if ($component->add_sql_uninstall == 1)
 		{
-			$this->setCustomScriptBuilder(
+			CFactory::_('Customcode.Dispenser')->set(
 				$component->sql_uninstall,
 				'sql_uninstall'
 			);
@@ -2259,13 +2260,13 @@ class Get
 			);
 
 			// setup token check
-			if (!isset($this->customScriptBuilder['token']))
+			if (!isset(CFactory::_('Customcode.Dispenser')->hub['token']))
 			{
-				$this->customScriptBuilder['token'] = array();
+				CFactory::_('Customcode.Dispenser')->hub['token'] = [];
 			}
-			$this->customScriptBuilder['token'][$view->name_single_code]
+			CFactory::_('Customcode.Dispenser')->hub['token'][$view->name_single_code]
 				                                                       = false;
-			$this->customScriptBuilder['token'][$view->name_list_code] = false;
+			CFactory::_('Customcode.Dispenser')->hub['token'][$view->name_list_code] = false;
 			// set some placeholders
 			CFactory::_('Placeholder')->active[Placefix::_h('view')]
 				= $view->name_single_code;
@@ -2940,11 +2941,11 @@ class Get
 					);
 					// update GUI mapper field
 					$guiMapper['field'] = $scripter;
-					$this->setCustomScriptBuilder(
+					CFactory::_('Customcode.Dispenser')->set(
 						$view->{$scripter},
 						$scripter_target,
 						$view->name_single_code,
-						false,
+						null,
 						$guiMapper,
 						true,
 						true,
@@ -2956,9 +2957,9 @@ class Get
 							$view->$scripter, "task=ajax"
 						) !== false)
 					{
-						if (!$this->customScriptBuilder['token'][$view->name_single_code])
+						if (!CFactory::_('Customcode.Dispenser')->hub['token'][$view->name_single_code])
 						{
-							$this->customScriptBuilder['token'][$view->name_single_code]
+							CFactory::_('Customcode.Dispenser')->hub['token'][$view->name_single_code]
 								= true;
 						}
 					}
@@ -2974,11 +2975,11 @@ class Get
 					&& $view->{'add_' . $scripter} == 1
 					&& StringHelper::check($view->{$scripter}))
 				{
-					$this->setCustomScriptBuilder(
+					CFactory::_('Customcode.Dispenser')->set(
 						$view->{$scripter},
 						$scripter,
 						$view->name_single_code,
-						false,
+						null,
 						array('prefix' => PHP_EOL),
 						true,
 						true,
@@ -3006,11 +3007,11 @@ class Get
 				{
 					// update GUI mapper field
 					$guiMapper['field'] = $scripter;
-					$this->setCustomScriptBuilder(
+					CFactory::_('Customcode.Dispenser')->set(
 						$view->{$scripter},
 						$scripter,
 						$view->name_single_code,
-						false,
+						null,
 						$guiMapper
 					);
 
@@ -3089,11 +3090,11 @@ class Get
 						{
 							$guiMapper['type'] = 'html';
 						}
-						$this->setCustomScriptBuilder(
+						CFactory::_('Customcode.Dispenser')->set(
 							$view->$importScripter,
 							$importScripter,
 							'import_' . $view->name_list_code,
-							false,
+							null,
 							$guiMapper
 						);
 						unset($view->$importScripter);
@@ -3101,7 +3102,7 @@ class Get
 					else
 					{
 						// load the default
-						$this->customScriptBuilder[$importScripter]['import_'
+						CFactory::_('Customcode.Dispenser')->hub[$importScripter]['import_'
 						. $view->name_list_code]
 							= ComponentbuilderHelper::getDynamicScripts(
 							$importScripter, true
@@ -3113,7 +3114,7 @@ class Get
 			if (isset($view->add_php_ajax) && $view->add_php_ajax == 1)
 			{
 				// insure the token is added to edit view atleast
-				$this->customScriptBuilder['token'][$view->name_single_code]
+				CFactory::_('Customcode.Dispenser')->hub['token'][$view->name_single_code]
 					         = true;
 				$addAjaxSite = false;
 				if (isset($this->siteEditView[$id]) && $this->siteEditView[$id])
@@ -3133,10 +3134,10 @@ class Get
 				{
 					if ($addAjaxSite)
 					{
-						$this->customScriptBuilder['site']['ajax_controller'][$view->name_single_code]
+						CFactory::_('Customcode.Dispenser')->hub['site']['ajax_controller'][$view->name_single_code]
 							= array_values($view->ajax_input);
 					}
-					$this->customScriptBuilder['admin']['ajax_controller'][$view->name_single_code]
+					CFactory::_('Customcode.Dispenser')->hub['admin']['ajax_controller'][$view->name_single_code]
 						           = array_values($view->ajax_input);
 					$this->addAjax = true;
 					unset($view->ajax_input);
@@ -3147,7 +3148,7 @@ class Get
 					$guiMapper['type'] = 'php';
 					// update GUI mapper field
 					$guiMapper['field'] = 'php_ajaxmethod';
-					$this->setCustomScriptBuilder(
+					CFactory::_('Customcode.Dispenser')->set(
 						$view->php_ajaxmethod,
 						'admin',
 						'ajax_model',
@@ -3157,7 +3158,7 @@ class Get
 
 					if ($addAjaxSite)
 					{
-						$this->setCustomScriptBuilder(
+						CFactory::_('Customcode.Dispenser')->set(
 							$view->php_ajaxmethod,
 							'site',
 							'ajax_model',
@@ -3215,7 +3216,7 @@ class Get
 				if ($view->source == 1 && isset($view->tables))
 				{
 					// build and add the SQL dump
-					$this->customScriptBuilder['sql'][$view->name_single_code]
+					CFactory::_('Customcode.Dispenser')->hub['sql'][$view->name_single_code]
 						= $this->buildSqlDump(
 						$view->tables, $view->name_single_code, $id
 					);
@@ -3224,7 +3225,7 @@ class Get
 				elseif ($view->source == 2 && isset($view->sql))
 				{
 					// add the SQL dump string
-					$this->setCustomScriptBuilder(
+					CFactory::_('Customcode.Dispenser')->set(
 						$view->sql,
 						'sql',
 						$view->name_single_code
@@ -3577,7 +3578,7 @@ class Get
 				? json_decode($view->ajax_input, true) : null;
 			if (ArrayHelper::check($view->ajax_input))
 			{
-				$this->customScriptBuilder[$target]['ajax_controller'][$view->code]
+				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller'][$view->code]
 					     = array_values($view->ajax_input);
 				$setAjax = true;
 			}
@@ -3587,7 +3588,7 @@ class Get
 			{
 				// set field
 				$guiMapper['field'] = 'php_ajaxmethod';
-				$this->setCustomScriptBuilder(
+				CFactory::_('Customcode.Dispenser')->set(
 					$view->php_ajaxmethod,
 					$target,
 					'ajax_model',
@@ -3931,11 +3932,11 @@ class Get
 					{
 						$convert__ = false;
 					}
-					$this->setCustomScriptBuilder(
+					CFactory::_('Customcode.Dispenser')->set(
 						$this->_fieldData[$id]->javascript_view_footer,
 						'view_footer',
 						$name_single,
-						false,
+						null,
 						array(
 							'table'  => 'field',
 							'id'     => (int) $id,
@@ -3960,14 +3961,14 @@ class Get
 							"task=ajax"
 						) !== false)
 					{
-						if (!isset($this->customScriptBuilder['token']))
+						if (!isset(CFactory::_('Customcode.Dispenser')->hub['token']))
 						{
-							$this->customScriptBuilder['token'] = array();
+							CFactory::_('Customcode.Dispenser')->hub['token'] = [];
 						}
-						if (!isset($this->customScriptBuilder['token'][$name_single])
-							|| !$this->customScriptBuilder['token'][$name_single])
+						if (!isset(CFactory::_('Customcode.Dispenser')->hub['token'][$name_single])
+							|| !CFactory::_('Customcode.Dispenser')->hub['token'][$name_single])
 						{
-							$this->customScriptBuilder['token'][$name_single]
+							CFactory::_('Customcode.Dispenser')->hub['token'][$name_single]
 								= true;
 						}
 					}
@@ -3982,11 +3983,11 @@ class Get
 					{
 						$convert__ = false;
 					}
-					$this->setCustomScriptBuilder(
+					CFactory::_('Customcode.Dispenser')->set(
 						$this->_fieldData[$id]->css_view,
 						'css_view',
 						$name_single,
-						false,
+						null,
 						array('prefix' => PHP_EOL),
 						$convert__,
 						$convert__,
@@ -4014,11 +4015,11 @@ class Get
 					{
 						$convert__ = false;
 					}
-					$this->setCustomScriptBuilder(
+					CFactory::_('Customcode.Dispenser')->set(
 						$this->_fieldData[$id]->javascript_views_footer,
 						'views_footer',
 						$name_single,
-						false,
+						null,
 						array(
 							'table'  => 'field',
 							'id'     => (int) $id,
@@ -4043,14 +4044,14 @@ class Get
 							"task=ajax"
 						) !== false)
 					{
-						if (!isset($this->customScriptBuilder['token']))
+						if (!isset(CFactory::_('Customcode.Dispenser')->hub['token']))
 						{
-							$this->customScriptBuilder['token'] = array();
+							CFactory::_('Customcode.Dispenser')->hub['token'] = [];
 						}
-						if (!isset($this->customScriptBuilder['token'][$name_list])
-							|| !$this->customScriptBuilder['token'][$name_list])
+						if (!isset(CFactory::_('Customcode.Dispenser')->hub['token'][$name_list])
+							|| !CFactory::_('Customcode.Dispenser')->hub['token'][$name_list])
 						{
-							$this->customScriptBuilder['token'][$name_list]
+							CFactory::_('Customcode.Dispenser')->hub['token'][$name_list]
 								= true;
 						}
 					}
@@ -4064,11 +4065,11 @@ class Get
 					{
 						$convert__ = false;
 					}
-					$this->setCustomScriptBuilder(
+					CFactory::_('Customcode.Dispenser')->set(
 						$this->_fieldData[$id]->css_views,
 						'css_views',
 						$name_single,
-						false,
+						null,
 						array('prefix' => PHP_EOL),
 						$convert__,
 						$convert__,
@@ -4668,11 +4669,11 @@ class Get
 									// set GUI mapper field
 									$guiMapper['field']  = $script;
 									$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
-									$this->setCustomScriptBuilder(
+									CFactory::_('Customcode.Dispenser')->set(
 										$result->{$script},
 										CFactory::_('Config')->build_target . '_' . $script,
 										$view_code,
-										false,
+										null,
 										$guiMapper,
 										true,
 										true,
@@ -5131,135 +5132,35 @@ class Get
 	}
 
 	/**
-	 * set the script for the custom script builder
+	 * Set the script for the customcode dispenser
 	 *
-	 * @param   string  $script   The script
-	 * @param   string  $first    The first key
-	 * @param   string  $second   The second key (if not set we use only first key)
-	 * @param   string  $third    The third key (if not set we use only first and second key)
-	 * @param   array   $config   The config options
-	 * @param   bool    $base64   The switch to decode base64 the script
-	 *                            default: true
-	 * @param   bool    $dynamic  The switch to dynamic update the script
-	 *                            default: true
-	 * @param   bool    $add      The switch to add to exiting instead of replace
-	 *                            default: false
+	 * @param   string       $script   The script
+	 * @param   string       $first    The first key
+	 * @param   string|null  $second   The second key (if not set we use only first key)
+	 * @param   string|null  $third    The third key (if not set we use only first and second key)
+	 * @param   array        $config   The config options
+	 * @param   bool         $base64   The switch to decode base64 the script
+	 *                                    default: true
+	 * @param   bool         $dynamic  The switch to dynamic update the script
+	 *                                    default: true
+	 * @param   bool         $add      The switch to add to exiting instead of replace
+	 *                                    default: false
 	 *
-	 * @return  boolean     true on success
-	 *
+	 * @return  bool    true on success
+	 * @deprecated 3.3 Use CFactory::_('Customcode.Dispenser')->set($script, $first, $second, $third, $config, $base64, $dynamic, $add);
 	 */
-	public function setCustomScriptBuilder(&$script, $first, $second = false,
-	                                       $third = false, $config = array(), $base64 = true, $dynamic = true,
-	                                       $add = false
-	)
+	public function setCustomScriptBuilder(
+		&$script,
+		string $first,
+		?string $second = null,
+		?string $third = null,
+		array $config = array(),
+		bool $base64 = true,
+		bool $dynamic = true,
+		bool $add = false
+	): bool
 	{
-		// only load if we have a string
-		if (!StringHelper::check($script))
-		{
-			return false;
-		}
-		// this needs refactoring (TODO)
-		if (!isset($this->customScriptBuilder[$first])
-			|| ($second
-				&& !isset($this->customScriptBuilder[$first][$second])))
-		{
-			// check if the script first key is set
-			if ($second && !isset($this->customScriptBuilder[$first]))
-			{
-				$this->customScriptBuilder[$first] = array();
-			}
-			elseif ($add && !$second
-				&& !isset($this->customScriptBuilder[$first]))
-			{
-				$this->customScriptBuilder[$first] = '';
-			}
-			// check if the script second key is set
-			if ($second && $third
-				&& !isset($this->customScriptBuilder[$first][$second]))
-			{
-				$this->customScriptBuilder[$first][$second] = array();
-			}
-			elseif ($add && $second && !$third
-				&& !isset($this->customScriptBuilder[$first][$second]))
-			{
-				$this->customScriptBuilder[$first][$second] = '';
-			}
-			// check if the script third key is set
-			if ($add && $second && $third
-				&& !isset($this->customScriptBuilder[$first][$second][$third]))
-			{
-				$this->customScriptBuilder[$first][$second][$third] = '';
-			}
-		}
-		// prep the script string
-		if ($base64 && $dynamic)
-		{
-			$script = CFactory::_('Customcode')->add(base64_decode($script));
-		}
-		elseif ($base64)
-		{
-			$script = base64_decode($script);
-		}
-		elseif ($dynamic) // this does not happen (just incase)
-		{
-			$script = CFactory::_('Customcode')->add($script);
-		}
-		// check if we still have a string
-		if (StringHelper::check($script))
-		{
-			// now load the placeholder snippet if needed
-			if ($base64 || $dynamic)
-			{
-				$script = CFactory::_('Customcode.Gui')->set($script, $config);
-			}
-			// add Dynamic HASHING option of a file/string
-			$script = $this->setDynamicHASHING($script);
-			// add base64 locking option of a string
-			$script = $this->setBase64LOCK($script);
-			// load the script
-			if ($first && $second && $third)
-			{
-				// now act on loading option
-				if ($add)
-				{
-					$this->customScriptBuilder[$first][$second][$third]
-						.= $script;
-				}
-				else
-				{
-					$this->customScriptBuilder[$first][$second][$third]
-						= $script;
-				}
-			}
-			elseif ($first && $second)
-			{
-				// now act on loading option
-				if ($add)
-				{
-					$this->customScriptBuilder[$first][$second] .= $script;
-				}
-				else
-				{
-					$this->customScriptBuilder[$first][$second] = $script;
-				}
-			}
-			else
-			{
-				// now act on loading option
-				if ($add)
-				{
-					$this->customScriptBuilder[$first] .= $script;
-				}
-				else
-				{
-					$this->customScriptBuilder[$first] = $script;
-				}
-			}
-
-			return true;
-		}
-
-		return false;
+		return CFactory::_('Customcode.Dispenser')->set($script, $first, $second, $third, $config, $base64, $dynamic, $add);
 	}
 
 	/**
@@ -5274,44 +5175,13 @@ class Get
 	 * @param   string  $sufix    The sufix  to add after the script if found
 	 *
 	 * @return  mix    The string/script if found or the default value if not found
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Customcode.Dispenser')->get($first, $second, $prefix, $note, $unset, $default, $sufix);
 	 */
 	public function getCustomScriptBuilder($first, $second, $prefix = '',
 	                                       $note = null, $unset = null, $default = null, $sufix = ''
 	)
 	{
-		// default is to return an empty string
-		$script = '';
-		// check if there is any custom script
-		if (isset($this->customScriptBuilder[$first][$second])
-			&& StringHelper::check(
-				$this->customScriptBuilder[$first][$second]
-			))
-		{
-			// add not if set
-			if ($note)
-			{
-				$script .= $note;
-			}
-			// load the actual script
-			$script .= $prefix . str_replace(
-					array_keys(CFactory::_('Placeholder')->active),
-					array_values(CFactory::_('Placeholder')->active),
-					$this->customScriptBuilder[$first][$second]
-				) . $sufix;
-			// clear some memory
-			if ($unset)
-			{
-				unset($this->customScriptBuilder[$first][$second]);
-			}
-		}
-		// if not found return default
-		if (!StringHelper::check($script) && $default)
-		{
-			return $default;
-		}
-
-		return $script;
+		return CFactory::_('Customcode.Dispenser')->get($first, $second, $prefix, $note, $unset, $default, $sufix);
 	}
 
 	/**
@@ -10198,7 +10068,7 @@ class Get
 	 * @param   string  $string  The code string
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Customcode.Hash')->set($script);
 	 */
 	protected function setDynamicHASHING($script)
 	{
@@ -10259,7 +10129,7 @@ class Get
 	 * @param   string  $string  The code string
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Customcode.LockBase')->set($script);
 	 */
 	protected function setBase64LOCK($script)
 	{

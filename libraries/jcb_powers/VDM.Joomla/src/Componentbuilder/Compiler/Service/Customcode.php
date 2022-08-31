@@ -17,6 +17,9 @@ use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode as CompilerCustomcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\External;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
+use VDM\Joomla\Componentbuilder\Compiler\Customcode\Hash;
+use VDM\Joomla\Componentbuilder\Compiler\Customcode\LockBase;
+use VDM\Joomla\Componentbuilder\Compiler\Customcode\Dispenser;
 
 
 /**
@@ -44,6 +47,15 @@ class Customcode implements ServiceProviderInterface
 
 		$container->alias(Gui::class, 'Customcode.Gui')
 			->share('Customcode.Gui', [$this, 'getGui'], true);
+
+		$container->alias(Hash::class, 'Customcode.Hash')
+			->share('Customcode.Hash', [$this, 'getHash'], true);
+
+		$container->alias(LockBase::class, 'Customcode.LockBase')
+			->share('Customcode.LockBase', [$this, 'getLockBase'], true);
+
+		$container->alias(Dispenser::class, 'Customcode.Dispenser')
+			->share('Customcode.Dispenser', [$this, 'getDispenser'], true);
 	}
 
 	/**
@@ -92,6 +104,55 @@ class Customcode implements ServiceProviderInterface
 		return new Gui(
 			$container->get('Config'),
 			$container->get('Placeholder.Reverse')
+		);
+	}
+
+	/**
+	 * Get the Customcode Hash
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Hash
+	 * @since 3.2.0
+	 */
+	public function getHash(Container $container): Hash
+	{
+		return new Hash(
+			$container->get('Placeholder')
+		);
+	}
+
+	/**
+	 * Get the Customcode LockBase64
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  LockBase
+	 * @since 3.2.0
+	 */
+	public function getLockBase(Container $container): LockBase
+	{
+		return new LockBase(
+			$container->get('Placeholder')
+		);
+	}
+
+	/**
+	 * Get the Customcode Dispenser
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Dispenser
+	 * @since 3.2.0
+	 */
+	public function getDispenser(Container $container): Dispenser
+	{
+		return new Dispenser(
+			$container->get('Placeholder'),
+			$container->get('Customcode'),
+			$container->get('Customcode.Gui'),
+			$container->get('Customcode.Hash'),
+			$container->get('Customcode.LockBase')
 		);
 	}
 

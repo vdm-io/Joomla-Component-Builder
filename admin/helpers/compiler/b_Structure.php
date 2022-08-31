@@ -754,7 +754,7 @@ class Structure extends Get
 					$module->add_scripts_field = false;
 					$field_script_bucket       = array();
 					// add any css from the fields
-					if (($css = $this->getCustomScriptBuilder(
+					if (($css = CFactory::_('Customcode.Dispenser')->get(
 							'css_view', $module->key
 						)) !== null
 						&& StringHelper::check($css))
@@ -789,7 +789,7 @@ class Structure extends Get
 						}
 					}
 					// add any JavaScript from the fields
-					if (($javascript = $this->getCustomScriptBuilder(
+					if (($javascript = CFactory::_('Customcode.Dispenser')->get(
 							'view_footer', $module->key
 						)) !== null
 						&& StringHelper::check($javascript))

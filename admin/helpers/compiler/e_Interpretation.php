@@ -4784,7 +4784,7 @@ class Interpretation extends Fields
 			// set main get query
 			$getItem .= $this->setCustomViewQuery($get->main_get, $code);
 			// check if there is any custom script
-			$getItem .= $this->getCustomScriptBuilder(
+			$getItem .= CFactory::_('Customcode.Dispenser')->get(
 				CFactory::_('Config')->build_target . '_php_getlistquery', $code, '',
 				PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -7403,7 +7403,7 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . Indent::_(3) . "}";
 		}
 		// add custom php to getitem method
-		$script .= $this->getCustomScriptBuilder(
+		$script .= CFactory::_('Customcode.Dispenser')->get(
 			'php_getitem', $view, PHP_EOL . PHP_EOL
 		);
 
@@ -7442,7 +7442,7 @@ class Interpretation extends Fields
 		$Component = $this->fileContentStatic[Placefix::_h('Component')];
 		$component = CFactory::_('Config')->component_code_name;
 		// check if there was script added before modeling of data
-		$script .= $this->getCustomScriptBuilder(
+		$script .= CFactory::_('Customcode.Dispenser')->get(
 			'php_before_save', $view, PHP_EOL . PHP_EOL
 		);
 		// turn array into JSON string
@@ -7627,7 +7627,7 @@ class Interpretation extends Fields
 			}
 		}
 		// add custom PHP to the save method
-		$script .= $this->getCustomScriptBuilder(
+		$script .= CFactory::_('Customcode.Dispenser')->get(
 			'php_save', $view, PHP_EOL . PHP_EOL
 		);
 
@@ -7901,7 +7901,7 @@ class Interpretation extends Fields
 				. PHP_EOL;
 		}
 		// add the custom script
-		$script .= $this->getCustomScriptBuilder(
+		$script .= CFactory::_('Customcode.Dispenser')->get(
 			'php_postflight', 'install', PHP_EOL . PHP_EOL, null, true
 		);
 		// add the Intelligent Fix script if needed
@@ -7930,7 +7930,7 @@ class Interpretation extends Fields
 		// reset script
 		$script = $this->setComponentToContentTypes('update');
 		// add the custom script
-		$script .= $this->getCustomScriptBuilder(
+		$script .= CFactory::_('Customcode.Dispenser')->get(
 			'php_postflight', 'update', PHP_EOL . PHP_EOL, null, true
 		);
 		if (isset($this->componentData->admin_views)
@@ -8427,7 +8427,7 @@ class Interpretation extends Fields
 		// add the Intelligent Reversal script if needed
 		$script .= $this->getAssetsTableIntelligentUninstall();
 		// add the custom uninstall script
-		$script .= $this->getCustomScriptBuilder(
+		$script .= CFactory::_('Customcode.Dispenser')->get(
 			'php_method', 'uninstall', "", null, true, null, PHP_EOL
 		);
 
@@ -9104,7 +9104,7 @@ class Interpretation extends Fields
 			$category = $this->catCodeBuilder[$nameSingleCode]['code'];
 		}
 		// prepare custom script
-		$customScript = $this->getCustomScriptBuilder(
+		$customScript = CFactory::_('Customcode.Dispenser')->get(
 			'php_batchmove', $nameSingleCode, PHP_EOL . PHP_EOL, null, true
 		);
 
@@ -9381,7 +9381,7 @@ class Interpretation extends Fields
 			}
 		}
 		// prepare custom script
-		$customScript = $this->getCustomScriptBuilder(
+		$customScript = CFactory::_('Customcode.Dispenser')->get(
 			'php_batchcopy', $nameSingleCode, PHP_EOL . PHP_EOL, null, true
 		);
 
@@ -10528,13 +10528,13 @@ class Interpretation extends Fields
 				$db .= $db_ . PHP_EOL . PHP_EOL;
 			}
 			// add custom sql dump to the file
-			if (isset($this->customScriptBuilder['sql'])
+			if (isset(CFactory::_('Customcode.Dispenser')->hub['sql'])
 				&& ArrayHelper::check(
-					$this->customScriptBuilder['sql']
+					CFactory::_('Customcode.Dispenser')->hub['sql']
 				))
 			{
 				foreach (
-					$this->customScriptBuilder['sql'] as $for => $customSql
+					CFactory::_('Customcode.Dispenser')->hub['sql'] as $for => $customSql
 				)
 				{
 					$placeholders = array(Placefix::_('component') => $component,
@@ -10543,7 +10543,7 @@ class Interpretation extends Fields
 							$customSql, $placeholders
 						) . PHP_EOL . PHP_EOL;
 				}
-				unset($this->customScriptBuilder['sql']);
+				unset(CFactory::_('Customcode.Dispenser')->hub['sql']);
 			}
 
 			// WHY DO WE NEED AN ASSET TABLE FIX?
@@ -10640,16 +10640,16 @@ class Interpretation extends Fields
 			}
 		}
 		// add custom sql uninstall dump to the file
-		if (isset($this->customScriptBuilder['sql_uninstall'])
+		if (isset(CFactory::_('Customcode.Dispenser')->hub['sql_uninstall'])
 			&& StringHelper::check(
-				$this->customScriptBuilder['sql_uninstall']
+				CFactory::_('Customcode.Dispenser')->hub['sql_uninstall']
 			))
 		{
 			$db .= CFactory::_('Placeholder')->update(
-					$this->customScriptBuilder['sql_uninstall'],
+					CFactory::_('Customcode.Dispenser')->hub['sql_uninstall'],
 					$this->placeholders
 				) . PHP_EOL;
-			unset($this->customScriptBuilder['sql_uninstall']);
+			unset(CFactory::_('Customcode.Dispenser')->hub['sql_uninstall']);
 		}
 
 		// check if this component used larger rules
@@ -14528,7 +14528,7 @@ class Interpretation extends Fields
 				. "') . ' = ' . \$db->quoteName('c.id') . ')');";
 		}
 		// add custom filtering php
-		$query .= $this->getCustomScriptBuilder(
+		$query .= CFactory::_('Customcode.Dispenser')->get(
 			'php_getlistquery', $nameSingleCode, PHP_EOL . PHP_EOL
 		);
 		// add the custom fields query
@@ -14949,7 +14949,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "}";
 		}
 		// add custom php to getitems method after all
-		$query .= $this->getCustomScriptBuilder(
+		$query .= CFactory::_('Customcode.Dispenser')->get(
 			'php_getitems_after_all', $nameSingleCode,
 			PHP_EOL . PHP_EOL . Indent::_(1)
 		);
@@ -15213,7 +15213,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3)
 				. "}";
 			// add custom filtering php
-			$query .= $this->getCustomScriptBuilder(
+			$query .= CFactory::_('Customcode.Dispenser')->get(
 				'php_getlistquery', $nameSingleCode,
 				PHP_EOL . PHP_EOL . Indent::_(1)
 			);
@@ -15337,7 +15337,7 @@ class Interpretation extends Fields
 				$query .= PHP_EOL . Indent::_(3) . "}";
 			}
 			// add custom php to getItems method after all
-			$query .= $this->getCustomScriptBuilder(
+			$query .= CFactory::_('Customcode.Dispenser')->get(
 				'php_getitems_after_all', $nameSingleCode,
 				PHP_EOL . PHP_EOL . Indent::_(2)
 			);
@@ -15361,7 +15361,7 @@ class Interpretation extends Fields
 				$header = ComponentbuilderHelper::getDynamicScripts('headers');
 
 				// add getExImPortHeaders
-				$query .= $this->getCustomScriptBuilder(
+				$query .= CFactory::_('Customcode.Dispenser')->get(
 					'php_import_headers', 'import_' . $nameListCode,
 					PHP_EOL . PHP_EOL, null, true,
 					// set a default script for those with no custom script
@@ -15597,40 +15597,40 @@ class Interpretation extends Fields
 		// load the custom script to the files
 		// IMPORT_EXT_METHOD <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_EXT_METHOD')]
-			= $this->getCustomScriptBuilder(
+			= CFactory::_('Customcode.Dispenser')->get(
 			'php_import_ext', 'import_' . $nameListCode, PHP_EOL, null,
 			true
 		);
 		// IMPORT_DISPLAY_METHOD_CUSTOM <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_DISPLAY_METHOD_CUSTOM')]
-			= $this->getCustomScriptBuilder(
+			= CFactory::_('Customcode.Dispenser')->get(
 			'php_import_display', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
 		);
 		// IMPORT_SETDATA_METHOD <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_SETDATA_METHOD')]
-			= $this->getCustomScriptBuilder(
+			= CFactory::_('Customcode.Dispenser')->get(
 			'php_import_setdata', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
 		);
 		// IMPORT_METHOD_CUSTOM <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_METHOD_CUSTOM')]
-			= $this->getCustomScriptBuilder(
+			= CFactory::_('Customcode.Dispenser')->get(
 			'php_import', 'import_' . $nameListCode, PHP_EOL, null,
 			true
 		);
 		// IMPORT_SAVE_METHOD <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_SAVE_METHOD')]
-			= $this->getCustomScriptBuilder(
+			= CFactory::_('Customcode.Dispenser')->get(
 			'php_import_save', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
 		);
 		// IMPORT_DEFAULT_VIEW_CUSTOM <<<DYNAMIC>>>
 		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_DEFAULT_VIEW_CUSTOM')]
-			= $this->getCustomScriptBuilder(
+			= CFactory::_('Customcode.Dispenser')->get(
 			'html_import_view', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
@@ -15700,7 +15700,7 @@ class Interpretation extends Fields
 				. "') . ' = ' . \$db->quoteName('c.id') . ')');";
 		}
 		// add custom filtering php
-		$query .= $this->getCustomScriptBuilder(
+		$query .= CFactory::_('Customcode.Dispenser')->get(
 			'php_getlistquery', $nameSingleCode, PHP_EOL . PHP_EOL
 		);
 		// add the custom fields query
@@ -16734,17 +16734,17 @@ class Interpretation extends Fields
 		{
 			$fileScript = '';
 		}
-		$fileScript .= $this->getCustomScriptBuilder(
+		$fileScript .= CFactory::_('Customcode.Dispenser')->get(
 			'view_file', $nameSingleCode, PHP_EOL . PHP_EOL, null, true, ''
 		);
 		// add custom script to footer
-		if (isset($this->customScriptBuilder['view_footer'][$nameSingleCode])
+		if (isset(CFactory::_('Customcode.Dispenser')->hub['view_footer'][$nameSingleCode])
 			&& StringHelper::check(
-				$this->customScriptBuilder['view_footer'][$nameSingleCode]
+				CFactory::_('Customcode.Dispenser')->hub['view_footer'][$nameSingleCode]
 			))
 		{
 			$customFooterScript = PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-					$this->customScriptBuilder['view_footer'][$nameSingleCode],
+					CFactory::_('Customcode.Dispenser')->hub['view_footer'][$nameSingleCode],
 					$this->placeholders
 				);
 			if (strpos($customFooterScript, '<?php') === false)
@@ -16761,7 +16761,7 @@ class Interpretation extends Fields
 		// set view listname
 		$nameListCode = $viewArray['settings']->name_list_code;
 		// add custom script to list view JS file
-		if (($list_fileScript = $this->getCustomScriptBuilder(
+		if (($list_fileScript = CFactory::_('Customcode.Dispenser')->get(
 				'views_file', $nameSingleCode, PHP_EOL . PHP_EOL, null, true,
 				false
 			)) !== false
@@ -17733,8 +17733,8 @@ class Interpretation extends Fields
 	public function setAjaxToke(&$view)
 	{
 		$fix = '';
-		if (isset($this->customScriptBuilder['token'][$view])
-			&& $this->customScriptBuilder['token'][$view])
+		if (isset(CFactory::_('Customcode.Dispenser')->hub['token'][$view])
+			&& CFactory::_('Customcode.Dispenser')->hub['token'][$view])
 		{
 			$fix .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Add Ajax Token";
@@ -17748,14 +17748,14 @@ class Interpretation extends Fields
 	public function setRegisterAjaxTask($target)
 	{
 		$tasks = '';
-		if (isset($this->customScriptBuilder[$target]['ajax_controller'])
+		if (isset(CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller'])
 			&& ArrayHelper::check(
-				$this->customScriptBuilder[$target]['ajax_controller']
+				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller']
 			))
 		{
 			$taskArray = array();
 			foreach (
-				$this->customScriptBuilder[$target]['ajax_controller'] as $view
+				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller'] as $view
 			)
 			{
 				foreach ($view as $task)
@@ -17779,9 +17779,9 @@ class Interpretation extends Fields
 	public function setAjaxInputReturn($target)
 	{
 		$cases = '';
-		if (isset($this->customScriptBuilder[$target]['ajax_controller'])
+		if (isset(CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller'])
 			&& ArrayHelper::check(
-				$this->customScriptBuilder[$target]['ajax_controller']
+				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller']
 			))
 		{
 			$input      = array();
@@ -17790,7 +17790,7 @@ class Interpretation extends Fields
 			$getModel   = array();
 			$userCheck  = array();
 			foreach (
-				$this->customScriptBuilder[$target]['ajax_controller'] as $view
+				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller'] as $view
 			)
 			{
 				foreach ($view as $task)
@@ -17911,13 +17911,13 @@ class Interpretation extends Fields
 	public function setAjaxModelMethods($target)
 	{
 		$methods = '';
-		if (isset($this->customScriptBuilder[$target]['ajax_model'])
+		if (isset(CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_model'])
 			&& ArrayHelper::check(
-				$this->customScriptBuilder[$target]['ajax_model']
+				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_model']
 			))
 		{
 			foreach (
-				$this->customScriptBuilder[$target]['ajax_model'] as $view =>
+				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_model'] as $view =>
 				$method
 			)
 			{
@@ -19005,7 +19005,7 @@ class Interpretation extends Fields
 		// set component name
 		$component = $this->componentCodeName;
 		// prepare custom permission script
-		$customAllow = $this->getCustomScriptBuilder(
+		$customAllow = CFactory::_('Customcode.Dispenser')->get(
 			'php_allowadd', $nameSingleCode, '', null, true
 		);
 		// setup correct core target
@@ -19162,7 +19162,7 @@ class Interpretation extends Fields
 		// set component name
 		$component = $this->componentCodeName;
 		// prepare custom permission script
-		$customAllow = $this->getCustomScriptBuilder(
+		$customAllow = CFactory::_('Customcode.Dispenser')->get(
 			'php_allowedit', $nameSingleCode, '', null, true
 		);
 		// setup correct core target
@@ -19953,7 +19953,7 @@ class Interpretation extends Fields
 			. "\$form->setValue(\$redirectedField, null, \$redirectedValue);";
 		$getForm[] = Indent::_(3) . "}";
 		// load custom script if found
-		$getForm[] = Indent::_(2) . "}" . $this->getCustomScriptBuilder(
+		$getForm[] = Indent::_(2) . "}" . CFactory::_('Customcode.Dispenser')->get(
 				'php_getform', $nameSingleCode, PHP_EOL
 			);
 		// setup the default script
@@ -20117,7 +20117,7 @@ class Interpretation extends Fields
 		// set component name
 		$component = $this->componentCodeName;
 		// prepare custom permission script
-		$customAllow = $this->getCustomScriptBuilder(
+		$customAllow = CFactory::_('Customcode.Dispenser')->get(
 			'php_allowedit', $nameSingleCode, Indent::_(2)
 			. "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;"
 			. PHP_EOL
@@ -22268,7 +22268,7 @@ class Interpretation extends Fields
 		}
 
 		// add custom php to getitems method
-		$fix .= $this->getCustomScriptBuilder(
+		$fix .= CFactory::_('Customcode.Dispenser')->get(
 			'php_getitems', $nameSingleCode, PHP_EOL . PHP_EOL . $tab
 		);
 
@@ -28029,14 +28029,14 @@ function vdm_dkim() {
 		// first add the header
 		$default = PHP_EOL . $module->default_header . PHP_EOL . '?>';
 		// add any css from the fields
-		$default .= $this->getCustomScriptBuilder(
+		$default .= CFactory::_('Customcode.Dispenser')->get(
 			'css_views', $key, PHP_EOL . '<style>', '', true, null,
 			PHP_EOL . '</style>' . PHP_EOL
 		);
 		// now add the body
 		$default .= PHP_EOL . $module->default . PHP_EOL;
 		// add any JavaScript from the fields
-		$default .= $this->getCustomScriptBuilder(
+		$default .= CFactory::_('Customcode.Dispenser')->get(
 			'views_footer', $key,
 			PHP_EOL . '<script type="text/javascript">', '', true,
 			null, PHP_EOL . '</script>' . PHP_EOL

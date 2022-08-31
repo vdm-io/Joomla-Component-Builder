@@ -216,38 +216,38 @@ class Infusion extends Interpretation
 			// ADMINJS
 			$this->fileContentStatic[Placefix::_h('ADMINJS')]
 				= CFactory::_('Placeholder')->update(
-				$this->customScriptBuilder['component_js'], CFactory::_('Placeholder')->active
+				CFactory::_('Customcode.Dispenser')->hub['component_js'], CFactory::_('Placeholder')->active
 			);
 			// SITEJS
 			$this->fileContentStatic[Placefix::_h('SITEJS')]
 				= CFactory::_('Placeholder')->update(
-				$this->customScriptBuilder['component_js'], CFactory::_('Placeholder')->active
+				CFactory::_('Customcode.Dispenser')->hub['component_js'], CFactory::_('Placeholder')->active
 			);
 
 			// ADMINCSS
 			$this->fileContentStatic[Placefix::_h('ADMINCSS')]
 				= CFactory::_('Placeholder')->update(
-				$this->customScriptBuilder['component_css_admin'],
+				CFactory::_('Customcode.Dispenser')->hub['component_css_admin'],
 				CFactory::_('Placeholder')->active
 			);
 			// SITECSS
 			$this->fileContentStatic[Placefix::_h('SITECSS')]
 				= CFactory::_('Placeholder')->update(
-				$this->customScriptBuilder['component_css_site'],
+				CFactory::_('Customcode.Dispenser')->hub['component_css_site'],
 				CFactory::_('Placeholder')->active
 			);
 
 			// CUSTOM_HELPER_SCRIPT
 			$this->fileContentStatic[Placefix::_h('CUSTOM_HELPER_SCRIPT')]
 				= CFactory::_('Placeholder')->update(
-				$this->customScriptBuilder['component_php_helper_admin'],
+				CFactory::_('Customcode.Dispenser')->hub['component_php_helper_admin'],
 				CFactory::_('Placeholder')->active
 			);
 
 			// BOTH_CUSTOM_HELPER_SCRIPT
 			$this->fileContentStatic[Placefix::_h('BOTH_CUSTOM_HELPER_SCRIPT')]
 				= CFactory::_('Placeholder')->update(
-				$this->customScriptBuilder['component_php_helper_both'],
+				CFactory::_('Customcode.Dispenser')->hub['component_php_helper_both'],
 				CFactory::_('Placeholder')->active
 			);
 
@@ -284,7 +284,7 @@ class Infusion extends Interpretation
 					.= PHP_EOL . Indent::_(1) . '{';
 				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT_HELPER')]
 					.= PHP_EOL . CFactory::_('Placeholder')->update(
-						$this->customScriptBuilder['component_php_admin_event'],
+						CFactory::_('Customcode.Dispenser')->hub['component_php_admin_event'],
 						CFactory::_('Placeholder')->active
 					);
 				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT_HELPER')]
@@ -447,7 +447,7 @@ class Infusion extends Interpretation
 					);
 
 					// DOCUMENT_CUSTOM_PHP <<<DYNAMIC>>>
-					if ($phpDocument = $this->getCustomScriptBuilder(
+					if ($phpDocument = CFactory::_('Customcode.Dispenser')->get(
 						'php_document', $nameSingleCode,
 						PHP_EOL, null, true,
 						false
@@ -512,28 +512,28 @@ class Infusion extends Interpretation
 
 					// JMODELADMIN_BEFORE_DELETE <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_BEFORE_DELETE')]
-						= $this->getCustomScriptBuilder(
+						= CFactory::_('Customcode.Dispenser')->get(
 						'php_before_delete',
 						$nameSingleCode, PHP_EOL
 					);
 
 					// JMODELADMIN_AFTER_DELETE <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_AFTER_DELETE')]
-						= $this->getCustomScriptBuilder(
+						= CFactory::_('Customcode.Dispenser')->get(
 						'php_after_delete', $nameSingleCode,
 						PHP_EOL . PHP_EOL
 					);
 
 					// JMODELADMIN_BEFORE_DELETE <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_BEFORE_PUBLISH')]
-						= $this->getCustomScriptBuilder(
+						= CFactory::_('Customcode.Dispenser')->get(
 						'php_before_publish',
 						$nameSingleCode, PHP_EOL
 					);
 
 					// JMODELADMIN_AFTER_DELETE <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_AFTER_PUBLISH')]
-						= $this->getCustomScriptBuilder(
+						= CFactory::_('Customcode.Dispenser')->get(
 						'php_after_publish',
 						$nameSingleCode, PHP_EOL . PHP_EOL
 					);
@@ -552,7 +552,7 @@ class Infusion extends Interpretation
 
 					// POSTSAVEHOOK <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('POSTSAVEHOOK')]
-						= $this->getCustomScriptBuilder(
+						= CFactory::_('Customcode.Dispenser')->get(
 						'php_postsavehook', $nameSingleCode,
 						PHP_EOL, null,
 						true, PHP_EOL . Indent::_(2) . "return;",
@@ -561,7 +561,7 @@ class Infusion extends Interpretation
 
 					// VIEWCSS <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('VIEWCSS')]
-						= $this->getCustomScriptBuilder(
+						= CFactory::_('Customcode.Dispenser')->get(
 						'css_view', $nameSingleCode, '',
 						null, true
 					);
@@ -746,7 +746,7 @@ class Infusion extends Interpretation
 
 					// GET_ITEMS_METHOD_AFTER_ALL <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameListCode][Placefix::_h('GET_ITEMS_METHOD_AFTER_ALL')]
-						= $this->getCustomScriptBuilder(
+						= CFactory::_('Customcode.Dispenser')->get(
 						'php_getitems_after_all',
 						$nameSingleCode, PHP_EOL
 					);
@@ -912,7 +912,7 @@ class Infusion extends Interpretation
 
 					// VIEWSCSS <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameListCode][Placefix::_h('VIEWSCSS')]
-						= $this->getCustomScriptBuilder(
+						= CFactory::_('Customcode.Dispenser')->get(
 						'css_views', $nameSingleCode, '',
 						null, true
 					);
@@ -927,7 +927,7 @@ class Infusion extends Interpretation
 					$scriptNote = PHP_EOL . '//' . Line::_(__Line__, __Class__)
 						. ' ' . $nameListCode
 						. ' footer script';
-					if (($footerScript = $this->getCustomScriptBuilder(
+					if (($footerScript = CFactory::_('Customcode.Dispenser')->get(
 							'views_footer', $nameSingleCode, '',
 							$scriptNote, true,
 							false, PHP_EOL
@@ -1040,17 +1040,17 @@ class Infusion extends Interpretation
 
 				// JCONTROLLERFORM_BEFORECANCEL <<<DYNAMIC>>>
 				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JCONTROLLERFORM_BEFORECANCEL')]
-					= $this->getCustomScriptBuilder(
+					= CFactory::_('Customcode.Dispenser')->get(
 					'php_before_cancel', $nameSingleCode,
-					PHP_EOL, null, null,
+					PHP_EOL, null, false,
 					''
 				);
 
 				// JCONTROLLERFORM_AFTERCANCEL <<<DYNAMIC>>>
 				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JCONTROLLERFORM_AFTERCANCEL')]
-					= $this->getCustomScriptBuilder(
+					= CFactory::_('Customcode.Dispenser')->get(
 					'php_after_cancel', $nameSingleCode,
-					PHP_EOL, null, null,
+					PHP_EOL, null, false,
 					''
 				);
 
@@ -1280,7 +1280,7 @@ class Infusion extends Interpretation
 					{
 						// CUSTOM_ADMIN_BEFORE_GET_ITEM <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_BEFORE_GET_ITEM')]
-							= $this->getCustomScriptBuilder(
+							= CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitem',
 							$view['settings']->code, '', null, true
 						);
@@ -1294,7 +1294,7 @@ class Infusion extends Interpretation
 
 						// CUSTOM_ADMIN_AFTER_GET_ITEM <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_AFTER_GET_ITEM')]
-							= $this->getCustomScriptBuilder(
+							= CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitem',
 							$view['settings']->code, '', null, true
 						);
@@ -1309,14 +1309,14 @@ class Infusion extends Interpretation
 
 						// CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY')]
-							= $this->getCustomScriptBuilder(
+							= CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_getlistquery',
 							$view['settings']->code, PHP_EOL, null, true
 						);
 
 						// CUSTOM_ADMIN_BEFORE_GET_ITEMS <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_BEFORE_GET_ITEMS')]
-							= $this->getCustomScriptBuilder(
+							= CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitems',
 							$view['settings']->code, PHP_EOL, null, true
 						);
@@ -1329,7 +1329,7 @@ class Infusion extends Interpretation
 
 						// CUSTOM_ADMIN_AFTER_GET_ITEMS <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_AFTER_GET_ITEMS')]
-							= $this->getCustomScriptBuilder(
+							= CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitems',
 							$view['settings']->code, PHP_EOL, null, true
 						);
@@ -1768,7 +1768,7 @@ class Infusion extends Interpretation
 
 						// SITE_BEFORE_GET_ITEM <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_BEFORE_GET_ITEM')]
-							= $this->getCustomScriptBuilder(
+							= CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitem',
 							$view['settings']->code, '', null, true
 						);
@@ -1782,7 +1782,7 @@ class Infusion extends Interpretation
 
 						// SITE_AFTER_GET_ITEM <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_AFTER_GET_ITEM')]
-							= $this->getCustomScriptBuilder(
+							= CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitem',
 							$view['settings']->code, '', null, true
 						);
@@ -1800,7 +1800,7 @@ class Infusion extends Interpretation
 
 						// SITE_BEFORE_GET_ITEMS <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_BEFORE_GET_ITEMS')]
-							= $this->getCustomScriptBuilder(
+							= CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitems',
 							$view['settings']->code, PHP_EOL, null, true
 						);
@@ -1813,7 +1813,7 @@ class Infusion extends Interpretation
 
 						// SITE_AFTER_GET_ITEMS <<<DYNAMIC>>>
 						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_AFTER_GET_ITEMS')]
-							= $this->getCustomScriptBuilder(
+							= CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitems',
 							$view['settings']->code, PHP_EOL, null, true
 						);
@@ -1969,7 +1969,7 @@ class Infusion extends Interpretation
 				// SITE_CUSTOM_HELPER_SCRIPT
 				$this->fileContentStatic[Placefix::_h('SITE_CUSTOM_HELPER_SCRIPT')]
 					= CFactory::_('Placeholder')->update(
-					$this->customScriptBuilder['component_php_helper_site'],
+					CFactory::_('Customcode.Dispenser')->hub['component_php_helper_site'],
 					CFactory::_('Placeholder')->active
 				);
 				// SITE_GLOBAL_EVENT_HELPER
@@ -2004,7 +2004,7 @@ class Infusion extends Interpretation
 						.= PHP_EOL . Indent::_(1) . '{';
 					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT_HELPER')]
 						.= PHP_EOL . CFactory::_('Placeholder')->update(
-							$this->customScriptBuilder['component_php_site_event'],
+							CFactory::_('Customcode.Dispenser')->hub['component_php_site_event'],
 							CFactory::_('Placeholder')->active
 						);
 					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT_HELPER')]
@@ -2014,13 +2014,13 @@ class Infusion extends Interpretation
 
 			// PREINSTALLSCRIPT
 			$this->fileContentStatic[Placefix::_h('PREINSTALLSCRIPT')]
-				= $this->getCustomScriptBuilder(
+				= CFactory::_('Customcode.Dispenser')->get(
 				'php_preflight', 'install', PHP_EOL, null, true
 			);
 
 			// PREUPDATESCRIPT
 			$this->fileContentStatic[Placefix::_h('PREUPDATESCRIPT')]
-				= $this->getCustomScriptBuilder(
+				= CFactory::_('Customcode.Dispenser')->get(
 				'php_preflight', 'update', PHP_EOL, null, true
 			);
 
