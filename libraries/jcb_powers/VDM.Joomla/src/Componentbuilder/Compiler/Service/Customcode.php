@@ -20,6 +20,8 @@ use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Hash;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\LockBase;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Dispenser;
+use VDM\Joomla\Componentbuilder\Compiler\Customcode\Extractor;
+use VDM\Joomla\Componentbuilder\Compiler\Customcode\Extractor\Paths;
 
 
 /**
@@ -56,6 +58,12 @@ class Customcode implements ServiceProviderInterface
 
 		$container->alias(Dispenser::class, 'Customcode.Dispenser')
 			->share('Customcode.Dispenser', [$this, 'getDispenser'], true);
+
+		$container->alias(Paths::class, 'Customcode.Extractor.Paths')
+			->share('Customcode.Extractor.Paths', [$this, 'getPaths'], true);
+
+		$container->alias(Extractor::class, 'Customcode.Extractor')
+			->share('Customcode.Extractor', [$this, 'getExtractor'], true);
 	}
 
 	/**
@@ -153,6 +161,44 @@ class Customcode implements ServiceProviderInterface
 			$container->get('Customcode.Gui'),
 			$container->get('Customcode.Hash'),
 			$container->get('Customcode.LockBase')
+		);
+	}
+
+	/**
+	 * Get the Customcode Extractor Paths
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Paths
+	 * @since 3.2.0
+	 */
+	public function getPaths(Container $container): Paths
+	{
+		return new Paths(
+			$container->get('Config'),
+			$container->get('Placeholder'),
+			$container->get('Component.Placeholder'),
+			$container->get('Customcode'),
+			$container->get('Language.Extractor')
+		);
+	}
+
+	/**
+	 * Get the Customcode Extractor
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Extractor
+	 * @since 3.2.0
+	 */
+	public function getExtractor(Container $container): Extractor
+	{
+		return new Extractor(
+			$container->get('Config'),
+			$container->get('Customcode.Gui'),
+			$container->get('Customcode.Extractor.Paths'),
+			$container->get('Placeholder.Reverse'),
+			$container->get('Component.Placeholder')
 		);
 	}
 

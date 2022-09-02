@@ -277,6 +277,8 @@ class Get
 	 *    ////////23 is the ID of the code in the system don't change it!!!!!!!!!!!!!!!!!!!!!!!!!!
 	 *
 	 * @var      array
+	 *
+	 * @deprecated 3.3
 	 */
 	protected $customCodePlaceholders
 		= array(
@@ -322,6 +324,7 @@ class Get
 	 * The custom code in local files that already exist in system
 	 *
 	 * @var      array
+	 * @deprecated 3.3
 	 */
 	protected $existingCustomCode = array();
 
@@ -329,6 +332,7 @@ class Get
 	 * The custom code in local files this are new
 	 *
 	 * @var      array
+	 * @deprecated 3.3
 	 */
 	protected $newCustomCode = array();
 
@@ -336,6 +340,7 @@ class Get
 	 * The index of code already loaded
 	 *
 	 * @var      array
+	 * @deprecated 3.3
 	 */
 	protected $codeAreadyDone = array();
 
@@ -972,7 +977,6 @@ class Get
 	 */
 	public function __construct()
 	{
-		echo '<pre>';
 		// we do not yet have this set as an option
 		$config['remove_line_breaks']
 			= 2; // 2 is global (use the components value)
@@ -1042,14 +1046,10 @@ class Get
 		$this->db = JFactory::getDbo();
 		// get global placeholders @deprecated
 		$this->globalPlaceholders = CFactory::_('Component.Placeholder')->get();
-		// check if this component is installed on the current website
-		if ($paths = $this->getLocalInstallPaths())
-		{
-			// start Automatic import of custom code
-			$today = JFactory::getDate()->toSql();
-			// get the custom code from installed files
-			$this->customCodeFactory($paths, $today);
-		}
+
+		// get the custom code from installed files
+		CFactory::_('Customcode.Extractor')->run();
+
 		// Trigger Event: jcb_ce_onBeforeGetComponentData
 		CFactory::_J('Event')->trigger(
 			'jcb_ce_onBeforeGetComponentData',
@@ -6907,11 +6907,11 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::_('<hr /><h3>External Code Warning</h3>'), 'Error'
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::_(
-				'Use of a deprecated method (getExternalCodeString)!'
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
 	}
@@ -6930,11 +6930,11 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::_('<hr /><h3>External Code Warning</h3>'), 'Error'
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::_(
-				'Use of a deprecated method (cutExternalCodeString)!'
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
 
@@ -6968,11 +6968,11 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::_('<hr /><h3>External Code Warning</h3>'), 'Error'
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::_(
-				'Use of a deprecated method (insertCustomCode)!'
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
 
@@ -6992,11 +6992,11 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::_('<hr /><h3>External Code Warning</h3>'), 'Error'
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::_(
-				'Use of a deprecated method (buildCustomCodePlaceholders)!'
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
 
@@ -7579,23 +7579,15 @@ class Get
 	 */
 	protected function checkCustomCodeMemory($ids)
 	{
-		// reset custom code
-		CFactory::_('Customcode')->active = array();
-		foreach ($ids as $pointer => $id)
-		{
-			if (isset(CFactory::_('Customcode')->memory[$id]))
-			{
-				CFactory::_('Customcode')->active[] = CFactory::_('Customcode')->memory[$id];
-				unset($ids[$pointer]);
-			}
-		}
-		// check if any ids left to fetch
-		if (ArrayHelper::check($ids))
-		{
-			return $ids;
-		}
-
-		return false;
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
@@ -7630,11 +7622,32 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::_('<hr /><h3>Power building error</h3>'), 'Error'
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::_(
-				'Use of a deprecated method (setPower)!'
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
+
+		return false;
+	}
+
+	/**
+	 * get the Joomla module path
+	 *
+	 * @return  string of module path and target site area on success
+	 * @deprecated 3.3
+	 */
+	protected function getModulePath($id)
+	{
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
 
@@ -7642,115 +7655,24 @@ class Get
 	}
 
 	/**
-	 * get the Joomla module path
-	 *
-	 * @return  array of module path and target site area on success
-	 *
-	 */
-	protected function getModulePath($id)
-	{
-		if (is_numeric($id) && $id > 0)
-		{
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
-
-			$query->select('a.*');
-			$query->select(
-				$this->db->quoteName(
-					array(
-						'a.name',
-						'a.target'
-					), array(
-						'name',
-						'target'
-					)
-				)
-			);
-			// from these tables
-			$query->from('#__componentbuilder_joomla_module AS a');
-			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
-			$this->db->setQuery($query);
-			$this->db->execute();
-			if ($this->db->getNumRows())
-			{
-				// get the module data
-				$module = $this->db->loadObject();
-				// update the name if it has dynamic values
-				$module->name = CFactory::_('Placeholder')->update(
-					CFactory::_('Customcode')->add($module->name),
-					$this->globalPlaceholders
-				);
-				// set safe class function name
-				$module->code_name
-					= ClassfunctionHelper::safe(
-					$module->name
-				);
-				// set module folder name
-				$module->folder_name = 'mod_' . strtolower($module->code_name);
-				// set the lang key
-				CFactory::_('Language.Extractor')->langKeys[strtoupper($module->folder_name)] = $module->id
-					. '_M0dU|3';
-				// return the path
-				if ($module->target == 2)
-				{
-					// administrator client area
-					return JPATH_ADMINISTRATOR . '/modules/'
-						. $module->folder_name;
-				}
-				else
-				{
-					// default is the site client area
-					return JPATH_ROOT . '/modules/' . $module->folder_name;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * get the Joomla Modules IDs
 	 *
 	 * @return  array of IDs on success
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function getModuleIDs()
 	{
-		if (($addjoomla_modules = GetHelper::var(
-				'component_modules', CFactory::_('Config')->component_id, 'joomla_component',
-				'addjoomla_modules'
-			)) !== false)
-		{
-			$addjoomla_modules = (JsonHelper::check(
-				$addjoomla_modules
-			)) ? json_decode($addjoomla_modules, true) : null;
-			if (ArrayHelper::check($addjoomla_modules))
-			{
-				$joomla_modules = array_filter(
-					array_values($addjoomla_modules),
-					function ($array) {
-						// only load the modules whose target association call for it
-						if (!isset($array['target']) || $array['target'] != 2)
-						{
-							return true;
-						}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 
-						return false;
-					}
-				);
-				// if we have values we return IDs
-				if (ArrayHelper::check($joomla_modules))
-				{
-					return array_map(
-						function ($array) {
-							return (int) $array['module'];
-						}, $joomla_modules
-					);
-				}
-			}
-		}
-
-		return false;
+		return [];
 	}
 
 	/**
@@ -8620,113 +8542,42 @@ class Get
 	 * get the Joomla plugins IDs
 	 *
 	 * @return  array of IDs on success
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function getPluginIDs()
 	{
-		if (($addjoomla_plugins = GetHelper::var(
-				'component_plugins', CFactory::_('Config')->component_id, 'joomla_component',
-				'addjoomla_plugins'
-			)) !== false)
-		{
-			$addjoomla_plugins = (JsonHelper::check(
-				$addjoomla_plugins
-			)) ? json_decode($addjoomla_plugins, true) : null;
-			if (ArrayHelper::check($addjoomla_plugins))
-			{
-				$joomla_plugins = array_filter(
-					array_values($addjoomla_plugins),
-					function ($array) {
-						// only load the plugins whose target association call for it
-						if (!isset($array['target']) || $array['target'] != 2)
-						{
-							return true;
-						}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 
-						return false;
-					}
-				);
-				// if we have values we return IDs
-				if (ArrayHelper::check($joomla_plugins))
-				{
-					return array_map(
-						function ($array) {
-							return (int) $array['plugin'];
-						}, $joomla_plugins
-					);
-				}
-			}
-		}
-
-		return false;
+		return [];
 	}
 
 	/**
 	 * get the Joomla plugin path
 	 *
 	 * @return  string of plugin path on success
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function getPluginPath($id)
 	{
-		if (is_numeric($id) && $id > 0)
-		{
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 
-			$query->select('a.*');
-			$query->select(
-				$this->db->quoteName(
-					array(
-						'a.name',
-						'g.name'
-					), array(
-						'name',
-						'group'
-					)
-				)
-			);
-			// from these tables
-			$query->from('#__componentbuilder_joomla_plugin AS a');
-			$query->join(
-				'LEFT', $this->db->quoteName(
-					'#__componentbuilder_joomla_plugin_group', 'g'
-				) . ' ON (' . $this->db->quoteName('a.joomla_plugin_group')
-				. ' = ' . $this->db->quoteName('g.id') . ')'
-			);
-			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
-			$this->db->setQuery($query);
-			$this->db->execute();
-			if ($this->db->getNumRows())
-			{
-				// get the plugin data
-				$plugin = $this->db->loadObject();
-				// update the name if it has dynamic values
-				$plugin->name = CFactory::_('Placeholder')->update(
-					CFactory::_('Customcode')->add($plugin->name),
-					$this->globalPlaceholders
-				);
-				// update the name if it has dynamic values
-				$plugin->code_name
-					= ClassfunctionHelper::safe(
-					$plugin->name
-				);
-				// set plugin folder name
-				$plugin->group = strtolower($plugin->group);
-				// set plugin file name
-				$plugin->file_name = strtolower($plugin->code_name);
-				// set the lang key
-				CFactory::_('Language.Extractor')->langKeys['PLG_' . strtoupper(
-					$plugin->group . '_' . $plugin->file_name
-				)]
-					= $plugin->id . '_P|uG!n';
-
-				// return the path
-				return $plugin->group . '/' . $plugin->file_name;
-			}
-		}
-
-		return false;
+		return '';
 	}
 
 	/**
@@ -9496,46 +9347,19 @@ class Get
 	 *
 	 * @return  void
 	 *
+	 * @deprecated 3.3
 	 */
 	protected function setNewCustomCode($when = 1)
 	{
-		if (count((array) $this->newCustomCode) >= $when)
-		{
-			// Create a new query object.
-			$query    = $this->db->getQuery(true);
-			$continue = false;
-			// Insert columns.
-			$columns = array('path', 'type', 'target', 'comment_type',
-				'component', 'published', 'created', 'created_by',
-				'version', 'access', 'hashtarget', 'from_line',
-				'to_line', 'code', 'hashendtarget');
-			// Prepare the insert query.
-			$query->insert(
-				$this->db->quoteName('#__componentbuilder_custom_code')
-			);
-			$query->columns($this->db->quoteName($columns));
-			foreach ($this->newCustomCode as $values)
-			{
-				if (count((array) $values) == 15)
-				{
-					$query->values(implode(',', $values));
-					$continue = true;
-				}
-				else
-				{
-					// TODO line mismatch... should not happen
-				}
-			}
-			// clear the values array
-			$this->newCustomCode = array();
-			if (!$continue)
-			{
-				return false; // insure we dont continue if no values were loaded
-			}
-			// Set the query using our newly populated query object and execute it.
-			$this->db->setQuery($query);
-			$this->db->execute();
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
@@ -9545,26 +9369,19 @@ class Get
 	 *
 	 * @return  void
 	 *
+	 * @deprecated 3.3
 	 */
 	protected function setExistingCustomCode($when = 1)
 	{
-		if (count((array) $this->existingCustomCode) >= $when)
-		{
-			foreach ($this->existingCustomCode as $code)
-			{
-				// Create a new query object.
-				$query = $this->db->getQuery(true);
-				// Prepare the update query.
-				$query->update(
-					$this->db->quoteName('#__componentbuilder_custom_code')
-				)->set($code['fields'])->where($code['conditions']);
-				// Set the query using our newly populated query object and execute it.
-				$this->db->setQuery($query);
-				$this->db->execute();
-			}
-			// clear the values array
-			$this->existingCustomCode = array();
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
@@ -9574,79 +9391,11 @@ class Get
 	 * @param   string  $today  The date for today
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Customcode.Extractor')->run();
 	 */
 	protected function customCodeFactory(&$paths, &$today)
 	{
-		// we must first store the current working directory
-		$joomla  = getcwd();
-		$counter = array(1 => 0, 2 => 0);
-		// file types to get
-		$fileTypes = array('\.php', '\.js', '\.xml');
-
-		// set some local placeholders
-		$placeholders                                    = array_flip(
-			$this->globalPlaceholders
-		);
-		$placeholders[StringHelper::safe(
-			CFactory::_('Config')->component_code_name, 'F'
-		) . 'Helper::']
-		                                                 = Placefix::_('Component') . 'Helper::';
-		$placeholders['COM_' . StringHelper::safe(
-			CFactory::_('Config')->component_code_name, 'U'
-		)]
-		                                                 = 'COM_' . Placefix::_('COMPONENT');
-		$placeholders['com_' . CFactory::_('Config')->component_code_name] = 'com_' . Placefix::_('component');
-		// putt the last first
-		$placeholders = array_reverse($placeholders, true);
-
-		foreach ($paths as $target => $path)
-		{
-			// we are changing the working directory to the component path
-			chdir($path);
-			foreach ($fileTypes as $type)
-			{
-				// get a list of files in the current directory tree (only PHP, JS and XML for now)
-				$files = Folder::files('.', $type, true, true);
-				// check if files found
-				if (ArrayHelper::check($files))
-				{
-					foreach ($files as $file)
-					{
-						$this->searchFileContent(
-							$counter, $file, $target,
-							$this->customCodePlaceholders, $placeholders, $today
-						);
-						// insert new code
-						if (ArrayHelper::check(
-							$this->newCustomCode
-						))
-						{
-							$this->setNewCustomCode(100);
-						}
-						// update existing custom code
-						if (ArrayHelper::check(
-							$this->existingCustomCode
-						))
-						{
-							$this->setExistingCustomCode(30);
-						}
-					}
-				}
-			}
-		}
-		// change back to Joomla working directory
-		chdir($joomla);
-		// make sure all code is stored
-		if (ArrayHelper::check($this->newCustomCode))
-		{
-			$this->setNewCustomCode();
-		}
-		// update existing custom code
-		if (ArrayHelper::check($this->existingCustomCode))
-		{
-			$this->setExistingCustomCode();
-		}
+		CFactory::_('Customcode.Extractor')->run();
 	}
 
 	/**
@@ -9660,406 +9409,23 @@ class Get
 	 *
 	 * @return  array    on success
 	 *
+	 * @deprecated 3.3
 	 */
 	protected function searchFileContent(&$counter, &$file, &$target,
 	                                     &$searchArray, &$placeholders, &$today
 	)
 	{
-		// we add a new search for the GUI CODE Blocks
-		CFactory::_('Customcode.Gui')->search($file, $placeholders, $today, $target);
-		// reset each time per file
-		$loadEndFingerPrint = false;
-		$endFingerPrint     = array();
-		$fingerPrint        = array();
-		$codeBucket         = array();
-		$pointer            = array();
-		$reading            = array();
-		$reader             = 0;
-		// reset found Start type
-		$commentType = 0;
-		// make sure we have the path correct (the script file is not in admin path for example)
-		// there may be more... will nead to keep our eye on this... since files could be moved during install
-		$file = str_replace('./', '', $file); # TODO (windows path issues)
-		if ($file !== 'script.php')
-		{
-			$path = $target . '/' . $file;
-		}
-		else
-		{
-			$path = $file;
-		}
-		// now we go line by line
-		foreach (new SplFileObject($file) as $lineNumber => $lineContent)
-		{
-			// we musk keep last few lines to dynamic find target entry later
-			$fingerPrint[$lineNumber] = trim($lineContent);
-			// load the end fingerprint
-			if ($loadEndFingerPrint)
-			{
-				$endFingerPrint[$lineNumber] = trim($lineContent);
-			}
-			foreach ($searchArray as $type => $search)
-			{
-				$i     = (int) ($type == 3 || $type == 4) ? 2 : 1;
-				$_type = (int) ($type == 1 || $type == 3) ? 1 : 2;
-				if ($reader === 0 || $reader === $i)
-				{
-					$targetKey = $type;
-					$start     = '/***[' . $search . '***/';
-					$end       = '/***[/' . $search . '***/';
-					$startHTML = '<!--[' . $search . '-->';
-					$endHTML   = '<!--[/' . $search . '-->';
-					// check if the ending place holder was found
-					if (isset($reading[$targetKey]) && $reading[$targetKey]
-						&& ((trim($lineContent) === $end
-								|| strpos(
-									$lineContent, $end
-								) !== false)
-							|| (trim($lineContent) === $endHTML
-								|| strpos(
-									$lineContent, $endHTML
-								) !== false)))
-					{
-						// trim the placeholder and if there is still data then load it
-						if (isset($endReplace)
-							&& ($_line
-								= $this->addLineChecker(
-								$endReplace, 2, $lineContent
-							)) !== false)
-						{
-							$codeBucket[$pointer[$targetKey]][] = $_line;
-						}
-						// deactivate the reader
-						$reading[$targetKey] = false;
-						if ($_type == 2)
-						{
-							// deactivate search
-							$reader = 0;
-						}
-						else
-						{
-							// activate fingerPrint for replacement end target
-							$loadEndFingerPrint = true;
-							$backupTargetKey    = $targetKey;
-							$backupI            = $i;
-						}
-						// all new records we can do a bulk insert
-						if ($i === 1)
-						{
-							// end the bucket info for this code block
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								(int) $lineNumber
-							);   // 'toline'
-							// first reverse engineer this code block
-							$c0de = CFactory::_('Placeholder.Reverse')->engine(
-								implode('', $codeBucket[$pointer[$targetKey]]),
-								$placeholders, $target
-							);
-							$this->newCustomCode[$pointer[$targetKey]][]
-							      = $this->db->quote(
-								base64_encode($c0de)
-							);  // 'code'
-							if ($_type == 2)
-							{
-								// load the last value
-								$this->newCustomCode[$pointer[$targetKey]][]
-									= $this->db->quote(0); // 'hashendtarget'
-							}
-						}
-						// the record already exist so we must update instead
-						elseif ($i === 2)
-						{
-							// end the bucket info for this code block
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-								= $this->db->quoteName('to_line') . ' = '
-								. $this->db->quote($lineNumber);
-							// first reverse engineer this code block
-							$c0de = CFactory::_('Placeholder.Reverse')->engine(
-								implode('', $codeBucket[$pointer[$targetKey]]),
-								$placeholders, $target,
-								$this->existingCustomCode[$pointer[$targetKey]]['id']
-							);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-							      = $this->db->quoteName('code') . ' = '
-								. $this->db->quote(base64_encode($c0de));
-							if ($_type == 2)
-							{
-								// load the last value
-								$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-									= $this->db->quoteName('hashendtarget')
-									. ' = ' . $this->db->quote(0);
-							}
-						}
-					}
-					// check if the endfingerprint is ready to save
-					if (count((array) $endFingerPrint) === 3)
-					{
-						$hashendtarget = '3__' . md5(
-								implode('', $endFingerPrint)
-							);
-						// all new records we can do a bulk insert
-						if ($i === 1)
-						{
-							// load the last value
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								$hashendtarget
-							); // 'hashendtarget'
-						}
-						// the record already exist so we must use module to update
-						elseif ($i === 2)
-						{
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-								= $this->db->quoteName('hashendtarget') . ' = '
-								. $this->db->quote($hashendtarget);
-						}
-						// reset the needed values
-						$endFingerPrint     = array();
-						$loadEndFingerPrint = false;
-						// deactivate reader (to allow other search)
-						$reader = 0;
-					}
-					// then read in the code
-					if (isset($reading[$targetKey]) && $reading[$targetKey])
-					{
-						$codeBucket[$pointer[$targetKey]][] = $lineContent;
-					}
-					// see if the custom code line starts now with PHP/JS comment type
-					if ((!isset($reading[$targetKey]) || !$reading[$targetKey])
-						&& (($i === 1 && trim($lineContent) === $start)
-							|| strpos($lineContent, $start) !== false))
-					{
-						$commentType  = 1; // PHP/JS type
-						$startReplace = $start;
-						$endReplace   = $end;
-					}
-					// see if the custom code line starts now with HTML comment type
-					elseif ((!isset($reading[$targetKey])
-							|| !$reading[$targetKey])
-						&& (($i === 1 && trim($lineContent) === $startHTML)
-							|| strpos($lineContent, $startHTML) !== false))
-					{
-						$commentType  = 2; // HTML type
-						$startReplace = $startHTML;
-						$endReplace   = $endHTML;
-					}
-					// check if the starting place holder was found
-					if ($commentType > 0)
-					{
-						// if we have all on one line we have a problem (don't load it TODO)
-						if (strpos($lineContent, $endReplace) !== false)
-						{
-							// reset found comment type
-							$commentType = 0;
-							$this->app->enqueueMessage(
-								JText::_('<hr /><h3>Custom Codes Warning</h3>'),
-								'Warning'
-							);
-							$this->app->enqueueMessage(
-								JText::sprintf(
-									'We found dynamic code <b>all in one line</b>, and ignored it! Please review (%s) for more details!',
-									$path
-								), 'Warning'
-							);
-							continue;
-						}
-						// do a quick check to insure we have an id
-						$id = false;
-						if ($i === 2)
-						{
-							$id = $this->getSystemID(
-								$lineContent,
-								array(1 => $start, 2 => $startHTML),
-								$commentType
-							);
-						}
-						if ($i === 2 && $id > 0)
-						{
-							// make sure we update it only once even if found again.
-							if (isset($this->codeAreadyDone[$id]))
-							{
-								// reset found comment type
-								$commentType = 0;
-								continue;
-							}
-							// store the id to avoid duplication
-							$this->codeAreadyDone[$id] = (int) $id;
-						}
-						// start replace
-						$startReplace = $this->setStartReplace(
-							$id, $commentType, $startReplace
-						);
-						// set active reader (to lock out other search)
-						$reader = $i;
-						// set pointer
-						$pointer[$targetKey] = $counter[$i];
-						// activate the reader
-						$reading[$targetKey] = true;
-						// start code bucket
-						$codeBucket[$pointer[$targetKey]] = array();
-						// trim the placeholder and if there is still data then load it
-						if ($_line = $this->addLineChecker(
-							$startReplace, 1, $lineContent
-						))
-						{
-							$codeBucket[$pointer[$targetKey]][] = $_line;
-						}
-						// get the finger print around the custom code
-						$inFinger   = count($fingerPrint);
-						$getFinger  = $inFinger - 1;
-						$hasharray  = array_slice(
-							$fingerPrint, -$inFinger, $getFinger, true
-						);
-						$hasleng    = count($hasharray);
-						$hashtarget = $hasleng . '__' . md5(
-								implode('', $hasharray)
-							);
-						// for good practice
-						ComponentbuilderHelper::fixPath($path);
-						// all new records we can do a bulk insert
-						if ($i === 1 || !$id)
-						{
-							// start the bucket for this code
-							$this->newCustomCode[$pointer[$targetKey]]
-								= array();
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								$path
-							);   // 'path'
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								(int) $_type
-							);  // 'type'
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								1
-							); // 'target'
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								$commentType
-							);  // 'comment_type'
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								(int) CFactory::_('Config')->component_id
-							); // 'component'
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								1
-							); // 'published'
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								$today
-							);   // 'created'
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								(int) $this->user->id
-							); // 'created_by'
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								1
-							); // 'version'
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								1
-							); // 'access'
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								$hashtarget
-							);  // 'hashtarget'
-							$this->newCustomCode[$pointer[$targetKey]][]
-								= $this->db->quote(
-								(int) $lineNumber
-							);  // 'fromline'
-						}
-						// the record already exist so we must update instead
-						elseif ($i === 2 && $id > 0)
-						{
-							// start the bucket for this code
-							$this->existingCustomCode[$pointer[$targetKey]]
-								= array();
-							$this->existingCustomCode[$pointer[$targetKey]]['id']
-								= (int) $id;
-							$this->existingCustomCode[$pointer[$targetKey]]['conditions']
-								= array();
-							$this->existingCustomCode[$pointer[$targetKey]]['conditions'][]
-								= $this->db->quoteName('id') . ' = '
-								. $this->db->quote($id);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields']
-								= array();
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-								= $this->db->quoteName('path') . ' = '
-								. $this->db->quote($path);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-								= $this->db->quoteName('type') . ' = '
-								. $this->db->quote($_type);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-								= $this->db->quoteName('comment_type') . ' = '
-								. $this->db->quote($commentType);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-								= $this->db->quoteName('component') . ' = '
-								. $this->db->quote(CFactory::_('Config')->component_id);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-								= $this->db->quoteName('from_line') . ' = '
-								. $this->db->quote($lineNumber);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-								= $this->db->quoteName('modified') . ' = '
-								. $this->db->quote($today);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-								= $this->db->quoteName('modified_by') . ' = '
-								. $this->db->quote($this->user->id);
-							$this->existingCustomCode[$pointer[$targetKey]]['fields'][]
-								= $this->db->quoteName('hashtarget') . ' = '
-								. $this->db->quote($hashtarget);
-						}
-						else // this should actualy never happen
-						{
-							// de activate the reader
-							$reading[$targetKey] = false;
-							$reader              = 0;
-						}
-						// reset found comment type
-						$commentType = 0;
-						// update the counter
-						$counter[$i]++;
-					}
-				}
-			}
-			// make sure only a few lines is kept at a time
-			if (count((array) $fingerPrint) > 10)
-			{
-				$fingerPrint = array_slice($fingerPrint, -6, 6, true);
-			}
-		}
-		// if the code is at the end of the page and there were not three more lines
-		if (count((array) $endFingerPrint) > 0 || $loadEndFingerPrint)
-		{
-			if (count((array) $endFingerPrint) > 0)
-			{
-				$leng          = count($endFingerPrint);
-				$hashendtarget = $leng . '__' . md5(
-						implode('', $endFingerPrint)
-					);
-			}
-			else
-			{
-				$hashendtarget = 0;
-			}
-			// all new records we can do a buldk insert
-			if ($backupI === 1)
-			{
-				// load the last value
-				$this->newCustomCode[$pointer[$backupTargetKey]][]
-					= $this->db->quote($hashendtarget); // 'hashendtarget'
-			}
-			// the record already exist so we must use module to update
-			elseif ($backupI === 2)
-			{
-				$this->existingCustomCode[$pointer[$backupTargetKey]]['fields'][]
-					= $this->db->quoteName('hashendtarget') . ' = '
-					. $this->db->quote($hashendtarget);
-			}
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
+
+		return [];
 	}
 
 	/**
@@ -10072,55 +9438,7 @@ class Get
 	 */
 	protected function setDynamicHASHING($script)
 	{
-		// check if we should hash a string
-		if (strpos($script, 'HASHSTRING((((') !== false)
-		{
-			// get the strings
-			$values = GetHelper::allBetween(
-				$script, 'HASHSTRING((((', '))))'
-			);
-			$locker = array();
-			// convert them
-			foreach ($values as $value)
-			{
-				$locker['HASHSTRING((((' . $value . '))))']
-					= md5($value);
-			}
-
-			// update the script
-			return CFactory::_('Placeholder')->update($script, $locker);
-		}
-		// check if we should hash a file
-		if (strpos($script, 'HASHFILE((((') !== false)
-		{
-			// get the strings
-			$values = GetHelper::allBetween(
-				$script, 'HASHFILE((((', '))))'
-			);
-			$locker = array();
-			// convert them
-			foreach ($values as $path)
-			{
-				// we first get the file if it exist
-				if ($value = FileHelper::getContent($path))
-				{
-					// now we hash the file content
-					$locker['HASHFILE((((' . $path . '))))']
-						= md5($value);
-				}
-				else
-				{
-					// could not retrieve the file so we show error
-					$locker['HASHFILE((((' . $path . '))))']
-						= 'ERROR';
-				}
-			}
-
-			// update the script
-			return CFactory::_('Placeholder')->update($script, $locker);
-		}
-
-		return $script;
+		return CFactory::_('Customcode.Hash')->set($script);
 	}
 
 	/**
@@ -10133,30 +9451,7 @@ class Get
 	 */
 	protected function setBase64LOCK($script)
 	{
-		if (strpos($script, 'LOCKBASE64((((') !== false)
-		{
-			// get the strings
-			$values = GetHelper::allBetween(
-				$script, 'LOCKBASE64((((', '))))'
-			);
-			$locker = array();
-			// convert them
-			foreach ($values as $value)
-			{
-				$locker['LOCKBASE64((((' . $value . '))))']
-					= "base64_decode( preg_replace('/\s+/', ''," .
-					PHP_EOL . Indent::_(2) . "'" .
-					wordwrap(
-						base64_encode($value), 64, PHP_EOL . Indent::_(2), true
-					) .
-					"'))";
-			}
-
-			// update the script
-			return CFactory::_('Placeholder')->update($script, $locker);
-		}
-
-		return $script;
+		return CFactory::_('Customcode.LockBase')->set($script);
 	}
 
 	/**
@@ -10184,15 +9479,17 @@ class Get
 	 */
 	protected function canAddGuiCodePlaceholder(&$code)
 	{
-		// check for customcode placeholders
-		if (strpos($code, '$$$$') !== false)
-		{
-			// we do not add GUI wrapper placeholder to code
-			// that already has any customcode placeholders
-			return false;
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 
-		return true;
+		return false;
 	}
 
 	/**
@@ -10220,29 +9517,19 @@ class Get
 	 *
 	 * @return  bool true    on success
 	 *
+	 * @deprecated 3.3
 	 */
 	protected function addLineChecker($replaceKey, $type, $lineContent)
 	{
-		$check = explode($replaceKey, $lineContent);
-		switch ($type)
-		{
-			case 1:
-				// beginning of code
-				$i = trim($check[1]);
-				if (StringHelper::check($i))
-				{
-					return $check[1];
-				}
-				break;
-			case 2:
-				// end of code
-				$i = trim($check[0]);
-				if (StringHelper::check($i))
-				{
-					return $check[0];
-				}
-				break;
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 
 		return false;
 	}
@@ -10256,23 +9543,21 @@ class Get
 	 *
 	 * @return  array    on success
 	 *
+	 * @deprecated 3.3
 	 */
 	protected function setStartReplace($id, $commentType, $startReplace)
 	{
-		if ($id > 0)
-		{
-			switch ($commentType)
-			{
-				case 1: // the PHP & JS type
-					$startReplace .= '/*' . $id . '*/';
-					break;
-				case 2: // the HTML type
-					$startReplace .= '<!--' . $id . '-->';
-					break;
-			}
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 
-		return $startReplace;
+		return [];
 	}
 
 	/**
@@ -10282,33 +9567,23 @@ class Get
 	 * @param   string  $placeholders  The values to search for
 	 * @param   int     $commentType   The comment type
 	 *
-	 * @return  array    on success
+	 * @return  int    on success
 	 *
+	 * @deprecated 3.3
 	 */
 	protected function getSystemID(&$lineContent, $placeholders, $commentType)
 	{
-		$trim = '/';
-		if ($commentType == 2)
-		{
-			$trim = '<!--';
-		}
-		// remove place holder from content
-		$string = trim(
-			str_replace($placeholders[$commentType] . $trim, '', $lineContent)
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
-		// now get all numbers
-		$numbers = array();
-		preg_match_all('!\d+!', $string, $numbers);
-		// return the first number
-		if (isset($numbers[0])
-			&& ArrayHelper::check(
-				$numbers[0]
-			))
-		{
-			return reset($numbers[0]);
-		}
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 
-		return false;
+		return null;
 	}
 
 	/**
@@ -10346,121 +9621,17 @@ class Get
 	                                              &$target
 	)
 	{
-		// get targets to search for
-		$langStringTargets = array_filter(
-			$this->langStringTargets, function ($get) use ($string) {
-			if (strpos($string, $get) !== false)
-			{
-				return true;
-			}
-
-			return false;
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
-		// check if we should continue
-		if (ArrayHelper::check($langStringTargets))
-		{
-			// start lang holder
-			$langHolders = array();
-			// set the lang for both since we don't know what area is being targeted
-			$_tmp = CFactory::_('Config')->lang_target;
-			// set the lang based on target
-			if (strpos($target, 'module') !== false)
-			{
-				// backup lang prefix
-				$_tmp_lang_prefix = CFactory::_('Config')->lang_prefix;
-				// set the new lang prefix
-				$this->langPrefix = strtoupper(
-					str_replace('module', 'mod', $target)
-				);
-				CFactory::_('Config')->set('lang_prefix', $this->langPrefix);
-				// now set the lang
-				if (isset(CFactory::_('Language.Extractor')->langKeys[CFactory::_('Config')->lang_prefix]))
-				{
-					CFactory::_('Config')->lang_target = CFactory::_('Language.Extractor')->langKeys[CFactory::_('Config')->lang_prefix];
-				}
-				else
-				{
-					CFactory::_('Config')->lang_target = 'module';
-				}
-			}
-			elseif (strpos($target, 'plugin') !== false)
-			{
-				// backup lang prefix
-				$_tmp_lang_prefix = CFactory::_('Config')->lang_prefix;
-				// set the new lang prefix
-				$this->langPrefix = strtoupper(
-					str_replace('plugin', 'plg', $target)
-				);
-				CFactory::_('Config')->set('lang_prefix', $this->langPrefix);
-				// now set the lang
-				if (isset(CFactory::_('Language.Extractor')->langKeys[CFactory::_('Config')->lang_prefix]))
-				{
-					CFactory::_('Config')->lang_target = CFactory::_('Language.Extractor')->langKeys[CFactory::_('Config')->lang_prefix];
-				}
-				else
-				{
-					CFactory::_('Config')->lang_target = 'plugin';
-				}
-			}
-			else
-			{
-				CFactory::_('Config')->lang_target = 'both';
-			}
-			// set language data
-			foreach ($langStringTargets as $langStringTarget)
-			{
-				$langCheck[] = GetHelper::allBetween(
-					$string, $langStringTarget . "'", "'"
-				);
-				$langCheck[] = GetHelper::allBetween(
-					$string, $langStringTarget . "'", "'"
-				);
-			}
-			// merge arrays
-			$langArray = ArrayHelper::merge($langCheck);
-			// continue only if strings were found
-			if (ArrayHelper::check(
-				$langArray
-			)) //<-- not really needed hmmm
-			{
-				foreach ($langArray as $lang)
-				{
-					$_keyLang = StringHelper::safe($lang, 'U');
-					// this is there to insure we dont break already added Language strings
-					if ($_keyLang === $lang)
-					{
-						continue;
-					}
-					// build lang key
-					$keyLang = CFactory::_('Config')->lang_prefix . '_' . $_keyLang;
-					// set lang content string
-					CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $keyLang, $lang);
-					// reverse the placeholders
-					foreach ($langStringTargets as $langStringTarget)
-					{
-						$langHolders[$langStringTarget . "'" . $keyLang . "'"]
-							= $langStringTarget . "'" . $lang . "'";
-						$langHolders[$langStringTarget . '"' . $keyLang . '"']
-							= $langStringTarget . '"' . $lang . '"';
-					}
-				}
-				// return the found placeholders
-				$updateString = CFactory::_('Placeholder')->update(
-					$updateString, $langHolders
-				);
-			}
-			// reset the lang
-			CFactory::_('Config')->lang_target = $_tmp;
-			// also rest the lang prefix if set
-			if (isset($_tmp_lang_prefix))
-			{
-				$this->langPrefix = $_tmp_lang_prefix;
-				CFactory::_('Config')->set('lang_prefix', $_tmp_lang_prefix);
-			}
-		}
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 
-		return $updateString;
+		return '';
 	}
 
 	/**
@@ -10502,66 +9673,21 @@ class Get
 	 * get the local installed path of this component
 	 *
 	 * @return  array   of paths on success
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function getLocalInstallPaths()
 	{
-		// set the local paths to search
-		$localPaths = array();
-		// admin path
-		$localPaths['admin'] = JPATH_ADMINISTRATOR . '/components/com_'
-			. CFactory::_('Config')->component_code_name;
-		// site path
-		$localPaths['site'] = JPATH_ROOT . '/components/com_'
-			. CFactory::_('Config')->component_code_name;
-		// media path
-		$localPaths['media'] = JPATH_ROOT . '/media/com_'
-			. CFactory::_('Config')->component_code_name;
-		// power path
-		$localPaths['power'] = JPATH_ROOT . '/' . CFactory::_('Config')->get('jcb_powers_path', 'libraries/jcb_powers');
-		// lets also go over the REPOS (TODO)
-		// Painfull but we need to folder paths for the linked modules
-		if (($module_ids = $this->getModuleIDs()) !== false)
-		{
-			foreach ($module_ids as $module_id)
-			{
-				// get the module folder path
-				if (($path = $this->getModulePath($module_id)) !== false)
-				{
-					// set the path
-					$localPaths['module_' . str_replace('/', '_', $path)]
-						= $path;
-				}
-			}
-		}
-		// Painfull but we need to folder paths for the linked plugins
-		if (($plugin_ids = $this->getPluginIDs()) !== false)
-		{
-			foreach ($plugin_ids as $plugin_id)
-			{
-				// get the plugin group and folder name
-				if (($path = $this->getPluginPath($plugin_id)) !== false)
-				{
-					// set the path
-					$localPaths['plugin_' . str_replace('/', '_', $path)]
-						= JPATH_ROOT . '/plugins/' . $path;
-				}
-			}
-		}
-		// check if the local install is found
-		foreach ($localPaths as $key => $localPath)
-		{
-			if (!Folder::exists($localPath))
-			{
-				unset($localPaths[$key]);
-			}
-		}
-		if (ArrayHelper::check($localPaths))
-		{
-			return $localPaths;
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 
-		return false;
+		return [];
 	}
 
 }

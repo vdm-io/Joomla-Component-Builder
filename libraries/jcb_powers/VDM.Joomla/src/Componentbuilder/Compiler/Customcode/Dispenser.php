@@ -37,20 +37,20 @@ class Dispenser
 	public array $hub;
 
 	/**
-	 * Compiler Customcode
-	 *
-	 * @var    Customcode
-	 * @since 3.2.0
-	 **/
-	protected Customcode $customcode;
-
-	/**
 	 * Compiler Placeholder
 	 *
 	 * @var    Placeholder
 	 * @since 3.2.0
 	 **/
 	protected Placeholder $placeholder;
+
+	/**
+	 * Compiler Customcode
+	 *
+	 * @var    Customcode
+	 * @since 3.2.0
+	 **/
+	protected Customcode $customcode;
 
 	/**
 	 * Compiler Customcode in Gui
@@ -79,8 +79,8 @@ class Dispenser
 	/**
 	 * Constructor.
 	 *
-	 * @param Customcode|null   $customcode  The compiler customcode object.
 	 * @param Placeholder|null  $placeholder The compiler placeholder object.
+	 * @param Customcode|null   $customcode  The compiler customcode object.
 	 * @param Gui|null          $gui         The compiler customcode gui object.
 	 * @param Hash|null         $hash        The compiler customcode hash object.
 	 * @param LockBase|null     $base64      The compiler customcode lock base64 object.

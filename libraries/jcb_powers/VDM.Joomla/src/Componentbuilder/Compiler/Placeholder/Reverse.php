@@ -84,18 +84,18 @@ class Reverse
 	/**
 	 * Reverse Engineer the dynamic placeholders (TODO hmmmm this is not ideal)
 	 *
-	 * @param   string  $string        The string to revers
-	 * @param   array   $placeholders  The values to search for
-	 * @param   string  $target        The target path type
-	 * @param   int|null     $id            The custom code id
-	 * @param   string  $field         The field name
-	 * @param   string  $table         The table name
+	 * @param   string     $string        The string to revers
+	 * @param   array      $placeholders  The values to search for
+	 * @param   string     $target        The target path type
+	 * @param   int|null   $id            The custom code id
+	 * @param   string     $field         The field name
+	 * @param   string     $table         The table name
 	 *
 	 * @return  string
 	 * @since 3.2.0
 	 */
 	public function engine(string $string, array &$placeholders,
-		string $target, ?int $id = null, $field = 'code', $table = 'custom_code'): string
+		string $target, ?int $id = null, string $field = 'code', string $table = 'custom_code'): string
 	{
 		// get local code if set
 		if ($id > 0 && $code = base64_decode(
@@ -222,7 +222,7 @@ class Reverse
 					}
 				}
 				// return the found placeholders
-				$updateString = $this->placeholder->replace(
+				$updateString = $this->placeholder->update(
 					$updateString, $lang_holders
 				);
 			}

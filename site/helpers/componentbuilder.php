@@ -3676,8 +3676,10 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	* 	prepare base64 string for url
-	**/
+	 * prepare base64 string for url
+	 *
+	 * @deprecate Use urlencode();
+	 */
 	public static function base64_urlencode($string, $encode = false)
 	{
 		if ($encode)
@@ -3688,8 +3690,10 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* 	prepare base64 string form url
-	**/
+	 * prepare base64 string form url
+	 *
+	 * @deprecate
+	 */
 	public static function base64_urldecode($string, $decode = false)
 	{
 		$string = str_replace(array('-', '_'), array('+', '/'), $string);
