@@ -1931,7 +1931,7 @@ class Get
 		// README
 		if ($component->addreadme)
 		{
-			$component->readme = CFactory::_('Customcode')->add(
+			$component->readme = CFactory::_('Customcode')->update(
 				base64_decode($component->readme)
 			);
 		}
@@ -1951,7 +1951,7 @@ class Get
 		{
 			$component->dashboard_tab = array_map(
 				function ($array) {
-					$array['html'] = CFactory::_('Customcode')->add($array['html']);
+					$array['html'] = CFactory::_('Customcode')->update($array['html']);
 
 					return $array;
 				}, array_values($component->dashboard_tab)
@@ -1969,7 +1969,7 @@ class Get
 		{
 			// load the php for the dashboard model
 			$component->php_dashboard_methods = CFactory::_('Customcode.Gui')->set(
-				CFactory::_('Customcode')->add(
+				CFactory::_('Customcode')->update(
 					base64_decode($component->php_dashboard_methods)
 				),
 				array(
@@ -2336,7 +2336,7 @@ class Get
 						$tab['view'] = $view->name_single_code;
 						// load the dynamic data
 						$tab['html'] = CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->add($tab['html']),
+							CFactory::_('Customcode')->update($tab['html']),
 							CFactory::_('Placeholder')->active
 						);
 						// set the tab name
@@ -2609,7 +2609,7 @@ class Get
 								$tmpfield['settings'] = new stdClass();
 								// convert the xml json string to normal string
 								$tmpfield['settings']->xml
-									= CFactory::_('Customcode')->add(
+									= CFactory::_('Customcode')->update(
 									json_decode(
 										$field['settings']->history->xml
 									)
@@ -2841,7 +2841,7 @@ class Get
 								$relationsValue['set']
 							))
 						{
-							$relationsValue['set'] = CFactory::_('Customcode')->add(
+							$relationsValue['set'] = CFactory::_('Customcode')->update(
 								$relationsValue['set']
 							);
 						}
@@ -3045,7 +3045,7 @@ class Get
 						$guiMapper['field'] = $button_code_field;
 						$view->{$button_code_field}
 						                    = CFactory::_('Customcode.Gui')->set(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode($view->{$button_code_field})
 							),
 							$guiMapper
@@ -3370,7 +3370,7 @@ class Get
 
 		// set the default data
 		$view->default = CFactory::_('Customcode.Gui')->set(
-			CFactory::_('Customcode')->add(base64_decode($view->default)),
+			CFactory::_('Customcode')->update(base64_decode($view->default)),
 			$guiMapper
 		);
 		// load context if not set
@@ -3491,7 +3491,7 @@ class Get
 					// set field
 					$guiMapper['field'] = $scripter;
 					$view->$scripter    = CFactory::_('Customcode.Gui')->set(
-						CFactory::_('Customcode')->add(
+						CFactory::_('Customcode')->update(
 							base64_decode($view->$scripter)
 						),
 						$guiMapper
@@ -3499,7 +3499,7 @@ class Get
 				}
 				else
 				{
-					$view->$scripter = CFactory::_('Customcode')->add(
+					$view->$scripter = CFactory::_('Customcode')->update(
 						base64_decode($view->$scripter)
 					);
 				}
@@ -3631,7 +3631,7 @@ class Get
 					// set field
 					$guiMapper['field']         = $button_code_field;
 					$view->{$button_code_field} = CFactory::_('Customcode.Gui')->set(
-						CFactory::_('Customcode')->add(
+						CFactory::_('Customcode')->update(
 							base64_decode($view->{$button_code_field})
 						),
 						$guiMapper
@@ -3735,7 +3735,7 @@ class Get
 				);
 
 				// load the values form params
-				$field->xml = CFactory::_('Customcode')->add(json_decode($field->xml));
+				$field->xml = CFactory::_('Customcode')->update(json_decode($field->xml));
 
 				// check if we have validate (validation rule set)
 				$validationRule = GetHelper::between(
@@ -3774,7 +3774,7 @@ class Get
 									$this->validationRules[$validationRule]
 										= CFactory::_('Customcode.Gui')->set(
 										CFactory::_('Placeholder')->update(
-											CFactory::_('Customcode')->add(
+											CFactory::_('Customcode')->update(
 												base64_decode(
 													$this->validationRules[$validationRule]
 												)
@@ -3853,7 +3853,7 @@ class Get
 						);
 						$field->initiator_save     = explode(
 							PHP_EOL, CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode(
 									$field->initiator_on_save_model
 								)
@@ -3870,7 +3870,7 @@ class Get
 						);
 						$field->initiator_get     = explode(
 							PHP_EOL, CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode(
 									$field->initiator_on_get_model
 								)
@@ -3881,14 +3881,14 @@ class Get
 					// set the field modeling
 					$field->model_field['save'] = explode(
 						PHP_EOL, CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add(
+						CFactory::_('Customcode')->update(
 							base64_decode($field->on_save_model_field)
 						), CFactory::_('Placeholder')->active
 					)
 					);
 					$field->model_field['get']  = explode(
 						PHP_EOL, CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add(
+						CFactory::_('Customcode')->update(
 							base64_decode($field->on_get_model_field)
 						), CFactory::_('Placeholder')->active
 					)
@@ -4618,7 +4618,7 @@ class Get
 							$guiMapper['field'] = 'php_calculation';
 							$result->php_calculation
 							                    = CFactory::_('Customcode.Gui')->set(
-								CFactory::_('Customcode')->add(
+								CFactory::_('Customcode')->update(
 									base64_decode($result->php_calculation)
 								),
 								$guiMapper
@@ -4636,7 +4636,7 @@ class Get
 							$guiMapper['field'] = 'php_router_parse';
 							$result->php_router_parse
 							                    = CFactory::_('Customcode.Gui')->set(
-								CFactory::_('Customcode')->add(
+								CFactory::_('Customcode')->update(
 									base64_decode($result->php_router_parse)
 								),
 								$guiMapper
@@ -4692,7 +4692,7 @@ class Get
 									// only for custom gets
 									$result->{$script}
 										= CFactory::_('Customcode.Gui')->set(
-										CFactory::_('Customcode')->add(
+										CFactory::_('Customcode')->update(
 											base64_decode($result->{$script})
 										),
 										$guiMapper
@@ -4761,7 +4761,7 @@ class Get
 								// get the custom query
 								$customQueryString
 									= CFactory::_('Customcode.Gui')->set(
-									CFactory::_('Customcode')->add(
+									CFactory::_('Customcode')->update(
 										base64_decode($result->php_custom_get)
 									),
 									$guiMapper
@@ -5029,7 +5029,7 @@ class Get
 											            = $operatorArray[$option2['operator']];
 										$option2['state_key']
 											            = CFactory::_('Placeholder')->update(
-											CFactory::_('Customcode')->add(
+											CFactory::_('Customcode')->update(
 												$option2['state_key']
 											), CFactory::_('Placeholder')->active
 										);
@@ -5844,7 +5844,7 @@ class Get
 			&& StringHelper::check($row->php_view))
 		{
 			$php_view = CFactory::_('Customcode.Gui')->set(
-				CFactory::_('Customcode')->add(base64_decode($row->php_view)),
+				CFactory::_('Customcode')->update(base64_decode($row->php_view)),
 				array(
 					'table' => $table,
 					'field' => 'php_view',
@@ -5853,7 +5853,7 @@ class Get
 			);
 		}
 		$contnent = CFactory::_('Customcode.Gui')->set(
-			CFactory::_('Customcode')->add(base64_decode($row->{$table})),
+			CFactory::_('Customcode')->update(base64_decode($row->{$table})),
 			array(
 				'table' => $table,
 				'field' => $table,
@@ -6231,7 +6231,7 @@ class Get
 						))
 					{
 						$library->document = CFactory::_('Customcode.Gui')->set(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode($library->php_setdocument)
 							),
 							array(
@@ -6873,11 +6873,11 @@ class Get
 	 *                           dynamic build values if it gets broken
 	 *
 	 * @return  string
-	 * @deprecated 3.3 Use CFactory::_('Customcode')->add($string, $debug);
+	 * @deprecated 3.3 Use CFactory::_('Customcode')->update($string, $debug);
 	 */
 	public function setDynamicValues($string, $debug = 0)
 	{
-		return CFactory::_('Customcode')->add($string, $debug);
+		return CFactory::_('Customcode')->update($string, $debug);
 	}
 
 	/**
@@ -7564,11 +7564,11 @@ class Get
 	 * @param   int            $debug         The switch to debug the update
 	 *
 	 * @return  void
-	 * @deprecated 3.3 Use CFactory::_('Customcode')->load($ids, $setLang, $debug);
+	 * @deprecated 3.3 Use CFactory::_('Customcode')->get($ids, $setLang, $debug);
 	 */
 	public function getCustomCode(?array $ids = null, bool $setLang = true, int $debug = 0)
 	{
-		CFactory::_('Customcode')->load($ids, $setLang, $debug);
+		CFactory::_('Customcode')->get($ids, $setLang, $debug);
 	}
 
 	/**
@@ -7766,7 +7766,7 @@ class Get
 				                   'id'    => (int) $id, 'type' => 'php');
 				// update the name if it has dynamic values
 				$module->name = CFactory::_('Placeholder')->update(
-					CFactory::_('Customcode')->add($module->name), CFactory::_('Placeholder')->active
+					CFactory::_('Customcode')->update($module->name), CFactory::_('Placeholder')->active
 				);
 				// set safe class function name
 				$module->code_name
@@ -7835,7 +7835,7 @@ class Get
 				else
 				{
 					$module->description = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add($module->description),
+						CFactory::_('Customcode')->update($module->description),
 						CFactory::_('Placeholder')->active
 					);
 					CFactory::_('Language')->set(
@@ -7864,7 +7864,7 @@ class Get
 				if ($module->addreadme == 1 && !empty($module->readme))
 				{
 					$module->readme = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add(base64_decode($module->readme)),
+						CFactory::_('Customcode')->update(base64_decode($module->readme)),
 						CFactory::_('Placeholder')->active
 					);
 				}
@@ -7904,7 +7904,7 @@ class Get
 						$module->class_helper_header = PHP_EOL
 							. CFactory::_('Customcode.Gui')->set(
 								CFactory::_('Placeholder')->update(
-									CFactory::_('Customcode')->add(
+									CFactory::_('Customcode')->update(
 										base64_decode(
 											$module->class_helper_header
 										)
@@ -7923,7 +7923,7 @@ class Get
 					// base64 Decode code
 					$module->class_helper_code = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode($module->class_helper_code)
 							), CFactory::_('Placeholder')->active
 						),
@@ -7953,7 +7953,7 @@ class Get
 					$guiMapper['field'] = 'mod_code';
 					$module->mod_code   = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode($module->mod_code)
 							), CFactory::_('Placeholder')->active
 						),
@@ -7981,7 +7981,7 @@ class Get
 					$guiMapper['field']     = 'default_header';
 					$module->default_header = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode($module->default_header)
 							), CFactory::_('Placeholder')->active
 						),
@@ -8001,7 +8001,7 @@ class Get
 					$guiMapper['type']  = 'html';
 					$module->default    = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode($module->default)
 							), CFactory::_('Placeholder')->active
 						),
@@ -8348,7 +8348,7 @@ class Get
 							$module->{$scriptMethod . '_' . $scriptType}
 							                            = CFactory::_('Customcode.Gui')->set(
 								CFactory::_('Placeholder')->update(
-									CFactory::_('Customcode')->add(
+									CFactory::_('Customcode')->update(
 										base64_decode(
 											$module->{$scriptMethod . '_'
 											. $scriptType}
@@ -8373,7 +8373,7 @@ class Get
 					&& StringHelper::check($module->sql))
 				{
 					$module->sql = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add(base64_decode($module->sql)),
+						CFactory::_('Customcode')->update(base64_decode($module->sql)),
 						CFactory::_('Placeholder')->active
 					);
 				}
@@ -8389,7 +8389,7 @@ class Get
 					))
 				{
 					$module->sql_uninstall = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add(
+						CFactory::_('Customcode')->update(
 							base64_decode($module->sql_uninstall)
 						), CFactory::_('Placeholder')->active
 					);
@@ -8406,7 +8406,7 @@ class Get
 					))
 				{
 					$module->update_server_url = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add($module->update_server_url),
+						CFactory::_('Customcode')->update($module->update_server_url),
 						CFactory::_('Placeholder')->active
 					);
 				}
@@ -8683,7 +8683,7 @@ class Get
 				                   'id'    => (int) $id, 'type' => 'php');
 				// update the name if it has dynamic values
 				$plugin->name = CFactory::_('Placeholder')->update(
-					CFactory::_('Customcode')->add($plugin->name), CFactory::_('Placeholder')->active
+					CFactory::_('Customcode')->update($plugin->name), CFactory::_('Placeholder')->active
 				);
 				// update the name if it has dynamic values
 				$plugin->code_name
@@ -8775,7 +8775,7 @@ class Get
 				else
 				{
 					$plugin->description = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add($plugin->description),
+						CFactory::_('Customcode')->update($plugin->description),
 						CFactory::_('Placeholder')->active
 					);
 					CFactory::_('Language')->set(
@@ -8807,7 +8807,7 @@ class Get
 				if ($plugin->addreadme == 1 && !empty($plugin->readme))
 				{
 					$plugin->readme = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add(base64_decode($plugin->readme)),
+						CFactory::_('Customcode')->update(base64_decode($plugin->readme)),
 						CFactory::_('Placeholder')->active
 					);
 				}
@@ -8824,7 +8824,7 @@ class Get
 					// base64 Decode main_class_code.
 					$plugin->main_class_code = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode($plugin->main_class_code)
 							), CFactory::_('Placeholder')->active
 						),
@@ -8839,7 +8839,7 @@ class Get
 					// base64 Decode head.
 					$plugin->head = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode($plugin->head)
 							), CFactory::_('Placeholder')->active
 						),
@@ -8851,7 +8851,7 @@ class Get
 					// base64 Decode head.
 					$plugin->head = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode($plugin->class_head)
 							), CFactory::_('Placeholder')->active
 						),
@@ -8869,7 +8869,7 @@ class Get
 					// base64 Decode comment.
 					$plugin->comment = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->add(
+							CFactory::_('Customcode')->update(
 								base64_decode($plugin->comment)
 							), CFactory::_('Placeholder')->active
 						),
@@ -9175,7 +9175,7 @@ class Get
 							$plugin->{$scriptMethod . '_' . $scriptType}
 							                            = CFactory::_('Customcode.Gui')->set(
 								CFactory::_('Placeholder')->update(
-									CFactory::_('Customcode')->add(
+									CFactory::_('Customcode')->update(
 										base64_decode(
 											$plugin->{$scriptMethod . '_'
 											. $scriptType}
@@ -9200,7 +9200,7 @@ class Get
 					&& StringHelper::check($plugin->sql))
 				{
 					$plugin->sql = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add(base64_decode($plugin->sql)),
+						CFactory::_('Customcode')->update(base64_decode($plugin->sql)),
 						CFactory::_('Placeholder')->active
 					);
 				}
@@ -9216,7 +9216,7 @@ class Get
 					))
 				{
 					$plugin->sql_uninstall = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add(
+						CFactory::_('Customcode')->update(
 							base64_decode($plugin->sql_uninstall)
 						), CFactory::_('Placeholder')->active
 					);
@@ -9233,7 +9233,7 @@ class Get
 					))
 				{
 					$plugin->update_server_url = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->add($plugin->update_server_url),
+						CFactory::_('Customcode')->update($plugin->update_server_url),
 						CFactory::_('Placeholder')->active
 					);
 				}

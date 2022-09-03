@@ -18,6 +18,7 @@ use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PlaceholderInterface;
 
 
 /**
@@ -25,7 +26,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
  * 
  * @since 3.2.0
  */
-class Placeholder
+class Placeholder implements PlaceholderInterface
 {
 	/**
 	 * The active placeholders
@@ -181,10 +182,10 @@ class Placeholder
 	 * @param   int         $type  The type of placement
 	 * @param   int|null  $id    The code id in the system
 	 *
-	 * @return  array    on success
+	 * @return  array    with start and end keys
 	 * @since 3.2.0
 	 */
-	public function keys(int $type, ?int $id = null)
+	public function keys(int $type, ?int $id = null): array
 	{
 		switch ($type)
 		{
@@ -200,10 +201,6 @@ class Placeholder
 						'end'   => '/***[/REPLACED$$$$]***/'
 					];
 				}
-				else
-				{
-					return [ 'start' => "", 'end' => ""];
-				}
 				break;
 			case 12:
 				//***[INSERTED$$$$]***//**1**/
@@ -213,10 +210,6 @@ class Placeholder
 						'start' => '/***[INSERTED$$$$]***//**' . $id . '**/',
 						'end'   => '/***[/INSERTED$$$$]***/'
 					];
-				}
-				else
-				{
-					return [ 'start' => "", 'end' => ""];
 				}
 				break;
 			case 21:
@@ -228,10 +221,6 @@ class Placeholder
 						'end'   => '<!--[/REPLACED$$$$]-->'
 					];
 				}
-				else
-				{
-					return [ 'start' => "", 'end' => ""];
-				}
 				break;
 			case 22:
 				//<!--[INSERTED$$$$]--><!--1-->
@@ -242,10 +231,6 @@ class Placeholder
 						'end'   => '<!--[/INSERTED$$$$]-->'
 					];
 				}
-				else
-				{
-					return [ 'start' => "", 'end' => ""];
-				}
 				break;
 			case 33:
 				return ['start' => Placefix::h(), 'end'   => Placefix::h()];
@@ -255,8 +240,9 @@ class Placeholder
 				break;
 		}
 
-		return false;
+		return [ 'start' => "", 'end' => ""];
 	}
+
 
 }
 

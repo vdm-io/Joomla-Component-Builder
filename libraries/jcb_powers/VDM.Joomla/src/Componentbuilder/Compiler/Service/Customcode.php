@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode as CompilerCustomcode;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\CustomcodeInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\External;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Hash;
@@ -71,10 +72,10 @@ class Customcode implements ServiceProviderInterface
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  CompilerCustomcode
+	 * @return  CustomcodeInterface
 	 * @since 3.2.0
 	 */
-	public function getCustomcode(Container $container): CompilerCustomcode
+	public function getCustomcode(Container $container): CustomcodeInterface
 	{
 		return new CompilerCustomcode(
 			$container->get('Config'),

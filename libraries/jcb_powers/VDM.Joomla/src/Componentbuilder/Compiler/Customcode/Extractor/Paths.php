@@ -273,7 +273,7 @@ class Paths
 				$module = $this->db->loadObject();
 				// update the name if it has dynamic values
 				$module->name = $this->placeholder->update(
-					$this->customcode->add($module->name),
+					$this->customcode->update($module->name),
 					$this->componentPlaceholder
 				);
 
@@ -397,7 +397,7 @@ class Paths
 
 				// update the name if it has dynamic values
 				$plugin->name = $this->placeholder->update(
-					$this->customcode->add($plugin->name),
+					$this->customcode->update($plugin->name),
 					$this->componentPlaceholder
 				);
 

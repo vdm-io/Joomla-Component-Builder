@@ -16,6 +16,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\LanguageInterface;
 
 
 /**
@@ -23,7 +24,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
  * 
  * @since 3.2.0
  */
-class Language
+class Language implements LanguageInterface
 {
 	/**
 	 * The language content

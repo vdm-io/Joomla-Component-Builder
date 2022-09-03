@@ -22,6 +22,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Language\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\External;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\CustomcodeInterface;
 
 
 /**
@@ -29,7 +30,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
  * 
  * @since 3.2.0
  */
-class Customcode
+class Customcode implements CustomcodeInterface
 {
 	/**
 	 * The function name memory ids
@@ -122,7 +123,7 @@ class Customcode
 	 *
 	 * @param Config|null          $config          The compiler config object.
 	 * @param Placeholder|null     $placeholder     The compiler placeholder object.
-	 * @param Extract|null         $extractor       The compiler language extractor object.
+	 * @param Extractor|null       $extractor       The compiler language extractor object.
 	 * @param External|null        $external       The compiler external custom code object.
 	 * @param \JDatabaseDriver     $db              The Database Driver object.
 	 *
@@ -139,7 +140,7 @@ class Customcode
 	}
 
 	/**
-	 * Set the **ALL** dynamic values in a strings here
+	 * Update **ALL** dynamic values in a strings here
 	 *
 	 * @param   string  $string  The content to check
 	 * @param   int     $debug   The switch to debug the update
@@ -149,7 +150,7 @@ class Customcode
 	 * @return  string
 	 * @since 3.2.0
 	 */
-	public function add(string $string, int $debug = 0): string
+	public function update(string $string, int $debug = 0): string
 	{
 		if (StringHelper::check($string))
 		{
@@ -169,7 +170,7 @@ class Customcode
 	}
 
 	/**
-	 * We start set the custom code data & can load it in to string
+	 * Set the custom code data & can load it in to string
 	 *
 	 * @param   string     $string  The content to check
 	 * @param   int          $debug   The switch to debug the update
@@ -212,9 +213,7 @@ class Customcode
 						$id = (int) $key;
 					}
 					elseif (StringHelper::check($key)
-						&& strpos(
-							$key, '+'
-						) === false)
+						&& strpos($key, '+') === false)
 					{
 						$getFuncName = trim($key);
 						if (!isset($this->functionNameMemory[$getFuncName]))
@@ -276,7 +275,7 @@ class Customcode
 							{
 								if (strpos($array[1], ',') !== false)
 								{
-									// update the function values with the custom code key placholdres (this allow the use of [] + and , in the values)
+									// update the function values with the custom code key placeholders (this allow the use of [] + and , in the values)
 									$this->data[$id]['args'][$key]
 										= array_map(
 										function ($_key) {
@@ -328,7 +327,7 @@ class Customcode
 				// insure we add the langs to both site and admin
 				$this->config->lang_target = 'both';
 				// now load the code to memory
-				$loaded = $this->load($bucket, false, $debug);
+				$loaded = $this->get($bucket, false, $debug);
 				// revert lang to current setting
 				$this->config->lang_target = $_tmpLang;
 			}
@@ -364,7 +363,7 @@ class Customcode
 	 * @return  bool
 	 * @since 3.2.0
 	 */
-	public function load(?array $ids = null, bool $setLang = true, $debug = 0): bool
+	public function get(?array $ids = null, bool $setLang = true, $debug = 0): bool
 	{
 		// should the result be stored in memory
 		$loadInMemory = false;
@@ -375,7 +374,7 @@ class Customcode
 		);
 		if (ArrayHelper::check($ids))
 		{
-			if ($idArray = $this->check($ids))
+			if (($idArray = $this->check($ids)) !== false)
 			{
 				$query->select(
 					$this->db->quoteName(
@@ -434,7 +433,8 @@ class Customcode
 				$customCode['code'] = $this->external->set(
 					$customCode['code']
 				);
-				// set the lang only if needed
+
+				// set the lang only if needed (we do the other later when we add it to the correct position)
 				if ($setLang)
 				{
 					$customCode['code'] = $this->extractor->engine(
@@ -448,6 +448,7 @@ class Customcode
 						$customCode['code'], $debug, $nr
 					);
 				}
+
 				// build the hash array
 				if (isset($customCode['hashtarget']))
 				{
@@ -456,20 +457,18 @@ class Customcode
 					);
 					// is this a replace code, set end has array
 					if ($customCode['type'] == 1
-						&& strpos(
-							$customCode['hashendtarget'], '__'
-						) !== false)
+						&& strpos($customCode['hashendtarget'], '__') !== false)
 					{
 						$customCode['hashendtarget'] = explode(
 							"__", $customCode['hashendtarget']
 						);
+
 						// NOW see if this is an end of page target (TODO not sure if the string is always d41d8cd98f00b204e9800998ecf8427e)
 						// I know this fix is not air-tight, but it should work as the value of an empty line when md5'ed is ^^^^
 						// Then if the line number is only >>>one<<< it is almost always end of the page.
 						// So I am using those two values to detect end of page replace ending, to avoid mismatching the ending target hash.
 						if ($customCode['hashendtarget'][0] == 1
-							&& 'd41d8cd98f00b204e9800998ecf8427e'
-							=== $customCode['hashendtarget'][1])
+							&& 'd41d8cd98f00b204e9800998ecf8427e' === $customCode['hashendtarget'][1])
 						{
 							// unset since this will force the replacement unto end of page.
 							unset($customCode['hashendtarget']);
@@ -477,11 +476,14 @@ class Customcode
 					}
 				}
 			}
+
 			// load this code into memory if needed
 			if ($loadInMemory === true)
 			{
 				$this->memory = $this->memory + $bucket;
 			}
+
+			// add to active set
 			$this->active = array_merge($this->active, $bucket);
 
 			return true;
@@ -500,7 +502,7 @@ class Customcode
 	 * @return  string on success
 	 * @since 3.2.0
 	 */
-	protected function insert(array $ids, string $string, int $debug = 0)
+	protected function insert(array $ids, string $string, int $debug = 0): string
 	{
 		$code = array();
 		// load the code

@@ -20,6 +20,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component\PlaceholderInterface;
 
 
 /**
@@ -27,12 +28,12 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
  * 
  * @since 3.2.0
  */
-class Placeholder
+class Placeholder implements PlaceholderInterface
 {
 	/**
 	 * Placeholders
 	 *
-	 * @var    arraya
+	 * @var    array
 	 * @since 3.2.0
 	 **/
 	protected $placeholders = null;

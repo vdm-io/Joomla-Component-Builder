@@ -23,6 +23,7 @@ use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\ExternalInterface;
 
 
 /**
@@ -30,7 +31,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
  * 
  * @since 3.2.0
  */
-class External
+class External implements ExternalInterface
 {
 	/**
 	 * The external code/string to be added

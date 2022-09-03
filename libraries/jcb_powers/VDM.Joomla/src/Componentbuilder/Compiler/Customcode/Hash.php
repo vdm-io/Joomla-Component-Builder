@@ -46,7 +46,7 @@ class Hash
 	}
 
 	/**
-	 * Set the the MD5 hashed string or file or string
+	 * Set the MD5 hashed string or file or string
 	 *
 	 * @param   string  $script  The code string
 	 *

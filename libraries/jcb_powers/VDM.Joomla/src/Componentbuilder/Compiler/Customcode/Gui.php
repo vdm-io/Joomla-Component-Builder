@@ -23,6 +23,7 @@ use VDM\Joomla\Utilities\String\FieldHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder\Reverse;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\GuiInterface;
 
 
 /**
@@ -30,7 +31,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Placeholder\Reverse;
  * 
  * @since 3.2.0
  */
-class Gui
+class Gui implements GuiInterface
 {
 	/**
 	 * Compiler Config

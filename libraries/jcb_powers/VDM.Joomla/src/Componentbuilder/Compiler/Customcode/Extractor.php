@@ -27,6 +27,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Placeholder\Reverse;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Path;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\ExtractorInterface;
 
 
 /**
@@ -66,7 +67,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Path;
  * 
  * @since 3.2.0
  */
-class Extractor
+class Extractor implements ExtractorInterface
 {
 	/**
 	 * The placeholder keys

@@ -26,6 +26,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PowerInterface;
 
 
 /**
@@ -33,7 +34,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
  * 
  * @since 3.2.0
  */
-class Power
+class Power implements PowerInterface
 {
 	/**
 	 * All loaded powers
@@ -207,7 +208,7 @@ class Power
 				$this->active[$guid]->key         = $this->active[$guid]->id . '_' . $this->active[$guid]->target_type;
 				// now set the name
 				$this->active[$guid]->name = $this->placeholder->update(
-					$this->customcode->add($this->active[$guid]->name),
+					$this->customcode->update($this->active[$guid]->name),
 					$this->placeholder->active
 				);
 				// now set the code_name and class name
@@ -382,7 +383,7 @@ class Power
 							&& StringHelper::check($this->active[$guid]->implements_custom))
 						{
 							$this->active[$guid]->implement_names[] = $this->placeholder->update(
-								$this->customcode->add($this->active[$guid]->implements_custom),
+								$this->customcode->update($this->active[$guid]->implements_custom),
 								$this->placeholder->active
 							);
 							// just add this once
@@ -409,7 +410,7 @@ class Power
 					&& StringHelper::check($this->active[$guid]->extends_custom))
 				{
 					$this->active[$guid]->extends_name = $this->placeholder->update(
-						$this->customcode->add($this->active[$guid]->extends_custom),
+						$this->customcode->update($this->active[$guid]->extends_custom),
 						$this->placeholder->active
 					);
 					// just add once
@@ -437,7 +438,7 @@ class Power
 					// base64 Decode code
 					$this->active[$guid]->head = $this->gui->set(
 							$this->placeholder->update(
-								$this->customcode->add(
+								$this->customcode->update(
 									base64_decode(
 										$this->active[$guid]->head
 									)
@@ -472,7 +473,7 @@ class Power
 				}
 				// now set the description
 				$this->active[$guid]->description = (StringHelper::check($this->active[$guid]->description)) ? $this->placeholder->update(
-					$this->customcode->add($this->active[$guid]->description),
+					$this->customcode->update($this->active[$guid]->description),
 					$this->placeholder->active
 				) : '';
 				// add the main code if set
@@ -483,7 +484,7 @@ class Power
 					// base64 Decode code
 					$this->active[$guid]->main_class_code = $this->gui->set(
 						$this->placeholder->update(
-							$this->customcode->add(
+							$this->customcode->update(
 								base64_decode(
 									$this->active[$guid]->main_class_code
 								)

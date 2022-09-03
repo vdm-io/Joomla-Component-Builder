@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Extension\JoomlaThree;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\InstallInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Extension\InstallInterface;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;

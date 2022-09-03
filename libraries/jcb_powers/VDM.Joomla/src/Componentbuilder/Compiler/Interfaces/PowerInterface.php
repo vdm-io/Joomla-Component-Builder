@@ -13,32 +13,31 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Interfaces;
 
 
 /**
- * The properties an extension should have to be passed to the InstallScript class
+ * Compiler Power Interface
+ * 
+ * @since 3.2.0
  */
-interface InstallInterface
+interface PowerInterface
 {
 	/**
-	 * The extension official name
+	 * load all the powers linked to this component
 	 *
-	 * @return     string
+	 * @param array   $guids    The global unique ids of the linked powers
+	 *
+	 * @return void
 	 * @since 3.2.0
 	 */
-	public function getOfficialName(): string;
+	public function load(array $guids);
 
 	/**
-	 * The extension class name
+	 * Get a power
 	 *
-	 * @return     string
+	 * @param string   $guid    The global unique id of the power
+	 * @param int        $build    Force build switch (to override global switch)
+	 *
+	 * @return mixed
 	 * @since 3.2.0
 	 */
-	public function getClassName(): string;
-
-	/**
-	 * The extension installer class name
-	 *
-	 * @return     string
-	 * @since 3.2.0
-	 */
-	public function getInstallerClassName(): string;
+	public function get(string $guid, int $build = 0);
 }
 

@@ -19,6 +19,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Hash;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\LockBase;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\DispenserInterface;
 
 
 /**
@@ -26,7 +27,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Customcode\LockBase;
  * 
  * @since 3.2.0
  */
-class Dispenser
+class Dispenser implements DispenserInterface
 {
 	/**
 	 * Customcode Dispenser Hub
@@ -159,7 +160,7 @@ class Dispenser
 		// prep the script string
 		if ($base64 && $dynamic)
 		{
-			$script = $this->customcode->add(base64_decode($script));
+			$script = $this->customcode->update(base64_decode($script));
 		}
 		elseif ($base64)
 		{
@@ -167,7 +168,7 @@ class Dispenser
 		}
 		elseif ($dynamic) // this does not happen (just incase)
 		{
-			$script = $this->customcode->add($script);
+			$script = $this->customcode->update($script);
 		}
 		// check if we still have a string
 		if (StringHelper::check($script))

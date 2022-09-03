@@ -16,6 +16,7 @@ use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\LockBaseInterface;
 
 
 /**
@@ -23,7 +24,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
  * 
  * @since 3.2.0
  */
-class LockBase
+class LockBase implements LockBaseInterface
 {
 	/**
 	 * Compiler Placeholder

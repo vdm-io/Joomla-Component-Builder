@@ -4210,7 +4210,7 @@ class Fields extends Structure
 					);
 					// load the php for the custom field file
 					$fieldAttributes['custom'][$phpKey][$phpLine]
-						= CFactory::_('Customcode')->add(
+						= CFactory::_('Customcode')->update(
 						ComponentbuilderHelper::openValidBase64(
 							GetHelper::between(
 								$field['settings']->xml,
@@ -4504,7 +4504,7 @@ class Fields extends Structure
 							)) !== $confirmation)
 						{
 							$fieldAttributes['custom'][$phpKey][$phpLine]
-								= CFactory::_('Customcode')->add(
+								= CFactory::_('Customcode')->update(
 								ComponentbuilderHelper::openValidBase64($value)
 							);
 						}

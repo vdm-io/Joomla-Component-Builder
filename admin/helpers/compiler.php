@@ -138,7 +138,7 @@ class Compiler extends Infusion
 				array(&$this->componentContext, &$this)
 			);
 			// now insert into the new files
-			if (CFactory::_('Customcode')->load())
+			if (CFactory::_('Customcode')->get())
 			{
 				// Trigger Event: jcb_ce_onBeforeAddCustomCode
 				CFactory::_J('Event')->trigger(
@@ -667,7 +667,7 @@ class Compiler extends Infusion
 		// check if this file needs extra care :)
 		if (isset($this->updateFileContent[$path]))
 		{
-			$answer = CFactory::_('Customcode')->add($answer);
+			$answer = CFactory::_('Customcode')->update($answer);
 		}
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
 		CFactory::_J('Event')->trigger(
