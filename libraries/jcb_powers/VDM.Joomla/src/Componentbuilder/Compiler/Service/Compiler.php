@@ -14,15 +14,16 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Compiler\Config as CompilerConfig;
+use VDM\Joomla\Componentbuilder\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Registry;
 
 
 /**
- * Compiler Config Service Provider
+ * Compiler Service Provider
  * 
  * @since 3.2.0
  */
-class Config implements ServiceProviderInterface
+class Compiler implements ServiceProviderInterface
 {
 	/**
 	 * Registers the service provider with a DI container.
@@ -34,8 +35,11 @@ class Config implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
-		$container->alias(CompilerConfig::class, 'Config')
+		$container->alias(Config::class, 'Config')
 			->share('Config', [$this, 'getConfig'], true);
+
+		$container->alias(Registry::class, 'Registry')
+			->share('Registry', [$this, 'getRegistry'], true);
 	}
 
 	/**
@@ -43,12 +47,26 @@ class Config implements ServiceProviderInterface
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  CompilerConfig
+	 * @return  Config
 	 * @since 3.2.0
 	 */
-	public function getConfig(Container $container): CompilerConfig
+	public function getConfig(Container $container): Config
 	{
-		return new CompilerConfig();
+		return new Config();
 	}
+
+	/**
+	 * Get the Compiler Registry
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Registry
+	 * @since 3.2.0
+	 */
+	public function getRegistry(Container $container): Registry
+	{
+		return new Registry();
+	}
+
 }
 

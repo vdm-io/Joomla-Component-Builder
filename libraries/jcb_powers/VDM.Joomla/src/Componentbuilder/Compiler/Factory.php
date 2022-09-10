@@ -94,14 +94,16 @@ abstract class Factory
 	protected static function createContainer(): Container
 	{
 		$container = (new Container())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Config())
+			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Compiler())
 			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Event())
+			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\History())
 			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Language())
 			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Placeholder())
 			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Customcode())
 			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Power())
 			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Component())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Extension());
+			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Extension())
+			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Field());
 
 		return $container;
 	}

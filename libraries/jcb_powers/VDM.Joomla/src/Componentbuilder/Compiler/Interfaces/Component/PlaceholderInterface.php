@@ -14,6 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component;
 
 /**
  * Component Placeholder Interface
+ * 
+ * @since 3.2.0
  */
 interface PlaceholderInterface
 {

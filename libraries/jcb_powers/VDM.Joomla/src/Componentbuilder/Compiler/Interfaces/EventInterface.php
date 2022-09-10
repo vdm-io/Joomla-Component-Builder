@@ -23,7 +23,7 @@ interface EventInterface
 	 * Trigger an event
 	 *
 	 * @param   string  $event  The event to trigger
-	 * @param   mix     $data   The values to pass to the event/plugin
+	 * @param   mixed   $data   The values to pass to the event/plugin
 	 *
 	 * @return  void
 	 * @since 3.2.0

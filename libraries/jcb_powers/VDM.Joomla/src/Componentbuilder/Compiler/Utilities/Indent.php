@@ -46,7 +46,7 @@ abstract class Indent
 	 * @return  string
 	 * @since 3.2.0
 	 */
-	public function _(int $nr): string
+	public static function _(int $nr): string
 	{
 		// check if we already have the string
 		if (!isset(self::$bucket[$nr]))

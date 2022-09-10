@@ -12,6 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\JoomlaThree;
 
 
+use Joomla\Registry\Registry;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
 
@@ -64,12 +65,13 @@ class Event implements EventInterface
 	 * Trigger and event
 	 *
 	 * @param   string  $event  The event to trigger
-	 * @param   mix     $data   The values to pass to the event/plugin
+	 * @param   mixed   $data   The values to pass to the event/plugin
 	 *
 	 * @return  void
+	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function trigger($event, $data)
+	public function trigger(string $event, $data)
 	{
 		// only execute if plugins were loaded (active)
 		if ($this->activePlugins)

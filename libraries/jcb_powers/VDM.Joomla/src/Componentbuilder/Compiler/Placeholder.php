@@ -124,7 +124,7 @@ class Placeholder implements PlaceholderInterface
 		// make sure the placeholders is an array
 		if (!ArrayHelper::check($placeholder))
 		{
-			// This is an error, (TODO) actualy we need to add a kind of log here to know that this happened
+			// This is an error, TODO actually we need to add a kind of log here to know that this happened
 			return $data;
 		}
 		// continue with the work of replacement
@@ -189,9 +189,6 @@ class Placeholder implements PlaceholderInterface
 	{
 		switch ($type)
 		{
-			case 3:
-				return [ 'start' => "", 'end' => ""];
-				break;
 			case 11:
 				//***[REPLACED$$$$]***//**1**/
 				if ($this->config->get('add_placeholders', false) === true)

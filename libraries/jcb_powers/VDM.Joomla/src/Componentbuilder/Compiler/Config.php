@@ -499,5 +499,38 @@ class Config extends Registry implements \JsonSerializable, \ArrayAccess, \Itera
 		return 'admin';
 	}
 
+	/**
+	 * get basic encryption switch
+	 *
+	 * @return  bool  Switch to control the encryption
+	 * @since 3.2.0
+	 */
+	protected function getBasicencryption(): bool
+	{
+		return false;
+	}
+
+	/**
+	 * get medium encryption switch
+	 *
+	 * @return  bool  Switch to control the encryption
+	 * @since 3.2.0
+	 */
+	protected function getMediumencryption(): bool
+	{
+		return false;
+	}
+
+	/**
+	 * get whmcs encryption switch
+	 *
+	 * @return  bool  Switch to control the encryption
+	 * @since 3.2.0
+	 */
+	protected function getWhmcsencryption(): bool
+	{
+		return false;
+	}
+
 }
 

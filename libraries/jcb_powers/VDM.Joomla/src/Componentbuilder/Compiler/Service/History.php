@@ -15,16 +15,16 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use Joomla\CMS\Version;
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
-use VDM\Joomla\Componentbuilder\Compiler\JoomlaThree\Event as J3Event;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\HistoryInterface;
+use VDM\Joomla\Componentbuilder\Compiler\JoomlaThree\History as J3History;
 
 
 /**
- * Event Service Provider
+ * History Service Provider
  * 
  * @since 3.2.0
  */
-class Event implements ServiceProviderInterface
+class History implements ServiceProviderInterface
 {
 	/**
 	 * Current Joomla Version We are IN
@@ -44,42 +44,44 @@ class Event implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
-		$container->alias(J3Event::class, 'J3.Event')
-			->share('J3.Event', [$this, 'getJ3Event'], true);
+		$container->alias(J3History::class, 'J3.History')
+			->share('J3.History', [$this, 'getJ3History'], true);
 
-		$container->alias(EventInterface::class, 'Event')
-			->share('Event', [$this, 'getEvent'], true);
+		$container->alias(HistoryInterface::class, 'History')
+			->share('History', [$this, 'getHistory'], true);
 	}
 
 	/**
-	 * Get the Event
+	 * Get the History
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  EventInterface
+	 * @return  HistoryInterface
 	 * @since 3.2.0
 	 */
-	public function getEvent(Container $container): EventInterface
+	public function getHistory(Container $container): HistoryInterface
 	{
 		if (empty($this->currentVersion))
 		{
 			$this->currentVersion = Version::MAJOR_VERSION;
 		}
 
-		return $container->get('J' . $this->currentVersion . '.Event');
+		return $container->get('J' . $this->currentVersion . '.History');
 	}
 
 	/**
-	 * Get the Joomla 3 Event
+	 * Get the Joomla 3 History
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  J3Event
+	 * @return  J3History
 	 * @since 3.2.0
 	 */
-	public function getJ3Event(Container $container): J3Event
+	public function getJ3History(Container $container): J3History
 	{
-		return new J3Event();
+		return new J3History(
+			$container->get('Config')
+		);
 	}
 
 }

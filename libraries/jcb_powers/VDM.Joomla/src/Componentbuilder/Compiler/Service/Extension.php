@@ -26,6 +26,14 @@ use VDM\Joomla\Componentbuilder\Compiler\Extension\JoomlaThree\InstallScript as 
 class Extension implements ServiceProviderInterface
 {
 	/**
+	 * Current Joomla Version Being Build
+	 *
+	 * @var     int
+	 * @since 3.2.0
+	 **/
+	protected $targetVersion;
+
+	/**
 	 * Registers the service provider with a DI container.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -35,6 +43,9 @@ class Extension implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
+		$container->alias(GetScriptInterface::class, 'Extension.InstallScript')
+			->share('Extension.InstallScript', [$this, 'getExtensionInstallScript'], true);
+
 		$container->alias(J3InstallScript::class, 'J3.Extension.InstallScript')
 			->share('J3.Extension.InstallScript', [$this, 'getJ3ExtensionInstallScript'], true);
 	}
@@ -44,12 +55,31 @@ class Extension implements ServiceProviderInterface
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  GetScriptInterface
+	 * @return  J3InstallScript
 	 * @since 3.2.0
 	 */
-	public function getJ3ExtensionInstallScript(Container $container): GetScriptInterface
+	public function getJ3ExtensionInstallScript(Container $container): J3InstallScript
 	{
 		return new J3InstallScript();
 	}
+
+	/**
+	 * Get the Joomla Extension Install Script
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  GetScriptInterface
+	 * @since 3.2.0
+	 */
+	public function getExtensionInstallScript(Container $container): GetScriptInterface
+	{
+		if (empty($this->targetVersion))
+		{
+			$this->targetVersion = $container->get('Config')->joomla_version;
+		}
+
+		return $container->get('J' . $this->targetVersion . '.Extension.InstallScript');
+	}
+
 }
 

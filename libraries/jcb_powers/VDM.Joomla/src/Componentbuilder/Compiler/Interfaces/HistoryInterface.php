@@ -9,24 +9,26 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode;
+namespace VDM\Joomla\Componentbuilder\Compiler\Interfaces;
 
 
 /**
- * Customcode LockBase Interface
+ * Compiler History Interface
  * 
  * @since 3.2.0
  */
-interface LockBaseInterface
+interface HistoryInterface
 {
 	/**
-	 * Set a string as bsae64 (basic)
+	 * Get Item History object
 	 *
-	 * @param   string  $script  The code string
+	 * @param   string  $type  The type of item
+	 * @param   int     $id    The item ID
 	 *
-	 * @return  string
+	 * @return  ?object    The history item object
 	 * @since 3.2.0
 	 */
-	public function set(string $script): string;
+	public function get(string $type, int $id): ?object;
+
 }
 

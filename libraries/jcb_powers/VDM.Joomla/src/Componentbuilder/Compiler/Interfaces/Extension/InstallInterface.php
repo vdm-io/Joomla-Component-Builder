@@ -14,6 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Interfaces\Extension;
 
 /**
  * The properties an extension should have to be passed to the InstallScript class
+ * 
+ * @since 3.2.0
  */
 interface InstallInterface
 {

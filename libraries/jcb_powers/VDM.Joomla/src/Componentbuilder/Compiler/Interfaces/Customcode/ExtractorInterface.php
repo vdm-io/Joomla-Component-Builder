@@ -14,6 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode;
 
 /**
  * Customcode Extractor Interface
+ * 
+ * @since 3.2.0
  */
 interface ExtractorInterface
 {
