@@ -153,6 +153,7 @@ class Fields extends Structure
 	 * list builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.list');
 	 */
 	public $listBuilder = array();
 
@@ -609,7 +610,7 @@ class Fields extends Structure
 		// for plugin event TODO change event api signatures
 		$this->placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onBeforeBuildFields
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildFields',
 			array(&$this->componentContext, &$dynamicFields, &$readOnly,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
@@ -630,7 +631,7 @@ class Fields extends Structure
 		// for plugin event TODO change event api signatures
 		$this->placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onAfterBuildFields
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterBuildFields',
 			array(&$this->componentContext, &$dynamicFields, &$readOnly,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
@@ -1028,7 +1029,7 @@ class Fields extends Structure
 		// for plugin event TODO change event api signatures
 		$this->placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onBeforeBuildFields
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildFields',
 			array(&$this->componentContext, &$dynamicFieldsXML, &$readOnlyXML,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
@@ -1049,7 +1050,7 @@ class Fields extends Structure
 		// for plugin event TODO change event api signatures
 		$this->placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onAfterBuildFields
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterBuildFields',
 			array(&$this->componentContext, &$dynamicFieldsXML, &$readOnlyXML,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
@@ -1606,8 +1607,8 @@ class Fields extends Structure
 			))
 		{
 			// reset some values
-			$name            = $this->getFieldName($field, $nameListCode);
-			$typeName        = $this->getFieldType($field);
+			$name            = CFactory::_('Field.Name')->get($field, $nameListCode);
+			$typeName        = CFactory::_('Field.Type.Name')->get($field);
 			$multiple        = false;
 			$langLabel       = '';
 			$fieldSet        = '';
@@ -2313,7 +2314,7 @@ class Fields extends Structure
 							$field          = array();
 							$field['field'] = $id;
 							// set the field details
-							$this->setFieldDetails(
+							CFactory::_('Field')->set(
 								$field, $nameSingleCode, $nameListCode,
 								$_resolverKey
 							);
@@ -2330,10 +2331,10 @@ class Fields extends Structure
 							$fieldData['settings']
 						))
 						{
-							$r_name      = $this->getFieldName(
+							$r_name      = CFactory::_('Field.Name')->get(
 								$fieldData, $nameListCode, $_resolverKey
 							);
-							$r_typeName  = $this->getFieldType($fieldData);
+							$r_typeName  = CFactory::_('Field.Type.Name')->get($fieldData);
 							$r_multiple  = false;
 							$r_langLabel = '';
 							// add the tabs needed
@@ -2479,7 +2480,7 @@ class Fields extends Structure
 							$field          = array();
 							$field['field'] = $id;
 							// set the field details
-							$this->setFieldDetails(
+							CFactory::_('Field')->set(
 								$field, $nameSingleCode, $nameListCode,
 								$_resolverKey
 							);
@@ -2496,10 +2497,10 @@ class Fields extends Structure
 							$fieldData['settings']
 						))
 						{
-							$r_name      = $this->getFieldName(
+							$r_name      = CFactory::_('Field.Name')->get(
 								$fieldData, $nameListCode, $_resolverKey
 							);
-							$r_typeName  = $this->getFieldType($fieldData);
+							$r_typeName  = CFactory::_('Field.Type.Name')->get($fieldData);
 							$r_multiple  = false;
 							$r_langLabel = '';
 							// add the tabs needed
@@ -3309,7 +3310,7 @@ class Fields extends Structure
 							$field          = array();
 							$field['field'] = $id;
 							// set the field details
-							$this->setFieldDetails(
+							CFactory::_('Field')->set(
 								$field, $nameSingleCode, $nameListCode,
 								$_resolverKey
 							);
@@ -3326,10 +3327,10 @@ class Fields extends Structure
 							$fieldData['settings']
 						))
 						{
-							$r_name      = $this->getFieldName(
+							$r_name      = CFactory::_('Field.Name')->get(
 								$fieldData, $nameListCode, $_resolverKey
 							);
-							$r_typeName  = $this->getFieldType($fieldData);
+							$r_typeName  = CFactory::_('Field.Type.Name')->get($fieldData);
 							$r_multiple  = false;
 							$r_langLabel = '';
 							// get field values
@@ -3493,7 +3494,7 @@ class Fields extends Structure
 								$field          = array();
 								$field['field'] = $id;
 								// set the field details
-								$this->setFieldDetails(
+								CFactory::_('Field')->set(
 									$field, $nameSingleCode, $nameListCode,
 									$_resolverKey
 								);
@@ -3510,10 +3511,10 @@ class Fields extends Structure
 								$fieldData['settings']
 							))
 							{
-								$r_name      = $this->getFieldName(
+								$r_name      = CFactory::_('Field.Name')->get(
 									$fieldData, $nameListCode, $_resolverKey
 								);
-								$r_typeName  = $this->getFieldType($fieldData);
+								$r_typeName  = CFactory::_('Field.Type.Name')->get($fieldData);
 								$r_multiple  = false;
 								$r_langLabel = '';
 								// get field values
@@ -4047,8 +4048,7 @@ class Fields extends Structure
 	public function buildSiteFieldData($view, $field, $set, $type)
 	{
 		$decode    = array('json', 'base64', 'basic_encryption',
-		                   'whmcs_encryption', 'medium_encryption',
-		                   'expert_mode');
+		                   'whmcs_encryption', 'medium_encryption', 'expert_mode');
 		$textareas = array('textarea', 'editor');
 		if (isset($this->siteFields[$view][$field])
 			&& ArrayHelper::check(
@@ -4392,11 +4392,11 @@ class Fields extends Structure
 					if ($property['name'] === 'label')
 					{
 						if (isset($fieldAttributes['name'])
-							&& isset($this->uniqueNames[$nameListCode]['names'][$fieldAttributes['name']]))
+							&& CFactory::_('Registry')->get("unique.names.$nameListCode.names." . $fieldAttributes['name']) !== null)
 						{
 							$xmlValue .= ' ('
 								. StringHelper::safe(
-									$this->uniqueNames[$nameListCode]['names'][$fieldAttributes['name']]
+									CFactory::_('Registry')->get("unique.names.$nameListCode.names." . $fieldAttributes['name'])
 								) . ')';
 						}
 					}
@@ -4699,7 +4699,7 @@ class Fields extends Structure
 				|| $field['list'] == 4));
 		// set list join
 		$listJoin
-			= (isset($this->listJoinBuilder[$nameListCode][(int) $field['field']]));
+			= CFactory::_('Registry')->exists('builder.list_join.' . $nameListCode . '.' . (int) $field['field']);
 		// add history to this view
 		if (isset($view['history']) && $view['history'])
 		{
@@ -4720,12 +4720,9 @@ class Fields extends Structure
 		// category name fix
 		if ($typeName === 'category')
 		{
-			if (isset($this->catOtherName[$nameListCode])
-				&& ArrayHelper::check(
-					$this->catOtherName[$nameListCode]
-				))
+			if (CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.name'))
 			{
-				$tempName = $this->catOtherName[$nameListCode]['name'];
+				$tempName = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.name');
 			}
 			else
 			{
@@ -4786,7 +4783,13 @@ class Fields extends Structure
 			// load to list builder
 			if ($listSwitch)
 			{
-				$this->listBuilder[$nameListCode][] = array(
+				// check if it does not exists
+				if (!CFactory::_('Registry')->exists('builder.list.' . $nameListCode))
+				{
+					CFactory::_('Registry')->set('builder.list.' . $nameListCode, []);
+				}
+				// append values
+				CFactory::_('Registry')->append('builder.list.' . $nameListCode, [
 					'id'       => (int) $field['field'],
 					'type'     => $typeName,
 					'code'     => $name,
@@ -4802,7 +4805,8 @@ class Fields extends Structure
 					'custom'   => $custom,
 					'multiple' => $multiple,
 					'options'  => $options,
-					'target'   => (int) $field['list']);
+					'target'   => (int) $field['list']
+				]);
 			}
 			// build custom builder list
 			if ($listSwitch || $listJoin)
@@ -4813,8 +4817,7 @@ class Fields extends Structure
 		// load the list join builder
 		if ($listJoin)
 		{
-			$this->listJoinBuilder[$nameListCode][(int) $field['field']]
-				= array(
+			CFactory::_('Registry')->set('builder.list_join.' . $nameListCode . '.' . (int) $field['field'], [
 				'type'     => $typeName,
 				'code'     => $name,
 				'lang'     => $listLangName,
@@ -4828,24 +4831,21 @@ class Fields extends Structure
 					: false,
 				'custom'   => $custom,
 				'multiple' => $multiple,
-				'options'  => $options);
+				'options'  => $options
+			]);
 		}
 		// update the field relations
-		if (isset($this->fieldRelations[$nameListCode])
-			&& isset($this->fieldRelations[$nameListCode][(int) $field['field']])
-			&& ArrayHelper::check(
-				$this->fieldRelations[$nameListCode][(int) $field['field']]
-			))
+		if (($field_relations =
+			CFactory::_('Registry')->get('builder.field_relations.' . $nameListCode . '.' . (int) $field['field'])) !== null)
 		{
-			foreach (
-				$this->fieldRelations[$nameListCode][(int) $field['field']] as
-				$area => &$field_values
-			)
+			$field_relations = (array) $field_relations;
+			foreach ($field_relations as $area => &$field_values)
 			{
 				$field_values['type']   = $typeName;
 				$field_values['code']   = $name;
 				$field_values['custom'] = $custom;
 			}
+			CFactory::_('Registry')->set('builder.field_relations.' . $nameListCode . '.' . (int) $field['field'], $field_relations);
 		}
 		// set the hidden field of this view
 		if ($dbSwitch && $typeName === 'hidden')
@@ -4943,13 +4943,11 @@ class Fields extends Structure
 		// setup category for this view
 		if ($dbSwitch && $typeName === 'category')
 		{
-			if (isset($this->catOtherName[$nameListCode])
-				&& ArrayHelper::check(
-					$this->catOtherName[$nameListCode]
-				))
+			if (CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
+				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
 			{
-				$otherViews = $this->catOtherName[$nameListCode]['views'];
-				$otherView  = $this->catOtherName[$nameListCode]['view'];
+				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
+				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
 			}
 			else
 			{

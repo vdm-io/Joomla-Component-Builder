@@ -29,10 +29,10 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'name',
 	'description',
 	'extends',
-	'implements_custom',
-	'implements',
-	'namespace',
 	'extends_custom',
+	'implements',
+	'implements_custom',
+	'namespace',
 	'add_head'
 );
 

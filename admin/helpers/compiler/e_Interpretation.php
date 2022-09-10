@@ -1192,7 +1192,7 @@ class Interpretation extends Fields
 			$modelJ = ComponentbuilderHelper::getModel('joomla_component');
 			$modelJ->save($newJ); // <-- to insure the history is also updated
 			// reset the watch here
-			$this->getHistoryWatch('joomla_component', CFactory::_('Config')->component_id);
+			CFactory::_('History')->get('joomla_component', CFactory::_('Config')->component_id);
 
 			// update the component update table
 			$newU = array();
@@ -10700,7 +10700,7 @@ class Interpretation extends Fields
 		// for plugin event TODO change event api signatures
 		$langContent = CFactory::_('Language')->getTarget('admin');
 		// Trigger Event: jcb_ce_onBeforeBuildAdminLang
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildAdminLang',
 			array(&$this->componentContext, &$langContent,
 				&$this->langPrefix, &$componentName)
@@ -10965,7 +10965,7 @@ class Interpretation extends Fields
 			// for plugin event TODO change event api signatures
 			$langContent = CFactory::_('Language')->getTarget('admin');
 			// Trigger Event: jcb_ce_onAfterBuildAdminLang
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterBuildAdminLang',
 				array(&$this->componentContext, &$langContent,
 					&$this->langPrefix, &$componentName)
@@ -10993,7 +10993,7 @@ class Interpretation extends Fields
 		// for plugin event TODO change event api signatures
 		$langContent = CFactory::_('Language')->getTarget('site');
 		// Trigger Event: jcb_ce_onBeforeBuildSiteLang
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildSiteLang',
 			array(&$this->componentContext, &$langContent,
 				&$this->langPrefix, &$componentName)
@@ -11064,7 +11064,7 @@ class Interpretation extends Fields
 			// for plugin event TODO change event api signatures
 			$langContent = CFactory::_('Language')->getTarget('site');
 			// Trigger Event: jcb_ce_onAfterBuildSiteLang
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterBuildSiteLang',
 				array(&$this->componentContext, &$langContent,
 					&$this->langPrefix, &$componentName)
@@ -11092,7 +11092,7 @@ class Interpretation extends Fields
 		// for plugin event TODO change event api signatures
 		$langContent = CFactory::_('Language')->getTarget('sitesys');
 		// Trigger Event: jcb_ce_onBeforeBuildSiteSysLang
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildSiteSysLang',
 			array(&$this->componentContext, &$langContent,
 				&$this->langPrefix, &$componentName)
@@ -11124,7 +11124,7 @@ class Interpretation extends Fields
 			// for plugin event TODO change event api signatures
 			$langContent = CFactory::_('Language')->getTarget('sitesys');
 			// Trigger Event: jcb_ce_onAfterBuildSiteSysLang
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterBuildSiteSysLang',
 				array(&$this->componentContext, &$langContent,
 					&$this->langPrefix, &$componentName)
@@ -11152,7 +11152,7 @@ class Interpretation extends Fields
 		// for plugin event TODO change event api signatures
 		$langContent = CFactory::_('Language')->getTarget('adminsys');
 		// Trigger Event: jcb_ce_onBeforeBuildAdminSysLang
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildAdminSysLang',
 			array(&$this->componentContext, &$langContent,
 				&$this->langPrefix, &$componentName)
@@ -11173,7 +11173,7 @@ class Interpretation extends Fields
 			// for plugin event TODO change event api signatures
 			$langContent = CFactory::_('Language')->getTarget('adminsys');
 			// Trigger Event: jcb_ce_onAfterBuildAdminSysLang
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterBuildAdminSysLang',
 				array(&$this->componentContext, &$langContent,
 					&$this->langPrefix, &$componentName)
@@ -11275,10 +11275,7 @@ class Interpretation extends Fields
 	 */
 	public function setListBody($nameSingleCode, $nameListCode)
 	{
-		if (isset($this->listBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->listBuilder[$nameListCode]
-			))
+		if (($items = CFactory::_('Registry')->get('builder.list.' . $nameListCode)) !== null)
 		{
 			// component helper name
 			$Helper = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
@@ -11398,7 +11395,7 @@ class Interpretation extends Fields
 				$doNotEscape = true;
 			}
 			// start adding the dynamic
-			foreach ($this->listBuilder[$nameListCode] as $item)
+			foreach ($items as $item)
 			{
 				// check if target is admin list
 				if (1 == $item['target'] || 3 == $item['target'])
@@ -11524,20 +11521,19 @@ class Interpretation extends Fields
 	)
 	{
 		// check if we have relation fields
-		if (isset($this->fieldRelations[$nameListCode])
-			&& isset($this->fieldRelations[$nameListCode][(int) $item['id']])
-			&& isset($this->fieldRelations[$nameListCode][(int) $item['id']][2]))
+		if (($field_relations =
+				CFactory::_('Registry')->get('builder.field_relations.' . $nameListCode . '.' . (int) $item['id'] . '.2')) !== null)
 		{
 			// set the fields array
 			$field = array();
 			// use custom code
 			$useCustomCode
-				= (isset($this->fieldRelations[$nameListCode][(int) $item['id']][2]['join_type'])
-				&& $this->fieldRelations[$nameListCode][(int) $item['id']][2]['join_type']
+				= (isset($field_relations['join_type'])
+				&& $field_relations['join_type']
 				== 2
-				&& isset($this->fieldRelations[$nameListCode][(int) $item['id']][2]['set'])
+				&& isset($field_relations['set'])
 				&& StringHelper::check(
-					$this->fieldRelations[$nameListCode][(int) $item['id']][2]['set']
+					$field_relations['set']
 				));
 			// load the main list view field
 			$field['[field=' . (int) $item['id'] . ']'] = $this->getListItem(
@@ -11552,34 +11548,28 @@ class Interpretation extends Fields
 					. $item['code'];
 			}
 			// now load the relations
-			if (isset($this->fieldRelations[$nameListCode][(int) $item['id']][2]['joinfields'])
-				&& ArrayHelper::check(
-					$this->fieldRelations[$nameListCode][(int) $item['id']][2]['joinfields']
-				))
+			if (isset($field_relations['joinfields'])
+				&& ArrayHelper::check($field_relations['joinfields']))
 			{
-				foreach (
-					$this->fieldRelations[$nameListCode][(int) $item['id']][2]['joinfields']
-					as $join
-				)
+				foreach ($field_relations['joinfields'] as $join)
 				{
 					$blankClass = '';
-					if (isset($this->listJoinBuilder[$nameListCode])
-						&& isset($this->listJoinBuilder[$nameListCode][(int) $join]))
+					if (($join_item =
+						CFactory::_('Registry')->get('builder.list_join.' . $nameListCode . '.' . (int) $join)) !== null)
 					{
 						// code block
 						$field['[field=' . (int) $join . ']']
 							= $this->getListItem(
-							$this->listJoinBuilder[$nameListCode][(int) $join],
-							$nameSingleCode, $nameListCode, $blankClass,
+							$join_item, $nameSingleCode, $nameListCode, $blankClass,
 							$doNotEscape, $coreLoad, $core, false, $ref,
 							$escape, $user, $refview
 						);
 						// code name
-						if (isset($this->listJoinBuilder[$nameListCode][(int) $join]['code'])
+						if (isset($join_item['code'])
 							&& $useCustomCode)
 						{
 							$field['$item->{' . (int) $join . '}'] = '$item->'
-								. $this->listJoinBuilder[$nameListCode][(int) $join]['code'];
+								. $join_item['code'];
 						}
 					}
 				}
@@ -11592,18 +11582,18 @@ class Interpretation extends Fields
 					. CFactory::_('Placeholder')->update(
 						str_replace(
 							array_keys($field), array_values($field),
-							$this->fieldRelations[$nameListCode][(int) $item['id']][2]['set']
+							$field_relations['set']
 						), $this->placeholders
 					) . PHP_EOL . Indent::_(3) . "</div>";
 			}
-			elseif (isset($this->fieldRelations[$nameListCode][(int) $item['id']]['set'])
+			elseif (isset($field_relations['set'])
 				&& StringHelper::check(
-					$this->fieldRelations[$nameListCode][(int) $item['id']][2]['set']
+					$field_relations['set']
 				))
 			{
 				// concatenate
 				return PHP_EOL . Indent::_(3) . "<div>" . implode(
-						$this->fieldRelations[$nameListCode][(int) $item['id']][2]['set'],
+						$field_relations['set'],
 						$field
 					) . PHP_EOL . Indent::_(3) . "</div>";
 			}
@@ -12146,7 +12136,7 @@ class Interpretation extends Fields
 			$body[] = "</script>";
 		}
 		// Trigger Event: jcb_ce_onSetDefaultViewsBodyTop
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onSetDefaultViewsBodyTop',
 			array(&$this,
 				&$body,
@@ -12167,7 +12157,7 @@ class Interpretation extends Fields
 		$body[] = Indent::_(1) . "<div id=\"j-main-container\">";
 		$body[] = "<?php endif; ?>";
 		// Trigger Event: jcb_ce_onSetDefaultViewsFormTop
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onSetDefaultViewsFormTop',
 			array(&$this,
 				&$body,
@@ -12263,7 +12253,7 @@ class Interpretation extends Fields
 			. "<input type=\"hidden\" name=\"task\" value=\"\" />";
 		$body[] = Indent::_(1) . "<?php echo JHtml::_('form.token'); ?>";
 		// Trigger Event: jcb_ce_onSetDefaultViewsFormBottom
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onSetDefaultViewsFormBottom',
 			array(&$this,
 				&$body,
@@ -12272,7 +12262,7 @@ class Interpretation extends Fields
 		);
 		$body[] = "</form>";
 		// Trigger Event: jcb_ce_onSetDefaultViewsBodyBottom
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onSetDefaultViewsBodyBottom',
 			array(&$this,
 				&$body,
@@ -12293,10 +12283,7 @@ class Interpretation extends Fields
 	 */
 	public function setListHead($nameSingleCode, $nameListCode)
 	{
-		if (isset($this->listBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->listBuilder[$nameListCode]
-			))
+		if (($items = CFactory::_('Registry')->get('builder.list.' . $nameListCode)) !== null)
 		{
 			// set the JHtml values based on filter type
 			$jhtml_sort        = "grid.sort";
@@ -12354,20 +12341,17 @@ class Interpretation extends Fields
 			// set footer Column number
 			$this->listColnrBuilder[$nameListCode] = 4;
 			// build the dynamic fields
-			foreach ($this->listBuilder[$nameListCode] as $item)
+			foreach ($items as $item)
 			{
 				// check if target is admin list
 				if (1 == $item['target'] || 3 == $item['target'])
 				{
 					// check if we have an over-ride
-					if (isset($this->listHeadOverRide[$nameListCode])
-						&& ArrayHelper::check(
-							$this->listHeadOverRide[$nameListCode]
-						)
-						&& isset($this->listHeadOverRide[$nameListCode][$item['id']]))
+					if (($list_head_override = CFactory::_('Registry')->get('builder.list_head_override.' .
+							$nameListCode . '.' . (int) $item['id']))
+						!== null)
 					{
-						$item['lang']
-							= $this->listHeadOverRide[$nameListCode][$item['id']];
+						$item['lang'] = $list_head_override;
 					}
 					$class = 'nowrap hidden-phone';
 					if ($item['link'])
@@ -14074,10 +14058,7 @@ class Interpretation extends Fields
 	                                  $refview
 	)
 	{
-		if (isset($this->listBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->listBuilder[$nameListCode]
-			))
+		if (($items = CFactory::_('Registry')->get('builder.list.' . $nameListCode)) !== null)
 		{
 			// component helper name
 			$Helper = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
@@ -14112,7 +14093,7 @@ class Interpretation extends Fields
 				$doNotEscape = true;
 			}
 			// start adding the dynamic
-			foreach ($this->listBuilder[$nameListCode] as $item)
+			foreach ($items as $item)
 			{
 				// check if target is linked list view
 				if (1 == $item['target'] || 4 == $item['target'])
@@ -14267,10 +14248,7 @@ class Interpretation extends Fields
 	                                  $addNewButon, $refview
 	)
 	{
-		if (isset($this->listBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->listBuilder[$nameListCode]
-			))
+		if (($items = CFactory::_('Registry')->get('builder.list.' . $nameListCode)) !== null)
 		{
 			// component helper name
 			$Helper = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
@@ -14376,20 +14354,17 @@ class Interpretation extends Fields
 			// set controller for data hiding options
 			$controller = 1;
 			// build the dynamic fields
-			foreach ($this->listBuilder[$nameListCode] as $item)
+			foreach ($items as $item)
 			{
 				// check if target is linked list view
 				if (1 == $item['target'] || 4 == $item['target'])
 				{
 					// check if we have an over-ride
-					if (isset($this->listHeadOverRide[$nameListCode])
-						&& ArrayHelper::check(
-							$this->listHeadOverRide[$nameListCode]
-						)
-						&& isset($this->listHeadOverRide[$nameListCode][$item['id']]))
+					if (($list_head_override = CFactory::_('Registry')->get('builder.list_head_override.' .
+							$nameListCode . '.' . (int) $item['id']))
+						!== null)
 					{
-						$item['lang']
-							= $this->listHeadOverRide[$nameListCode][$item['id']];
+						$item['lang'] = $list_head_override;
 					}
 					$setin = (2 == $this->footableVersion)
 						? ' data-hide="phone"' : ' data-breakpoints="xs sm"';
@@ -14689,7 +14664,7 @@ class Interpretation extends Fields
 				as $order_field
 			)
 			{
-				if (($order_field_name = $this->getFieldDatabaseName(
+				if (($order_field_name = CFactory::_('Field.Database.Name')->get(
 						$nameListCode, $order_field['field']
 					// We Removed This 'listJoinBuilder' as targetArea
 					// we will keep an eye on this
@@ -15277,7 +15252,7 @@ class Interpretation extends Fields
 					as $order_field
 				)
 				{
-					if (($order_field_name = $this->getFieldDatabaseName(
+					if (($order_field_name = CFactory::_('Field.Database.Name')->get(
 							$nameListCode, $order_field['field']
 						)) !== false)
 					{
@@ -15831,7 +15806,7 @@ class Interpretation extends Fields
 				as $order_field
 			)
 			{
-				if (($order_field_name = $this->getFieldDatabaseName(
+				if (($order_field_name = CFactory::_('Field.Database.Name')->get(
 						$nameListCode, $order_field['field']
 					)) !== false)
 				{
@@ -18924,13 +18899,11 @@ class Interpretation extends Fields
 				$component = $this->componentCodeName;
 			}
 			// check if category has another name
-			if (isset($this->catOtherName[$nameListCode])
-				&& ArrayHelper::check(
-					$this->catOtherName[$nameListCode]
-				))
+			if (CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
+				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
 			{
-				$otherViews = $this->catOtherName[$nameListCode]['views'];
-				$otherView  = $this->catOtherName[$nameListCode]['view'];
+				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
+				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
 			}
 			else
 			{
@@ -19019,13 +18992,11 @@ class Interpretation extends Fields
 		if (0) //isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode])) <-- remove category from check
 		{
 			// check if category has another name
-			if ($coreLoad && isset($this->catOtherName[$nameListCode])
-				&& ArrayHelper::check(
-					$this->catOtherName[$nameListCode]
-				))
+			if (CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
+				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
 			{
-				$otherViews = $this->catOtherName[$nameListCode]['views'];
-				$otherView  = $this->catOtherName[$nameListCode]['view'];
+				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
+				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
 			}
 			else
 			{
@@ -19178,13 +19149,11 @@ class Interpretation extends Fields
 			))
 		{
 			// check if category has another name
-			if ($coreLoad && isset($this->catOtherName[$nameListCode])
-				&& ArrayHelper::check(
-					$this->catOtherName[$nameListCode]
-				))
+			if ($coreLoad && CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
+				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
 			{
-				$otherViews = $this->catOtherName[$nameListCode]['views'];
-				$otherView  = $this->catOtherName[$nameListCode]['view'];
+				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
+				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
 			}
 			else
 			{
@@ -19567,13 +19536,11 @@ class Interpretation extends Fields
 		if (0) //isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode]))  <-- remove category from check
 		{
 			// check if category has another name
-			if ($coreLoad && isset($this->catOtherName[$nameListCode])
-				&& ArrayHelper::check(
-					$this->catOtherName[$nameListCode]
-				))
+			if ($coreLoad && CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
+				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
 			{
-				$otherViews = $this->catOtherName[$nameListCode]['views'];
-				$otherView  = $this->catOtherName[$nameListCode]['view'];
+				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
+				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
 			}
 			else
 			{
@@ -20184,13 +20151,11 @@ class Interpretation extends Fields
 		if (0) //isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode]))  <-- remove category from check
 		{
 			// check if category has another name
-			if ($coreLoad && isset($this->catOtherName[$nameListCode])
-				&& ArrayHelper::check(
-					$this->catOtherName[$nameListCode]
-				))
+			if ($coreLoad && CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
+				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
 			{
-				$otherViews = $this->catOtherName[$nameListCode]['views'];
-				$otherView  = $this->catOtherName[$nameListCode]['view'];
+				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
+				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
 			}
 			else
 			{
@@ -20308,13 +20273,11 @@ class Interpretation extends Fields
 		if (0) // isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode]))  <-- remove category from check
 		{
 			// check if category has another name
-			if (isset($this->catOtherName[$nameListCode])
-				&& ArrayHelper::check(
-					$this->catOtherName[$nameListCode]
-				))
+			if (CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
+				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
 			{
-				$otherViews = $this->catOtherName[$nameListCode]['views'];
-				$otherView  = $this->catOtherName[$nameListCode]['view'];
+				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
+				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
 			}
 			else
 			{
@@ -21703,14 +21666,10 @@ class Interpretation extends Fields
 			$methodName = 'getItemsMethodListStringFixBuilder';
 		}
 		// load the relations before modeling
-		if (isset($this->fieldRelations[$nameListCode])
-			&& ArrayHelper::check(
-				$this->fieldRelations[$nameListCode]
-			))
+		if (($field_relations =
+				CFactory::_('Registry')->get('builder.field_relations.' . $nameListCode)) !== null)
 		{
-			foreach (
-				$this->fieldRelations[$nameListCode] as $field_id => $fields
-			)
+			foreach ($field_relations as $field_id => $fields)
 			{
 				foreach ($fields as $area => $field)
 				{
@@ -22072,12 +22031,10 @@ class Interpretation extends Fields
 			}
 		} */
 		// load the relations after modeling
-		if (isset($this->fieldRelations[$nameListCode])
-			&& ArrayHelper::check(
-				$this->fieldRelations[$nameListCode]
-			))
+		if (($field_relations =
+				CFactory::_('Registry')->get('builder.field_relations.' . $nameListCode)) !== null)
 		{
-			foreach ($this->fieldRelations[$nameListCode] as $fields)
+			foreach ($field_relations as $fields)
 			{
 				foreach ($fields as $area => $field)
 				{
@@ -22437,7 +22394,7 @@ class Interpretation extends Fields
 				break;
 		}
 		// Trigger Event: jcb_ce_setClassHeader
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_setClassHeader',
 			array(&$this->componentContext, &$context, &$codeName,
 				&$headers)
@@ -22602,7 +22559,7 @@ class Interpretation extends Fields
 			foreach ($item['joinfields'] as $join)
 			{
 				$field['$item->{' . (int) $join . '}'] = '$item->'
-					. $this->listJoinBuilder[$nameListCode][(int) $join]['code'];
+					. CFactory::_('Registry')->get('builder.list_join.' . $nameListCode . '.' . (int) $join . '.code');
 			}
 		}
 		// set based on join_type
@@ -22917,13 +22874,11 @@ class Interpretation extends Fields
 					$catCode = $this->categoryBuilder[$name_list]['code'];
 
 					// check if category has another name
-					if (isset($this->catOtherName[$name_list])
-						&& ArrayHelper::check(
-							$this->catOtherName[$name_list]
-						))
+					if (CFactory::_('Registry')->get('category.other.name.' . $name_list . '.views')
+						&& CFactory::_('Registry')->get('category.other.name.' . $name_list . '.name'))
 					{
-						$otherViews = $this->catOtherName[$name_list]['views'];
-						$otherNames = $this->catOtherName[$name_list]['name'];
+						$otherViews = CFactory::_('Registry')->get('category.other.name.' . $name_list . '.views');
+						$otherNames = CFactory::_('Registry')->get('category.other.name.' . $name_list . '.name');
 						// build lang
 						$langName = StringHelper::safe(
 							$otherNames, 'W'
@@ -23503,13 +23458,10 @@ class Interpretation extends Fields
 						$view['settings']->name_list
 					);
 					// check if category has another name
-					if (isset($this->catOtherName[$nameListCode])
-						&& ArrayHelper::check(
-							$this->catOtherName[$nameListCode]
-						))
+					if (CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
 					{
 						$otherViews
-							= $this->catOtherName[$nameListCode]['views'];
+							= CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
 					}
 					else
 					{
@@ -24171,7 +24123,7 @@ class Interpretation extends Fields
 				// set the custom table key
 				$dbkey = 'g';
 				// Trigger Event: jcb_ce_onBeforeSetConfigFieldsets
-				CFactory::_J('Event')->trigger(
+				CFactory::_('Event')->trigger(
 					'jcb_ce_onBeforeSetConfigFieldsets',
 					array(&$this->componentContext, &$timer,
 						&$this->configFieldSets,
@@ -24248,7 +24200,7 @@ class Interpretation extends Fields
 		elseif (2 == $timer) // this is after the admin views are build
 		{
 			// Trigger Event: jcb_ce_onBeforeSetConfigFieldsets
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeSetConfigFieldsets',
 				array(&$this->componentContext, &$timer,
 					&$this->configFieldSets,
@@ -24267,7 +24219,7 @@ class Interpretation extends Fields
 			$this->setCustomControlConfigFieldsets($lang);
 		}
 		// Trigger Event: jcb_ce_onAfterSetConfigFieldsets
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterSetConfigFieldsets',
 			array(&$this->componentContext, &$timer, &$this->configFieldSets,
 				&$this->configFieldSetsCustomField, &$this->extensionsParams,
@@ -26629,9 +26581,9 @@ function vdm_dkim() {
 		// enable the loading of dynamic field sets
 		$dynamicAddFields = array();
 		// Add encryption if needed
-		if ((isset($this->basicEncryption) && $this->basicEncryption)
-			|| (isset($this->whmcsEncryption) && $this->whmcsEncryption)
-			|| (isset($this->mediumEncryption) && $this->mediumEncryption)
+		if (CFactory::_('Config')->basic_encryption
+			|| CFactory::_('Config')->whmcs_encryption
+			|| CFactory::_('Config')->medium_encryption
 			|| $this->componentData->add_license
 			|| (isset($this->configFieldSetsCustomField['Encryption Settings'])
 				&& ArrayHelper::check(
@@ -26649,11 +26601,9 @@ function vdm_dkim() {
 				. '_ENCRYPTION_DESC">';
 
 			// set tab lang
-			if (((isset($this->basicEncryption) && $this->basicEncryption)
-					|| (isset($this->mediumEncryption)
-						&& $this->mediumEncryption)
-					|| (isset($this->whmcsEncryption)
-						&& $this->whmcsEncryption))
+			if ((CFactory::_('Config')->basic_encryption
+					|| CFactory::_('Config')->medium_encryption
+					|| CFactory::_('Config')->whmcs_encryption)
 				&& $this->componentData->add_license
 				&& $this->componentData->license_type == 3)
 			{
@@ -26668,11 +26618,9 @@ function vdm_dkim() {
 				// add the next dynamic option
 				$dynamicAddFields[] = "License & Encryption Settings";
 			}
-			elseif (((isset($this->basicEncryption) && $this->basicEncryption)
-					|| (isset($this->mediumEncryption)
-						&& $this->mediumEncryption)
-					|| (isset($this->whmcsEncryption)
-						&& $this->whmcsEncryption))
+			elseif ((CFactory::_('Config')->basic_encryption
+					|| CFactory::_('Config')->medium_encryption
+					|| CFactory::_('Config')->whmcs_encryption)
 				&& $this->componentData->add_license
 				&& $this->componentData->license_type == 2)
 			{
@@ -26725,7 +26673,7 @@ function vdm_dkim() {
 				);
 			}
 
-			if (isset($this->basicEncryption) && $this->basicEncryption)
+			if (CFactory::_('Config')->basic_encryption)
 			{
 				// set field lang
 				CFactory::_('Language')->set(
@@ -26759,7 +26707,7 @@ function vdm_dkim() {
 				$this->configFieldSets[] = Indent::_(3) . 'default=""';
 				$this->configFieldSets[] = Indent::_(2) . "/>";
 			}
-			if (isset($this->mediumEncryption) && $this->mediumEncryption)
+			if (CFactory::_('Config')->medium_encryption)
 			{
 				// set field lang
 				CFactory::_('Language')->set(
@@ -26802,7 +26750,7 @@ function vdm_dkim() {
 					"Medium key path (for encryption of various fields) does not exist, or is not writable. Please check the path and update it in the global option of this component."
 				);
 			}
-			if (isset($this->whmcsEncryption) && $this->whmcsEncryption
+			if (CFactory::_('Config')->whmcs_encryption
 				|| $this->componentData->add_license)
 			{
 				// set field lang label and description
@@ -26863,7 +26811,7 @@ function vdm_dkim() {
 				}
 				else
 				{
-					if (isset($this->whmcsEncryption) && $this->whmcsEncryption)
+					if (CFactory::_('Config')->whmcs_encryption)
 					{
 						CFactory::_('Language')->set(
 							CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_LABEL',
@@ -26880,7 +26828,7 @@ function vdm_dkim() {
 					}
 				}
 				// add the description based on global settings
-				if (isset($this->whmcsEncryption) && $this->whmcsEncryption)
+				if (CFactory::_('Config')->whmcs_encryption)
 				{
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_DESC',
@@ -27010,7 +26958,7 @@ function vdm_dkim() {
 		$this->permissionViews = array();
 
 		// Trigger Event: jcb_ce_onBeforeBuildAccessSections
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildAccessSections',
 			array(&$this->componentContext, &$this)
 		);
@@ -27372,8 +27320,8 @@ function vdm_dkim() {
 									$field['settings']->properties
 								))
 								{
-									$fieldType = $this->getFieldType($field);
-									$fieldName = $this->getFieldName(
+									$fieldType = CFactory::_('Field.Type.Name')->get($field);
+									$fieldName = CFactory::_('Field.Name')->get(
 										$field, $nameViews
 									);
 									// loop the permission options
@@ -27447,7 +27395,7 @@ function vdm_dkim() {
 			}
 
 			// Trigger Event: jcb_ce_onAfterBuildAccessSections
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterBuildAccessSections',
 				array(&$this->componentContext, &$this)
 			);
@@ -28175,7 +28123,7 @@ function vdm_dkim() {
 			// for plugin event TODO change event api signatures
 			$langContent = CFactory::_('Language')->getTarget($module->key);
 			// Trigger Event: jcb_ce_onBeforeBuildModuleLang
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildModuleLang',
 				array(&$this->componentContext, &$module,
 					&$langContent, &$module->lang_prefix, &$module->official_name)
@@ -28197,7 +28145,7 @@ function vdm_dkim() {
 			$total = count($values);
 			unset($values);
 			// Trigger Event: jcb_ce_onBeforeBuildModuleLangFiles
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildModuleLangFiles',
 				array(&$this->componentContext, &$module,
 					&$this->languages['modules'],
@@ -28563,7 +28511,7 @@ function vdm_dkim() {
 			// for plugin event TODO change event api signatures
 			$langContent = CFactory::_('Language')->getTarget($plugin->key);
 			// Trigger Event: jcb_ce_onBeforeBuildPluginLang
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildPluginLang',
 				array(&$this->componentContext, &$plugin,
 					&$langContent,
@@ -28586,7 +28534,7 @@ function vdm_dkim() {
 			$total = count($values);
 			unset($values);
 			// Trigger Event: jcb_ce_onBeforeBuildPluginLangFiles
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildPluginLangFiles',
 				array(&$this->componentContext, &$plugin,
 					&$this->languages['plugins'],

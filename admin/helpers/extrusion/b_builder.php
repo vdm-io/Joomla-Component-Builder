@@ -191,7 +191,7 @@ class Builder extends Mapping
 	 */
 	protected function setField(&$view, &$field)
 	{
-		if ($fieldType = $this->getFieldType($field['fieldType']))
+		if ($fieldType = CFactory::_('Field.Type.Name')->get($field['fieldType']))
 		{
 			// set the field object
 			$object = new stdClass();

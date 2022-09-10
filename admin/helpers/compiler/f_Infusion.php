@@ -67,7 +67,7 @@ class Infusion extends Interpretation
 			// for plugin event TODO change event api signatures
 			$this->placeholders = CFactory::_('Placeholder')->active;
 			// Trigger Event: jcb_ce_onBeforeBuildFilesContent
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildFilesContent',
 				array(&$this->componentContext, &$this->componentData,
 					&$this->fileContentStatic, &$this->fileContentDynamic,
@@ -391,7 +391,7 @@ class Infusion extends Interpretation
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
 					// Trigger Event: jcb_ce_onBeforeBuildAdminEditViewContent
-					CFactory::_J('Event')->trigger(
+					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildAdminEditViewContent',
 						array(&$this->componentContext, &$view,
 							&$nameSingleCode,
@@ -641,7 +641,7 @@ class Infusion extends Interpretation
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
 					// Trigger Event: jcb_ce_onAfterBuildAdminEditViewContent
-					CFactory::_J('Event')->trigger(
+					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildAdminEditViewContent',
 						array(&$this->componentContext, &$view,
 							&$nameSingleCode,
@@ -666,7 +666,7 @@ class Infusion extends Interpretation
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
 					// Trigger Event: jcb_ce_onBeforeBuildAdminListViewContent
-					CFactory::_J('Event')->trigger(
+					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildAdminListViewContent',
 						array(&$this->componentContext, &$view,
 							&$nameSingleCode,
@@ -982,7 +982,7 @@ class Infusion extends Interpretation
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
 					// Trigger Event: jcb_ce_onAfterBuildAdminListViewContent
-					CFactory::_J('Event')->trigger(
+					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildAdminListViewContent',
 						array(&$this->componentContext, &$view,
 							&$nameSingleCode,
@@ -1156,7 +1156,7 @@ class Infusion extends Interpretation
 				// for plugin event TODO change event api signatures
 				$this->placeholders = CFactory::_('Placeholder')->active;
 				// Trigger Event: jcb_ce_onAfterBuildAdminViewContent
-				CFactory::_J('Event')->trigger(
+				CFactory::_('Event')->trigger(
 					'jcb_ce_onAfterBuildAdminViewContent',
 					array(&$this->componentContext, &$view,
 						&$nameSingleCode,
@@ -1241,7 +1241,7 @@ class Infusion extends Interpretation
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
 					// Trigger Event: jcb_ce_onBeforeBuildCustomAdminViewContent
-					CFactory::_J('Event')->trigger(
+					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildCustomAdminViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
@@ -1430,7 +1430,7 @@ class Infusion extends Interpretation
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
 					// Trigger Event: jcb_ce_onAfterBuildCustomAdminViewContent
-					CFactory::_J('Event')->trigger(
+					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildCustomAdminViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
@@ -1624,10 +1624,9 @@ class Infusion extends Interpretation
 			}
 
 			// build the validation rules
-			if (isset($this->validationRules)
-				&& ArrayHelper::check($this->validationRules))
+			if (($validationRules = CFactory::_('Registry')->_('validation.rules')) !== null)
 			{
-				foreach ($this->validationRules as $rule => $_php)
+				foreach ($validationRules as $rule => $_php)
 				{
 					// setup rule file
 					$target = array('admin' => 'a_rule_zi');
@@ -1716,7 +1715,7 @@ class Infusion extends Interpretation
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
 					// Trigger Event: jcb_ce_onBeforeBuildSiteViewContent
-					CFactory::_J('Event')->trigger(
+					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildSiteViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
@@ -1933,7 +1932,7 @@ class Infusion extends Interpretation
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
 					// Trigger Event: jcb_ce_onAfterBuildSiteViewContent
-					CFactory::_J('Event')->trigger(
+					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildSiteViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
@@ -2089,7 +2088,7 @@ class Infusion extends Interpretation
 					if (ObjectHelper::check($power))
 					{
 						// Trigger Event: jcb_ce_onBeforeInfusePowerData
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onBeforeInfusePowerData',
 							array(&$this->componentContext, &$power, &$this)
 						);
@@ -2099,7 +2098,7 @@ class Infusion extends Interpretation
 						// build the autoloader
 						$autoloader[implode('.', $power->_namespace_prefix)] = $power->_namespace_prefix;
 						// Trigger Event: jcb_ce_onAfterInfusePowerData
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterInfusePowerData',
 							array(&$this->componentContext, &$power, &$this)
 						);
@@ -2120,7 +2119,7 @@ class Infusion extends Interpretation
 					if (ObjectHelper::check($module))
 					{
 						// Trigger Event: jcb_ce_onBeforeInfuseModuleData
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onBeforeInfuseModuleData',
 							array(&$this->componentContext, &$module, &$this)
 						);
@@ -2150,7 +2149,7 @@ class Infusion extends Interpretation
 						{
 							// INSTALLCLASS
 							$this->fileContentDynamic[$module->key][Placefix::_h('INSTALLCLASS')]
-								= CFactory::_J('Extension.InstallScript')->get($module);
+								= CFactory::_('Extension.InstallScript')->get($module);
 						}
 						// FIELDSET
 						if (isset($module->form_files)
@@ -2178,7 +2177,7 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$module->key][Placefix::_h('MAINXML')]
 							= $this->getModuleMainXML($module);
 						// Trigger Event: jcb_ce_onAfterInfuseModuleData
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterInfuseModuleData',
 							array(&$this->componentContext, &$module, &$this)
 						);
@@ -2193,7 +2192,7 @@ class Infusion extends Interpretation
 					if (ObjectHelper::check($plugin))
 					{
 						// Trigger Event: jcb_ce_onBeforeInfusePluginData
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onBeforeInfusePluginData',
 							array(&$this->componentContext, &$plugin, &$this)
 						);
@@ -2209,7 +2208,7 @@ class Infusion extends Interpretation
 						{
 							// INSTALLCLASS
 							$this->fileContentDynamic[$plugin->key][Placefix::_h('INSTALLCLASS')]
-								= CFactory::_J('Extension.InstallScript')->get($plugin);
+								= CFactory::_('Extension.InstallScript')->get($plugin);
 						}
 						// FIELDSET
 						if (isset($plugin->form_files)
@@ -2237,7 +2236,7 @@ class Infusion extends Interpretation
 						$this->fileContentDynamic[$plugin->key][Placefix::_h('MAINXML')]
 							= $this->getPluginMainXML($plugin);
 						// Trigger Event: jcb_ce_onAfterInfusePluginData
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterInfusePluginData',
 							array(&$this->componentContext, &$plugin, &$this)
 						);
@@ -2252,7 +2251,7 @@ class Infusion extends Interpretation
 			// for plugin event TODO change event api signatures
 			$this->placeholders = CFactory::_('Placeholder')->active;
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterBuildFilesContent',
 				array(&$this->componentContext, &$this->componentData,
 					&$this->fileContentStatic, &$this->fileContentDynamic,
@@ -2438,7 +2437,7 @@ class Infusion extends Interpretation
 		// path to INI file
 		$getPAth = $this->templatePath . '/en-GB.com_admin.ini';
 		// Trigger Event: jcb_ce_onBeforeBuildAllLangFiles
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildAllLangFiles',
 			array(&$this->componentContext, &$this->languages['components'],
 				&$this->langTag)

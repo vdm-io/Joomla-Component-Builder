@@ -682,6 +682,7 @@ class Get
 	 * The validation rules that should be added
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('validation.rules');
 	 */
 	public $validationRules = array();
 
@@ -689,6 +690,7 @@ class Get
 	 * The validation linked to fields
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('validation.linked');
 	 */
 	public $validationLinkedFields = array();
 
@@ -703,6 +705,7 @@ class Get
 	 * The field data array
 	 *
 	 * @var     array
+	 * @deprecated 3.3
 	 */
 	private $_fieldData = array();
 
@@ -728,6 +731,7 @@ class Get
 	 * Set unique Names
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('unique.names');
 	 */
 	public $uniqueNames = array();
 
@@ -735,6 +739,7 @@ class Get
 	 * Set unique Names
 	 *
 	 * @var    array
+	 * @deprecated
 	 */
 	protected $uniqueFieldNames = array();
 
@@ -742,6 +747,7 @@ class Get
 	 * Category other name bucket
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('category.other.name');
 	 */
 	public $catOtherName = array();
 
@@ -749,6 +755,7 @@ class Get
 	 * The field relations values
 	 *
 	 * @var     array
+	 * @deprecate Use CFactory::_('Registry')->get('builder.field_relations');
 	 */
 	public $fieldRelations = array();
 
@@ -772,6 +779,7 @@ class Get
 	 * The list join fields
 	 *
 	 * @var     array
+	 * @deprecate Use CFactory::_('Registry')->get('builder.list_join');
 	 */
 	public $listJoinBuilder = array();
 
@@ -779,6 +787,7 @@ class Get
 	 * The list head over ride
 	 *
 	 * @var     array
+	 * @deprecate Use CFactory::_('Registry')->get('builder.list_head_override');
 	 */
 	public $listHeadOverRide = array();
 
@@ -842,6 +851,7 @@ class Get
 	 * The WHMCS Encryption Switch
 	 *
 	 * @var    boolean
+	 * @deprecated 3.3 Use CFactory::_('Config')->whmcs_encryption;
 	 */
 	public $whmcsEncryption = false;
 
@@ -849,6 +859,7 @@ class Get
 	 * The Basic Encryption Switch
 	 *
 	 * @var    boolean
+	 * @deprecated 3.3 Use CFactory::_('Config')->basic_encryption;
 	 */
 	public $basicEncryption = false;
 
@@ -856,6 +867,7 @@ class Get
 	 * The Medium Encryption Switch
 	 *
 	 * @var    boolean
+	 * @deprecated 3.3 Use CFactory::_('Config')->medium_encryption;
 	 */
 	public $mediumEncryption = false;
 
@@ -863,6 +875,7 @@ class Get
 	 * The Custom field Switch per view
 	 *
 	 * @var    array
+	 * @deprecated 3.3
 	 */
 	public $customFieldScript = array();
 
@@ -985,7 +998,7 @@ class Get
 		// Set the params
 		$this->params = JComponentHelper::getParams('com_componentbuilder');
 		// Trigger Event: jcb_ce_onBeforeGet
-		CFactory::_J('Event')->trigger('jcb_ce_onBeforeGet', array(&$config, &$this));
+		CFactory::_('Event')->trigger('jcb_ce_onBeforeGet', array(&$config, &$this));
 		// set the Joomla version @deprecated
 		$this->joomlaVersion = CFactory::_('Config')->joomla_version;
 		// set the minfy switch of the JavaScript @deprecated
@@ -1051,14 +1064,14 @@ class Get
 		CFactory::_('Customcode.Extractor')->run();
 
 		// Trigger Event: jcb_ce_onBeforeGetComponentData
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeGetComponentData',
 			array(&$this->componentContext, &$this)
 		);
 		// get the component data
 		$this->componentData = $this->getComponentData();
 		// Trigger Event: jcb_ce_onAfterGetComponentData
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterGetComponentData',
 			array(&$this->componentContext, &$this)
 		);
@@ -1100,7 +1113,7 @@ class Get
 		);
 
 		// Trigger Event: jcb_ce_onBeforeGet
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterGet', array(&$this->componentContext, &$this)
 		);
 
@@ -1113,12 +1126,12 @@ class Get
 	 * @param   int  $nr  The number of tag/space
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3 Use Indent::_($nr);
 	 */
 	public function _t($nr)
 	{
 		// use global method for conformity
-		return ComponentbuilderHelper::_t($nr);
+		return Indent::_($nr);
 	}
 
 	/**
@@ -1128,11 +1141,11 @@ class Get
 	 * @param   mix     $data   The values to pass to the event/plugin
 	 *
 	 * @return  void
-	 * @deprecated 3.3 Use CFactory::_J('Event')->trigger($event, $data);
+	 * @deprecated 3.3 Use CFactory::_('Event')->trigger($event, $data);
 	 */
 	public function triggerEvent($event, $data)
 	{
-		return CFactory::_J('Event')->trigger($event, $data);
+		return CFactory::_('Event')->trigger($event, $data);
 	}
 
 	/**
@@ -1217,7 +1230,7 @@ class Get
 		);
 
 		// Trigger Event: jcb_ce_onBeforeQueryComponentData
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeQueryComponentData',
 			array(&$this->componentContext, &$this->componentID, &$query,
 				&$this->db)
@@ -1230,7 +1243,7 @@ class Get
 		$component = $this->db->loadObject();
 
 		// Trigger Event: jcb_ce_onBeforeModelComponentData
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeModelComponentData',
 			array(&$this->componentContext, &$component)
 		);
@@ -1622,9 +1635,9 @@ class Get
 					$field['alias'] = 0;
 					$field['title'] = 0;
 					// set the field details
-					$this->setFieldDetails($field);
+					CFactory::_('Field')->set($field);
 					// set unique name counter
-					$this->setUniqueNameCounter($field['base_name'], 'configs');
+					CFactory::_('Field.Unique.Name')->set($field['base_name'], 'configs');
 
 					// return field
 					return $field;
@@ -1635,7 +1648,7 @@ class Get
 			foreach ($component->config as $field)
 			{
 				// so first we lock the field name in
-				$this->getFieldName($field, 'configs');
+				CFactory::_('Field.Name')->get($field, 'configs');
 			}
 			// unset original value
 			unset($component->addconfig);
@@ -1666,10 +1679,10 @@ class Get
 		}
 
 		// build update SQL
-		$old_admin_views = $this->getHistoryWatch(
+		$old_admin_views = CFactory::_('History')->get(
 			'component_admin_views', $component->addadmin_views_id
 		);
-		$old_component   = $this->getHistoryWatch(
+		$old_component   = CFactory::_('History')->get(
 			'joomla_component', CFactory::_('Config')->component_id
 		);
 		if ($old_component || $old_admin_views)
@@ -2079,7 +2092,7 @@ class Get
 		unset($component->addjoomla_plugins);
 
 		// Trigger Event: jcb_ce_onAfterModelComponentData
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterModelComponentData',
 			array(&$this->componentContext, &$component)
 		);
@@ -2098,7 +2111,6 @@ class Get
 	 *
 	 * @return  void
 	 * @deprecated 3.3 Use CFactory::_('Language')->set($target, $language, $string, $addPrefix);
-	 *
 	 */
 	public function setLangContent($target, $language, $string,
 	                               $addPrefix = false
@@ -2114,7 +2126,6 @@ class Get
 	 *
 	 * @return  string
 	 * @deprecated 3.3
-	 *
 	 */
 	public function fixLangString(&$string)
 	{
@@ -2189,7 +2200,7 @@ class Get
 			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
 			// Trigger Event: jcb_ce_onBeforeQueryViewData
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeQueryViewData',
 				array(&$this->componentContext, &$id, &$query, &$this->db)
 			);
@@ -2222,7 +2233,7 @@ class Get
 			$name_length = CFactory::_('Config')->component_code_name_length + strlen(
 					$view->name_single_code
 				) + 5;
-			// when the name is larger then 49 we need to add the assets table name fix
+			// when the name is larger than 49 we need to add the assets' table name fix
 			if ($name_length > 49)
 			{
 				$this->addAssetsTableNameFix = true;
@@ -2304,7 +2315,7 @@ class Get
 			// for plugin event TODO change event api signatures
 			$this->placeholders = CFactory::_('Placeholder')->active;
 			// Trigger Event: jcb_ce_onBeforeModelViewData
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeModelViewData',
 				array(&$this->componentContext, &$view, &$this->placeholders)
 			);
@@ -2495,7 +2506,7 @@ class Get
 						&$view, &$ignoreFields
 					) {
 						// set the field details
-						$this->setFieldDetails(
+						CFactory::_('Field')->set(
 							$field, $view->name_single_code,
 							$view->name_list_code
 						);
@@ -2516,7 +2527,7 @@ class Get
 					}, array_values($view->addfields)
 				);
 				// build update SQL
-				if ($old_view = $this->getHistoryWatch(
+				if ($old_view = CFactory::_('History')->get(
 					'admin_fields', $view->addfields_id
 				))
 				{
@@ -2563,7 +2574,7 @@ class Get
 				foreach ($view->fields as $field)
 				{
 					// so first we lock the field name in
-					$field_name = $this->getFieldName(
+					$field_name = CFactory::_('Field.Name')->get(
 						$field, $view->name_list_code
 					);
 					// check if the field changed since the last compilation (default fields never change and are always added)
@@ -2624,12 +2635,12 @@ class Get
 								$tmpfield['settings']->type_name
 									= $field['settings']->type_name;
 								// get the old name
-								$old_field_name = $this->getFieldName(
+								$old_field_name = CFactory::_('Field.Name')->get(
 									$tmpfield
 								);
 
 								// only run this if not a multi field
-								if (!isset($this->uniqueNames[$view->name_list_code]['names'][$field_name]))
+								if (CFactory::_('Registry')->get('unique.names.' . $view->name_list_code . '.names.' . $field_name) === null)
 								{
 									// this only works when the field is not multiple of the same field
 									$this->setUpdateSQL(
@@ -2664,7 +2675,7 @@ class Get
 			}
 			unset($view->addfields);
 			// build update SQL
-			if ($old_view = $this->getHistoryWatch('admin_view', $id))
+			if ($old_view = CFactory::_('History')->get('admin_view', $id))
 			{
 				// check if the view name changed
 				if (StringHelper::check($old_view->name_single))
@@ -2755,10 +2766,10 @@ class Get
 									// set the field name
 									$conditionValue['target_field'][$fieldKey]
 										= array(
-										'name'     => $this->getFieldName(
+										'name'     => CFactory::_('Field.Name')->get(
 											$fieldValues, $view->name_list_code
 										),
-										'type'     => $this->getFieldType(
+										'type'     => CFactory::_('Field.Type.Name')->get(
 											$fieldValues
 										),
 										'required' => $required,
@@ -2780,10 +2791,10 @@ class Get
 								== (int) $conditionValue['match_field'])
 							{
 								// set the type
-								$type = $this->getFieldType($fieldValue);
+								$type = CFactory::_('Field.Type.Name')->get($fieldValue);
 								// set the field details
 								$conditionValue['match_name']
-									                          = $this->getFieldName(
+									                          = CFactory::_('Field.Name')->get(
 									$fieldValue, $view->name_list_code
 								);
 								$conditionValue['match_type'] = $type;
@@ -2813,10 +2824,6 @@ class Get
 			}
 			unset($view->addconditions);
 
-			// prep the buckets
-			$this->fieldRelations[$view->name_list_code]   = array();
-			$this->listJoinBuilder[$view->name_list_code]  = array();
-			$this->listHeadOverRide[$view->name_list_code] = array();
 			// set the relations
 			$view->addrelations = (isset($view->addrelations)
 				&& JsonHelper::check($view->addrelations))
@@ -2825,7 +2832,7 @@ class Get
 			{
 				foreach ($view->addrelations as $nr => $relationsValue)
 				{
-					// only add if list view field is selected and joind fields are set
+					// only add if list view field is selected and joined fields are set
 					if (isset($relationsValue['listfield'])
 						&& is_numeric(
 							$relationsValue['listfield']
@@ -2845,18 +2852,11 @@ class Get
 								$relationsValue['set']
 							);
 						}
-						// check that the arrays are set
-						if (!isset($this->fieldRelations[$view->name_list_code][(int) $relationsValue['listfield']])
-							|| !ArrayHelper::check(
-								$this->fieldRelations[$view->name_list_code][(int) $relationsValue['listfield']]
-							))
-						{
-							$this->fieldRelations[$view->name_list_code][(int) $relationsValue['listfield']]
-								= array();
-						}
+
 						// load the field relations
-						$this->fieldRelations[$view->name_list_code][(int) $relationsValue['listfield']][(int) $relationsValue['area']]
-							= $relationsValue;
+						CFactory::_('Registry')->set('builder.field_relations.' . $view->name_list_code . '.' . (int) $relationsValue['listfield']
+							. '.' . (int) $relationsValue['area'], $relationsValue);
+
 						// load the list joints
 						if (isset($relationsValue['joinfields'])
 							&& ArrayHelper::check(
@@ -2865,8 +2865,7 @@ class Get
 						{
 							foreach ($relationsValue['joinfields'] as $join)
 							{
-								$this->listJoinBuilder[$view->name_list_code][(int) $join]
-									= (int) $join;
+								CFactory::_('Registry')->set('builder.list_join.' . $view->name_list_code . '.' . (int) $join, (int) $join);
 							}
 						}
 						// set header over-ride
@@ -2892,8 +2891,11 @@ class Get
 									'admin', $column_name_lang,
 									$relationsValue['column_name']
 								);
-								$this->listHeadOverRide[$view->name_list_code][(int) $relationsValue['listfield']]
-									= $column_name_lang;
+								CFactory::_('Registry')->set('builder.list_head_override.' .
+									$view->name_list_code . '.' . (int) $relationsValue['listfield'],
+									$column_name_lang
+								);
+
 							}
 						}
 					}
@@ -3201,7 +3203,7 @@ class Get
 					$this->customAliasBuilder[$view->name_single_code]
 						= (array) array_map(
 						function ($field) use (&$view) {
-							return $this->getFieldName(
+							return CFactory::_('Field.Name')->get(
 								$field, $view->name_list_code
 							);
 						}, $alias_fields
@@ -3264,7 +3266,7 @@ class Get
 			// for plugin event TODO change event api signatures
 			$this->placeholders = CFactory::_('Placeholder')->active;
 			// Trigger Event: jcb_ce_onAfterModelViewData
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterModelViewData',
 				array(&$this->componentContext, &$view, &$this->placeholders)
 			);
@@ -3312,7 +3314,7 @@ class Get
 		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
 		// Trigger Event: jcb_ce_onBeforeQueryCustomViewData
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeQueryCustomViewData',
 			array(&$this->componentContext, &$id, &$table, &$query, &$this->db)
 		);
@@ -3329,7 +3331,7 @@ class Get
 		$view->Code = StringHelper::safe($view->code, 'F');
 		$view->CODE = StringHelper::safe($view->code, 'U');
 		// Trigger Event: jcb_ce_onBeforeModelCustomViewData
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeModelCustomViewData',
 			array(&$this->componentContext, &$view, &$id, &$table)
 		);
@@ -3650,7 +3652,7 @@ class Get
 		}
 
 		// Trigger Event: jcb_ce_onAfterModelCustomViewData
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterModelCustomViewData',
 			array(&$this->componentContext, &$view)
 		);
@@ -3667,432 +3669,11 @@ class Get
 	 * @param   string  $name_list    The view list name
 	 *
 	 * @return  oject The field data
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Field.Data')->get($id, $name_single, $name_list);
 	 */
 	public function getFieldData($id, $name_single = null, $name_list = null)
 	{
-		if ($id > 0 && !isset($this->_fieldData[$id]))
-		{
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
-
-			// Select all the values in the field
-			$query->select('a.*');
-			$query->select(
-				$this->db->quoteName(
-					array('c.name', 'c.properties'),
-					array('type_name', 'properties')
-				)
-			);
-			$query->from('#__componentbuilder_field AS a');
-			$query->join(
-				'LEFT',
-				$this->db->quoteName('#__componentbuilder_fieldtype', 'c')
-				. ' ON (' . $this->db->quoteName('a.fieldtype') . ' = '
-				. $this->db->quoteName('c.id') . ')'
-			);
-			$query->where(
-				$this->db->quoteName('a.id') . ' = ' . $this->db->quote($id)
-			);
-
-			// Trigger Event: jcb_ce_onBeforeQueryFieldData
-			CFactory::_J('Event')->trigger(
-				'jcb_ce_onBeforeQueryFieldData',
-				array(&$this->componentContext, &$id, &$query, &$this->db)
-			);
-
-			// Reset the query using our newly populated query object.
-			$this->db->setQuery($query);
-			$this->db->execute();
-			if ($this->db->getNumRows())
-			{
-				// Load the results as a list of stdClass objects (see later for more options on retrieving data).
-				$field = $this->db->loadObject();
-
-				// Trigger Event: jcb_ce_onBeforeModelFieldData
-				CFactory::_J('Event')->trigger(
-					'jcb_ce_onBeforeModelFieldData',
-					array(&$this->componentContext, &$field)
-				);
-
-				// adding a fix for the changed name of type to fieldtype
-				$field->type = $field->fieldtype;
-
-				// repeatable fields to update
-				$searchRepeatables = array(
-					// repeatablefield => checker
-					'properties' => 'name'
-				);
-				// set upater
-				$updater = array(
-					'table' => 'fieldtype',
-					'key'   => 'id',
-					'val'   => (int) $id
-				);
-				// update the repeatable fields
-				$field = ComponentbuilderHelper::convertRepeatableFields(
-					$field, $searchRepeatables, $updater
-				);
-
-				// load the values form params
-				$field->xml = CFactory::_('Customcode')->update(json_decode($field->xml));
-
-				// check if we have validate (validation rule set)
-				$validationRule = GetHelper::between(
-					$field->xml, 'validate="', '"'
-				);
-				if (StringHelper::check($validationRule))
-				{
-					// make sure it is lowercase
-					$validationRule = StringHelper::safe(
-						$validationRule
-					);
-					// link this field to this validation
-					$this->validationLinkedFields[$id] = $validationRule;
-					// make sure it is not already set
-					if (!isset($this->validationRules[$validationRule]))
-					{
-						// get joomla core validation names
-						if ($coreValidationRules
-							= ComponentbuilderHelper::getExistingValidationRuleNames(
-							true
-						))
-						{
-							// make sure this rule is not a core validation rule
-							if (!in_array(
-								$validationRule, (array) $coreValidationRules
-							))
-							{
-								// get the class methods for this rule if it exists
-								if ($this->validationRules[$validationRule]
-									= GetHelper::var(
-									'validation_rule', $validationRule, 'name',
-									'php'
-								))
-								{
-									// open and set the validation rule
-									$this->validationRules[$validationRule]
-										= CFactory::_('Customcode.Gui')->set(
-										CFactory::_('Placeholder')->update(
-											CFactory::_('Customcode')->update(
-												base64_decode(
-													$this->validationRules[$validationRule]
-												)
-											), CFactory::_('Placeholder')->active
-										),
-										array(
-											'table' => 'validation_rule',
-											'field' => 'php',
-											'id'    => GetHelper::var(
-												'validation_rule',
-												$validationRule, 'name', 'id'
-											),
-											'type'  => 'php')
-									);
-								}
-								else
-								{
-									// set the notice that this validation rule is custom and was not found (TODO)
-									unset($this->validationLinkedFields[$id], $this->validationRules[$validationRule]);
-								}
-							}
-							else
-							{
-								// remove link (we only want custom validations linked)
-								unset($this->validationLinkedFields[$id]);
-							}
-						}
-					}
-				}
-
-				// load the type values form type params
-				$field->properties = (isset($field->properties)
-					&& JsonHelper::check($field->properties))
-					? json_decode($field->properties, true) : null;
-				if (ArrayHelper::check($field->properties))
-				{
-					$field->properties = array_values($field->properties);
-				}
-				// check if we have WHMCS encryption
-				if (4 == $field->store
-					&& (!isset($this->whmcsEncryption)
-						|| !$this->whmcsEncryption))
-				{
-					$this->whmcsEncryption = true;
-				}
-				// check if we have basic encryption
-				elseif (3 == $field->store
-					&& (!isset($this->basicEncryption)
-						|| !$this->basicEncryption))
-				{
-					$this->basicEncryption = true;
-				}
-				// check if we have better encryption
-				elseif (5 == $field->store
-					&& (!isset($this->mediumEncryption)
-						|| !$this->mediumEncryption))
-				{
-					$this->mediumEncryption = true;
-				}
-				// check if we have better encryption
-				elseif (6 == $field->store
-					&& StringHelper::check(
-						$field->on_get_model_field
-					)
-					&& StringHelper::check(
-						$field->on_save_model_field
-					))
-				{
-					// add only if string lenght found
-					if (StringHelper::check(
-						$field->initiator_on_save_model
-					))
-					{
-						$field->initiator_save_key = md5(
-							$field->initiator_on_save_model
-						);
-						$field->initiator_save     = explode(
-							PHP_EOL, CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->update(
-								base64_decode(
-									$field->initiator_on_save_model
-								)
-							), CFactory::_('Placeholder')->active
-						)
-						);
-					}
-					if (StringHelper::check(
-						$field->initiator_on_save_model
-					))
-					{
-						$field->initiator_get_key = md5(
-							$field->initiator_on_get_model
-						);
-						$field->initiator_get     = explode(
-							PHP_EOL, CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->update(
-								base64_decode(
-									$field->initiator_on_get_model
-								)
-							), CFactory::_('Placeholder')->active
-						)
-						);
-					}
-					// set the field modeling
-					$field->model_field['save'] = explode(
-						PHP_EOL, CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->update(
-							base64_decode($field->on_save_model_field)
-						), CFactory::_('Placeholder')->active
-					)
-					);
-					$field->model_field['get']  = explode(
-						PHP_EOL, CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->update(
-							base64_decode($field->on_get_model_field)
-						), CFactory::_('Placeholder')->active
-					)
-					);
-					// remove the original values
-					unset($field->on_save_model_field, $field->on_get_model_field, $field->initiator_on_save_model, $field->initiator_on_get_model);
-				}
-
-				// get the last used version
-				$field->history = $this->getHistoryWatch('field', $id);
-
-				// Trigger Event: jcb_ce_onAfterModelFieldData
-				CFactory::_J('Event')->trigger(
-					'jcb_ce_onAfterModelFieldData',
-					array(&$this->componentContext, &$field)
-				);
-
-				$this->_fieldData[$id] = $field;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		// check if the script should be added to the view each time this field is called
-		if ($id > 0 && isset($this->_fieldData[$id]))
-		{
-			// check if we should load scripts for single view
-			if (StringHelper::check($name_single)
-				&& !isset($this->customFieldScript[$name_single][$id]))
-			{
-				// add_javascript_view_footer
-				if ($this->_fieldData[$id]->add_javascript_view_footer == 1
-					&& StringHelper::check(
-						$this->_fieldData[$id]->javascript_view_footer
-					))
-				{
-					$convert__ = true;
-					if (isset($this->_fieldData[$id]->javascript_view_footer_decoded)
-						&& $this->_fieldData[$id]->javascript_view_footer_decoded)
-					{
-						$convert__ = false;
-					}
-					CFactory::_('Customcode.Dispenser')->set(
-						$this->_fieldData[$id]->javascript_view_footer,
-						'view_footer',
-						$name_single,
-						null,
-						array(
-							'table'  => 'field',
-							'id'     => (int) $id,
-							'field'  => 'javascript_view_footer',
-							'type'   => 'js',
-							'prefix' => PHP_EOL),
-						$convert__,
-						$convert__,
-						true
-					);
-					if (!isset($this->_fieldData[$id]->javascript_view_footer_decoded))
-					{
-						$this->_fieldData[$id]->javascript_view_footer_decoded
-							= true;
-					}
-					if (strpos(
-							$this->_fieldData[$id]->javascript_view_footer,
-							"token"
-						) !== false
-						|| strpos(
-							$this->_fieldData[$id]->javascript_view_footer,
-							"task=ajax"
-						) !== false)
-					{
-						if (!isset(CFactory::_('Customcode.Dispenser')->hub['token']))
-						{
-							CFactory::_('Customcode.Dispenser')->hub['token'] = [];
-						}
-						if (!isset(CFactory::_('Customcode.Dispenser')->hub['token'][$name_single])
-							|| !CFactory::_('Customcode.Dispenser')->hub['token'][$name_single])
-						{
-							CFactory::_('Customcode.Dispenser')->hub['token'][$name_single]
-								= true;
-						}
-					}
-				}
-
-				// add_css_view
-				if ($this->_fieldData[$id]->add_css_view == 1)
-				{
-					$convert__ = true;
-					if (isset($this->_fieldData[$id]->css_view_decoded)
-						&& $this->_fieldData[$id]->css_view_decoded)
-					{
-						$convert__ = false;
-					}
-					CFactory::_('Customcode.Dispenser')->set(
-						$this->_fieldData[$id]->css_view,
-						'css_view',
-						$name_single,
-						null,
-						array('prefix' => PHP_EOL),
-						$convert__,
-						$convert__,
-						true
-					);
-					if (!isset($this->_fieldData[$id]->css_view_decoded))
-					{
-						$this->_fieldData[$id]->css_view_decoded = true;
-					}
-				}
-			}
-			// check if we should load scripts for list views
-			if (StringHelper::check($name_list)
-				&& !isset($this->customFieldScript[$name_list][$id]))
-			{
-				// add_javascript_views_footer
-				if ($this->_fieldData[$id]->add_javascript_views_footer == 1
-					&& StringHelper::check(
-						$this->_fieldData[$id]->javascript_views_footer
-					))
-				{
-					$convert__ = true;
-					if (isset($this->_fieldData[$id]->javascript_views_footer_decoded)
-						&& $this->_fieldData[$id]->javascript_views_footer_decoded)
-					{
-						$convert__ = false;
-					}
-					CFactory::_('Customcode.Dispenser')->set(
-						$this->_fieldData[$id]->javascript_views_footer,
-						'views_footer',
-						$name_single,
-						null,
-						array(
-							'table'  => 'field',
-							'id'     => (int) $id,
-							'field'  => 'javascript_views_footer',
-							'type'   => 'js',
-							'prefix' => PHP_EOL),
-						$convert__,
-						$convert__,
-						true
-					);
-					if (!isset($this->_fieldData[$id]->javascript_views_footer_decoded))
-					{
-						$this->_fieldData[$id]->javascript_views_footer_decoded
-							= true;
-					}
-					if (strpos(
-							$this->_fieldData[$id]->javascript_views_footer,
-							"token"
-						) !== false
-						|| strpos(
-							$this->_fieldData[$id]->javascript_views_footer,
-							"task=ajax"
-						) !== false)
-					{
-						if (!isset(CFactory::_('Customcode.Dispenser')->hub['token']))
-						{
-							CFactory::_('Customcode.Dispenser')->hub['token'] = [];
-						}
-						if (!isset(CFactory::_('Customcode.Dispenser')->hub['token'][$name_list])
-							|| !CFactory::_('Customcode.Dispenser')->hub['token'][$name_list])
-						{
-							CFactory::_('Customcode.Dispenser')->hub['token'][$name_list]
-								= true;
-						}
-					}
-				}
-				// add_css_views
-				if ($this->_fieldData[$id]->add_css_views == 1)
-				{
-					$convert__ = true;
-					if (isset($this->_fieldData[$id]->css_views_decoded)
-						&& $this->_fieldData[$id]->css_views_decoded)
-					{
-						$convert__ = false;
-					}
-					CFactory::_('Customcode.Dispenser')->set(
-						$this->_fieldData[$id]->css_views,
-						'css_views',
-						$name_single,
-						null,
-						array('prefix' => PHP_EOL),
-						$convert__,
-						$convert__,
-						true
-					);
-					if (!isset($this->_fieldData[$id]->css_views_decoded))
-					{
-						$this->_fieldData[$id]->css_views_decoded = true;
-					}
-				}
-			}
-			// add this only once to single view.
-			$this->customFieldScript[$name_single][$id] = true;
-			// add this only once to list view.
-			$this->customFieldScript[$name_list][$id] = true;
-		}
-		if ($id > 0 && isset($this->_fieldData[$id]))
-		{
-			// return the found field data
-			return $this->_fieldData[$id];
-		}
-
-		return false;
+		return CFactory::_('Field.Data')->get($id, $name_single, $name_list);
 	}
 
 	/**
@@ -4104,55 +3685,11 @@ class Get
 	 * @param   string  $amicably        The peaceful resolve
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Field')->set($field, $singleViewName, $listViewName, $amicably);
 	 */
-	public function setFieldDetails(&$field, $singleViewName = null,
-	                                $listViewName = null, $amicably = ''
-	)
+	public function setFieldDetails(&$field, $singleViewName = null, $listViewName = null, $amicably = '')
 	{
-		// set hash
-		static $hash = 123467890;
-		// load hash if not found
-		if (!isset($field['hash']))
-		{
-			$field['hash'] = md5($field['field'] . $hash);
-			// increment hash
-			$hash++;
-		}
-		// set the settings
-		if (!isset($field['settings']))
-		{
-			$field['settings'] = $this->getFieldData(
-				$field['field'], $singleViewName, $listViewName
-			);
-		}
-		// set real field name
-		if (!isset($field['base_name']))
-		{
-			$field['base_name'] = $this->getFieldName($field);
-		}
-		// set code name for field type
-		if (!isset($field['type_name']))
-		{
-			$field['type_name'] = $this->getFieldType($field);
-		}
-		// check if value is array
-		if (isset($field['permission'])
-			&& !ArrayHelper::check(
-				$field['permission']
-			)
-			&& is_numeric($field['permission'])
-			&& $field['permission'] > 0)
-		{
-			$field['permission'] = array($field['permission']);
-		}
-		// set unique name keeper
-		if ($listViewName)
-		{
-			$this->setUniqueNameCounter(
-				$field['base_name'], $listViewName . $amicably
-			);
-		}
+		CFactory::_('Field')->set($field, $singleViewName, $listViewName, $amicably);
 	}
 
 	/**
@@ -4174,7 +3711,7 @@ class Get
 				as $order_field
 			)
 			{
-				if (($order_field_name = $this->getFieldDatabaseName(
+				if (($order_field_name = CFactory::_('Field.Database.Name')->get(
 						$nameListCode, $order_field['field']
 					)) !== false)
 				{
@@ -4202,52 +3739,11 @@ class Get
 	 * @param   string  $targetArea    The area being targeted
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Field.Database.Name')->get($nameListCode, $fieldId, $targetArea);
 	 */
-	public function getFieldDatabaseName($nameListCode, int $fieldId,
-	                                     $targetArea = 'listBuilder'
-	)
+	public function getFieldDatabaseName($nameListCode, int $fieldId, $targetArea = 'builder.list')
 	{
-		if (isset($this->{$targetArea}[$nameListCode]))
-		{
-			if ($fieldId < 0)
-			{
-				switch ($fieldId)
-				{
-					case -1:
-						return 'a.id';
-					case -2:
-						return 'a.ordering';
-					case -3:
-						return 'a.published';
-				}
-			}
-			foreach ($this->{$targetArea}[$nameListCode] as $field)
-			{
-				if ($field['id'] == $fieldId)
-				{
-					// now check if this is a category
-					if ($field['type'] === 'category')
-					{
-						return 'c.title';
-					}
-					// set the custom code
-					elseif (ArrayHelper::check(
-						$field['custom']
-					))
-					{
-						return $field['custom']['db'] . "."
-							. $field['custom']['text'];
-					}
-					else
-					{
-						return 'a.' . $field['code'];
-					}
-				}
-			}
-		}
-
-		return false;
+		return CFactory::_('Field.Database.Name')->get($nameListCode, $fieldId, $targetArea);
 	}
 
 	/**
@@ -4256,92 +3752,11 @@ class Get
 	 * @param   object  $field  The field object
 	 *
 	 * @return  string   Success returns field type
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Field.Type.Name')->get($field);
 	 */
 	public function getFieldType(&$field)
 	{
-		// check if we have done this already
-		if (isset($field['type_name']))
-		{
-			return $field['type_name'];
-		}
-		// check that we have the poperties
-		if (isset($field['settings'])
-			&& ObjectHelper::check(
-				$field['settings']
-			)
-			&& isset($field['settings']->properties)
-			&& ArrayHelper::check(
-				$field['settings']->properties
-			))
-		{
-			// search for own custom fields
-			if (strpos($field['settings']->type_name, '@') !== false)
-			{
-				// set own custom field
-				$field['settings']->own_custom = $field['settings']->type_name;
-				$field['settings']->type_name  = 'Custom';
-			}
-			// set the type name
-			$type_name = TypeHelper::safe(
-				$field['settings']->type_name
-			);
-			// if custom (we must use the xml value)
-			if (strtolower($type_name) === 'custom'
-				|| strtolower($type_name) === 'customuser')
-			{
-				$type = TypeHelper::safe(
-					GetHelper::between(
-						$field['settings']->xml, 'type="', '"'
-					)
-				);
-			}
-			else
-			{
-				// loop over properties looking for the type value
-				foreach ($field['settings']->properties as $property)
-				{
-					if ($property['name']
-						=== 'type') // type field is never ajustable (unless custom)
-					{
-						// force the default value
-						if (isset($property['example'])
-							&& StringHelper::check(
-								$property['example']
-							))
-						{
-							$type = TypeHelper::safe(
-								$property['example']
-							);
-						}
-						// fall back on the xml settings (not ideal)
-						else
-						{
-							$type = TypeHelper::safe(
-								GetHelper::between(
-									$field['settings']->xml, 'type="', '"'
-								)
-							);
-						}
-						// exit foreach loop
-						break;
-					}
-				}
-			}
-			// check if the value is set
-			if (isset($type) && StringHelper::check($type))
-			{
-				return $type;
-			}
-			// fallback on type name set in name field (not ideal)
-			else
-			{
-				return $type_name;
-			}
-		}
-
-		// fall back to text
-		return 'text';
+		return CFactory::_('Field.Type.Name')->get($field);
 	}
 
 	/**
@@ -4352,147 +3767,11 @@ class Get
 	 * @param   string  $amicably      The peaceful resolve (for fields in subforms in same view :)
 	 *
 	 * @return  string   Success returns field name
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Field.Name')->get($field, $listViewName, $amicably);
 	 */
 	public function getFieldName(&$field, $listViewName = null, $amicably = '')
 	{
-		// return the unique name if already set
-		if (StringHelper::check($listViewName)
-			&& isset($field['hash'])
-			&& isset(
-				$this->uniqueFieldNames[$listViewName . $amicably
-				. $field['hash']]
-			))
-		{
-			return $this->uniqueFieldNames[$listViewName . $amicably
-			. $field['hash']];
-		}
-		// always make sure we have a field name and type
-		if (!isset($field['settings']) || !isset($field['settings']->type_name)
-			|| !isset($field['settings']->name))
-		{
-			return 'error';
-		}
-		// set the type name
-		$type_name = TypeHelper::safe(
-			$field['settings']->type_name
-		);
-		// set the name of the field
-		$name = FieldHelper::safe($field['settings']->name);
-		// check that we have the properties
-		if (ArrayHelper::check($field['settings']->properties))
-		{
-			foreach ($field['settings']->properties as $property)
-			{
-				if ($property['name'] === 'name')
-				{
-					// if category then name must be catid (only one per view)
-					if ($type_name === 'category')
-					{
-						// quick check if this is a category linked to view page
-						$requeSt_id = GetHelper::between(
-							$field['settings']->xml, 'name="', '"'
-						);
-						if (strpos($requeSt_id, '_request_id') !== false
-							|| strpos($requeSt_id, '_request_catid') !== false)
-						{
-							// keep it then, don't change
-							$name = CFactory::_('Placeholder')->update(
-								$requeSt_id, CFactory::_('Placeholder')->active
-							);
-						}
-						else
-						{
-							$name = 'catid';
-						}
-						// if list view name is set
-						if (StringHelper::check($listViewName))
-						{
-							// check if we should use another Text Name as this views name
-							$otherName  = CFactory::_('Placeholder')->update(
-								GetHelper::between(
-									$field['settings']->xml, 'othername="', '"'
-								), CFactory::_('Placeholder')->active
-							);
-							$otherViews = CFactory::_('Placeholder')->update(
-								GetHelper::between(
-									$field['settings']->xml, 'views="', '"'
-								), CFactory::_('Placeholder')->active
-							);
-							$otherView  = CFactory::_('Placeholder')->update(
-								GetHelper::between(
-									$field['settings']->xml, 'view="', '"'
-								), CFactory::_('Placeholder')->active
-							);
-							// This is to link other view category
-							if (StringHelper::check($otherName)
-								&& StringHelper::check(
-									$otherViews
-								)
-								&& StringHelper::check(
-									$otherView
-								))
-							{
-								// set other category details
-								$this->catOtherName[$listViewName] = array(
-									'name'  => FieldHelper::safe(
-										$otherName
-									),
-									'views' => StringHelper::safe(
-										$otherViews
-									),
-									'view'  => StringHelper::safe(
-										$otherView
-									)
-								);
-							}
-						}
-					}
-					// if tag is set then enable all tag options for this view (only one per view)
-					elseif ($type_name === 'tag')
-					{
-						$name = 'tags';
-					}
-					// if the field is set as alias it must be called alias
-					elseif (isset($field['alias']) && $field['alias'])
-					{
-						$name = 'alias';
-					}
-					else
-					{
-						// get value from xml
-						$xml = FieldHelper::safe(
-							CFactory::_('Placeholder')->update(
-								GetHelper::between(
-									$field['settings']->xml, 'name="', '"'
-								), CFactory::_('Placeholder')->active
-							)
-						);
-						// check if a value was found
-						if (StringHelper::check($xml))
-						{
-							$name = $xml;
-						}
-					}
-					// exit foreach loop
-					break;
-				}
-			}
-		}
-		// return the value unique
-		if (StringHelper::check($listViewName)
-			&& isset($field['hash']))
-		{
-			$this->uniqueFieldNames[$listViewName . $amicably . $field['hash']]
-				= $this->uniqueName($name, $listViewName . $amicably);
-
-			// now return the unique name
-			return $this->uniqueFieldNames[$listViewName . $amicably
-			. $field['hash']];
-		}
-
-		// fall back to global
-		return $name;
+		return CFactory::_('Field.Name')->get($field, $listViewName, $amicably);
 	}
 
 	/**
@@ -4502,26 +3781,11 @@ class Get
 	 * @param   string  $view  The name of the view
 	 *
 	 * @return  void
-	 *
+	 * @deprecated Use CFactory::_('Field.Unique.Name')->set($name, $view);
 	 */
 	protected function setUniqueNameCounter($name, $view)
 	{
-		if (!isset($this->uniqueNames[$view]))
-		{
-			$this->uniqueNames[$view]            = array();
-			$this->uniqueNames[$view]['counter'] = array();
-			$this->uniqueNames[$view]['names']   = array();
-		}
-		if (!isset($this->uniqueNames[$view]['counter'][$name]))
-		{
-			$this->uniqueNames[$view]['counter'][$name] = 1;
-
-			return;
-		}
-		// count how many times the field is used
-		$this->uniqueNames[$view]['counter'][$name]++;
-
-		return;
+		CFactory::_('Field.Unique.Name')->set($name, $view);
 	}
 
 	/**
@@ -4531,36 +3795,19 @@ class Get
 	 * @param   string  $view  The name of the view
 	 *
 	 * @return  string   the name
-	 *
+	 * @deprecated
 	 */
 	protected function uniqueName($name, $view)
 	{
-		// only increment if the field name is used multiple times
-		if (isset($this->uniqueNames[$view]['counter'][$name])
-			&& $this->uniqueNames[$view]['counter'][$name] > 1)
-		{
-			$counter = 1;
-			// set the unique name
-			$uniqueName = FieldHelper::safe(
-				$name . '_' . $counter
-			);
-			while (isset($this->uniqueNames[$view]['names'][$uniqueName]))
-			{
-				// increment the number
-				$counter++;
-				// try again
-				$uniqueName = FieldHelper::safe(
-					$name . '_' . $counter
-				);
-			}
-			// set the new name number
-			$this->uniqueNames[$view]['names'][$uniqueName] = $counter;
-
-			// return the unique name
-			return $uniqueName;
-		}
-
-		return $name;
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
@@ -4602,7 +3849,7 @@ class Get
 					foreach ($results as $_nr => &$result)
 					{
 						// Trigger Event: jcb_ce_onBeforeModelDynamicGetData
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onBeforeModelDynamicGetData',
 							array(&$this->componentContext, &$result, &$result->id, &$view_code, &$context)
 						);
@@ -5117,7 +4364,7 @@ class Get
 							$result->plugin_events = '';
 						}
 						// Trigger Event: jcb_ce_onAfterModelDynamicGetData
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterModelDynamicGetData',
 							array(&$this->componentContext, &$result, &$result->id, &$view_code, &$context)
 						);
@@ -5475,83 +4722,12 @@ class Get
 	 * @param   string  $type  The type of item
 	 * @param   int     $id    The item ID
 	 *
-	 * @return  oject    The history
-	 *
+	 * @return  object    The history
+	 * @deprecated 3.3 Use CFactory::_('History')->get($type, $id);
 	 */
 	protected function getHistoryWatch($type, $id)
 	{
-		// quick class object to store old history object
-		$this->tmpHistory = null;
-		// Create a new query object.
-		$query = $this->db->getQuery(true);
-
-		$query->select('h.*');
-		$query->from('#__ucm_history AS h');
-		$query->where(
-			$this->db->quoteName('h.ucm_item_id') . ' = ' . (int) $id
-		);
-		// Join over the content type for the type id
-		$query->join(
-			'LEFT', '#__content_types AS ct ON ct.type_id = h.ucm_type_id'
-		);
-		$query->where(
-			'ct.type_alias = ' . $this->db->quote(
-				'com_componentbuilder.' . $type
-			)
-		);
-		$query->order('h.save_date DESC');
-		$this->db->setQuery($query, 0, 1);
-		$this->db->execute();
-		if ($this->db->getNumRows())
-		{
-			// new version of this item found
-			// so we need to mark it as the last compiled version
-			$newActive = $this->db->loadObject();
-			// set the new version watch
-			$this->setHistoryWatch($newActive, 1);
-		}
-		// Get last compiled verion
-		$query = $this->db->getQuery(true);
-
-		$query->select('h.*');
-		$query->from('#__ucm_history AS h');
-		$query->where(
-			$this->db->quoteName('h.ucm_item_id') . ' = ' . (int) $id
-		);
-		$query->where('h.keep_forever = 1');
-		$query->where('h.version_note LIKE ' . $this->db->quote('%component%'));
-		// make sure it does not return the active version
-		if (isset($newActive) && isset($newActive->version_id))
-		{
-			$query->where('h.version_id != ' . (int) $newActive->version_id);
-		}
-		// Join over the content type for the type id
-		$query->join(
-			'LEFT', '#__content_types AS ct ON ct.type_id = h.ucm_type_id'
-		);
-		$query->where(
-			'ct.type_alias = ' . $this->db->quote(
-				'com_componentbuilder.' . $type
-			)
-		);
-		$query->order('h.save_date DESC');
-		$this->db->setQuery($query);
-		$this->db->execute();
-		if ($this->db->getNumRows())
-		{
-			// the old active version was found
-			// so we may need to do an SQL update
-			// and unmark the old compiled version
-			$oldActives = $this->db->loadObjectList();
-			foreach ($oldActives as $oldActive)
-			{
-				// remove old version watch
-				$this->setHistoryWatch($oldActive, 0);
-			}
-		}
-
-		// return the last used history record or null.
-		return $this->tmpHistory;
+		return CFactory::_('History')->get($type, $id);
 	}
 
 	/**
@@ -5564,73 +4740,19 @@ class Get
 	 * @param   string  $type    The type of item
 	 *
 	 * @return  bool
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function setHistoryWatch($object, $action)
 	{
-		// check the note
-		if (JsonHelper::check($object->version_note))
-		{
-			$version_note = json_decode($object->version_note, true);
-		}
-		else
-		{
-			$version_note = array('component' => array());
-		}
-		// set watch
-		switch ($action)
-		{
-			case 0:
-				// remove watch
-				if (isset($version_note['component'])
-					&& ($key = array_search(
-						CFactory::_('Config')->component_id, $version_note['component']
-					)) !== false)
-				{
-					// last version that was used to build/compile
-					$this->tmpHistory = json_decode($object->version_data);
-					// remove it from this component
-					unset($version_note['component'][$key]);
-				}
-				else
-				{
-					// since it was not found, no need to update anything
-					return true;
-				}
-				break;
-			case 1:
-				// add watch
-				if (!in_array(CFactory::_('Config')->component_id, $version_note['component']))
-				{
-					$version_note['component'][] = CFactory::_('Config')->component_id;
-				}
-				else
-				{
-					// since it is there already, no need to update anything
-					return true;
-				}
-				break;
-		}
-		// check if we need to still keep this locked
-		if (isset($version_note['component'])
-			&& ArrayHelper::check($version_note['component']))
-		{
-			// insure component ids are only added once per item
-			$version_note['component'] = array_unique(
-				$version_note['component']
-			);
-			// we may change this, little risky (but since JCB does not have history notes it should be okay for now)
-			$object->version_note = json_encode($version_note);
-			$object->keep_forever = '1';
-		}
-		else
-		{
-			$object->version_note = '';
-			$object->keep_forever = '0';
-		}
-
-		// run the update
-		return $this->db->updateObject('#__ucm_history', $object, 'version_id');
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
@@ -6212,7 +5334,7 @@ class Get
 							function ($array) {
 								$array['alias']    = 0;
 								$array['title']    = 0;
-								$array['settings'] = $this->getFieldData(
+								$array['settings'] = CFactory::_('Field.Data')->get(
 									$array['field']
 								);
 
@@ -8134,7 +7256,7 @@ class Get
 									$field['alias'] = 0;
 									$field['title'] = 0;
 									// set the field details
-									$this->setFieldDetails(
+									CFactory::_('Field')->set(
 										$field, $key, $key, $unique
 									);
 									// update the default if set
@@ -8196,7 +7318,7 @@ class Get
 								foreach ($form['fields'] as $field)
 								{
 									// so first we lock the field name in
-									$this->getFieldName(
+									CFactory::_('Field.Name')->get(
 										$field, $module->key, $unique
 									);
 									// add the fields to the global form file builder
@@ -8223,7 +7345,7 @@ class Get
 								foreach ($form['fields'] as $field)
 								{
 									// so first we lock the field name in
-									$this->getFieldName(
+									CFactory::_('Field.Name')->get(
 										$field, $module->key, $unique
 									);
 									// add the fields to the config builder
@@ -9002,7 +8124,7 @@ class Get
 									$field['alias'] = 0;
 									$field['title'] = 0;
 									// set the field details
-									$this->setFieldDetails(
+									CFactory::_('Field')->set(
 										$field, $key, $key, $unique
 									);
 									// update the default if set
@@ -9064,7 +8186,7 @@ class Get
 								foreach ($form['fields'] as $field)
 								{
 									// so first we lock the field name in
-									$this->getFieldName(
+									CFactory::_('Field.Name')->get(
 										$field, $plugin->key, $unique
 									);
 									// add the fields to the global form file builder
@@ -9091,7 +8213,7 @@ class Get
 								foreach ($form['fields'] as $field)
 								{
 									// so first we lock the field name in
-									$this->getFieldName(
+									CFactory::_('Field.Name')->get(
 										$field, $plugin->key, $unique
 									);
 									// add the fields to the config builder

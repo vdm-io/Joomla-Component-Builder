@@ -33,10 +33,10 @@ class ComponentbuilderModelPower extends AdminModel
 				'name',
 				'description',
 				'extends',
-				'implements_custom',
-				'implements',
-				'namespace',
 				'extends_custom',
+				'implements',
+				'implements_custom',
+				'namespace',
 				'add_head'
 			),
 			'right' => array(

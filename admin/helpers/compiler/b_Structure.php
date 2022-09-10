@@ -436,7 +436,7 @@ class Structure extends Get
 			// set the Joomla Version Data
 			$this->joomlaVersionData = $this->setJoomlaVersionData();
 			// Trigger Event: jcb_ce_onAfterSetJoomlaVersionData
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterSetJoomlaVersionData',
 				array(&$this->componentContext, &$this->joomlaVersionData)
 			);
@@ -477,7 +477,7 @@ class Structure extends Get
 			// for plugin event TODO change event api signatures
 			$this->powers = CFactory::_('Power')->active;
 			// Trigger Event: jcb_ce_onBeforeSetModules
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildPowers',
 				array(&$this->componentContext, &$this->powers)
 			);
@@ -590,7 +590,7 @@ class Structure extends Get
 		if (ArrayHelper::check($this->joomlaModules))
 		{
 			// Trigger Event: jcb_ce_onBeforeSetModules
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildModules',
 				array(&$this->componentContext, &$this->joomlaModules)
 			);
@@ -1171,7 +1171,7 @@ class Structure extends Get
 		if (ArrayHelper::check($this->joomlaPlugins))
 		{
 			// Trigger Event: jcb_ce_onBeforeSetPlugins
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildPlugins',
 				array(&$this->componentContext, &$this->joomlaPlugins)
 			);
@@ -1587,7 +1587,7 @@ class Structure extends Get
 		if (ArrayHelper::check($this->libraries))
 		{
 			// Trigger Event: jcb_ce_onBeforeSetLibraries
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeSetLibraries',
 				array(&$this->componentContext, &$this->libraries)
 			);
@@ -2495,11 +2495,11 @@ class Structure extends Get
 				}
 			}
 			// check if this has validation that should be moved
-			if (isset($this->validationLinkedFields[$field['field']]))
+			if (CFactory::_('Registry')->get('validation.linked.' . $field['field']) !== null)
 			{
 				$check = md5(
 					$path . 'rule'
-					. $this->validationLinkedFields[$field['field']]
+					. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
 				);
 				// lets check if we already moved this
 				if (!isset($this->extentionTrackingFilesMoved[$check]))
@@ -2507,16 +2507,16 @@ class Structure extends Get
 					// check files exist
 					if (File::exists(
 						$this->componentPath . '/admin/models/rules/'
-						. $this->validationLinkedFields[$field['field']]
+						. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
 						. '.php'
 					))
 					{
 						// copy the custom field
 						File::copy(
 							$this->componentPath . '/admin/models/rules/'
-							. $this->validationLinkedFields[$field['field']]
+							. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
 							. '.php', $path . '/rules/'
-							. $this->validationLinkedFields[$field['field']]
+							. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
 							. '.php'
 						);
 					}
@@ -2555,7 +2555,7 @@ class Structure extends Get
 				// setup the field
 				$field          = array();
 				$field['field'] = $id;
-				$this->setFieldDetails($field);
+				CFactory::_('Field')->set($field);
 				// move field and rules if needed
 				$this->moveFieldsRules($field, $path);
 			}

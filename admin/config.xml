@@ -678,16 +678,6 @@
 			size="60"
 			default=""
 		/>
-		<field type="note" name="medium_key_note" class="alert alert-info" label="COM_COMPONENTBUILDER_CONFIG_MEDIUM_KEY_NOTE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_MEDIUM_KEY_NOTE_DESC" />
-		<field name="medium_key_path"
-			type="text"
-			label="COM_COMPONENTBUILDER_CONFIG_MEDIUM_KEY_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_MEDIUM_KEY_DESC"
-			size="160"
-			filter="PATH"
-			hint="/home/user/hiddenfolder123/"
-			default=""
-		/>
 	</fieldset>
 	<fieldset
 		name="compiler_custom_config"

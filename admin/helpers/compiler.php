@@ -123,7 +123,7 @@ class Compiler extends Infusion
 				$this->writeFile($xmlPath, $componentXML);
 			}
 			// Trigger Event: jcb_ce_onBeforeUpdateFiles
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeUpdateFiles',
 				array(&$this->componentContext, &$this)
 			);
@@ -133,7 +133,7 @@ class Compiler extends Infusion
 				return false;
 			}
 			// Trigger Event: jcb_ce_onBeforeGetCustomCode
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeGetCustomCode',
 				array(&$this->componentContext, &$this)
 			);
@@ -141,7 +141,7 @@ class Compiler extends Infusion
 			if (CFactory::_('Customcode')->get())
 			{
 				// Trigger Event: jcb_ce_onBeforeAddCustomCode
-				CFactory::_J('Event')->trigger(
+				CFactory::_('Event')->trigger(
 					'jcb_ce_onBeforeAddCustomCode',
 					array(&$this->componentContext, &$this)
 				);
@@ -149,7 +149,7 @@ class Compiler extends Infusion
 				$this->addCustomCode();
 			}
 			// Trigger Event: jcb_ce_onBeforeSetLangFileData
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeSetLangFileData',
 				array(&$this->componentContext, &$this)
 			);
@@ -627,7 +627,7 @@ class Compiler extends Infusion
 	protected function setFileContent(&$name, &$path, &$bom, $view = null)
 	{
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeSetFileContent',
 			array(&$this->componentContext, &$name, &$path, &$bom, &$view)
 		);
@@ -642,7 +642,7 @@ class Compiler extends Infusion
 		// get content of the file
 		$string = ComponentbuilderHelper::getFileContents($path);
 		// Trigger Event: jcb_ce_onGetFileContents
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onGetFileContents',
 			array(&$this->componentContext, &$string, &$name, &$path, &$bom,
 			      &$view)
@@ -670,7 +670,7 @@ class Compiler extends Infusion
 			$answer = CFactory::_('Customcode')->update($answer);
 		}
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeWriteFileContent',
 			array(&$this->componentContext, &$answer, &$name, &$path, &$bom,
 			      &$view)
@@ -983,7 +983,7 @@ class Compiler extends Infusion
 				. $this->componentData->sales_name . '__joomla_'
 				. CFactory::_('Config')->get('version', 3);
 			// Trigger Event: jcb_ce_onBeforeUpdateRepo
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeUpdateRepo',
 				array(&$this->componentContext, &$this->componentPath,
 				      &$repoFullPath, &$this->componentData)
@@ -993,7 +993,7 @@ class Compiler extends Infusion
 			// set the new data
 			Folder::copy($this->componentPath, $repoFullPath, '', true);
 			// Trigger Event: jcb_ce_onAfterUpdateRepo
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterUpdateRepo',
 				array(&$this->componentContext, &$this->componentPath,
 				      &$repoFullPath, &$this->componentData)
@@ -1014,7 +1014,7 @@ class Compiler extends Infusion
 							. $module->folder_name . '__joomla_'
 							. CFactory::_('Config')->get('version', 3);
 						// Trigger Event: jcb_ce_onBeforeUpdateRepo
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onBeforeUpdateRepo',
 							array(&$module_context, &$module->folder_path,
 							      &$repoFullPath, &$module)
@@ -1028,7 +1028,7 @@ class Compiler extends Infusion
 							$module->folder_path, $repoFullPath, '', true
 						);
 						// Trigger Event: jcb_ce_onAfterUpdateRepo
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterUpdateRepo',
 							array(&$module_context, &$module->folder_path,
 							      &$repoFullPath, &$module)
@@ -1051,7 +1051,7 @@ class Compiler extends Infusion
 							. $plugin->folder_name . '__joomla_'
 							. CFactory::_('Config')->get('version', 3);
 						// Trigger Event: jcb_ce_onBeforeUpdateRepo
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onBeforeUpdateRepo',
 							array(&$plugin_context, &$plugin->folder_path,
 							      &$repoFullPath, &$plugin)
@@ -1065,7 +1065,7 @@ class Compiler extends Infusion
 							$plugin->folder_path, $repoFullPath, '', true
 						);
 						// Trigger Event: jcb_ce_onAfterUpdateRepo
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterUpdateRepo',
 							array(&$plugin_context, &$plugin->folder_path,
 							      &$repoFullPath, &$plugin)
@@ -1084,7 +1084,7 @@ class Compiler extends Infusion
 		$this->filepath['component'] = $this->tempPath . '/'
 			. $this->filepath['component-folder'] . '.zip';
 		// Trigger Event: jcb_ce_onBeforeZipComponent
-		CFactory::_J('Event')->trigger(
+		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeZipComponent',
 			array(&$this->componentContext, &$this->componentPath,
 			      &$this->filepath['component'], &$this->tempPath,
@@ -1099,7 +1099,7 @@ class Compiler extends Infusion
 			if ($this->backupPath && $this->dynamicIntegration)
 			{
 				// Trigger Event: jcb_ce_onBeforeBackupZip
-				CFactory::_J('Event')->trigger(
+				CFactory::_('Event')->trigger(
 					'jcb_ce_onBeforeBackupZip', array(&$this->componentContext,
 					                                  &$this->filepath['component'],
 					                                  &$this->tempPath,
@@ -1121,7 +1121,7 @@ class Compiler extends Infusion
 				if (isset($this->componentData->sales_server))
 				{
 					// Trigger Event: jcb_ce_onBeforeMoveToServer
-					CFactory::_J('Event')->trigger(
+					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeMoveToServer',
 						array(&$this->componentContext,
 						      &$this->filepath['component'], &$this->tempPath,
@@ -1137,7 +1137,7 @@ class Compiler extends Infusion
 				}
 			}
 			// Trigger Event: jcb_ce_onAfterZipComponent
-			CFactory::_J('Event')->trigger(
+			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterZipComponent',
 				array(&$this->componentContext, &$this->filepath['component'],
 				      &$this->tempPath, &$this->componentFolderName,
@@ -1176,7 +1176,7 @@ class Compiler extends Infusion
 					$this->filepath['modules'][$module->id] = $this->tempPath
 						. '/' . $module->zip_name . '.zip';
 					// Trigger Event: jcb_ce_onBeforeZipModule
-					CFactory::_J('Event')->trigger(
+					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeZipModule',
 						array(&$module_context, &$module->folder_path,
 						      &$this->filepath['modules'][$module->id],
@@ -1193,7 +1193,7 @@ class Compiler extends Infusion
 						{
 							$__module_context = 'module.' . $module_context;
 							// Trigger Event: jcb_ce_onBeforeBackupZip
-							CFactory::_J('Event')->trigger(
+							CFactory::_('Event')->trigger(
 								'jcb_ce_onBeforeBackupZip',
 								array(&$__module_context,
 								      &$this->filepath['modules'][$module->id],
@@ -1215,7 +1215,7 @@ class Compiler extends Infusion
 							if (isset($module->sales_server))
 							{
 								// Trigger Event: jcb_ce_onBeforeMoveToServer
-								CFactory::_J('Event')->trigger(
+								CFactory::_('Event')->trigger(
 									'jcb_ce_onBeforeMoveToServer',
 									array(&$__module_context,
 									      &$this->filepath['modules'][$module->id],
@@ -1232,7 +1232,7 @@ class Compiler extends Infusion
 							}
 						}
 						// Trigger Event: jcb_ce_onAfterZipModule
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterZipModule', array(&$module_context,
 							                                 &$this->filepath['modules'][$module->id],
 							                                 &$this->tempPath,
@@ -1270,7 +1270,7 @@ class Compiler extends Infusion
 					$this->filepath['plugins'][$plugin->id] = $this->tempPath
 						. '/' . $plugin->zip_name . '.zip';
 					// Trigger Event: jcb_ce_onBeforeZipPlugin
-					CFactory::_J('Event')->trigger(
+					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeZipPlugin',
 						array(&$plugin_context, &$plugin->folder_path,
 						      &$this->filepath['plugins'][$plugin->id],
@@ -1287,7 +1287,7 @@ class Compiler extends Infusion
 						{
 							$__plugin_context = 'plugin.' . $plugin_context;
 							// Trigger Event: jcb_ce_onBeforeBackupZip
-							CFactory::_J('Event')->trigger(
+							CFactory::_('Event')->trigger(
 								'jcb_ce_onBeforeBackupZip',
 								array(&$__plugin_context,
 								      &$this->filepath['plugins'][$plugin->id],
@@ -1309,7 +1309,7 @@ class Compiler extends Infusion
 							if (isset($plugin->sales_server))
 							{
 								// Trigger Event: jcb_ce_onBeforeMoveToServer
-								CFactory::_J('Event')->trigger(
+								CFactory::_('Event')->trigger(
 									'jcb_ce_onBeforeMoveToServer',
 									array(&$__plugin_context,
 									      &$this->filepath['plugins'][$plugin->id],
@@ -1326,7 +1326,7 @@ class Compiler extends Infusion
 							}
 						}
 						// Trigger Event: jcb_ce_onAfterZipPlugin
-						CFactory::_J('Event')->trigger(
+						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterZipPlugin', array(&$plugin_context,
 							                                 &$this->filepath['plugins'][$plugin->id],
 							                                 &$this->tempPath,
