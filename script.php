@@ -6755,7 +6755,7 @@ class com_componentbuilderInstallerScript
 			{
 				$rule_length = $db->loadResult();
 				// Check the size of the rules column
-				if ($rule_length <= 96960)
+				if ($rule_length <= 97440)
 				{
 					// Fix the assets table rules column size
 					$fix_rules_size = "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control. Enlarged to MEDIUMTEXT by JCB';";

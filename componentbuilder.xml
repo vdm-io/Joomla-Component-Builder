@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="4" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>10th September, 2022</creationDate>
+	<creationDate>14th September, 2022</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>joomla@vdm.io</authorEmail>
 	<authorUrl>https://dev.vdm.io</authorUrl>
@@ -74,6 +74,7 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 		<submenu>
 			<!-- Instead of link you can specify individual link attributes -->
 			<menu option="com_componentbuilder" view="compiler">COM_COMPONENTBUILDER_MENU_COMPILER</menu>
+			<menu option="com_componentbuilder" view="search">COM_COMPONENTBUILDER_MENU_SEARCH</menu>
 			<menu option="com_componentbuilder" view="joomla_components">COM_COMPONENTBUILDER_MENU_JOOMLA_COMPONENTS</menu>
 			<menu option="com_componentbuilder" view="joomla_modules">COM_COMPONENTBUILDER_MENU_JOOMLA_MODULES</menu>
 			<menu option="com_componentbuilder" view="joomla_plugins">COM_COMPONENTBUILDER_MENU_JOOMLA_PLUGINS</menu>

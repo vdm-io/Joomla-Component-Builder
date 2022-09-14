@@ -44,9 +44,9 @@ abstract class Path
 		{
 			foreach ($targets as $target)
 			{
-				if (isset($values[$target]) && strpos($values[$target], '\\') !== false)
+				if (isset($values[$target]))
 				{
-					$values[$target] = str_replace('\\', '/', $values[$target]);
+					self::fix($values[$target], $targets);
 				}
 			}
 		}

@@ -1307,10 +1307,7 @@ class Get
 		);
 
 		// load the global placeholders
-		if (ArrayHelper::check($this->globalPlaceholders))
-		{
-			CFactory::_('Placeholder')->active = $this->globalPlaceholders;
-		}
+		CFactory::_('Placeholder')->active = CFactory::_('Component.Placeholder')->get();
 
 		// set component sales name
 		$component->sales_name = StringHelper::safe(
@@ -7567,7 +7564,7 @@ class Get
 				CFactory::_('Config')->build_target = $_backup_target;
 				CFactory::_('Config')->lang_target = $_backup_lang;
 				$this->langPrefix = $_backup_langPrefix;
-				CFactory::_('Config')->set('lang_prefix', $_backup_langPrefix);
+				CFactory::_('Config')->lang_prefix = $_backup_langPrefix;
 
 				unset(
 					CFactory::_('Placeholder')->active[Placefix::_('Module_name')]
@@ -7816,15 +7813,14 @@ class Get
 				$plugin->official_name = ucwords(
 					$plugin->group . ' - ' . $plugin->name
 				);
-				// set langPrefix
-				$this->langPrefix
-					= PluginHelper::safeLangPrefix(
-						$plugin->code_name,
-						$plugin->group
-				);
-				CFactory::_('Config')->set('lang_prefix', $this->langPrefix);
 				// set lang prefix
-				$plugin->lang_prefix = CFactory::_('Config')->lang_prefix;
+				$plugin->lang_prefix = PluginHelper::safeLangPrefix(
+					$plugin->code_name,
+					$plugin->group
+				);
+				// set langPrefix
+				CFactory::_('Config')->lang_prefix = $plugin->lang_prefix;
+				$this->langPrefix = $plugin->lang_prefix;
 				// set plugin class name
 				$plugin->class_name
 					= PluginHelper::safeClassName(

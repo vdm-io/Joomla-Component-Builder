@@ -24106,17 +24106,9 @@ class Interpretation extends Fields
 				$placeholders[Placefix::_('views')]
 				              = $nameListCode;
 				// load the global placeholders
-				if (ArrayHelper::check(
-					$this->globalPlaceholders
-				))
+				foreach (CFactory::_('Component.Placeholder')->get() as $globalPlaceholder => $gloabalValue)
 				{
-					foreach (
-						$this->globalPlaceholders as $globalPlaceholder =>
-						$gloabalValue
-					)
-					{
-						$placeholders[$globalPlaceholder] = $gloabalValue;
-					}
+					$placeholders[$globalPlaceholder] = $gloabalValue;
 				}
 				$view     = '';
 				$viewType = 0;
@@ -29015,10 +29007,12 @@ function vdm_dkim() {
 	public function getExtensionFieldsetXML(&$extension, &$fields, $dbkey = 'zz'
 	)
 	{
+		// get global placeholders
+		$placeholder = CFactory::_('Component.Placeholder')->get();
 		// build the fieldset
 		return $this->getFieldsetXML(
 			$fields, $extension->lang_prefix, $extension->key, $extension->key,
-			$this->globalPlaceholders, $dbkey
+			$placeholder, $dbkey
 		);
 	}
 

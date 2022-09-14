@@ -1,4 +1,3 @@
-<?php
 /**
  * @package    Joomla.Component.Builder
  *
@@ -9,23 +8,6 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component;
+/* CSS Document */
 
-
-/**
- * Component Placeholder Interface
- * 
- * @since 3.2.0
- */
-interface PlaceholderInterface
-{
-	/**
-	 * get all System Placeholders
-	 *
-	 * @return  array The global placeholders
-	 *
-	 * @since 3.2.0
-	 */
-	public function get(): array;
-}
 

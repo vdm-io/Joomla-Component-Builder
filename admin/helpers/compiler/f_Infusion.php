@@ -324,17 +324,13 @@ class Infusion extends Interpretation
 				= $this->addEmailHelper();
 
 			// load the global placeholders
-			if (ArrayHelper::check($this->globalPlaceholders))
+			foreach (CFactory::_('Component.Placeholder')->get() as $globalPlaceholder =>
+				$gloabalValue
+			)
 			{
-				foreach (
-					$this->globalPlaceholders as $globalPlaceholder =>
-					$gloabalValue
-				)
-				{
-					$this->fileContentStatic[$globalPlaceholder]
-						= $gloabalValue;
-				}
+				$this->fileContentStatic[$globalPlaceholder] = $gloabalValue;
 			}
+
 			// reset view array
 			$viewarray            = array();
 			$site_edit_view_array = array();
@@ -1168,6 +1164,10 @@ class Infusion extends Interpretation
 				// for plugin event TODO change event api signatures
 				CFactory::_('Placeholder')->active = $this->placeholders;
 			}
+
+			// all fields stored in database
+			$this->fileContentStatic[Placefix::_h('ARRAY_ALL_SEARCH_FIELDS')] =
+				CFactory::_('Registry')->varExport('all_search_fields', 1);
 
 			// setup the layouts
 			$this->setCustomViewLayouts();

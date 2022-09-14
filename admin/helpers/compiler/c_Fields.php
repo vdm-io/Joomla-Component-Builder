@@ -3954,7 +3954,7 @@ class Fields extends Structure
 		}
 		// now build the layout
 		if (StringHelper::check($tabName)
-			&& $tabName != 'publishing')
+			&& strtolower($tabName) != 'publishing')
 		{
 			$this->tabCounter[$nameSingleCode][(int) $field['tab']]
 				= $tabName;
@@ -5032,6 +5032,8 @@ class Fields extends Structure
 					$this->buildSiteFieldData(
 						$nameSingleCode, $name, 'json', $typeName
 					);
+					// add open close method to field data
+					$field['store'] = 'json';
 					break;
 				case 2:
 					// BASE_SIXTY_FOUR
@@ -5040,6 +5042,8 @@ class Fields extends Structure
 					$this->buildSiteFieldData(
 						$nameSingleCode, $name, 'base64', $typeName
 					);
+					// add open close method to field data
+					$field['store'] = 'base64';
 					break;
 				case 3:
 					// BASIC_ENCRYPTION_LOCALKEY
@@ -5048,6 +5052,8 @@ class Fields extends Structure
 					$this->buildSiteFieldData(
 						$nameSingleCode, $name, 'basic_encryption', $typeName
 					);
+					// add open close method to field data
+					$field['store'] = 'basic_encryption';
 					break;
 				case 4:
 					// WHMCS_ENCRYPTION_VDMKEY (DUE REMOVAL)
@@ -5056,6 +5062,8 @@ class Fields extends Structure
 					$this->buildSiteFieldData(
 						$nameSingleCode, $name, 'whmcs_encryption', $typeName
 					);
+					// add open close method to field data
+					$field['store'] = 'whmcs_encryption';
 					break;
 				case 5:
 					// MEDIUM_ENCRYPTION_LOCALFILE
@@ -5064,6 +5072,8 @@ class Fields extends Structure
 					$this->buildSiteFieldData(
 						$nameSingleCode, $name, 'medium_encryption', $typeName
 					);
+					// add open close method to field data
+					$field['store'] = 'medium_encryption';
 					break;
 				case 6:
 					// EXPERT_MODE
@@ -5096,6 +5106,8 @@ class Fields extends Structure
 					);
 					// no londer add the json again (already added)
 					$subformJsonSwitch = false;
+					// add open close method to field data
+					$field['store'] = 'json';
 					break;
 			}
 			// just a heads-up for usergroups set to multiple
@@ -5286,6 +5298,22 @@ class Fields extends Structure
 			$tabName = 'publishing';
 		}
 		$this->setLayoutBuilder($nameSingleCode, $tabName, $name, $field);
+
+		// only load fields we want to search
+		if ($dbSwitch && ComponentbuilderHelper::fieldCheck($typeName, 'search'))
+		{
+			// load a search array of view, field, and [encryption, type, tab]
+			CFactory::_('Registry')->set('all_search_fields.' . $nameSingleCode . '.' . $name,
+				[
+					'name' => $name,
+					'type' => $typeName,
+					'title' => (isset($this->titleBuilder[$nameSingleCode]) && $name === $this->titleBuilder[$nameSingleCode]) ? true : false,
+					'list' => $nameListCode,
+					'store' => (isset($field['store'])) ? $field['store'] : null,
+					'tab_name' => $tabName
+				]
+			);
+		}
 	}
 
 	/**
@@ -5384,15 +5412,9 @@ class Fields extends Structure
 				$replace[$replacekey] = $replacevalue;
 			}
 			// load the global placeholders
-			if (ArrayHelper::check($this->globalPlaceholders))
+			foreach (CFactory::_('Component.Placeholder')->get() as $globalPlaceholder => $gloabalValue)
 			{
-				foreach (
-					$this->globalPlaceholders as $globalPlaceholder =>
-					$gloabalValue
-				)
-				{
-					$replace[$globalPlaceholder] = $gloabalValue;
-				}
+				$replace[$globalPlaceholder] = $gloabalValue;
 			}
 			// start loading the field type
 			$this->fileContentDynamic['customfield_' . $data['type']] = array();

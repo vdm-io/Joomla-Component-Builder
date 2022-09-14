@@ -3547,6 +3547,9 @@ abstract class ComponentbuilderHelper
 		),
 		'special' => array(
 			'contentlanguage', 'moduleposition', 'plugin', 'repeatable', 'subform'
+		),
+		'search' => array(
+			'editor', 'email', 'tel', 'text', 'textarea', 'url', 'subform'
 		)
 	);
 

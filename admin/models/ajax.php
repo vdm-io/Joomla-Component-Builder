@@ -14,8 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
-use Joomla\Registry\Registry;
-use VDM\Gitea\Gitea;
+
+use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 
 /**
  * Componentbuilder Ajax List Model
@@ -3603,6 +3603,82 @@ class ComponentbuilderModelAjax extends ListModel
 		}
 		return false;
 	}
+
+	// Used in search
+	/**
+	 * Search for value in a table
+	 *
+	 * @param   string           $tableName    The main table to search
+	 * @param   string           $searchValue  The value to search for
+	 * @param   int               $matchCase  The switch to control match case
+	 * @param   int               $wholeWord  The switch to control whole word
+	 * @param   int               $regexSearch  The switch to control regex search
+	 * @param   int               $componentId  The option to filter by component
+	 *
+	 * @return  array|null
+	 * @since   3.2.0
+	 **/
+	public function searchTable(string $tableName, string $searchValue,
+		int $matchCase, int $wholeWord, int $regexSearch, int $componentId): ?array
+	{
+		// check if this is a valid table
+		if (SearchFactory('Table')->exist($tableName))
+		{
+			// load the configurations
+			SearchFactory('Config')->table_name = $tableName;
+			SearchFactory('Config')->search_value = $searchValue;
+			SearchFactory('Config')->match_case = $matchCase;
+			SearchFactory('Config')->whole_word = $wholeWord;
+			SearchFactory('Config')->regex_search = $regexSearch;
+			SearchFactory('Config')->component_id = $componentId;
+
+			if (($items = SearchFactory('Agent')->find()) !== null)
+			{
+				return ['success' => JText::sprintf('COM_COMPONENTBUILDER_WE_FOUND_SOME_INSTANCES_IN_S', $tableName), 'items' => $items];
+			}
+
+			return ['success' => JText::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_S', $tableName)];
+		}
+
+		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
+	}
+
+	/**
+	 * Search and replace value in a table
+	 *
+	 * @param   string           $tableName    The main table to search
+	 * @param   string           $searchValue  The value to search for
+	 * @param   string|null     $replaceValue  The value to replace search value
+	 * @param   int               $matchCase  The switch to control match case
+	 * @param   int               $wholeWord  The switch to control whole word
+	 * @param   int               $regexSearch  The switch to control regex search
+	 * @param   int               $componentId  The option to filter by component
+	 *
+	 * @return  array|null
+	 * @since   3.2.0
+	 **/
+	public function updateTable(string $tableName, string $searchValue, ?string $replaceValue = null,
+		int $matchCase, int $wholeWord, int $regexSearch, int $componentId): ?array
+	{
+		// check if this is a valid table
+		if (SearchFactory('Table')->exist($tableName))
+		{
+			// load the configurations
+			SearchFactory('Config')->table_name = $tableName;
+			SearchFactory('Config')->search_value = $searchValue;
+			SearchFactory('Config')->replace_value = $replaceValue;
+			SearchFactory('Config')->match_case = $matchCase;
+			SearchFactory('Config')->whole_word = $wholeWord;
+			SearchFactory('Config')->regex_search = $regexSearch;
+			SearchFactory('Config')->component_id = $componentId;
+
+			SearchFactory('Agent')->replace();
+
+			return ['success' => JText::sprintf('COM_COMPONENTBUILDER_ALL_FOUND_INSTANCES_IN_S_WHERE_REPLACED', $tableName)];
+		}
+		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
+	}
+
 
 	// Used in get_snippets
 

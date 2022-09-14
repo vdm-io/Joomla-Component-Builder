@@ -3550,6 +3550,9 @@ abstract class ComponentbuilderHelper
 		),
 		'special' => array(
 			'contentlanguage', 'moduleposition', 'plugin', 'repeatable', 'subform'
+		),
+		'search' => array(
+			'editor', 'email', 'tel', 'text', 'textarea', 'url', 'subform'
 		)
 	);
 
@@ -6317,6 +6320,11 @@ abstract class ComponentbuilderHelper
 		if ($user->authorise('compiler.submenu', 'com_componentbuilder'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_COMPILER'), 'index.php?option=com_componentbuilder&view=compiler', $submenu === 'compiler');
+		}
+		// Access control (search.submenu).
+		if ($user->authorise('search.submenu', 'com_componentbuilder'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_COMPONENTBUILDER_SUBMENU_SEARCH'), 'index.php?option=com_componentbuilder&view=search', $submenu === 'search');
 		}
 		if ($user->authorise('joomla_component.access', 'com_componentbuilder') && $user->authorise('joomla_component.submenu', 'com_componentbuilder'))
 		{

@@ -71,11 +71,11 @@ class Placeholder implements PlaceholderInterface
 	/**
 	 * get all System Placeholders
 	 *
-	 * @return  array The global placeholders
+	 * @return  array   The global placeholders
 	 *
 	 * @since 3.2.0
 	 */
-	public function get()
+	public function get(): array
 	{
 		// set only once
 		if (is_array($this->placeholders))

@@ -36,6 +36,7 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 		$viewAccess = array(
 			'compiler.submenu' => 'compiler.submenu',
 			'compiler.dashboard_list' => 'compiler.dashboard_list',
+			'search.submenu' => 'search.submenu',
 			'get_snippets.submenu' => 'get_snippets.submenu',
 			'get_snippets.dashboard_list' => 'get_snippets.dashboard_list',
 			'joomla_component.create' => 'joomla_component.create',
