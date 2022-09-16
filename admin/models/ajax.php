@@ -3622,17 +3622,17 @@ class ComponentbuilderModelAjax extends ListModel
 		int $matchCase, int $wholeWord, int $regexSearch, int $componentId): ?array
 	{
 		// check if this is a valid table
-		if (SearchFactory('Table')->exist($tableName))
+		if (SearchFactory::_('Table')->exist($tableName))
 		{
 			// load the configurations
-			SearchFactory('Config')->table_name = $tableName;
-			SearchFactory('Config')->search_value = $searchValue;
-			SearchFactory('Config')->match_case = $matchCase;
-			SearchFactory('Config')->whole_word = $wholeWord;
-			SearchFactory('Config')->regex_search = $regexSearch;
-			SearchFactory('Config')->component_id = $componentId;
+			SearchFactory::_('Config')->table_name = $tableName;
+			SearchFactory::_('Config')->search_value = $searchValue;
+			SearchFactory::_('Config')->match_case = $matchCase;
+			SearchFactory::_('Config')->whole_word = $wholeWord;
+			SearchFactory::_('Config')->regex_search = $regexSearch;
+			SearchFactory::_('Config')->component_id = $componentId;
 
-			if (($items = SearchFactory('Agent')->find()) !== null)
+			if (($items = SearchFactory::_('Agent')->find()) !== null)
 			{
 				return ['success' => JText::sprintf('COM_COMPONENTBUILDER_WE_FOUND_SOME_INSTANCES_IN_S', $tableName), 'items' => $items];
 			}

@@ -117,7 +117,7 @@ class Replace implements ReplaceInterface
 		{
 			foreach ($item as $field => $value)
 			{
-				if ($field !== 'id' && ($_value = $this->update->value($value, $id, $field, $table)) !== null)
+				if ($field !== 'id' && ($_value = $this->update->value($value)) !== null)
 				{
 					if (empty($this->updated[$table][$id]))
 					{

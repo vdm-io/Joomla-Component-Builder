@@ -12,9 +12,10 @@
 namespace VDM\Joomla\Componentbuilder\Search\Agent;
 
 
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Search\Factory;
-use VDM\Joomla\Componentbuilder\Search\Config;
-use VDM\Joomla\Componentbuilder\Search\Table;
+use VDM\Joomla\Componentbuilder\Search\Interfaces\SearchTypeInterface as SearchEngine;
 
 
 /**
@@ -25,49 +26,113 @@ use VDM\Joomla\Componentbuilder\Search\Table;
 class Update
 {
 	/**
-	 * Search Config
+	 * Search Engine
 	 *
-	 * @var    Config
+	 * @var    SearchEngine
 	 * @since 3.2.0
 	 */
-	protected Config $config;
-
-	/**
-	 * Table
-	 *
-	 * @var    Table
-	 * @since 3.2.0
-	 */
-	protected Table $table;
+	protected SearchEngine $search;
 
 	/**
 	 * Constructor
 	 *
-	 * @param Config|null           $config           The search config object.
-	 * @param Table|null             $table            The search table object.
+	 * @param SearchEngine|null    $search    The search engine object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Table $table = null)
+	public function __construct(?SearchEngine $search = null)
 	{
-		$this->config = $config ?: Factory::_('Config');
-		$this->table = $table ?: Factory::_('Table');
+		$this->search = $search ?: Factory::_('Search');
 	}
 
 	/**
-	 * Update value
+	 * Update the value
 	 *
-	 * @param   mixed         $value     The field value
-	 * @param   int               $id          The item ID
-	 * @param   string          $field      The field key
-	 * @param   string|null    $table     The table
+	 * @param   mixed    $value    The field value
+	 * @param   int      $line     The line to update  (0 = all)
 	 *
 	 * @return  mixed
 	 * @since 3.2.0
 	 */
-	public function value($value, int $id, string $field, ?string $table = null)
+	public function value($value, int $line = 0)
 	{
-		return $value;
+		// update the value
+		$update = $this->updateValue($value, $line);
+
+		// was anything updated
+		if ($value === $update)
+		{
+			return null;
+		}
+
+		return $update;
+	}
+
+	/**
+	 * Update all search-replace instances inside a value
+	 *
+	 * @param   mixed    $value   The field value
+	 * @param   int      $line    The line to update  (0 = all)
+	 *
+	 * @return  mixed
+	 * @since 3.2.0
+	 */
+	protected function updateValue($value, int $line = 0)
+	{
+		if (ArrayHelper::check($value))
+		{
+			echo '<pre>'; var_dump($value); exit;
+		}
+		elseif (StringHelper::check($value))
+		{
+			return $this->string($value, $line);
+		}
+		else
+		{
+			// this should not happen
+			echo '<pre>Error:<br />'; var_dump($value); exit;
+		}
+	}
+
+	/**
+	 * Update all search-replace instances inside a string
+	 *
+	 * @param   string    $value   The field value
+	 * @param   int       $line    The line to update  (0 = all)
+	 *
+	 * @return  string
+	 * @since 3.2.0
+	 */
+	protected function string(string $value, int $line = 0): string
+	{
+		// check if string has a new line
+		if (\preg_match('/\R/', $value) && $line > 0)
+		{
+			// line counter
+			$line_number = 1;
+
+			$search_array = \preg_split('/\R/', $value);
+
+			// loop over the lines
+			foreach ($search_array as $nr => $line_value)
+			{
+				if ($line_number == $line)
+				{
+					$search_array[$nr] = $this->search->replace($line_value);
+
+					// since we are targeting on line (and possibly one number)
+					// this can only happen once, and so we return at this point
+					return implode(PHP_EOL, $search_array);
+				}
+				// next line
+				$line_number++;
+			}
+
+			// no update took place so we just return the original value
+			return $value;
+		}
+
+		return $this->search->replace($value);
 	}
 
 }

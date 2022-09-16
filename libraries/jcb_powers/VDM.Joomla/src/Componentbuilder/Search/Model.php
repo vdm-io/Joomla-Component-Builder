@@ -12,10 +12,11 @@
 namespace VDM\Joomla\Componentbuilder\Search;
 
 
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Search\Factory;
 use VDM\Joomla\Componentbuilder\Search\Config;
 use VDM\Joomla\Componentbuilder\Search\Table;
-use VDM\Joomla\Utilities\ArrayHelper;
 
 
 /**
@@ -65,15 +66,15 @@ abstract class Model
 
 	/**
 	 * Model the values of an item
-	 *          Example: $this->item(Object, 'table_name');
+	 *          Example: $this->item('table_name', Object);
 	 *
-	 * @param   object          $item      The item object
+	 * @param   object         $item      The item object
 	 * @param   string|null    $table     The table
 	 *
-	 * @return  object
+	 * @return  object|null
 	 * @since 3.2.0
 	 */
-	public function item(object $item, ?string $table = null): object
+	public function item(object $item, ?string $table = null): ?object
 	{
 		// set the table name
 		if (empty($table))
@@ -81,19 +82,39 @@ abstract class Model
 			$table = $this->config->table_name;
 		}
 
+		// field counter
+		$field_number = 0;
+
 		// check if this is a valid table
 		if (($fields = $this->table->fields($table)) !== null)
 		{
 			foreach ($fields as $field)
 			{
+				// model a value if it exists
 				if(isset($item->{$field}))
 				{
 					$item->{$field} = $this->value($item->{$field}, $field, $table);
+
+					// remove empty values
+					if (!StringHelper::check($item->{$field}) && !ArrayHelper::check($item->{$field}, true))
+					{
+						unset($item->{$field});
+					}
+					else
+					{
+						$field_number++;
+					}
 				}
 			}
 		}
 
-		return $item;
+		// all items must have more than one field or its empty (1 = id)
+		if ($field_number > 1)
+		{
+			return $item;
+		}
+
+		return null;
 	}
 
 	/**
@@ -120,14 +141,24 @@ abstract class Model
 			foreach ($items as $id => &$item)
 			{
 				// model the item
-				$item = $this->item($item, $table);
+				if (($item = $this->item($item, $table)) !== null)
+				{
+					// add the last ID
+					$this->last[$table] = $item->id;
+				}
+				else
+				{
+					unset($items[$id]);
+				}
+			}
 
-				// add the last ID
-				$this->last[$table] = $item->id;
+			if (ArrayHelper::check($items))
+			{
+				return $items;
 			}
 		}
 
-		return $items;
+		return null;
 	}
 
 	/**

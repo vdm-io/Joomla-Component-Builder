@@ -117,8 +117,7 @@ class Agent implements ServiceProviderInterface
 	public function getSearch(Container $container): Search
 	{
 		return new Search(
-			$container->get('Config'),
-			$container->get('Table')
+			$container->get('Search')
 		);
 	}
 
@@ -133,8 +132,7 @@ class Agent implements ServiceProviderInterface
 	public function getUpdate(Container $container): Update
 	{
 		return new Update(
-			$container->get('Config'),
-			$container->get('Table')
+			$container->get('Search')
 		);
 	}
 

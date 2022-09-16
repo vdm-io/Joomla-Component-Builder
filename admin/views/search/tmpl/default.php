@@ -16,6 +16,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.formvalidator');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
+use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 ?>
 <?php if ($this->canDo->get('search.access')): ?>
 <script type="text/javascript">
@@ -41,7 +42,29 @@ JHtml::_('behavior.keepalive');
 <?php else : ?>
 <div id="j-main-container">
 <?php endif; ?>
-	<?php echo JText::_('COM_COMPONENTBUILDER_MORE_SOON'); ?>
+	<?php
+	// lets do some tests with the API
+	$tableName = 'admin_view';
+	$searchValue = ' array(';
+	// set the search configurations
+	SearchFactory::_('Config')->table_name = $tableName;
+	SearchFactory::_('Config')->search_value = $searchValue;
+	SearchFactory::_('Config')->match_case = 0;
+	SearchFactory::_('Config')->whole_word = 0;
+	SearchFactory::_('Config')->regex_search = 0;
+	SearchFactory::_('Config')->component_id = 0;
+
+	if (($items = SearchFactory::_('Agent')->find()) !== null)
+	{
+		echo JText::sprintf('COM_COMPONENTBUILDER_WE_FOUND_SOME_INSTANCES_IN_S', $tableName) . '<br /><pre>';
+		var_dump($items);
+		echo '</pre>';
+	}
+	else
+	{
+		echo JText::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_S', $tableName);
+	}
+ 	?>
 </div>
 <input type="hidden" name="task" value="" />
 <?php echo JHtml::_('form.token'); ?>

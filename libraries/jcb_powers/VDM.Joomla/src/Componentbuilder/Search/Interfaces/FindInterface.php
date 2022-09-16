@@ -61,5 +61,6 @@ interface FindInterface
 	 * @since 3.2.0
 	 */
 	public function reset(?string $table = null);
+
 }
 

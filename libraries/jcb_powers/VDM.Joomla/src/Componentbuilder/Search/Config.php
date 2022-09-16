@@ -25,10 +25,10 @@ class Config extends BaseConfig
 	/**
 	 * get posted search value
 	 *
-	 * @return  string  Raw search value
+	 * @return  string|null  Raw search value
 	 * @since 3.2.0
 	 */
-	protected function getSearchvalue(): string
+	protected function getSearchvalue(): ?string
 	{
 		return $this->input->post->get('search_value', null, 'RAW');
 	}
@@ -36,10 +36,10 @@ class Config extends BaseConfig
 	/**
 	 * get posted replace value
 	 *
-	 * @return  string  Raw replace value
+	 * @return  string|null  Raw replace value
 	 * @since 3.2.0
 	 */
-	protected function getReplacevalue(): string
+	protected function getReplacevalue(): ?string
 	{
 		return $this->input->post->get('replace_value', null, 'RAW');
 	}

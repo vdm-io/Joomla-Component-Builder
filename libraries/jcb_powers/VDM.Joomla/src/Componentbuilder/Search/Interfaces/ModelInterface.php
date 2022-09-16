@@ -34,15 +34,15 @@ interface ModelInterface
 
 	/**
 	 * Model the values of an item
-	 *          Example: $this->item('table_name', Object);
+	 *          Example: $this->item(Object, 'table_name');
 	 *
-	 * @param   string        $table     The table
-	 * @param   object       $item      The item object
+	 * @param   object         $item      The item object
+	 * @param   string|null    $table     The table
 	 *
-	 * @return  object
+	 * @return  object|null
 	 * @since 3.2.0
 	 */
-	public function item(object $item, ?string $table = null): object;
+	public function item(object $item, ?string $table = null): ?object;
 
 	/**
 	 * Model the values of multiple items

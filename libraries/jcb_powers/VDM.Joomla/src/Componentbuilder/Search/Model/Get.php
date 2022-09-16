@@ -12,6 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Search\Model;
 
 
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\ModelInterface;
 use VDM\Joomla\Componentbuilder\Search\Model;
 
@@ -43,7 +45,7 @@ class Get extends Model implements ModelInterface
 		}
 
 		// check if this is a valid table
-		if (($store = $this->table->get($table, $field, 'store')) !== null)
+		if (StringHelper::check($value) && ($store = $this->table->get($table, $field, 'store')) !== null)
 		{
 			// open the value based on the store method
 			switch($store)
@@ -52,7 +54,11 @@ class Get extends Model implements ModelInterface
 					$value = \base64_decode($value);
 				break;
 				case 'json':
-					$value = \json_decode($value, true);
+					// check if there is a json string
+					if (JsonHelper::check($value))
+					{
+						$value = \json_decode($value, true);
+					}
 				break;
 			}
 		}

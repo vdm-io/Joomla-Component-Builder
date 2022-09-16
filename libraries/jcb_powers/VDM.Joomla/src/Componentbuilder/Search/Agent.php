@@ -125,7 +125,7 @@ class Agent
 			$set++;
 		}
 
-		return $this->search->found($table);
+		return $this->search->get($table);
 	}
 
 	/**
