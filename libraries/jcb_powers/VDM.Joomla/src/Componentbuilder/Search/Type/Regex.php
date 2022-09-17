@@ -12,9 +12,11 @@
 namespace VDM\Joomla\Componentbuilder\Search\Type;
 
 
-use VDM\Joomla\Componentbuilder\Search\Factory;
 use VDM\Joomla\Componentbuilder\Search\Config;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\SearchTypeInterface;
+use VDM\Joomla\Componentbuilder\Search\Type;
 
 
 /**
@@ -22,64 +24,35 @@ use VDM\Joomla\Componentbuilder\Search\Interfaces\SearchTypeInterface;
  * 
  * @since 3.2.0
  */
-class Regex implements SearchTypeInterface
+class Regex extends Type implements SearchTypeInterface
 {
 	/**
-	 * Search Config
-	 *
-	 * @var    Config
-	 * @since 3.2.0
-	 */
-	protected Config $config;
-
-	/**
-	 * Search Value
+	 * Regex Search Value
 	 *
 	 * @var    string
 	 * @since 3.2.0
 	 */
-	protected string $searchValue;
-
-	/**
-	 * Replace Value
-	 *
-	 * @var    string
-	 * @since 3.2.0
-	 */
-	protected string $replaceValue;
-
-	/**
-	 * Search Should Match Case
-	 *
-	 * @var    int
-	 * @since 3.2.0
-	 */
-	protected int $matchCase = 0;
-
-	/**
-	 * Search Should Match Whole Word
-	 *
-	 * @var    int
-	 * @since 3.2.0
-	 */
-	protected int $wholeWord = 0;
+	protected string $regexValue = '';
 
 	/**
 	 * Constructor
 	 *
-	 * @param Config|null           $config           The search config object.
+	 * @param Config|null    $config    The search config object.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null)
 	{
-		$this->config = $config ?: Factory::_('Config');
+		parent::__construct($config);
 
-		// set some class values
-		$this->searchValue = $this->config->search_value;
-		$this->replaceValue = $this->config->replace_value; // TODO
-		$this->matchCase = $this->config->match_case;
-		$this->wholeWord = $this->config->whole_word; // TODO
+		// set search based on match case
+		$case = '';
+		if ($this->matchCase == 0)
+		{
+			$case = 'i';
+		}
+
+		$this->regexValue = "/(" . $this->searchValue . ")/" . $case;
 	}
 
 	/**
@@ -92,6 +65,15 @@ class Regex implements SearchTypeInterface
 	 */
 	public function string(string $value): ?string
 	{
+		if (StringHelper::check($this->searchValue) && $this->match($value))
+		{
+			return trim(preg_replace(
+				$this->regexValue . 'm',
+				$this->start . "$1" . $this->end,
+				$value
+			));
+		}
+
 		return null;
 	}
 
@@ -105,7 +87,45 @@ class Regex implements SearchTypeInterface
 	 */
 	public function replace(string $value): string
 	{
+		if (StringHelper::check($this->searchValue) && $this->match($value))
+		{
+			return preg_replace(
+				$this->regexValue . 'm',
+				$this->replaceValue,
+				$value
+			);
+		}
+
 		return $value;
+	}
+
+	/**
+	 * Math the Regular Expression
+	 *
+	 * @param   string    $value  The string value
+	 *
+	 * @return  bool  true if match is found
+	 * @since  3.0.9
+	 */
+	public function match(string $value): bool
+	{
+		$match = [];
+
+		preg_match($this->regexValue, $value, $match);
+
+		$match = array_filter(
+			$match,
+			function ($found) {
+				return !empty($found);
+			}
+		);
+
+		if (ArrayHelper::check($match))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 }

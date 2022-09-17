@@ -43,15 +43,15 @@ use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 <div id="j-main-container">
 <?php endif; ?>
 	<?php
-	// lets do some tests with the API
+	// let's do some tests with the API
 	$tableName = 'admin_view';
-	$searchValue = ' array(';
+	$searchValue = '\b\w+Helper';
 	// set the search configurations
 	SearchFactory::_('Config')->table_name = $tableName;
 	SearchFactory::_('Config')->search_value = $searchValue;
-	SearchFactory::_('Config')->match_case = 0;
+	SearchFactory::_('Config')->match_case = 1;
 	SearchFactory::_('Config')->whole_word = 0;
-	SearchFactory::_('Config')->regex_search = 0;
+	SearchFactory::_('Config')->regex_search = 1;
 	SearchFactory::_('Config')->component_id = 0;
 
 	if (($items = SearchFactory::_('Agent')->find()) !== null)

@@ -36,12 +36,12 @@ class Config extends BaseConfig
 	/**
 	 * get posted replace value
 	 *
-	 * @return  string|null  Raw replace value
+	 * @return  string  Raw replace value
 	 * @since 3.2.0
 	 */
-	protected function getReplacevalue(): ?string
+	protected function getReplacevalue(): string
 	{
-		return $this->input->post->get('replace_value', null, 'RAW');
+		return $this->input->post->get('replace_value', '', 'RAW');
 	}
 
 	/**
@@ -119,6 +119,28 @@ class Config extends BaseConfig
 	protected function getItemid(): int
 	{
 		return $this->input->post->get('item_id', 0, 'INT');
+	}
+
+	/**
+	 * get the start marker
+	 *
+	 * @return  string  The string to use as the start marker
+	 * @since 3.2.0
+	 */
+	protected function getMarkerstart(): string
+	{
+		return '{+' . '|' . '=[';
+	}
+
+	/**
+	 * get the end marker
+	 *
+	 * @return  string  The string to use as the end marker
+	 * @since 3.2.0
+	 */
+	protected function getMarkerend(): string
+	{
+		return ']=' . '|' . '+}';
 	}
 
 }
