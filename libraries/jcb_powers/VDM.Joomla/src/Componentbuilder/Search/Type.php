@@ -42,10 +42,10 @@ abstract class Type
 	/**
 	 * Replace Value
 	 *
-	 * @var    string|null
+	 * @var    string
 	 * @since 3.2.0
 	 */
-	protected ?string $replaceValue;
+	protected string $replaceValue;
 
 	/**
 	 * Search Should Match Case
@@ -82,7 +82,7 @@ abstract class Type
 	/**
 	 * Constructor
 	 *
-	 * @param Config|null           $config           The search config object.
+	 * @param Config|null    $config  The search config object.
 	 *
 	 * @since 3.2.0
 	 */
