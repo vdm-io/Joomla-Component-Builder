@@ -56,6 +56,7 @@ spl_autoload_register(function ($class) {
 	}
 });
 
+use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Language\Language;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
@@ -64,7 +65,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Joomla\Archive\Archive;
-use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\Path;
 use VDM\Joomla\Utilities;
