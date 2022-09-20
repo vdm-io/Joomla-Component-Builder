@@ -58,6 +58,12 @@ class ComponentbuilderModelPower extends AdminModel
 				'type',
 				'power_version'
 			)
+		),
+		'licensing' => array(
+			'fullwidth' => array(
+				'add_licensing_template',
+				'licensing_template'
+			)
 		)
 	);
 
@@ -178,6 +184,12 @@ class ComponentbuilderModelPower extends AdminModel
 				$item->main_class_code = base64_decode($item->main_class_code);
 			}
 
+			if (!empty($item->licensing_template))
+			{
+				// base64 Decode licensing_template.
+				$item->licensing_template = base64_decode($item->licensing_template);
+			}
+
 			if (!empty($item->head))
 			{
 				// base64 Decode head.
@@ -190,14 +202,6 @@ class ComponentbuilderModelPower extends AdminModel
 				$load_selection = new Registry;
 				$load_selection->loadString($item->load_selection);
 				$item->load_selection = $load_selection->toArray();
-			}
-
-			if (!empty($item->use_selection))
-			{
-				// Convert the use_selection field to an array.
-				$use_selection = new Registry;
-				$use_selection->loadString($item->use_selection);
-				$item->use_selection = $use_selection->toArray();
 			}
 
 			if (!empty($item->property_selection))
@@ -222,6 +226,14 @@ class ComponentbuilderModelPower extends AdminModel
 				$method_selection = new Registry;
 				$method_selection->loadString($item->method_selection);
 				$item->method_selection = $method_selection->toArray();
+			}
+
+			if (!empty($item->use_selection))
+			{
+				// Convert the use_selection field to an array.
+				$use_selection = new Registry;
+				$use_selection->loadString($item->use_selection);
+				$item->use_selection = $use_selection->toArray();
 			}
 
 
@@ -1038,19 +1050,6 @@ class ComponentbuilderModelPower extends AdminModel
 			$data['load_selection'] = '';
 		}
 
-		// Set the use_selection items to data.
-		if (isset($data['use_selection']) && is_array($data['use_selection']))
-		{
-			$use_selection = new JRegistry;
-			$use_selection->loadArray($data['use_selection']);
-			$data['use_selection'] = (string) $use_selection;
-		}
-		elseif (!isset($data['use_selection']))
-		{
-			// Set the empty use_selection to data
-			$data['use_selection'] = '';
-		}
-
 		// Set the property_selection items to data.
 		if (isset($data['property_selection']) && is_array($data['property_selection']))
 		{
@@ -1090,10 +1089,29 @@ class ComponentbuilderModelPower extends AdminModel
 			$data['method_selection'] = '';
 		}
 
+		// Set the use_selection items to data.
+		if (isset($data['use_selection']) && is_array($data['use_selection']))
+		{
+			$use_selection = new JRegistry;
+			$use_selection->loadArray($data['use_selection']);
+			$data['use_selection'] = (string) $use_selection;
+		}
+		elseif (!isset($data['use_selection']))
+		{
+			// Set the empty use_selection to data
+			$data['use_selection'] = '';
+		}
+
 		// Set the main_class_code string to base64 string.
 		if (isset($data['main_class_code']))
 		{
 			$data['main_class_code'] = base64_encode($data['main_class_code']);
+		}
+
+		// Set the licensing_template string to base64 string.
+		if (isset($data['licensing_template']))
+		{
+			$data['licensing_template'] = base64_encode($data['licensing_template']);
 		}
 
 		// Set the head string to base64 string.

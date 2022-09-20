@@ -2,7 +2,7 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    30th April, 2015
+ * @created    3rd September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
  * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
@@ -765,14 +765,6 @@ class Table
 				'store' => 'base64',
 				'tab_name' => 'Code',
 			],
-			'use_selection' => [
-				'name' => 'use_selection',
-				'type' => 'subform',
-				'title' => false,
-				'list' => 'powers',
-				'store' => 'json',
-				'tab_name' => 'Code',
-			],
 			'description' => [
 				'name' => 'description',
 				'type' => 'textarea',
@@ -780,6 +772,14 @@ class Table
 				'list' => 'powers',
 				'store' => NULL,
 				'tab_name' => 'Code',
+			],
+			'licensing_template' => [
+				'name' => 'licensing_template',
+				'type' => 'textarea',
+				'title' => false,
+				'list' => 'powers',
+				'store' => 'base64',
+				'tab_name' => 'Licensing',
 			],
 			'property_selection' => [
 				'name' => 'property_selection',
@@ -819,6 +819,14 @@ class Table
 				'title' => false,
 				'list' => 'powers',
 				'store' => 'base64',
+				'tab_name' => 'Code',
+			],
+			'use_selection' => [
+				'name' => 'use_selection',
+				'type' => 'subform',
+				'title' => false,
+				'list' => 'powers',
+				'store' => 'json',
 				'tab_name' => 'Code',
 			],
 			'guid' => [

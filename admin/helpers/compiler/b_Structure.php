@@ -514,11 +514,16 @@ class Structure extends Get
 						. $power->file_name . '.php',
 					                     'name' => $power->file_name . '.php',
 					                     'zip' => $power->file_name . '.php');
+					$bom = '<?php' . PHP_EOL . '// A POWER FILE' .
+						PHP_EOL . Placefix::_h('BOM') . PHP_EOL;
+					// add custom override if found
+					if ($power->add_licensing_template == 2)
+					{
+						$bom = '<?php' . PHP_EOL . $power->licensing_template;
+					}
 					$this->writeFile(
 						$fileDetails['path'],
-						'<?php' . PHP_EOL . '// A POWER FILE' .
-						PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
-						PHP_EOL . Placefix::_h('POWERCODE')
+						$bom . PHP_EOL . Placefix::_h('POWERCODE')
 					);
 					$this->newFiles[$power->key][] = $fileDetails;
 					// count the file created

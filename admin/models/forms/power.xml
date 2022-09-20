@@ -202,44 +202,6 @@
 			filter="raw"
 			validate="code"
 		/>
-		<!-- Use_selection Field. Type: Subform. (joomla) -->
-		<field
-			type="subform"
-			name="use_selection"
-			label="COM_COMPONENTBUILDER_POWER_USE_SELECTION_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
-			multiple="true"
-			buttons="add,remove,move"
-			description="COM_COMPONENTBUILDER_POWER_USE_SELECTION_DESCRIPTION"
-			icon="list"
-			max="30"
-			min="0"
-			showon="type!:interface">
-			<form hidden="true" name="list_use_selection_modal" repeat="true">
-				<!-- Use Field. Type: Namespaces. (custom) -->
-				<field
-					type="namespaces"
-					name="use"
-					label="COM_COMPONENTBUILDER_POWER_USE_LABEL"
-					class="list_class span12"
-					multiple="false"
-					default="0"
-					button="false"
-				/>
-				<!-- As Field. Type: Text. (joomla) -->
-				<field
-					type="text"
-					name="as"
-					label="COM_COMPONENTBUILDER_POWER_AS_LABEL"
-					size="10"
-					maxlength="50"
-					default="default"
-					class="text_area"
-					filter="STRING"
-					autocomplete="on"
-				/>
-			</form>
-		</field>
 		<!-- Description Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -251,6 +213,19 @@
 			class="text_area span12"
 			filter="HTML"
 			hint="COM_COMPONENTBUILDER_POWER_DESCRIPTION_HINT"
+		/>
+		<!-- Licensing_template Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="licensing_template"
+			label="COM_COMPONENTBUILDER_POWER_LICENSING_TEMPLATE_LABEL"
+			rows="10"
+			cols="10"
+			class="text_area span12"
+			filter="RAW"
+			hint="COM_COMPONENTBUILDER_POWER_LICENSING_TEMPLATE_HINT"
+			validate="code"
+			showon="add_licensing_template:2"
 		/>
 		<!-- Property_selection Field. Type: Subform. (joomla) -->
 		<field
@@ -397,6 +372,59 @@
 			required="false"
 			validate="code"
 		/>
+		<!-- Add_licensing_template Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_licensing_template"
+			label="COM_COMPONENTBUILDER_POWER_ADD_LICENSING_TEMPLATE_LABEL"
+			description="COM_COMPONENTBUILDER_POWER_ADD_LICENSING_TEMPLATE_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_POWER_USE_GLOBAL</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_POWER_OVERRIDE</option>
+		</field>
+		<!-- Use_selection Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="use_selection"
+			label="COM_COMPONENTBUILDER_POWER_USE_SELECTION_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			buttons="add,remove,move"
+			description="COM_COMPONENTBUILDER_POWER_USE_SELECTION_DESCRIPTION"
+			icon="list"
+			max="30"
+			min="0"
+			showon="type!:interface">
+			<form hidden="true" name="list_use_selection_modal" repeat="true">
+				<!-- Use Field. Type: Namespaces. (custom) -->
+				<field
+					type="namespaces"
+					name="use"
+					label="COM_COMPONENTBUILDER_POWER_USE_LABEL"
+					class="list_class span12"
+					multiple="false"
+					default="0"
+					button="false"
+				/>
+				<!-- As Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="as"
+					label="COM_COMPONENTBUILDER_POWER_AS_LABEL"
+					size="10"
+					maxlength="50"
+					default="default"
+					class="text_area"
+					filter="STRING"
+					autocomplete="on"
+				/>
+			</form>
+		</field>
 		<!-- Guid Field. Type: Text. (joomla) -->
 		<field
 			type="text"

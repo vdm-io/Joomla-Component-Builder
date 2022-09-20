@@ -2,7 +2,7 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    30th April, 2015
+ * @created    3rd September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
  * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
@@ -430,6 +430,29 @@ class Power implements PowerInterface
 				}
 				// set GUI mapper
 				$guiMapper = array('table' => 'power', 'id' => (int) $this->active[$guid]->id, 'type' => 'php');
+				// add the licensing template 
+				if ($this->active[$guid]->add_licensing_template == 2 &&
+					StringHelper::check($this->active[$guid]->licensing_template))
+				{
+					// set GUI mapper field
+					$guiMapper['field'] = 'licensing_template';
+					// base64 Decode code
+					$this->active[$guid]->licensing_template = $this->gui->set(
+							$this->placeholder->update(
+								$this->customcode->update(
+									base64_decode(
+										$this->active[$guid]->licensing_template
+									)
+								), $this->placeholder->active
+							),
+							$guiMapper
+						);
+				}
+				else
+				{
+					$this->active[$guid]->add_licensing_template = 1;
+					$this->active[$guid]->licensing_template = '';
+				}
 				// add the header script
 				if ($this->active[$guid]->add_head == 1)
 				{
