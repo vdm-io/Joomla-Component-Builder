@@ -16,7 +16,7 @@ use VDM\Joomla\Componentbuilder\Search\Config;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\SearchTypeInterface;
-use VDM\Joomla\Componentbuilder\Search\Type;
+use VDM\Joomla\Componentbuilder\Search\Abstraction\Type;
 
 
 /**

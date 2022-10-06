@@ -15,7 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Search\Model;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\ModelInterface;
-use VDM\Joomla\Componentbuilder\Search\Model;
+use VDM\Joomla\Componentbuilder\Search\Abstraction\Model;
 
 
 /**

@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Search\Model;
 
 
 use VDM\Joomla\Componentbuilder\Search\Interfaces\ModelInterface;
-use VDM\Joomla\Componentbuilder\Search\Model;
+use VDM\Joomla\Componentbuilder\Search\Abstraction\Model;
 
 
 /**

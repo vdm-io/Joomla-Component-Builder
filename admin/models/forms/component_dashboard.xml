@@ -138,6 +138,8 @@
 					maxlength="150"
 					description="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_NAME_DESCRIPTION"
 					class="text_area"
+					readonly="false"
+					disabled="false"
 					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_COMPONENT_DASHBOARD_NAME_MESSAGE"

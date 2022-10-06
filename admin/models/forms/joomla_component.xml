@@ -1217,6 +1217,8 @@
 					maxlength="150"
 					description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_DESCRIPTION"
 					class="text_area"
+					readonly="false"
+					disabled="false"
 					required="true"
 					filter="STRING"
 					message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_MESSAGE"

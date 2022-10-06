@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Componentbuilder\BaseConfig;
+use VDM\Joomla\Componentbuilder\Abstraction\Registry;
 
 
 /**
@@ -22,7 +22,7 @@ use VDM\Joomla\Componentbuilder\BaseConfig;
  * 
  * @since 3.2.0
  */
-class Config extends BaseConfig
+class Config extends Registry
 {
 	/**
 	 * get posted component id

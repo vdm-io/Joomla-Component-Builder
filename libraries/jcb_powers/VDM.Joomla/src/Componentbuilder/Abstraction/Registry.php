@@ -9,10 +9,10 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder;
+namespace VDM\Joomla\Componentbuilder\Abstraction;
 
 
-use Joomla\Registry\Registry;
+use Joomla\Registry\Registry as JoomlaRegistry;
 use Joomla\CMS\Factory;
 use Joomla\Input\Input;
 use VDM\Joomla\Utilities\Component\Helper;
@@ -20,11 +20,11 @@ use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 
 
 /**
- * Configurations
+ * Registry
  * 
  * @since 3.2.0
  */
-abstract class BaseConfig extends Registry
+abstract class Registry extends JoomlaRegistry
 {
 	/**
 	 * Hold a JInput object for easier access to the input variables.
@@ -37,10 +37,10 @@ abstract class BaseConfig extends Registry
 	/**
 	 * The Params
 	 *
-	 * @var     Registry
+	 * @var     JoomlaRegistry
 	 * @since 3.2.0
 	 */
-	protected Registry $params;
+	protected JoomlaRegistry $params;
 
 	/**
 	 * Constructor
@@ -51,7 +51,7 @@ abstract class BaseConfig extends Registry
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(?Input $input = null, ?Registry $params = null)
+	public function __construct(?Input $input = null, ?JoomlaRegistry $params = null)
 	{
 		$this->input = $input ?: Factory::getApplication()->input;
 		$this->params = $params ?: Helper::getParams('com_componentbuilder');
@@ -92,7 +92,7 @@ abstract class BaseConfig extends Registry
 			return $value;
 		}
 
-		throw new \InvalidArgumentException(sprintf('Argument %s could not be found as function [%s], or path.', $key, $method));
+		throw new \InvalidArgumentException(sprintf('Argument %s could not be found as function or path.', $key));
 	}
 
 	/**
