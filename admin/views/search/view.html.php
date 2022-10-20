@@ -13,6 +13,9 @@
 defined('_JEXEC') or die('Restricted access'); 
 
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Form\Form;
+use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 
 /**
  * Componentbuilder Html View class for the Search
@@ -39,6 +42,10 @@ class ComponentbuilderViewSearch extends HtmlView
 			JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=search');
 			$this->sidebar = JHtmlSidebar::render();
 		}
+		
+		// get the needed form fields
+		$this->form = $this->getDynamicForm();
+		
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -60,6 +67,184 @@ class ComponentbuilderViewSearch extends HtmlView
 	}
 
 	/**
+	 * Get the dynamic build form fields needed on the page
+	 *
+	 * @return  Form|null  The array of form fields
+	 *
+	 * @since   3.2.0
+	 */
+	public function getDynamicForm(): ?Form
+	{
+		if(ComponentbuilderHelper::checkArray($this->item) &&
+			ComponentbuilderHelper::checkArray($this->item['tables']) &&
+			ComponentbuilderHelper::checkArray($this->item['components']))
+		{
+			// start the form
+			$form = new Form('Search');
+
+			$form->load('<form
+				addrulepath="/administrator/components/com_componentbuilder/models/rules"
+				addfieldpath="/administrator/components/com_componentbuilder/models/fields">
+					<fieldset name="search"></fieldset>
+					<fieldset name="settings"></fieldset>
+					<fieldset name="view"></fieldset>
+			</form>');
+
+			// Search Mode
+			$attributes = [
+				'type' => 'radio',
+				'name' => 'type_search',
+				'label' => 'COM_COMPONENTBUILDER_MODE',
+				'class' => 'btn-group',
+				'description' => 'COM_COMPONENTBUILDER_SEARCH_OR_SEARCH_AND_REPLACE',
+				'default' => '1'];
+			// set the mode options
+			$options = [
+				1 => 'COM_COMPONENTBUILDER_SEARCH',
+				2 => 'COM_COMPONENTBUILDER_REPLACE'];
+			// add to form
+			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'search');
+			}
+
+			// search text attributes
+			$attributes = [
+				'type' => 'text',
+				'name' => 'search_value',
+				'label' => 'COM_COMPONENTBUILDER_SEARCH',
+				'size' => 150,
+				'maxlength' => 200,
+				'description' => 'COM_COMPONENTBUILDER_HERE_YOU_CAN_ENTER_YOUR_SEARCH_TEXT',
+				'filter' => 'RAW',
+				'class' => 'search-value span12',
+				'hint' => 'COM_COMPONENTBUILDER_ENTER_YOUR_SEARCH_TEXT',
+				'autocomplete' => true];
+			// add to form
+			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'search');
+			}
+
+			// replace text attributes
+			$attributes = [
+				'type' => 'text',
+				'name' => 'replace_value',
+				'label' => 'COM_COMPONENTBUILDER_REPLACE',
+				'size' => 150,
+				'maxlength' => 200,
+				'description' => 'COM_COMPONENTBUILDER_HERE_YOU_CAN_ENTER_THE_REPLACE_TEXT_THAT_YOU_WOULD_LIKE_TO_USE_AS_REPLACEMENT_FOR_THE_SEARCH_TEXT_FOUND',
+				'filter' => 'RAW',
+				'class' => 'replace-value span12',
+				'hint' => 'COM_COMPONENTBUILDER_ENTER_YOUR_REPLACE_TEXT',
+				'autocomplete' => true,
+				'showon' => 'type_search:2'];
+			// add to form
+			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'search');
+			}
+
+			// Search Behaviour
+			$attributes = [
+				'type' => 'checkboxes',
+				'name' => 'search_behaviour',
+				'label' => 'COM_COMPONENTBUILDER_BEHAVIOUR',
+				'class' => 'btn-group',
+				'description' => 'COM_COMPONENTBUILDER_SET_THE_SEARCH_BEHAVIOUR_HERE'];
+			// set the mode options
+			$options = [
+				'match_case' => 'COM_COMPONENTBUILDER_MATCH_CASE',
+				'whole_word' => 'COM_COMPONENTBUILDER_WHOLE_WORD',
+				'regex_search' => 'COM_COMPONENTBUILDER_REGEX_SEARCH'];
+			// add to form
+			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'settings');
+			}
+
+			// component attributes
+			$attributes = [
+				'type' => 'list',
+				'name' => 'component_id',
+				'label' => 'COM_COMPONENTBUILDER_COMPONENTS_BR_SMALLDISABLED_SOONSMALL',
+				'class' => 'list_class',
+				'description' => 'COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_TO_SEARCH',
+				'required' => 'true',
+				'disable' => 'true',
+				'readonly' => 'true',
+				'default' => -1];
+			// start the component options
+			$options = [];
+			$options['-1'] = 'COM_COMPONENTBUILDER__SEARCH_ALL_';
+			// load component options from array
+			foreach($this->item['components'] as $component)
+			{
+				$options[(int) $component->id] = $this->escape($component->name);
+			}
+			// add to form
+			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'settings');
+			}
+
+			// table attributes
+			$attributes = [
+				'type' => 'list',
+				'name' => 'table_name',
+				'label' => 'COM_COMPONENTBUILDER_TABLES',
+				'class' => 'list_class',
+				'description' => 'COM_COMPONENTBUILDER_SELECT_THE_TABLE_TO_SEARCH',
+				'required' => 'true',
+				'default' => -1];
+			// start the component options
+			$options = [];
+			$options['-1'] = 'COM_COMPONENTBUILDER__SEARCH_ALL_';
+			// load table options from array
+			foreach($this->item['tables'] as $table)
+			{
+				$options[$table] = $this->escape($table);
+			}
+			// add to form
+			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'settings');
+			}
+
+			// editor attributes
+			$attributes = [
+				'type' => 'editor',
+				'name' => 'full_text',
+				'label' => 'COM_COMPONENTBUILDER_FULL_TEXT',
+				'width' => '100%',
+				'height' => '450px',
+				'class' => 'full_text_editor',
+				'syntax' => 'php',
+				'buttons' => 'false',
+				'filter' => 'raw',
+				'editor' => 'codemirror|none'];
+			// add to form
+			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'view');
+			}
+
+			// return the form array
+			return $form;
+		}
+
+		return null;
+	}
+
+
+	/**
 	 * Prepares the document
 	 */
 	protected function setDocument()
@@ -71,6 +256,9 @@ class ComponentbuilderViewSearch extends HtmlView
 		require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );
 		// Initialize the header checker.
 		$HeaderCheck = new componentbuilderHeaderCheck;
+
+		// Add View JavaScript File
+		$this->document->addScript(JURI::root(true) . "/administrator/components/com_componentbuilder/assets/js/search.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -88,6 +276,40 @@ class ComponentbuilderViewSearch extends HtmlView
 		if ((!$HeaderCheck->js_loaded('uikit.min') || $uikit == 1) && $uikit != 2 && $uikit != 3)
 		{
 			JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', ['version' => 'auto']);
+		}
+
+		// Load the script to find all uikit components needed.
+		if ($uikit != 2)
+		{
+			// Set the default uikit components in this view.
+			$uikitComp = array();
+			$uikitComp[] = 'uk-progress';
+		}
+
+		// Load the needed uikit components in this view.
+		if ($uikit != 2 && isset($uikitComp) && ComponentbuilderHelper::checkArray($uikitComp))
+		{
+			// load just in case.
+			jimport('joomla.filesystem.file');
+			// loading...
+			foreach ($uikitComp as $class)
+			{
+				foreach (ComponentbuilderHelper::$uk_components[$class] as $name)
+				{
+					// check if the CSS file exists.
+					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css'))
+					{
+						// load the css.
+						JHtml::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css', ['version' => 'auto']);
+					}
+					// check if the JavaScript file exists.
+					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js'))
+					{
+						// load the js.
+						JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);
+					}
+				}
+			}
 		}
 		// add the document default css file
 		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/search.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');

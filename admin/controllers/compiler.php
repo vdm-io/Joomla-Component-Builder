@@ -51,7 +51,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 	 *
 	 * @return  true on success
 	 */
-	public function getCompilerAnimations()
+	public function getDynamicContent()
 	{
 		// Check for request forgeries
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
@@ -65,7 +65,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 		{
 			// get the model
 			$model = $this->getModel('compiler');
-			if ($model->getCompilerAnimations($message))
+			if ($model->getDynamicContent($message))
 			{
 				$message = JText::_('COM_COMPONENTBUILDER_BALL_THE_COMPILER_ANIMATIONS_WERE_SUCCESSFULLY_DOWNLOADED_TO_THIS_JOOMLA_INSTALLB');
 				$this->setRedirect($redirect_url, $message, 'message');

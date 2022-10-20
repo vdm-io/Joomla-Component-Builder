@@ -17,8 +17,8 @@ use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Search\Config;
 use VDM\Joomla\Componentbuilder\Search\Table;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\SearchTypeInterface as SearchEngine;
-use VDM\Joomla\Componentbuilder\Search\Type\Regex;
-use VDM\Joomla\Componentbuilder\Search\Type\Basic;
+use VDM\Joomla\Componentbuilder\Search\Engine\Regex;
+use VDM\Joomla\Componentbuilder\Search\Engine\Basic;
 
 
 /**

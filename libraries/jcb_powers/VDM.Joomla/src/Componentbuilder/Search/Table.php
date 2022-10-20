@@ -2981,14 +2981,15 @@ class Table
 	}
 
 	/**
-	 * Check if a table exist
+	 * Check if a table (and field) exist
 	 *
 	 * @param   string|null  $table  The area
+	 * @param   string|null  $field  The area
 	 *
 	 * @return  bool
 	 * @since 3.2.0
 	 */
-	public function exist(?string $table = null): bool
+	public function exist(?string $table = null, ?string $field = null): bool
 	{
 		// load the table
 		if (empty($table))
@@ -2996,9 +2997,20 @@ class Table
 			$table = $this->config->table_name;
 		}
 
-		if (isset($table) && isset($this->tables[$table]))
+		if (is_string($table) && isset($this->tables[$table]))
 		{
-			return true;
+			// if we have a field
+			if (is_string($field))
+			{
+				if (isset($this->tables[$table][$field]))
+				{
+					return true;
+				}
+			}
+			else
+			{
+				return true;
+			}
 		}
 
 		return false;

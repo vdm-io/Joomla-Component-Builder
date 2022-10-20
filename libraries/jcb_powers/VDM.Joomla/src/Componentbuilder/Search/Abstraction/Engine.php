@@ -17,11 +17,11 @@ use VDM\Joomla\Componentbuilder\Search\Config;
 
 
 /**
- * Search Type Regex
+ * Search Engine
  * 
  * @since 3.2.0
  */
-abstract class Type
+abstract class Engine
 {
 	/**
 	 * Search Config

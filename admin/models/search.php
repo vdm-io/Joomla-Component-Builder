@@ -114,8 +114,8 @@ class ComponentbuilderModelSearch extends ItemModel
 				$query = $db->getQuery(true);
 
 				// Get data
-				// load the tables and components (soon)
-				$data = ['tables' => SearchFactory::_('Table')->tables(), 'components' => null];
+				// load the tables and components
+				$data = ['tables' => SearchFactory::_('Table')->tables(), 'components' => $this->getComponents()];
 
 
 				if (empty($data))
@@ -162,4 +162,38 @@ class ComponentbuilderModelSearch extends ItemModel
 		}
 		return false;
 	}
+
+
+	/**
+	 * Get all components in the system
+	 *
+	 * @return  array
+	 * @since   3.2.0
+	 **/
+	public function getComponents(): array
+	{
+		// Get a db connection.
+		$db = $this->getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select only id and system name
+		$query->select($db->quoteName(array('id', 'system_name'),array('id', 'name')));
+		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
+
+		// only the active components
+		$query->where($db->quoteName('published') . ' = 1');
+
+		// Order it by the ordering field.
+		$query->order('modified DESC');
+		$query->order('created DESC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		// return the result
+		return $db->loadObjectList();
+	}
+
 }

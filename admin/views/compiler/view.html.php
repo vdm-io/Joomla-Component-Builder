@@ -40,11 +40,18 @@ class ComponentbuilderViewCompiler extends HtmlView
 			JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=compiler');
 			$this->sidebar = JHtmlSidebar::render();
 		}
+		// get the success message if set
 		$this->SuccessMessage = $this->app->getUserState('com_componentbuilder.success_message', false);
+		
+		// get active components
 		$this->Components = $this->get('Components');
-		$this->form = $this->setForm();
+		
+		// get the needed form fields
+		$this->Form = $this->getDynamicForm();
+		
 		// set the compiler artwork from global settings
 		$this->builder_gif_size = $this->params->get('builder_gif_size', '480-272');
+		
 		// only run these checks if he has access
 		if ($this->canDo->get('compiler.compiler_animations'))
 		{
@@ -96,7 +103,14 @@ class ComponentbuilderViewCompiler extends HtmlView
 	// JLayoutHelper::render('sectionjcb', [?]); // added to ensure the layout are loaded
 	// JLayoutHelper::render('repeatablejcb', [?]); // added to ensure the layout are loaded
 
-	public function setForm()
+	/**
+	 * Get the dynamic build form fields needed on the page
+	 *
+	 * @return  array|null  The array of form fields
+	 *
+	 * @since   3.2.0
+	 */
+	public function getDynamicForm(): ?array
 	{		
 		if(ComponentbuilderHelper::checkArray($this->Components))
 		{
@@ -209,8 +223,10 @@ class ComponentbuilderViewCompiler extends HtmlView
 			// return the form array
 			return $form;
 		}
-		return false;
+
+		return null;
 	}
+
 
 	/**
 	 * Prepares the document
@@ -396,7 +412,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 		if ($this->canDo->get('compiler.compiler_animations'))
 		{
 			// add Compiler Animations button.
-			JToolBarHelper::custom('compiler.getCompilerAnimations', 'download custom-button-getcompileranimations', '', 'COM_COMPONENTBUILDER_COMPILER_ANIMATIONS', false);
+			JToolBarHelper::custom('compiler.getDynamicContent', 'download custom-button-getdynamiccontent', '', 'COM_COMPONENTBUILDER_COMPILER_ANIMATIONS', false);
 		}
 		if ($this->canDo->get('compiler.clear_tmp'))
 		{

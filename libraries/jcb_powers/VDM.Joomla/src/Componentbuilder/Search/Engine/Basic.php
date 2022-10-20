@@ -9,14 +9,14 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Search\Type;
+namespace VDM\Joomla\Componentbuilder\Search\Engine;
 
 
 use VDM\Joomla\Componentbuilder\Search\Config;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\SearchTypeInterface;
-use VDM\Joomla\Componentbuilder\Search\Abstraction\Type;
+use VDM\Joomla\Componentbuilder\Search\Abstraction\Engine;
 
 
 /**
@@ -24,7 +24,7 @@ use VDM\Joomla\Componentbuilder\Search\Abstraction\Type;
  * 
  * @since 3.2.0
  */
-class Basic extends Type implements SearchTypeInterface
+class Basic extends Engine implements SearchTypeInterface
 {
 	/**
 	 * Regex Search Value

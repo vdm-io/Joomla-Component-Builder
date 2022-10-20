@@ -17,6 +17,10 @@ JHtml::_('behavior.formvalidator');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
+
+$this->app->input->set('hidemainmenu', false);
+$selectNotice = '<h3>' . JText::_('COM_COMPONENTBUILDER_HI') . ' ' . $this->user->name . '</h3>';
+$selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_ENTER_YOUR_SEARCH_TEXT') . '</p>';
 ?>
 <?php if ($this->canDo->get('search.access')): ?>
 <script type="text/javascript">
@@ -32,7 +36,6 @@ use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 	}
 </script>
 <?php $urlId = (isset($this->item->id)) ? '&id='. (int) $this->item->id : ''; ?>
-<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=search' . $urlId); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
 <?php if(!empty( $this->sidebar)): ?>
 <div id="j-sidebar-container" class="span2">
@@ -42,33 +45,55 @@ use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 <?php else : ?>
 <div id="j-main-container">
 <?php endif; ?>
-	<?php
-	// let's do some tests with the API
-	$tableName = 'admin_view';
-	$searchValue = '\b\w+Helper';
-	// set the search configurations
-	SearchFactory::_('Config')->table_name = $tableName;
-	SearchFactory::_('Config')->search_value = $searchValue;
-	SearchFactory::_('Config')->match_case = 1;
-	SearchFactory::_('Config')->whole_word = 0;
-	SearchFactory::_('Config')->regex_search = 1;
-	SearchFactory::_('Config')->component_id = 0;
-
-	if (($items = SearchFactory::_('Agent')->find()) !== null)
-	{
-		echo JText::sprintf('COM_COMPONENTBUILDER_WE_FOUND_SOME_INSTANCES_IN_S', $tableName) . '<br /><pre>';
-		var_dump($items);
-		echo '</pre>';
-	}
-	else
-	{
-		echo JText::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_S', $tableName);
-	}
- 	?>
+	<?php if ($this->form): ?>
+	<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=search'); ?>" method="post"
+		name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+		<div class="form-horizontal">
+			<div class="row-fluid">
+				<div class="span8">
+					<?php echo $this->form->renderField('type_search'); ?>
+					<?php echo $this->form->renderField('search_value'); ?>
+					<?php echo $this->form->renderField('replace_value'); ?>
+				</div>
+				<div class="span3">
+					<?php echo $this->form->renderFieldset('settings'); ?>
+				</div>
+			</div>
+			<div class="row-fluid" id="search_view">
+				<div id="search-results-tbl-box">
+					<table id="search-results-tbl" class="table">
+						<thead>
+							<tr>
+								<th><?php echo JText::_('COM_COMPONENTBUILDER_FOUND_TEXT'); ?></th>
+								<th><?php echo JText::_('COM_COMPONENTBUILDER_TABLE'); ?></th>
+								<th><?php echo JText::_('COM_COMPONENTBUILDER_FIELD'); ?></th>
+								<th><?php echo JText::_('ID'); ?></th>
+								<th><?php echo JText::_('COM_COMPONENTBUILDER_LINE'); ?></th>
+							</tr>
+						</thead>
+						<tbody id="search-results-tbl-tbody"></tbody>
+					</table>
+				</div>
+			</div>
+			<div class="row-fluid" id="item_view" style="display: none;">
+				<?php echo $this->form->renderFieldset('view'); ?>
+			</div>
+		</div>
+	</form>
+	<?php endif; ?>
 </div>
-<input type="hidden" name="task" value="" />
-<?php echo JHtml::_('form.token'); ?>
-</form>
+<?php if (isset($this->item['tables']) && ComponentbuilderHelper::checkArray($this->item['tables'])) : ?>
+<script>
+	var searchTables = json_encode($this->item['tables']);
+
+	const searchValueInp = document.getElementById("search_value");
+	const replaceValueInp = document.getElementById("replace_value");
+	const caseSensitiveLbl = document.getElementById("match_case_lbl");
+	const completeWordLbl = document.getElementById("whole_word_lbl");
+	const regexpSearchLbl = document.getElementById("regex_search_lbl");
+	let controller = null;
+</script>
+<?php endif; ?>
 <?php else: ?>
         <h1><?php echo JText::_('COM_COMPONENTBUILDER_NO_ACCESS_GRANTED'); ?></h1>
 <?php endif; ?>

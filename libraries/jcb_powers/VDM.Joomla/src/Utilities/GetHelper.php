@@ -33,11 +33,12 @@ abstract class GetHelper
 	 * @param   string   $operator     The operator between $whereString/field and $where/value
 	 * @param   string   $main         The component in which the table is found
 	 *
-	 * @return  mix string/int/float
-	 * 
+	 * @return  mixed string/int/float
 	 * @since  3.0.9
 	 */
-	public static function var($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = null)
+	public static function var(string $table, ?string $where = null,
+		string $whereString = 'user', string $what = 'id',
+		string $operator = '=', ?string $main = null)
 	{
 		if(empty($where))
 		{
@@ -85,6 +86,7 @@ abstract class GetHelper
 		{
 			return $db->loadResult();
 		}
+
 		return false;
 	}
 
@@ -99,11 +101,12 @@ abstract class GetHelper
 	 * @param   string   $main         The component in which the table is found
 	 * @param   bool     $unique       The switch to return a unique array
 	 *
-	 * @return  array
-	 * 
+	 * @return  array|null
 	 * @since  3.0.9
 	 */
-	public static function vars($table, $where = null, $whereString = 'user', $what = 'id', $operator = 'IN', $main = null, $unique = true)
+	public static function vars(string $table, ?string $where = null,
+		string $whereString = 'user', string $what = 'id', string $operator = 'IN',
+		?string $main = null, bool $unique = true): ?array
 	{
 		if(empty($where))
 		{
@@ -147,11 +150,11 @@ abstract class GetHelper
 			// add strings to array search
 			if ('IN_STRINGS' === $operator || 'NOT IN_STRINGS' === $operator)
 			{
-				$query->where($db->quoteName($whereString) . ' ' . str_replace('_STRINGS', '', $operator) . ' ("' . implode('","',$where) . '")');
+				$query->where($db->quoteName($whereString) . ' ' . str_replace('_STRINGS', '', $operator) . ' ("' . implode('","', $where) . '")');
 			}
 			else
 			{
-				$query->where($db->quoteName($whereString) . ' ' . $operator . ' (' . implode(',',$where) . ')');
+				$query->where($db->quoteName($whereString) . ' ' . $operator . ' (' . implode(',', $where) . ')');
 			}
 
 			$db->setQuery($query);
@@ -166,71 +169,83 @@ abstract class GetHelper
 				return $db->loadColumn();
 			}
 		}
-		return false;
+
+		return null;
 	}
 
 	/**
 	 * get all strings between two other strings
 	 * 
-	 * @param  string          $content    The content to search
-	 * @param  string          $start        The starting value
-	 * @param  string          $end         The ending value
+	 * @param  string       $content    The content to search
+	 * @param  string       $start      The starting value
+	 * @param  string       $end        The ending value
 	 *
-	 * @return  array          On success
-	 * 
+	 * @return  array|null          On success
 	 * @since  3.0.9
 	 */
-	public static function allBetween($content, $start, $end)
+	public static function allBetween(string $content, string $start, string $end): ?array
 	{
 		// reset bucket
-		$bucket = array();
+		$bucket = [];
 		for ($i = 0; ; $i++)
 		{
 			// search for string
-			$found = self::between($content,$start,$end);
+			$found = self::between($content, $start, $end);
+
 			if (StringHelper::check($found))
 			{
 				// add to bucket
 				$bucket[] = $found;
+
 				// build removal string
-				$remove = $start.$found.$end;
+				$remove = $start . $found . $end;
+
 				// remove from content
-				$content = str_replace($remove,'',$content);
+				$content = str_replace($remove, '', $content);
 			}
 			else
 			{
 				break;
 			}
+
 			// safety catch
 			if ($i == 500)
 			{
 				break;
 			}
 		}
+
 		// only return unique array of values
-		return  array_unique($bucket);
+		if (ArrayHelper::check($bucket))
+		{
+			return  array_unique($bucket);
+		}
+
+		return null;
 	}
 
 	/**
 	 * get a string between two other strings
 	 * 
-	 * @param  string          $content    The content to search
-	 * @param  string          $start        The starting value
-	 * @param  string          $end         The ending value
-	 * @param  string          $default     The default value if none found
+	 * @param  string       $content    The content to search
+	 * @param  string       $start      The starting value
+	 * @param  string       $end        The ending value
+	 * @param  string       $default    The default value if none found
 	 *
 	 * @return  string          On success / empty string on failure
-	 * 
 	 * @since  3.0.9
 	 */
-	public static function between($content, $start, $end, $default = '')
+	public static function between(string $content, string $start, string $end, string $default = ''): string
 	{
-		$r = explode($start, $content);
-		if (isset($r[1]))
+		$array = explode($start, $content);
+		if (isset($array[1]) && strpos($array[1], $end) !== false)
 		{
-			$r = explode($end, $r[1]);
-			return $r[0];
+			$array = explode($end, $array[1]);
+
+			// return string found between
+			return $array[0];
 		}
+
 		return $default;
 	}
 

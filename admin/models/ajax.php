@@ -3649,11 +3649,11 @@ class ComponentbuilderModelAjax extends ListModel
 	 *
 	 * @param   string           $tableName    The main table to search
 	 * @param   string           $searchValue  The value to search for
-	 * @param   string|null     $replaceValue  The value to replace search value
-	 * @param   int               $matchCase  The switch to control match case
-	 * @param   int               $wholeWord  The switch to control whole word
-	 * @param   int               $regexSearch  The switch to control regex search
-	 * @param   int               $componentId  The option to filter by component
+	 * @param   string|null      $replaceValue  The value to replace search value
+	 * @param   int              $matchCase  The switch to control match case
+	 * @param   int              $wholeWord  The switch to control whole word
+	 * @param   int              $regexSearch  The switch to control regex search
+	 * @param   int              $componentId  The option to filter by component
 	 *
 	 * @return  array|null
 	 * @since   3.2.0
@@ -3662,20 +3662,105 @@ class ComponentbuilderModelAjax extends ListModel
 		int $matchCase, int $wholeWord, int $regexSearch, int $componentId): ?array
 	{
 		// check if this is a valid table
-		if (SearchFactory('Table')->exist($tableName))
+		if (SearchFactory::_('Table')->exist($tableName))
 		{
 			// load the configurations
-			SearchFactory('Config')->table_name = $tableName;
-			SearchFactory('Config')->search_value = $searchValue;
-			SearchFactory('Config')->replace_value = $replaceValue;
-			SearchFactory('Config')->match_case = $matchCase;
-			SearchFactory('Config')->whole_word = $wholeWord;
-			SearchFactory('Config')->regex_search = $regexSearch;
-			SearchFactory('Config')->component_id = $componentId;
+			SearchFactory::_('Config')->table_name = $tableName;
+			SearchFactory::_('Config')->search_value = $searchValue;
+			SearchFactory::_('Config')->replace_value = $replaceValue;
+			SearchFactory::_('Config')->match_case = $matchCase;
+			SearchFactory::_('Config')->whole_word = $wholeWord;
+			SearchFactory::_('Config')->regex_search = $regexSearch;
+			SearchFactory::_('Config')->component_id = $componentId;
 
-			SearchFactory('Agent')->replace();
+			SearchFactory::_('Agent')->replace();
 
 			return ['success' => JText::sprintf('COM_COMPONENTBUILDER_ALL_FOUND_INSTANCES_IN_S_WHERE_REPLACED', $tableName)];
+		}
+		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
+	}
+
+	/**
+	 * Get a selected search value from a given table and row
+	 *
+	 * @param   string         $fieldName    The field key
+	 * @param   int            $rowId        The item ID
+	 * @param   string         $tableName    The table
+	 *
+	 * @return  array
+	 * @since   3.2.0
+	 **/
+	public function getSearchValue(string $fieldName, int $rowId, string $tableName): array
+	{
+		// check if this is a valid table and field
+		if ($rowId > 0 && SearchFactory('Table')->exist($tableName, $fieldName) &&
+			($value = SearchFactory('Agent')->getValue($fieldName, $rowId, 0, $tableName)) !== null)
+		{
+			// load the value
+			return ['value' => $value];
+		}
+		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
+	}
+
+	/**
+	 * Get a replaced search value from a given table and row
+	 *
+	 * @param   string         $fieldName    The field key
+	 * @param   int            $rowId        The item ID
+	 * @param   mixed          $line         The line line
+	 * @param   string         $tableName    The table
+	 * @param   string         $searchValue  The value to search for
+	 * @param   string|null    $replaceValue The value to replace search value
+	 * @param   int            $matchCase    The switch to control match case
+	 * @param   int            $wholeWord    The switch to control whole word
+	 * @param   int            $regexSearch  The switch to control regex search
+	 *
+	 * @return  array
+	 * @since   3.2.0
+	 **/
+	public function getReplaceValue(string $fieldName, int $rowId, $line, string $tableName,
+		string $searchValue, ?string $replaceValue = null, int $matchCase, int $wholeWord, int $regexSearch): array
+	{
+		// check if this is a valid table and field
+		if ($rowId > 0 && SearchFactory('Table')->exist($tableName, $fieldName))
+		{
+			// load the configurations
+			SearchFactory::_('Config')->table_name = $tableName;
+			SearchFactory::_('Config')->search_value = $searchValue;
+			SearchFactory::_('Config')->replace_value = $replaceValue;
+			SearchFactory::_('Config')->match_case = $matchCase;
+			SearchFactory::_('Config')->whole_word = $wholeWord;
+			SearchFactory::_('Config')->regex_search = $regexSearch;
+
+			// load the value
+			if (($value = SearchFactory('Agent')->getValue($fieldName, $rowId, $line, $tableName, true)) !== null)
+			{
+				return ['value' => $value];
+			}
+		}
+		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
+	}
+
+	/**
+	 * Set selected search value in a given table and row
+	 *
+	 * @param   mixed        $value        The field value
+	 * @param   int          $rowId        The item ID
+	 * @param   string       $fieldName    The field key
+	 * @param   string       $tableName    The table
+	 *
+	 * @return  array
+	 * @since   3.2.0
+	 **/
+	public function setValue($value, int $rowId, string $fieldName, string $tableName): array
+	{
+		// check if this is a valid table and field
+		if ($rowId > 0 && SearchFactory('Table')->exist($tableName, $fieldName) &&
+			SearchFactory('Agent')->setValue($value, $rowId, $fieldName, $tableName))
+		{
+			return ['success' => JText::sprintf(
+					'<b>%s</b> (%s:%s) was successfully updated!',
+					$tableName, $rowId, $fieldName)];
 		}
 		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
 	}

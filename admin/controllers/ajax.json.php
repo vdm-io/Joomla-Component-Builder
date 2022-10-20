@@ -69,6 +69,9 @@ class ComponentbuilderControllerAjax extends BaseController
 		$this->registerTask('getCodeGlueOptions', 'ajax');
 		$this->registerTask('searchTable', 'ajax');
 		$this->registerTask('updateTable', 'ajax');
+		$this->registerTask('getSearchValue', 'ajax');
+		$this->registerTask('getReplaceValue', 'ajax');
+		$this->registerTask('setValue', 'ajax');
 		$this->registerTask('snippetDetails', 'ajax');
 		$this->registerTask('setSnippetGithub', 'ajax');
 		$this->registerTask('getSnippets', 'ajax');
@@ -1692,6 +1695,142 @@ class ComponentbuilderControllerAjax extends BaseController
 						if($table_nameValue && $user->id != 0 && $search_valueValue)
 						{
 							$result = $this->getModel('ajax')->updateTable($table_nameValue, $search_valueValue, $replace_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue, $component_idValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getSearchValue':
+					try
+					{
+						$field_nameValue = $jinput->get('field_name', NULL, 'WORD');
+						$row_idValue = $jinput->get('row_id', NULL, 'INT');
+						$table_nameValue = $jinput->get('table_name', NULL, 'WORD');
+						if($field_nameValue && $user->id != 0 && $row_idValue && $table_nameValue)
+						{
+							$result = $this->getModel('ajax')->getSearchValue($field_nameValue, $row_idValue, $table_nameValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getReplaceValue':
+					try
+					{
+						$field_nameValue = $jinput->get('field_name', NULL, 'WORD');
+						$row_idValue = $jinput->get('row_id', NULL, 'INT');
+						$line_nrValue = $jinput->get('line_nr', 0, 'STRING');
+						$table_nameValue = $jinput->get('table_name', NULL, 'WORD');
+						$search_valueValue = $jinput->get('search_value', NULL, 'RAW');
+						$replace_valueValue = $jinput->get('replace_value', NULL, 'RAW');
+						$match_caseValue = $jinput->get('match_case', 0, 'INT');
+						$whole_wordValue = $jinput->get('whole_word', 0, 'INT');
+						$regex_searchValue = $jinput->get('regex_search', 0, 'INT');
+						if($field_nameValue && $user->id != 0 && $row_idValue && $table_nameValue && $search_valueValue)
+						{
+							$result = $this->getModel('ajax')->getReplaceValue($field_nameValue, $row_idValue, $line_nrValue, $table_nameValue, $search_valueValue, $replace_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue);
+						}
+						else
+						{
+							$result = false;
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'setValue':
+					try
+					{
+						$valueValue = $jinput->get('value', NULL, 'RAW');
+						$row_idValue = $jinput->get('row_id', NULL, 'INT');
+						$field_nameValue = $jinput->get('field_name', NULL, 'WORD');
+						$table_nameValue = $jinput->get('table_name', NULL, 'WORD');
+						if($valueValue && $user->id != 0 && $row_idValue && $field_nameValue && $table_nameValue)
+						{
+							$result = $this->getModel('ajax')->setValue($valueValue, $row_idValue, $field_nameValue, $table_nameValue);
 						}
 						else
 						{

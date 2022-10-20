@@ -139,69 +139,6 @@ class ComponentbuilderModelCompiler extends ListModel
 
 	public $compiler;
 
-	public function getComponents()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		// Order it by the ordering field.
-		$query->select($db->quoteName(array('id', 'system_name'),array('id', 'name')));
-		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
-		$query->where($db->quoteName('published') . ' = 1');
-		$query->order('modified DESC');
-		$query->order('created DESC');
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		// return the result
-		return $db->loadObjectList();
-	}	
-
-	public function getCompilerAnimations(&$errorMessage) 
-	{
-		// convert error message to array
-		$errorMessage = array();
-		$searchArray = array(
-			// add banners (width - height)
-			'banner' => array(
-					'728-90',
-					'160-600'
-				),
-			// The build-gif by size (width - height)
-			'builder-gif' => array(
-					'480-540'
-				)
-			);
-		// start search, and get
-		foreach ($searchArray as $type => $sizes)
-		{
-			// per size
-			foreach ($sizes as $size)
-			{
-				// get size
-				if (($set_size = ComponentbuilderHelper::getDynamicContentSize($type, $size)) !== 0)
-				{
-					// we loop over all type size artwork
-					for ($target = 1; $target <= $set_size; $target++)
-					{
-    						if (!ComponentbuilderHelper::getDynamicContent($type, $size, false, 0, $target))
-    						{
-    							$errorMessage[] = JText::sprintf('COM_COMPONENTBUILDER_S_S_NUMBER_BSB_COULD_NOT_BE_DOWNLOADED_SUCCESSFULLY_TO_THIS_JOOMLA_INSTALL', $type, $size, $target);
-    						}
-					}
-				}
-			}
-		}
-		// check if we had any errors
-		if (ComponentbuilderHelper::checkArray($errorMessage))
-		{
-			// flatten the error message array
-			$errorMessage = implode('<br />', $errorMessage);
-			return false;
-		}
-		return true;
-	}
-
 	public function builder() 
 	{
 		// run compiler
@@ -360,4 +297,90 @@ class ComponentbuilderModelCompiler extends ListModel
 
 		return $result;
 	}
+
+	/**
+	 * Get all components in the system
+	 *
+	 * @return  array
+	 * @since   3.2.0
+	 **/
+	public function getComponents(): array
+	{
+		// Get a db connection.
+		$db = $this->getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Select only id and system name
+		$query->select($db->quoteName(array('id', 'system_name'),array('id', 'name')));
+		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
+
+		// only the active components
+		$query->where($db->quoteName('published') . ' = 1');
+
+		// Order it by the ordering field.
+		$query->order('modified DESC');
+		$query->order('created DESC');
+
+		// Reset the query using our newly populated query object.
+		$db->setQuery($query);
+
+		// return the result
+		return $db->loadObjectList();
+	}
+
+
+	/**
+	 * Get all dynamic content
+	 *
+	 * @return  bool
+	 * @since   3.2.0
+	 **/
+	public function getDynamicContent(&$errorMessage): bool
+	{
+		// convert error message to array
+		$errorMessage = [];
+		$searchArray = [
+			// add banners (width - height)
+			'banner' => [
+					'728-90',
+					'160-600'
+				],
+			// The build-gif by size (width - height)
+			'builder-gif' => [
+					'480-540'
+				]
+			];
+		// start search, and get
+		foreach ($searchArray as $type => $sizes)
+		{
+			// per size
+			foreach ($sizes as $size)
+			{
+				// get size
+				if (($set_size = ComponentbuilderHelper::getDynamicContentSize($type, $size)) !== 0)
+				{
+					// we loop over all type size artwork
+					for ($target = 1; $target <= $set_size; $target++)
+					{
+    						if (!ComponentbuilderHelper::getDynamicContent($type, $size, false, 0, $target))
+    						{
+    							$errorMessage[] = JText::sprintf('COM_COMPONENTBUILDER_S_S_NUMBER_BSB_COULD_NOT_BE_DOWNLOADED_SUCCESSFULLY_TO_THIS_JOOMLA_INSTALL', $type, $size, $target);
+    						}
+					}
+				}
+			}
+		}
+		// check if we had any errors
+		if (ComponentbuilderHelper::checkArray($errorMessage))
+		{
+			// flatten the error message array
+			$errorMessage = implode('<br />', $errorMessage);
+
+			return false;
+		}
+		return true;
+	}
+
 }

@@ -175,7 +175,7 @@ class Power implements PowerInterface
 	 *
 	 * @param string   $guid    The global unique id of the power
 	 *
-	 * @return bool
+	 * @return bool  true on successful setting of a power
 	 * @since 3.2.0
 	 */
 	protected function set(string $guid): bool
@@ -190,39 +190,52 @@ class Power implements PowerInterface
 			// Create a new query object.
 			$query = $this->db->getQuery(true);
 
+			// select all values
 			$query->select('a.*');
-			// from these tables
+
+			// from this table
 			$query->from('#__componentbuilder_power AS a');
 			$query->where($this->db->quoteName('a.guid') . ' = ' . $this->db->quote($guid));
+
 			$this->db->setQuery($query);
 			$this->db->execute();
+
 			if ($this->db->getNumRows())
 			{
 				// make sure that in recursion we
 				// don't try to load this power again
+				// since during the load of a power we also load
+				// all powers linked to it
 				$this->state[$guid] = true;
+
 				// get the power data
 				$this->active[$guid] = $this->db->loadObject();
+
 				// make sure to add any language strings found to all language files
 				// since we can't know where this is used at this point
 				$tmp_lang_target = $this->config->lang_target;
 				$this->config->lang_target = 'both';
+
 				// we set the fix usr if needed
 				$this->fixUrl
 					= '"index.php?option=com_componentbuilder&view=powers&task=power.edit&id='
 					. $this->active[$guid]->id . '" target="_blank"';
+
 				// set some keys
 				$this->active[$guid]->target_type = 'P0m3R!';
 				$this->active[$guid]->key         = $this->active[$guid]->id . '_' . $this->active[$guid]->target_type;
+
 				// now set the name
 				$this->active[$guid]->name = $this->placeholder->update(
 					$this->customcode->update($this->active[$guid]->name),
 					$this->placeholder->active
 				);
+
 				// now set the code_name and class name
 				$this->active[$guid]->code_name = $this->active[$guid]->class_name = ClassfunctionHelper::safe(
 					$this->active[$guid]->name
 				);
+
 				// set official name
 				$this->active[$guid]->official_name = StringHelper::safe(
 					$this->active[$guid]->name, 'W'
@@ -287,6 +300,7 @@ class Power implements PowerInterface
 				{
 					// set GUI mapper field
 					$guiMapper['field'] = 'head';
+
 					// base64 Decode code
 					$this->active[$guid]->head = $this->gui->set(
 							$this->placeholder->update(
@@ -333,6 +347,7 @@ class Power implements PowerInterface
 				return true;
 			}
 		}
+
 		// we failed to get the power,
 		// so we raise an error message
 		// only if guid is valid
@@ -343,6 +358,7 @@ class Power implements PowerInterface
 				'Error'
 			);
 		}
+
 		// let's not try again
 		$this->state[$guid] = false;
 

@@ -19,6 +19,7 @@ use VDM\Joomla\Componentbuilder\Search\Database\Set;
 use VDM\Joomla\Componentbuilder\Search\Agent\Find;
 use VDM\Joomla\Componentbuilder\Search\Agent\Replace;
 use VDM\Joomla\Componentbuilder\Search\Agent\Search;
+use VDM\Joomla\Componentbuilder\Search\Agent\Update;
 
 
 /**
@@ -77,6 +78,14 @@ class Agent
 	protected Search $search;
 
 	/**
+	 * Update
+	 *
+	 * @var    Update
+	 * @since 3.2.0
+	 */
+	protected Update $update;
+
+	/**
 	 * Constructor
 	 *
 	 * @param Config|null         $config         The search config object.
@@ -90,7 +99,7 @@ class Agent
 	 */
 	public function __construct(?Config $config = null, ?Get $get = null,
 		?Set$set = null, ?Find $find = null, ?Replace $replace = null,
-		?Search $search = null)
+		?Search $search = null, ?Update $update = null)
 	{
 		$this->config = $config ?: Factory::_('Config');
 		$this->get = $get ?: Factory::_('Get.Database');
@@ -98,6 +107,65 @@ class Agent
 		$this->find = $find ?: Factory::_('Agent.Find');
 		$this->replace = $replace ?: Factory::_('Agent.Replace');
 		$this->search = $search ?: Factory::_('Agent.Search');
+		$this->update = $update ?: Factory::_('Agent.Update');
+	}
+
+	/**
+	 * Get the value of a field in a row and table
+	 *
+	 * @param   mixed        $value    The field value
+	 * @param   int          $id       The item ID
+	 * @param   string       $field    The field key
+	 * @param   mixed        $line     The field line
+	 * @param   string|null  $table    The table
+	 * @param   bool         $update   The switch to triger an update (default is false)
+	 *
+	 * @return  mixed
+	 * @since 3.2.0
+	 */
+	public function getValue(int $id, string $field, $line = null,
+		?string $table = null, bool $update = false)
+	{
+		// set the table name
+		if (empty($table))
+		{
+			$table = $this->config->table_name;
+		}
+
+		if (($value = $this->get->value($id, $field, $table)) !== null)
+		{
+			// try to update the value if required
+			if ($update && ($updated_value = $this->update->value($value, $line)) !== null)
+			{
+				return $updated_value;
+			}
+
+			return $value;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Set the value of a field in a row and table
+	 *
+	 * @param   mixed        $value    The field value
+	 * @param   int          $id       The item ID
+	 * @param   string       $field    The field key
+	 * @param   string|null  $table    The table
+	 *
+	 * @return  bool
+	 * @since 3.2.0
+	 */
+	public function setValue($value, int $id, string $field, ?string $table = null): bool
+	{
+		// set the table name
+		if (empty($table))
+		{
+			$table = $this->config->table_name;
+		}
+
+		return $this->set->value($value, $id, $field, $table);
 	}
 
 	/**

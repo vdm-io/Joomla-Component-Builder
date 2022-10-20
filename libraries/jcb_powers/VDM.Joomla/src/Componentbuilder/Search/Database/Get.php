@@ -87,17 +87,17 @@ class Get implements GetInterface
 	}
 
 	/**
-	 * Get values from a given table
+	 * Get a value from a given table
 	 *          Example: $this->value(23, 'value_key', 'table_name');
 	 *
-	 * @param   string           $field     The field key
 	 * @param   int              $id        The item ID
+	 * @param   string           $field     The field key
 	 * @param   string|null      $table     The table
 	 *
 	 * @return  mixed
 	 * @since 3.2.0
 	 */
-	public function value(string $field, int $id, string $table = null)
+	public function value(int $id, string $field, string $table = null)
 	{
 		// load the table
 		if (empty($table))
