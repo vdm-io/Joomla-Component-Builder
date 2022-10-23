@@ -12,18 +12,16 @@
 namespace VDM\Joomla\Componentbuilder\Compiler;
 
 
-use Joomla\Registry\Registry as JoomlaRegistry;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
+use VDM\Joomla\Componentbuilder\Abstraction\BaseRegistry;
 
 
 /**
  * Compiler Registry
  * 
- * So we have full control over this class
- * 
  * @since 3.2.0
  */
-class Registry extends JoomlaRegistry implements \JsonSerializable, \ArrayAccess, \IteratorAggregate, \Countable
+class Registry extends BaseRegistry
 {
 	/**
 	 * Default indentation value
@@ -32,27 +30,6 @@ class Registry extends JoomlaRegistry implements \JsonSerializable, \ArrayAccess
 	 * @since  1.0
 	 */
 	protected $indent = 2;
-
-	/**
-	 * Method to iterate over any part of the registry
-	 *
-	 * @param   string  $path  Registry path (e.g. joomla.content.showauthor)
-	 *
-	 * @return  \ArrayIterator  This object represented as an ArrayIterator.
-	 *
-	 * @since   3.4.0
-	 */
-	public function _($path)
-	{
-		$data = $this->extract($path);
-
-		if ($data === null)
-		{
-			return null;
-		}
-
-		return $data->getIterator();
-	}
 
 	/**
 	 * Method to export a set of values to a PHP array

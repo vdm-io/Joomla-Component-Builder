@@ -37,6 +37,10 @@ $selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_ENTER_YOUR_SEARCH_TEXT')
 </script>
 <?php $urlId = (isset($this->item->id)) ? '&id='. (int) $this->item->id : ''; ?>
 
+<div class="alert alert-info" role="alert">
+	<?php echo JText::_('COM_COMPONENTBUILDER_THIS_AREA_IS_STILL_UNDER_DEVELOPMENT_AND_DOES_NOT_WORK'); ?>
+</div>
+<hr />
 <?php if(!empty( $this->sidebar)): ?>
 <div id="j-sidebar-container" class="span2">
 	<?php echo $this->sidebar; ?>

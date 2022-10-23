@@ -13,6 +13,10 @@ namespace VDM\Joomla\Componentbuilder\Search;
 
 
 use Joomla\DI\Container;
+use VDM\Joomla\Componentbuilder\Search\Service\Search;
+use VDM\Joomla\Componentbuilder\Search\Service\Model;
+use VDM\Joomla\Componentbuilder\Search\Service\Database;
+use VDM\Joomla\Componentbuilder\Search\Service\Agent;
 
 
 /**
@@ -68,10 +72,10 @@ abstract class Factory
 	protected static function createContainer(): Container
 	{
 		$container = (new Container())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Search\Service\Search())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Search\Service\Model())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Search\Service\Database())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Search\Service\Agent());
+			->registerServiceProvider(new Search())
+			->registerServiceProvider(new Model())
+			->registerServiceProvider(new Database())
+			->registerServiceProvider(new Agent());
 
 		return $container;
 	}

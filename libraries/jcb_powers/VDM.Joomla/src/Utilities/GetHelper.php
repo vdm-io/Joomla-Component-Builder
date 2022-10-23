@@ -26,17 +26,17 @@ abstract class GetHelper
 	/**
 	 * Get a Variable 
 	 *
-	 * @param   string   $table        The table from which to get the variable
-	 * @param   string   $where        The value where
-	 * @param   string   $whereString  The target/field string where/name
-	 * @param   string   $what         The return field
-	 * @param   string   $operator     The operator between $whereString/field and $where/value
-	 * @param   string   $main         The component in which the table is found
+	 * @param   string|null  $table        The table from which to get the variable
+	 * @param   mixed        $where        The value where
+	 * @param   string       $whereString  The target/field string where/name
+	 * @param   string       $what         The return field
+	 * @param   string       $operator     The operator between $whereString/field and $where/value
+	 * @param   string       $main         The component in which the table is found
 	 *
 	 * @return  mixed string/int/float
 	 * @since  3.0.9
 	 */
-	public static function var(string $table, ?string $where = null,
+	public static function var(?string $table = null, $where = null,
 		string $whereString = 'user', string $what = 'id',
 		string $operator = '=', ?string $main = null)
 	{
@@ -93,18 +93,18 @@ abstract class GetHelper
 	/**
 	 * Get array of variables
 	 *
-	 * @param   string   $table        The table from which to get the variables
-	 * @param   string   $where        The value where
-	 * @param   string   $whereString  The target/field string where/name
-	 * @param   string   $what         The return field
-	 * @param   string   $operator     The operator between $whereString/field and $where/value
-	 * @param   string   $main         The component in which the table is found
-	 * @param   bool     $unique       The switch to return a unique array
+	 * @param   string|null  $table        The table from which to get the variables
+	 * @param   mixed        $where        The value where
+	 * @param   string       $whereString  The target/field string where/name
+	 * @param   string       $what         The return field
+	 * @param   string       $operator     The operator between $whereString/field and $where/value
+	 * @param   string       $main         The component in which the table is found
+	 * @param   bool         $unique       The switch to return a unique array
 	 *
 	 * @return  array|null
 	 * @since  3.0.9
 	 */
-	public static function vars(string $table, ?string $where = null,
+	public static function vars(?string $table = null, $where = null,
 		string $whereString = 'user', string $what = 'id', string $operator = 'IN',
 		?string $main = null, bool $unique = true): ?array
 	{

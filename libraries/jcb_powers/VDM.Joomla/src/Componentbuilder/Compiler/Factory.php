@@ -13,6 +13,16 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 
 
 use Joomla\DI\Container;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Compiler;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Event;
+use VDM\Joomla\Componentbuilder\Compiler\Service\History;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Language;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Placeholder;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Customcode;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Power;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Component;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Extension;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Field;
 
 
 /**
@@ -43,7 +53,7 @@ abstract class Factory
 	 *
 	 * @param   string  $key  The container class key
 	 *
-	 * @return  Mixed
+	 * @return  mixed
 	 * @since 3.2.0
 	 */
 	public static function _($key)
@@ -56,7 +66,7 @@ abstract class Factory
 	 *
 	 * @param   string  $key  The container class key
 	 *
-	 * @return  Mixed
+	 * @return  mixed
 	 * @since 3.2.0
 	 */
 	public static function _J($key)
@@ -94,20 +104,19 @@ abstract class Factory
 	protected static function createContainer(): Container
 	{
 		$container = (new Container())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Compiler())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Event())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\History())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Language())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Placeholder())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Customcode())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Power())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Component())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Extension())
-			->registerServiceProvider(new \VDM\Joomla\Componentbuilder\Compiler\Service\Field());
+			->registerServiceProvider(new Compiler())
+			->registerServiceProvider(new Event())
+			->registerServiceProvider(new History())
+			->registerServiceProvider(new Language())
+			->registerServiceProvider(new Placeholder())
+			->registerServiceProvider(new Customcode())
+			->registerServiceProvider(new Power())
+			->registerServiceProvider(new Component())
+			->registerServiceProvider(new Extension())
+			->registerServiceProvider(new Field());
 
 		return $container;
 	}
-
 
 }
 

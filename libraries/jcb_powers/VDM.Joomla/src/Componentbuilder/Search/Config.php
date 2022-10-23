@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Search;
 
 
-use VDM\Joomla\Componentbuilder\Abstraction\Registry;
+use VDM\Joomla\Componentbuilder\Abstraction\BaseConfig;
 
 
 /**
@@ -20,7 +20,7 @@ use VDM\Joomla\Componentbuilder\Abstraction\Registry;
  * 
  * @since 3.2.0
  */
-class Config extends Registry
+class Config extends BaseConfig
 {
 	/**
 	 * get posted search value

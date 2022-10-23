@@ -20,11 +20,11 @@ use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 
 
 /**
- * Registry
+ * Config
  * 
  * @since 3.2.0
  */
-abstract class Registry extends JoomlaRegistry
+abstract class BaseConfig extends JoomlaRegistry
 {
 	/**
 	 * Hold a JInput object for easier access to the input variables.

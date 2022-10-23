@@ -693,17 +693,26 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		{
 			$values = json_decode($values, true);
 		}
+		// let's check for just a string or int
+		elseif (is_string($values) || (is_numeric($values) && $values > 0))
+		{
+			$values = [$values];
+		}
+
 		// make sure we have an array of values
 		if (!ComponentbuilderHelper::checkArray($values, true) || !ComponentbuilderHelper::checkString($table) || !ComponentbuilderHelper::checkString($key))
 		{
 			return false;
 		}
+
 		// start the query
 		$query = $this->_db->getQuery(true);
 		// Select some fields
 		$query->select(array('a.*'));
+
 		// From the componentbuilder_ANY table
 		$query->from($this->_db->quoteName('#__componentbuilder_'. $table, 'a'));
+
 		// check if this is an array of integers 
 		if ($this->is_numeric($values))
 		{
@@ -722,12 +731,14 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				return $this->_db->quote($var);
 			}, $values)) . ')');
 		}
+
 		// Implement View Level Access
 		if (!$this->user->authorise('core.options', 'com_componentbuilder'))
 		{
 			$groups = implode(',', $this->user->getAuthorisedViewLevels());
 			$query->where('a.access IN (' . $groups . ')');
 		}
+
 		// Order the results by ordering
 		$query->order('a.ordering  ASC');
 		// Load the items
