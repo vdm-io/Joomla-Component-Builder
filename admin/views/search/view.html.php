@@ -13,7 +13,6 @@
 defined('_JEXEC') or die('Restricted access'); 
 
 use Joomla\CMS\MVC\View\HtmlView;
-use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Form\Form;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 
@@ -46,6 +45,15 @@ class ComponentbuilderViewSearch extends HtmlView
 		// get the needed form fields
 		$this->form = $this->getDynamicForm();
 		
+		// build our table headers
+		$this->table_headers = array(
+			'edit' => 'E',
+			'code' => JText::_('COM_COMPONENTBUILDER_FOUND_TEXT'),
+			'table' => JText::_('COM_COMPONENTBUILDER_TABLE'),
+			'field' => JText::_('COM_COMPONENTBUILDER_FIELD'),
+			'id' => JText::_('ID'),
+			'line' => JText::_('COM_COMPONENTBUILDER_LINE')
+		);
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -223,7 +231,7 @@ class ComponentbuilderViewSearch extends HtmlView
 				'name' => 'full_text',
 				'label' => 'COM_COMPONENTBUILDER_FULL_TEXT',
 				'width' => '100%',
-				'height' => '450px',
+				'height' => '250px',
 				'class' => 'full_text_editor',
 				'syntax' => 'php',
 				'buttons' => 'false',
@@ -257,6 +265,12 @@ class ComponentbuilderViewSearch extends HtmlView
 		// Initialize the header checker.
 		$HeaderCheck = new componentbuilderHeaderCheck;
 
+		// always load these files.
+		$this->document->addStyleSheet(JURI::root(true) . "/media/com_componentbuilder/datatable/css/datatables.min.css", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/css");
+		$this->document->addScript(JURI::root(true) . "/media/com_componentbuilder/datatable/js/pdfmake.min.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
+		$this->document->addScript(JURI::root(true) . "/media/com_componentbuilder/datatable/js/vfs_fonts.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
+		$this->document->addScript(JURI::root(true) . "/media/com_componentbuilder/datatable/js/datatables.min.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
+
 		// Add View JavaScript File
 		$this->document->addScript(JURI::root(true) . "/administrator/components/com_componentbuilder/assets/js/search.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
 
@@ -277,42 +291,16 @@ class ComponentbuilderViewSearch extends HtmlView
 		{
 			JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', ['version' => 'auto']);
 		}
-
-		// Load the script to find all uikit components needed.
-		if ($uikit != 2)
-		{
-			// Set the default uikit components in this view.
-			$uikitComp = array();
-			$uikitComp[] = 'uk-progress';
-		}
-
-		// Load the needed uikit components in this view.
-		if ($uikit != 2 && isset($uikitComp) && ComponentbuilderHelper::checkArray($uikitComp))
-		{
-			// load just in case.
-			jimport('joomla.filesystem.file');
-			// loading...
-			foreach ($uikitComp as $class)
-			{
-				foreach (ComponentbuilderHelper::$uk_components[$class] as $name)
-				{
-					// check if the CSS file exists.
-					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css'))
-					{
-						// load the css.
-						JHtml::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css', ['version' => 'auto']);
-					}
-					// check if the JavaScript file exists.
-					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js'))
-					{
-						// load the js.
-						JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);
-					}
-				}
-			}
-		}
 		// add the document default css file
 		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/search.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		// Set the Custom CSS script to view
+		$this->document->addStyleDeclaration("
+			.found_code {
+				color: #46a546;
+				font-weight: bolder;
+			}
+			
+		");
 	}
 
 	/**

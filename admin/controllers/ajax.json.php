@@ -67,8 +67,8 @@ class ComponentbuilderControllerAjax extends BaseController
 		$this->registerTask('fieldTypeProperties', 'ajax');
 		$this->registerTask('getFieldPropertyDesc', 'ajax');
 		$this->registerTask('getCodeGlueOptions', 'ajax');
-		$this->registerTask('searchTable', 'ajax');
-		$this->registerTask('updateTable', 'ajax');
+		$this->registerTask('doSearch', 'ajax');
+		$this->registerTask('replaceAll', 'ajax');
 		$this->registerTask('getSearchValue', 'ajax');
 		$this->registerTask('getReplaceValue', 'ajax');
 		$this->registerTask('setValue', 'ajax');
@@ -1636,7 +1636,7 @@ class ComponentbuilderControllerAjax extends BaseController
 						}
 					}
 				break;
-				case 'searchTable':
+				case 'doSearch':
 					try
 					{
 						$table_nameValue = $jinput->get('table_name', NULL, 'WORD');
@@ -1647,7 +1647,7 @@ class ComponentbuilderControllerAjax extends BaseController
 						$component_idValue = $jinput->get('component_id', 0, 'INT');
 						if($table_nameValue && $user->id != 0 && $search_valueValue)
 						{
-							$result = $this->getModel('ajax')->searchTable($table_nameValue, $search_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue, $component_idValue);
+							$result = $this->getModel('ajax')->doSearch($table_nameValue, $search_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue, $component_idValue);
 						}
 						else
 						{
@@ -1682,7 +1682,7 @@ class ComponentbuilderControllerAjax extends BaseController
 						}
 					}
 				break;
-				case 'updateTable':
+				case 'replaceAll':
 					try
 					{
 						$table_nameValue = $jinput->get('table_name', NULL, 'WORD');
@@ -1694,7 +1694,7 @@ class ComponentbuilderControllerAjax extends BaseController
 						$component_idValue = $jinput->get('component_id', 0, 'INT');
 						if($table_nameValue && $user->id != 0 && $search_valueValue)
 						{
-							$result = $this->getModel('ajax')->updateTable($table_nameValue, $search_valueValue, $replace_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue, $component_idValue);
+							$result = $this->getModel('ajax')->replaceAll($table_nameValue, $search_valueValue, $replace_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue, $component_idValue);
 						}
 						else
 						{

@@ -16,7 +16,6 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.formvalidator');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
-use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 
 $this->app->input->set('hidemainmenu', false);
 $selectNotice = '<h3>' . JText::_('COM_COMPONENTBUILDER_HI') . ' ' . $this->user->name . '</h3>';
@@ -54,33 +53,25 @@ $selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_ENTER_YOUR_SEARCH_TEXT')
 		name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 		<div class="form-horizontal">
 			<div class="row-fluid">
-				<div class="span8">
+				<div class="span7">
 					<?php echo $this->form->renderField('type_search'); ?>
 					<?php echo $this->form->renderField('search_value'); ?>
 					<?php echo $this->form->renderField('replace_value'); ?>
 				</div>
-				<div class="span3">
+				<div class="span4">
 					<?php echo $this->form->renderFieldset('settings'); ?>
 				</div>
 			</div>
-			<div class="row-fluid" id="search_view">
-				<div id="search-results-tbl-box">
-					<table id="search-results-tbl" class="table">
-						<thead>
-							<tr>
-								<th><?php echo JText::_('COM_COMPONENTBUILDER_FOUND_TEXT'); ?></th>
-								<th><?php echo JText::_('COM_COMPONENTBUILDER_TABLE'); ?></th>
-								<th><?php echo JText::_('COM_COMPONENTBUILDER_FIELD'); ?></th>
-								<th><?php echo JText::_('ID'); ?></th>
-								<th><?php echo JText::_('COM_COMPONENTBUILDER_LINE'); ?></th>
-							</tr>
-						</thead>
-						<tbody id="search-results-tbl-tbody"></tbody>
-					</table>
+			<div class="row-fluid" id="search_results_view">
+				<hr>
+				<div id="search_results_table_box">
+					<?php echo JLayoutHelper::render('table', ['id' => 'search_results_table', 'headers' => $this->table_headers, 'items' => 7, 'init' => false]); ?>
 				</div>
 			</div>
-			<div class="row-fluid" id="item_view" style="display: none;">
-				<?php echo $this->form->renderFieldset('view'); ?>
+			<div class="row-fluid" id="item_view_box">
+				<hr>
+				<div id="item_notice"></div>
+				<?php echo $this->form->getInput('full_text'); ?>
 			</div>
 		</div>
 	</form>
@@ -88,14 +79,115 @@ $selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_ENTER_YOUR_SEARCH_TEXT')
 </div>
 <?php if (isset($this->item['tables']) && ComponentbuilderHelper::checkArray($this->item['tables'])) : ?>
 <script>
-	var searchTables = json_encode($this->item['tables']);
+	const searchTables = <?php echo json_encode($this->item['tables']); ?>;
 
-	const searchValueInp = document.getElementById("search_value");
-	const replaceValueInp = document.getElementById("replace_value");
-	const caseSensitiveLbl = document.getElementById("match_case_lbl");
-	const completeWordLbl = document.getElementById("whole_word_lbl");
-	const regexpSearchLbl = document.getElementById("regex_search_lbl");
+	// the search Ajax URLs
+	const Url = '<?php echo JUri::base(); ?>index.php?option=com_componentbuilder&format=json&raw=true&<?php echo JSession::getFormToken(); ?>=1&task=ajax.';
+
+	// make sure our controller is set
 	let controller = null;
+
+	// set the search mode object
+	const modeObject = document.getElementById("type_search");
+
+	// set the search settings objects
+	const searchObject = document.getElementById("search_value");
+	const replaceObject = document.getElementById("replace_value");
+	const matchObject = document.getElementById("search_behaviour0");
+	const wholeObject = document.getElementById("search_behaviour1");
+	const regexObject = document.getElementById("search_behaviour2");
+	const tableObject = document.getElementById("table_name");
+
+	// Do the search on key up of search or replace input elements
+	searchObject.onkeyup = onChange;
+	replaceObject.onkeyup = onChange;
+
+	// Do the search on key up of search input elements
+	matchObject.onchange = onChange;
+	wholeObject.onchange = onChange;
+	regexObject.onchange = onChange;
+	tableObject.onchange = onChange;
+
+	// get the editor
+	var editorObject;
+	var editorBoxObject;
+	var editorNoticeObject;
+
+	// set some global objects
+	document.addEventListener('DOMContentLoaded', function () {
+		// get the editor
+		editorObject = Joomla.editors.instances['full_text'];
+		editorBoxObject = document.getElementById("item_view_box");
+		editorNoticeObject = document.getElementById("item_notice");
+	});
+
+	// configurations of the table
+	const tableConfigObject = {
+		responsive: true,
+		order: [[ 2, "asc" ]],
+		select:  true,
+		paging: true,
+		lengthMenu: [5, 10, 20 ,50, 80, 100, 150, 200, 500, 1000, 1500, 2000],
+		pageLength: 80,
+		scrollY: 170,
+		columnDefs: [
+			{ 'targets': [ 4, 5 ], 'visible': false, 'searchable': false },
+			{ 'targets': [ 0, 1 ], type: 'html' },
+			{ responsivePriority: 1, targets: 1 },
+			{ responsivePriority: 2, targets: 0 },
+			{ responsivePriority: 3, targets: 2 },
+			{ responsivePriority: 4, targets: 3 }
+		],
+		columns: [
+			{
+				data: 'edit'
+			},
+			{
+				data: 'code'
+			},
+			{
+				data: 'table'
+			},
+			{
+				data: 'field'
+			},
+			{
+				data: 'id'
+			},
+			{
+				data: 'line'
+			}
+		]
+	};
+
+	// The Result Table Code
+	document.addEventListener('DOMContentLoaded', function () {
+
+		// init the table
+		let searchResultsTable = new DataTable('#search_results_table', tableConfigObject);
+
+		searchResultsTable.on( 'select', function ( e, dt, type, indexes ) {
+			if ( type === 'row' ) {
+				// get the data from the row
+				let data = searchResultsTable.rows( indexes ).data();
+
+				// get the item data
+				let item_id = data[0].id;
+				let item_table = data[0].table;
+				let item_field = data[0].field;
+				let item_line = data[0].line;
+
+				// get selected item
+				getSelectedItem(item_table, item_id, item_field, item_line);
+			}
+		});
+
+		searchResultsTable.on( 'deselect', function ( e, dt, type, indexes ) {
+			if ( type === 'row' ) {
+				clearSelectedItem(false);
+			}
+		});
+	});
 </script>
 <?php endif; ?>
 <?php else: ?>

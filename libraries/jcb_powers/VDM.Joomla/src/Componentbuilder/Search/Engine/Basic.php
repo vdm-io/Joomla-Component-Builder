@@ -46,7 +46,7 @@ class Basic extends Engine implements SearchTypeInterface
 		parent::__construct($config);
 
 		// quote all regular expression characters
-		$searchValue = \preg_quote($this->searchValue);
+		$searchValue = preg_quote($this->searchValue, '/');
 
 		$start = ''; $end = '';
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="4" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>23rd October, 2022</creationDate>
+	<creationDate>30th October, 2022</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>joomla@vdm.io</authorEmail>
 	<authorUrl>https://dev.vdm.io</authorUrl>
@@ -39,6 +39,7 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 		<folder>js</folder>
 		<folder>css</folder>
 		<folder>images</folder>
+		<folder>datatable</folder>
 		<folder>uikit-v2</folder>
 		<folder>footable-v3</folder>
 	</media>

@@ -3619,7 +3619,7 @@ class ComponentbuilderModelAjax extends ListModel
 	 * @return  array|null
 	 * @since   3.2.0
 	 **/
-	public function searchTable(string $tableName, string $searchValue,
+	public function doSearch(string $tableName, string $searchValue,
 		int $matchCase, int $wholeWord, int $regexSearch, int $componentId): ?array
 	{
 		// check if this is a valid table
@@ -3633,7 +3633,7 @@ class ComponentbuilderModelAjax extends ListModel
 			SearchFactory::_('Config')->regex_search = $regexSearch;
 			SearchFactory::_('Config')->component_id = $componentId;
 
-			if (($items = SearchFactory::_('Agent')->find()) !== null)
+			if (($items = SearchFactory::_('Agent')->table($tableName)) !== null)
 			{
 				return ['success' => JText::sprintf('COM_COMPONENTBUILDER_WE_FOUND_SOME_INSTANCES_IN_S', $tableName), 'items' => $items];
 			}
@@ -3658,7 +3658,7 @@ class ComponentbuilderModelAjax extends ListModel
 	 * @return  array|null
 	 * @since   3.2.0
 	 **/
-	public function updateTable(string $tableName, string $searchValue, ?string $replaceValue = null,
+	public function replaceAll(string $tableName, string $searchValue, ?string $replaceValue = null,
 		int $matchCase, int $wholeWord, int $regexSearch, int $componentId): ?array
 	{
 		// check if this is a valid table
@@ -3673,7 +3673,7 @@ class ComponentbuilderModelAjax extends ListModel
 			SearchFactory::_('Config')->regex_search = $regexSearch;
 			SearchFactory::_('Config')->component_id = $componentId;
 
-			SearchFactory::_('Agent')->replace();
+			// SearchFactory::_('Agent')->replace(); // TODO show danger message before allowing this!!!!!
 
 			return ['success' => JText::sprintf('COM_COMPONENTBUILDER_ALL_FOUND_INSTANCES_IN_S_WHERE_REPLACED', $tableName)];
 		}
@@ -3693,11 +3693,22 @@ class ComponentbuilderModelAjax extends ListModel
 	public function getSearchValue(string $fieldName, int $rowId, string $tableName): array
 	{
 		// check if this is a valid table and field
-		if ($rowId > 0 && SearchFactory('Table')->exist($tableName, $fieldName) &&
-			($value = SearchFactory('Agent')->getValue($fieldName, $rowId, 0, $tableName)) !== null)
+		if ($rowId > 0 && SearchFactory::_('Table')->exist($tableName, $fieldName))
 		{
-			// load the value
-			return ['value' => $value];
+			// load the configurations
+			SearchFactory::_('Config')->table_name = $tableName;
+			// load dummy data... TODO this should not be needed!
+			SearchFactory::_('Config')->search_value = '';
+			SearchFactory::_('Config')->replace_value = '';
+			SearchFactory::_('Config')->match_case = 0;
+			SearchFactory::_('Config')->whole_word = 0;
+			SearchFactory::_('Config')->regex_search = 0;
+
+			if (($value = SearchFactory::_('Agent')->getValue($rowId, $fieldName, 0, $tableName)) !== null)
+			{
+				// load the value
+				return ['value' => $value];
+			}
 		}
 		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
 	}
@@ -3722,7 +3733,7 @@ class ComponentbuilderModelAjax extends ListModel
 		string $searchValue, ?string $replaceValue = null, int $matchCase, int $wholeWord, int $regexSearch): array
 	{
 		// check if this is a valid table and field
-		if ($rowId > 0 && SearchFactory('Table')->exist($tableName, $fieldName))
+		if ($rowId > 0 && SearchFactory::_('Table')->exist($tableName, $fieldName))
 		{
 			// load the configurations
 			SearchFactory::_('Config')->table_name = $tableName;
@@ -3733,7 +3744,7 @@ class ComponentbuilderModelAjax extends ListModel
 			SearchFactory::_('Config')->regex_search = $regexSearch;
 
 			// load the value
-			if (($value = SearchFactory('Agent')->getValue($fieldName, $rowId, $line, $tableName, true)) !== null)
+			if (($value = SearchFactory::_('Agent')->getValue($rowId, $fieldName, $line, $tableName, true)) !== null)
 			{
 				return ['value' => $value];
 			}
@@ -3755,8 +3766,8 @@ class ComponentbuilderModelAjax extends ListModel
 	public function setValue($value, int $rowId, string $fieldName, string $tableName): array
 	{
 		// check if this is a valid table and field
-		if ($rowId > 0 && SearchFactory('Table')->exist($tableName, $fieldName) &&
-			SearchFactory('Agent')->setValue($value, $rowId, $fieldName, $tableName))
+		if ($rowId > 0 && SearchFactory::_('Table')->exist($tableName, $fieldName) &&
+			SearchFactory::_('Agent')->setValue($value, $rowId, $fieldName, $tableName))
 		{
 			return ['success' => JText::sprintf(
 					'<b>%s</b> (%s:%s) was successfully updated!',

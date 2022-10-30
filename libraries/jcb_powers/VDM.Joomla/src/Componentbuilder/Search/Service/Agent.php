@@ -70,7 +70,9 @@ class Agent implements ServiceProviderInterface
 			$container->get('Set.Database'),
 			$container->get('Agent.Find'),
 			$container->get('Agent.Replace'),
-			$container->get('Agent.Search')
+			$container->get('Agent.Search'),
+			$container->get('Agent.Update'),
+			$container->get('Table')
 		);
 	}
 

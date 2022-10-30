@@ -237,7 +237,7 @@ abstract class StringHelper
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function html($var, $charset = 'UTF-8', $shorten = false, $length = 40)
+	public static function html($var, $charset = 'UTF-8', $shorten = false, $length = 40, $addTip = true)
 	{
 		if (self::check($var))
 		{
@@ -254,7 +254,7 @@ abstract class StringHelper
 			);
 			if ($shorten)
 			{
-				return self::shorten($string, $length);
+				return self::shorten($string, $length, $addTip);
 			}
 			return $string;
 		}
