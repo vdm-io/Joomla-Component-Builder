@@ -283,6 +283,7 @@ class Search implements SearchInterface
 		{
 			$this->found[$table][$id][$field] = [];
 		}
+		// we should add a call to get the item name if the table has a name field TODO
 	}
 
 }

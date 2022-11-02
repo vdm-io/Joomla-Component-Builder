@@ -228,14 +228,14 @@ class Agent
 
 		if(($values = $this->find($table)) !== null)
 		{
-			$table_rows = [];
-
-			// set the return value
-			$this->return = urlencode(base64_encode('index.php?option=com_componentbuilder&view=search'));
+			// build return value
+			$this->setReturnValue();
 
 			// set the markers
-			$this->marker = [$this->config->marker_start,  $this->config->marker_end];
-			$this->markerHtml = ['<span class="found_code">','</span>'];
+			$this->setMarkers();
+
+			// start table bucket
+			$table_rows = [];
 
 			foreach ($values as $id => $fields)
 			{
@@ -285,10 +285,10 @@ class Agent
 	 *
 	 * @param string|null     $table    The table being searched
 	 *
-	 * @return  void
+	 * @return  int
 	 * @since 3.2.0
 	 */
-	public function replace(?string $table = null)
+	public function replace(?string $table = null): int
 	{
 		// set the table name
 		if (empty($table))
@@ -297,6 +297,7 @@ class Agent
 		}
 
 		$set = 1;
+		$replaced = 0;
 
 		// continue loading items until all was loaded
 		while(($items = $this->get->items($table, $set)) !== null)
@@ -308,7 +309,10 @@ class Agent
 			$this->replace->items($this->find->get($table), $table);
 
 			// update the database
-			$this->set->items($this->replace->get($table), $table);
+			if ($this->set->items($this->replace->get($table), $table))
+			{
+				$replaced++;
+			}
 
 			// reset found items
 			$this->find->reset($table);
@@ -316,6 +320,9 @@ class Agent
 
 			$set++;
 		}
+
+		// we return the number of times we replaced
+		return $replaced;
 	}
 
 	/**
@@ -370,14 +377,48 @@ class Agent
 	{
 		// get list view
 		$views = $this->table->get($view, $field, 'list');
+		$tab = $this->table->get($view, $field, 'tab_name');
 
 		// return edit link	
-		return '<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=' . 
-			$views . '&task=' . 
-			$view . '.edit&id=' .
-			$id . '&return=' .
-			$this->return . '" title="' .
-			Text::_('COM_COMPONENTBUILDER_EDIT') . '" ><span class="icon-edit"></span></a>';
+		return '<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder' .
+			'&view=' . $views .
+			'&task=' . $view . '.edit' .
+			'&id=' . $id .
+			'&open_tab=' . $tab .
+			'&open_field=' . $field .
+			'&return=' . $this->return . '" title="' .
+			Text::sprintf('COM_COMPONENTBUILDER_EDIT_S_S_DIRECTLY', $view, $field) . '." ><span class="icon-edit"></span></a>';
+	}
+
+	/**
+	 * Set the return value for this search
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	protected function setReturnValue()
+	{
+		// set the return value so the search auto load on return
+		$this->return = urlencode(base64_encode('index.php?option=com_componentbuilder&view=search' . 
+			'&type_search=' . (int) $this->config->type_search .
+			'&match_case=' . (int) $this->config->match_case .
+			'&whole_word=' . (int) $this->config->whole_word .
+			'&regex_search=' . (int) $this->config->regex_search .
+			'&search_value=' . (string) urlencode($this->config->search_value) .
+			'&replace_value=' . (string) urlencode($this->config->replace_value)));
+	}
+
+	/**
+	 * Set the markers of the found code
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	protected function setMarkers()
+	{
+		// set the markers
+		$this->marker = [$this->config->marker_start,  $this->config->marker_end];
+		$this->markerHtml = ['<span class="found_code">','</span>'];
 	}
 
 }

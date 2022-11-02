@@ -112,11 +112,11 @@ class Get implements GetInterface
 			$query = $this->db->getQuery(true);
 
 			// Order it by the ordering field.
-			$query->select($name);
+			$query->select($this->db->quoteName($name));
 			$query->from($this->db->quoteName('#__componentbuilder_' . $table));
 
 			// get by id
-			$query->where($this->db->quoteName('id') . " = " . $id);
+			$query->where($this->db->quoteName('id') . " = " . (int) $id);
 
 			// Reset the query using our newly populated query object.
 			$this->db->setQuery($query);

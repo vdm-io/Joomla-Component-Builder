@@ -1640,14 +1640,15 @@ class ComponentbuilderControllerAjax extends BaseController
 					try
 					{
 						$table_nameValue = $jinput->get('table_name', NULL, 'WORD');
+						$type_searchValue = $jinput->get('type_search', 1, 'INT');
 						$search_valueValue = $jinput->get('search_value', NULL, 'RAW');
 						$match_caseValue = $jinput->get('match_case', 0, 'INT');
 						$whole_wordValue = $jinput->get('whole_word', 0, 'INT');
 						$regex_searchValue = $jinput->get('regex_search', 0, 'INT');
 						$component_idValue = $jinput->get('component_id', 0, 'INT');
-						if($table_nameValue && $user->id != 0 && $search_valueValue)
+						if($table_nameValue && $user->id != 0 && $type_searchValue && $search_valueValue)
 						{
-							$result = $this->getModel('ajax')->doSearch($table_nameValue, $search_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue, $component_idValue);
+							$result = $this->getModel('ajax')->doSearch($table_nameValue, $type_searchValue, $search_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue, $component_idValue);
 						}
 						else
 						{
@@ -1735,9 +1736,14 @@ class ComponentbuilderControllerAjax extends BaseController
 						$field_nameValue = $jinput->get('field_name', NULL, 'WORD');
 						$row_idValue = $jinput->get('row_id', NULL, 'INT');
 						$table_nameValue = $jinput->get('table_name', NULL, 'WORD');
-						if($field_nameValue && $user->id != 0 && $row_idValue && $table_nameValue)
+						$search_valueValue = $jinput->get('search_value', NULL, 'RAW');
+						$replace_valueValue = $jinput->get('replace_value', NULL, 'RAW');
+						$match_caseValue = $jinput->get('match_case', 0, 'INT');
+						$whole_wordValue = $jinput->get('whole_word', 0, 'INT');
+						$regex_searchValue = $jinput->get('regex_search', 0, 'INT');
+						if($field_nameValue && $user->id != 0 && $row_idValue && $table_nameValue && $search_valueValue)
 						{
-							$result = $this->getModel('ajax')->getSearchValue($field_nameValue, $row_idValue, $table_nameValue);
+							$result = $this->getModel('ajax')->getSearchValue($field_nameValue, $row_idValue, $table_nameValue, $search_valueValue, $replace_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue);
 						}
 						else
 						{

@@ -149,6 +149,50 @@ class ComponentbuilderModelSearch extends ItemModel
 	}
 
 	/**
+	 * Custom Method
+	 *
+	 * @return mixed  item data object on success, false on failure.
+	 *
+	 */
+	public function getUrlValues()
+	{
+
+		if (!isset($this->initSet) || !$this->initSet)
+		{
+			$this->user = JFactory::getUser();
+			$this->userId = $this->user->get('id');
+			$this->guest = $this->user->get('guest');
+			$this->groups = $this->user->get('groups');
+			$this->authorisedGroups = $this->user->getAuthorisedGroups();
+			$this->levels = $this->user->getAuthorisedViewLevels();
+			$this->initSet = true;
+		}
+		// Get a db connection.
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+
+		// Get data
+		$data = [
+			'type_search' => SearchFactory::_('Config')->get('type_search', 1),
+			'search_value' => SearchFactory::_('Config')->get('search_value', ''),
+			'replace_value' => SearchFactory::_('Config')->get('replace_value', ''),
+			'match_case' => SearchFactory::_('Config')->get('match_case', 0),
+			'whole_word' => SearchFactory::_('Config')->get('whole_word', 0),
+			'regex_search' => SearchFactory::_('Config')->get('regex_search', 0)
+		];
+
+		if (empty($data))
+		{
+			return false;
+		}
+
+		// return data object.
+		return $data;
+	}
+
+	/**
 	 * Get the uikit needed components
 	 *
 	 * @return mixed  An array of objects on success.

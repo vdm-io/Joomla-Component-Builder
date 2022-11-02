@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access'); 
 
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Form\Form;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 
@@ -34,6 +35,7 @@ class ComponentbuilderViewSearch extends HtmlView
 		$this->canDo = ComponentbuilderHelper::getActions('search');
 		// Initialise variables.
 		$this->item = $this->get('Item');
+		$this->urlvalues = $this->get('UrlValues');
 		if ($this->getLayout() !== 'modal')
 		{
 			// Include helper submenu
@@ -54,6 +56,18 @@ class ComponentbuilderViewSearch extends HtmlView
 			'id' => JText::_('ID'),
 			'line' => JText::_('COM_COMPONENTBUILDER_LINE')
 		);
+		
+		// set some JavaScript Language
+		JText::script('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_UPDATE_ROW');
+		JText::script('COM_COMPONENTBUILDER_FIELD_IN_THE');
+		JText::script('COM_COMPONENTBUILDER_TABLE');
+		JText::script('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE');
+		JText::script('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_REPLACE_BALLB_SEARCH_RESULTS');
+		JText::script('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_BYOU_HAVE_BEEN_WARNEDB');
+		JText::script('COM_COMPONENTBUILDER_ARE_YOU_THEREFORE_ABSOLUTELY_SURE_YOU_WANT_TO_CONTINUE');
+		JText::script('COM_COMPONENTBUILDER_SEARCH_FINISHED_IN');
+		JText::script('COM_COMPONENTBUILDER_SECONDS');
+		
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -105,7 +119,7 @@ class ComponentbuilderViewSearch extends HtmlView
 				'label' => 'COM_COMPONENTBUILDER_MODE',
 				'class' => 'btn-group',
 				'description' => 'COM_COMPONENTBUILDER_SEARCH_OR_SEARCH_AND_REPLACE',
-				'default' => '1'];
+				'default' => $this->urlvalues['type_search']];
 			// set the mode options
 			$options = [
 				1 => 'COM_COMPONENTBUILDER_SEARCH',
@@ -128,7 +142,8 @@ class ComponentbuilderViewSearch extends HtmlView
 				'filter' => 'RAW',
 				'class' => 'search-value span12',
 				'hint' => 'COM_COMPONENTBUILDER_ENTER_YOUR_SEARCH_TEXT',
-				'autocomplete' => true];
+				'autocomplete' => true,
+				'default' => $this->urlvalues['search_value']];
 			// add to form
 			$xml = ComponentbuilderHelper::getFieldXML($attributes);
 			if ($xml instanceof SimpleXMLElement)
@@ -148,7 +163,8 @@ class ComponentbuilderViewSearch extends HtmlView
 				'class' => 'replace-value span12',
 				'hint' => 'COM_COMPONENTBUILDER_ENTER_YOUR_REPLACE_TEXT',
 				'autocomplete' => true,
-				'showon' => 'type_search:2'];
+				'showon' => 'type_search:2',
+				'default' => $this->urlvalues['replace_value']];
 			// add to form
 			$xml = ComponentbuilderHelper::getFieldXML($attributes);
 			if ($xml instanceof SimpleXMLElement)
@@ -157,12 +173,28 @@ class ComponentbuilderViewSearch extends HtmlView
 			}
 
 			// Search Behaviour
+			$default = [];
+			if ($this->urlvalues['match_case'] == 1)
+			{
+				$default[] = 'match_case';
+			}
+			if ($this->urlvalues['whole_word'] == 1)
+			{
+				$default[] = 'whole_word';
+			}
+			if ($this->urlvalues['regex_search'] == 1)
+			{
+				$default[] = 'regex_search';
+			}
 			$attributes = [
 				'type' => 'checkboxes',
 				'name' => 'search_behaviour',
 				'label' => 'COM_COMPONENTBUILDER_BEHAVIOUR',
-				'class' => 'btn-group',
 				'description' => 'COM_COMPONENTBUILDER_SET_THE_SEARCH_BEHAVIOUR_HERE'];
+			if (ComponentbuilderHelper::checkArray($default))
+			{
+				$attributes['default'] = implode(',', $default);
+			}
 			// set the mode options
 			$options = [
 				'match_case' => 'COM_COMPONENTBUILDER_MATCH_CASE',
@@ -228,11 +260,11 @@ class ComponentbuilderViewSearch extends HtmlView
 			// editor attributes
 			$attributes = [
 				'type' => 'editor',
-				'name' => 'full_text',
-				'label' => 'COM_COMPONENTBUILDER_FULL_TEXT',
+				'name' => 'item_code',
+				'label' => 'COM_COMPONENTBUILDER_ITEM_CODE',
 				'width' => '100%',
-				'height' => '250px',
-				'class' => 'full_text_editor',
+				'height' => '150px',
+				'class' => 'item_code_editor',
 				'syntax' => 'php',
 				'buttons' => 'false',
 				'filter' => 'raw',
@@ -291,16 +323,43 @@ class ComponentbuilderViewSearch extends HtmlView
 		{
 			JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', ['version' => 'auto']);
 		}
+
+		// Load the script to find all uikit components needed.
+		if ($uikit != 2)
+		{
+			// Set the default uikit components in this view.
+			$uikitComp = array();
+			$uikitComp[] = 'UIkit.notify';
+			$uikitComp[] = 'uk-progress';
+		}
+
+		// Load the needed uikit components in this view.
+		if ($uikit != 2 && isset($uikitComp) && ComponentbuilderHelper::checkArray($uikitComp))
+		{
+			// load just in case.
+			jimport('joomla.filesystem.file');
+			// loading...
+			foreach ($uikitComp as $class)
+			{
+				foreach (ComponentbuilderHelper::$uk_components[$class] as $name)
+				{
+					// check if the CSS file exists.
+					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css'))
+					{
+						// load the css.
+						JHtml::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css', ['version' => 'auto']);
+					}
+					// check if the JavaScript file exists.
+					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js'))
+					{
+						// load the js.
+						JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);
+					}
+				}
+			}
+		}
 		// add the document default css file
 		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/search.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
-		// Set the Custom CSS script to view
-		$this->document->addStyleDeclaration("
-			.found_code {
-				color: #46a546;
-				font-weight: bolder;
-			}
-			
-		");
 	}
 
 	/**

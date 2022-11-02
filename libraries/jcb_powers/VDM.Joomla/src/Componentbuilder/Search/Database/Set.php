@@ -17,6 +17,7 @@ use VDM\Joomla\Componentbuilder\Search\Factory;
 use VDM\Joomla\Componentbuilder\Search\Config;
 use VDM\Joomla\Componentbuilder\Search\Table;
 use VDM\Joomla\Componentbuilder\Search\Model\Set as Model;
+use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\SetInterface;
 
 
@@ -152,13 +153,13 @@ class Set implements SetInterface
 	 * Set values to a given table
 	 *          Example: $this->items(Array, 'table_name');
 	 *
-	 * @param   array          $items    The items being saved
+	 * @param   array|null     $items    The items being saved
 	 * @param   string|null    $table    The table
 	 *
 	 * @return  bool
 	 * @since 3.2.0
 	 */
-	public function items(array $items, string $table = null): bool
+	public function items(?array $items, string $table = null): bool
 	{
 		// load the table
 		if (empty($table))

@@ -23,6 +23,17 @@ use VDM\Joomla\Componentbuilder\Abstraction\BaseConfig;
 class Config extends BaseConfig
 {
 	/**
+	 * get type search being preformed
+	 *
+	 * @return  int   the search type 1 = search, 2 = search & replace
+	 * @since 3.2.0
+	 */
+	protected function getTypesearch(): ?int
+	{
+		return $this->input->get('type_search', 1, 'INT');
+	}
+
+	/**
 	 * get posted search value
 	 *
 	 * @return  string|null  Raw search value
@@ -30,7 +41,7 @@ class Config extends BaseConfig
 	 */
 	protected function getSearchvalue(): ?string
 	{
-		return $this->input->post->get('search_value', null, 'RAW');
+		return $this->input->get('search_value', null, 'RAW');
 	}
 
 	/**
@@ -41,7 +52,7 @@ class Config extends BaseConfig
 	 */
 	protected function getReplacevalue(): string
 	{
-		return $this->input->post->get('replace_value', '', 'RAW');
+		return $this->input->get('replace_value', '', 'RAW');
 	}
 
 	/**
@@ -52,7 +63,7 @@ class Config extends BaseConfig
 	 */
 	protected function getMatchcase(): int
 	{
-		return $this->input->post->get('match_case', 0, 'INT');
+		return $this->input->get('match_case', 0, 'INT');
 	}
 
 	/**
@@ -63,7 +74,7 @@ class Config extends BaseConfig
 	 */
 	protected function getWholeword(): int
 	{
-		return $this->input->post->get('whole_word', 0, 'INT');
+		return $this->input->get('whole_word', 0, 'INT');
 	}
 
 	/**
@@ -72,9 +83,9 @@ class Config extends BaseConfig
 	 * @return  int  Regex
 	 * @since 3.2.0
 	 */
-	protected function getRegex(): int
+	protected function getRegexsearch(): int
 	{
-		return $this->input->post->get('regex_search', 0, 'INT');
+		return $this->input->get('regex_search', 0, 'INT');
 	}
 
 	/**
@@ -85,7 +96,7 @@ class Config extends BaseConfig
 	 */
 	protected function getComponentid(): int
 	{
-		return $this->input->post->get('component_id', 0, 'INT');
+		return $this->input->get('component_id', 0, 'INT');
 	}
 
 	/**
@@ -96,7 +107,7 @@ class Config extends BaseConfig
 	 */
 	protected function getTablename(): string
 	{
-		return $this->input->post->get('table_name', null, 'word');
+		return $this->input->get('table_name', null, 'word');
 	}
 
 	/**
@@ -107,7 +118,7 @@ class Config extends BaseConfig
 	 */
 	protected function getFieldname(): string
 	{
-		return $this->input->post->get('field_name', null, 'word');
+		return $this->input->get('field_name', null, 'word');
 	}
 
 	/**
@@ -118,7 +129,7 @@ class Config extends BaseConfig
 	 */
 	protected function getItemid(): int
 	{
-		return $this->input->post->get('item_id', 0, 'INT');
+		return $this->input->get('item_id', 0, 'INT');
 	}
 
 	/**

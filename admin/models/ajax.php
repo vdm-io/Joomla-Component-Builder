@@ -3610,6 +3610,7 @@ class ComponentbuilderModelAjax extends ListModel
 	 * Search for value in a table
 	 *
 	 * @param   string           $tableName    The main table to search
+	 * @param   int              $typeSearch  The type of search being done
 	 * @param   string           $searchValue  The value to search for
 	 * @param   int               $matchCase  The switch to control match case
 	 * @param   int               $wholeWord  The switch to control whole word
@@ -3619,26 +3620,34 @@ class ComponentbuilderModelAjax extends ListModel
 	 * @return  array|null
 	 * @since   3.2.0
 	 **/
-	public function doSearch(string $tableName, string $searchValue,
+	public function doSearch(string $tableName, int $typeSearch, string $searchValue,
 		int $matchCase, int $wholeWord, int $regexSearch, int $componentId): ?array
 	{
 		// check if this is a valid table
 		if (SearchFactory::_('Table')->exist($tableName))
 		{
-			// load the configurations
-			SearchFactory::_('Config')->table_name = $tableName;
-			SearchFactory::_('Config')->search_value = $searchValue;
-			SearchFactory::_('Config')->match_case = $matchCase;
-			SearchFactory::_('Config')->whole_word = $wholeWord;
-			SearchFactory::_('Config')->regex_search = $regexSearch;
-			SearchFactory::_('Config')->component_id = $componentId;
-
-			if (($items = SearchFactory::_('Agent')->table($tableName)) !== null)
+			try
 			{
-				return ['success' => JText::sprintf('COM_COMPONENTBUILDER_WE_FOUND_SOME_INSTANCES_IN_S', $tableName), 'items' => $items];
-			}
+				// load the configurations
+				SearchFactory::_('Config')->table_name = $tableName;
+				SearchFactory::_('Config')->type_search = $typeSearch;
+				SearchFactory::_('Config')->search_value = $searchValue;
+				SearchFactory::_('Config')->match_case = $matchCase;
+				SearchFactory::_('Config')->whole_word = $wholeWord;
+				SearchFactory::_('Config')->regex_search = $regexSearch;
+				SearchFactory::_('Config')->component_id = $componentId;
 
-			return ['success' => JText::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_S', $tableName)];
+				if (($items = SearchFactory::_('Agent')->table($tableName)) !== null)
+				{
+					return ['success' => JText::sprintf('COM_COMPONENTBUILDER_WE_FOUND_SOME_INSTANCES_IN_S', $tableName), 'items' => $items];
+				}
+
+				return ['not_found' => JText::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_IN_S', $tableName)];
+			}
+			catch(Exception $error)
+			{
+				return ['error' => $error->getMessage()];
+			}
 		}
 
 		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
@@ -3664,18 +3673,27 @@ class ComponentbuilderModelAjax extends ListModel
 		// check if this is a valid table
 		if (SearchFactory::_('Table')->exist($tableName))
 		{
-			// load the configurations
-			SearchFactory::_('Config')->table_name = $tableName;
-			SearchFactory::_('Config')->search_value = $searchValue;
-			SearchFactory::_('Config')->replace_value = $replaceValue;
-			SearchFactory::_('Config')->match_case = $matchCase;
-			SearchFactory::_('Config')->whole_word = $wholeWord;
-			SearchFactory::_('Config')->regex_search = $regexSearch;
-			SearchFactory::_('Config')->component_id = $componentId;
+			try
+			{
+				// load the configurations
+				SearchFactory::_('Config')->table_name = $tableName;
+				SearchFactory::_('Config')->search_value = $searchValue;
+				SearchFactory::_('Config')->replace_value = $replaceValue;
+				SearchFactory::_('Config')->match_case = $matchCase;
+				SearchFactory::_('Config')->whole_word = $wholeWord;
+				SearchFactory::_('Config')->regex_search = $regexSearch;
+				SearchFactory::_('Config')->component_id = $componentId;
 
-			// SearchFactory::_('Agent')->replace(); // TODO show danger message before allowing this!!!!!
-
-			return ['success' => JText::sprintf('COM_COMPONENTBUILDER_ALL_FOUND_INSTANCES_IN_S_WHERE_REPLACED', $tableName)];
+				if (($number = SearchFactory::_('Agent')->replace()) !== 0)
+				{
+					return ['success' => JText::sprintf('COM_COMPONENTBUILDER_ALL_FOUND_INSTANCES_IN_S_WHERE_REPLACED', $tableName)];
+				}
+				return ['not_found' => JText::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_IN_S', $tableName)];
+			}
+			catch(Exception $error)
+			{
+				return ['error' => $error->getMessage()];
+			}
 		}
 		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
 	}
@@ -3686,28 +3704,41 @@ class ComponentbuilderModelAjax extends ListModel
 	 * @param   string         $fieldName    The field key
 	 * @param   int            $rowId        The item ID
 	 * @param   string         $tableName    The table
+	 * @param   string         $searchValue  The value to search for
+	 * @param   string|null    $replaceValue The value to replace search value
+	 * @param   int            $matchCase    The switch to control match case
+	 * @param   int            $wholeWord    The switch to control whole word
+	 * @param   int            $regexSearch  The switch to control regex search
 	 *
 	 * @return  array
 	 * @since   3.2.0
 	 **/
-	public function getSearchValue(string $fieldName, int $rowId, string $tableName): array
+	public function getSearchValue(string $fieldName, int $rowId, string $tableName,
+		string $searchValue, ?string $replaceValue = null, int $matchCase, int $wholeWord, int $regexSearch): array
 	{
 		// check if this is a valid table and field
 		if ($rowId > 0 && SearchFactory::_('Table')->exist($tableName, $fieldName))
 		{
-			// load the configurations
-			SearchFactory::_('Config')->table_name = $tableName;
-			// load dummy data... TODO this should not be needed!
-			SearchFactory::_('Config')->search_value = '';
-			SearchFactory::_('Config')->replace_value = '';
-			SearchFactory::_('Config')->match_case = 0;
-			SearchFactory::_('Config')->whole_word = 0;
-			SearchFactory::_('Config')->regex_search = 0;
-
-			if (($value = SearchFactory::_('Agent')->getValue($rowId, $fieldName, 0, $tableName)) !== null)
+			try
 			{
-				// load the value
-				return ['value' => $value];
+				// load the configurations
+				SearchFactory::_('Config')->table_name = $tableName;
+				SearchFactory::_('Config')->type_search = 1;
+				SearchFactory::_('Config')->search_value = $searchValue;
+				SearchFactory::_('Config')->replace_value = $replaceValue;
+				SearchFactory::_('Config')->match_case = $matchCase;
+				SearchFactory::_('Config')->whole_word = $wholeWord;
+				SearchFactory::_('Config')->regex_search = $regexSearch;
+
+				if (($value = SearchFactory::_('Agent')->getValue($rowId, $fieldName, 0, $tableName)) !== null)
+				{
+					// load the value
+					return ['value' => $value];
+				}
+			}
+			catch(Exception $error)
+			{
+				return ['error' => $error->getMessage()];
 			}
 		}
 		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
@@ -3735,18 +3766,26 @@ class ComponentbuilderModelAjax extends ListModel
 		// check if this is a valid table and field
 		if ($rowId > 0 && SearchFactory::_('Table')->exist($tableName, $fieldName))
 		{
-			// load the configurations
-			SearchFactory::_('Config')->table_name = $tableName;
-			SearchFactory::_('Config')->search_value = $searchValue;
-			SearchFactory::_('Config')->replace_value = $replaceValue;
-			SearchFactory::_('Config')->match_case = $matchCase;
-			SearchFactory::_('Config')->whole_word = $wholeWord;
-			SearchFactory::_('Config')->regex_search = $regexSearch;
-
-			// load the value
-			if (($value = SearchFactory::_('Agent')->getValue($rowId, $fieldName, $line, $tableName, true)) !== null)
+			try
 			{
-				return ['value' => $value];
+				// load the configurations
+				SearchFactory::_('Config')->table_name = $tableName;
+				SearchFactory::_('Config')->type_search = 2;
+				SearchFactory::_('Config')->search_value = $searchValue;
+				SearchFactory::_('Config')->replace_value = $replaceValue;
+				SearchFactory::_('Config')->match_case = $matchCase;
+				SearchFactory::_('Config')->whole_word = $wholeWord;
+				SearchFactory::_('Config')->regex_search = $regexSearch;
+
+				// load the value
+				if (($value = SearchFactory::_('Agent')->getValue($rowId, $fieldName, $line, $tableName, true)) !== null)
+				{
+					return ['value' => $value];
+				}
+			}
+			catch(Exception $error)
+			{
+				return ['error' => $error->getMessage()];
 			}
 		}
 		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];

@@ -10,4 +10,28 @@
 
 /* CSS Document */
 
-
+.selected {
+ background-color:#d7d8db !important
+}
+tr.selected td {
+ background-color:#d7d8db !important
+}
+tr {
+ cursor:pointer
+}
+.found_code {
+	color: #46a546;
+	font-weight: bolder;
+}
+.search_details_title {
+	font-size: large;
+	font-weight: bolder;
+}
+.small_column {
+	padding: 2px;
+	text-align: center;
+}
+th.small_column {
+	padding: 2px !important;
+	text-align: center !important;
+}
