@@ -48,6 +48,11 @@ const doSearch = async (signal, tables) => {
 		// start search timer
 		startSearchTimer();
 
+		// reset our global counters
+		fieldCount = 0;
+		lineCount = 0;
+
+		// set our local counters
 		let total = 0;
 		let progress = tables.length;
 		let index;
@@ -68,23 +73,13 @@ const doSearch = async (signal, tables) => {
 			if (abort_this_search_values) {
 				break;
 			}
-			const response = await fetch(Url + 'doSearch', options).then(response => {
+			const response = await fetch(UrlAjax + 'doSearch', options).then(response => {
 				total++;
-				// calculate the percent
-				let percent = 100.0 * (total / progress);
-				// update the progress bar
-				searchProgressBarObject.style.width = percent.toFixed(2) + '%';
-				searchProgressBarObject.innerHTML = percent.toFixed(2) + '%';
-				// when complete hide the progress bar
-				if (progress == total) {
-					searchProgressBarObject.innerHTML = Joomla.JText._('COM_COMPONENTBUILDER_SEARCH_FINISHED_IN') + ' ' + getSearchLenght() + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_SECONDS');
-					setTimeout(function () {
-						searchProgressObject.style.display = 'none';
-					}, 3000);
-				}
 				// return the json response
 				if (response.ok) {
 					return response.json();
+				} else { 
+					UIkit.notify(Joomla.JText._('COM_COMPONENTBUILDER_THE_SEARCH_PROCESS_HAD_AN_ERROR_WITH_TABLE') + ' ' + tableName, {pos:'top-right', status:'danger'});
 				}
 			}).then((data) => {
 				if (typeof data.success !== 'undefined') {
@@ -95,8 +90,35 @@ const doSearch = async (signal, tables) => {
 				if (typeof data.items !== 'undefined') {
 					addTableItems(resultsTable, data.items, typeSearch);
 				}
+				if (typeof data.fields_count !== 'undefined') {
+					fieldCount += data.fields_count;
+				}
+				if (typeof data.line_count !== 'undefined') {
+					lineCount += data.line_count;
+				}
+				// calculate the percent
+				let percent = 100.0 * (total / progress);
+				// update the progress bar
+				searchProgressBarObject.style.width = percent.toFixed(2) + '%';
+				searchProgressBarObject.innerHTML = percent.toFixed(2) + '%';
+				// when complete hide the progress bar
+				if (progress == total) {
+					let total_field_line = ' ' +  fieldCount + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_FIELDS_THAT_HAD') + ' ' +  lineCount + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_LINES') + ' ';
+					if (progress == 1) {
+						searchProgressBarObject.innerHTML = Joomla.JText._('COM_COMPONENTBUILDER_SEARCHING') + ' ' + tableName + total_field_line + Joomla.JText._('COM_COMPONENTBUILDER_AND_FINISHED_THE_SEARCH_IN') + ' ' + getSearchLenght() + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_SECONDS');
+					} else {
+						searchProgressBarObject.innerHTML = Joomla.JText._('COM_COMPONENTBUILDER_SEARCHING') + ' ' + progress + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_TABLES_WITH') + total_field_line + Joomla.JText._('COM_COMPONENTBUILDER_AND_FINISHED_THE_SEARCH_IN') + ' ' + getSearchLenght() + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_SECONDS');
+					}
+					setTimeout(function () {
+						// hide the progress bar again
+						searchProgressObject.style.display = 'none';
+					}, 13000);
+				}
 			}).catch(error => {
 				console.log(error);
+				if (error.name === "AbortError") {
+					abort_this_search_values = true;
+				}
 			});
 		}
 	} catch (error) {
@@ -129,7 +151,7 @@ const getSearchLenght = () => {
 
 	// get seconds 
 	return Math.round(timeDiff);
-}
+};
 
 /**
  * JS Function to fetch selected item
@@ -154,12 +176,12 @@ const getSelectedItem = async (table, row, field, line) => {
 		// get search value
 		if (mode == 1) {
 			// calling URL
-			postURL = Url + 'getSearchValue';
+			postURL = UrlAjax + 'getSearchValue';
 		} else {
 			// add the line value
 			formData.append('line_nr', line);
 			// calling URL
-			postURL = Url + 'getReplaceValue';
+			postURL = UrlAjax + 'getReplaceValue';
 		}
 
 		let options = {
@@ -198,28 +220,23 @@ const replaceAllCheck = () => {
 		Joomla.JText._('COM_COMPONENTBUILDER_ARE_YOU_THEREFORE_ABSOLUTELY_SURE_YOU_WANT_TO_CONTINUE');
 	// do check
 	UIkit.modal.confirm(question, function () {
-		// we clear the table again
-		clearAll();
 
 		// show the search settings again
 		showSearch();
 
-		// clear search values
-		clearSearch();
-
 		// Create new controller and issue new request
-		controller = new AbortController();
+		controller_replace = new AbortController();
 
 		// check if any specific table was set
 		let tables = [];
 		let table = tableObject.value;
 		if (table != -1) {
 			tables.push(table);
-			replaceAll(controller.signal, tables);
+			replaceAll(controller_replace.signal, tables);
 		} else {
-			replaceAll(controller.signal, searchTables);
+			replaceAll(controller_replace.signal, searchTables);
 		}
-	});
+	}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES_UPDATE_ALL'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
 };
 
 /**
@@ -230,31 +247,38 @@ const replaceAll = async (signal, tables) => {
 		// build form
 		const formData = new FormData();
 
-		// load the result table
-		const resultsTable = new DataTable('#search_results_table');
-
 		// get the search mode
 		let typeSearch = modeObject.querySelector('input[type=\'radio\']:checked').value;
 
 		// set some search values
 		let searchValue = searchObject.value;
 		let replaceValue = replaceObject.value;
+		let matchValue = matchObject.checked ? 1 : 0;
+		let wholeValue = wholeObject.checked ? 1 : 0;
+		let regexValue = regexObject.checked ? 1 : 0;
 
 		// add the form data
 		formData.append('table_name', '');
 		formData.append('type_search', typeSearch);
 		formData.append('search_value', searchValue);
 		formData.append('replace_value', replaceValue);
-		formData.append('match_case', matchObject.checked ? 1 : 0);
-		formData.append('whole_word', wholeObject.checked ? 1 : 0);
-		formData.append('regex_search', regexObject.checked ? 1 : 0);
+		formData.append('match_case', matchValue);
+		formData.append('whole_word', wholeValue);
+		formData.append('regex_search', regexValue);
+
+		// reset the progress bar
+		replaceProgressBarObject.style.width = '0%';
+
+		// show the progress bar
+		replaceProgressObject.style.display = '';
 
 		let abort_this_replace_values = false;
 
 		let total = 0;
+		let progress = tables.length;
 		let index;
 
-		for (index = 0; index < tables.length; index++) {
+		for (index = 0; index < progress; index++) {
 
 			let tableName = tables[index];
 
@@ -270,10 +294,12 @@ const replaceAll = async (signal, tables) => {
 			if (abort_this_replace_values) {
 				break;
 			}
-			const response = await fetch(Url + 'replaceAll', options).then(response => {
+			const response = await fetch(UrlAjax + 'replaceAll', options).then(response => {
 				total++;
 				if (response.ok) {
 					return response.json();
+				} else { 
+					UIkit.notify(Joomla.JText._('COM_COMPONENTBUILDER_THE_REPLACE_PROCESS_HAD_AN_ERROR_WITH_TABLE') + ' ' + tableName, {pos:'top-right', status:'danger'});
 				}
 			}).then((data) => {
 				if (typeof data.success !== 'undefined') {
@@ -281,8 +307,44 @@ const replaceAll = async (signal, tables) => {
 				} else if (typeof data.error !== 'undefined') {
 					UIkit.notify(data.error, {pos:'bottom-right', timeout : 200});
 				}
+				// calculate the percent
+				let percent = 100.0 * (total / progress);
+				// update the progress bar
+				replaceProgressBarObject.style.width = percent.toFixed(2) + '%';
+				// when complete hide the progress bar
+				if (progress == total) {
+					setTimeout(function () {
+						// hide the progress bar again
+						replaceProgressObject.style.display = 'none';
+						// we clear the table again
+						clearAll();
+						// if not reqex we reverse the search for you so you can see the update was a success
+						if (regexValue == 0) {
+							// set the replace value as the search value
+							UIkit.modal.confirm(Joomla.JText._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_DO_A_REVERSE_SEARCH'), function(){
+								setSearch(replaceValue, searchValue, matchValue, wholeValue, regexValue, 2);
+							}, function () {
+								UIkit.modal.confirm(Joomla.JText._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_REPEAT_THE_SAME_SEARCH'), function(){
+									onChange();
+								}, function () {
+									clearSearch();
+								}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
+							}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
+						} else {
+							// else we search it again just to prove its changed
+							UIkit.modal.confirm(Joomla.JText._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_REPEAT_THE_SAME_SEARCH'), function(){
+								onChange();
+							}, function () {
+								clearSearch();
+							}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
+						}
+					}, 3000);
+				}
 			}).catch(error => {
 				console.log(error);
+				if (error.name === "AbortError") {
+					abort_this_replace_values = true;
+				}
 			});
 		}
 	} catch (error) {
@@ -303,7 +365,7 @@ const setValueCheck = (row, field, table) => {
 	// do check
 	UIkit.modal.confirm(question, function () {
 		setValue(row, field, table);
-	});
+	}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
 };
 
 /**
@@ -327,7 +389,7 @@ const setValue = async (row, field, table) => {
 			body: formData
 		}
 
-		const response = await fetch(Url + 'setValue', options).then(response => {
+		const response = await fetch(UrlAjax + 'setValue', options).then(response => {
 			if (response.ok) {
 				return response.json();
 			}
@@ -382,7 +444,7 @@ const addSelectedItem = async (value, table, row, field, line) => {
 			buttonUpdateItemObject.style.display = 'none';
 		}
 	}
-}
+};
 
 /**
  * JS Function to clear item from the editor and hide it
@@ -399,7 +461,7 @@ const clearSelectedItem = async () => {
 	itemLineNumberObject.innerHTML = '...';
 	// clear update button
 	buttonUpdateItemObject.setAttribute('onclick', '');
-}
+};
 
 /**
  * JS Function to clear table items
@@ -410,7 +472,7 @@ const clearTableItems = async () => {
 
 	// hide the update all items
 	buttonUpdateAllObject.style.display = 'none';
-}
+};
 
 /**
  * JS Function to clear all details of the search
@@ -420,7 +482,7 @@ const clearAll = async () => {
 	clearTableItems();
 	clearSelectedItem();
 	searchedObject.innerHTML = '....';
-}
+};
 
 /**
  * JS Function to clear the search and replace values
@@ -429,7 +491,54 @@ const clearSearch = async () => {
 	// clear the search and replace values
 	searchObject.value = '';
 	replaceObject.value = '';
-}
+};
+
+/**
+ * JS Function to set the search and replace values
+ */
+const setSearch = async (search, replace = '', match = 0, whole = 0, regex = 0, mode = 1) => {
+	// update the type of search
+	if (mode == 1) {
+		window.location.href  = UrlSearch +
+			'&search_value=' + search +
+			'&type_search=1&match_case=' + match +
+			'&whole_word=' + whole +
+			'&regex_search=' + regex;
+	} else if (mode == 2) {
+		window.location.href = UrlSearch +
+			'&search_value=' + search +
+			'&replace_value=' + replace +
+			'&type_search=2&match_case=' + match +
+			'&whole_word=' + whole +
+			'&regex_search=' + regex;
+	}
+};
+
+/**
+ * JS Function to check if a element has a class
+ */
+ const hasClass = (elementObject, classNaam) => {
+	return !!elementObject.className.match(new RegExp('(\\s|^)' + classNaam + '(\\s|$)'));
+};
+
+/**
+ * JS Function add a class from an element
+ */
+const addClass = (elementObject, classNaam) => {
+	if (!hasClass(elementObject, classNaam)) {
+		elementObject.className += " " + classNaam;
+	}
+};
+
+/**
+ * JS Function remove a class from an element
+ */
+const removeClass = (elementObject, classNaam) => {
+	if (hasClass(elementObject, classNaam)) {
+		var reg = new RegExp('(\\s|^)' + classNaam + '(\\s|$)');
+		elementObject.className = elementObject.className.replace(reg, ' ');
+	}
+};
 
 /**
  * JS Function to add items to the table
@@ -441,7 +550,7 @@ const addTableItems = async (table, items, typeSearch) => {
 	} else {
 		buttonUpdateAllObject.style.display = 'none'; // TODO should only show once all items are loaded
 	}
-}
+};
 
 /**
  * JS Function to execute (A) on search/replace text change , (B) on search options changes

@@ -17,9 +17,12 @@ JHtml::_('behavior.formvalidator');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
 
+// allow main menu selection
 $this->app->input->set('hidemainmenu', false);
-$selectNotice = '<h3>' . JText::_('COM_COMPONENTBUILDER_HI') . ' ' . $this->user->name . '</h3>';
-$selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_ENTER_YOUR_SEARCH_TEXT') . '</p>';
+
+// set the basu URL
+$url_base = JUri::base() . 'index.php?option=com_componentbuilder';
+$url_search = $url_base . '&view=search';
 ?>
 <?php if ($this->canDo->get('search.access')): ?>
 <script type="text/javascript">
@@ -36,8 +39,8 @@ $selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_ENTER_YOUR_SEARCH_TEXT')
 </script>
 <?php $urlId = (isset($this->item->id)) ? '&id='. (int) $this->item->id : ''; ?>
 
-<div class="alert alert-danger" role="alert">
-	<?php echo JText::_('COM_COMPONENTBUILDER_THIS_AREA_IS_STILL_UNDER_DEVELOPMENT_ALTHOUGH_IT_WORKS_IT_SHOULD_BE_USED_WITH_EXTREME_CAUTION_AS_ITS_NOT_STABLE'); ?>
+<div class="alert alert-warning" role="alert">
+	<?php echo JText::_('COM_COMPONENTBUILDER_THE_CHANGES_YOU_MAKE_HERE_CAN_NOT_BE_UNDONE_THEREFORE_YOU_MUST_ALWAYS_USE_THE_UPDATE_AND_REPLACE_FEATURES_WITH_GREAT_CAUTION_SEARCH_FEATURE_IS_IN_BETA_STAGE'); ?>
 </div>
 <hr />
 <?php if(!empty( $this->sidebar)): ?>
@@ -49,12 +52,17 @@ $selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_ENTER_YOUR_SEARCH_TEXT')
 <div id="j-main-container">
 <?php endif; ?>
 	<?php if ($this->form): ?>
-	<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=search'); ?>" method="post"
+	<form action="<?php echo JRoute::_($url_search); ?>" method="post"
 		name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 		<div class="form-horizontal">
 			<div class="row-fluid" id="search_progress_block" style="display: none">
 				<div class="uk-progress uk-progress-striped uk-active">
 					<div id="search_progress_bar" class="uk-progress-bar" style="width: 0%;">0%</div>
+				</div>
+			</div>
+			<div class="row-fluid" id="replace_progress_block" style="display: none">
+				<div class="uk-progress uk-progress-small uk-progress-danger uk-progress-striped uk-active">
+					<div id="replace_progress_bar" class="uk-progress-bar" style="width: 0%;"></div>
 				</div>
 			</div>
 			<div class="row-fluid" id="search_details_block" style="display: none">
@@ -125,10 +133,18 @@ $selectNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_ENTER_YOUR_SEARCH_TEXT')
 const searchTables = <?php echo json_encode($this->item['tables']); ?>;
 
 // the search Ajax URLs
-const Url = '<?php echo JUri::base(); ?>index.php?option=com_componentbuilder&format=json&raw=true&<?php echo JSession::getFormToken(); ?>=1&task=ajax.';
+const UrlAjax = '<?php echo $url_base; ?>&format=json&raw=true&<?php echo JSession::getFormToken(); ?>=1&task=ajax.';
+
+// the search URL
+const UrlSearch = '<?php echo $url_search; ?>';
 
 // make sure our controller is set
 let controller = null;
+let controller_replace = null;
+
+// some counters
+var fieldCount = 0;
+var lineCount = 0;
 
 // start search time keepers
 var startSearchTime, endSearchTime;
@@ -139,6 +155,8 @@ var editButtonSelected;
 // get search progress area
 const searchProgressObject = document.getElementById("search_progress_block");
 const searchProgressBarObject = document.getElementById("search_progress_bar");
+const replaceProgressObject = document.getElementById("replace_progress_block");
+const replaceProgressBarObject = document.getElementById("replace_progress_bar");
 
 // get search settings area
 const searchSettingsObject = document.getElementById("search_settings_block");
@@ -149,8 +167,12 @@ const searchedObject = document.getElementById("searched");
 const replaceDetailsObject = document.getElementById("replace_details");
 const replacedObject = document.getElementById("replaced");
 
-// set the search mode object
+// set the search mode objects
 const modeObject = document.getElementById("type_search");
+const typeSearchObject = document.getElementById("type_search0");
+const typeReplaceObject = document.getElementById("type_search1");
+const typeSearchLabelObject = document.querySelector('[for=type_search0]');
+const typeReplaceLabelObject = document.querySelector('[for=type_search1]');
 
 // set the search settings objects
 const searchObject = document.getElementById("search_value");

@@ -255,7 +255,7 @@ class External implements ExternalInterface
 					))
 					{
 						// update the hash since it changed
-						$object         = new stdClass();
+						$object         = new \stdClass();
 						$object->target = $target_key;
 						$object->hash   = $live_hash;
 						// update local hash
@@ -296,7 +296,7 @@ class External implements ExternalInterface
 				))
 				{
 					// add the hash to track changes
-					$object         = new stdClass();
+					$object         = new \stdClass();
 					$object->target = $target_key;
 					$object->hash   = $live_hash;
 					// insert local hash

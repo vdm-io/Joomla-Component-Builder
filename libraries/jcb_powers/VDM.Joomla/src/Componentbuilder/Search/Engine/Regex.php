@@ -65,6 +65,9 @@ class Regex extends Engine implements SearchTypeInterface
 	 */
 	public function string(string $value): ?string
 	{
+		// we count every line
+		$this->lineCounter();
+
 		if (StringHelper::check($this->searchValue) && $this->match($value))
 		{
 			return trim(preg_replace(

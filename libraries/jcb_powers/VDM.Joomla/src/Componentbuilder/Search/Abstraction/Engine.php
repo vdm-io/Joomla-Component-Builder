@@ -109,5 +109,15 @@ abstract class Engine
 		$this->end = $this->config->marker_end;
 	}
 
+	/**
+	 * we count every line being searched
+	 *
+	 * @since 3.2.0
+	 */
+	protected function lineCounter()
+	{
+		// we count every line we search
+		$this->config->line_counter = $this->config->line_counter + 1;
+	}
 }
 

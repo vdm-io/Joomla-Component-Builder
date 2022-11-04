@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Search\Agent;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Search\Factory;
+use VDM\Joomla\Componentbuilder\Search\Config;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\SearchTypeInterface as SearchEngine;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\SearchInterface;
 
@@ -35,6 +36,14 @@ class Search implements SearchInterface
 	protected array $found = [];
 
 	/**
+	 * Search Config
+	 *
+	 * @var    Config
+	 * @since 3.2.0
+	 */
+	protected Config $config;
+
+	/**
 	 * Search Engine
 	 *
 	 * @var    SearchEngine
@@ -45,12 +54,14 @@ class Search implements SearchInterface
 	/**
 	 * Constructor
 	 *
+	 * @param Config|null                 $config       The search config object.
 	 * @param SearchEngine|null      $search    The search engine object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?SearchEngine $search = null)
+	public function __construct(?Config $config = null, ?SearchEngine $search = null)
 	{
+		$this->config = $config ?: Factory::_('Config');
 		$this->search = $search ?: Factory::_('Search');
 	}
 
@@ -226,6 +237,9 @@ class Search implements SearchInterface
 		// line counter
 		$line = 1;
 
+		// we count every field we search
+		$this->fieldCounter();
+
 		// check if string has a new line
 		if (\preg_match('/\R/', $value))
 		{
@@ -286,5 +300,15 @@ class Search implements SearchInterface
 		// we should add a call to get the item name if the table has a name field TODO
 	}
 
+	/**
+	 * we count every field being searched
+	 *
+	 * @since 3.2.0
+	 */
+	protected function fieldCounter()
+	{
+		// we count every field we search
+		$this->config->field_counter = $this->config->field_counter + 1;
+	}
 }
 

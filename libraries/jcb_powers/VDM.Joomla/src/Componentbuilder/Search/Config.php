@@ -133,6 +133,28 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * get field counter
+	 *
+	 * @return  int   we start at 0
+	 * @since 3.2.0
+	 */
+	protected function getFieldcounter(): ?int
+	{
+		return 0;
+	}
+
+	/**
+	 * get line counter
+	 *
+	 * @return  int   we start at 0
+	 * @since 3.2.0
+	 */
+	protected function getLinecounter(): ?int
+	{
+		return 0;
+	}
+
+	/**
 	 * get the start marker
 	 *
 	 * @return  string  The string to use as the start marker

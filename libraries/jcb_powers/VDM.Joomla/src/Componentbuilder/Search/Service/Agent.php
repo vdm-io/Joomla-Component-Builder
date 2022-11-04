@@ -119,6 +119,7 @@ class Agent implements ServiceProviderInterface
 	public function getSearch(Container $container): Search
 	{
 		return new Search(
+			$container->get('Config'),
 			$container->get('Search')
 		);
 	}

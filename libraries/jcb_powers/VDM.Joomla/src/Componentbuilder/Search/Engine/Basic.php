@@ -93,6 +93,9 @@ class Basic extends Engine implements SearchTypeInterface
 	 */
 	public function string(string $value): ?string
 	{
+		// we count every line
+		$this->lineCounter();
+
 		if (StringHelper::check($this->searchValue))
 		{
 			if ($this->wholeWord == 1)

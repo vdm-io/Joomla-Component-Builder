@@ -3639,10 +3639,19 @@ class ComponentbuilderModelAjax extends ListModel
 
 				if (($items = SearchFactory::_('Agent')->table($tableName)) !== null)
 				{
-					return ['success' => JText::sprintf('COM_COMPONENTBUILDER_WE_FOUND_SOME_INSTANCES_IN_S', $tableName), 'items' => $items];
+					return [
+						'success' => JText::sprintf('COM_COMPONENTBUILDER_WE_FOUND_SOME_INSTANCES_IN_S', $tableName),
+						'items' => $items,
+						'fields_count' => SearchFactory::_('Config')->field_counter,
+						'line_count' => SearchFactory::_('Config')->line_counter
+					];
 				}
 
-				return ['not_found' => JText::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_IN_S', $tableName)];
+				return [
+					'not_found' => JText::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_IN_S', $tableName),
+					'fields_count' => SearchFactory::_('Config')->field_counter,
+					'line_count' => SearchFactory::_('Config')->line_counter
+				];
 			}
 			catch(Exception $error)
 			{
