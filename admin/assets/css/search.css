@@ -11,13 +11,16 @@
 /* CSS Document */
 
 .selected {
- background-color:#d7d8db !important
+	background-color:#d7d8db !important
 }
 tr.selected td {
- background-color:#d7d8db !important
+	background-color:#d7d8db !important
+}
+#search_settings_block .controls {
+	margin-left: 1px !important;
 }
 tr {
- cursor:pointer
+	cursor:pointer
 }
 .found_code {
 	color: #46a546;

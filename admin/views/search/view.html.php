@@ -62,7 +62,9 @@ class ComponentbuilderViewSearch extends HtmlView
 		JText::script('COM_COMPONENTBUILDER_FIELD_IN_THE');
 		JText::script('COM_COMPONENTBUILDER_TABLE');
 		JText::script('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE');
-		JText::script('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_REPLACE_BALLB_SEARCH_RESULTS');
+		JText::script('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_UPDATE_BALLB_VALUES_THAT_CAN_BE_FOUND_IN_THE_DATABASE');
+		JText::script('COM_COMPONENTBUILDER_YOU_WILL_REPLACE');
+		JText::script('COM_COMPONENTBUILDER_WITH');
 		JText::script('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_BYOU_HAVE_BEEN_WARNEDB');
 		JText::script('COM_COMPONENTBUILDER_ARE_YOU_THEREFORE_ABSOLUTELY_SURE_YOU_WANT_TO_CONTINUE');
 		JText::script('COM_COMPONENTBUILDER_THE_SEARCH_PROCESS_HAD_AN_ERROR_WITH_TABLE');
@@ -127,6 +129,7 @@ class ComponentbuilderViewSearch extends HtmlView
 			$attributes = [
 				'type' => 'radio',
 				'name' => 'type_search',
+				'hiddenLabel' => true,
 				'label' => 'COM_COMPONENTBUILDER_MODE',
 				'class' => 'btn-group',
 				'description' => 'COM_COMPONENTBUILDER_SEARCH_OR_SEARCH_AND_REPLACE',
@@ -146,12 +149,13 @@ class ComponentbuilderViewSearch extends HtmlView
 			$attributes = [
 				'type' => 'text',
 				'name' => 'search_value',
+				'hiddenLabel' => true,
 				'label' => 'COM_COMPONENTBUILDER_SEARCH',
 				'size' => 150,
 				'maxlength' => 200,
 				'description' => 'COM_COMPONENTBUILDER_HERE_YOU_CAN_ENTER_YOUR_SEARCH_TEXT',
 				'filter' => 'RAW',
-				'class' => 'search-value span12',
+				'class' => 'search-value span11',
 				'hint' => 'COM_COMPONENTBUILDER_ENTER_YOUR_SEARCH_TEXT',
 				'autocomplete' => true,
 				'default' => $this->urlvalues['search_value']];
@@ -166,12 +170,13 @@ class ComponentbuilderViewSearch extends HtmlView
 			$attributes = [
 				'type' => 'text',
 				'name' => 'replace_value',
+				'hiddenLabel' => true,
 				'label' => 'COM_COMPONENTBUILDER_REPLACE',
 				'size' => 150,
 				'maxlength' => 200,
 				'description' => 'COM_COMPONENTBUILDER_HERE_YOU_CAN_ENTER_THE_REPLACE_TEXT_THAT_YOU_WOULD_LIKE_TO_USE_AS_REPLACEMENT_FOR_THE_SEARCH_TEXT_FOUND',
 				'filter' => 'RAW',
-				'class' => 'replace-value span12',
+				'class' => 'replace-value span11',
 				'hint' => 'COM_COMPONENTBUILDER_ENTER_YOUR_REPLACE_TEXT',
 				'autocomplete' => true,
 				'showon' => 'type_search:2',

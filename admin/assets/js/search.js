@@ -45,6 +45,12 @@ const doSearch = async (signal, tables) => {
 		// show the progress bar
 		searchProgressObject.style.display = '';
 
+		// hidde the search button
+		startSearchButton.style.display = 'none';
+
+		// show the stop search button
+		stopSearchButton.style.display = '';
+
 		// start search timer
 		startSearchTimer();
 
@@ -99,6 +105,7 @@ const doSearch = async (signal, tables) => {
 				// calculate the percent
 				let percent = 100.0 * (total / progress);
 				// update the progress bar
+				searchProgressObject.style.display = ''; // always make sure it still shows...
 				searchProgressBarObject.style.width = percent.toFixed(2) + '%';
 				searchProgressBarObject.innerHTML = percent.toFixed(2) + '%';
 				// when complete hide the progress bar
@@ -109,6 +116,10 @@ const doSearch = async (signal, tables) => {
 					} else {
 						searchProgressBarObject.innerHTML = Joomla.JText._('COM_COMPONENTBUILDER_SEARCHING') + ' ' + progress + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_TABLES_WITH') + total_field_line + Joomla.JText._('COM_COMPONENTBUILDER_AND_FINISHED_THE_SEARCH_IN') + ' ' + getSearchLenght() + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_SECONDS');
 					}
+					// show the search button
+					startSearchButton.style.display = '';
+					// hidde the stop search button
+					stopSearchButton.style.display = 'none';
 					setTimeout(function () {
 						// hide the progress bar again
 						searchProgressObject.style.display = 'none';
@@ -214,8 +225,13 @@ const getSelectedItem = async (table, row, field, line) => {
  * JS Function to check if we should save/update the all current found items
  */
 const replaceAllCheck = () => {
+	// get the current searc and replace values
+	let searchValue = searchObject.value;
+	let replaceValue = replaceObject.value;
 	// load question
-	let question = Joomla.JText._('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_REPLACE_BALLB_SEARCH_RESULTS') + '<br />' +
+	let question = Joomla.JText._('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_UPDATE_BALLB_VALUES_THAT_CAN_BE_FOUND_IN_THE_DATABASE') + '<br />' +
+		Joomla.JText._('COM_COMPONENTBUILDER_YOU_WILL_REPLACE') + ': [<span class="found_code">' + htmlentities(searchValue) + '</span>] ' +
+		Joomla.JText._('COM_COMPONENTBUILDER_WITH') + ': [<span class="found_code">' + htmlentities(replaceValue) + '</span>]<br />' +
 		Joomla.JText._('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_BYOU_HAVE_BEEN_WARNEDB') + '<br /><br />' +
 		Joomla.JText._('COM_COMPONENTBUILDER_ARE_YOU_THEREFORE_ABSOLUTELY_SURE_YOU_WANT_TO_CONTINUE');
 	// do check
@@ -325,7 +341,7 @@ const replaceAll = async (signal, tables) => {
 								setSearch(replaceValue, searchValue, matchValue, wholeValue, regexValue, 2);
 							}, function () {
 								UIkit.modal.confirm(Joomla.JText._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_REPEAT_THE_SAME_SEARCH'), function(){
-									onChange();
+									startSearch();
 								}, function () {
 									clearSearch();
 								}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
@@ -333,7 +349,7 @@ const replaceAll = async (signal, tables) => {
 						} else {
 							// else we search it again just to prove its changed
 							UIkit.modal.confirm(Joomla.JText._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_REPEAT_THE_SAME_SEARCH'), function(){
-								onChange();
+								startSearch();
 							}, function () {
 								clearSearch();
 							}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
@@ -471,7 +487,7 @@ const clearTableItems = async () => {
 	table.clear().draw( true );
 
 	// hide the update all items
-	buttonUpdateAllObject.style.display = 'none';
+	buttonUpdateAllStyleDisplay('none');
 };
 
 /**
@@ -500,14 +516,14 @@ const setSearch = async (search, replace = '', match = 0, whole = 0, regex = 0, 
 	// update the type of search
 	if (mode == 1) {
 		window.location.href  = UrlSearch +
-			'&search_value=' + search +
+			'&search_value=' + urlencode(search) +
 			'&type_search=1&match_case=' + match +
 			'&whole_word=' + whole +
 			'&regex_search=' + regex;
 	} else if (mode == 2) {
 		window.location.href = UrlSearch +
-			'&search_value=' + search +
-			'&replace_value=' + replace +
+			'&search_value=' + urlencode(search) +
+			'&replace_value=' + urlencode(replace) +
 			'&type_search=2&match_case=' + match +
 			'&whole_word=' + whole +
 			'&regex_search=' + regex;
@@ -546,16 +562,25 @@ const removeClass = (elementObject, classNaam) => {
 const addTableItems = async (table, items, typeSearch) => {
 	table.rows.add(items).draw( false );
 	if (typeSearch == 2) {
-		buttonUpdateAllObject.style.display = ''; // TODO should only show once all items are loaded
+		buttonUpdateAllStyleDisplay(''); // TODO should only show once all items are loaded
 	} else {
-		buttonUpdateAllObject.style.display = 'none'; // TODO should only show once all items are loaded
+		buttonUpdateAllStyleDisplay('none'); // TODO should only show once all items are loaded
 	}
+};
+
+/**
+ * JS Function to update the update all button
+ */
+const buttonUpdateAllStyleDisplay = async (value) => {
+	buttonUpdateAllObject.forEach((buttonObject) => {
+		buttonObject.style.display = value;
+	});
 };
 
 /**
  * JS Function to execute (A) on search/replace text change , (B) on search options changes
  */
-const onChange = () => {
+const startSearch = (field, forced = false) => {
 	// get replace value if set
 	const replaceValue = replaceObject.value;
 	if (replaceValue.length > 0) {
@@ -566,7 +591,7 @@ const onChange = () => {
 	}
 	// get search value
 	const searchValue = searchObject.value;
-	if (searchValue.length > 2) {
+	if (searchValue.length > 3 || (searchValue.length > 0 && forced)) {
 		// Cancel any ongoing requests
 		if (controller) controller.abort();
 
@@ -593,6 +618,23 @@ const onChange = () => {
 		clearAll();
 	}
 };
+
+/**
+ * JS Function to stop a search
+ */
+const stopSearch = () => {
+	// Cancel any ongoing requests
+	if (controller) controller.abort();
+	// show the search button
+	startSearchButton.style.display = '';
+	// hidde the stop search button
+	stopSearchButton.style.display = 'none';
+	// remove the progress bar at some point
+	setTimeout(function () {
+		// hide the progress bar again
+		searchProgressObject.style.display = 'none';
+	}, 13000);
+}
 
 /**
  * JS Function to hide search settings and show table search
@@ -830,4 +872,43 @@ function getHtmlTranslationTable(table, quoteStyle) { // eslint-disable-line cam
   }
 
   return hashMap
+}
+
+
+function urlencode (str) {
+  //       discuss at: https://locutus.io/php/urlencode/
+  //      original by: Philip Peterson
+  //      improved by: Kevin van Zonneveld (https://kvz.io)
+  //      improved by: Kevin van Zonneveld (https://kvz.io)
+  //      improved by: Brett Zamir (https://brett-zamir.me)
+  //      improved by: Lars Fischer
+  //      improved by: Waldo Malqui Silva (https://fayr.us/waldo/)
+  //         input by: AJ
+  //         input by: travc
+  //         input by: Brett Zamir (https://brett-zamir.me)
+  //         input by: Ratheous
+  //      bugfixed by: Kevin van Zonneveld (https://kvz.io)
+  //      bugfixed by: Kevin van Zonneveld (https://kvz.io)
+  //      bugfixed by: Joris
+  // reimplemented by: Brett Zamir (https://brett-zamir.me)
+  // reimplemented by: Brett Zamir (https://brett-zamir.me)
+  //           note 1: This reflects PHP 5.3/6.0+ behavior
+  //           note 1: Please be aware that this function
+  //           note 1: expects to encode into UTF-8 encoded strings, as found on
+  //           note 1: pages served as UTF-8
+  //        example 1: urlencode('Kevin van Zonneveld!')
+  //        returns 1: 'Kevin+van+Zonneveld%21'
+  //        example 2: urlencode('https://kvz.io/')
+  //        returns 2: 'https%3A%2F%2Fkvz.io%2F'
+  //        example 3: urlencode('https://www.google.nl/search?q=Locutus&ie=utf-8')
+  //        returns 3: 'https%3A%2F%2Fwww.google.nl%2Fsearch%3Fq%3DLocutus%26ie%3Dutf-8'
+  str = (str + '')
+  return encodeURIComponent(str)
+    .replace(/!/g, '%21')
+    .replace(/'/g, '%27')
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29')
+    .replace(/\*/g, '%2A')
+    .replace(/~/g, '%7E')
+    .replace(/%20/g, '+')
 }
