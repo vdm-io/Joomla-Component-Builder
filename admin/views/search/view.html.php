@@ -257,7 +257,7 @@ class ComponentbuilderViewSearch extends HtmlView
 				'class' => 'list_class',
 				'description' => 'COM_COMPONENTBUILDER_SELECT_THE_TABLE_TO_SEARCH',
 				'required' => 'true',
-				'default' => -1];
+				'default' => $this->urlvalues['table_name']];
 			// start the component options
 			$options = [];
 			$options['-1'] = 'COM_COMPONENTBUILDER__SEARCH_ALL_';

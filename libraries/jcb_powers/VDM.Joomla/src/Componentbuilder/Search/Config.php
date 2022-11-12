@@ -102,10 +102,10 @@ class Config extends BaseConfig
 	/**
 	 * get posted area/table
 	 *
-	 * @return  string  Table name
+	 * @return  string|null  Table name
 	 * @since 3.2.0
 	 */
-	protected function getTablename(): string
+	protected function getTablename(): ?string
 	{
 		return $this->input->get('table_name', null, 'word');
 	}
@@ -113,10 +113,10 @@ class Config extends BaseConfig
 	/**
 	 * get posted field
 	 *
-	 * @return  string  Field name
+	 * @return  string|null  Field name
 	 * @since 3.2.0
 	 */
-	protected function getFieldname(): string
+	protected function getFieldname(): ?string
 	{
 		return $this->input->get('field_name', null, 'word');
 	}
@@ -138,7 +138,7 @@ class Config extends BaseConfig
 	 * @return  int   we start at 0
 	 * @since 3.2.0
 	 */
-	protected function getFieldcounter(): ?int
+	protected function getFieldcounter(): int
 	{
 		return 0;
 	}
@@ -149,7 +149,7 @@ class Config extends BaseConfig
 	 * @return  int   we start at 0
 	 * @since 3.2.0
 	 */
-	protected function getLinecounter(): ?int
+	protected function getLinecounter(): int
 	{
 		return 0;
 	}

@@ -42,10 +42,6 @@ $search_value = $this->form->getField('search_value');
 </script>
 <?php $urlId = (isset($this->item->id)) ? '&id='. (int) $this->item->id : ''; ?>
 
-<div class="alert alert-warning" role="alert">
-	<?php echo JText::_('COM_COMPONENTBUILDER_THE_CHANGES_YOU_MAKE_HERE_CAN_NOT_BE_UNDONE_THEREFORE_YOU_MUST_ALWAYS_USE_THE_UPDATE_AND_REPLACE_FEATURES_WITH_GREAT_CAUTION_SEARCH_FEATURE_IS_IN_BETA_STAGE'); ?>
-</div>
-<hr />
 <?php if(!empty( $this->sidebar)): ?>
 <div id="j-sidebar-container" class="span2">
 	<?php echo $this->sidebar; ?>
@@ -143,6 +139,8 @@ $search_value = $this->form->getField('search_value');
 				<?php echo $this->form->getInput('item_code'); ?>
 			</div>
 		</div>
+		<input type="hidden" name="task" value="" />
+		<?php echo JHtml::_('form.token'); ?>
 	</form>
 	<?php endif; ?>
 </div>

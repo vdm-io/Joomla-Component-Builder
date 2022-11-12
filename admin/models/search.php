@@ -180,7 +180,8 @@ class ComponentbuilderModelSearch extends ItemModel
 			'replace_value' => SearchFactory::_('Config')->get('replace_value', ''),
 			'match_case' => SearchFactory::_('Config')->get('match_case', 0),
 			'whole_word' => SearchFactory::_('Config')->get('whole_word', 0),
-			'regex_search' => SearchFactory::_('Config')->get('regex_search', 0)
+			'regex_search' => SearchFactory::_('Config')->get('regex_search', 0),
+			'table_name' => SearchFactory::_('Config')->get('table_name', -1)
 		];
 
 		if (empty($data))

@@ -26,15 +26,21 @@ const doSearch = async (signal, tables) => {
 		// set some search values
 		let searchValue = searchObject.value;
 		let replaceValue = replaceObject.value;
+		let matchValue = matchObject.checked ? 1 : 0;
+		let wholeValue = wholeObject.checked ? 1 : 0;
+		let regexValue = regexObject.checked ? 1 : 0;
 
 		// add the form data
 		formData.append('table_name', '');
 		formData.append('type_search', typeSearch);
 		formData.append('search_value', searchValue);
 		formData.append('replace_value', replaceValue);
-		formData.append('match_case', matchObject.checked ? 1 : 0);
-		formData.append('whole_word', wholeObject.checked ? 1 : 0);
-		formData.append('regex_search', regexObject.checked ? 1 : 0);
+		formData.append('match_case', matchValue);
+		formData.append('whole_word', wholeValue);
+		formData.append('regex_search', regexValue);
+
+		// update the URL
+		updateUrlQuery(searchValue, replaceValue, matchValue, wholeValue, regexValue, typeSearch);
 
 		let abort_this_search_values = false;
 
@@ -338,7 +344,7 @@ const replaceAll = async (signal, tables) => {
 						if (regexValue == 0) {
 							// set the replace value as the search value
 							UIkit.modal.confirm(Joomla.JText._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_DO_A_REVERSE_SEARCH'), function(){
-								setSearch(replaceValue, searchValue, matchValue, wholeValue, regexValue, 2);
+								startNewSearch(replaceValue, searchValue, matchValue, wholeValue, regexValue, 2);
 							}, function () {
 								UIkit.modal.confirm(Joomla.JText._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_REPEAT_THE_SAME_SEARCH'), function(){
 									startSearch();
@@ -484,6 +490,9 @@ const clearSelectedItem = async () => {
  */
 const clearTableItems = async () => {
 	let table = new DataTable('#search_results_table');
+	// clear search
+	table.search('').columns().search( '' );
+	// clear items
 	table.clear().draw( true );
 
 	// hide the update all items
@@ -512,22 +521,45 @@ const clearSearch = async () => {
 /**
  * JS Function to set the search and replace values
  */
-const setSearch = async (search, replace = '', match = 0, whole = 0, regex = 0, mode = 1) => {
+const startNewSearch = async (search, replace = '', match = 0, whole = 0, regex = 0, mode = 1) => {
+	// redirect to a new search
+	window.location.href = getSearchURL(search, replace, match, whole, regex, mode);
+};
+
+/**
+ * JS Function to update the URL of the browser with the search query
+ */
+const updateUrlQuery = async (search, replace = '', match = 0, whole = 0, regex = 0, mode = 1) => {
+	// update the url query
+	window.history.pushState({}, '', getSearchURL(search, replace, match, whole, regex, mode));
+};
+
+/**
+ * JS Function to get the current search URL
+ */
+const getSearchURL = (search, replace = '', match = 0, whole = 0, regex = 0, mode = 1) => {
+	// check if its a single table search
+	let table = tableObject.value;
+	let table_name = '';
+	if (table != -1) {
+		table_name = '&table_name=' + urlencode(table);
+	}
 	// update the type of search
 	if (mode == 1) {
-		window.location.href  = UrlSearch +
+		return UrlSearch + table_name +
 			'&search_value=' + urlencode(search) +
 			'&type_search=1&match_case=' + match +
 			'&whole_word=' + whole +
 			'&regex_search=' + regex;
 	} else if (mode == 2) {
-		window.location.href = UrlSearch +
+		return UrlSearch + table_name +
 			'&search_value=' + urlencode(search) +
 			'&replace_value=' + urlencode(replace) +
 			'&type_search=2&match_case=' + match +
 			'&whole_word=' + whole +
 			'&regex_search=' + regex;
 	}
+	return UrlSearch + table_name;
 };
 
 /**
@@ -591,7 +623,7 @@ const startSearch = (field, forced = false) => {
 	}
 	// get search value
 	const searchValue = searchObject.value;
-	if (searchValue.length > 3 || (searchValue.length > 0 && forced)) {
+	if (searchValue.length > 2 || (searchValue.length > 0 && forced)) {
 		// Cancel any ongoing requests
 		if (controller) controller.abort();
 
