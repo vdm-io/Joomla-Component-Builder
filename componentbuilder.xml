@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="4" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>12th November, 2022</creationDate>
+	<creationDate>13th November, 2022</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>joomla@vdm.io</authorEmail>
 	<authorUrl>https://dev.vdm.io</authorUrl>
 	<copyright>Copyright (C) 2015 Vast Development Method. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>3.1.11</version>
+	<version>3.1.12</version>
 	<description><![CDATA[
-		<h1>Component Builder (v.3.1.11)</h1>
+		<h1>Component Builder (v.3.1.12)</h1>
 		<div style="clear: both;"></div>
 		<p>The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
@@ -75,11 +75,11 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 		<submenu>
 			<!-- Instead of link you can specify individual link attributes -->
 			<menu option="com_componentbuilder" view="compiler">COM_COMPONENTBUILDER_MENU_COMPILER</menu>
-			<menu option="com_componentbuilder" view="search">COM_COMPONENTBUILDER_MENU_SEARCH</menu>
 			<menu option="com_componentbuilder" view="joomla_components">COM_COMPONENTBUILDER_MENU_JOOMLA_COMPONENTS</menu>
 			<menu option="com_componentbuilder" view="joomla_modules">COM_COMPONENTBUILDER_MENU_JOOMLA_MODULES</menu>
 			<menu option="com_componentbuilder" view="joomla_plugins">COM_COMPONENTBUILDER_MENU_JOOMLA_PLUGINS</menu>
 			<menu option="com_componentbuilder" view="powers">COM_COMPONENTBUILDER_MENU_POWERS</menu>
+			<menu option="com_componentbuilder" view="search">COM_COMPONENTBUILDER_MENU_SEARCH</menu>
 			<menu option="com_componentbuilder" view="admin_views">COM_COMPONENTBUILDER_MENU_ADMIN_VIEWS</menu>
 			<menu option="com_componentbuilder" view="custom_admin_views">COM_COMPONENTBUILDER_MENU_CUSTOM_ADMIN_VIEWS</menu>
 			<menu option="com_componentbuilder" view="site_views">COM_COMPONENTBUILDER_MENU_SITE_VIEWS</menu>

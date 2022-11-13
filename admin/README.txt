@@ -1,5 +1,5 @@
 
-# Joomla Component Builder ([JCB](http://joomlacomponentbuilder.com))
+# Joomla Component Builder ([JCB](https://www.joomlacomponentbuilder.com))
 
 This is a [Joomla 3.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -9,7 +9,7 @@ The Component Builder for [Joomla](https://extensions.joomla.org/extension/compo
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will save you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (3.1.11) with **ALL** its features and **ALL** concepts totally open-source and free! 
+You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (3.1.12) with **ALL** its features and **ALL** concepts totally open-source and free! 
 
 > Watch Quick Build of a Hello World component in [JCB on Youtube](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -23,8 +23,8 @@ Some of the Features
 + Add you [own dashboard](https://www.youtube.com/watch?v=tU7TeYn1Djo&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=60) in the back-end.
 + [Dynamic File and Folder](https://www.youtube.com/watch?v=_c7wzW075lA&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&t=0s&index=56) Inclusion concept.
 + [Easy Translation](https://www.youtube.com/watch?v=q5NwKGnOHoQ&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&t=0s&index=51) via excel.
-+ Adding your [own rule validation](https://www.youtube.com/watch?v=Z6-ggKtX35o&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&t=0s&index=46) to a field in [JCB](http://joomlacomponentbuilder.com)
-+ [Automated backup system](https://www.youtube.com/watch?v=GUWZaODo_IM&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&t=0s&index=40) in [JCB](http://joomlacomponentbuilder.com).
++ Adding your [own rule validation](https://www.youtube.com/watch?v=Z6-ggKtX35o&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&t=0s&index=46) to a field in [JCB](https://www.joomlacomponentbuilder.com)
++ [Automated backup system](https://www.youtube.com/watch?v=GUWZaODo_IM&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&t=0s&index=40) in [JCB](https://www.joomlacomponentbuilder.com).
 + Adding mySQL Dump to any View/Table.
 + Grab existing Table data and build a dynamic dump.
 + Unlimited [Joomla](https://extensions.joomla.org/extension/component-builder/) Components.
@@ -83,13 +83,13 @@ You are in Control
 + You can dynamically add internal help structures to all component.
 + There is no limitations on how big or how much you want to build (server limitation only).
 + This is a complete factory kind of component that functions like a deployment hub.
-+ Export any component completely mapped in [JCB](http://joomlacomponentbuilder.com) and import into another [JCB](http://joomlacomponentbuilder.com).
++ Export any component completely mapped in [JCB](https://www.joomlacomponentbuilder.com) and import into another [JCB](https://www.joomlacomponentbuilder.com).
 + This and much much more are all possible with this component builder!
 
 Get More Demo Content
 ====================
 
-> You can now get access to the WOW factor, [JCB](http://joomlacomponentbuilder.com) fully mapped can now be yours! Including many other [JCB](http://joomlacomponentbuilder.com) mapped components.
+> You can now get access to the WOW factor, [JCB](https://www.joomlacomponentbuilder.com) fully mapped can now be yours! Including many other [JCB](https://www.joomlacomponentbuilder.com) mapped components.
 
 ### All you need to do is [explained here](https://vdm.bz/how-to-get-free-vdm-package-keys)!
 
@@ -104,11 +104,11 @@ Where can you get support and help?
 + [Hello World Tutorial](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 + [The JCB! Wiki](https://git.vdm.dev/joomla/Component-Builder/wiki)
 + [Forum](https://vdm.bz/jcb-forum)
-+ [Report a Security Issue](http://joomlacomponentbuilder.com/report-security-issues)
-+ [Community Complaint](http://joomlacomponentbuilder.com/community-complaint)
++ [Report a Security Issue](https://www.joomlacomponentbuilder.com/report-security-issues)
++ [Community Complaint](https://www.joomlacomponentbuilder.com/community-complaint)
 + [Open Issue On Gitea](https://git.vdm.dev/joomla/Component-Builder/issues) ^^
 
-Since [JCB](http://joomlacomponentbuilder.com) has [become a community](https://git.vdm.dev/joomla/Component-Builder/src/branch/master/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/) is **no longer solely responsible** for support.
+Since [JCB](https://www.joomlacomponentbuilder.com) has [become a community](https://git.vdm.dev/joomla/Component-Builder/src/branch/master/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/) is **no longer solely responsible** for support.
 
 We have started a [**JCB forum**](https://vdm.bz/jcb-forum) where you can post questions, about how things work, or if you need some kind of help in relation to your development of your components.
 
@@ -125,14 +125,14 @@ Our idea was to almost let this tool serve as a cheat sheet to how things can be
 MAKING IT BETTER!
 ====================
 
-Get involved on the forums, and the Gitea issues, and you can even help us develop/improve the pipeline of [JCB](http://joomlacomponentbuilder.com) for continues delivery. We really want to see [JCB](http://joomlacomponentbuilder.com) remain the tool of choice for all [Joomla Component Development](https://extensions.joomla.org/extension/component-builder/) needs and ideas.
+Get involved on the forums, and the Gitea issues, and you can even help us develop/improve the pipeline of [JCB](https://www.joomlacomponentbuilder.com) for continues delivery. We really want to see [JCB](https://www.joomlacomponentbuilder.com) remain the tool of choice for all [Joomla Component Development](https://extensions.joomla.org/extension/component-builder/) needs and ideas.
 
 TODO
 ======
 
-- Add automatic unit testing. To nurture pipeline integration for all components build with [JCB](http://joomlacomponentbuilder.com).
-- Team collaborative development across [JCB](http://joomlacomponentbuilder.com) installations offline and online.
-- Documentation (maintained by the community) for [JCB](http://joomlacomponentbuilder.com). (help us select the best system for this)
+- Add automatic unit testing. To nurture pipeline integration for all components build with [JCB](https://www.joomlacomponentbuilder.com).
+- Team collaborative development across [JCB](https://www.joomlacomponentbuilder.com) installations offline and online.
+- Documentation (maintained by the community) for [JCB](https://www.joomlacomponentbuilder.com). (help us select the best system for this)
 
 # Build Details
 
@@ -140,16 +140,16 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 12th November, 2022
-+ *Version*: 3.1.11
++ *Last Build*: 13th November, 2022
++ *Version*: 3.1.12
 + *Copyright*: Copyright (C) 2015 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **334324**
++ *Line count*: **334311**
 + *Field count*: **2004**
 + *File count*: **2183**
 + *Folder count*: **381**
 
-> This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](http://joomlacomponentbuilder.com).
+> This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](https://www.joomlacomponentbuilder.com).
 > Developed by [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)
 
 

@@ -30,13 +30,15 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 		$icons  = array();
 		// view groups array
 		$viewGroups = array(
-			'main' => array('png.compiler', 'png.joomla_components', 'png.joomla_modules', 'png.joomla_plugins', 'png.powers', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.admin_view.add', 'png.admin_views', 'png.custom_admin_view.add', 'png.custom_admin_views', 'png.site_view.add', 'png.site_views', 'png.template.add', 'png.templates', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_field', 'png.fieldtypes', 'png.fieldtypes.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_fieldtype', 'png.language_translations', 'png.servers', 'png.help_documents')
+			'main' => array('png.compiler', 'png.joomla_components', 'png.joomla_modules', 'png.joomla_plugins', 'png.powers', 'png.search', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.admin_views', 'png.custom_admin_views', 'png.site_views', 'png.template.add', 'png.templates', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_field', 'png.fieldtypes', 'png.fieldtypes.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_fieldtype', 'png.language_translations', 'png.servers', 'png.help_documents')
 		);
 		// view access array
 		$viewAccess = array(
 			'compiler.submenu' => 'compiler.submenu',
 			'compiler.dashboard_list' => 'compiler.dashboard_list',
+			'search.access' => 'search.access',
 			'search.submenu' => 'search.submenu',
+			'search.dashboard_list' => 'search.dashboard_list',
 			'get_snippets.submenu' => 'get_snippets.submenu',
 			'get_snippets.dashboard_list' => 'get_snippets.dashboard_list',
 			'joomla_component.create' => 'joomla_component.create',
@@ -64,17 +66,14 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 			'admin_view.access' => 'admin_view.access',
 			'admin_views.submenu' => 'admin_view.submenu',
 			'admin_views.dashboard_list' => 'admin_view.dashboard_list',
-			'admin_view.dashboard_add' => 'admin_view.dashboard_add',
 			'custom_admin_views.access' => 'custom_admin_view.access',
 			'custom_admin_view.access' => 'custom_admin_view.access',
 			'custom_admin_views.submenu' => 'custom_admin_view.submenu',
 			'custom_admin_views.dashboard_list' => 'custom_admin_view.dashboard_list',
-			'custom_admin_view.dashboard_add' => 'custom_admin_view.dashboard_add',
 			'site_views.access' => 'site_view.access',
 			'site_view.access' => 'site_view.access',
 			'site_views.submenu' => 'site_view.submenu',
 			'site_views.dashboard_list' => 'site_view.dashboard_list',
-			'site_view.dashboard_add' => 'site_view.dashboard_add',
 			'templates.access' => 'template.access',
 			'template.access' => 'template.access',
 			'templates.submenu' => 'template.submenu',

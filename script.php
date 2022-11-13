@@ -6755,7 +6755,7 @@ class com_componentbuilderInstallerScript
 			{
 				$rule_length = $db->loadResult();
 				// Check the size of the rules column
-				if ($rule_length <= 97440)
+				if ($rule_length <= 97280)
 				{
 					// Fix the assets table rules column size
 					$fix_rules_size = "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control. Enlarged to MEDIUMTEXT by JCB';";
@@ -9422,7 +9422,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 3.1.11 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 3.1.12 Was Successful! Let us know if anything is not working as expected.</h3>';
 
 			// Set db if not set already.
 			if (!isset($db))
