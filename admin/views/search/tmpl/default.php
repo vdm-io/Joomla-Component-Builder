@@ -329,8 +329,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	tableLengthObject = document.getElementById("search_results_table_length");
 
 	showSearch();
-<?php if (strlen($this->urlvalues['search_value']) > 2): ?>
-	startSearch();
+<?php if (strlen($this->urlvalues['search_value']) > 0): ?>
+	startSearch(null, true);
 <?php endif; ?>
 });
 </script>

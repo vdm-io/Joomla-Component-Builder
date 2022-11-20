@@ -23,6 +23,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Power;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Component;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Extension;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Field;
+use VDM\Joomla\Componentbuilder\Interfaces\Factoryinterface;
 
 
 /**
@@ -30,7 +31,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Field;
  * 
  * @since 3.2.0
  */
-abstract class Factory
+abstract class Factory implements Factoryinterface
 {
 	/**
 	 * Global Compiler Container

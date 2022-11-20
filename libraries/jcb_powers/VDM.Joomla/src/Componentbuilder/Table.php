@@ -9,22 +9,21 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Search;
+namespace VDM\Joomla\Componentbuilder;
 
 
-use VDM\Joomla\Componentbuilder\Search\Factory;
-use VDM\Joomla\Componentbuilder\Search\Config;
+use VDM\Joomla\Componentbuilder\Interfaces\Tableinterface;
 
 
 /**
- * Search Table
+ * JCB Tables
  * 
  * @since 3.2.0
  */
-class Table
+class Table implements Tableinterface
 {
 	/**
-	 * All areas/views/tables with their field details to SEARCH
+	 * All areas/views/tables with their field details
 	 *
 	 * @var     array
 	 * @since 3.2.0
@@ -2833,26 +2832,6 @@ class Table
 	];
 
 	/**
-	 * Search Config
-	 *
-	 * @var    Config
-	 * @since 3.2.0
-	 */
-	protected Config $config;
-
-	/**
-	 * Constructor
-	 *
-	 * @param Config|null    $config           The search config object.
-	 *
-	 * @since 3.2.0
-	 */
-	public function __construct(?Config $config = null)
-	{
-		$this->config = $config ?: Factory::_('Config');
-	}
-
-	/**
 	 * Get any value from a item/field/column of an area/view/table
 	 *          Example: $this->get('table_name', 'field_name', 'value_key');
 	 * Get an item/field/column of an area/view/table
@@ -2860,23 +2839,17 @@ class Table
 	 * Get all items/fields/columns of an area/view/table
 	 *          Example: $this->get('table_name');
 	 * Get all areas/views/tables with all their item/field/column details
-	 *          Example: $this->get();
+	 *          Example: $this->get('All');
 	 *
-	 * @param   string|null  $table  The table
+	 * @param   string       $table  The table
 	 * @param   string|null  $field  The field
 	 * @param   string|null  $key    The value key
 	 *
 	 * @return  mixed
 	 * @since 3.2.0
 	 */
-	public function get(?string $table = null, ?string $field = null, ?string $key = null)
+	public function get(string $table, ?string $field = null, ?string $key = null)
 	{
-		// load the table
-		if (empty($table) && is_string($field))
-		{
-			$table = $this->config->table_name;
-		}
-
 		// return the item/field/column of an area/view/table 
 		if (is_string($field) && is_string($key))
 		{
@@ -2897,7 +2870,7 @@ class Table
 			return null;
 		}
 		// return an area/view/table
-		elseif (is_string($table))
+		elseif ($table !== 'All')
 		{
 			if (isset($this->tables[$table]))
 			{
@@ -2913,19 +2886,13 @@ class Table
 	/**
 	 * Get title field from an area/view/table
 	 *
-	 * @param   string|null  $table  The area
+	 * @param   string   $table  The area
 	 *
 	 * @return  ?array
 	 * @since 3.2.0
 	 */
-	public function title(?string $table = null): ?array
+	public function title(string $table): ?array
 	{
-		// load the table
-		if (empty($table))
-		{
-			$table = $this->config->table_name;
-		}
-
 		// return the title item/field/column of an area/view/table 
 		if (($table = $this->get($table)) !== null)
 		{
@@ -2945,20 +2912,14 @@ class Table
 	/**
 	 * Get title field name
 	 *
-	 * @param   string|null  $table  The area
+	 * @param   string   $table  The area
 	 *
 	 * @return  string
 	 * @since 3.2.0
 	 */
-	public function titleName(?string $table = null): string
+	public function titleName(string $table): string
 	{
-		// load the table
-		if (empty($table))
-		{
-			$table = $this->config->table_name;
-		}
-
-		// return the title name of an area/view/table 
+		// return the title name of an area/view/table
 		if (($field = $this->title($table)) !== null)
 		{
 			return $field['name'];
@@ -2983,21 +2944,15 @@ class Table
 	/**
 	 * Check if a table (and field) exist
 	 *
-	 * @param   string|null  $table  The area
+	 * @param   string       $table  The area
 	 * @param   string|null  $field  The area
 	 *
 	 * @return  bool
 	 * @since 3.2.0
 	 */
-	public function exist(?string $table = null, ?string $field = null): bool
+	public function exist(string $table, ?string $field = null): bool
 	{
-		// load the table
-		if (empty($table))
-		{
-			$table = $this->config->table_name;
-		}
-
-		if (is_string($table) && isset($this->tables[$table]))
+		if (isset($this->tables[$table]))
 		{
 			// if we have a field
 			if (is_string($field))
@@ -3019,19 +2974,13 @@ class Table
 	/**
 	 * Get all fields of an area/view/table
 	 *
-	 * @param   string|null  $table  The area
+	 * @param   string  $table  The area
 	 *
 	 * @return  ?array
 	 * @since 3.2.0
 	 */
-	public function fields(?string $table = null): ?array
+	public function fields(string $table): ?array
 	{
-		// load the table
-		if (empty($table))
-		{
-			$table = $this->config->table_name;
-		}
-
 		// return all fields of an area/view/table
 		if (($table = $this->get($table)) !== null)
 		{

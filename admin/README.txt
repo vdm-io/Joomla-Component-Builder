@@ -140,14 +140,14 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 13th November, 2022
++ *Last Build*: 20th November, 2022
 + *Version*: 3.1.12
 + *Copyright*: Copyright (C) 2015 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **334311**
++ *Line count*: **334395**
 + *Field count*: **2004**
-+ *File count*: **2183**
-+ *Folder count*: **381**
++ *File count*: **2186**
++ *Folder count*: **382**
 
 > This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](https://www.joomlacomponentbuilder.com).
 > Developed by [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)

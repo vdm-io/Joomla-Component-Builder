@@ -29,11 +29,11 @@ abstract class BaseRegistry extends JoomlaRegistry implements \JsonSerializable,
 	 *
 	 * @param   string  $path  Registry path (e.g. joomla.content.showauthor)
 	 *
-	 * @return  \ArrayIterator  This object represented as an ArrayIterator.
+	 * @return  \ArrayIterator|null  This object represented as an ArrayIterator.
 	 *
 	 * @since   3.4.0
 	 */
-	public function _($path)
+	public function _(string $path): ?\ArrayIterator
 	{
 		$data = $this->extract($path);
 

@@ -17,6 +17,7 @@ use VDM\Joomla\Componentbuilder\Search\Service\Search;
 use VDM\Joomla\Componentbuilder\Search\Service\Model;
 use VDM\Joomla\Componentbuilder\Search\Service\Database;
 use VDM\Joomla\Componentbuilder\Search\Service\Agent;
+use VDM\Joomla\Componentbuilder\Interfaces\Factoryinterface;
 
 
 /**
@@ -24,7 +25,7 @@ use VDM\Joomla\Componentbuilder\Search\Service\Agent;
  * 
  * @since 3.2.0
  */
-abstract class Factory
+abstract class Factory implements Factoryinterface
 {
 	/**
 	 * Global Compiler Container
@@ -42,7 +43,7 @@ abstract class Factory
 	 * @return  Mixed
 	 * @since 3.2.0
 	 */
-	public static function _($key)
+	public static function _(string $key)
 	{
 		return self::getContainer()->get($key);
 	}

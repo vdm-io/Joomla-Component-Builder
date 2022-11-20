@@ -613,6 +613,10 @@ const buttonUpdateAllStyleDisplay = async (value) => {
  * JS Function to execute (A) on search/replace text change , (B) on search options changes
  */
 const startSearch = (field, forced = false) => {
+	// check if we have an Enter click
+	if (field && typeof field.code !== 'undefined' && field.code  === "Enter") {
+		forced = true;
+	}
 	// get replace value if set
 	const replaceValue = replaceObject.value;
 	if (replaceValue.length > 0) {

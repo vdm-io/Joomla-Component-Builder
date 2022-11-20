@@ -21,7 +21,7 @@ use VDM\Joomla\Componentbuilder\Search\Agent\Find;
 use VDM\Joomla\Componentbuilder\Search\Agent\Replace;
 use VDM\Joomla\Componentbuilder\Search\Agent\Search;
 use VDM\Joomla\Componentbuilder\Search\Agent\Update;
-use VDM\Joomla\Componentbuilder\Search\Table;
+use VDM\Joomla\Componentbuilder\Table;
 
 
 /**

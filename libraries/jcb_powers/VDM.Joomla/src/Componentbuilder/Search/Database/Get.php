@@ -15,7 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Search\Database;
 use Joomla\CMS\Factory as JoomlaFactory;
 use VDM\Joomla\Componentbuilder\Search\Factory;
 use VDM\Joomla\Componentbuilder\Search\Config;
-use VDM\Joomla\Componentbuilder\Search\Table;
+use VDM\Joomla\Componentbuilder\Table;
 use VDM\Joomla\Componentbuilder\Search\Model\Get as Model;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\GetInterface;
 
