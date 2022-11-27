@@ -13,11 +13,11 @@ namespace VDM\Joomla\Componentbuilder\Search\Interfaces;
 
 
 /**
- * Search Database Set Interface
+ * Search Database Insert Interface
  * 
  * @since 3.2.0
  */
-interface SetInterface
+interface InsertInterface
 {
 	/**
 	 * Set values to a given table

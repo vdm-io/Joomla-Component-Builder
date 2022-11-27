@@ -14,8 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Search\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Search\Model\Get;
-use VDM\Joomla\Componentbuilder\Search\Model\Set;
+use VDM\Joomla\Componentbuilder\Search\Model\Load;
+use VDM\Joomla\Componentbuilder\Search\Model\Insert;
 
 
 /**
@@ -35,40 +35,40 @@ class Model implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
-		$container->alias(Get::class, 'Get.Model')
-			->share('Get.Model', [$this, 'getModelGet'], true);
+		$container->alias(Load::class, 'Load.Model')
+			->share('Load.Model', [$this, 'getModelLoad'], true);
 
-		$container->alias(Set::class, 'Set.Model')
-			->share('Set.Model', [$this, 'getModelSet'], true);
+		$container->alias(Insert::class, 'Insert.Model')
+			->share('Insert.Model', [$this, 'getModelInsert'], true);
 	}
 
 	/**
-	 * Get the Get Model
+	 * Get the Load Model
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Get
+	 * @return  Load
 	 * @since 3.2.0
 	 */
-	public function getModelGet(Container $container): Get
+	public function getModelLoad(Container $container): Load
 	{
-		return new Get(
+		return new Load(
 			$container->get('Config'),
 			$container->get('Table')
 		);
 	}
 
 	/**
-	 * Get the Set Model
+	 * Get the Insert Model
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Set
+	 * @return  Insert
 	 * @since 3.2.0
 	 */
-	public function getModelSet(Container $container): Set
+	public function getModelInsert(Container $container): Insert
 	{
-		return new Set(
+		return new Insert(
 			$container->get('Config'),
 			$container->get('Table')
 		);

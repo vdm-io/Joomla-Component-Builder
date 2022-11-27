@@ -13,11 +13,11 @@ namespace VDM\Joomla\Componentbuilder\Search\Interfaces;
 
 
 /**
- * Search Database Get Interface
+ * Search Database Load Interface
  * 
  * @since 3.2.0
  */
-interface GetInterface
+interface LoadInterface
 {
 	/**
 	 * Get a value from a given table

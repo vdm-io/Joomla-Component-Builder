@@ -272,7 +272,7 @@ class Data
 						)
 						);
 					}
-					// set the field modeling
+					// set the field modelling
 					$field->model_field['save'] = explode(
 						PHP_EOL, $this->placeholder->update(
 						$this->customcode->update(

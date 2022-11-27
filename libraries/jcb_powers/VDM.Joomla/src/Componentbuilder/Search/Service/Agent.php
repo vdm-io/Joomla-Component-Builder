@@ -66,8 +66,8 @@ class Agent implements ServiceProviderInterface
 	{
 		return new SearchAgent(
 			$container->get('Config'),
-			$container->get('Get.Database'),
-			$container->get('Set.Database'),
+			$container->get('Load.Database'),
+			$container->get('Insert.Database'),
 			$container->get('Agent.Find'),
 			$container->get('Agent.Replace'),
 			$container->get('Agent.Search'),

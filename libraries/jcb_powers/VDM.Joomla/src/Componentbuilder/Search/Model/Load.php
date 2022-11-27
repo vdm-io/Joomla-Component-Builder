@@ -19,11 +19,11 @@ use VDM\Joomla\Componentbuilder\Search\Abstraction\Model;
 
 
 /**
- * Search Get Model
+ * Search Load Model
  * 
  * @since 3.2.0
  */
-class Get extends Model implements ModelInterface
+class Load extends Model implements ModelInterface
 {
 	/**
 	 * Model the value

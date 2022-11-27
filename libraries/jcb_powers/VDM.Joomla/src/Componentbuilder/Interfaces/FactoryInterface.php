@@ -16,12 +16,12 @@ use Joomla\DI\Container;
 
 
 /**
- * The Basic Factory Interface
+ * The Container Factory Interface
  */
-interface Factoryinterface
+interface FactoryInterface
 {
 	/**
-	 * Get any class from the compiler container
+	 * Get any class from the container
 	 *
 	 * @param   string  $key  The container class key
 	 *
@@ -31,7 +31,7 @@ interface Factoryinterface
 	public static function _(string $key);
 
 	/**
-	 * Get a the global compiler container
+	 * Get the global container
 	 *
 	 * @return  Container
 	 * @since 3.2.0

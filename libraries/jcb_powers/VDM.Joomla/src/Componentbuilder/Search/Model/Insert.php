@@ -17,11 +17,11 @@ use VDM\Joomla\Componentbuilder\Search\Abstraction\Model;
 
 
 /**
- * Search Set Model
+ * Search Insert Model
  * 
  * @since 3.2.0
  */
-class Set extends Model implements ModelInterface
+class Insert extends Model implements ModelInterface
 {
 	/**
 	 * Model the value

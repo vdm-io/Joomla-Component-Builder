@@ -27,7 +27,7 @@ abstract class Helper
 	/**
 	 * The current option
 	 *
-	 * @var    String
+	 * @var    string
 	 * @since   3.0.11
 	 */
 	public static $option;
@@ -43,14 +43,14 @@ abstract class Helper
 	/**
 	 * Gets the parameter object for the component
 	 *
-	 * @param   String               $option  The option for the component.
+	 * @param   string       $option  The option for the component.
 	 *
-	 * @return  Registry            A Registry object.
+	 * @return  Registry     A Registry object.
 	 *
 	 * @see     Registry
 	 * @since   3.0.11
 	 */
-	public static function getParams($option = null)
+	public static function getParams($option = null): Registry
 	{
 		// check that we have an option
 		if (empty($option))
@@ -70,13 +70,13 @@ abstract class Helper
 	/**
 	 * Gets the component option
 	 *
-	 * @param   String|Bool      $default  The default return value if none is found
+	 * @param   string|null      $default  The default return value if none is found
 	 *
-	 * @return  String|Bool      A component option
+	 * @return  string|null      A component option
 	 *
 	 * @since   3.0.11
 	 */
-	public static function getOption($default = 'empty')
+	public static function getOption($default = 'empty'): ?string
 	{
 		if (empty(self::$option))
 		{
@@ -95,14 +95,14 @@ abstract class Helper
 	/**
 	 * Gets the component code name
 	 *
-	 * @param   String              $option  The option for the component.
-	 * @param   String|Bool      $default  The default return value if none is found
+	 * @param   string         $option   The option for the component.
+	 * @param   string|null    $default  The default return value if none is found
 	 *
-	 * @return  String|Mixed      A component code name
+	 * @return  string|null    A component code name
 	 *
 	 * @since   3.0.11
 	 */
-	public static function getCode($option = null, $default = null)
+	public static function getCode($option = null, $default = null): ?string
 	{
 		// check that we have an option
 		if (empty($option))
@@ -121,14 +121,14 @@ abstract class Helper
 	/**
 	 * Gets the component abstract helper class
 	 *
-	 * @param   String              $option  The option for the component.
-	 * @param   String|Bool      $default  The default return value if none is found
+	 * @param   string|null    $option   The option for the component.
+	 * @param   string|null    $default  The default return value if none is found
 	 *
-	 * @return  String|Mixed      A component helper name
+	 * @return  string|null    A component helper name
 	 *
 	 * @since   3.0.11
 	 */
-	public static function get($option = null, $default = null)
+	public static function get($option = null, $default = null): ?string
 	{
 		// check that we have an option
 		// and get the code name from it
@@ -149,10 +149,10 @@ abstract class Helper
 	/**
 	 * Check if the helper class of this component has a method
 	 *
-	 * @param   String       $method  The method name to search for
-	 * @param   String       $option    The option for the component.
+	 * @param   String     $method  The method name to search for
+	 * @param   String     $option  The option for the component.
 	 *
-	 * @return  bool          true if method exist
+	 * @return  bool    true if method exist
 	 *
 	 * @since   3.0.11
 	 */

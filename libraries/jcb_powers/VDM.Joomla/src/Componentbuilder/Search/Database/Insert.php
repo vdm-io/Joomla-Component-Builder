@@ -16,9 +16,9 @@ use Joomla\CMS\Factory as JoomlaFactory;
 use VDM\Joomla\Componentbuilder\Search\Factory;
 use VDM\Joomla\Componentbuilder\Search\Config;
 use VDM\Joomla\Componentbuilder\Table;
-use VDM\Joomla\Componentbuilder\Search\Model\Set as Model;
+use VDM\Joomla\Componentbuilder\Search\Model\Insert as Model;
 use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Componentbuilder\Search\Interfaces\SetInterface;
+use VDM\Joomla\Componentbuilder\Search\Interfaces\InsertInterface;
 
 
 /**
@@ -26,7 +26,7 @@ use VDM\Joomla\Componentbuilder\Search\Interfaces\SetInterface;
  * 
  * @since 3.2.0
  */
-class Set implements SetInterface
+class Insert implements InsertInterface
 {
 	/**
 	 * Search Config
@@ -75,7 +75,7 @@ class Set implements SetInterface
 	{
 		$this->config = $config ?: Factory::_('Config');
 		$this->table = $table ?: Factory::_('Table');
-		$this->model = $model ?: Factory::_('Set.Model');
+		$this->model = $model ?: Factory::_('Insert.Model');
 		$this->db = $db ?: JoomlaFactory::getDbo();
 	}
 

@@ -14,8 +14,10 @@ namespace VDM\Joomla\Componentbuilder\Search\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Search\Database\Get as GetDatabase;
-use VDM\Joomla\Componentbuilder\Search\Database\Set as SetDatabase;
+use VDM\Joomla\Componentbuilder\Database\Load;
+use VDM\Joomla\Componentbuilder\Search\Database\Load as LoadDatabase;
+use VDM\Joomla\Componentbuilder\Database\Insert;
+use VDM\Joomla\Componentbuilder\Search\Database\Insert as InsertDatabase;
 
 
 /**
@@ -35,44 +37,77 @@ class Database implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
-		$container->alias(GetDatabase::class, 'Get.Database')
-			->share('Get.Database', [$this, 'getDatabaseGet'], true);
+		$container->alias(Load::class, 'Load')
+			->share('Load', [$this, 'getLoad'], true);
 
-		$container->alias(SetDatabase::class, 'Set.Database')
-			->share('Set.Database', [$this, 'getDatabaseSet'], true);
+		$container->alias(LoadDatabase::class, 'Load.Database')
+			->share('Load.Database', [$this, 'getDatabaseLoad'], true);
+
+		$container->alias(Insert::class, 'Insert')
+			->share('Insert', [$this, 'getInsert'], true);
+
+		$container->alias(InsertDatabase::class, 'Insert.Database')
+			->share('Insert.Database', [$this, 'getDatabaseInsert'], true);
 	}
 
 	/**
-	 * Get the Get Database
+	 * Get the Core Load Database
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  GetDatabase
+	 * @return  Load
 	 * @since 3.2.0
 	 */
-	public function getDatabaseGet(Container $container): GetDatabase
+	public function getLoad(Container $container): Load
 	{
-		return new GetDatabase(
+		return new Load();
+	}
+
+	/**
+	 * Get the Load Database
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  LoadDatabase
+	 * @since 3.2.0
+	 */
+	public function getDatabaseLoad(Container $container): LoadDatabase
+	{
+		return new LoadDatabase(
 			$container->get('Config'),
 			$container->get('Table'),
-			$container->get('Get.Model')
+			$container->get('Load.Model'),
+			$container->get('Load')
 		);
 	}
 
 	/**
-	 * Get the Set Database
+	 * Get the Core Insert Database
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  SetDatabase
+	 * @return  Insert
 	 * @since 3.2.0
 	 */
-	public function getDatabaseSet(Container $container): SetDatabase
+	public function getInsert(Container $container): Insert
 	{
-		return new SetDatabase(
+		return new Insert();
+	}
+
+	/**
+	 * Get the Insert Database
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  InsertDatabase
+	 * @since 3.2.0
+	 */
+	public function getDatabaseInsert(Container $container): InsertDatabase
+	{
+		return new InsertDatabase(
 			$container->get('Config'),
 			$container->get('Table'),
-			$container->get('Set.Model')
+			$container->get('Insert.Model')
 		);
 	}
 

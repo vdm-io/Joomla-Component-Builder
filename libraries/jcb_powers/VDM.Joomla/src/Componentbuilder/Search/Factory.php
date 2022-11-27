@@ -17,7 +17,7 @@ use VDM\Joomla\Componentbuilder\Search\Service\Search;
 use VDM\Joomla\Componentbuilder\Search\Service\Model;
 use VDM\Joomla\Componentbuilder\Search\Service\Database;
 use VDM\Joomla\Componentbuilder\Search\Service\Agent;
-use VDM\Joomla\Componentbuilder\Interfaces\Factoryinterface;
+use VDM\Joomla\Componentbuilder\Interfaces\FactoryInterface;
 
 
 /**
@@ -25,10 +25,10 @@ use VDM\Joomla\Componentbuilder\Interfaces\Factoryinterface;
  * 
  * @since 3.2.0
  */
-abstract class Factory implements Factoryinterface
+abstract class Factory implements FactoryInterface
 {
 	/**
-	 * Global Compiler Container
+	 * Global Search Container
 	 *
 	 * @var     Container
 	 * @since 3.2.0
@@ -36,7 +36,7 @@ abstract class Factory implements Factoryinterface
 	protected static $container = null;
 
 	/**
-	 * Get any class from the compiler container
+	 * Get any class from the search container
 	 *
 	 * @param   string  $key  The container class key
 	 *
@@ -49,7 +49,7 @@ abstract class Factory implements Factoryinterface
 	}
 
 	/**
-	 * Get a the global compiler container
+	 * Get the global search container
 	 *
 	 * @return  Container
 	 * @since 3.2.0

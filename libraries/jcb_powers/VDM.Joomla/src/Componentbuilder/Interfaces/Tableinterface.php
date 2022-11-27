@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Interfaces;
 
 
 /**
- * The Table Interface
+ * The Core JCB Table Interface
  */
 interface Tableinterface
 {

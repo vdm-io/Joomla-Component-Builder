@@ -15,8 +15,8 @@ namespace VDM\Joomla\Componentbuilder\Search;
 use Joomla\CMS\Language\Text;
 use VDM\Joomla\Componentbuilder\Search\Factory;
 use VDM\Joomla\Componentbuilder\Search\Config;
-use VDM\Joomla\Componentbuilder\Search\Database\Get;
-use VDM\Joomla\Componentbuilder\Search\Database\Set;
+use VDM\Joomla\Componentbuilder\Search\Database\Load;
+use VDM\Joomla\Componentbuilder\Search\Database\Insert;
 use VDM\Joomla\Componentbuilder\Search\Agent\Find;
 use VDM\Joomla\Componentbuilder\Search\Agent\Replace;
 use VDM\Joomla\Componentbuilder\Search\Agent\Search;
@@ -40,20 +40,20 @@ class Agent
 	protected Config $config;
 
 	/**
-	 * Search Get Database
+	 * Search Load Database
 	 *
-	 * @var    Get
+	 * @var    Load
 	 * @since 3.2.0
 	 */
-	protected Get $get;
+	protected Load $load;
 
 	/**
-	 * Search Set Database
+	 * Search Insert Database
 	 *
-	 * @var    Set
+	 * @var    Insert
 	 * @since 3.2.0
 	 */
-	protected Set $set;
+	protected Insert $insert;
 
 	/**
 	 * Search Find
@@ -123,8 +123,8 @@ class Agent
 	 * Constructor
 	 *
 	 * @param Config|null      $config        The search config object.
-	 * @param Get|null         $get           The search get database object.
-	 * @param Set|null         $set           The search get database object.
+	 * @param Load|null         $load           The search load database object.
+	 * @param Insert|null         $insert           The search insert database object.
 	 * @param Find|null        $find          The search find object.
 	 * @param Replace|null     $replace       The search replace object.
 	 * @param Search|null      $search        The search object.
@@ -133,13 +133,13 @@ class Agent
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Get $get = null,
-		?Set$set = null, ?Find $find = null, ?Replace $replace = null,
+	public function __construct(?Config $config = null, ?Load $load = null,
+		?Insert $insert = null, ?Find $find = null, ?Replace $replace = null,
 		?Search $search = null, ?Update $update = null, ?Table $table = null)
 	{
 		$this->config = $config ?: Factory::_('Config');
-		$this->get = $get ?: Factory::_('Get.Database');
-		$this->set = $set ?: Factory::_('Set.Database');
+		$this->load = $load ?: Factory::_('Load.Database');
+		$this->insert = $insert ?: Factory::_('Insert.Database');
 		$this->find = $find ?: Factory::_('Agent.Find');
 		$this->replace = $replace ?: Factory::_('Agent.Replace');
 		$this->search = $search ?: Factory::_('Agent.Search');
@@ -156,11 +156,11 @@ class Agent
 	 * @param   string|null  $table    The table
 	 * @param   bool         $update   The switch to triger an update (default is false)
 	 *
-	 * @return  string
+	 * @return  string|null
 	 * @since 3.2.0
 	 */
 	public function getValue(int $id, string $field, $line = null,
-		?string $table = null, bool $update = false): string
+		?string $table = null, bool $update = false): ?string
 	{
 		// set the table name
 		if (empty($table))
@@ -168,7 +168,7 @@ class Agent
 			$table = $this->config->table_name;
 		}
 
-		if (($value = $this->get->value($id, $field, $table)) !== null)
+		if (($value = $this->load->value($id, $field, $table)) !== null)
 		{
 			// we only return strings that can load in an editor
 			if (is_string($value))
@@ -207,7 +207,7 @@ class Agent
 			$table = $this->config->table_name;
 		}
 
-		return $this->set->value($value, $id, $field, $table);
+		return $this->insert->value($value, $id, $field, $table);
 	}
 
 	/**
@@ -271,7 +271,7 @@ class Agent
 		$set = 1;
 
 		// continue loading items until all are searched
-		while(($items = $this->get->items($table, $set)) !== null)
+		while(($items = $this->load->items($table, $set)) !== null)
 		{
 			$this->find->items($items, $table);
 			$set++;
@@ -300,7 +300,7 @@ class Agent
 		$replaced = 0;
 
 		// continue loading items until all was loaded
-		while(($items = $this->get->items($table, $set)) !== null)
+		while(($items = $this->load->items($table, $set)) !== null)
 		{
 			// search for items
 			$this->find->items($items, $table);
@@ -309,7 +309,7 @@ class Agent
 			$this->replace->items($this->find->get($table), $table);
 
 			// update the database
-			if ($this->set->items($this->replace->get($table), $table))
+			if ($this->insert->items($this->replace->get($table), $table))
 			{
 				$replaced++;
 			}

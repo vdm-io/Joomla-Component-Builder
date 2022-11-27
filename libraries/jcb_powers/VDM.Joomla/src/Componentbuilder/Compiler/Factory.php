@@ -23,7 +23,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Power;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Component;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Extension;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Field;
-use VDM\Joomla\Componentbuilder\Interfaces\Factoryinterface;
+use VDM\Joomla\Componentbuilder\Interfaces\FactoryInterface;
 
 
 /**
@@ -31,7 +31,7 @@ use VDM\Joomla\Componentbuilder\Interfaces\Factoryinterface;
  * 
  * @since 3.2.0
  */
-abstract class Factory implements Factoryinterface
+abstract class Factory implements FactoryInterface
 {
 	/**
 	 * Global Compiler Container
@@ -81,7 +81,7 @@ abstract class Factory implements Factoryinterface
 	}
 
 	/**
-	 * Get a the global compiler container
+	 * Get the global compiler container
 	 *
 	 * @return  Container
 	 * @since 3.2.0

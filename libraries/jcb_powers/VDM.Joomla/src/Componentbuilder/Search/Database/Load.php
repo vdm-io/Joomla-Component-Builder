@@ -16,16 +16,17 @@ use Joomla\CMS\Factory as JoomlaFactory;
 use VDM\Joomla\Componentbuilder\Search\Factory;
 use VDM\Joomla\Componentbuilder\Search\Config;
 use VDM\Joomla\Componentbuilder\Table;
-use VDM\Joomla\Componentbuilder\Search\Model\Get as Model;
-use VDM\Joomla\Componentbuilder\Search\Interfaces\GetInterface;
+use VDM\Joomla\Componentbuilder\Search\Model\Load as Model;
+use VDM\Joomla\Componentbuilder\Database\Load as Database;
+use VDM\Joomla\Componentbuilder\Search\Interfaces\LoadInterface;
 
 
 /**
- * Search Database Get
+ * Search Database Load
  * 
  * @since 3.2.0
  */
-class Get implements GetInterface
+class Load implements LoadInterface
 {
 	/**
 	 * Bundle Size
@@ -60,39 +61,39 @@ class Get implements GetInterface
 	protected Model $model;
 
 	/**
-	 * Database object to query local DB
+	 * Database load class
 	 *
-	 * @var    \JDatabaseDriver
+	 * @var    Database
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected Database $load;
 
 	/**
 	 * Constructor
 	 *
-	 * @param Config|null               $config       The search config object.
-	 * @param Table|null                $table        The search table object.
-	 * @param Model|null                $model        The search get model object.
-	 * @param \JDatabaseDriver|null     $db           The database object.
+	 * @param Config|null      $config     The search config object.
+	 * @param Table|null       $table      The search table object.
+	 * @param Model|null       $model      The search get model object.
+	 * @param Database|null    $load       The database object.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Table $table = null,
-		?Model $model = null, ?\JDatabaseDriver $db = null)
+		?Model $model = null, ?Database $load = null)
 	{
 		$this->config = $config ?: Factory::_('Config');
 		$this->table = $table ?: Factory::_('Table');
-		$this->model = $model ?: Factory::_('Get.Model');
-		$this->db = $db ?: JoomlaFactory::getDbo();
+		$this->model = $model ?: Factory::_('Load.Model');
+		$this->load = $load ?: Factory::_('Load');
 	}
 
 	/**
 	 * Get a value from a given table
 	 *          Example: $this->value(23, 'value_key', 'table_name');
 	 *
-	 * @param   int              $id        The item ID
-	 * @param   string           $field     The field key
-	 * @param   string|null      $table     The table
+	 * @param   int            $id       The item ID
+	 * @param   string         $field    The field key
+	 * @param   string|null    $table    The table
 	 *
 	 * @return  mixed
 	 * @since 3.2.0
@@ -105,30 +106,19 @@ class Get implements GetInterface
 			$table = $this->config->table_name;
 		}
 
-		// check if this is a valid field and table
-		if ($id > 0 && ($name = $this->table->get($table, $field, 'name')) !== null)
+		// check if this is a valid table
+		if ($id > 0 && $this->table->exist($table, $field) &&
+			($value = $this->load->value(
+				["a.${field}" => $field],  // select
+				['a' => $table],  // tables
+				['a.id' => $id]  // where
+			)) !== null)
 		{
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
-
-			// Order it by the ordering field.
-			$query->select($this->db->quoteName($name));
-			$query->from($this->db->quoteName('#__componentbuilder_' . $table));
-
-			// get by id
-			$query->where($this->db->quoteName('id') . " = " . (int) $id);
-
-			// Reset the query using our newly populated query object.
-			$this->db->setQuery($query);
-			$this->db->execute();
-
-			// check if we have any values
-			if ($this->db->getNumRows())
-			{
-				// return found values
-				return $this->model->value($this->db->loadResult(), $name, $table);
-			}
+			return $this->model->value(
+				$value, $field, $table
+			);
 		}
+
 		return null;
 	}
 
@@ -136,8 +126,8 @@ class Get implements GetInterface
 	 * Get values from a given table
 	 *          Example: $this->item(23, 'table_name');
 	 *
-	 * @param   int           $id        The item ID
-	 * @param   string| null  $table     The table
+	 * @param   int           $id      The item ID
+	 * @param   string| null  $table   The table
 	 *
 	 * @return  object|null
 	 * @since 3.2.0
@@ -151,32 +141,17 @@ class Get implements GetInterface
 		}
 
 		// check if this is a valid table
-		if ($id > 0 && ($fields = $this->table->fields($table)) !== null)
+		if ($id > 0 && ($fields = $this->getFields($table)) !== null &&
+			($item = $this->load->item(
+				$fields,  // select
+				['a' => $table],  // tables
+				['a.id' => $id]  // where
+			)) !== null)
 		{
-			// add the ID
-			array_unshift($fields , 'id');
-
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
-
-			// Order it by the ordering field.
-			$query->select($this->db->quoteName($fields));
-			$query->from($this->db->quoteName('#__componentbuilder_' . $table));
-
-			// get by id
-			$query->where($this->db->quoteName('id') . " = " . $id);
-
-			// Reset the query using our newly populated query object.
-			$this->db->setQuery($query);
-			$this->db->execute();
-
-			// check if we have any values
-			if ($this->db->getNumRows())
-			{
-				// return found values
-				return $this->model->item($this->db->loadObject(), $table);
-			}
+			// return found values
+			return $this->model->item($item, $table);
 		}
+
 		return null;
 	}
 
@@ -199,43 +174,46 @@ class Get implements GetInterface
 		}
 
 		// check if this is a valid table
-		if (($fields = $this->table->fields($table)) !== null)
+		if ( ($fields = $this->getFields($table)) !== null)
 		{
-			// add the ID
-			array_unshift($fields , 'id');
-
+			// add a key to the selection return set
+			$fields['key'] = 'id';
 			// get the title value
 			$title = $this->table->titleName($table);
-
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
-
-			// Order it by the ordering field.
-			$query->select($this->db->quoteName($fields));
-			$query->from($this->db->quoteName('#__componentbuilder_' . $table));
-			$query->order($title .' ASC');
+			// set order
+			$order = [$title => 'ASC'];
+			// select all
+			$where = null;
+			// no limit
+			$limit = null;
 
 			// add limitation and pagination
 			if ($bundle > 0)
 			{
 				// get the incremental number
-				$query->where($this->db->quoteName('id') . " >= " . $this->next($table, $bundle));
+				$where = ['a.id' => [
+						'operator' => '>=',
+						'value' => $this->next($table, $bundle)
+						]
+					];
 
 				// only return a limited number
-				$query->setLimit($this->bundle);
+				$limit = $this->bundle;
 			}
 
-			// Reset the query using our newly populated query object.
-			$this->db->setQuery($query);
-			$this->db->execute();
-
-			// check if we have any values
-			if ($this->db->getNumRows())
+			if (($items = $this->load->items(
+				$fields,  // select
+				['a' => $table],  // tables
+				$where,
+				$order,
+				$limit
+			)) !== null)
 			{
 				// return found values
-				return $this->model->items($this->db->loadObjectList('id'), $table);
+				return $this->model->items($items, $table);
 			}
 		}
+
 		return null;
 	}
 
@@ -289,6 +267,36 @@ class Get implements GetInterface
 		 * 1200 + 1 = 1201 <--
 		 **/
 		return (($bundle * $this->bundle) - $this->bundle) + 1;
+	}
+
+	/**
+	 * Get Fields ready to use in database call
+	 *
+	 * @param   string    $table  The table which fields we want to get
+	 *
+	 * @return  array|null
+	 * @since 3.2.0
+	 */
+	protected function getFields(string $table, string $key = 'a', bool $addId = true): ?array
+	{
+		if (($fields = $this->table->fields($table)) !== null)
+		{
+			// add the ID
+			if ($addId)
+			{
+				array_unshift($fields , 'id');
+			}
+
+			$bucket = [];
+			foreach ($fields as $field)
+			{
+				$bucket[$key . '.' . $field] = $field;
+			}
+
+			return $bucket;
+		}
+
+		return null;
 	}
 
 }
