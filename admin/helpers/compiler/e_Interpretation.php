@@ -271,7 +271,7 @@ class Interpretation extends Fields
 		{
 			// set email helper in place with component name
 			$component = CFactory::_('Config')->component_code_name;
-			$Component = $this->fileContentStatic[Placefix::_h('Component')];
+			$Component = CFactory::_('Content')->get('Component');
 			$target    = array('admin' => 'emailer');
 			$done      = $this->buildDynamique($target, 'emailer', $component);
 			if ($done)
@@ -297,36 +297,27 @@ class Interpretation extends Fields
 		if ($this->componentData->add_license
 			&& $this->componentData->license_type == 3)
 		{
-			if (!isset(
-				$this->fileContentStatic[Placefix::_h('HELPER_SITE_LICENSE_LOCK')]
-			))
+			if (!CFactory::_('Content')->exist('HELPER_SITE_LICENSE_LOCK'))
 			{
 				$_WHMCS = '_' . StringHelper::safe(
 						$this->uniquekey(10), 'U'
 					);
 				// add it to the system
-				$this->fileContentStatic[Placefix::_h('HELPER_SITE_LICENSE_LOCK')]
-					= $this->setHelperLicenseLock($_WHMCS, 'site');
-				$this->fileContentStatic[Placefix::_h('HELPER_LICENSE_LOCK')]
-					= $this->setHelperLicenseLock($_WHMCS, 'admin');
-				$this->fileContentStatic[Placefix::_h('LICENSE_LOCKED_INT')]
-					= $this->setInitLicenseLock($_WHMCS);
-				$this->fileContentStatic[Placefix::_h('LICENSE_LOCKED_DEFINED')]
-					= PHP_EOL . PHP_EOL . 'defined(\'' . $_WHMCS
-					. '\') or die(JText:' . ':_(\'NIE_REG_NIE\'));';
+				CFactory::_('Content')->set('HELPER_SITE_LICENSE_LOCK', $this->setHelperLicenseLock($_WHMCS, 'site'));
+				CFactory::_('Content')->set('HELPER_LICENSE_LOCK', $this->setHelperLicenseLock($_WHMCS, 'admin'));
+				CFactory::_('Content')->set('LICENSE_LOCKED_INT', $this->setInitLicenseLock($_WHMCS));
+				CFactory::_('Content')->set('LICENSE_LOCKED_DEFINED',
+					PHP_EOL . PHP_EOL . 'defined(\'' . $_WHMCS
+					. '\') or die(JText:' . ':_(\'NIE_REG_NIE\'));');
 			}
 		}
 		else
 		{
 			// don't add it to the system
-			$this->fileContentStatic[Placefix::_h('HELPER_SITE_LICENSE_LOCK')]
-				= '';
-			$this->fileContentStatic[Placefix::_h('HELPER_LICENSE_LOCK')]
-				= '';
-			$this->fileContentStatic[Placefix::_h('LICENSE_LOCKED_INT')]
-				= '';
-			$this->fileContentStatic[Placefix::_h('LICENSE_LOCKED_DEFINED')]
-				= '';
+			CFactory::_('Content')->set('HELPER_SITE_LICENSE_LOCK', '');
+			CFactory::_('Content')->set('HELPER_LICENSE_LOCK', '');
+			CFactory::_('Content')->set('LICENSE_LOCKED_INT', '');
+			CFactory::_('Content')->set('LICENSE_LOCKED_DEFINED', '');
 		}
 	}
 
@@ -496,7 +487,7 @@ class Interpretation extends Fields
 		$init[] = PHP_EOL . "if (!defined('" . $_WHMCS . "'))";
 		$init[] = "{";
 		$init[] = Indent::_(1) . "\$allow = "
-			. $this->fileContentStatic[Placefix::_h('Component')]
+			. CFactory::_('Content')->get('Component')
 			. "Helper::isGenuine();";
 		$init[] = Indent::_(1) . "if (\$allow)";
 		$init[] = Indent::_(1) . "{";
@@ -819,8 +810,7 @@ class Interpretation extends Fields
 	public function setGetCryptKey()
 	{
 		// WHMCS_ENCRYPT_FILE
-		$this->fileContentStatic[Placefix::_h('WHMCS_ENCRYPT_FILE')]
-			= '';
+		CFactory::_('Content')->set('WHMCS_ENCRYPT_FILE', '');
 		// check if encryption is ative
 		if ((isset($this->basicFieldModeling)
 				&& ArrayHelper::check(
@@ -847,8 +837,7 @@ class Interpretation extends Fields
 				$this->fileContentDynamic['whmcs'][Placefix::_h('WHMCS_ENCRYPTION_BODY')]
 					= $this->setWHMCSCryption();
 				// ENCRYPT_FILE
-				$this->fileContentStatic[Placefix::_h('WHMCS_ENCRYPT_FILE')]
-					= PHP_EOL . Indent::_(3) . "<filename>whmcs.php</filename>";
+				CFactory::_('Content')->set('WHMCS_ENCRYPT_FILE', PHP_EOL . Indent::_(3) . "<filename>whmcs.php</filename>");
 			}
 			// get component name
 			$component = CFactory::_('Config')->component_code_name;
@@ -1158,20 +1147,18 @@ class Interpretation extends Fields
 			$updateServer[] = Indent::_(2)
 				. '<server type="extension" enabled="1" element="com_'
 				. CFactory::_('Config')->component_code_name . '" name="'
-				. $this->fileContentStatic[Placefix::_h('Component_name')] . '">' . $this->componentData->update_server_url
+				. CFactory::_('Content')->get('Component_name') . '">' . $this->componentData->update_server_url
 				. '</server>';
 			$updateServer[] = Indent::_(1) . '</updateservers>';
 			// return the array to string
 			$updateServer = implode(PHP_EOL, $updateServer);
 			// add update server details to component XML file
-			$this->fileContentStatic[Placefix::_h('UPDATESERVER')]
-				= $updateServer;
+			CFactory::_('Content')->set('UPDATESERVER', $updateServer);
 		}
 		else
 		{
 			// add update server details to component XML file
-			$this->fileContentStatic[Placefix::_h('UPDATESERVER')]
-				= '';
+			CFactory::_('Content')->set('UPDATESERVER', '');
 		}
 		// ensure to update Component version data
 		if (ArrayHelper::check($this->updateSQLBuilder))
@@ -1364,9 +1351,9 @@ class Interpretation extends Fields
 			// build update xml
 			$updateXML[] = Indent::_(1) . "<update>";
 			$updateXML[] = Indent::_(2) . "<name>"
-				. $this->fileContentStatic[Placefix::_h('Component_name')] . "</name>";
+				. CFactory::_('Content')->get('Component_name') . "</name>";
 			$updateXML[] = Indent::_(2) . "<description>"
-				. $this->fileContentStatic[Placefix::_h('SHORT_DESCRIPTION')] . "</description>";
+				. CFactory::_('Content')->get('SHORT_DESCRIPTION') . "</description>";
 			$updateXML[] = Indent::_(2) . "<element>$u_element</element>";
 			$updateXML[] = Indent::_(2) . "<type>$u_server_type</type>";
 			// check if we should add the target client value
@@ -1377,7 +1364,7 @@ class Interpretation extends Fields
 			$updateXML[] = Indent::_(2) . "<version>" . $update['version']
 				. "</version>";
 			$updateXML[] = Indent::_(2) . '<infourl title="'
-				. $this->fileContentStatic[Placefix::_h('Component_name')] . '!">' . $this->fileContentStatic[Placefix::_h('AUTHORWEBSITE')] . '</infourl>';
+				. CFactory::_('Content')->get('Component_name') . '!">' . CFactory::_('Content')->get('AUTHORWEBSITE') . '</infourl>';
 			$updateXML[] = Indent::_(2) . "<downloads>";
 			if (!isset($update['url'])
 				|| !StringHelper::check(
@@ -1394,10 +1381,10 @@ class Interpretation extends Fields
 			$updateXML[] = Indent::_(3) . "<tag>$u_state</tag>";
 			$updateXML[] = Indent::_(2) . "</tags>";
 			$updateXML[] = Indent::_(2) . "<maintainer>"
-				. $this->fileContentStatic[Placefix::_h('AUTHOR')]
+				. CFactory::_('Content')->get('AUTHOR')
 				. "</maintainer>";
 			$updateXML[] = Indent::_(2) . "<maintainerurl>"
-				. $this->fileContentStatic[Placefix::_h('AUTHORWEBSITE')] . "</maintainerurl>";
+				. CFactory::_('Content')->get('AUTHORWEBSITE') . "</maintainerurl>";
 			$updateXML[] = Indent::_(2)
 				. '<targetplatform name="joomla" version="' . $u_target_version . '"/>';
 			$updateXML[] = Indent::_(1) . "</update>";
@@ -1437,11 +1424,9 @@ class Interpretation extends Fields
 			if ($admindone && $sitedone)
 			{
 				// HELP
-				$this->fileContentStatic[Placefix::_h('HELP')]
-					= $this->setHelp(1);
+				CFactory::_('Content')->set('HELP', $this->setHelp(1));
 				// HELP_SITE
-				$this->fileContentStatic[Placefix::_h('HELP_SITE')]
-					= $this->setHelp(2);
+				CFactory::_('Content')->set('HELP_SITE', $this->setHelp(2));
 				// to make sure the file is updated TODO
 				$this->fileContentDynamic['help'][Placefix::_h('BLABLA')]
 					= 'blabla';
@@ -1557,7 +1542,7 @@ class Interpretation extends Fields
 		if ($this->addEximport)
 		{
 			// we use the company name set in the GUI
-			$company_name = $this->fileContentStatic[Placefix::_h('COMPANYNAME')];
+			$company_name = CFactory::_('Content')->get('COMPANYNAME');
 			// start building the xml function
 			$exel   = array();
 			$exel[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
@@ -2313,7 +2298,7 @@ class Interpretation extends Fields
 					$xml .= PHP_EOL . Indent::_(1) . '<fields name="params">';
 					$xml .= PHP_EOL . Indent::_(2)
 						. '<fieldset name="basic" label="COM_'
-						. $this->fileContentStatic[Placefix::_h('COMPONENT')] . '"';
+						. CFactory::_('Content')->get('COMPONENT') . '"';
 					$xml .= PHP_EOL . Indent::_(3)
 						. 'addrulepath="/administrator/components/com_'
 						. CFactory::_('Config')->component_code_name . '/models/rules"';
@@ -2587,7 +2572,7 @@ class Interpretation extends Fields
 
 								$filter .= PHP_EOL . PHP_EOL . Indent::_(1)
 									. $tab . Indent::_(1) . "if ("
-									. $this->fileContentStatic[Placefix::_h('Component')]
+									. CFactory::_('Content')->get('Component')
 									. "Helper::checkArray(" . $string . "->"
 									. $field . "))";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
@@ -2640,7 +2625,7 @@ class Interpretation extends Fields
 									. $as . " based on repeatable value";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(1) . "if ("
-									. $this->fileContentStatic[Placefix::_h('Component')]
+									. CFactory::_('Content')->get('Component')
 									. "Helper::checkString(" . $string . "->"
 									. $field . "))";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
@@ -2651,7 +2636,7 @@ class Interpretation extends Fields
 									. $string . "->" . $field . ",true);";
 								$filter .= PHP_EOL . Indent::_(2) . $tab
 									. Indent::_(1) . "if ("
-									. $this->fileContentStatic[Placefix::_h('Component')]
+									. CFactory::_('Content')->get('Component')
 									. "Helper::checkArray(\$array))";
 								$filter .= PHP_EOL . Indent::_(2) . $tab
 									. Indent::_(1) . "{";
@@ -2769,7 +2754,7 @@ class Interpretation extends Fields
 					if ('json' === $decode)
 					{
 						$if = PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "if (" . $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkJson("
+							. "if (" . CFactory::_('Content')->get('Component') . "Helper::checkJson("
 							. $string . "->" . $field . "))" . PHP_EOL
 							. Indent::_(1) . $tab . Indent::_(1) . "{";
 						// json_decode
@@ -2869,7 +2854,7 @@ class Interpretation extends Fields
 		$fieldPrepare = '';
 		$runplugins   = false;
 		// set component
-		$Component = $this->fileContentStatic[Placefix::_h('Component')];
+		$Component = CFactory::_('Content')->get('Component');
 		// set context
 		$context = (isset($get['context'])) ? $get['context'] : $code;
 		$context = 'com_' . CFactory::_('Config')->component_code_name . '.' . $context;
@@ -2969,7 +2954,7 @@ class Interpretation extends Fields
 						. $field . " has uikit components that must be loaded.";
 					$fieldUikit .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
 						. "\$this->uikitComp = "
-						. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::getUikitComp(" . $string . "->"
+						. CFactory::_('Content')->get('Component') . "Helper::getUikitComp(" . $string . "->"
 						. $field . ",\$this->uikitComp);";
 				}
 			}
@@ -3148,7 +3133,7 @@ class Interpretation extends Fields
 								. "\$array = " . $ter['state_key'] . ";";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. "if (isset(\$array) && "
-								. $this->fileContentStatic[Placefix::_h('Component')]
+								. CFactory::_('Content')->get('Component')
 								. "Helper::checkArray(\$array))";
 							$string .= PHP_EOL . Indent::_(2) . $tab . "{";
 							$string .= PHP_EOL . Indent::_(2) . $tab
@@ -3177,7 +3162,7 @@ class Interpretation extends Fields
 								. "\$checkValue = " . $ter['state_key'] . ";";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. "if (isset(\$checkValue) && "
-								. $this->fileContentStatic[Placefix::_h('Component')]
+								. CFactory::_('Content')->get('Component')
 								. "Helper::checkString(\$checkValue))";
 							$string .= PHP_EOL . Indent::_(2) . $tab . "{";
 							$string .= PHP_EOL . Indent::_(2) . $tab
@@ -3395,7 +3380,7 @@ class Interpretation extends Fields
 						|| $whe['operator'] === 'NOT IN')
 					{
 						$string = "if (isset(" . $whe['value_key'] . ") && "
-							. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray("
+							. CFactory::_('Content')->get('Component') . "Helper::checkArray("
 							. $whe['value_key'] . "))";
 						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(1)
 							. "{";
@@ -3526,10 +3511,8 @@ class Interpretation extends Fields
 					break;
 			}
 			// check that the default and the redirect page is not the same
-			if (isset(
-					$this->fileContentStatic[Placefix::_h('SITE_DEFAULT_VIEW')]
-				)
-				&& $this->fileContentStatic[Placefix::_h('SITE_DEFAULT_VIEW')] != $view['settings']->code)
+			if (CFactory::_('Content')->exist('SITE_DEFAULT_VIEW')
+				&& CFactory::_('Content')->get('SITE_DEFAULT_VIEW') != $view['settings']->code)
 			{
 				$redirectMessage = Indent::_(3) . "//" . Line::_(
 						__LINE__,__CLASS__
@@ -3537,7 +3520,7 @@ class Interpretation extends Fields
 					. " redirect away to the default view if no access allowed.";
 				$redirectString  = "JRoute::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name . "&view="
-					. $this->fileContentStatic[Placefix::_h('SITE_DEFAULT_VIEW')] . "')";
+					. CFactory::_('Content')->get('SITE_DEFAULT_VIEW') . "')";
 			}
 			else
 			{
@@ -3711,14 +3694,12 @@ class Interpretation extends Fields
 				if ('site' === CFactory::_('Config')->build_target)
 				{
 					// check that the default and the redirect page is not the same
-					if (isset(
-							$this->fileContentStatic[Placefix::_h('SITE_DEFAULT_VIEW')]
-						)
-						&& $this->fileContentStatic[Placefix::_h('SITE_DEFAULT_VIEW')] != $code)
+					if (CFactory::_('Content')->exist('SITE_DEFAULT_VIEW')
+						&& CFactory::_('Content')->get('SITE_DEFAULT_VIEW') != $code)
 					{
 						$redirectString = "JRoute::_('index.php?option=com_"
 							. CFactory::_('Config')->component_code_name . "&view="
-							. $this->fileContentStatic[Placefix::_h('SITE_DEFAULT_VIEW')] . "')";
+							. CFactory::_('Content')->get('SITE_DEFAULT_VIEW') . "')";
 					}
 					else
 					{
@@ -3819,7 +3800,7 @@ class Interpretation extends Fields
 				}
 			}
 			// set the scripts
-			$Component = $this->fileContentStatic[Placefix::_h('Component')];
+			$Component = CFactory::_('Content')->get('Component');
 			$script    = '';
 			foreach ($this->cryptionTypes as $cryptionType)
 			{
@@ -4240,7 +4221,7 @@ class Interpretation extends Fields
 			$method .= PHP_EOL . Indent::_(1) . "{";
 			$method .= PHP_EOL . Indent::_(2)
 				. "if (isset(\$this->uikitComp) && "
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$this->uikitComp))";
+				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$this->uikitComp))";
 			$method .= PHP_EOL . Indent::_(2) . "{";
 			$method .= PHP_EOL . Indent::_(3) . "return \$this->uikitComp;";
 			$method .= PHP_EOL . Indent::_(2) . "}";
@@ -4337,7 +4318,7 @@ class Interpretation extends Fields
 								. $default['on_field']
 								. " is an array with values.";
 							$methods .= PHP_EOL . Indent::_(2) . "\$array = ("
-								. $this->fileContentStatic[Placefix::_h('Component')]
+								. CFactory::_('Content')->get('Component')
 								. "Helper::checkJson(\$"
 								. $default['on_field']
 								. ", true)) ? json_decode(\$"
@@ -4345,7 +4326,7 @@ class Interpretation extends Fields
 								. $default['on_field'] . ";";
 							$methods .= PHP_EOL . Indent::_(2)
 								. "if (isset(\$array) && "
-								. $this->fileContentStatic[Placefix::_h('Component')]
+								. CFactory::_('Content')->get('Component')
 								. "Helper::checkArray(\$array, true))";
 							$methods .= PHP_EOL . Indent::_(2) . "{";
 							$methods .= PHP_EOL . Indent::_(3)
@@ -4628,7 +4609,7 @@ class Interpretation extends Fields
 						$methods .= PHP_EOL . Indent::_(1) . "}";
 
 						// set the script if it was found
-						$Component = $this->fileContentStatic[Placefix::_h('Component')];
+						$Component = CFactory::_('Content')->get('Component');
 						$script    = '';
 						foreach ($this->cryptionTypes as $cryptionType)
 						{
@@ -4840,7 +4821,7 @@ class Interpretation extends Fields
 			$this->siteDecrypt[$cryptionType][$code] = false;
 		}
 		// set the component name
-		$Component = $this->fileContentStatic[Placefix::_h('Component')];
+		$Component = CFactory::_('Content')->get('Component');
 		// start load the get item
 		if (ObjectHelper::check($get))
 		{
@@ -5188,7 +5169,7 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					) . " Process the content plugins.";
 				$method .= PHP_EOL . Indent::_(2) . "if ("
-					. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkObject(\$this->item))";
+					. CFactory::_('Content')->get('Component') . "Helper::checkObject(\$this->item))";
 				$method .= PHP_EOL . Indent::_(2) . "{";
 				$method .= PHP_EOL . Indent::_(3)
 					. "JPluginHelper::importPlugin('content');";
@@ -5202,7 +5183,7 @@ class Interpretation extends Fields
 					) . " Check if item has params, or pass global params";
 				$method .= PHP_EOL . Indent::_(3)
 					. "\$params = (isset(\$this->item->params) && "
-					. $this->fileContentStatic[Placefix::_h('Component')]
+					. CFactory::_('Content')->get('Component')
 					. "Helper::checkJson(\$this->item->params)) ? json_decode(\$this->item->params) : \$this->params;";
 				// load the defaults
 				foreach (
@@ -5355,7 +5336,7 @@ class Interpretation extends Fields
 			$addModule[] = Indent::_(3)
 				. "\$modules = JModuleHelper::getModules(\$position);";
 			$addModule[] = Indent::_(3) . "if ("
-				. $this->fileContentStatic[Placefix::_h('Component')]
+				. CFactory::_('Content')->get('Component')
 				. "Helper::checkArray(\$modules, true))";
 			$addModule[] = Indent::_(3) . "{";
 			$addModule[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
@@ -5374,13 +5355,13 @@ class Interpretation extends Fields
 				. " check if modules were found";
 			$addModule[] = Indent::_(2)
 				. "if (\$found && isset(\$this->setModules[\$position]) && "
-				. $this->fileContentStatic[Placefix::_h('Component')]
+				. CFactory::_('Content')->get('Component')
 				. "Helper::checkArray(\$this->setModules[\$position]))";
 			$addModule[] = Indent::_(2) . "{";
 			$addModule[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " set class";
 			$addModule[] = Indent::_(3) . "if ("
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkString(\$class))";
+				. CFactory::_('Content')->get('Component') . "Helper::checkString(\$class))";
 			$addModule[] = Indent::_(3) . "{";
 			$addModule[] = Indent::_(4)
 				. "\$class = ' class=\"'.\$class.'\" ';";
@@ -5544,7 +5525,7 @@ class Interpretation extends Fields
 				$buttons[] = $tab . Indent::_(2)
 					. "JToolBarHelper::custom('" . $viewCodeName . "."
 					. "dashboard', 'grid-2', '', 'COM_"
-					. $this->fileContentStatic[Placefix::_h('COMPONENT')]
+					. CFactory::_('Content')->get('COMPONENT')
 					. "_DASH', false);";
 			}
 		}
@@ -6427,13 +6408,13 @@ class Interpretation extends Fields
 			{
 				case 'js':
 					return '$this->document->addScript(' . $JURI . '"' . $path
-						. '", (' . $this->fileContentStatic[Placefix::_h('Component')]
+						. '", (' . CFactory::_('Content')->get('Component')
 						. 'Helper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");';
 					break;
 				case 'css':
 				case 'less':
 					return '$this->document->addStyleSheet(' . $JURI . '"'
-						. $path . '", (' . $this->fileContentStatic[Placefix::_h('Component')]
+						. $path . '", (' . CFactory::_('Content')->get('Component')
 						. 'Helper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/css");';
 					break;
 				case 'php':
@@ -6579,11 +6560,11 @@ class Interpretation extends Fields
 					. "\$uikitFieldComp = \$this->get('UikitComp');";
 				$setter .= PHP_EOL . $tabV . Indent::_(3)
 					. "if (isset(\$uikitFieldComp) && "
-					. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$uikitFieldComp))";
+					. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$uikitFieldComp))";
 				$setter .= PHP_EOL . $tabV . Indent::_(3) . "{";
 				$setter .= PHP_EOL . $tabV . Indent::_(4)
 					. "if (isset(\$uikitComp) && "
-					. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$uikitComp))";
+					. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$uikitComp))";
 				$setter .= PHP_EOL . $tabV . Indent::_(4) . "{";
 				$setter .= PHP_EOL . $tabV . Indent::_(5)
 					. "\$uikitComp = array_merge(\$uikitComp, \$uikitFieldComp);";
@@ -6603,7 +6584,7 @@ class Interpretation extends Fields
 				. " Load the needed uikit components in this view.";
 			$setter .= PHP_EOL . $tabV . Indent::_(2)
 				. "if (\$uikit != 2 && isset(\$uikitComp) && "
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$uikitComp))";
+				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$uikitComp))";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -6617,7 +6598,7 @@ class Interpretation extends Fields
 				. "foreach (\$uikitComp as \$class)";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(4) . "foreach ("
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::\$uk_components[\$class] as \$name)";
+				. CFactory::_('Content')->get('Component') . "Helper::\$uk_components[\$class] as \$name)";
 			$setter .= PHP_EOL . $tabV . Indent::_(4) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -6668,7 +6649,7 @@ class Interpretation extends Fields
 				. "\$uikitComp = \$this->get('UikitComp');";
 			$setter .= PHP_EOL . $tabV . Indent::_(2)
 				. "if (\$uikit != 2 && isset(\$uikitComp) && "
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$uikitComp))";
+				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$uikitComp))";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -6677,7 +6658,7 @@ class Interpretation extends Fields
 				. "foreach (\$uikitComp as \$class)";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(4) . "foreach ("
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::\$uk_components[\$class] as \$name)";
+				. CFactory::_('Content')->get('Component') . "Helper::\$uk_components[\$class] as \$name)";
 			$setter .= PHP_EOL . $tabV . Indent::_(4) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -7231,8 +7212,8 @@ class Interpretation extends Fields
 	{
 		$script = '';
 		// get the component name
-		$Component = $this->fileContentStatic[Placefix::_h('Component')];
-		$component = $this->fileContentStatic[Placefix::_h('component')];
+		$Component = CFactory::_('Content')->get('Component');
+		$component = CFactory::_('Content')->get('component');
 		// go from base64 to string
 		if (isset($this->base64Builder[$view])
 			&& ArrayHelper::check($this->base64Builder[$view]))
@@ -7439,7 +7420,7 @@ class Interpretation extends Fields
 	{
 		$script = '';
 		// get component name
-		$Component = $this->fileContentStatic[Placefix::_h('Component')];
+		$Component = CFactory::_('Content')->get('Component');
 		$component = CFactory::_('Config')->component_code_name;
 		// check if there was script added before modeling of data
 		$script .= CFactory::_('Customcode.Dispenser')->get(
@@ -7911,8 +7892,8 @@ class Interpretation extends Fields
 		{
 			$script .= PHP_EOL . Indent::_(3)
 				. 'echo \'<a target="_blank" href="'
-				. $this->fileContentStatic[Placefix::_h('AUTHORWEBSITE')] . '" title="'
-				. $this->fileContentStatic[Placefix::_h('Component_name')] . '">';
+				. CFactory::_('Content')->get('AUTHORWEBSITE') . '" title="'
+				. CFactory::_('Content')->get('Component_name') . '">';
 			$script .= PHP_EOL . Indent::_(4) . '<img src="components/com_'
 				. $component . '/assets/images/vdm-component.'
 				. $this->componentImageType . '"/>';
@@ -7940,14 +7921,14 @@ class Interpretation extends Fields
 		{
 			$script .= PHP_EOL . Indent::_(3)
 				. 'echo \'<a target="_blank" href="'
-				. $this->fileContentStatic[Placefix::_h('AUTHORWEBSITE')] . '" title="'
-				. $this->fileContentStatic[Placefix::_h('Component_name')] . '">';
+				. CFactory::_('Content')->get('AUTHORWEBSITE') . '" title="'
+				. CFactory::_('Content')->get('Component_name') . '">';
 			$script .= PHP_EOL . Indent::_(4) . '<img src="components/com_'
 				. CFactory::_('Config')->component_code_name . '/assets/images/vdm-component.'
 				. $this->componentImageType . '"/>';
 			$script .= PHP_EOL . Indent::_(4) . '</a>';
 			$script .= PHP_EOL . Indent::_(4) . "<h3>Upgrade to Version "
-				. $this->fileContentStatic[Placefix::_h('ACTUALVERSION')]
+				. CFactory::_('Content')->get('ACTUALVERSION')
 				. " Was Successful! Let us know if anything is not working as expected.</h3>';";
 		}
 
@@ -9068,11 +9049,9 @@ class Interpretation extends Fields
 
 	public function routerBuildViews(&$view)
 	{
-		if (isset(
-				$this->fileContentStatic[Placefix::_h('ROUTER_BUILD_VIEWS')]
-			)
+		if (CFactory::_('Content')->exist('ROUTER_BUILD_VIEWS')
 			&& StringHelper::check(
-				$this->fileContentStatic[Placefix::_h('ROUTER_BUILD_VIEWS')]
+				CFactory::_('Content')->get('ROUTER_BUILD_VIEWS')
 			))
 		{
 			return " || \$view === '" . $view . "'";
@@ -9090,7 +9069,7 @@ class Interpretation extends Fields
 		$batchmove = array();
 		$VIEW      = StringHelper::safe($nameSingleCode, 'U');
 		// component helper name
-		$Helper = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
+		$Helper = CFactory::_('Content')->get('Component') . 'Helper';
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$nameSingleCode]))
@@ -9337,7 +9316,7 @@ class Interpretation extends Fields
 		$batchcopy = array();
 		$VIEW      = StringHelper::safe($nameSingleCode, 'U');
 		// component helper name
-		$Helper = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
+		$Helper = CFactory::_('Content')->get('Component') . 'Helper';
 		// setup correct core target
 		$coreLoad = false;
 		if (isset($this->permissionCore[$nameSingleCode]))
@@ -9860,7 +9839,7 @@ class Interpretation extends Fields
 					. "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUnique[] = Indent::_(4) . "{";
 				$fixUnique[] = Indent::_(5) . "\$msg = JText:" . ":_('COM_"
-					. $this->fileContentStatic[Placefix::_h('COMPONENT')] . "_" . $VIEW . "_SAVE_WARNING');";
+					. CFactory::_('Content')->get('COMPONENT') . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUnique[] = Indent::_(4) . "}";
 				$fixUnique[] = PHP_EOL . Indent::_(4) . "list(" . implode(
 						'', $titleVars
@@ -9879,7 +9858,7 @@ class Interpretation extends Fields
 					. "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUnique[] = Indent::_(4) . "{";
 				$fixUnique[] = Indent::_(5) . "\$msg = JText:" . ":_('COM_"
-					. $this->fileContentStatic[Placefix::_h('COMPONENT')] . "_" . $VIEW . "_SAVE_WARNING');";
+					. CFactory::_('Content')->get('COMPONENT') . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUnique[] = Indent::_(4) . "}";
 				$fixUnique[] = PHP_EOL . Indent::_(4) . "\$data['" . $alias
 					. "'] = \$this->_generateNewTitle(\$data['" . $alias
@@ -9917,7 +9896,7 @@ class Interpretation extends Fields
 		$fixUnique[] = Indent::_(3)
 			. "\$uniqueFields = \$this->getUniqueFields();";
 		$fixUnique[] = Indent::_(3) . "if ("
-			. $this->fileContentStatic[Placefix::_h('Component')]
+			. CFactory::_('Content')->get('Component')
 			. "Helper::checkArray(\$uniqueFields))";
 		$fixUnique[] = Indent::_(3) . "{";
 		$fixUnique[] = Indent::_(4)
@@ -9940,7 +9919,7 @@ class Interpretation extends Fields
 				|| isset($this->customAliasBuilder[$nameSingleCode])))
 		{
 			// get component name
-			$Component = $this->fileContentStatic[Placefix::_h('Component')];
+			$Component = CFactory::_('Content')->get('Component');
 			// rest the new function
 			$newFunction   = array();
 			$newFunction[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
@@ -11278,7 +11257,7 @@ class Interpretation extends Fields
 		if (($items = CFactory::_('Registry')->get('builder.list.' . $nameListCode)) !== null)
 		{
 			// component helper name
-			$Helper = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
+			$Helper = CFactory::_('Content')->get('Component') . 'Helper';
 			// setup correct core target
 			$coreLoad = false;
 			$core     = null;
@@ -11767,14 +11746,14 @@ class Interpretation extends Fields
 					. $this->componentCodeName . '&view='
 					. $customLinkView['link'] . '&id=<?php echo $item->id; ?>'
 					. $ref . '" title="<?php echo JText:' . ':_(' . "'COM_"
-					. $this->fileContentStatic[Placefix::_h('COMPONENT')] . '_' . $customLinkView['NAME'] . "'"
+					. CFactory::_('Content')->get('COMPONENT') . '_' . $customLinkView['NAME'] . "'"
 					. '); ?>" ><span class="icon-' . $customLinkView['icon']
 					. '"></span></a>';
 				$customAdminViewButton .= PHP_EOL . Indent::_(3)
 					. "<?php else: ?>";
 				$customAdminViewButton .= PHP_EOL . Indent::_(4)
 					. '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:'
-					. ':_(' . "'COM_" . $this->fileContentStatic[Placefix::_h('COMPONENT')] . '_' . $customLinkView['NAME']
+					. ':_(' . "'COM_" . CFactory::_('Content')->get('COMPONENT') . '_' . $customLinkView['NAME']
 					. "'" . '); ?>"><span class="icon-'
 					. $customLinkView['icon'] . '"></span></a>';
 				$customAdminViewButton .= PHP_EOL . Indent::_(3)
@@ -13811,7 +13790,7 @@ class Interpretation extends Fields
 			$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 				. ' check if return value was set';
 			$headerscript .= PHP_EOL . 'if ('
-				. $this->fileContentStatic[Placefix::_h('Component')] . 'Helper::checkString($return))';
+				. CFactory::_('Content')->get('Component') . 'Helper::checkString($return))';
 			$headerscript .= PHP_EOL . '{';
 			$headerscript .= PHP_EOL . Indent::_(1) . '//' . Line::_(
 					__LINE__,__CLASS__
@@ -13851,7 +13830,7 @@ class Interpretation extends Fields
 				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 					. ' load the action object';
 				$headerscript .= PHP_EOL . '$can = '
-					. $this->fileContentStatic[Placefix::_h('Component')] . 'Helper::getActions(' . "'"
+					. CFactory::_('Content')->get('Component') . 'Helper::getActions(' . "'"
 					. $name_single_code . "'"
 					. ');';
 			}
@@ -14061,7 +14040,7 @@ class Interpretation extends Fields
 		if (($items = CFactory::_('Registry')->get('builder.list.' . $nameListCode)) !== null)
 		{
 			// component helper name
-			$Helper = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
+			$Helper = CFactory::_('Content')->get('Component') . 'Helper';
 			// make sure the custom links are only added once
 			$firstTimeBeingAdded = true;
 			// setup correct core target
@@ -14251,7 +14230,7 @@ class Interpretation extends Fields
 		if (($items = CFactory::_('Registry')->get('builder.list.' . $nameListCode)) !== null)
 		{
 			// component helper name
-			$Helper = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
+			$Helper = CFactory::_('Content')->get('Component') . 'Helper';
 			$head   = '';
 			// only add new button if set
 			if ($addNewButon > 0)
@@ -14613,7 +14592,7 @@ class Interpretation extends Fields
 			if (!isset($this->fieldsNames[$nameSingleCode]['access']))
 			{
 				// component helper name
-				$Helper = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
+				$Helper = CFactory::_('Content')->get('Component') . 'Helper';
 				// load the access filter query code
 				$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
@@ -14704,13 +14683,13 @@ class Interpretation extends Fields
 		// add the fixing strings method
 		$query .= $this->setGetItemsMethodStringFix(
 			$nameSingleCode, $nameListCode,
-			$this->fileContentStatic[Placefix::_h('Component')],
+			CFactory::_('Content')->get('Component'),
 			Indent::_(1)
 		);
 		// add translations
 		$query .= $this->setSelectionTranslationFix(
 			$nameListCode,
-			$this->fileContentStatic[Placefix::_h('Component')],
+			CFactory::_('Content')->get('Component'),
 			Indent::_(1)
 		);
 		// filter by child repetable field values
@@ -14725,19 +14704,19 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Filter by " . $globalKey . " in this Repetable Field";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$items) && isset(\$this->"
+				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$items) && isset(\$this->"
 				. $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
 				. "foreach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . Indent::_(4) . "{";
 			$query .= PHP_EOL . Indent::_(5) . "if (isset(\$item->" . $field
-				. ") && " . $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkJson(\$item->" . $field . "))";
+				. ") && " . CFactory::_('Content')->get('Component') . "Helper::checkJson(\$item->" . $field . "))";
 			$query .= PHP_EOL . Indent::_(5) . "{";
 			$query .= PHP_EOL . Indent::_(6)
 				. "\$tmpArray = json_decode(\$item->" . $field . ",true);";
 			$query .= PHP_EOL . Indent::_(6) . "if (!isset(\$tmpArray['"
-				. $target . "']) || !" . $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$tmpArray['"
+				. $target . "']) || !" . CFactory::_('Content')->get('Component') . "Helper::checkArray(\$tmpArray['"
 				. $target . "']) || !in_array(\$this->" . $globalKey
 				. ", \$tmpArray['" . $target . "']))";
 			$query .= PHP_EOL . Indent::_(6) . "{";
@@ -14770,7 +14749,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey . " = \$this->"
 				. $globalKey . ";";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$items) && \$" . $globalKey
+				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$items) && \$" . $globalKey
 				. ")";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
@@ -14780,14 +14759,14 @@ class Interpretation extends Fields
 			if (StringHelper::check($target))
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if ("
-					. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkJson(\$item->" . $target
+					. CFactory::_('Content')->get('Component') . "Helper::checkJson(\$item->" . $target
 					. "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "\$item->" . $target
 					. " = json_decode(\$item->" . $target . ", true);";
 				$query .= PHP_EOL . Indent::_(5) . "}";
 				$query .= PHP_EOL . Indent::_(5) . "elseif (!isset(\$item->"
-					. $target . ") || !" . $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$item->"
+					. $target . ") || !" . CFactory::_('Content')->get('Component') . "Helper::checkArray(\$item->"
 					. $target . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "unset(\$items[\$nr]);";
@@ -14799,13 +14778,13 @@ class Interpretation extends Fields
 			else
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if ("
-					. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkJson(\$item->" . $_key . "))";
+					. CFactory::_('Content')->get('Component') . "Helper::checkJson(\$item->" . $_key . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "\$item->" . $_key
 					. " = json_decode(\$item->" . $_key . ", true);";
 				$query .= PHP_EOL . Indent::_(5) . "}";
 				$query .= PHP_EOL . Indent::_(5) . "elseif (!isset(\$item->"
-					. $_key . ") || !" . $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$item->"
+					. $_key . ") || !" . CFactory::_('Content')->get('Component') . "Helper::checkArray(\$item->"
 					. $_key . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "unset(\$items[\$nr]);";
@@ -14839,8 +14818,8 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey
 				. " = json_decode(\$this->" . $globalKey . ",true);";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$items) && isset(\$"
-				. $globalKey . ") && " . $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$"
+				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$items) && isset(\$"
+				. $globalKey . ") && " . CFactory::_('Content')->get('Component') . "Helper::checkArray(\$"
 				. $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
@@ -14848,7 +14827,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(4) . "{";
 			$query .= PHP_EOL . Indent::_(5) . "if (\$item->" . $_key
 				. " && isset(\$" . $globalKey . "['" . $target . "']) && "
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$" . $globalKey . "['"
+				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$" . $globalKey . "['"
 				. $target . "']))";
 			$query .= PHP_EOL . Indent::_(5) . "{";
 			$query .= PHP_EOL . Indent::_(6) . "if (!in_array(\$item->" . $_key
@@ -14883,8 +14862,8 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey . " = \$this->"
 				. $globalKey . ";";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$items) && "
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$" . $globalKey . "))";
+				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$items) && "
+				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$" . $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
 				. "foreach (\$items as \$nr => &\$item)";
@@ -14893,7 +14872,7 @@ class Interpretation extends Fields
 			if (StringHelper::check($target))
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if (\$item->" . $_key
-					. " && " . $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$" . $globalKey . "['"
+					. " && " . CFactory::_('Content')->get('Component') . "Helper::checkArray(\$" . $globalKey . "['"
 					. $target . "']))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "if (!in_array(\$item->"
@@ -14936,7 +14915,7 @@ class Interpretation extends Fields
 		// SELECTIONTRANSLATIONFIXFUNC<<<DYNAMIC>>>
 		$query .= $this->setSelectionTranslationFixFunc(
 			$nameListCode,
-			$this->fileContentStatic[Placefix::_h('Component')]
+			CFactory::_('Content')->get('Component')
 		);
 
 		// fixe mothod name clash
@@ -15122,7 +15101,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " setup the query";
 			$query .= PHP_EOL . Indent::_(2) . "if ((\$pks_size = "
-				. $this->fileContentStatic[Placefix::_h('Component')]
+				. CFactory::_('Content')->get('Component')
 				. "Helper::checkArray(\$pks)) !== false || 'bulk' === \$pks)";
 			$query .= PHP_EOL . Indent::_(2) . "{";
 			$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
@@ -15133,7 +15112,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Get the user object if not set.";
 			$query .= PHP_EOL . Indent::_(3) . "if (!isset(\$user) || !"
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkObject(\$user))";
+				. CFactory::_('Content')->get('Component') . "Helper::checkObject(\$user))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4) . "\$user = JFactory::getUser();";
 			$query .= PHP_EOL . Indent::_(3) . "}";
@@ -15288,7 +15267,7 @@ class Interpretation extends Fields
 			// set the string fixing code
 			$query .= $this->setGetItemsMethodStringFix(
 				$nameSingleCode, $nameListCode,
-				$this->fileContentStatic[Placefix::_h('Component')],
+				CFactory::_('Content')->get('Component'),
 				Indent::_(2), $isExport, true
 			);
 			// first check if we export of text only is avalable
@@ -15296,7 +15275,7 @@ class Interpretation extends Fields
 			{
 				$query_translations = $this->setSelectionTranslationFix(
 					$nameListCode,
-					$this->fileContentStatic[Placefix::_h('Component')], Indent::_(3)
+					CFactory::_('Content')->get('Component'), Indent::_(3)
 				);
 			}
 			// add translations
@@ -15396,12 +15375,12 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3)
 				. "\$data = \$model->getExportData(\$pks);";
 			$method[] = Indent::_(3) . "if ("
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkArray(\$data))";
+				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$data))";
 			$method[] = Indent::_(3) . "{";
 			$method[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " now set the data to the spreadsheet";
 			$method[] = Indent::_(4) . "\$date = JFactory::getDate();";
-			$method[] = Indent::_(4) . $this->fileContentStatic[Placefix::_h('Component')] . "Helper::xls(\$data,'"
+			$method[] = Indent::_(4) . CFactory::_('Content')->get('Component') . "Helper::xls(\$data,'"
 				. StringHelper::safe($nameListCode, 'F')
 				. "_'.\$date->format('jS_F_Y'),'"
 				. StringHelper::safe($nameListCode, 'Ww')
@@ -15448,7 +15427,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3)
 				. "\$headers = \$model->getExImPortHeaders();";
 			$method[] = Indent::_(3) . "if ("
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkObject(\$headers))";
+				. CFactory::_('Content')->get('Component') . "Helper::checkObject(\$headers))";
 			$method[] = Indent::_(3) . "{";
 			$method[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Load headers to session.";
@@ -15711,7 +15690,7 @@ class Interpretation extends Fields
 			if (!isset($this->fieldsNames[$nameSingleCode]['access']))
 			{
 				// component helper name
-				$Helper = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
+				$Helper = CFactory::_('Content')->get('Component') . 'Helper';
 				// load the access filter query code
 				$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
@@ -16051,7 +16030,7 @@ class Interpretation extends Fields
 			))
 		{
 			// component helper name
-			$Helper = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
+			$Helper = CFactory::_('Content')->get('Component') . 'Helper';
 			// start building the filter query
 			$filterQuery = "";
 			foreach ($this->filterBuilder[$nameListCode] as $filter)
@@ -18384,7 +18363,7 @@ class Interpretation extends Fields
 			))
 		{
 			// get component name
-			$Component = $this->fileContentStatic[Placefix::_h('Component')];
+			$Component = CFactory::_('Content')->get('Component');
 			// load the rest of the filters
 			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
@@ -18649,7 +18628,7 @@ class Interpretation extends Fields
 				$get_values = true;
 			}
 			// get component name
-			$Component = $this->fileContentStatic[Placefix::_h('Component')];
+			$Component = CFactory::_('Content')->get('Component');
 			// load the rest of the batch options
 			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
@@ -18946,15 +18925,12 @@ class Interpretation extends Fields
 				$includeHelper[] = Indent::_(2) . "include_once \$path;";
 				$includeHelper[] = Indent::_(1) . "}";
 				$includeHelper[] = "}";
-				$this->fileContentStatic[Placefix::_h('CATEGORY_CLASS_TREES')]
-				                 .= implode("\n", $includeHelper);
+				CFactory::_('Content')->add('CATEGORY_CLASS_TREES', implode("\n", $includeHelper));
 			}
 			// return category view string
-			if (isset(
-					$this->fileContentStatic[Placefix::_h('ROUTER_CATEGORY_VIEWS')]
-				)
+			if (CFactory::_('Content')->exist('ROUTER_CATEGORY_VIEWS')
 				&& StringHelper::check(
-					$this->fileContentStatic[Placefix::_h('ROUTER_CATEGORY_VIEWS')]
+					CFactory::_('Content')->get('ROUTER_CATEGORY_VIEWS')
 				))
 			{
 				return "," . PHP_EOL . Indent::_(3) . '"'
@@ -20987,7 +20963,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Built the actions for new and existing records.";
 			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkString(\$this->referral))";
+				. CFactory::_('Content')->get('Component') . "Helper::checkString(\$this->referral))";
 			$toolBar .= PHP_EOL . Indent::_(2) . "{";
 			if ($coreLoad && isset($core['core.create'])
 				&& isset($this->permissionBuilder['global'][$core['core.create']])
@@ -21226,10 +21202,10 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " set help url for this view if found";
 			$toolBar .= PHP_EOL . Indent::_(2) . "\$this->help_url = "
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::getHelpUrl('" . $nameSingleCode
+				. CFactory::_('Content')->get('Component') . "Helper::getHelpUrl('" . $nameSingleCode
 				. "');";
 			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
-				. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkString(\$this->help_url))";
+				. CFactory::_('Content')->get('Component') . "Helper::checkString(\$this->help_url))";
 			$toolBar .= PHP_EOL . Indent::_(2) . "{";
 			$toolBar .= PHP_EOL . Indent::_(3) . "JToolbarHelper::help('"
 				. $this->langPrefix . "_HELP_MANAGER', false, \$this->help_url);";
@@ -21635,7 +21611,7 @@ class Interpretation extends Fields
 				. "\$item->tags->getTagIds(";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
 				. "\$item->id, 'com_"
-				. $this->fileContentStatic[Placefix::_h('component')] . ".$nameSingleCode'";
+				. CFactory::_('Content')->get('component') . ".$nameSingleCode'";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . ");";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
 				. "if (\$item->tags->tags)";
@@ -22069,7 +22045,7 @@ class Interpretation extends Fields
 					. " Get the user object if not set.";
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 					. "if (!isset(\$user) || !"
-					. $this->fileContentStatic[Placefix::_h('Component')] . "Helper::checkObject(\$user))";
+					. CFactory::_('Content')->get('Component') . "Helper::checkObject(\$user))";
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 					. "{";
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
@@ -23105,7 +23081,7 @@ class Interpretation extends Fields
 			. "<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>";
 		$display[] = $tab . Indent::_(2)
 			. "<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_right', '"
-			. $this->fileContentStatic[Placefix::_h('COMPANYNAME')]
+			. CFactory::_('Content')->get('COMPANYNAME')
 			. "', 'vdm'); ?>";
 		$display[] = $tab . Indent::_(3)
 			. "<?php echo \$this->loadTemplate('vdm');?>";
@@ -27940,8 +27916,8 @@ function vdm_dkim() {
 	public function getModCode(&$module)
 	{
 		// get component helper string
-		$Helper    = $this->fileContentStatic[Placefix::_h('Component')] . 'Helper';
-		$component = $this->fileContentStatic[Placefix::_h('component')];
+		$Helper    = CFactory::_('Content')->get('Component') . 'Helper';
+		$component = CFactory::_('Content')->get('component');
 		$_helper   = '';
 		// get libraries code
 		$libraries = array(Placefix::_('MOD_LIBRARIES') => $this->getModLibCode($module));
@@ -27961,7 +27937,7 @@ function vdm_dkim() {
 				. "/helpers/" . $component . ".php');";
 		}
 
-		return CFactory::_('Placeholder')->update($_helper . PHP_EOL . $code . PHP_EOL, $this->fileContentStatic);
+		return CFactory::_('Placeholder')->update($_helper . PHP_EOL . $code . PHP_EOL, CFactory::_('Content')->active);
 	}
 
 	public function getModDefault(&$module, &$key)
@@ -27983,7 +27959,7 @@ function vdm_dkim() {
 		);
 
 		// return the default content for the model default area
-		return CFactory::_('Placeholder')->update($default, $this->fileContentStatic);
+		return CFactory::_('Placeholder')->update($default, CFactory::_('Content')->active);
 	}
 
 	public function getModHelperCode(&$module)
@@ -27993,7 +27969,7 @@ function vdm_dkim() {
 				$module->class_helper_type . $module->class_helper_name . PHP_EOL
 				. '{' . PHP_EOL .
 				$module->class_helper_code . PHP_EOL .
-				"}" . PHP_EOL, $this->fileContentStatic);
+				"}" . PHP_EOL, CFactory::_('Content')->active);
 	}
 
 	public function getModLibCode(&$module)
@@ -28048,7 +28024,7 @@ function vdm_dkim() {
 					)
 				),
 				$this->placeholders
-			), $this->fileContentStatic);
+			), CFactory::_('Content')->active);
 		}
 
 		return '';
@@ -28449,7 +28425,7 @@ function vdm_dkim() {
 			$plugin->class_name . ' extends ' .
 			$plugin->extends . PHP_EOL . '{' . PHP_EOL .
 			$plugin->main_class_code . PHP_EOL .
-			"}" . PHP_EOL, $this->fileContentStatic);
+			"}" . PHP_EOL, CFactory::_('Content')->active);
 	}
 
 	public function getPluginMainXML(&$plugin)
@@ -28862,7 +28838,7 @@ function vdm_dkim() {
 		}
 		$code[] = '}' . PHP_EOL . PHP_EOL;
 
-		return CFactory::_('Placeholder')->update(implode(PHP_EOL, $code), $this->fileContentStatic);
+		return CFactory::_('Placeholder')->update(implode(PHP_EOL, $code), CFactory::_('Content')->active);
 	}
 
 	public function setPowersAutoloader($namespace, $loadSite)
@@ -28870,7 +28846,7 @@ function vdm_dkim() {
 		if (($size = ArrayHelper::check($namespace)) > 0)
 		{
 			// check if we are using a plugin
-			$use_plugin = isset($this->fileContentStatic[Placefix::_h('PLUGIN_POWER_AUTOLOADER')]);
+			$use_plugin = CFactory::_('Content')->exist('PLUGIN_POWER_AUTOLOADER');
 			// build the methods
 			$autoloadNotSiteMethod = array();
 			$autoloadMethod = array();
@@ -28977,20 +28953,20 @@ function vdm_dkim() {
 			// check if we are using a plugin
 			if ($use_plugin)
 			{
-				$this->fileContentStatic[Placefix::_h('PLUGIN_POWER_AUTOLOADER')] = PHP_EOL . $autoloader;
+				CFactory::_('Content')->set('PLUGIN_POWER_AUTOLOADER', PHP_EOL . $autoloader);
 			}
 			else
 			{
 				// load to events placeholders
-				$this->fileContentStatic[Placefix::_h('ADMIN_POWER_HELPER')] .= $autoloader;
+				CFactory::_('Content')->add('ADMIN_POWER_HELPER', $autoloader);
 				// load to site if needed
 				if ($loadSite)
 				{
-					$this->fileContentStatic[Placefix::_h('SITE_POWER_HELPER')] .= $autoloader;
+					CFactory::_('Content')->add('SITE_POWER_HELPER', $autoloader);
 				}
 			}
 			// to add to custom files
-			$this->fileContentStatic[Placefix::_h('CUSTOM_POWER_AUTOLOADER')] .= PHP_EOL . implode(PHP_EOL, $autoloadMethod);
+			CFactory::_('Content')->add('CUSTOM_POWER_AUTOLOADER', PHP_EOL . implode(PHP_EOL, $autoloadMethod));
 		}
 	}
 

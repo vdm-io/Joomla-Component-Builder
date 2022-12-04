@@ -105,7 +105,7 @@ class Compiler extends Infusion
 				$this->removeFolder($this->componentPath . '/site');
 				// clear form component xml
 				$xmlPath        = $this->componentPath . '/'
-					. $this->fileContentStatic[Placefix::_h('component')] . '.xml';
+					. CFactory::_('Content')->get('component') . '.xml';
 				$componentXML   = ComponentbuilderHelper::getFileContents(
 					$xmlPath
 				);
@@ -632,7 +632,7 @@ class Compiler extends Infusion
 			array(&$this->componentContext, &$name, &$path, &$bom, &$view)
 		);
 		// set the file name
-		$this->fileContentStatic[Placefix::_h('FILENAME')] = $name;
+		CFactory::_('Content')->set('FILENAME', $name);
 		// check if the file should get PHP opening
 		$php = '';
 		if (ComponentbuilderHelper::checkFileType($name, 'php'))
@@ -656,7 +656,7 @@ class Compiler extends Infusion
 			$string = $php . $bom . $code;
 		}
 		// set the answer
-		$answer = CFactory::_('Placeholder')->update($string, $this->fileContentStatic, 3);
+		$answer = CFactory::_('Placeholder')->update($string, CFactory::_('Content')->active, 3);
 		// set the dynamic answer
 		if ($view)
 		{
@@ -805,21 +805,15 @@ class Compiler extends Infusion
 						$value = '@update number ' . $value . ' of this MVC';
 					}
 				}
-				$this->fileContentStatic[$key] = $value;
+				CFactory::_('Content')->set($key, $value);
 			}
 
 			return true;
 		}
 		// else insure to reset to global
-		$this->fileContentStatic[Placefix::_h('CREATIONDATE')]
-			= $this->fileContentStatic[Placefix::_h('CREATIONDATE')
-		. 'GLOBAL'];
-		$this->fileContentStatic[Placefix::_h('BUILDDATE')]
-			= $this->fileContentStatic[Placefix::_h('BUILDDATE')
-		. 'GLOBAL'];
-		$this->fileContentStatic[Placefix::_h('VERSION')]
-			= $this->fileContentStatic[Placefix::_h('VERSION')
-		. 'GLOBAL'];
+		CFactory::_('Content')->set('CREATIONDATE', CFactory::_('Content')->get('GLOBALCREATIONDATE'));
+		CFactory::_('Content')->set('BUILDDATE', CFactory::_('Content')->get('GLOBALBUILDDATE'));
+		CFactory::_('Content')->set('VERSION', CFactory::_('Content')->get('GLOBALVERSION'));
 	}
 
 	// set all global numbers
@@ -883,10 +877,8 @@ class Compiler extends Infusion
 	private function setReadMe($path)
 	{
 		// set readme data if not set already
-		if (!isset(
-				$this->fileContentStatic[Placefix::_h('LINE_COUNT')]
-			)
-			|| $this->fileContentStatic[Placefix::_h('LINE_COUNT')]
+		if (!CFactory::_('Content')->exist('LINE_COUNT')
+			|| CFactory::_('Content')->get('LINE_COUNT')
 			!= $this->lineCount)
 		{
 			$this->buildReadMeData();
@@ -894,7 +886,7 @@ class Compiler extends Infusion
 		// get the file
 		$string = ComponentbuilderHelper::getFileContents($path);
 		// update the file
-		$answer = CFactory::_('Placeholder')->update($string, $this->fileContentStatic);
+		$answer = CFactory::_('Placeholder')->update($string, CFactory::_('Content')->active);
 		// add to zip array
 		$this->writeFile($path, $answer);
 	}
@@ -902,72 +894,39 @@ class Compiler extends Infusion
 	private function buildReadMeData()
 	{
 		// set some defaults
-		$this->fileContentStatic[Placefix::_h('LINE_COUNT')]
-			= $this->lineCount;
-		$this->fileContentStatic[Placefix::_h('FIELD_COUNT')]
-			= $this->fieldCount;
-		$this->fileContentStatic[Placefix::_h('FILE_COUNT')]
-			= $this->fileCount;
-		$this->fileContentStatic[Placefix::_h('FOLDER_COUNT')]
-			= $this->folderCount;
-		$this->fileContentStatic[Placefix::_h('PAGE_COUNT')]
-			= $this->pageCount;
-		$this->fileContentStatic[Placefix::_h('folders')]
-			= $this->folderSeconds;
-		$this->fileContentStatic[Placefix::_h('foldersSeconds')]
-			= $this->folderSeconds;
-		$this->fileContentStatic[Placefix::_h('files')]
-			= $this->fileSeconds;
-		$this->fileContentStatic[Placefix::_h('filesSeconds')]
-			= $this->fileSeconds;
-		$this->fileContentStatic[Placefix::_h('lines')]
-			= $this->lineSeconds;
-		$this->fileContentStatic[Placefix::_h('linesSeconds')]
-			= $this->lineSeconds;
-		$this->fileContentStatic[Placefix::_h('seconds')]
-			= $this->actualSeconds;
-		$this->fileContentStatic[Placefix::_h('actualSeconds')]
-			= $this->actualSeconds;
-		$this->fileContentStatic[Placefix::_h('totalHours')]
-			= $this->totalHours;
-		$this->fileContentStatic[Placefix::_h('totalDays')]
-			= $this->totalDays;
-		$this->fileContentStatic[Placefix::_h('debugging')]
-			= $this->secondsDebugging;
-		$this->fileContentStatic[Placefix::_h('secondsDebugging')]
-			= $this->secondsDebugging;
-		$this->fileContentStatic[Placefix::_h('planning')]
-			= $this->secondsPlanning;
-		$this->fileContentStatic[Placefix::_h('secondsPlanning')]
-			= $this->secondsPlanning;
-		$this->fileContentStatic[Placefix::_h('mapping')]
-			= $this->secondsMapping;
-		$this->fileContentStatic[Placefix::_h('secondsMapping')]
-			= $this->secondsMapping;
-		$this->fileContentStatic[Placefix::_h('office')]
-			= $this->secondsOffice;
-		$this->fileContentStatic[Placefix::_h('secondsOffice')]
-			= $this->secondsOffice;
-		$this->fileContentStatic[Placefix::_h('actualTotalHours')]
-			= $this->actualTotalHours;
-		$this->fileContentStatic[Placefix::_h('actualTotalDays')]
-			= $this->actualTotalDays;
-		$this->fileContentStatic[Placefix::_h('debuggingHours')]
-			= $this->debuggingHours;
-		$this->fileContentStatic[Placefix::_h('planningHours')]
-			= $this->planningHours;
-		$this->fileContentStatic[Placefix::_h('mappingHours')]
-			= $this->mappingHours;
-		$this->fileContentStatic[Placefix::_h('officeHours')]
-			= $this->officeHours;
-		$this->fileContentStatic[Placefix::_h('actualHoursSpent')]
-			= $this->actualHoursSpent;
-		$this->fileContentStatic[Placefix::_h('actualDaysSpent')]
-			= $this->actualDaysSpent;
-		$this->fileContentStatic[Placefix::_h('projectWeekTime')]
-			= $this->projectWeekTime;
-		$this->fileContentStatic[Placefix::_h('projectMonthTime')]
-			= $this->projectMonthTime;
+		CFactory::_('Content')->set('LINE_COUNT', $this->lineCount);
+		CFactory::_('Content')->set('FIELD_COUNT', $this->fieldCount);
+		CFactory::_('Content')->set('FILE_COUNT', $this->fileCount);
+		CFactory::_('Content')->set('FOLDER_COUNT', $this->folderCount);
+		CFactory::_('Content')->set('PAGE_COUNT', $this->pageCount);
+		CFactory::_('Content')->set('folders', $this->folderSeconds);
+		CFactory::_('Content')->set('foldersSeconds', $this->folderSeconds);
+		CFactory::_('Content')->set('files', $this->fileSeconds);
+		CFactory::_('Content')->set('filesSeconds', $this->fileSeconds);
+		CFactory::_('Content')->set('lines', $this->lineSeconds);
+		CFactory::_('Content')->set('linesSeconds', $this->lineSeconds);
+		CFactory::_('Content')->set('seconds', $this->actualSeconds);
+		CFactory::_('Content')->set('actualSeconds', $this->actualSeconds);
+		CFactory::_('Content')->set('totalHours', $this->totalHours);
+		CFactory::_('Content')->set('totalDays', $this->totalDays);
+		CFactory::_('Content')->set('debugging', $this->secondsDebugging);
+		CFactory::_('Content')->set('secondsDebugging', $this->secondsDebugging);
+		CFactory::_('Content')->set('planning', $this->secondsPlanning);
+		CFactory::_('Content')->set('secondsPlanning', $this->secondsPlanning);
+		CFactory::_('Content')->set('mapping', $this->secondsMapping);
+		CFactory::_('Content')->set('secondsMapping', $this->secondsMapping);
+		CFactory::_('Content')->set('office', $this->secondsOffice);
+		CFactory::_('Content')->set('secondsOffice', $this->secondsOffice);
+		CFactory::_('Content')->set('actualTotalHours', $this->actualTotalHours);
+		CFactory::_('Content')->set('actualTotalDays', $this->actualTotalDays);
+		CFactory::_('Content')->set('debuggingHours', $this->debuggingHours);
+		CFactory::_('Content')->set('planningHours', $this->planningHours);
+		CFactory::_('Content')->set('mappingHours', $this->mappingHours);
+		CFactory::_('Content')->set('officeHours', $this->officeHours);
+		CFactory::_('Content')->set('actualHoursSpent', $this->actualHoursSpent);
+		CFactory::_('Content')->set('actualDaysSpent', $this->actualDaysSpent);
+		CFactory::_('Content')->set('projectWeekTime', $this->projectWeekTime);
+		CFactory::_('Content')->set('projectMonthTime', $this->projectMonthTime);
 	}
 
 	private function setLocalRepos()

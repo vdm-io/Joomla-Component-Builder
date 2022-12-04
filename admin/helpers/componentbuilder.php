@@ -3799,7 +3799,7 @@ abstract class ComponentbuilderHelper
 		// make sure we have the composer classes loaded
 		self::composerAutoload('phpseclib');
 		// build class name
-		$CLASS = '\phpseclib\Crypt\\' . $type;
+		$CLASS = '\phpseclib3\Crypt\\' . $type;
 		// make sure we have the phpseclib classes
 		if (!class_exists($CLASS))
 		{
@@ -3813,31 +3813,31 @@ abstract class ComponentbuilderHelper
 			switch ($mode)
 			{
 				case 'CTR':
-					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_CTR);
+					self::$CRYPT[$key] = new $CLASS('ctr');
 				break;
 				case 'ECB':
-					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_ECB);
+					self::$CRYPT[$key] = new $CLASS('ecb');
 				break;
 				case 'CBC':
-					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_CBC);
+					self::$CRYPT[$key] = new $CLASS('cbc');
 				break;
 				case 'CBC3':
-					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_CBC3);
+					self::$CRYPT[$key] = new $CLASS('cbc3');
 				break;
 				case 'CFB':
-					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_CFB);
+					self::$CRYPT[$key] = new $CLASS('cfb');
 				break;
 				case 'CFB8':
-					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_CFB8);
+					self::$CRYPT[$key] = new $CLASS('cfb8');
 				break;
 				case 'OFB':
-					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_OFB);
+					self::$CRYPT[$key] = new $CLASS('ofb');
 				break;
 				case 'GCM':
-					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_GCM);
+					self::$CRYPT[$key] = new $CLASS('gcm');
 				break;
 				case 'STREAM':
-					self::$CRYPT[$key] = new $CLASS($CLASS::MODE_STREAM);
+					self::$CRYPT[$key] = new $CLASS('stream');
 				break;
 				default:
 					// No valid mode has been specified
@@ -3848,7 +3848,7 @@ abstract class ComponentbuilderHelper
 		}
 		else
 		{
-			// set the 
+			// set the default
 			self::$CRYPT[$key] = new $CLASS();
 		}
 		// return the object
@@ -3958,7 +3958,7 @@ abstract class ComponentbuilderHelper
 				// make sure we have the composer classes loaded
 				self::composerAutoload('phpseclib');
 				// make sure we have the phpseclib classes
-				if (!class_exists('\phpseclib\Net\SFTP'))
+				if (!class_exists('\phpseclib3\Net\SFTP'))
 				{
 					// class not in place so send out error
 					JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_THE_BPHPSECLIBNETSFTPB_LIBRARYCLASS_IS_NOT_AVAILABLE_THIS_LIBRARYCLASS_SHOULD_HAVE_BEEN_ADDED_TO_YOUR_BLIBRARIESVDM_IOVENDORB_FOLDER_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO'), 'Error');
@@ -3967,7 +3967,7 @@ abstract class ComponentbuilderHelper
 				// insure the port is set
 				$server->port = (isset($server->port) && is_numeric($server->port) && $server->port > 0) ? (int) $server->port : 22;
 				// open the connection
-				self::$sftp[$server->cache] = new phpseclib\Net\SFTP($server->host, $server->port);
+				self::$sftp[$server->cache] = new phpseclib3\Net\SFTP($server->host, $server->port);
 				// heads-up on protocol
 				self::$sftp[$server->cache]->jcb_protocol = 2; // SFTP <-- if called not knowing what type of protocol is being used
 				// now login based on authentication type

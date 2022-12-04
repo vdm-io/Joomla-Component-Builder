@@ -175,7 +175,7 @@ class ComponentbuilderModelAjax extends ListModel
 			// we first use the new encryption
 			// load phpseclib <https://phpseclib.com/docs/symmetric>
 			$opened = false;
-			if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib\Crypt\Rijndael)
+			if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib3\Crypt\Rijndael)
 			{
 				// load the system password
 				ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($password, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');

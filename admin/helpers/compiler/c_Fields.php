@@ -29,7 +29,6 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 class Fields extends Structure
 {
 
-
 	/**
 	 * Metadate Switch
 	 *
@@ -5386,7 +5385,7 @@ class Fields extends Structure
 				) : 'com_' . CFactory::_('Config')->component_code_name,
 				// set the generic values
 				Placefix::_('component')                          => CFactory::_('Config')->component_code_name,
-				Placefix::_('Component')                          => $this->fileContentStatic[Placefix::_h('Component')],
+				Placefix::_('Component')                          => CFactory::_('Content')->get('Component'),
 				Placefix::_('view')                          => (isset($data['custom']['view'])
 					&& StringHelper::check(
 						$data['custom']['view']

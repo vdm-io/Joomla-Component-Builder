@@ -186,22 +186,6 @@
 		</field>
 		<!-- Load_powers_note Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="load_powers_note" label="COM_COMPONENTBUILDER_POWER_LOAD_POWERS_NOTE_LABEL" description="COM_COMPONENTBUILDER_POWER_LOAD_POWERS_NOTE_DESCRIPTION" heading="h4" class="alert alert-info load_powers_note" />
-		<!-- Main_class_code Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="main_class_code"
-			label="COM_COMPONENTBUILDER_POWER_MAIN_CLASS_CODE_LABEL"
-			description="COM_COMPONENTBUILDER_POWER_MAIN_CLASS_CODE_DESCRIPTION"
-			width="100%"
-			height="800px"
-			cols="40"
-			rows="300"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			validate="code"
-		/>
 		<!-- Description Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -227,6 +211,63 @@
 			validate="code"
 			showon="add_licensing_template:2"
 		/>
+		<!-- Composer Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="composer"
+			label="COM_COMPONENTBUILDER_POWER_COMPOSER_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			buttons="add,remove,move"
+			icon="list"
+			max="1"
+			min="0">
+			<form hidden="true" name="list_composer_modal" repeat="true">
+				<!-- Access_point Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="access_point"
+					label="COM_COMPONENTBUILDER_POWER_ACCESS_POINT_LABEL"
+					size="70"
+					maxlength="300"
+					description="COM_COMPONENTBUILDER_POWER_ACCESS_POINT_DESCRIPTION"
+					class="text_area"
+					required="true"
+					filter="PATH"
+					message="COM_COMPONENTBUILDER_POWER_ACCESS_POINT_MESSAGE"
+					hint="COM_COMPONENTBUILDER_POWER_ACCESS_POINT_HINT"
+				/>
+				<!-- Namespace Field. Type: Subform. (joomla) -->
+				<field
+					type="subform"
+					name="namespace"
+					label="COM_COMPONENTBUILDER_POWER_NAMESPACE_LABEL"
+					layout="joomla.form.field.subform.repeatable-table"
+					multiple="true"
+					buttons="add,remove,move"
+					icon="list"
+					max="30"
+					min="1"
+					nested_depth="1">
+					<form hidden="true" name="list_namespace_modal" repeat="true">
+						<!-- Use Field. Type: Text. (joomla) -->
+						<field
+							type="text"
+							name="use"
+							label="COM_COMPONENTBUILDER_POWER_USE_LABEL"
+							size="70"
+							maxlength="300"
+							class="text_area"
+							required="true"
+							filter="STRING"
+							message="COM_COMPONENTBUILDER_POWER_USE_MESSAGE"
+							hint="COM_COMPONENTBUILDER_POWER_USE_HINT"
+							autocomplete="on"
+						/>
+					</form>
+				</field>
+			</form>
+		</field>
 		<!-- Property_selection Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -372,21 +413,8 @@
 			required="false"
 			validate="code"
 		/>
-		<!-- Add_licensing_template Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_licensing_template"
-			label="COM_COMPONENTBUILDER_POWER_ADD_LICENSING_TEMPLATE_LABEL"
-			description="COM_COMPONENTBUILDER_POWER_ADD_LICENSING_TEMPLATE_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_POWER_USE_GLOBAL</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_POWER_OVERRIDE</option>
-		</field>
+		<!-- Autoload_composer_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="autoload_composer_note" label="COM_COMPONENTBUILDER_POWER_AUTOLOAD_COMPOSER_NOTE_LABEL" description="COM_COMPONENTBUILDER_POWER_AUTOLOAD_COMPOSER_NOTE_DESCRIPTION" heading="h4" class="alert alert-info autoload_composer_note" />
 		<!-- Use_selection Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -425,6 +453,37 @@
 				/>
 			</form>
 		</field>
+		<!-- Add_licensing_template Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_licensing_template"
+			label="COM_COMPONENTBUILDER_POWER_ADD_LICENSING_TEMPLATE_LABEL"
+			description="COM_COMPONENTBUILDER_POWER_ADD_LICENSING_TEMPLATE_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_POWER_USE_GLOBAL</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_POWER_OVERRIDE</option>
+		</field>
+		<!-- Main_class_code Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="main_class_code"
+			label="COM_COMPONENTBUILDER_POWER_MAIN_CLASS_CODE_LABEL"
+			description="COM_COMPONENTBUILDER_POWER_MAIN_CLASS_CODE_DESCRIPTION"
+			width="100%"
+			height="800px"
+			cols="40"
+			rows="300"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
+		/>
 		<!-- Guid Field. Type: Text. (joomla) -->
 		<field
 			type="text"

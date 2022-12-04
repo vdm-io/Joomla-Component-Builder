@@ -2,7 +2,7 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    3rd September, 2022
+ * @created    4th September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
  * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
@@ -16,7 +16,6 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Database\Load;
 use VDM\Joomla\Componentbuilder\Search\Database\Load as LoadDatabase;
-use VDM\Joomla\Componentbuilder\Database\Insert;
 use VDM\Joomla\Componentbuilder\Search\Database\Insert as InsertDatabase;
 
 
@@ -42,9 +41,6 @@ class Database implements ServiceProviderInterface
 
 		$container->alias(LoadDatabase::class, 'Load.Database')
 			->share('Load.Database', [$this, 'getDatabaseLoad'], true);
-
-		$container->alias(Insert::class, 'Insert')
-			->share('Insert', [$this, 'getInsert'], true);
 
 		$container->alias(InsertDatabase::class, 'Insert.Database')
 			->share('Insert.Database', [$this, 'getDatabaseInsert'], true);
@@ -79,19 +75,6 @@ class Database implements ServiceProviderInterface
 			$container->get('Load.Model'),
 			$container->get('Load')
 		);
-	}
-
-	/**
-	 * Get the Core Insert Database
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Insert
-	 * @since 3.2.0
-	 */
-	public function getInsert(Container $container): Insert
-	{
-		return new Insert();
 	}
 
 	/**

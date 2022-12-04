@@ -2,7 +2,7 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    3rd September, 2022
+ * @created    4th September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
  * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
@@ -181,7 +181,7 @@ class Load implements LoadInterface
 			// get the title value
 			$title = $this->table->titleName($table);
 			// set order
-			$order = [$title => 'ASC'];
+			$order = ['a.' . $title => 'ASC'];
 			// select all
 			$where = null;
 			// no limit

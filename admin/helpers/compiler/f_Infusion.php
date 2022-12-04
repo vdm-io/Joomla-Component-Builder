@@ -66,269 +66,236 @@ class Infusion extends Interpretation
 		{
 			// for plugin event TODO change event api signatures
 			$this->placeholders = CFactory::_('Placeholder')->active;
+			$fileContentStatic = CFactory::_('Content')->active;
+			// $this->fileContentDynamic = CFactory::_('Content')->_active;
 			// Trigger Event: jcb_ce_onBeforeBuildFilesContent
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildFilesContent',
 				array(&$this->componentContext, &$this->componentData,
-					&$this->fileContentStatic, &$this->fileContentDynamic,
+					&$fileContentStatic, &$this->fileContentDynamic,
 					&$this->placeholders, &$this->hhh)
 			);
 			// for plugin event TODO change event api signatures
 			CFactory::_('Placeholder')->active = $this->placeholders;
+			CFactory::_('Content')->active = $fileContentStatic;
+			// CFactory::_('Content')->_active = $this->fileContentDynamic;
+			unset($fileContentStatic);
 
 			// COMPONENT
-			$this->fileContentStatic[Placefix::_h('COMPONENT')]
-				= CFactory::_('Placeholder')->active[Placefix::_h('COMPONENT')];
+			CFactory::_('Content')->set('COMPONENT', CFactory::_('Placeholder')->active[Placefix::_h('COMPONENT')]);
 
 			// Component
-			$this->fileContentStatic[Placefix::_h('Component')]
-				= CFactory::_('Placeholder')->active[Placefix::_h('Component')];
+			CFactory::_('Content')->set('Component', CFactory::_('Placeholder')->active[Placefix::_h('Component')]);
 
 			// component
-			$this->fileContentStatic[Placefix::_h('component')]
-				= CFactory::_('Placeholder')->active[Placefix::_h('component')];
+			CFactory::_('Content')->set('component', CFactory::_('Placeholder')->active[Placefix::_h('component')]);
 
 			// COMPANYNAME
-			$this->fileContentStatic[Placefix::_h('COMPANYNAME')]
-				= trim(
+			CFactory::_('Content')->set('COMPANYNAME', trim(
 				JFilterOutput::cleanText($this->componentData->companyname)
-			);
+			));
 
 			// CREATIONDATE
-			$this->fileContentStatic[Placefix::_h('CREATIONDATE')]
-				= JFactory::getDate($this->componentData->created)->format(
+			CFactory::_('Content')->set('CREATIONDATE',
+				JFactory::getDate($this->componentData->created)->format(
 				'jS F, Y'
-			);
-			$this->fileContentStatic[Placefix::_h('CREATIONDATE')
-			. 'GLOBAL']
-				= $this->fileContentStatic[Placefix::_h('CREATIONDATE')];
+			));
+			CFactory::_('Content')->set('GLOBALCREATIONDATE',
+				CFactory::_('Content')->get('CREATIONDATE'));
 
 			// BUILDDATE
-			$this->fileContentStatic[Placefix::_h('BUILDDATE')]
-				= JFactory::getDate()->format('jS F, Y');
-			$this->fileContentStatic[Placefix::_h('BUILDDATE')
-			. 'GLOBAL']
-				= $this->fileContentStatic[Placefix::_h('BUILDDATE')];
+			CFactory::_('Content')->set('BUILDDATE', JFactory::getDate()->format('jS F, Y'));
+			CFactory::_('Content')->set('GLOBALBUILDDATE',
+				CFactory::_('Content')->get('BUILDDATE'));
 
 			// AUTHOR
-			$this->fileContentStatic[Placefix::_h('AUTHOR')] = trim(
+			CFactory::_('Content')->set('AUTHOR', trim(
 				JFilterOutput::cleanText($this->componentData->author)
-			);
+			));
 
 			// AUTHOREMAIL
-			$this->fileContentStatic[Placefix::_h('AUTHOREMAIL')]
-				= trim($this->componentData->email);
+			CFactory::_('Content')->set('AUTHOREMAIL', trim($this->componentData->email));
 
 			// AUTHORWEBSITE
-			$this->fileContentStatic[Placefix::_h('AUTHORWEBSITE')]
-				= trim($this->componentData->website);
+			CFactory::_('Content')->set('AUTHORWEBSITE', trim($this->componentData->website));
 
 			// COPYRIGHT
-			$this->fileContentStatic[Placefix::_h('COPYRIGHT')]
-				= trim($this->componentData->copyright);
+			CFactory::_('Content')->set('COPYRIGHT', trim($this->componentData->copyright));
 
 			// LICENSE
-			$this->fileContentStatic[Placefix::_h('LICENSE')]
-				= trim($this->componentData->license);
+			CFactory::_('Content')->set('LICENSE', trim($this->componentData->license));
 
 			// VERSION
-			$this->fileContentStatic[Placefix::_h('VERSION')]
-				= trim($this->componentData->component_version);
+			CFactory::_('Content')->set('VERSION', trim($this->componentData->component_version));
 			// set the actual global version
-			$this->fileContentStatic[Placefix::_h('ACTUALVERSION')]
-				= $this->fileContentStatic[Placefix::_h('VERSION')];
+			CFactory::_('Content')->set('ACTUALVERSION', CFactory::_('Content')->get('VERSION'));
 
 			// do some Tweaks to the version based on selected options
-			if (strpos(
-					$this->fileContentStatic[Placefix::_h('VERSION')], '.'
-				) !== false)
+			if (strpos(CFactory::_('Content')->get('VERSION'), '.') !== false)
 			{
 				$versionArray = explode(
-					'.', $this->fileContentStatic[Placefix::_h('VERSION')]
+					'.', CFactory::_('Content')->get('VERSION')
 				);
 			}
 			// load only first two values
 			if (isset($versionArray)
 				&& ArrayHelper::check(
 					$versionArray
-				)
-				&& $this->componentData->mvc_versiondate == 2)
+				) && $this->componentData->mvc_versiondate == 2)
 			{
-				$this->fileContentStatic[Placefix::_h('VERSION')]
-					= $versionArray[0] . '.' . $versionArray[1] . '.x';
+				CFactory::_('Content')->set('VERSION', $versionArray[0] . '.' . $versionArray[1] . '.x');
 			}
 			// load only the first value
 			elseif (isset($versionArray)
 				&& ArrayHelper::check(
 					$versionArray
-				)
-				&& $this->componentData->mvc_versiondate == 3)
+				) && $this->componentData->mvc_versiondate == 3)
 			{
-				$this->fileContentStatic[Placefix::_h('VERSION')]
-					= $versionArray[0] . '.x.x';
+				CFactory::_('Content')->set('VERSION', $versionArray[0] . '.x.x');
 			}
 			unset($versionArray);
 
 			// set the global version in case			
-			$this->fileContentStatic[Placefix::_h('VERSION')
-			. 'GLOBAL']
-				= $this->fileContentStatic[Placefix::_h('VERSION')];
+			CFactory::_('Content')->set('GLOBALVERSION', CFactory::_('Content')->get('VERSION'));
 
 			// set the joomla target xml version
-			$this->fileContentStatic[Placefix::_h('XMLVERSION')]
-				= $this->joomlaVersions[CFactory::_('Config')->joomla_version]['xml_version'];
+			CFactory::_('Content')->set('XMLVERSION', $this->joomlaVersions[CFactory::_('Config')->joomla_version]['xml_version']);
 
 			// Component_name
-			$this->fileContentStatic[Placefix::_h('Component_name')]
-				= JFilterOutput::cleanText($this->componentData->name);
+			CFactory::_('Content')->set('Component_name', JFilterOutput::cleanText($this->componentData->name));
 
 			// SHORT_DISCRIPTION
-			$this->fileContentStatic[Placefix::_h('SHORT_DESCRIPTION')]
-				= trim(
+			CFactory::_('Content')->set('SHORT_DESCRIPTION', trim(
 				JFilterOutput::cleanText(
 					$this->componentData->short_description
 				)
-			);
+			));
 
 			// DESCRIPTION
-			$this->fileContentStatic[Placefix::_h('DESCRIPTION')]
-				= trim($this->componentData->description);
+			CFactory::_('Content')->set('DESCRIPTION', trim($this->componentData->description));
 
 			// COMP_IMAGE_TYPE
-			$this->fileContentStatic[Placefix::_h('COMP_IMAGE_TYPE')]
-				= $this->setComponentImageType($this->componentData->image);
+			CFactory::_('Content')->set('COMP_IMAGE_TYPE', $this->setComponentImageType($this->componentData->image));
 
 			// ACCESS_SECTIONS
-			$this->fileContentStatic[Placefix::_h('ACCESS_SECTIONS')]
-				= $this->setAccessSections();
+			CFactory::_('Content')->set('ACCESS_SECTIONS', $this->setAccessSections());
 
 			// CONFIG_FIELDSETS
 			$keepLang   = CFactory::_('Config')->lang_target;
 			CFactory::_('Config')->lang_target = 'admin';
 
 			// start loading the category tree scripts
-			$this->fileContentStatic[Placefix::_h('CATEGORY_CLASS_TREES')]
-				= '';
+			CFactory::_('Content')->set('CATEGORY_CLASS_TREES', '');
 			// run the field sets for first time
 			$this->setConfigFieldsets(1);
 			CFactory::_('Config')->lang_target = $keepLang;
 
 			// ADMINJS
-			$this->fileContentStatic[Placefix::_h('ADMINJS')]
-				= CFactory::_('Placeholder')->update(
+			CFactory::_('Content')->set('ADMINJS',
+				CFactory::_('Placeholder')->update(
 				CFactory::_('Customcode.Dispenser')->hub['component_js'], CFactory::_('Placeholder')->active
-			);
+			));
 			// SITEJS
-			$this->fileContentStatic[Placefix::_h('SITEJS')]
-				= CFactory::_('Placeholder')->update(
+			CFactory::_('Content')->set('SITEJS',
+				CFactory::_('Placeholder')->update(
 				CFactory::_('Customcode.Dispenser')->hub['component_js'], CFactory::_('Placeholder')->active
-			);
+			));
 
 			// ADMINCSS
-			$this->fileContentStatic[Placefix::_h('ADMINCSS')]
-				= CFactory::_('Placeholder')->update(
+			CFactory::_('Content')->set('ADMINCSS',
+				CFactory::_('Placeholder')->update(
 				CFactory::_('Customcode.Dispenser')->hub['component_css_admin'],
 				CFactory::_('Placeholder')->active
-			);
+			));
 			// SITECSS
-			$this->fileContentStatic[Placefix::_h('SITECSS')]
-				= CFactory::_('Placeholder')->update(
+			CFactory::_('Content')->set('SITECSS',
+				CFactory::_('Placeholder')->update(
 				CFactory::_('Customcode.Dispenser')->hub['component_css_site'],
 				CFactory::_('Placeholder')->active
-			);
+			));
 
 			// CUSTOM_HELPER_SCRIPT
-			$this->fileContentStatic[Placefix::_h('CUSTOM_HELPER_SCRIPT')]
-				= CFactory::_('Placeholder')->update(
+			CFactory::_('Content')->set('CUSTOM_HELPER_SCRIPT',
+				CFactory::_('Placeholder')->update(
 				CFactory::_('Customcode.Dispenser')->hub['component_php_helper_admin'],
 				CFactory::_('Placeholder')->active
-			);
+			));
 
 			// BOTH_CUSTOM_HELPER_SCRIPT
-			$this->fileContentStatic[Placefix::_h('BOTH_CUSTOM_HELPER_SCRIPT')]
-				= CFactory::_('Placeholder')->update(
+			CFactory::_('Content')->set('BOTH_CUSTOM_HELPER_SCRIPT',
+				CFactory::_('Placeholder')->update(
 				CFactory::_('Customcode.Dispenser')->hub['component_php_helper_both'],
 				CFactory::_('Placeholder')->active
-			);
+			));
 
 			// ADMIN_GLOBAL_EVENT_HELPER
-			if (!isset($this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT')]))
+			if (!CFactory::_('Content')->exist('ADMIN_GLOBAL_EVENT'))
 			{
-				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT')] = '';
+				CFactory::_('Content')->set('ADMIN_GLOBAL_EVENT', '');
 			}
-			if (!isset($this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT_HELPER')]))
+			if (!CFactory::_('Content')->exist('ADMIN_GLOBAL_EVENT_HELPER'))
 			{
-				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT_HELPER')] = '';
+				CFactory::_('Content')->set('ADMIN_GLOBAL_EVENT_HELPER', '');
 			}
 			// now load the data for the global event if needed
 			if ($this->componentData->add_admin_event == 1)
 			{
 				// ADMIN_GLOBAL_EVENT
-				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT')]
-					.= PHP_EOL . PHP_EOL . '// Trigger the Global Admin Event';
-				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT')]
-					.= PHP_EOL . $this->fileContentStatic[Placefix::_h('Component')]
-					. 'Helper::globalEvent($document);';
+				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT', PHP_EOL . PHP_EOL . '// Trigger the Global Admin Event');
+				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT',
+					PHP_EOL . CFactory::_('Content')->get('Component')
+					. 'Helper::globalEvent($document);');
 				// ADMIN_GLOBAL_EVENT_HELPER
-				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT_HELPER')]
-					.= PHP_EOL . PHP_EOL . Indent::_(1) . '/**';
-				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT_HELPER')]
-					.= PHP_EOL . Indent::_(1)
-					. '*	The Global Admin Event Method.';
-				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT_HELPER')]
-					.= PHP_EOL . Indent::_(1) . '**/';
-				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT_HELPER')]
-					.= PHP_EOL . Indent::_(1)
-					. 'public static function globalEvent($document)';
-				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT_HELPER')]
-					.= PHP_EOL . Indent::_(1) . '{';
-				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT_HELPER')]
-					.= PHP_EOL . CFactory::_('Placeholder')->update(
+				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . PHP_EOL . Indent::_(1) . '/**');
+				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER',
+					PHP_EOL . Indent::_(1)
+					. '*	The Global Admin Event Method.');
+				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '**/');
+				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER',
+					PHP_EOL . Indent::_(1)
+					. 'public static function globalEvent($document)');
+				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '{');
+				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER',
+					PHP_EOL . CFactory::_('Placeholder')->update(
 						CFactory::_('Customcode.Dispenser')->hub['component_php_admin_event'],
 						CFactory::_('Placeholder')->active
-					);
-				$this->fileContentStatic[Placefix::_h('ADMIN_GLOBAL_EVENT_HELPER')]
-					.= PHP_EOL . Indent::_(1) . '}';
+					));
+				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '}');
 			}
 
 			// now load the readme file if needed
 			if ($this->componentData->addreadme == 1)
 			{
-				$this->fileContentStatic[Placefix::_h('EXSTRA_ADMIN_FILES')]
-					.= PHP_EOL . Indent::_(3)
-					. "<filename>README.txt</filename>";
+				CFactory::_('Content')->add('EXSTRA_ADMIN_FILES',
+					PHP_EOL . Indent::_(3)
+					. "<filename>README.txt</filename>");
 			}
 
 			// HELPER_CREATEUSER
-			$this->fileContentStatic[Placefix::_h('HELPER_CREATEUSER')]
-				= $this->setCreateUserHelperMethod(
+			CFactory::_('Content')->add('HELPER_CREATEUSER',
+				$this->setCreateUserHelperMethod(
 				$this->componentData->creatuserhelper
-			);
+			));
 
 			// HELP
-			$this->fileContentStatic[Placefix::_h('HELP')]
-				= $this->noHelp();
+			CFactory::_('Content')->set('HELP', $this->noHelp());
 			// HELP_SITE
-			$this->fileContentStatic[Placefix::_h('HELP_SITE')]
-				= $this->noHelp();
+			CFactory::_('Content')->set('HELP_SITE', $this->noHelp());
 
 			// build route parse switch
-			$this->fileContentStatic[Placefix::_h('ROUTER_PARSE_SWITCH')]
-				= '';
+			CFactory::_('Content')->set('ROUTER_PARSE_SWITCH', '');
 			// build route views
-			$this->fileContentStatic[Placefix::_h('ROUTER_BUILD_VIEWS')]
-				= '';
+			CFactory::_('Content')->set('ROUTER_BUILD_VIEWS', '');
 
 			// add the helper emailer if set
-			$this->fileContentStatic[Placefix::_h('HELPER_EMAIL')]
-				= $this->addEmailHelper();
+			CFactory::_('Content')->set('HELPER_EMAIL', $this->addEmailHelper());
 
 			// load the global placeholders
 			foreach (CFactory::_('Component.Placeholder')->get() as $globalPlaceholder =>
 				$gloabalValue
 			)
 			{
-				$this->fileContentStatic[$globalPlaceholder] = $gloabalValue;
+				CFactory::_('Content')->set($globalPlaceholder, $gloabalValue);
 			}
 
 			// reset view array
@@ -386,18 +353,23 @@ class Infusion extends Interpretation
 
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
+					$fileContentStatic = CFactory::_('Content')->active;
+					// $this->fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onBeforeBuildAdminEditViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildAdminEditViewContent',
 						array(&$this->componentContext, &$view,
 							&$nameSingleCode,
 							&$nameListCode,
-							&$this->fileContentStatic,
+							&$fileContentStatic,
 							&$this->fileContentDynamic[$nameSingleCode],
 							&$this->placeholders, &$this->hhh)
 					);
 					// for plugin event TODO change event api signatures
 					CFactory::_('Placeholder')->active = $this->placeholders;
+					CFactory::_('Content')->active = $fileContentStatic;
+					// CFactory::_('Content')->_active = $this->fileContentDynamic;
+					unset($fileContentStatic);
 
 					// FIELDSETS <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('FIELDSETS')]
@@ -469,7 +441,7 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('VALIDATIONFIX')]
 						= $this->setValidationFix(
 						$nameSingleCode,
-						$this->fileContentStatic[Placefix::_h('Component')]
+						CFactory::_('Content')->get('Component')
 					);
 
 					// EDITBODY <<<DYNAMIC>>>
@@ -636,18 +608,23 @@ class Infusion extends Interpretation
 
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
+					$fileContentStatic = CFactory::_('Content')->active;
+					// $this->fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onAfterBuildAdminEditViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildAdminEditViewContent',
 						array(&$this->componentContext, &$view,
 							&$nameSingleCode,
 							&$nameListCode,
-							&$this->fileContentStatic,
+							&$fileContentStatic,
 							&$this->fileContentDynamic[$nameSingleCode],
 							&$this->placeholders, &$this->hhh)
 					);
 					// for plugin event TODO change event api signatures
 					CFactory::_('Placeholder')->active = $this->placeholders;
+					CFactory::_('Content')->active = $fileContentStatic;
+					// CFactory::_('Content')->_active = $this->fileContentDynamic;
+					unset($fileContentStatic);
 				}
 				// set the views names
 				if (isset($view['settings']->name_list)
@@ -661,18 +638,23 @@ class Infusion extends Interpretation
 
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
+					$fileContentStatic = CFactory::_('Content')->active;
+					// $this->fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onBeforeBuildAdminListViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildAdminListViewContent',
 						array(&$this->componentContext, &$view,
 							&$nameSingleCode,
 							&$nameListCode,
-							&$this->fileContentStatic,
+							&$fileContentStatic,
 							&$this->fileContentDynamic[$nameListCode],
 							&$this->placeholders, &$this->hhh)
 					);
 					// for plugin event TODO change event api signatures
 					CFactory::_('Placeholder')->active = $this->placeholders;
+					CFactory::_('Content')->active = $fileContentStatic;
+					// CFactory::_('Content')->_active = $this->fileContentDynamic;
+					unset($fileContentStatic);
 
 					// set the export/import option
 					if (isset($view['port']) && $view['port']
@@ -737,7 +719,7 @@ class Infusion extends Interpretation
 						= $this->setGetItemsMethodStringFix(
 						$nameSingleCode,
 						$nameListCode,
-						$this->fileContentStatic[Placefix::_h('Component')]
+						CFactory::_('Content')->get('Component')
 					);
 
 					// GET_ITEMS_METHOD_AFTER_ALL <<<DYNAMIC>>>
@@ -751,14 +733,14 @@ class Infusion extends Interpretation
 					$this->fileContentDynamic[$nameListCode][Placefix::_h('SELECTIONTRANSLATIONFIX')]
 						= $this->setSelectionTranslationFix(
 						$nameListCode,
-						$this->fileContentStatic[Placefix::_h('Component')]
+						CFactory::_('Content')->get('Component')
 					);
 
 					// SELECTIONTRANSLATIONFIXFUNC <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameListCode][Placefix::_h('SELECTIONTRANSLATIONFIXFUNC')]
 						= $this->setSelectionTranslationFixFunc(
 						$nameListCode,
-						$this->fileContentStatic[Placefix::_h('Component')]
+						CFactory::_('Content')->get('Component')
 					);
 
 					// FILTER_FIELDS <<<DYNAMIC>>>
@@ -787,18 +769,11 @@ class Infusion extends Interpretation
 					);
 
 					// CATEGORY_VIEWS
-					if (!isset(
-						$this->fileContentStatic[Placefix::_h('ROUTER_CATEGORY_VIEWS')]
-					))
-					{
-						$this->fileContentStatic[Placefix::_h('ROUTER_CATEGORY_VIEWS')]
-							= '';
-					}
-					$this->fileContentStatic[Placefix::_h('ROUTER_CATEGORY_VIEWS')]
-						.= $this->setRouterCategoryViews(
+					CFactory::_('Content')->add('ROUTER_CATEGORY_VIEWS',
+						$this->setRouterCategoryViews(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// FILTERFIELDDISPLAYHELPER <<<DYNAMIC>>>
 					$this->fileContentDynamic[$nameListCode][Placefix::_h('FILTERFIELDDISPLAYHELPER')]
@@ -977,18 +952,23 @@ class Infusion extends Interpretation
 
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
+					$fileContentStatic = CFactory::_('Content')->active;
+					// $this->fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onAfterBuildAdminListViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildAdminListViewContent',
 						array(&$this->componentContext, &$view,
 							&$nameSingleCode,
 							&$nameListCode,
-							&$this->fileContentStatic,
+							&$fileContentStatic,
 							&$this->fileContentDynamic[$nameListCode],
 							&$this->placeholders, &$this->hhh)
 					);
 					// for plugin event TODO change event api signatures
 					CFactory::_('Placeholder')->active = $this->placeholders;
+					CFactory::_('Content')->active = $fileContentStatic;
+					// CFactory::_('Content')->_active = $this->fileContentDynamic;
+					unset($fileContentStatic);
 				}
 
 				// set u fields used in batch
@@ -1098,18 +1078,11 @@ class Infusion extends Interpretation
 				);
 
 				// set helper router
-				if (!isset(
-					$this->fileContentStatic[Placefix::_h('ROUTEHELPER')]
-				))
-				{
-					$this->fileContentStatic[Placefix::_h('ROUTEHELPER')]
-						= '';
-				}
-				$this->fileContentStatic[Placefix::_h('ROUTEHELPER')]
-					.= $this->setRouterHelp(
+				CFactory::_('Content')->add('ROUTEHELPER',
+					$this->setRouterHelp(
 					$nameSingleCode,
 					$nameListCode
-				);
+				));
 
 				if (isset($view['edit_create_site_view'])
 					&& is_numeric(
@@ -1118,56 +1091,52 @@ class Infusion extends Interpretation
 					&& $view['edit_create_site_view'] > 0)
 				{
 					// add needed router stuff for front edit views
-					$this->fileContentStatic[Placefix::_h('ROUTER_PARSE_SWITCH')]
-						.= $this->routerParseSwitch(
+					CFactory::_('Content')->add('ROUTER_PARSE_SWITCH',
+						$this->routerParseSwitch(
 						$nameSingleCode, null, false
-					);
-					$this->fileContentStatic[Placefix::_h('ROUTER_BUILD_VIEWS')]
-						.= $this->routerBuildViews(
+					));
+					CFactory::_('Content')->add('ROUTER_BUILD_VIEWS',
+						$this->routerBuildViews(
 						$nameSingleCode
-					);
+					));
 				}
 
 				// ACCESS_SECTIONS
-				if (!isset(
-					$this->fileContentStatic[Placefix::_h('ACCESS_SECTIONS')]
-				))
-				{
-					$this->fileContentStatic[Placefix::_h('ACCESS_SECTIONS')]
-						= '';
-				}
-				$this->fileContentStatic[Placefix::_h('ACCESS_SECTIONS')]
-					.= $this->setAccessSectionsCategory(
+				CFactory::_('Content')->add('ACCESS_SECTIONS',
+					$this->setAccessSectionsCategory(
 					$nameSingleCode,
 					$nameListCode
-				);
+				));
 				// set the Joomla Fields ACCESS section if needed
 				if (isset($view['joomla_fields'])
 					&& $view['joomla_fields'] == 1)
 				{
-					$this->fileContentStatic[Placefix::_h('ACCESS_SECTIONS')]
-						.= $this->setAccessSectionsJoomlaFields();
+					CFactory::_('Content')->add('ACCESS_SECTIONS', $this->setAccessSectionsJoomlaFields());
 				}
 
 				// for plugin event TODO change event api signatures
 				$this->placeholders = CFactory::_('Placeholder')->active;
+				$fileContentStatic = CFactory::_('Content')->active;
+				// $this->fileContentDynamic = CFactory::_('Content')->_active;
 				// Trigger Event: jcb_ce_onAfterBuildAdminViewContent
 				CFactory::_('Event')->trigger(
 					'jcb_ce_onAfterBuildAdminViewContent',
 					array(&$this->componentContext, &$view,
 						&$nameSingleCode,
 						&$nameListCode,
-						&$this->fileContentStatic,
+						&$fileContentStatic,
 						&$this->fileContentDynamic, &$this->placeholders,
 						&$this->hhh)
 				);
 				// for plugin event TODO change event api signatures
 				CFactory::_('Placeholder')->active = $this->placeholders;
+				CFactory::_('Content')->active = $fileContentStatic;
+				// CFactory::_('Content')->_active = $this->fileContentDynamic;
+				unset($fileContentStatic);
 			}
 
 			// all fields stored in database
-			$this->fileContentStatic[Placefix::_h('ARRAY_ALL_SEARCH_FIELDS')] =
-				CFactory::_('Registry')->varExport('all_search_fields', 1);
+			CFactory::_('Content')->set('ARRAY_ALL_SEARCH_FIELDS', CFactory::_('Registry')->varExport('all_search_fields', 1));
 
 			// setup the layouts
 			$this->setCustomViewLayouts();
@@ -1240,17 +1209,22 @@ class Infusion extends Interpretation
 
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
+					$fileContentStatic = CFactory::_('Content')->active;
+					// $this->fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onBeforeBuildCustomAdminViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildCustomAdminViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
-							&$this->fileContentStatic,
+							&$fileContentStatic,
 							&$this->fileContentDynamic[$view['settings']->code],
 							&$this->placeholders, &$this->hhh)
 					);
 					// for plugin event TODO change event api signatures
 					CFactory::_('Placeholder')->active = $this->placeholders;
+					CFactory::_('Content')->active = $fileContentStatic;
+					// CFactory::_('Content')->_active = $this->fileContentDynamic;
+					unset($fileContentStatic);
 
 					// set license per view if needed
 					$this->setLockLicensePer(
@@ -1429,17 +1403,22 @@ class Infusion extends Interpretation
 
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
+					$fileContentStatic = CFactory::_('Content')->active;
+					// $this->fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onAfterBuildCustomAdminViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildCustomAdminViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
-							&$this->fileContentStatic,
+							&$fileContentStatic,
 							&$this->fileContentDynamic[$view['settings']->code],
 							&$this->placeholders, &$this->hhh)
 					);
 					// for plugin event TODO change event api signatures
 					CFactory::_('Placeholder')->active = $this->placeholders;
+					CFactory::_('Content')->active = $fileContentStatic;
+					// CFactory::_('Content')->_active = $this->fileContentDynamic;
+					unset($fileContentStatic);
 				}
 
 				// setup the layouts
@@ -1447,67 +1426,58 @@ class Infusion extends Interpretation
 			}
 
 			// ADMIN_HELPER_CLASS_HEADER
-			$this->fileContentStatic[Placefix::_h('ADMIN_HELPER_CLASS_HEADER')]
-				= $this->setFileHeader(
+			CFactory::_('Content')->set('ADMIN_HELPER_CLASS_HEADER',
+				$this->setFileHeader(
 				'admin.helper', 'admin'
-			);
+			));
 
 			// ADMIN_COMPONENT_HEADER
-			$this->fileContentStatic[Placefix::_h('ADMIN_COMPONENT_HEADER')]
-				= $this->setFileHeader(
+			CFactory::_('Content')->set('ADMIN_COMPONENT_HEADER',
+				$this->setFileHeader(
 				'admin.component', 'admin'
-			);
+			));
 
 			// SITE_HELPER_CLASS_HEADER
-			$this->fileContentStatic[Placefix::_h('SITE_HELPER_CLASS_HEADER')]
-				= $this->setFileHeader(
+			CFactory::_('Content')->set('SITE_HELPER_CLASS_HEADER',
+				$this->setFileHeader(
 				'site.helper', 'site'
-			);
+			));
 
 			// SITE_COMPONENT_HEADER
-			$this->fileContentStatic[Placefix::_h('SITE_COMPONENT_HEADER')]
-				= $this->setFileHeader(
+			CFactory::_('Content')->set('SITE_COMPONENT_HEADER',
+				$this->setFileHeader(
 				'site.component', 'site'
-			);
+			));
 
 			// HELPER_EXEL
-			$this->fileContentStatic[Placefix::_h('HELPER_EXEL')]
-				= $this->setHelperExelMethods();
+			CFactory::_('Content')->set('HELPER_EXEL', $this->setHelperExelMethods());
 
 			// VIEWARRAY
-			$this->fileContentStatic[Placefix::_h('VIEWARRAY')]
-				= PHP_EOL . implode("," . PHP_EOL, $viewarray);
+			CFactory::_('Content')->set('VIEWARRAY', PHP_EOL . implode("," . PHP_EOL, $viewarray));
 
 			// CUSTOM_ADMIN_EDIT_VIEW_ARRAY
-			$this->fileContentStatic[Placefix::_h('SITE_EDIT_VIEW_ARRAY')]
-				= PHP_EOL . implode("," . PHP_EOL, $site_edit_view_array);
+			CFactory::_('Content')->set('SITE_EDIT_VIEW_ARRAY', PHP_EOL . implode("," . PHP_EOL, $site_edit_view_array));
 
 			// MAINMENUS
-			$this->fileContentStatic[Placefix::_h('MAINMENUS')]
-				= $this->setMainMenus();
+			CFactory::_('Content')->set('MAINMENUS', $this->setMainMenus());
 
 			// SUBMENU
-			$this->fileContentStatic[Placefix::_h('SUBMENU')]
-				= $this->setSubMenus();
+			CFactory::_('Content')->set('SUBMENU', $this->setSubMenus());
 
 			// GET_CRYPT_KEY
-			$this->fileContentStatic[Placefix::_h('GET_CRYPT_KEY')]
-				= $this->setGetCryptKey();
+			CFactory::_('Content')->set('GET_CRYPT_KEY', $this->setGetCryptKey());
 
 			// set the license locker
 			$this->setLockLicense();
 
 			// CONTRIBUTORS
-			$this->fileContentStatic[Placefix::_h('CONTRIBUTORS')]
-				= $this->theContributors;
+			CFactory::_('Content')->set('CONTRIBUTORS', $this->theContributors);
 
 			// INSTALL
-			$this->fileContentStatic[Placefix::_h('INSTALL')]
-				= $this->setInstall();
+			CFactory::_('Content')->set('INSTALL', $this->setInstall());
 
 			// UNINSTALL
-			$this->fileContentStatic[Placefix::_h('UNINSTALL')]
-				= $this->setUninstall();
+			CFactory::_('Content')->set('UNINSTALL', $this->setUninstall());
 
 			// UPDATE_VERSION_MYSQL
 			$this->setVersionController();
@@ -1516,8 +1486,7 @@ class Infusion extends Interpretation
 			if (!StringHelper::check($this->dynamicDashboard))
 			{
 				// DASHBOARDVIEW
-				$this->fileContentStatic[Placefix::_h('DASHBOARDVIEW')]
-					= CFactory::_('Config')->component_code_name;
+				CFactory::_('Content')->set('DASHBOARDVIEW', CFactory::_('Config')->component_code_name);
 
 				// DASHBOARDICONS
 				$this->fileContentDynamic[CFactory::_('Config')->component_code_name][Placefix::_h('DASHBOARDICONS')]
@@ -1555,8 +1524,7 @@ class Infusion extends Interpretation
 			else
 			{
 				// DASHBOARDVIEW
-				$this->fileContentStatic[Placefix::_h('DASHBOARDVIEW')]
-					= $this->dynamicDashboard;
+				CFactory::_('Content')->set('DASHBOARDVIEW', $this->dynamicDashboard);
 			}
 
 			// add import
@@ -1714,17 +1682,22 @@ class Infusion extends Interpretation
 
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
+					$fileContentStatic = CFactory::_('Content')->active;
+					// $this->fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onBeforeBuildSiteViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildSiteViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
-							&$this->fileContentStatic,
+							&$fileContentStatic,
 							&$this->fileContentDynamic[$view['settings']->code],
 							&$this->placeholders, &$this->hhh)
 					);
 					// for plugin event TODO change event api signatures
 					CFactory::_('Placeholder')->active = $this->placeholders;
+					CFactory::_('Content')->active = $fileContentStatic;
+					// CFactory::_('Content')->_active = $this->fileContentDynamic;
+					unset($fileContentStatic);
 
 					// set license per view if needed
 					$this->setLockLicensePer(
@@ -1735,8 +1708,7 @@ class Infusion extends Interpretation
 					if (isset($view['default_view'])
 						&& $view['default_view'] == 1)
 					{
-						$this->fileContentStatic[Placefix::_h('SITE_DEFAULT_VIEW')]
-							= $view['settings']->code;
+						CFactory::_('Content')->set('SITE_DEFAULT_VIEW', $view['settings']->code);
 					}
 					// add site menu
 					if (isset($view['menu']) && $view['menu'] == 1)
@@ -1747,17 +1719,16 @@ class Infusion extends Interpretation
 					}
 
 					// insure the needed route helper is loaded
-					$this->fileContentStatic[Placefix::_h('ROUTEHELPER')]
-						.= $this->setRouterHelp(
+					CFactory::_('Content')->add('ROUTEHELPER',
+						$this->setRouterHelp(
 						$view['settings']->code, $view['settings']->code, true
-					);
+					));
 					// build route details
-					$this->fileContentStatic[Placefix::_h('ROUTER_PARSE_SWITCH')]
-						.= $this->routerParseSwitch(
+					CFactory::_('Content')->add('ROUTER_PARSE_SWITCH',
+						$this->routerParseSwitch(
 						$view['settings']->code, $view
-					);
-					$this->fileContentStatic[Placefix::_h('ROUTER_BUILD_VIEWS')]
-						.= $this->routerBuildViews($view['settings']->code);
+					));
+					CFactory::_('Content')->add('ROUTER_BUILD_VIEWS', $this->routerBuildViews($view['settings']->code));
 
 					if ($view['settings']->main_get->gettype == 1)
 					{
@@ -1931,17 +1902,22 @@ class Infusion extends Interpretation
 
 					// for plugin event TODO change event api signatures
 					$this->placeholders = CFactory::_('Placeholder')->active;
+					$fileContentStatic = CFactory::_('Content')->active;
+					// $this->fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onAfterBuildSiteViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildSiteViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
-							&$this->fileContentStatic,
+							&$fileContentStatic,
 							&$this->fileContentDynamic[$view['settings']->code],
 							&$this->placeholders, &$this->hhh)
 					);
 					// for plugin event TODO change event api signatures
 					CFactory::_('Placeholder')->active = $this->placeholders;
+					CFactory::_('Content')->active = $fileContentStatic;
+					// CFactory::_('Content')->_active = $this->fileContentDynamic;
+					unset($fileContentStatic);
 				}
 
 				// setup the layouts
@@ -1957,127 +1933,107 @@ class Infusion extends Interpretation
 			{
 				CFactory::_('Config')->build_target = 'site';
 				// if no default site view was set, the redirect to root
-				if (!isset(
-					$this->fileContentStatic[Placefix::_h('SITE_DEFAULT_VIEW')]
-				))
+				if (!CFactory::_('Content')->exist('SITE_DEFAULT_VIEW'))
 				{
-					$this->fileContentStatic[Placefix::_h('SITE_DEFAULT_VIEW')]
-						= '';
+					CFactory::_('Content')->set('SITE_DEFAULT_VIEW', '');
 				}
 				// set site custom script to helper class
 				// SITE_CUSTOM_HELPER_SCRIPT
-				$this->fileContentStatic[Placefix::_h('SITE_CUSTOM_HELPER_SCRIPT')]
-					= CFactory::_('Placeholder')->update(
+				CFactory::_('Content')->set('SITE_CUSTOM_HELPER_SCRIPT',
+					CFactory::_('Placeholder')->update(
 					CFactory::_('Customcode.Dispenser')->hub['component_php_helper_site'],
 					CFactory::_('Placeholder')->active
-				);
+				));
 				// SITE_GLOBAL_EVENT_HELPER
-				if (!isset($this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT')]))
+				if (!CFactory::_('Content')->exist('SITE_GLOBAL_EVENT'))
 				{
-					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT')] = '';
+					CFactory::_('Content')->set('SITE_GLOBAL_EVENT', '');
 				}
-				if (!isset($this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT_HELPER')]))
+				if (!CFactory::_('Content')->exist('SITE_GLOBAL_EVENT_HELPER'))
 				{
-					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT_HELPER')] = '';
+					CFactory::_('Content')->set('SITE_GLOBAL_EVENT_HELPER', '');
 				}
 				// now load the data for the global event if needed
 				if ($this->componentData->add_site_event == 1)
 				{
-					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT')]
-						.= PHP_EOL . PHP_EOL . '// Trigger the Global Site Event';
-					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT')]
-						.= PHP_EOL . $this->fileContentStatic[Placefix::_h('Component')]
-						. 'Helper::globalEvent($document);';
+					CFactory::_('Content')->add('SITE_GLOBAL_EVENT', PHP_EOL . PHP_EOL . '// Trigger the Global Site Event');
+					CFactory::_('Content')->add('SITE_GLOBAL_EVENT',
+						PHP_EOL . CFactory::_('Content')->get('Component')
+						. 'Helper::globalEvent($document);');
 					// SITE_GLOBAL_EVENT_HELPER
-					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT_HELPER')]
-						.= PHP_EOL . PHP_EOL . Indent::_(1) . '/**';
-					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT_HELPER')]
-						.= PHP_EOL . Indent::_(1)
-						. '*	The Global Site Event Method.';
-					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT_HELPER')]
-						.= PHP_EOL . Indent::_(1) . '**/';
-					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT_HELPER')]
-						.= PHP_EOL . Indent::_(1)
-						. 'public static function globalEvent($document)';
-					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT_HELPER')]
-						.= PHP_EOL . Indent::_(1) . '{';
-					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT_HELPER')]
-						.= PHP_EOL . CFactory::_('Placeholder')->update(
+					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . PHP_EOL . Indent::_(1) . '/**');
+					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER',
+						PHP_EOL . Indent::_(1)
+						. '*	The Global Site Event Method.');
+					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '**/');
+					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER',
+						PHP_EOL . Indent::_(1)
+						. 'public static function globalEvent($document)');
+					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '{');
+					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER',
+						PHP_EOL . CFactory::_('Placeholder')->update(
 							CFactory::_('Customcode.Dispenser')->hub['component_php_site_event'],
 							CFactory::_('Placeholder')->active
-						);
-					$this->fileContentStatic[Placefix::_h('SITE_GLOBAL_EVENT_HELPER')]
-						.= PHP_EOL . Indent::_(1) . '}';
+						));
+					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '}');
 				}
 			}
 
 			// PREINSTALLSCRIPT
-			$this->fileContentStatic[Placefix::_h('PREINSTALLSCRIPT')]
-				= CFactory::_('Customcode.Dispenser')->get(
+			CFactory::_('Content')->set('PREINSTALLSCRIPT',
+				CFactory::_('Customcode.Dispenser')->get(
 				'php_preflight', 'install', PHP_EOL, null, true
-			);
+			));
 
 			// PREUPDATESCRIPT
-			$this->fileContentStatic[Placefix::_h('PREUPDATESCRIPT')]
-				= CFactory::_('Customcode.Dispenser')->get(
+			CFactory::_('Content')->set('PREUPDATESCRIPT',
+				CFactory::_('Customcode.Dispenser')->get(
 				'php_preflight', 'update', PHP_EOL, null, true
-			);
+			));
 
 			// POSTINSTALLSCRIPT
-			$this->fileContentStatic[Placefix::_h('POSTINSTALLSCRIPT')]
-				= $this->setPostInstallScript();
+			CFactory::_('Content')->set('POSTINSTALLSCRIPT', $this->setPostInstallScript());
 
 			// POSTUPDATESCRIPT
-			$this->fileContentStatic[Placefix::_h('POSTUPDATESCRIPT')]
-				= $this->setPostUpdateScript();
+			CFactory::_('Content')->set('POSTUPDATESCRIPT', $this->setPostUpdateScript());
 
 			// UNINSTALLSCRIPT
-			$this->fileContentStatic[Placefix::_h('UNINSTALLSCRIPT')]
-				= $this->setUninstallScript();
+			CFactory::_('Content')->set('UNINSTALLSCRIPT', $this->setUninstallScript());
 
 			// MOVEFOLDERSSCRIPT
-			$this->fileContentStatic[Placefix::_h('MOVEFOLDERSSCRIPT')]
-				= $this->setMoveFolderScript();
+			CFactory::_('Content')->set('MOVEFOLDERSSCRIPT', $this->setMoveFolderScript());
 
 			// MOVEFOLDERSMETHOD
-			$this->fileContentStatic[Placefix::_h('MOVEFOLDERSMETHOD')]
-				= $this->setMoveFolderMethod();
+			CFactory::_('Content')->set('MOVEFOLDERSMETHOD', $this->setMoveFolderMethod());
 
 			// HELPER_UIKIT
-			$this->fileContentStatic[Placefix::_h('HELPER_UIKIT')]
-				= $this->setUikitHelperMethods();
+			CFactory::_('Content')->set('HELPER_UIKIT', $this->setUikitHelperMethods());
 
 			// CONFIG_FIELDSETS
-			$this->fileContentStatic[Placefix::_h('CONFIG_FIELDSETS')]
-				= implode(PHP_EOL, $this->configFieldSets);
+			CFactory::_('Content')->set('CONFIG_FIELDSETS', implode(PHP_EOL, $this->configFieldSets));
 
 			// check if this has been set
-			if (!isset(
-					$this->fileContentStatic[Placefix::_h('ROUTER_BUILD_VIEWS')]
-				)
+			if (!CFactory::_('Content')->exist('ROUTER_BUILD_VIEWS')
 				|| !StringHelper::check(
-					$this->fileContentStatic[Placefix::_h('ROUTER_BUILD_VIEWS')]
+					CFactory::_('Content')->get('ROUTER_BUILD_VIEWS')
 				))
 			{
-				$this->fileContentStatic[Placefix::_h('ROUTER_BUILD_VIEWS')]
-					= 0;
+				CFactory::_('Content')->set('ROUTER_BUILD_VIEWS', 0);
 			}
 			else
 			{
-				$this->fileContentStatic[Placefix::_h('ROUTER_BUILD_VIEWS')]
-					= '(' . $this->fileContentStatic[Placefix::_h('ROUTER_BUILD_VIEWS')] . ')';
+				CFactory::_('Content')->set('ROUTER_BUILD_VIEWS', '(' . CFactory::_('Content')->get('ROUTER_BUILD_VIEWS') . ')');
 			}
 
 			// README
 			if ($this->componentData->addreadme)
 			{
-				$this->fileContentStatic[Placefix::_h('README')]
-					= $this->componentData->readme;
+				CFactory::_('Content')->set('README', $this->componentData->readme);
 			}
 			// remove all the power placeholders
-			$this->fileContentStatic[Placefix::_h('ADMIN_POWER_HELPER')] = '';
-			$this->fileContentStatic[Placefix::_h('SITE_POWER_HELPER')] = '';
-			$this->fileContentStatic[Placefix::_h('CUSTOM_POWER_AUTOLOADER')] = '';
+			CFactory::_('Content')->set('ADMIN_POWER_HELPER', '');
+			CFactory::_('Content')->set('SITE_POWER_HELPER', '');
+			CFactory::_('Content')->set('CUSTOM_POWER_AUTOLOADER', '');
 			// infuse powers data if set
 			if (ArrayHelper::check(CFactory::_('Power')->active))
 			{
@@ -2250,15 +2206,20 @@ class Infusion extends Interpretation
 			CFactory::_('Config')->set('lang_prefix', $_backup_langPrefix);
 			// for plugin event TODO change event api signatures
 			$this->placeholders = CFactory::_('Placeholder')->active;
+			$fileContentStatic = CFactory::_('Content')->active;
+			// $this->fileContentDynamic = CFactory::_('Content')->_active;
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterBuildFilesContent',
 				array(&$this->componentContext, &$this->componentData,
-					&$this->fileContentStatic, &$this->fileContentDynamic,
+					&$fileContentStatic, &$this->fileContentDynamic,
 					&$this->placeholders, &$this->hhh)
 			);
 			// for plugin event TODO change event api signatures
 			CFactory::_('Placeholder')->active = $this->placeholders;
+			CFactory::_('Content')->active = $fileContentStatic;
+			// CFactory::_('Content')->_active = $this->fileContentDynamic;
+			unset($fileContentStatic);
 
 			return true;
 		}

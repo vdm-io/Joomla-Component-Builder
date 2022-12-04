@@ -240,6 +240,7 @@ class Structure extends Get
 	 * Static File Content
 	 *
 	 * @var      array
+	 * @deprecated 3.3 Use CFactory::_('Content')->active
 	 */
 	public $fileContentStatic = array();
 
@@ -277,6 +278,7 @@ class Structure extends Get
 	 * Dynamic File Content
 	 *
 	 * @var      array
+	 * @deprecated 3.3 Use CFactory::_('Content')->_active
 	 */
 	public $fileContentDynamic = array();
 
@@ -382,23 +384,17 @@ class Structure extends Get
 			// set the standard admin file
 			$this->stdRootFiles[] = $this->componentData->name_code . '.php';
 			// set incase no extra admin folder are loaded
-			$this->fileContentStatic[Placefix::_h('EXSTRA_ADMIN_FOLDERS')]
-				= '';
+			CFactory::_('Content')->set('EXSTRA_ADMIN_FOLDERS', '');
 			// set incase no extra site folder are loaded
-			$this->fileContentStatic[Placefix::_h('EXSTRA_SITE_FOLDERS')]
-				= '';
+			CFactory::_('Content')->set('EXSTRA_SITE_FOLDERS', '');
 			// set incase no extra media folder are loaded
-			$this->fileContentStatic[Placefix::_h('EXSTRA_MEDIA_FOLDERS')]
-				= '';
+			CFactory::_('Content')->set('EXSTRA_MEDIA_FOLDERS', '');
 			// set incase no extra admin files are loaded
-			$this->fileContentStatic[Placefix::_h('EXSTRA_ADMIN_FILES')]
-				= '';
+			CFactory::_('Content')->set('EXSTRA_ADMIN_FILES', '');
 			// set incase no extra site files are loaded
-			$this->fileContentStatic[Placefix::_h('EXSTRA_SITE_FILES')]
-				= '';
+			CFactory::_('Content')->set('EXSTRA_SITE_FILES', '');
 			// set incase no extra media files are loaded
-			$this->fileContentStatic[Placefix::_h('EXSTRA_MEDIA_FILES')]
-				= '';
+			CFactory::_('Content')->set('EXSTRA_MEDIA_FILES', '');
 			// run global updater
 			ComponentbuilderHelper::runGlobalUpdater();
 			// set the template path
@@ -1701,9 +1697,9 @@ class Structure extends Get
 						if ($addLocalFolder)
 						{
 							// add folder to xml of media folders
-							$this->fileContentStatic[Placefix::_h('EXSTRA_MEDIA_FOLDERS')]
-								.= PHP_EOL . Indent::_(2) . "<folder>"
-								. $libFolder . "</folder>";
+							CFactory::_('Content')->add('EXSTRA_MEDIA_FOLDERS',
+								PHP_EOL . Indent::_(2) . "<folder>"
+								. $libFolder . "</folder>");
 						}
 					}
 					// if config fields are found load into component config (avoiding duplicates)
@@ -2283,12 +2279,13 @@ class Structure extends Get
 								$eTab = Indent::_(3);
 							}
 							// set the xml file
-							$this->fileContentStatic[Placefix::_h('EXSTRA_'
-							. StringHelper::safe(
-								$checker[0], 'U'
-							) . '_' . $eNAME)]
-								.= PHP_EOL . $eTab . "<" . $ename . ">"
-								. $checker[1] . "</" . $ename . ">";
+							$key_ = 'EXSTRA_'
+								. StringHelper::safe(
+									$checker[0], 'U'
+								) . '_' . $eNAME;
+							CFactory::_('Content')->add($key_,
+								PHP_EOL . $eTab . "<" . $ename . ">"
+								. $checker[1] . "</" . $ename . ">");
 						}
 					}
 				}

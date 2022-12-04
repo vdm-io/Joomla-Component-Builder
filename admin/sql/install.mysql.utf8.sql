@@ -314,6 +314,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_power` (
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
 	`add_head` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_licensing_template` TINYINT(1) NOT NULL DEFAULT 1,
+	`composer` TEXT NOT NULL,
 	`description` TEXT NOT NULL,
 	`extends` VARCHAR(36) NOT NULL DEFAULT '',
 	`extends_custom` VARCHAR(64) NOT NULL DEFAULT '',

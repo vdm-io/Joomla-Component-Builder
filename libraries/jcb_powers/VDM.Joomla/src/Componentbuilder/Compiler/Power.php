@@ -2,7 +2,7 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    3rd September, 2022
+ * @created    4th September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
  * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
@@ -216,7 +216,7 @@ class Power implements PowerInterface
 				$tmp_lang_target = $this->config->lang_target;
 				$this->config->lang_target = 'both';
 
-				// we set the fix usr if needed
+				// we set the fix url if needed
 				$this->fixUrl
 					= '"index.php?option=com_componentbuilder&view=powers&task=power.edit&id='
 					. $this->active[$guid]->id . '" target="_blank"';
@@ -313,6 +313,13 @@ class Power implements PowerInterface
 							$guiMapper
 						) . PHP_EOL;
 				}
+				else
+				{
+					$this->active[$guid]->head = '';
+				}
+
+				// set composer
+				$this->setComposer($guid);
 
 				// now set the description
 				$this->active[$guid]->description = (StringHelper::check($this->active[$guid]->description)) ? $this->placeholder->update(
@@ -400,7 +407,7 @@ class Power implements PowerInterface
 		$path_array = (array) explode('\\', $this->active[$guid]->namespace);
 
 		// make sure all sub folders in src dir is set and remove all characters that will not work in folders naming
-		$this->active[$guid]->namespace = NamespaceHelper::safe(str_replace('.', '\\', $this->active[$guid]->namespace));
+		$this->active[$guid]->namespace = $this->getCleanNamespace(str_replace('.', '\\', $this->active[$guid]->namespace));
 
 		// make sure it has two or more
 		if (ArrayHelper::check($path_array) <= 1)
@@ -463,10 +470,10 @@ class Power implements PowerInterface
 
 		// make sure the arrays are namespace safe
 		$path_array      = array_map(function ($val) {
-			return NamespaceHelper::safe($val);
+			return $this->getCleanNamespace($val);
 		}, $path_array);
 		$namespace_array = array_map(function ($val) {
-			return NamespaceHelper::safe($val);
+			return $this->getCleanNamespace($val);
 		}, $namespace_array);
 		// set the actual class namespace
 		$this->active[$guid]->_namespace = implode('\\', $namespace_array);
@@ -481,7 +488,7 @@ class Power implements PowerInterface
 		{
 			// make sure the arrays are namespace safe
 			$sub_folder = '/' . implode('/', array_map(function ($val) {
-					return NamespaceHelper::safe($val);
+					return $this->getCleanNamespace($val);
 				}, $src_array));
 		}
 
@@ -552,6 +559,69 @@ class Power implements PowerInterface
 				// just load it directly and be done with it
 				return $this->set($power['load']);
 			}, $this->active[$guid]->load_selection);
+		}
+	}
+
+	/**
+	 * Set Composer Linked Use and Access Point
+	 *
+	 * @param string  $guid  The global unique id of the power
+	 * @param array   $use   The use array
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	protected function setComposer(string $guid)
+	{
+		// does this have composer powers
+		$_composer = (isset($this->active[$guid]->composer)
+			&& JsonHelper::check(
+				$this->active[$guid]->composer
+			)) ? json_decode($this->active[$guid]->composer, true) : null;
+
+		if (ArrayHelper::check($_composer))
+		{
+			$this->active[$guid]->composer = [];
+
+			foreach ($_composer as $composer)
+			{
+				if (isset($composer['access_point']) && StringHelper::check($composer['access_point']))
+				{
+					if (isset($composer['namespace']) && ArrayHelper::check($composer['namespace']))
+					{
+						foreach ($composer['namespace'] as $_namespace)
+						{
+							// make sure we have a valid namespace
+							if (isset($_namespace['use']) && StringHelper::check($_namespace['use']) &&
+								strpos($_namespace['use'], '\\') !== false)
+							{
+								// trim possible use or ; added to the namespace
+								$namespace = $this->getCleanNamespace($_namespace['use']);
+
+								// check if still valid
+								if (!StringHelper::check($namespace))
+								{
+									continue;
+								}
+
+								// add to the header of the class
+								$this->addToHeader($guid, $this->getUseNamespace($namespace));
+
+								// add the namespace to this access point
+								if (strpos($namespace, ' as ') !== false)
+								{
+									$namespace = $this->getCleanNamespace(explode(' as ', $namespace)[0]);
+								}
+								$this->active[$guid]->composer[$namespace] = $composer['access_point'];
+							}
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			$this->active[$guid]->composer = null;
 		}
 	}
 
@@ -663,25 +733,73 @@ class Power implements PowerInterface
 				if ($this->set($u))
 				{
 					// get the namespace
-					$add_use = $this->get($u, 1)->namespace;
+					$namespace = $this->get($u, 1)->namespace;
 
 					// check if it has an AS option
-					if (isset($as[$u]) && StringHelper::check($as[$u]) && $as[$u] !== 'default')
+					if (isset($as[$u]) && StringHelper::check($as[$u]))
 					{
-						 $add_use = 'use ' . $add_use . ' as ' . $as[$u] . ';';
+						// add to the header of the class
+						$this->addToHeader($guid, $this->getUseNamespace($namespace, $as[$u]));
 					}
 					else
 					{
-						$add_use = 'use ' . $add_use . ';';
-					}
-
-					// check if it is already added manually
-					if (strpos($this->active[$guid]->head, $add_use) === false)
-					{
-						$this->active[$guid]->head .= $add_use . PHP_EOL;
+						// add to the header of the class
+						$this->addToHeader($guid, $this->getUseNamespace($namespace));
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Get Clean Namespace without use or ; as part of the name space
+	 *
+	 * @param string  $namespace  The actual name space
+	 *
+	 * @return string
+	 * @since 3.2.0
+	 */
+	protected function getCleanNamespace(string $namespace): string
+	{
+		// trim possible (use) or (;) or (starting or ending \) added to the namespace
+		return NamespaceHelper::safe(str_replace(['use ', ';'], '', $namespace));
+	}
+
+	/**
+	 * Get [use Namespace\Class;]
+	 *
+	 * @param string  $namespace  The actual name space
+	 * @param string   $as                The use as name (default is none)
+	 *
+	 * @return string
+	 * @since 3.2.0
+	 */
+	protected function getUseNamespace(string $namespace, string $as = 'default'): string
+	{
+		// check if it has an AS option
+		if ($as !== 'default')
+		{
+			 return 'use ' . $namespace . ' as ' . $as . ';';
+		}
+		return 'use ' . $namespace . ';';
+	}
+
+	/**
+	 * Add to class header
+	 *
+	 * @param string  $guid      The global unique id of the power
+	 * @param string  $string    The string to add to header
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	protected function addToHeader(string $guid, string $string)
+	{
+		// check if it is already added manually
+		if (isset($this->active[$guid]->head) &&
+			strpos($this->active[$guid]->head, $string) === false)
+		{
+			$this->active[$guid]->head .= $string . PHP_EOL;
 		}
 	}
 

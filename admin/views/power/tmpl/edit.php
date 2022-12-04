@@ -64,6 +64,16 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php echo JHtml::_('bootstrap.addTab', 'powerTab', 'composer', JText::_('COM_COMPONENTBUILDER_POWER_COMPOSER', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('power.composer_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+
 	<?php echo JHtml::_('bootstrap.addTab', 'powerTab', 'licensing', JText::_('COM_COMPONENTBUILDER_POWER_LICENSING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>

@@ -2,7 +2,7 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    3rd September, 2022
+ * @created    4th September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
  * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
@@ -16,6 +16,7 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Compiler\Content;
 
 
 /**
@@ -40,6 +41,9 @@ class Compiler implements ServiceProviderInterface
 
 		$container->alias(Registry::class, 'Registry')
 			->share('Registry', [$this, 'getRegistry'], true);
+
+		$container->alias(Content::class, 'Content')
+			->share('Content', [$this, 'getContent'], true);
 	}
 
 	/**
@@ -66,6 +70,19 @@ class Compiler implements ServiceProviderInterface
 	public function getRegistry(Container $container): Registry
 	{
 		return new Registry();
+	}
+
+	/**
+	 * Get the Compiler Content
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Content
+	 * @since 3.2.0
+	 */
+	public function getContent(Container $container): Content
+	{
+		return new Content();
 	}
 
 }

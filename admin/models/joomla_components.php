@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
 
 /**
  * Joomla_components List Model
@@ -1259,7 +1260,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				// $locker = new FOFEncryptAes($this->key, 128);
 				// $data = $locker->encryptString($data);
 				// load phpseclib <https://phpseclib.com/docs/symmetric>
-				if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib\Crypt\Rijndael)
+				if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib3\Crypt\Rijndael)
 				{
 					// set the password
 					ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($this->key, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');
@@ -1313,7 +1314,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				return false;
 			}
 			// set info data
-			if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib\Crypt\Rijndael)
+			if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib3\Crypt\Rijndael)
 			{
 				// set system password
 				$db = 'COM_COMPONENTBUILDER_SZDEQZDMVSMHBTRWFIFTYTSQFLVVXJTMTHREEJTWOIXM';

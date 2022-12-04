@@ -64,6 +64,12 @@ class ComponentbuilderModelPower extends AdminModel
 				'add_licensing_template',
 				'licensing_template'
 			)
+		),
+		'composer' => array(
+			'fullwidth' => array(
+				'autoload_composer_note',
+				'composer'
+			)
 		)
 	);
 
@@ -178,12 +184,6 @@ class ComponentbuilderModelPower extends AdminModel
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->main_class_code))
-			{
-				// base64 Decode main_class_code.
-				$item->main_class_code = base64_decode($item->main_class_code);
-			}
-
 			if (!empty($item->licensing_template))
 			{
 				// base64 Decode licensing_template.
@@ -196,12 +196,26 @@ class ComponentbuilderModelPower extends AdminModel
 				$item->head = base64_decode($item->head);
 			}
 
+			if (!empty($item->main_class_code))
+			{
+				// base64 Decode main_class_code.
+				$item->main_class_code = base64_decode($item->main_class_code);
+			}
+
 			if (!empty($item->load_selection))
 			{
 				// Convert the load_selection field to an array.
 				$load_selection = new Registry;
 				$load_selection->loadString($item->load_selection);
 				$item->load_selection = $load_selection->toArray();
+			}
+
+			if (!empty($item->composer))
+			{
+				// Convert the composer field to an array.
+				$composer = new Registry;
+				$composer->loadString($item->composer);
+				$item->composer = $composer->toArray();
 			}
 
 			if (!empty($item->property_selection))
@@ -1050,6 +1064,19 @@ class ComponentbuilderModelPower extends AdminModel
 			$data['load_selection'] = '';
 		}
 
+		// Set the composer items to data.
+		if (isset($data['composer']) && is_array($data['composer']))
+		{
+			$composer = new JRegistry;
+			$composer->loadArray($data['composer']);
+			$data['composer'] = (string) $composer;
+		}
+		elseif (!isset($data['composer']))
+		{
+			// Set the empty composer to data
+			$data['composer'] = '';
+		}
+
 		// Set the property_selection items to data.
 		if (isset($data['property_selection']) && is_array($data['property_selection']))
 		{
@@ -1102,12 +1129,6 @@ class ComponentbuilderModelPower extends AdminModel
 			$data['use_selection'] = '';
 		}
 
-		// Set the main_class_code string to base64 string.
-		if (isset($data['main_class_code']))
-		{
-			$data['main_class_code'] = base64_encode($data['main_class_code']);
-		}
-
 		// Set the licensing_template string to base64 string.
 		if (isset($data['licensing_template']))
 		{
@@ -1118,6 +1139,12 @@ class ComponentbuilderModelPower extends AdminModel
 		if (isset($data['head']))
 		{
 			$data['head'] = base64_encode($data['head']);
+		}
+
+		// Set the main_class_code string to base64 string.
+		if (isset($data['main_class_code']))
+		{
+			$data['main_class_code'] = base64_encode($data['main_class_code']);
 		}
         
 		// Set the Params Items to data
