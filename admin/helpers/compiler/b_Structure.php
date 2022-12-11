@@ -3087,8 +3087,8 @@ class Structure extends Get
 					'//', '/', $custom['file']
 				);
 				// update the dynamic component name placholders in file names
-				$custom['path'] = CFactory::_('Placeholder')->update(
-					$custom['path'], CFactory::_('Placeholder')->active
+				$custom['path'] = CFactory::_('Placeholder')->update_(
+					$custom['path']
 				);
 				// get the path info
 				$pathInfo = pathinfo($custom['path']);
@@ -3227,10 +3227,10 @@ class Structure extends Get
 	 */
 	protected function updateDynamicPath($path)
 	{
-		return CFactory::_('Placeholder')->update(
+		return CFactory::_('Placeholder')->update_(
 			CFactory::_('Placeholder')->update(
 				$path, ComponentbuilderHelper::$constantPaths
-			), CFactory::_('Placeholder')->active
+			)
 		);
 	}
 

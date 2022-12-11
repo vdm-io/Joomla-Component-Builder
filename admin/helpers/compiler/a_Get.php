@@ -2275,49 +2275,31 @@ class Get
 			CFactory::_('Customcode.Dispenser')->hub['token'][$view->name_single_code]
 				                                                       = false;
 			CFactory::_('Customcode.Dispenser')->hub['token'][$view->name_list_code] = false;
+
 			// set some placeholders
-			CFactory::_('Placeholder')->active[Placefix::_h('view')]
-				= $view->name_single_code;
-			CFactory::_('Placeholder')->active[Placefix::_h('views')]
-				= $view->name_list_code;
-			CFactory::_('Placeholder')->active[Placefix::_h('View')]
-				= StringHelper::safe(
+			CFactory::_('Placeholder')->set('view', $view->name_single_code);
+			CFactory::_('Placeholder')->set('views', $view->name_list_code);
+			CFactory::_('Placeholder')->set('View', StringHelper::safe(
 				$view->name_single, 'F'
-			);
-			CFactory::_('Placeholder')->active[Placefix::_h('Views')]
-				= StringHelper::safe(
+			));
+			CFactory::_('Placeholder')->set('Views', StringHelper::safe(
 				$view->name_list, 'F'
-			);
-			CFactory::_('Placeholder')->active[Placefix::_h('VIEW')]
-				= StringHelper::safe(
+			));
+			CFactory::_('Placeholder')->set('VIEW', StringHelper::safe(
 				$view->name_single, 'U'
-			);
-			CFactory::_('Placeholder')->active[Placefix::_h('VIEWS')]
-				= StringHelper::safe(
+			));
+			CFactory::_('Placeholder')->set('VIEWS', StringHelper::safe(
 				$view->name_list, 'U'
-			);
-			CFactory::_('Placeholder')->active[Placefix::_('view')]
-				= CFactory::_('Placeholder')->active[Placefix::_h('view')];
-			CFactory::_('Placeholder')->active[Placefix::_('views')]
-				= CFactory::_('Placeholder')->active[Placefix::_h('views')];
-			CFactory::_('Placeholder')->active[Placefix::_('View')]
-				= CFactory::_('Placeholder')->active[Placefix::_h('View')];
-			CFactory::_('Placeholder')->active[Placefix::_('Views')]
-				= CFactory::_('Placeholder')->active[Placefix::_h('Views')];
-			CFactory::_('Placeholder')->active[Placefix::_('VIEW')]
-				= CFactory::_('Placeholder')->active[Placefix::_h('VIEW')];
-			CFactory::_('Placeholder')->active[Placefix::_('VIEWS')]
-				= CFactory::_('Placeholder')->active[Placefix::_h('VIEWS')];
+			));
 
 			// for plugin event TODO change event api signatures
-			$this->placeholders = CFactory::_('Placeholder')->active;
+			$placeholders = CFactory::_('Placeholder')->active;
 			// Trigger Event: jcb_ce_onBeforeModelViewData
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeModelViewData',
-				array(&$this->componentContext, &$view, &$this->placeholders)
+				array(&$this->componentContext, &$view, &$placeholders)
 			);
-			// for plugin event TODO change event api signatures
-			CFactory::_('Placeholder')->active = $this->placeholders;
+			unset($placeholders);
 
 			// add the tables
 			$view->addtables = (isset($view->addtables)
@@ -2343,9 +2325,8 @@ class Get
 						// set the view name
 						$tab['view'] = $view->name_single_code;
 						// load the dynamic data
-						$tab['html'] = CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode')->update($tab['html']),
-							CFactory::_('Placeholder')->active
+						$tab['html'] = CFactory::_('Placeholder')->update_(
+							CFactory::_('Customcode')->update($tab['html'])
 						);
 						// set the tab name
 						$tab['name'] = (isset($tab['name'])
@@ -2425,7 +2406,7 @@ class Get
 							$tab['lang_permission_desc'] = $tab['lang']
 								. '_TAB_PERMISSION_DESC';
 							$tab['lang_permission_title']
-							                             = CFactory::_('Placeholder')->active[Placefix::_h('Views')] . ' View '
+							                             = CFactory::_('Placeholder')->get('Views') . ' View '
 								. $tab['name'] . ' Tab';
 							CFactory::_('Language')->set(
 								'both', $tab['lang_permission'],
@@ -2435,7 +2416,7 @@ class Get
 								'both', $tab['lang_permission_desc'],
 								'Allow the users in this group to view '
 								. $tab['name'] . ' Tab of '
-								. CFactory::_('Placeholder')->active[Placefix::_h('views')]
+								. CFactory::_('Placeholder')->get('views')
 							);
 							// set the sort key
 							$tab['sortKey']
@@ -3261,28 +3242,21 @@ class Get
 			}
 
 			// for plugin event TODO change event api signatures
-			$this->placeholders = CFactory::_('Placeholder')->active;
+			$placeholders = CFactory::_('Placeholder')->active;
 			// Trigger Event: jcb_ce_onAfterModelViewData
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterModelViewData',
-				array(&$this->componentContext, &$view, &$this->placeholders)
+				array(&$this->componentContext, &$view, &$placeholders)
 			);
-			// for plugin event TODO change event api signatures
-			CFactory::_('Placeholder')->active = $this->placeholders;
+			unset($placeholders);
 
 			// clear placeholders
-			unset(CFactory::_('Placeholder')->active[Placefix::_h('view')]);
-			unset(CFactory::_('Placeholder')->active[Placefix::_h('views')]);
-			unset(CFactory::_('Placeholder')->active[Placefix::_h('View')]);
-			unset(CFactory::_('Placeholder')->active[Placefix::_h('Views')]);
-			unset(CFactory::_('Placeholder')->active[Placefix::_h('VIEW')]);
-			unset(CFactory::_('Placeholder')->active[Placefix::_h('VIEWS')]);
-			unset(CFactory::_('Placeholder')->active[Placefix::_('view')]);
-			unset(CFactory::_('Placeholder')->active[Placefix::_('views')]);
-			unset(CFactory::_('Placeholder')->active[Placefix::_('View')]);
-			unset(CFactory::_('Placeholder')->active[Placefix::_('Views')]);
-			unset(CFactory::_('Placeholder')->active[Placefix::_('VIEW')]);
-			unset(CFactory::_('Placeholder')->active[Placefix::_('VIEWS')]);
+			CFactory::_('Placeholder')->remove('view');
+			CFactory::_('Placeholder')->remove('views');
+			CFactory::_('Placeholder')->remove('View');
+			CFactory::_('Placeholder')->remove('Views');
+			CFactory::_('Placeholder')->remove('VIEW');
+			CFactory::_('Placeholder')->remove('VIEWS');
 
 			// store this view to class object
 			$this->_adminViewData[$id] = $view;
@@ -4272,10 +4246,10 @@ class Get
 										$option2['operator']
 											            = $operatorArray[$option2['operator']];
 										$option2['state_key']
-											            = CFactory::_('Placeholder')->update(
+											            = CFactory::_('Placeholder')->update_(
 											CFactory::_('Customcode')->update(
 												$option2['state_key']
-											), CFactory::_('Placeholder')->active
+											)
 										);
 										$option2['key'] = $result->key;
 									}
@@ -6884,8 +6858,8 @@ class Get
 				$guiMapper = array('table' => 'joomla_module',
 				                   'id'    => (int) $id, 'type' => 'php');
 				// update the name if it has dynamic values
-				$module->name = CFactory::_('Placeholder')->update(
-					CFactory::_('Customcode')->update($module->name), CFactory::_('Placeholder')->active
+				$module->name = CFactory::_('Placeholder')->update_(
+					CFactory::_('Customcode')->update($module->name)
 				);
 				// set safe class function name
 				$module->code_name
@@ -6927,22 +6901,17 @@ class Get
 					$module->key, CFactory::_('Config')->lang_prefix, $module->official_name
 				);
 				// set some placeholder for this module
-				CFactory::_('Placeholder')->active[Placefix::_('Module_name')]
-					= $module->official_name;
-				CFactory::_('Placeholder')->active[Placefix::_('Module')]
-					= ucfirst(
+				CFactory::_('Placeholder')->set('Module_name', $module->official_name);
+				CFactory::_('Placeholder')->set('Module', ucfirst(
 					$module->code_name
-				);
-				CFactory::_('Placeholder')->active[Placefix::_('module')]
-					= strtolower(
+				));
+				CFactory::_('Placeholder')->set('module', strtolower(
 					$module->code_name
-				);
-				CFactory::_('Placeholder')->active[Placefix::_('module.version')]
-					= $module->module_version;
-				CFactory::_('Placeholder')->active[Placefix::_('module_version')]
-					= str_replace(
+				));
+				CFactory::_('Placeholder')->set('module.version', $module->module_version);
+				CFactory::_('Placeholder')->set('module_version', str_replace(
 					'.', '_', $module->module_version
-				);
+				));
 				// set description (TODO) add description field to module
 				if (!isset($module->description)
 					|| !StringHelper::check(
@@ -6953,9 +6922,8 @@ class Get
 				}
 				else
 				{
-					$module->description = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->update($module->description),
-						CFactory::_('Placeholder')->active
+					$module->description = CFactory::_('Placeholder')->update_(
+						CFactory::_('Customcode')->update($module->description)
 					);
 					CFactory::_('Language')->set(
 						$module->key, $module->lang_prefix . '_DESCRIPTION',
@@ -6982,9 +6950,8 @@ class Get
 				// update the readme if set
 				if ($module->addreadme == 1 && !empty($module->readme))
 				{
-					$module->readme = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->update(base64_decode($module->readme)),
-						CFactory::_('Placeholder')->active
+					$module->readme = CFactory::_('Placeholder')->update_(
+						CFactory::_('Customcode')->update(base64_decode($module->readme))
 					);
 				}
 				else
@@ -7022,12 +6989,12 @@ class Get
 						// base64 Decode code
 						$module->class_helper_header = PHP_EOL
 							. CFactory::_('Customcode.Gui')->set(
-								CFactory::_('Placeholder')->update(
+								CFactory::_('Placeholder')->update_(
 									CFactory::_('Customcode')->update(
 										base64_decode(
 											$module->class_helper_header
 										)
-									), CFactory::_('Placeholder')->active
+									)
 								),
 								$guiMapper
 							) . PHP_EOL;
@@ -7041,10 +7008,10 @@ class Get
 					$guiMapper['field'] = 'class_helper_code';
 					// base64 Decode code
 					$module->class_helper_code = CFactory::_('Customcode.Gui')->set(
-						CFactory::_('Placeholder')->update(
+						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
 								base64_decode($module->class_helper_code)
-							), CFactory::_('Placeholder')->active
+							)
 						),
 						$guiMapper
 					);
@@ -7071,10 +7038,10 @@ class Get
 					// set GUI mapper field
 					$guiMapper['field'] = 'mod_code';
 					$module->mod_code   = CFactory::_('Customcode.Gui')->set(
-						CFactory::_('Placeholder')->update(
+						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
 								base64_decode($module->mod_code)
-							), CFactory::_('Placeholder')->active
+							)
 						),
 						$guiMapper
 					);
@@ -7099,10 +7066,10 @@ class Get
 					// set GUI mapper field
 					$guiMapper['field']     = 'default_header';
 					$module->default_header = CFactory::_('Customcode.Gui')->set(
-						CFactory::_('Placeholder')->update(
+						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
 								base64_decode($module->default_header)
-							), CFactory::_('Placeholder')->active
+							)
 						),
 						$guiMapper
 					);
@@ -7119,10 +7086,10 @@ class Get
 					$guiMapper['field'] = 'default';
 					$guiMapper['type']  = 'html';
 					$module->default    = CFactory::_('Customcode.Gui')->set(
-						CFactory::_('Placeholder')->update(
+						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
 								base64_decode($module->default)
-							), CFactory::_('Placeholder')->active
+							)
 						),
 						$guiMapper
 					);
@@ -7464,15 +7431,14 @@ class Get
 							// set GUI mapper field
 							$guiMapper['field']         = $scriptMethod . '_'
 								. $scriptType;
-							$module->{$scriptMethod . '_' . $scriptType}
-							                            = CFactory::_('Customcode.Gui')->set(
-								CFactory::_('Placeholder')->update(
+							$module->{$scriptMethod . '_' . $scriptType} = CFactory::_('Customcode.Gui')->set(
+								CFactory::_('Placeholder')->update_(
 									CFactory::_('Customcode')->update(
 										base64_decode(
 											$module->{$scriptMethod . '_'
 											. $scriptType}
 										)
-									), CFactory::_('Placeholder')->active
+									)
 								),
 								$guiMapper
 							);
@@ -7491,9 +7457,8 @@ class Get
 				if ($module->add_sql == 1
 					&& StringHelper::check($module->sql))
 				{
-					$module->sql = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->update(base64_decode($module->sql)),
-						CFactory::_('Placeholder')->active
+					$module->sql = CFactory::_('Placeholder')->update_(
+						CFactory::_('Customcode')->update(base64_decode($module->sql))
 					);
 				}
 				else
@@ -7507,10 +7472,10 @@ class Get
 						$module->sql_uninstall
 					))
 				{
-					$module->sql_uninstall = CFactory::_('Placeholder')->update(
+					$module->sql_uninstall = CFactory::_('Placeholder')->update_(
 						CFactory::_('Customcode')->update(
 							base64_decode($module->sql_uninstall)
-						), CFactory::_('Placeholder')->active
+						)
 					);
 				}
 				else
@@ -7524,9 +7489,8 @@ class Get
 						$module->update_server_url
 					))
 				{
-					$module->update_server_url = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->update($module->update_server_url),
-						CFactory::_('Placeholder')->active
+					$module->update_server_url = CFactory::_('Placeholder')->update_(
+						CFactory::_('Customcode')->update($module->update_server_url)
 					);
 				}
 				// add the update/sales server FTP details if that is the expected protocol
@@ -7566,17 +7530,11 @@ class Get
 				$this->langPrefix = $_backup_langPrefix;
 				CFactory::_('Config')->lang_prefix = $_backup_langPrefix;
 
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('Module_name')]
-				);
-				unset(CFactory::_('Placeholder')->active[Placefix::_('Module')]);
-				unset(CFactory::_('Placeholder')->active[Placefix::_('module')]);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('module.version')]
-				);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('module_version')]
-				);
+				CFactory::_('Placeholder')->remove('Module_name');
+				CFactory::_('Placeholder')->remove('Module');
+				CFactory::_('Placeholder')->remove('module');
+				CFactory::_('Placeholder')->remove('module.version');
+				CFactory::_('Placeholder')->remove('module_version');
 
 				$this->joomlaModules[$id] = $module;
 
@@ -7801,8 +7759,8 @@ class Get
 				$guiMapper = array('table' => 'joomla_plugin',
 				                   'id'    => (int) $id, 'type' => 'php');
 				// update the name if it has dynamic values
-				$plugin->name = CFactory::_('Placeholder')->update(
-					CFactory::_('Customcode')->update($plugin->name), CFactory::_('Placeholder')->active
+				$plugin->name = CFactory::_('Placeholder')->update_(
+					CFactory::_('Customcode')->update($plugin->name)
 				);
 				// update the name if it has dynamic values
 				$plugin->code_name
@@ -7852,37 +7810,19 @@ class Get
 					$plugin->key, CFactory::_('Config')->lang_prefix, $plugin->official_name
 				);
 				// set some placeholder for this plugin
-				CFactory::_('Placeholder')->active[Placefix::_('Plugin_name')]
-					= $plugin->official_name;
-				CFactory::_('Placeholder')->active[Placefix::_h('PLUGIN_NAME')]
-					= $plugin->official_name;
-				CFactory::_('Placeholder')->active[Placefix::_('Plugin')]
-					= ucfirst(
-					$plugin->code_name
-				);
-				CFactory::_('Placeholder')->active[Placefix::_('plugin')]
-					= strtolower(
-					$plugin->code_name
-				);
-				CFactory::_('Placeholder')->active[Placefix::_('Plugin_group')]
-					= ucfirst(
-					$plugin->group
-				);
-				CFactory::_('Placeholder')->active[Placefix::_('plugin_group')]
-					= strtolower(
-					$plugin->group
-				);
-				CFactory::_('Placeholder')->active[Placefix::_('plugin.version')]
-					= $plugin->plugin_version;
-				CFactory::_('Placeholder')->active[Placefix::_h('VERSION')]
-					= $plugin->plugin_version;
-				CFactory::_('Placeholder')->active[Placefix::_('plugin_version')]
-					= str_replace(
+				CFactory::_('Placeholder')->set('Plugin_name', $plugin->official_name);
+				CFactory::_('Placeholder')->set('PLUGIN_NAME', $plugin->official_name);
+				CFactory::_('Placeholder')->set('Plugin', ucfirst($plugin->code_name));
+				CFactory::_('Placeholder')->set('plugin', strtolower($plugin->code_name));
+				CFactory::_('Placeholder')->set('Plugin_group', ucfirst($plugin->group));
+				CFactory::_('Placeholder')->set('plugin_group', strtolower($plugin->group));
+				CFactory::_('Placeholder')->set('plugin.version', $plugin->plugin_version);
+				CFactory::_('Placeholder')->set('VERSION', $plugin->plugin_version);
+				CFactory::_('Placeholder')->set('plugin_version', str_replace(
 					'.', '_', $plugin->plugin_version
-				);
+				));
 				// set description
-				CFactory::_('Placeholder')->active[Placefix::_h('DESCRIPTION')]
-					= '';
+				CFactory::_('Placeholder')->set('DESCRIPTION', '');
 				if (!isset($plugin->description)
 					|| !StringHelper::check(
 						$plugin->description
@@ -7892,19 +7832,16 @@ class Get
 				}
 				else
 				{
-					$plugin->description = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->update($plugin->description),
-						CFactory::_('Placeholder')->active
+					$plugin->description = CFactory::_('Placeholder')->update_(
+						CFactory::_('Customcode')->update($plugin->description)
 					);
 					CFactory::_('Language')->set(
 						$plugin->key, $plugin->lang_prefix . '_DESCRIPTION',
 						$plugin->description
 					);
 					// set description
-					CFactory::_('Placeholder')->active[Placefix::_h('DESCRIPTION')]
-						                 = $plugin->description;
-					$plugin->description = '<p>' . $plugin->description
-						. '</p>';
+					CFactory::_('Placeholder')->set('DESCRIPTION', $plugin->description);
+					$plugin->description = '<p>' . $plugin->description . '</p>';
 				}
 				$plugin->xml_description = "<h1>" . $plugin->official_name
 					. " (v." . $plugin->plugin_version
@@ -7924,9 +7861,8 @@ class Get
 				// update the readme if set
 				if ($plugin->addreadme == 1 && !empty($plugin->readme))
 				{
-					$plugin->readme = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->update(base64_decode($plugin->readme)),
-						CFactory::_('Placeholder')->active
+					$plugin->readme = CFactory::_('Placeholder')->update_(
+						CFactory::_('Customcode')->update(base64_decode($plugin->readme))
 					);
 				}
 				else
@@ -7941,10 +7877,10 @@ class Get
 					$guiMapper['field'] = 'main_class_code';
 					// base64 Decode main_class_code.
 					$plugin->main_class_code = CFactory::_('Customcode.Gui')->set(
-						CFactory::_('Placeholder')->update(
+						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
 								base64_decode($plugin->main_class_code)
-							), CFactory::_('Placeholder')->active
+							)
 						),
 						$guiMapper
 					);
@@ -7956,10 +7892,10 @@ class Get
 					$guiMapper['field'] = 'head';
 					// base64 Decode head.
 					$plugin->head = CFactory::_('Customcode.Gui')->set(
-						CFactory::_('Placeholder')->update(
+						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
 								base64_decode($plugin->head)
-							), CFactory::_('Placeholder')->active
+							)
 						),
 						$guiMapper
 					);
@@ -7968,10 +7904,10 @@ class Get
 				{
 					// base64 Decode head.
 					$plugin->head = CFactory::_('Customcode.Gui')->set(
-						CFactory::_('Placeholder')->update(
+						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
 								base64_decode($plugin->class_head)
-							), CFactory::_('Placeholder')->active
+							)
 						),
 						array(
 							'table' => 'class_extends',
@@ -7986,10 +7922,10 @@ class Get
 				{
 					// base64 Decode comment.
 					$plugin->comment = CFactory::_('Customcode.Gui')->set(
-						CFactory::_('Placeholder')->update(
+						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
 								base64_decode($plugin->comment)
-							), CFactory::_('Placeholder')->active
+							)
 						),
 						array(
 							'table' => 'class_extends',
@@ -8292,13 +8228,13 @@ class Get
 								. $scriptType;
 							$plugin->{$scriptMethod . '_' . $scriptType}
 							                            = CFactory::_('Customcode.Gui')->set(
-								CFactory::_('Placeholder')->update(
+								CFactory::_('Placeholder')->update_(
 									CFactory::_('Customcode')->update(
 										base64_decode(
 											$plugin->{$scriptMethod . '_'
 											. $scriptType}
 										)
-									), CFactory::_('Placeholder')->active
+									)
 								),
 								$guiMapper
 							);
@@ -8317,9 +8253,8 @@ class Get
 				if ($plugin->add_sql == 1
 					&& StringHelper::check($plugin->sql))
 				{
-					$plugin->sql = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->update(base64_decode($plugin->sql)),
-						CFactory::_('Placeholder')->active
+					$plugin->sql = CFactory::_('Placeholder')->update_(
+						CFactory::_('Customcode')->update(base64_decode($plugin->sql))
 					);
 				}
 				else
@@ -8333,10 +8268,10 @@ class Get
 						$plugin->sql_uninstall
 					))
 				{
-					$plugin->sql_uninstall = CFactory::_('Placeholder')->update(
+					$plugin->sql_uninstall = CFactory::_('Placeholder')->update_(
 						CFactory::_('Customcode')->update(
 							base64_decode($plugin->sql_uninstall)
-						), CFactory::_('Placeholder')->active
+						)
 					);
 				}
 				else
@@ -8350,9 +8285,8 @@ class Get
 						$plugin->update_server_url
 					))
 				{
-					$plugin->update_server_url = CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode')->update($plugin->update_server_url),
-						CFactory::_('Placeholder')->active
+					$plugin->update_server_url = CFactory::_('Placeholder')->update_(
+						CFactory::_('Customcode')->update($plugin->update_server_url)
 					);
 				}
 				// add the update/sales server FTP details if that is the expected protocol
@@ -8392,32 +8326,16 @@ class Get
 				$this->langPrefix = $_backup_langPrefix;
 				CFactory::_('Config')->set('lang_prefix', $_backup_langPrefix);
 
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('Plugin_name')]
-				);
-				unset(CFactory::_('Placeholder')->active[Placefix::_('Plugin')]);
-				unset(CFactory::_('Placeholder')->active[Placefix::_('plugin')]);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('Plugin_group')]
-				);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('plugin_group')]
-				);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('plugin.version')]
-				);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('plugin_version')]
-				);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_h('VERSION')]
-				);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_h('DESCRIPTION')]
-				);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_h('PLUGIN_NAME')]
-				);
+				CFactory::_('Placeholder')->remove('Plugin_name');
+				CFactory::_('Placeholder')->remove('Plugin');
+				CFactory::_('Placeholder')->remove('plugin');
+				CFactory::_('Placeholder')->remove('Plugin_group');
+				CFactory::_('Placeholder')->remove('plugin_group');
+				CFactory::_('Placeholder')->remove('plugin.version');
+				CFactory::_('Placeholder')->remove('plugin_version');
+				CFactory::_('Placeholder')->remove('VERSION');
+				CFactory::_('Placeholder')->remove('DESCRIPTION');
+				CFactory::_('Placeholder')->remove('PLUGIN_NAME');
 
 				$this->joomlaPlugins[$id] = $plugin;
 

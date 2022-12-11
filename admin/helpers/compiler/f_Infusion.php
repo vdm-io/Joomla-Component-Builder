@@ -30,9 +30,22 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 class Infusion extends Interpretation
 {
 
-
 	public $langFiles = array();
+
+	/**
+	 * Switch to remove site folder
+	 *
+	 * @var     bool
+	 * @deprecated 3.3 Use CFactory::_('Config')->remove_site_folder;
+	 */
 	public $removeSiteFolder = false;
+
+	/**
+	 * Switch to remove site edit folder
+	 *
+	 * @var     bool
+	 * @deprecated 3.3 Use CFactory::_('Config')->remove_site_edit_folder;
+	 */
 	public $removeSiteEditFolder = true;
 
 	/**
@@ -65,30 +78,28 @@ class Infusion extends Interpretation
 			))
 		{
 			// for plugin event TODO change event api signatures
-			$this->placeholders = CFactory::_('Placeholder')->active;
+			$placeholders = CFactory::_('Placeholder')->active;
 			$fileContentStatic = CFactory::_('Content')->active;
-			// $this->fileContentDynamic = CFactory::_('Content')->_active;
+			$fileContentDynamic = CFactory::_('Content')->_active;
 			// Trigger Event: jcb_ce_onBeforeBuildFilesContent
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildFilesContent',
 				array(&$this->componentContext, &$this->componentData,
-					&$fileContentStatic, &$this->fileContentDynamic,
-					&$this->placeholders, &$this->hhh)
+					&$fileContentStatic, &$fileContentDynamic,
+					&$placeholders, &$this->hhh)
 			);
-			// for plugin event TODO change event api signatures
-			CFactory::_('Placeholder')->active = $this->placeholders;
-			CFactory::_('Content')->active = $fileContentStatic;
-			// CFactory::_('Content')->_active = $this->fileContentDynamic;
 			unset($fileContentStatic);
+			unset($fileContentDynamic);
+			unset($placeholders);
 
 			// COMPONENT
-			CFactory::_('Content')->set('COMPONENT', CFactory::_('Placeholder')->active[Placefix::_h('COMPONENT')]);
+			CFactory::_('Content')->set('COMPONENT', CFactory::_('Placeholder')->get('COMPONENT'));
 
 			// Component
-			CFactory::_('Content')->set('Component', CFactory::_('Placeholder')->active[Placefix::_h('Component')]);
+			CFactory::_('Content')->set('Component', CFactory::_('Placeholder')->get('Component'));
 
 			// component
-			CFactory::_('Content')->set('component', CFactory::_('Placeholder')->active[Placefix::_h('component')]);
+			CFactory::_('Content')->set('component', CFactory::_('Placeholder')->get('component'));
 
 			// COMPANYNAME
 			CFactory::_('Content')->set('COMPANYNAME', trim(
@@ -192,40 +203,36 @@ class Infusion extends Interpretation
 
 			// ADMINJS
 			CFactory::_('Content')->set('ADMINJS',
-				CFactory::_('Placeholder')->update(
-				CFactory::_('Customcode.Dispenser')->hub['component_js'], CFactory::_('Placeholder')->active
+				CFactory::_('Placeholder')->update_(
+				CFactory::_('Customcode.Dispenser')->hub['component_js']
 			));
 			// SITEJS
 			CFactory::_('Content')->set('SITEJS',
-				CFactory::_('Placeholder')->update(
-				CFactory::_('Customcode.Dispenser')->hub['component_js'], CFactory::_('Placeholder')->active
+				CFactory::_('Placeholder')->update_(
+				CFactory::_('Customcode.Dispenser')->hub['component_js']
 			));
 
 			// ADMINCSS
 			CFactory::_('Content')->set('ADMINCSS',
-				CFactory::_('Placeholder')->update(
-				CFactory::_('Customcode.Dispenser')->hub['component_css_admin'],
-				CFactory::_('Placeholder')->active
+				CFactory::_('Placeholder')->update_(
+				CFactory::_('Customcode.Dispenser')->hub['component_css_admin']
 			));
 			// SITECSS
 			CFactory::_('Content')->set('SITECSS',
-				CFactory::_('Placeholder')->update(
-				CFactory::_('Customcode.Dispenser')->hub['component_css_site'],
-				CFactory::_('Placeholder')->active
+				CFactory::_('Placeholder')->update_(
+				CFactory::_('Customcode.Dispenser')->hub['component_css_site']
 			));
 
 			// CUSTOM_HELPER_SCRIPT
 			CFactory::_('Content')->set('CUSTOM_HELPER_SCRIPT',
-				CFactory::_('Placeholder')->update(
-				CFactory::_('Customcode.Dispenser')->hub['component_php_helper_admin'],
-				CFactory::_('Placeholder')->active
+				CFactory::_('Placeholder')->update_(
+				CFactory::_('Customcode.Dispenser')->hub['component_php_helper_admin']
 			));
 
 			// BOTH_CUSTOM_HELPER_SCRIPT
 			CFactory::_('Content')->set('BOTH_CUSTOM_HELPER_SCRIPT',
-				CFactory::_('Placeholder')->update(
-				CFactory::_('Customcode.Dispenser')->hub['component_php_helper_both'],
-				CFactory::_('Placeholder')->active
+				CFactory::_('Placeholder')->update_(
+				CFactory::_('Customcode.Dispenser')->hub['component_php_helper_both']
 			));
 
 			// ADMIN_GLOBAL_EVENT_HELPER
@@ -256,9 +263,8 @@ class Infusion extends Interpretation
 					. 'public static function globalEvent($document)');
 				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '{');
 				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER',
-					PHP_EOL . CFactory::_('Placeholder')->update(
-						CFactory::_('Customcode.Dispenser')->hub['component_php_admin_event'],
-						CFactory::_('Placeholder')->active
+					PHP_EOL . CFactory::_('Placeholder')->update_(
+						CFactory::_('Customcode.Dispenser')->hub['component_php_admin_event']
 					));
 				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '}');
 			}
@@ -326,7 +332,7 @@ class Infusion extends Interpretation
 						. $nameSingleCode . "'";
 					CFactory::_('Config')->lang_target = 'both';
 					// insure site view does not get removed
-					$this->removeSiteEditFolder = false;
+					CFactory::_('Config')->remove_site_edit_folder = false;
 				}
 				// check if help is being loaded
 				$this->checkHelp($nameSingleCode);
@@ -352,9 +358,9 @@ class Infusion extends Interpretation
 					);
 
 					// for plugin event TODO change event api signatures
-					$this->placeholders = CFactory::_('Placeholder')->active;
+					$placeholders = CFactory::_('Placeholder')->active;
 					$fileContentStatic = CFactory::_('Content')->active;
-					// $this->fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onBeforeBuildAdminEditViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildAdminEditViewContent',
@@ -362,57 +368,48 @@ class Infusion extends Interpretation
 							&$nameSingleCode,
 							&$nameListCode,
 							&$fileContentStatic,
-							&$this->fileContentDynamic[$nameSingleCode],
-							&$this->placeholders, &$this->hhh)
+							&$fileContentDynamic[$nameSingleCode],
+							&$placeholders, &$this->hhh)
 					);
-					// for plugin event TODO change event api signatures
-					CFactory::_('Placeholder')->active = $this->placeholders;
-					CFactory::_('Content')->active = $fileContentStatic;
-					// CFactory::_('Content')->_active = $this->fileContentDynamic;
 					unset($fileContentStatic);
+					unset($fileContentDynamic);
+					unset($placeholders);
 
 					// FIELDSETS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('FIELDSETS')]
-						= $this->setFieldSet(
+					CFactory::_('Content')->set_($nameSingleCode, 'FIELDSETS', $this->setFieldSet(
 						$view, CFactory::_('Config')->component_code_name,
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// ACCESSCONTROL <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('ACCESSCONTROL')]
-						= $this->setFieldSetAccessControl(
+					CFactory::_('Content')->set_($nameSingleCode, 'ACCESSCONTROL', $this->setFieldSetAccessControl(
 						$nameSingleCode
-					);
+					));
 
 					// LINKEDVIEWITEMS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('LINKEDVIEWITEMS')]
-						= '';
+					CFactory::_('Content')->set_($nameSingleCode, 'LINKEDVIEWITEMS', '');
 
 					// ADDTOOLBAR <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('ADDTOOLBAR')]
-						= $this->setAddToolBar($view);
+					CFactory::_('Content')->set_($nameSingleCode, 'ADDTOOLBAR', $this->setAddToolBar($view));
 
 					// set the script for this view
 					$this->buildTheViewScript($view);
 
 					// VIEW_SCRIPT
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('VIEW_SCRIPT')]
-						= $this->setViewScript(
+					CFactory::_('Content')->set_($nameSingleCode, 'VIEW_SCRIPT', $this->setViewScript(
 						$nameSingleCode, 'fileScript'
-					);
+					));
 
 					// EDITBODYSCRIPT
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('EDITBODYSCRIPT')]
-						= $this->setViewScript(
+					CFactory::_('Content')->set_($nameSingleCode, 'EDITBODYSCRIPT', $this->setViewScript(
 						$nameSingleCode, 'footerScript'
-					);
+					));
 
 					// AJAXTOKE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('AJAXTOKE')]
-						= $this->setAjaxToke(
+					CFactory::_('Content')->set_($nameSingleCode, 'AJAXTOKE', $this->setAjaxToke(
 						$nameSingleCode
-					);
+					));
 
 					// DOCUMENT_CUSTOM_PHP <<<DYNAMIC>>>
 					if ($phpDocument = CFactory::_('Customcode.Dispenser')->get(
@@ -421,195 +418,163 @@ class Infusion extends Interpretation
 						false
 					))
 					{
-						$this->fileContentDynamic[$nameSingleCode][Placefix::_h('DOCUMENT_CUSTOM_PHP')]
-							= str_replace(
+						CFactory::_('Content')->set_($nameSingleCode, 'DOCUMENT_CUSTOM_PHP', str_replace(
 							'$document->', '$this->document->', $phpDocument
-						);
+						));
 						// clear some memory
 						unset($phpDocument);
 					}
 					else
 					{
-						$this->fileContentDynamic[$nameSingleCode][Placefix::_h('DOCUMENT_CUSTOM_PHP')]
-							= '';
+						CFactory::_('Content')->set_($nameSingleCode, 'DOCUMENT_CUSTOM_PHP', '');
 					}
 					// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('LINKEDVIEWTABLESCRIPTS')]
-						= '';
+					CFactory::_('Content')->set_($nameSingleCode, 'LINKEDVIEWTABLESCRIPTS', '');
 
 					// VALIDATEFIX <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('VALIDATIONFIX')]
-						= $this->setValidationFix(
+					CFactory::_('Content')->set_($nameSingleCode, 'VALIDATIONFIX', $this->setValidationFix(
 						$nameSingleCode,
 						CFactory::_('Content')->get('Component')
-					);
+					));
 
 					// EDITBODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('EDITBODY')]
-						= $this->setEditBody($view);
+					CFactory::_('Content')->set_($nameSingleCode, 'EDITBODY', $this->setEditBody($view));
 
 					// EDITBODYFADEIN <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('EDITBODYFADEIN')]
-						= $this->setFadeInEfect($view);
+					CFactory::_('Content')->set_($nameSingleCode, 'EDITBODYFADEIN', $this->setFadeInEfect($view));
 
 					// JTABLECONSTRUCTOR <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JTABLECONSTRUCTOR')]
-						= $this->setJtableConstructor(
+					CFactory::_('Content')->set_($nameSingleCode, 'JTABLECONSTRUCTOR', $this->setJtableConstructor(
 						$nameSingleCode
-					);
+					));
 
 					// JTABLEALIASCATEGORY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JTABLEALIASCATEGORY')]
-						= $this->setJtableAliasCategory(
+					CFactory::_('Content')->set_($nameSingleCode, 'JTABLEALIASCATEGORY', $this->setJtableAliasCategory(
 						$nameSingleCode
-					);
+					));
 
 					// METHOD_GET_ITEM <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('METHOD_GET_ITEM')]
-						= $this->setMethodGetItem(
+					CFactory::_('Content')->set_($nameSingleCode, 'METHOD_GET_ITEM', $this->setMethodGetItem(
 						$nameSingleCode
-					);
+					));
 
 					// LINKEDVIEWGLOBAL <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('LINKEDVIEWGLOBAL')]
-						= '';
+					CFactory::_('Content')->set_($nameSingleCode, 'LINKEDVIEWGLOBAL', '');
 
 					// LINKEDVIEWMETHODS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('LINKEDVIEWMETHODS')]
-						= '';
+					CFactory::_('Content')->set_($nameSingleCode, 'LINKEDVIEWMETHODS', '');
 
 					// JMODELADMIN_BEFORE_DELETE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_BEFORE_DELETE')]
-						= CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_BEFORE_DELETE', CFactory::_('Customcode.Dispenser')->get(
 						'php_before_delete',
 						$nameSingleCode, PHP_EOL
-					);
+					));
 
 					// JMODELADMIN_AFTER_DELETE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_AFTER_DELETE')]
-						= CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_AFTER_DELETE', CFactory::_('Customcode.Dispenser')->get(
 						'php_after_delete', $nameSingleCode,
 						PHP_EOL . PHP_EOL
-					);
+					));
 
 					// JMODELADMIN_BEFORE_DELETE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_BEFORE_PUBLISH')]
-						= CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_BEFORE_PUBLISH', CFactory::_('Customcode.Dispenser')->get(
 						'php_before_publish',
 						$nameSingleCode, PHP_EOL
-					);
+					));
 
 					// JMODELADMIN_AFTER_DELETE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_AFTER_PUBLISH')]
-						= CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_AFTER_PUBLISH', CFactory::_('Customcode.Dispenser')->get(
 						'php_after_publish',
 						$nameSingleCode, PHP_EOL . PHP_EOL
-					);
+					));
 
 					// CHECKBOX_SAVE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('CHECKBOX_SAVE')]
-						= $this->setCheckboxSave(
+					CFactory::_('Content')->set_($nameSingleCode, 'CHECKBOX_SAVE', $this->setCheckboxSave(
 						$nameSingleCode
-					);
+					));
 
 					// METHOD_ITEM_SAVE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('METHOD_ITEM_SAVE')]
-						= $this->setMethodItemSave(
+					CFactory::_('Content')->set_($nameSingleCode, 'METHOD_ITEM_SAVE', $this->setMethodItemSave(
 						$nameSingleCode
-					);
+					));
 
 					// POSTSAVEHOOK <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('POSTSAVEHOOK')]
-						= CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Content')->set_($nameSingleCode, 'POSTSAVEHOOK', CFactory::_('Customcode.Dispenser')->get(
 						'php_postsavehook', $nameSingleCode,
 						PHP_EOL, null,
 						true, PHP_EOL . Indent::_(2) . "return;",
 						PHP_EOL . PHP_EOL . Indent::_(2) . "return;"
-					);
+					));
 
 					// VIEWCSS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('VIEWCSS')]
-						= CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Content')->set_($nameSingleCode, 'VIEWCSS', CFactory::_('Customcode.Dispenser')->get(
 						'css_view', $nameSingleCode, '',
 						null, true
-					);
+					));
 
 					// add css to front end
 					if (isset($view['edit_create_site_view'])
-						&& is_numeric(
-							$view['edit_create_site_view']
-						)
+						&& is_numeric($view['edit_create_site_view'])
 						&& $view['edit_create_site_view'] > 0)
 					{
-						$this->fileContentDynamic[$nameSingleCode][Placefix::_h('SITE_VIEWCSS')]
-							= $this->fileContentDynamic[$nameSingleCode][Placefix::_h('VIEWCSS')];
+						CFactory::_('Content')->set_($nameSingleCode, 'SITE_VIEWCSS', CFactory::_('Content')->get_($nameSingleCode,'VIEWCSS'));
 						// check if we should add a create menu
 						if ($view['edit_create_site_view'] == 2)
 						{
 							// SITE_MENU_XML <<<DYNAMIC>>>
-							$this->fileContentDynamic[$nameSingleCode][Placefix::_h('SITE_MENU_XML')]
-								= $this->setAdminViewMenu(
+							CFactory::_('Content')->set_($nameSingleCode, 'SITE_MENU_XML', $this->setAdminViewMenu(
 								$nameSingleCode, $view
-							);
+							));
 						}
 						// SITE_ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-						$this->fileContentDynamic[$nameSingleCode][Placefix::_h('SITE_ADMIN_VIEW_CONTROLLER_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($nameSingleCode, 'SITE_ADMIN_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
 							'site.admin.view.controller',
 							$nameSingleCode
-						);
+						));
 						// SITE_ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-						$this->fileContentDynamic[$nameSingleCode][Placefix::_h('SITE_ADMIN_VIEW_MODEL_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($nameSingleCode, 'SITE_ADMIN_VIEW_MODEL_HEADER', $this->setFileHeader(
 							'site.admin.view.model',
 							$nameSingleCode
-						);
+						));
 						// SITE_ADMIN_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-						$this->fileContentDynamic[$nameSingleCode][Placefix::_h('SITE_ADMIN_VIEW_HTML_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($nameSingleCode, 'SITE_ADMIN_VIEW_HTML_HEADER', $this->setFileHeader(
 							'site.admin.view.html',
 							$nameSingleCode
-						);
+						));
 						// SITE_ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
-						$this->fileContentDynamic[$nameSingleCode][Placefix::_h('SITE_ADMIN_VIEW_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($nameSingleCode, 'SITE_ADMIN_VIEW_HEADER', $this->setFileHeader(
 							'site.admin.view',
 							$nameSingleCode
-						);
+						));
 					}
 
 					// TABLAYOUTFIELDSARRAY <<<DYNAMIC>>> add the tab layout fields array to the model
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('TABLAYOUTFIELDSARRAY')]
-						= $this->getTabLayoutFieldsArray(
+					CFactory::_('Content')->set_($nameSingleCode, 'TABLAYOUTFIELDSARRAY', $this->getTabLayoutFieldsArray(
 						$nameSingleCode
-					);
+					));
 
 					// ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('ADMIN_VIEW_CONTROLLER_HEADER')]
-						= $this->setFileHeader(
+					CFactory::_('Content')->set_($nameSingleCode, 'ADMIN_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
 						'admin.view.controller',
 						$nameSingleCode
-					);
+					));
 					// ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('ADMIN_VIEW_MODEL_HEADER')]
-						= $this->setFileHeader(
+					CFactory::_('Content')->set_($nameSingleCode, 'ADMIN_VIEW_MODEL_HEADER', $this->setFileHeader(
 						'admin.view.model', $nameSingleCode
-					);
+					));
 					// ADMIN_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('ADMIN_VIEW_HTML_HEADER')]
-						= $this->setFileHeader(
+					CFactory::_('Content')->set_($nameSingleCode, 'ADMIN_VIEW_HTML_HEADER', $this->setFileHeader(
 						'admin.view.html', $nameSingleCode
-					);
+					));
 					// ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('ADMIN_VIEW_HEADER')]
-						= $this->setFileHeader(
+					CFactory::_('Content')->set_($nameSingleCode, 'ADMIN_VIEW_HEADER', $this->setFileHeader(
 						'admin.view', $nameSingleCode
-					);
+					));
 
 					// for plugin event TODO change event api signatures
-					$this->placeholders = CFactory::_('Placeholder')->active;
+					$placeholders = CFactory::_('Placeholder')->active;
 					$fileContentStatic = CFactory::_('Content')->active;
-					// $this->fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onAfterBuildAdminEditViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildAdminEditViewContent',
@@ -617,14 +582,12 @@ class Infusion extends Interpretation
 							&$nameSingleCode,
 							&$nameListCode,
 							&$fileContentStatic,
-							&$this->fileContentDynamic[$nameSingleCode],
-							&$this->placeholders, &$this->hhh)
+							&$fileContentDynamic[$nameSingleCode],
+							&$placeholders, &$this->hhh)
 					);
-					// for plugin event TODO change event api signatures
-					CFactory::_('Placeholder')->active = $this->placeholders;
-					CFactory::_('Content')->active = $fileContentStatic;
-					// CFactory::_('Content')->_active = $this->fileContentDynamic;
 					unset($fileContentStatic);
+					unset($fileContentDynamic);
+					unset($placeholders);
 				}
 				// set the views names
 				if (isset($view['settings']->name_list)
@@ -633,13 +596,12 @@ class Infusion extends Interpretation
 					CFactory::_('Config')->lang_target = 'admin';
 
 					// ICOMOON <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('ICOMOON')]
-						= $view['icomoon'];
+					CFactory::_('Content')->set_($nameListCode, 'ICOMOON', $view['icomoon']);
 
 					// for plugin event TODO change event api signatures
-					$this->placeholders = CFactory::_('Placeholder')->active;
+					$placeholders = CFactory::_('Placeholder')->active;
 					$fileContentStatic = CFactory::_('Content')->active;
-					// $this->fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onBeforeBuildAdminListViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildAdminListViewContent',
@@ -647,14 +609,12 @@ class Infusion extends Interpretation
 							&$nameSingleCode,
 							&$nameListCode,
 							&$fileContentStatic,
-							&$this->fileContentDynamic[$nameListCode],
-							&$this->placeholders, &$this->hhh)
+							&$fileContentDynamic[$nameListCode],
+							&$placeholders, &$this->hhh)
 					);
-					// for plugin event TODO change event api signatures
-					CFactory::_('Placeholder')->active = $this->placeholders;
-					CFactory::_('Content')->active = $fileContentStatic;
-					// CFactory::_('Content')->_active = $this->fileContentDynamic;
 					unset($fileContentStatic);
+					unset($fileContentDynamic);
+					unset($placeholders);
 
 					// set the export/import option
 					if (isset($view['port']) && $view['port']
@@ -683,90 +643,75 @@ class Infusion extends Interpretation
 					if (isset($view['checkin']) && $view['checkin'] == 1)
 					{
 						// AUTOCHECKIN <<<DYNAMIC>>>
-						$this->fileContentDynamic[$nameListCode][Placefix::_h('AUTOCHECKIN')]
-							= $this->setAutoCheckin(
+						CFactory::_('Content')->set_($nameListCode, 'AUTOCHECKIN', $this->setAutoCheckin(
 							$nameSingleCode,
 							CFactory::_('Config')->component_code_name
-						);
+						));
 						// CHECKINCALL <<<DYNAMIC>>>
-						$this->fileContentDynamic[$nameListCode][Placefix::_h('CHECKINCALL')]
-							= $this->setCheckinCall();
+						CFactory::_('Content')->set_($nameListCode, 'CHECKINCALL', $this->setCheckinCall());
 					}
 					else
 					{
 						// AUTOCHECKIN <<<DYNAMIC>>>
-						$this->fileContentDynamic[$nameListCode][Placefix::_h('AUTOCHECKIN')]
-							= '';
+						CFactory::_('Content')->set_($nameListCode, 'AUTOCHECKIN', '');
 						// CHECKINCALL <<<DYNAMIC>>>
-						$this->fileContentDynamic[$nameListCode][Placefix::_h('CHECKINCALL')]
-							= '';
+						CFactory::_('Content')->set_($nameListCode, 'CHECKINCALL', '');
 					}
 					// admin list file contnet
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('ADMIN_JAVASCRIPT_FILE')]
-						= $this->setViewScript(
+					CFactory::_('Content')->set_($nameListCode, 'ADMIN_JAVASCRIPT_FILE', $this->setViewScript(
 						$nameListCode, 'list_fileScript'
-					);
+					));
 					// ADMIN_CUSTOM_BUTTONS_LIST
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('ADMIN_CUSTOM_BUTTONS_LIST')]
-						= $this->setCustomButtons($view, 3, Indent::_(1));
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST')]
-						= $this->setFunctionOnlyButtons(
+					CFactory::_('Content')->set_($nameListCode, 'ADMIN_CUSTOM_BUTTONS_LIST', $this->setCustomButtons($view, 3, Indent::_(1)));
+					CFactory::_('Content')->set_($nameListCode, 'ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST', $this->setFunctionOnlyButtons(
 						$nameListCode
-					);
+					));
 
 					// GET_ITEMS_METHOD_STRING_FIX <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('GET_ITEMS_METHOD_STRING_FIX')]
-						= $this->setGetItemsMethodStringFix(
+					CFactory::_('Content')->set_($nameListCode, 'GET_ITEMS_METHOD_STRING_FIX', $this->setGetItemsMethodStringFix(
 						$nameSingleCode,
 						$nameListCode,
 						CFactory::_('Content')->get('Component')
-					);
+					));
 
 					// GET_ITEMS_METHOD_AFTER_ALL <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('GET_ITEMS_METHOD_AFTER_ALL')]
-						= CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Content')->set_($nameListCode, 'GET_ITEMS_METHOD_AFTER_ALL', CFactory::_('Customcode.Dispenser')->get(
 						'php_getitems_after_all',
 						$nameSingleCode, PHP_EOL
-					);
+					));
 
 					// SELECTIONTRANSLATIONFIX <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('SELECTIONTRANSLATIONFIX')]
-						= $this->setSelectionTranslationFix(
+					CFactory::_('Content')->set_($nameListCode, 'SELECTIONTRANSLATIONFIX', $this->setSelectionTranslationFix(
 						$nameListCode,
 						CFactory::_('Content')->get('Component')
-					);
+					));
 
 					// SELECTIONTRANSLATIONFIXFUNC <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('SELECTIONTRANSLATIONFIXFUNC')]
-						= $this->setSelectionTranslationFixFunc(
+					CFactory::_('Content')->set_($nameListCode, 'SELECTIONTRANSLATIONFIXFUNC', $this->setSelectionTranslationFixFunc(
 						$nameListCode,
 						CFactory::_('Content')->get('Component')
-					);
+					));
 
 					// FILTER_FIELDS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('FILTER_FIELDS')]
-						= $this->setFilterFieldsArray(
+					CFactory::_('Content')->set_($nameListCode, 'FILTER_FIELDS', $this->setFilterFieldsArray(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// STOREDID <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('STOREDID')]
-						= $this->setStoredId(
+					CFactory::_('Content')->set_($nameListCode, 'STOREDID', $this->setStoredId(
 						$nameSingleCode, $nameListCode
-					);
+					));
 
 					// POPULATESTATE <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('POPULATESTATE')]
-						= $this->setPopulateState(
+					CFactory::_('Content')->set_($nameListCode, 'POPULATESTATE', $this->setPopulateState(
 						$nameSingleCode, $nameListCode
-					);
+					));
 
 					// SORTFIELDS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('SORTFIELDS')]
-						= $this->setSortFields(
+					CFactory::_('Content')->set_($nameListCode, 'SORTFIELDS', $this->setSortFields(
 						$nameListCode
-					);
+					));
 
 					// CATEGORY_VIEWS
 					CFactory::_('Content')->add('ROUTER_CATEGORY_VIEWS',
@@ -776,123 +721,106 @@ class Infusion extends Interpretation
 					));
 
 					// FILTERFIELDDISPLAYHELPER <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('FILTERFIELDDISPLAYHELPER')]
-						= $this->setFilterFieldSidebarDisplayHelper(
+					CFactory::_('Content')->set_($nameListCode, 'FILTERFIELDDISPLAYHELPER', $this->setFilterFieldSidebarDisplayHelper(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// BATCHDISPLAYHELPER <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('BATCHDISPLAYHELPER')]
-						= $this->setBatchDisplayHelper(
+					CFactory::_('Content')->set_($nameListCode, 'BATCHDISPLAYHELPER', $this->setBatchDisplayHelper(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// FILTERFUNCTIONS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('FILTERFUNCTIONS')]
-						= $this->setFilterFieldHelper(
+					CFactory::_('Content')->set_($nameListCode, 'FILTERFUNCTIONS', $this->setFilterFieldHelper(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// FIELDFILTERSETS <<<DYNAMIC>>>
-					$this->fileContentDynamic['filter_'
-					. $nameListCode][Placefix::_h('FIELDFILTERSETS')]
-						= $this->setFieldFilterSet(
+					CFactory::_('Content')->set_('filter_' . $nameListCode,'FIELDFILTERSETS',
+						$this->setFieldFilterSet(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// FIELDLISTSETS <<<DYNAMIC>>>
-					$this->fileContentDynamic['filter_'
-					. $nameListCode][Placefix::_h('FIELDLISTSETS')]
-						= $this->setFieldFilterListSet(
+					CFactory::_('Content')->set_('filter_' . $nameListCode, 'FIELDLISTSETS',
+						$this->setFieldFilterListSet(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// LISTQUERY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('LISTQUERY')]
-						= $this->setListQuery(
+					CFactory::_('Content')->set_($nameListCode, 'LISTQUERY', $this->setListQuery(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// MODELEXPORTMETHOD <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('MODELEXPORTMETHOD')]
-						= $this->setGetItemsModelMethod(
+					CFactory::_('Content')->set_($nameListCode, 'MODELEXPORTMETHOD', $this->setGetItemsModelMethod(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// MODELEXIMPORTMETHOD <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('CONTROLLEREXIMPORTMETHOD')]
-						= $this->setControllerEximportMethod(
+					CFactory::_('Content')->set_($nameListCode, 'CONTROLLEREXIMPORTMETHOD', $this->setControllerEximportMethod(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// EXPORTBUTTON <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('EXPORTBUTTON')]
-						= $this->setExportButton(
+					CFactory::_('Content')->set_($nameListCode, 'EXPORTBUTTON', $this->setExportButton(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// IMPORTBUTTON <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('IMPORTBUTTON')]
-						= $this->setImportButton(
+					CFactory::_('Content')->set_($nameListCode, 'IMPORTBUTTON', $this->setImportButton(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// VIEWS_DEFAULT_BODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('VIEWS_DEFAULT_BODY')]
-						= $this->setDefaultViewsBody(
+					CFactory::_('Content')->set_($nameListCode, 'VIEWS_DEFAULT_BODY', $this->setDefaultViewsBody(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// LISTHEAD <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('LISTHEAD')]
-						= $this->setListHead(
+					CFactory::_('Content')->set_($nameListCode, 'LISTHEAD', $this->setListHead(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// LISTBODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('LISTBODY')]
-						= $this->setListBody(
+					CFactory::_('Content')->set_($nameListCode, 'LISTBODY', $this->setListBody(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// LISTCOLNR <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('LISTCOLNR')]
-						= $this->setListColnr(
+					CFactory::_('Content')->set_($nameListCode, 'LISTCOLNR', $this->setListColnr(
 						$nameListCode
-					);
+					));
 
 					// JVIEWLISTCANDO <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('JVIEWLISTCANDO')]
-						= $this->setJviewListCanDo(
+					CFactory::_('Content')->set_($nameListCode, 'JVIEWLISTCANDO', $this->setJviewListCanDo(
 						$nameSingleCode,
 						$nameListCode
-					);
+					));
 
 					// VIEWSCSS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('VIEWSCSS')]
-						= CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Content')->set_($nameListCode, 'VIEWSCSS', CFactory::_('Customcode.Dispenser')->get(
 						'css_views', $nameSingleCode, '',
 						null, true
-					);
+					));
 
 					// ADMIN_DIPLAY_METHOD <<<DYNAMIC>>>
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('ADMIN_DIPLAY_METHOD')]
-						= $this->setAdminViewDisplayMethod(
+					CFactory::_('Content')->set_($nameListCode, 'ADMIN_DIPLAY_METHOD', $this->setAdminViewDisplayMethod(
 						$nameListCode
-					);
+					));
 
 					// VIEWS_FOOTER_SCRIPT <<<DYNAMIC>>>
 					$scriptNote = PHP_EOL . '//' . Line::_(__Line__, __Class__)
@@ -916,44 +844,38 @@ class Infusion extends Interpretation
 							// clear some memory
 							unset($minifier);
 						}
-						$this->fileContentDynamic[$nameListCode][Placefix::_h('VIEWS_FOOTER_SCRIPT')]
-							= PHP_EOL . '<script type="text/javascript">'
-							. $footerScript . "</script>";
+						CFactory::_('Content')->set_($nameListCode, 'VIEWS_FOOTER_SCRIPT', PHP_EOL . '<script type="text/javascript">'
+							. $footerScript . "</script>");
 						// clear some memory
 						unset($footerScript);
 					}
 					else
 					{
-						$this->fileContentDynamic[$nameListCode][Placefix::_h('VIEWS_FOOTER_SCRIPT')]
-							= '';
+						CFactory::_('Content')->set_($nameListCode, 'VIEWS_FOOTER_SCRIPT', '');
 					}
 
 					// ADMIN_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('ADMIN_VIEWS_CONTROLLER_HEADER')]
-						= $this->setFileHeader(
+					CFactory::_('Content')->set_($nameListCode, 'ADMIN_VIEWS_CONTROLLER_HEADER', $this->setFileHeader(
 						'admin.views.controller',
 						$nameListCode
-					);
+					));
 					// ADMIN_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('ADMIN_VIEWS_MODEL_HEADER')]
-						= $this->setFileHeader(
+					CFactory::_('Content')->set_($nameListCode, 'ADMIN_VIEWS_MODEL_HEADER', $this->setFileHeader(
 						'admin.views.model', $nameListCode
-					);
+					));
 					// ADMIN_VIEWS_HTML_HEADER <<<DYNAMIC>>> add the header details for the views
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('ADMIN_VIEWS_HTML_HEADER')]
-						= $this->setFileHeader(
+					CFactory::_('Content')->set_($nameListCode, 'ADMIN_VIEWS_HTML_HEADER', $this->setFileHeader(
 						'admin.views.html', $nameListCode
-					);
+					));
 					// ADMIN_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the views
-					$this->fileContentDynamic[$nameListCode][Placefix::_h('ADMIN_VIEWS_HEADER')]
-						= $this->setFileHeader(
+					CFactory::_('Content')->set_($nameListCode, 'ADMIN_VIEWS_HEADER', $this->setFileHeader(
 						'admin.views', $nameListCode
-					);
+					));
 
 					// for plugin event TODO change event api signatures
-					$this->placeholders = CFactory::_('Placeholder')->active;
+					$placeholders = CFactory::_('Placeholder')->active;
 					$fileContentStatic = CFactory::_('Content')->active;
-					// $this->fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onAfterBuildAdminListViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildAdminListViewContent',
@@ -961,121 +883,102 @@ class Infusion extends Interpretation
 							&$nameSingleCode,
 							&$nameListCode,
 							&$fileContentStatic,
-							&$this->fileContentDynamic[$nameListCode],
-							&$this->placeholders, &$this->hhh)
+							&$fileContentDynamic[$nameListCode],
+							&$placeholders, &$this->hhh)
 					);
-					// for plugin event TODO change event api signatures
-					CFactory::_('Placeholder')->active = $this->placeholders;
-					CFactory::_('Content')->active = $fileContentStatic;
-					// CFactory::_('Content')->_active = $this->fileContentDynamic;
 					unset($fileContentStatic);
+					unset($fileContentDynamic);
+					unset($placeholders);
 				}
 
 				// set u fields used in batch
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('UNIQUEFIELDS')]
-					= $this->setUniqueFields(
+				CFactory::_('Content')->set_($nameSingleCode, 'UNIQUEFIELDS', $this->setUniqueFields(
 					$nameSingleCode
-				);
+				));
 
 				// TITLEALIASFIX <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('TITLEALIASFIX')]
-					= $this->setAliasTitleFix(
+				CFactory::_('Content')->set_($nameSingleCode, 'TITLEALIASFIX', $this->setAliasTitleFix(
 					$nameSingleCode
-				);
+				));
 
 				// GENERATENEWTITLE <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('GENERATENEWTITLE')]
-					= $this->setGenerateNewTitle(
+				CFactory::_('Content')->set_($nameSingleCode, 'GENERATENEWTITLE', $this->setGenerateNewTitle(
 					$nameSingleCode
-				);
+				));
 
 				// GENERATENEWALIAS <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('GENERATENEWALIAS')]
-					= $this->setGenerateNewAlias(
+				CFactory::_('Content')->set_($nameSingleCode, 'GENERATENEWALIAS', $this->setGenerateNewAlias(
 					$nameSingleCode
-				);
+				));
 
 				// MODEL_BATCH_COPY <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('MODEL_BATCH_COPY')]
-					= $this->setBatchCopy($nameSingleCode);
+				CFactory::_('Content')->set_($nameSingleCode, 'MODEL_BATCH_COPY', $this->setBatchCopy($nameSingleCode));
 
 				// MODEL_BATCH_MOVE <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('MODEL_BATCH_MOVE')]
-					= $this->setBatchMove($nameSingleCode);
+				CFactory::_('Content')->set_($nameSingleCode, 'MODEL_BATCH_MOVE', $this->setBatchMove($nameSingleCode));
 
 				// BATCH_ONCLICK_CANCEL_SCRIPT <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameListCode][Placefix::_h('BATCH_ONCLICK_CANCEL_SCRIPT')]
-					= ''; // TODO <-- must still be build
+				CFactory::_('Content')->set_($nameListCode, 'BATCH_ONCLICK_CANCEL_SCRIPT', ''); // TODO <-- must still be build
 
 				// JCONTROLLERFORM_ALLOWADD <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JCONTROLLERFORM_ALLOWADD')]
-					= $this->setJcontrollerAllowAdd(
+				CFactory::_('Content')->set_($nameSingleCode, 'JCONTROLLERFORM_ALLOWADD', $this->setJcontrollerAllowAdd(
 					$nameSingleCode,
 					$nameListCode
-				);
+				));
 
 				// JCONTROLLERFORM_BEFORECANCEL <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JCONTROLLERFORM_BEFORECANCEL')]
-					= CFactory::_('Customcode.Dispenser')->get(
+				CFactory::_('Content')->set_($nameSingleCode, 'JCONTROLLERFORM_BEFORECANCEL', CFactory::_('Customcode.Dispenser')->get(
 					'php_before_cancel', $nameSingleCode,
 					PHP_EOL, null, false,
 					''
-				);
+				));
 
 				// JCONTROLLERFORM_AFTERCANCEL <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JCONTROLLERFORM_AFTERCANCEL')]
-					= CFactory::_('Customcode.Dispenser')->get(
+				CFactory::_('Content')->set_($nameSingleCode, 'JCONTROLLERFORM_AFTERCANCEL', CFactory::_('Customcode.Dispenser')->get(
 					'php_after_cancel', $nameSingleCode,
 					PHP_EOL, null, false,
 					''
-				);
+				));
 
 				// JCONTROLLERFORM_ALLOWEDIT <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JCONTROLLERFORM_ALLOWEDIT')]
-					= $this->setJcontrollerAllowEdit(
+				CFactory::_('Content')->set_($nameSingleCode, 'JCONTROLLERFORM_ALLOWEDIT', $this->setJcontrollerAllowEdit(
 					$nameSingleCode,
 					$nameListCode
-				);
+				));
 
 				// JMODELADMIN_GETFORM <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_GETFORM')]
-					= $this->setJmodelAdminGetForm(
+				CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_GETFORM', $this->setJmodelAdminGetForm(
 					$nameSingleCode,
 					$nameListCode
-				);
+				));
 
 				// JMODELADMIN_ALLOWEDIT <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_ALLOWEDIT')]
-					= $this->setJmodelAdminAllowEdit(
+				CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_ALLOWEDIT', $this->setJmodelAdminAllowEdit(
 					$nameSingleCode,
 					$nameListCode
-				);
+				));
 
 				// JMODELADMIN_CANDELETE <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_CANDELETE')]
-					= $this->setJmodelAdminCanDelete(
+				CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_CANDELETE', $this->setJmodelAdminCanDelete(
 					$nameSingleCode,
 					$nameListCode
-				);
+				));
 
 				// JMODELADMIN_CANEDITSTATE <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('JMODELADMIN_CANEDITSTATE')]
-					= $this->setJmodelAdminCanEditState(
+				CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_CANEDITSTATE', $this->setJmodelAdminCanEditState(
 					$nameSingleCode,
 					$nameListCode
-				);
+				));
 
 				// set custom admin view Toolbare buttons
 				// CUSTOM_ADMIN_DYNAMIC_BUTTONS  <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameListCode][Placefix::_h('CUSTOM_ADMIN_DYNAMIC_BUTTONS')]
-					= $this->setCustomAdminDynamicButton(
+				CFactory::_('Content')->set_($nameListCode, 'CUSTOM_ADMIN_DYNAMIC_BUTTONS', $this->setCustomAdminDynamicButton(
 					$nameListCode
-				);
+				));
 				// CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER  <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameListCode][Placefix::_h('CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER')]
-					= $this->setCustomAdminDynamicButtonController(
+				CFactory::_('Content')->set_($nameListCode, 'CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER', $this->setCustomAdminDynamicButtonController(
 					$nameListCode
-				);
+				));
 
 				// set helper router
 				CFactory::_('Content')->add('ROUTEHELPER',
@@ -1115,9 +1018,9 @@ class Infusion extends Interpretation
 				}
 
 				// for plugin event TODO change event api signatures
-				$this->placeholders = CFactory::_('Placeholder')->active;
+				$placeholders = CFactory::_('Placeholder')->active;
 				$fileContentStatic = CFactory::_('Content')->active;
-				// $this->fileContentDynamic = CFactory::_('Content')->_active;
+				$fileContentDynamic = CFactory::_('Content')->_active;
 				// Trigger Event: jcb_ce_onAfterBuildAdminViewContent
 				CFactory::_('Event')->trigger(
 					'jcb_ce_onAfterBuildAdminViewContent',
@@ -1125,14 +1028,12 @@ class Infusion extends Interpretation
 						&$nameSingleCode,
 						&$nameListCode,
 						&$fileContentStatic,
-						&$this->fileContentDynamic, &$this->placeholders,
+						&$fileContentDynamic, &$placeholders,
 						&$this->hhh)
 				);
-				// for plugin event TODO change event api signatures
-				CFactory::_('Placeholder')->active = $this->placeholders;
-				CFactory::_('Content')->active = $fileContentStatic;
-				// CFactory::_('Content')->_active = $this->fileContentDynamic;
 				unset($fileContentStatic);
+				unset($fileContentDynamic);
+				unset($placeholders);
 			}
 
 			// all fields stored in database
@@ -1153,19 +1054,13 @@ class Infusion extends Interpretation
 				foreach ($this->componentData->custom_admin_views as $view)
 				{
 					// for single views
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SView')]
-						= $view['settings']->Code;
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('sview')]
-						= $view['settings']->code;
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SVIEW')]
-						= $view['settings']->CODE;
+					CFactory::_('Content')->set_($view['settings']->code, 'SView', $view['settings']->Code);
+					CFactory::_('Content')->set_($view['settings']->code, 'sview', $view['settings']->code);
+					CFactory::_('Content')->set_($view['settings']->code, 'SVIEW', $view['settings']->CODE);
 					// for list views
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SViews')]
-						= $view['settings']->Code;
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('sviews')]
-						= $view['settings']->code;
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SVIEWS')]
-						= $view['settings']->CODE;
+					CFactory::_('Content')->set_($view['settings']->code, 'SViews', $view['settings']->Code);
+					CFactory::_('Content')->set_($view['settings']->code, 'sviews', $view['settings']->code);
+					CFactory::_('Content')->set_($view['settings']->code, 'SVIEWS', $view['settings']->CODE);
 					// add to lang array
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target,
@@ -1178,53 +1073,33 @@ class Infusion extends Interpretation
 						. '_DESC', $view['settings']->description
 					);
 					// ICOMOON <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('ICOMOON')]
-						= $view['icomoon'];
+					CFactory::_('Content')->set_($view['settings']->code, 'ICOMOON', $view['icomoon']);
 
 					// set placeholders
-					CFactory::_('Placeholder')->active[Placefix::_h('SView')]
-						= $view['settings']->Code;
-					CFactory::_('Placeholder')->active[Placefix::_h('sview')]
-						= $view['settings']->code;
-					CFactory::_('Placeholder')->active[Placefix::_h('SVIEW')]
-						= $view['settings']->CODE;
-					CFactory::_('Placeholder')->active[Placefix::_('SView')]
-						= $view['settings']->Code;
-					CFactory::_('Placeholder')->active[Placefix::_('sview')]
-						= $view['settings']->code;
-					CFactory::_('Placeholder')->active[Placefix::_('SVIEW')]
-						= $view['settings']->CODE;
-					CFactory::_('Placeholder')->active[Placefix::_h('SViews')]
-						= $view['settings']->Code;
-					CFactory::_('Placeholder')->active[Placefix::_h('sviews')]
-						= $view['settings']->code;
-					CFactory::_('Placeholder')->active[Placefix::_h('SVIEWS')]
-						= $view['settings']->CODE;
-					CFactory::_('Placeholder')->active[Placefix::_('SViews')]
-						= $view['settings']->Code;
-					CFactory::_('Placeholder')->active[Placefix::_('sviews')]
-						= $view['settings']->code;
-					CFactory::_('Placeholder')->active[Placefix::_('SVIEWS')]
-						= $view['settings']->CODE;
+					CFactory::_('Placeholder')->set('SView', $view['settings']->Code);
+					CFactory::_('Placeholder')->set('sview', $view['settings']->code);
+					CFactory::_('Placeholder')->set('SVIEW', $view['settings']->CODE);
+
+					CFactory::_('Placeholder')->set('SViews', $view['settings']->Code);
+					CFactory::_('Placeholder')->set('sviews', $view['settings']->code);
+					CFactory::_('Placeholder')->set('SVIEWS', $view['settings']->CODE);
 
 					// for plugin event TODO change event api signatures
-					$this->placeholders = CFactory::_('Placeholder')->active;
+					$placeholders = CFactory::_('Placeholder')->active;
 					$fileContentStatic = CFactory::_('Content')->active;
-					// $this->fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onBeforeBuildCustomAdminViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildCustomAdminViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
 							&$fileContentStatic,
-							&$this->fileContentDynamic[$view['settings']->code],
-							&$this->placeholders, &$this->hhh)
+							&$fileContentDynamic[$view['settings']->code],
+							&$placeholders, &$this->hhh)
 					);
-					// for plugin event TODO change event api signatures
-					CFactory::_('Placeholder')->active = $this->placeholders;
-					CFactory::_('Content')->active = $fileContentStatic;
-					// CFactory::_('Content')->_active = $this->fileContentDynamic;
 					unset($fileContentStatic);
+					unset($fileContentDynamic);
+					unset($placeholders);
 
 					// set license per view if needed
 					$this->setLockLicensePer(
@@ -1236,189 +1111,162 @@ class Infusion extends Interpretation
 						&& $this->dynamicDashboard === $view['settings']->code)
 					{
 						// HIDEMAINMENU <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('HIDEMAINMENU')]
-							= '';
+						CFactory::_('Content')->set_($view['settings']->code, 'HIDEMAINMENU', '');
 					}
 					else
 					{
 						// HIDEMAINMENU <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('HIDEMAINMENU')]
-							= PHP_EOL . Indent::_(2) . '//' . Line::_(
+						CFactory::_('Content')->set_($view['settings']->code, 'HIDEMAINMENU', PHP_EOL . Indent::_(2) . '//' . Line::_(
 								__LINE__,__CLASS__
 							) . " hide the main menu"
 							. PHP_EOL . Indent::_(2)
-							. "\$this->app->input->set('hidemainmenu', true);";
+							. "\$this->app->input->set('hidemainmenu', true);");
 					}
 
 					if ($view['settings']->main_get->gettype == 1)
 					{
 						// CUSTOM_ADMIN_BEFORE_GET_ITEM <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_BEFORE_GET_ITEM')]
-							= CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_BEFORE_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitem',
 							$view['settings']->code, '', null, true
-						);
+						));
 
 						// CUSTOM_ADMIN_GET_ITEM <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_GET_ITEM')]
-							= $this->setCustomViewGetItem(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_GET_ITEM', $this->setCustomViewGetItem(
 							$view['settings']->main_get,
 							$view['settings']->code, Indent::_(2)
-						);
+						));
 
 						// CUSTOM_ADMIN_AFTER_GET_ITEM <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_AFTER_GET_ITEM')]
-							= CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_AFTER_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitem',
 							$view['settings']->code, '', null, true
-						);
+						));
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
 						// CUSTOM_ADMIN_GET_LIST_QUERY <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_GET_LIST_QUERY')]
-							= $this->setCustomViewListQuery(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_GET_LIST_QUERY', $this->setCustomViewListQuery(
 							$view['settings']->main_get, $view['settings']->code
-						);
+						));
 
 						// CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY')]
-							= CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_getlistquery',
 							$view['settings']->code, PHP_EOL, null, true
-						);
+						));
 
 						// CUSTOM_ADMIN_BEFORE_GET_ITEMS <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_BEFORE_GET_ITEMS')]
-							= CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_BEFORE_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitems',
 							$view['settings']->code, PHP_EOL, null, true
-						);
+						));
 
 						// CUSTOM_ADMIN_GET_ITEMS <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_GET_ITEMS')]
-							= $this->setCustomViewGetItems(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_GET_ITEMS', $this->setCustomViewGetItems(
 							$view['settings']->main_get, $view['settings']->code
-						);
+						));
 
 						// CUSTOM_ADMIN_AFTER_GET_ITEMS <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_AFTER_GET_ITEMS')]
-							= CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_AFTER_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitems',
 							$view['settings']->code, PHP_EOL, null, true
-						);
+						));
 					}
 
 					// CUSTOM_ADMIN_CUSTOM_METHODS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_CUSTOM_METHODS')]
-						= $this->setCustomViewCustomItemMethods(
+					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_CUSTOM_METHODS', $this->setCustomViewCustomItemMethods(
 						$view['settings']->main_get, $view['settings']->code
-					);
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_CUSTOM_METHODS')]
-						.= $this->setCustomViewCustomMethods(
-						$view, $view['settings']->code
+					));
+					CFactory::_('Content')->add_($view['settings']->code, 'CUSTOM_ADMIN_CUSTOM_METHODS',
+						$this->setCustomViewCustomMethods(
+							$view, $view['settings']->code
+						)
 					);
 					// CUSTOM_ADMIN_DIPLAY_METHOD <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_DIPLAY_METHOD')]
-						= $this->setCustomViewDisplayMethod($view);
+					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_DIPLAY_METHOD', $this->setCustomViewDisplayMethod($view));
 					// set document details
 					$this->setPrepareDocument($view);
 					// CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS')]
-						= $this->setCustomViewExtraDisplayMethods($view);
+					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS', $this->setCustomViewExtraDisplayMethods($view));
 					// CUSTOM_ADMIN_CODE_BODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_CODE_BODY')]
-						= $this->setCustomViewCodeBody($view);
+					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_CODE_BODY', $this->setCustomViewCodeBody($view));
 					// CUSTOM_ADMIN_BODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_BODY')]
-						= $this->setCustomViewBody($view);
+					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_BODY', $this->setCustomViewBody($view));
 					// CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT')]
-						= $this->setCustomViewSubmitButtonScript($view);
+					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT', $this->setCustomViewSubmitButtonScript($view));
 
 					// setup the templates
 					$this->setCustomViewTemplateBody($view);
 
 					// set the site form if needed
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_TOP_FORM')]
-						= $this->setCustomViewForm(
+					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_TOP_FORM', $this->setCustomViewForm(
 						$view['settings']->code,
 						$view['settings']->main_get->gettype, 1
-					);
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_BOTTOM_FORM')]
-						= $this->setCustomViewForm(
+					));
+					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_BOTTOM_FORM', $this->setCustomViewForm(
 						$view['settings']->code,
 						$view['settings']->main_get->gettype, 2
-					);
+					));
 
 					// set headers based on the main get type
 					if ($view['settings']->main_get->gettype == 1)
 					{
 						// CUSTOM_ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_VIEW_CONTROLLER_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
 							'custom.admin.view.controller',
 							$view['settings']->code
-						);
+						));
 						// CUSTOM_ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_VIEW_MODEL_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEW_MODEL_HEADER', $this->setFileHeader(
 							'custom.admin.view.model', $view['settings']->code
-						);
+						));
 						// CUSTOM_ADMIN_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_VIEW_HTML_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEW_HTML_HEADER', $this->setFileHeader(
 							'custom.admin.view.html', $view['settings']->code
-						);
+						));
 						// CUSTOM_ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_VIEW_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEW_HEADER', $this->setFileHeader(
 							'custom.admin.view', $view['settings']->code
-						);
+						));
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
 						// CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER', $this->setFileHeader(
 							'custom.admin.views.controller',
 							$view['settings']->code
-						);
+						));
 						// CUSTOM_ADMIN_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_VIEWS_MODEL_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEWS_MODEL_HEADER', $this->setFileHeader(
 							'custom.admin.views.model', $view['settings']->code
-						);
+						));
 						// CUSTOM_ADMIN_VIEWS_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_VIEWS_HTML_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEWS_HTML_HEADER', $this->setFileHeader(
 							'custom.admin.views.html', $view['settings']->code
-						);
+						));
 						// CUSTOM_ADMIN_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the view
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('CUSTOM_ADMIN_VIEWS_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEWS_HEADER', $this->setFileHeader(
 							'custom.admin.views', $view['settings']->code
-						);
+						));
 					}
 
 					// for plugin event TODO change event api signatures
-					$this->placeholders = CFactory::_('Placeholder')->active;
+					$placeholders = CFactory::_('Placeholder')->active;
 					$fileContentStatic = CFactory::_('Content')->active;
-					// $this->fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onAfterBuildCustomAdminViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildCustomAdminViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
 							&$fileContentStatic,
-							&$this->fileContentDynamic[$view['settings']->code],
-							&$this->placeholders, &$this->hhh)
+							&$fileContentDynamic[$view['settings']->code],
+							&$placeholders, &$this->hhh)
 					);
-					// for plugin event TODO change event api signatures
-					CFactory::_('Placeholder')->active = $this->placeholders;
-					CFactory::_('Content')->active = $fileContentStatic;
-					// CFactory::_('Content')->_active = $this->fileContentDynamic;
 					unset($fileContentStatic);
+					unset($fileContentDynamic);
+					unset($placeholders);
 				}
 
 				// setup the layouts
@@ -1489,37 +1337,28 @@ class Infusion extends Interpretation
 				CFactory::_('Content')->set('DASHBOARDVIEW', CFactory::_('Config')->component_code_name);
 
 				// DASHBOARDICONS
-				$this->fileContentDynamic[CFactory::_('Config')->component_code_name][Placefix::_h('DASHBOARDICONS')]
-					= $this->setDashboardIcons();
+				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASHBOARDICONS', $this->setDashboardIcons());
 
 				// DASHBOARDICONACCESS
-				$this->fileContentDynamic[CFactory::_('Config')->component_code_name][Placefix::_h('DASHBOARDICONACCESS')]
-					= $this->setDashboardIconAccess();
+				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASHBOARDICONACCESS', $this->setDashboardIconAccess());
 
 				// DASH_MODEL_METHODS
-				$this->fileContentDynamic[CFactory::_('Config')->component_code_name][Placefix::_h('DASH_MODEL_METHODS')]
-					= $this->setDashboardModelMethods();
+				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_MODEL_METHODS', $this->setDashboardModelMethods());
 
 				// DASH_GET_CUSTOM_DATA
-				$this->fileContentDynamic[CFactory::_('Config')->component_code_name][Placefix::_h('DASH_GET_CUSTOM_DATA')]
-					= $this->setDashboardGetCustomData();
+				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_GET_CUSTOM_DATA', $this->setDashboardGetCustomData());
 
 				// DASH_DISPLAY_DATA
-				$this->fileContentDynamic[CFactory::_('Config')->component_code_name][Placefix::_h('DASH_DISPLAY_DATA')]
-					= $this->setDashboardDisplayData();
+				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_DISPLAY_DATA', $this->setDashboardDisplayData());
 
 				// DASH_VIEW_HEADER
-				$this->fileContentDynamic[CFactory::_('Config')->component_code_name][Placefix::_h('DASH_VIEW_HEADER')]
-					= $this->setFileHeader('dashboard.view', 'dashboard');
+				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_VIEW_HEADER', $this->setFileHeader('dashboard.view', 'dashboard'));
 				// DASH_VIEW_HTML_HEADER
-				$this->fileContentDynamic[CFactory::_('Config')->component_code_name][Placefix::_h('DASH_VIEW_HTML_HEADER')]
-					= $this->setFileHeader('dashboard.view.html', 'dashboard');
+				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_VIEW_HTML_HEADER', $this->setFileHeader('dashboard.view.html', 'dashboard'));
 				// DASH_MODEL_HEADER
-				$this->fileContentDynamic[CFactory::_('Config')->component_code_name][Placefix::_h('DASH_MODEL_HEADER')]
-					= $this->setFileHeader('dashboard.model', 'dashboard');
+				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_MODEL_HEADER', $this->setFileHeader('dashboard.model', 'dashboard'));
 				// DASH_CONTROLLER_HEADER
-				$this->fileContentDynamic[CFactory::_('Config')->component_code_name][Placefix::_h('DASH_CONTROLLER_HEADER')]
-					= $this->setFileHeader('dashboard.controller', 'dashboard');
+				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_CONTROLLER_HEADER', $this->setFileHeader('dashboard.controller', 'dashboard'));
 			}
 			else
 			{
@@ -1534,23 +1373,17 @@ class Infusion extends Interpretation
 				$target = array('admin' => 'import');
 				$this->buildDynamique($target, 'import');
 				// IMPORT_EXT_METHOD <<<DYNAMIC>>>
-				$this->fileContentDynamic['import'][Placefix::_h('IMPORT_EXT_METHOD')]
-					= PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-						ComponentbuilderHelper::getDynamicScripts('ext'),
-						CFactory::_('Placeholder')->active
-					);
+				CFactory::_('Content')->set_('import', 'IMPORT_EXT_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+						ComponentbuilderHelper::getDynamicScripts('ext')
+					));
 				// IMPORT_SETDATA_METHOD <<<DYNAMIC>>>
-				$this->fileContentDynamic['import'][Placefix::_h('IMPORT_SETDATA_METHOD')]
-					= PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-						ComponentbuilderHelper::getDynamicScripts('setdata'),
-						CFactory::_('Placeholder')->active
-					);
+				CFactory::_('Content')->set_('import', 'IMPORT_SETDATA_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+						ComponentbuilderHelper::getDynamicScripts('setdata')
+					));
 				// IMPORT_SAVE_METHOD <<<DYNAMIC>>>
-				$this->fileContentDynamic['import'][Placefix::_h('IMPORT_SAVE_METHOD')]
-					= PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-						ComponentbuilderHelper::getDynamicScripts('save'),
-						CFactory::_('Placeholder')->active
-					);
+				CFactory::_('Content')->set_('import', 'IMPORT_SAVE_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+						ComponentbuilderHelper::getDynamicScripts('save')
+					));
 			}
 
 			// ensure that the ajax model and controller is set if needed
@@ -1560,16 +1393,12 @@ class Infusion extends Interpretation
 				$target = array('admin' => 'ajax');
 				$this->buildDynamique($target, 'ajax');
 				// set the controller
-				$this->fileContentDynamic['ajax'][Placefix::_h('REGISTER_AJAX_TASK')]
-					= $this->setRegisterAjaxTask('admin');
-				$this->fileContentDynamic['ajax'][Placefix::_h('AJAX_INPUT_RETURN')]
-					= $this->setAjaxInputReturn('admin');
+				CFactory::_('Content')->set_('ajax', 'REGISTER_AJAX_TASK', $this->setRegisterAjaxTask('admin'));
+				CFactory::_('Content')->set_('ajax', 'AJAX_INPUT_RETURN', $this->setAjaxInputReturn('admin'));
 				// set the model header
-				$this->fileContentDynamic['ajax'][Placefix::_h('AJAX_ADMIN_MODEL_HEADER')]
-					= $this->setFileHeader('ajax.admin.model', 'ajax');
+				CFactory::_('Content')->set_('ajax', 'AJAX_ADMIN_MODEL_HEADER', $this->setFileHeader('ajax.admin.model', 'ajax'));
 				// set the module
-				$this->fileContentDynamic['ajax'][Placefix::_h('AJAX_MODEL_METHODS')]
-					= $this->setAjaxModelMethods('admin');
+				CFactory::_('Content')->set_('ajax', 'AJAX_MODEL_METHODS', $this->setAjaxModelMethods('admin'));
 			}
 
 			// ensure that the site ajax model and controller is set if needed
@@ -1579,16 +1408,12 @@ class Infusion extends Interpretation
 				$target = array('site' => 'ajax');
 				$this->buildDynamique($target, 'ajax');
 				// set the controller
-				$this->fileContentDynamic['ajax'][Placefix::_h('REGISTER_SITE_AJAX_TASK')]
-					= $this->setRegisterAjaxTask('site');
-				$this->fileContentDynamic['ajax'][Placefix::_h('AJAX_SITE_INPUT_RETURN')]
-					= $this->setAjaxInputReturn('site');
+				CFactory::_('Content')->set_('ajax', 'REGISTER_SITE_AJAX_TASK', $this->setRegisterAjaxTask('site'));
+				CFactory::_('Content')->set_('ajax', 'AJAX_SITE_INPUT_RETURN', $this->setAjaxInputReturn('site'));
 				// set the model header
-				$this->fileContentDynamic['ajax'][Placefix::_h('AJAX_SITE_MODEL_HEADER')]
-					= $this->setFileHeader('ajax.site.model', 'ajax');
+				CFactory::_('Content')->set_('ajax', 'AJAX_SITE_MODEL_HEADER', $this->setFileHeader('ajax.site.model', 'ajax'));
 				// set the module
-				$this->fileContentDynamic['ajax'][Placefix::_h('AJAX_SITE_MODEL_METHODS')]
-					= $this->setAjaxModelMethods('site');
+				CFactory::_('Content')->set_('ajax', 'AJAX_SITE_MODEL_METHODS', $this->setAjaxModelMethods('site'));
 			}
 
 			// build the validation rules
@@ -1600,11 +1425,9 @@ class Infusion extends Interpretation
 					$target = array('admin' => 'a_rule_zi');
 					$this->buildDynamique($target, 'rule', $rule);
 					// set the JFormRule Name
-					$this->fileContentDynamic['a_rule_zi_' . $rule][Placefix::_h('Name')]
-						= ucfirst($rule);
+					CFactory::_('Content')->set_('a_rule_zi_' . $rule, 'Name', ucfirst($rule));
 					// set the JFormRule PHP
-					$this->fileContentDynamic['a_rule_zi_' . $rule][Placefix::_h('VALIDATION_RULE_METHODS')]
-						= PHP_EOL . $_php;
+					CFactory::_('Content')->set_('a_rule_zi_' . $rule, 'VALIDATION_RULE_METHODS', PHP_EOL . $_php);
 				}
 			}
 
@@ -1644,60 +1467,37 @@ class Infusion extends Interpretation
 				foreach ($this->componentData->site_views as $view)
 				{
 					// for list views
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SViews')]
-						= $view['settings']->Code;
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('sviews')]
-						= $view['settings']->code;
+					CFactory::_('Content')->set_($view['settings']->code, 'SViews', $view['settings']->Code);
+					CFactory::_('Content')->set_($view['settings']->code, 'sviews', $view['settings']->code);
 					// for single views
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SView')]
-						= $view['settings']->Code;
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('sview')]
-						= $view['settings']->code;
+					CFactory::_('Content')->set_($view['settings']->code, 'SView', $view['settings']->Code);
+					CFactory::_('Content')->set_($view['settings']->code, 'sview', $view['settings']->code);
 
-					// set placeholder
-					CFactory::_('Placeholder')->active[Placefix::_h('SView')]
-						= $view['settings']->Code;
-					CFactory::_('Placeholder')->active[Placefix::_h('sview')]
-						= $view['settings']->code;
-					CFactory::_('Placeholder')->active[Placefix::_h('SVIEW')]
-						= $view['settings']->CODE;
-					CFactory::_('Placeholder')->active[Placefix::_('SView')]
-						= $view['settings']->Code;
-					CFactory::_('Placeholder')->active[Placefix::_('sview')]
-						= $view['settings']->code;
-					CFactory::_('Placeholder')->active[Placefix::_('SVIEW')]
-						= $view['settings']->CODE;
-					CFactory::_('Placeholder')->active[Placefix::_h('SViews')]
-						= $view['settings']->Code;
-					CFactory::_('Placeholder')->active[Placefix::_h('sviews')]
-						= $view['settings']->code;
-					CFactory::_('Placeholder')->active[Placefix::_h('SVIEWS')]
-						= $view['settings']->CODE;
-					CFactory::_('Placeholder')->active[Placefix::_('SViews')]
-						= $view['settings']->Code;
-					CFactory::_('Placeholder')->active[Placefix::_('sviews')]
-						= $view['settings']->code;
-					CFactory::_('Placeholder')->active[Placefix::_('SVIEWS')]
-						= $view['settings']->CODE;
+					// set placeholders
+					CFactory::_('Placeholder')->set('SView', $view['settings']->Code);
+					CFactory::_('Placeholder')->set('sview', $view['settings']->code);
+					CFactory::_('Placeholder')->set('SVIEW', $view['settings']->CODE);
+
+					CFactory::_('Placeholder')->set('SViews', $view['settings']->Code);
+					CFactory::_('Placeholder')->set('sviews', $view['settings']->code);
+					CFactory::_('Placeholder')->set('SVIEWS', $view['settings']->CODE);
 
 					// for plugin event TODO change event api signatures
-					$this->placeholders = CFactory::_('Placeholder')->active;
+					$placeholders = CFactory::_('Placeholder')->active;
 					$fileContentStatic = CFactory::_('Content')->active;
-					// $this->fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onBeforeBuildSiteViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildSiteViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
 							&$fileContentStatic,
-							&$this->fileContentDynamic[$view['settings']->code],
-							&$this->placeholders, &$this->hhh)
+							&$fileContentDynamic[$view['settings']->code],
+							&$placeholders, &$this->hhh)
 					);
-					// for plugin event TODO change event api signatures
-					CFactory::_('Placeholder')->active = $this->placeholders;
-					CFactory::_('Content')->active = $fileContentStatic;
-					// CFactory::_('Content')->_active = $this->fileContentDynamic;
 					unset($fileContentStatic);
+					unset($fileContentDynamic);
+					unset($placeholders);
 
 					// set license per view if needed
 					$this->setLockLicensePer(
@@ -1714,8 +1514,7 @@ class Infusion extends Interpretation
 					if (isset($view['menu']) && $view['menu'] == 1)
 					{
 						// SITE_MENU_XML <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_MENU_XML')]
-							= $this->setCustomViewMenu($view);
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_MENU_XML', $this->setCustomViewMenu($view));
 					}
 
 					// insure the needed route helper is loaded
@@ -1733,60 +1532,51 @@ class Infusion extends Interpretation
 					if ($view['settings']->main_get->gettype == 1)
 					{
 						// set user permission access check USER_PERMISSION_CHECK_ACCESS <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('USER_PERMISSION_CHECK_ACCESS')]
-							= $this->setUserPermissionCheckAccess($view, 1);
+						CFactory::_('Content')->set_($view['settings']->code, 'USER_PERMISSION_CHECK_ACCESS', $this->setUserPermissionCheckAccess($view, 1));
 
 						// SITE_BEFORE_GET_ITEM <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_BEFORE_GET_ITEM')]
-							= CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_BEFORE_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitem',
 							$view['settings']->code, '', null, true
-						);
+						));
 
 						// SITE_GET_ITEM <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_GET_ITEM')]
-							= $this->setCustomViewGetItem(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_GET_ITEM', $this->setCustomViewGetItem(
 							$view['settings']->main_get,
 							$view['settings']->code, Indent::_(2)
-						);
+						));
 
 						// SITE_AFTER_GET_ITEM <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_AFTER_GET_ITEM')]
-							= CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_AFTER_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitem',
 							$view['settings']->code, '', null, true
-						);
+						));
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
 						// set user permission access check USER_PERMISSION_CHECK_ACCESS <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('USER_PERMISSION_CHECK_ACCESS')]
-							= $this->setUserPermissionCheckAccess($view, 2);
+						CFactory::_('Content')->set_($view['settings']->code, 'USER_PERMISSION_CHECK_ACCESS', $this->setUserPermissionCheckAccess($view, 2));
 						// SITE_GET_LIST_QUERY <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_GET_LIST_QUERY')]
-							= $this->setCustomViewListQuery(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_GET_LIST_QUERY', $this->setCustomViewListQuery(
 							$view['settings']->main_get, $view['settings']->code
-						);
+						));
 
 						// SITE_BEFORE_GET_ITEMS <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_BEFORE_GET_ITEMS')]
-							= CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_BEFORE_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitems',
 							$view['settings']->code, PHP_EOL, null, true
-						);
+						));
 
 						// SITE_GET_ITEMS <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_GET_ITEMS')]
-							= $this->setCustomViewGetItems(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_GET_ITEMS', $this->setCustomViewGetItems(
 							$view['settings']->main_get, $view['settings']->code
-						);
+						));
 
 						// SITE_AFTER_GET_ITEMS <<<DYNAMIC>>>
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_AFTER_GET_ITEMS')]
-							= CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_AFTER_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitems',
 							$view['settings']->code, PHP_EOL, null, true
-						);
+						));
 					}
 					// add to lang array
 					CFactory::_('Language')->set(
@@ -1800,43 +1590,37 @@ class Infusion extends Interpretation
 						. '_DESC', $view['settings']->description
 					);
 					// SITE_CUSTOM_METHODS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_CUSTOM_METHODS')]
-						= $this->setCustomViewCustomItemMethods(
+					CFactory::_('Content')->set_($view['settings']->code, 'SITE_CUSTOM_METHODS', $this->setCustomViewCustomItemMethods(
 						$view['settings']->main_get, $view['settings']->code
-					);
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_CUSTOM_METHODS')]
-						.= $this->setCustomViewCustomMethods(
-						$view, $view['settings']->code
+					));
+					CFactory::_('Content')->add_($view['settings']->code, 'SITE_CUSTOM_METHODS',
+						$this->setCustomViewCustomMethods(
+							$view, $view['settings']->code
+						)
 					);
 					// SITE_DIPLAY_METHOD <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_DIPLAY_METHOD')]
-						= $this->setCustomViewDisplayMethod($view);
+					CFactory::_('Content')->set_($view['settings']->code, 'SITE_DIPLAY_METHOD', $this->setCustomViewDisplayMethod($view));
 					// set document details
 					$this->setPrepareDocument($view);
 					// SITE_EXTRA_DIPLAY_METHODS <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_EXTRA_DIPLAY_METHODS')]
-						= $this->setCustomViewExtraDisplayMethods($view);
+					CFactory::_('Content')->set_($view['settings']->code, 'SITE_EXTRA_DIPLAY_METHODS', $this->setCustomViewExtraDisplayMethods($view));
 					// SITE_CODE_BODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_CODE_BODY')]
-						= $this->setCustomViewCodeBody($view);
+					CFactory::_('Content')->set_($view['settings']->code, 'SITE_CODE_BODY', $this->setCustomViewCodeBody($view));
 					// SITE_BODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_BODY')]
-						= $this->setCustomViewBody($view);
+					CFactory::_('Content')->set_($view['settings']->code, 'SITE_BODY', $this->setCustomViewBody($view));
 
 					// setup the templates
 					$this->setCustomViewTemplateBody($view);
 
 					// set the site form if needed
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_TOP_FORM')]
-						= $this->setCustomViewForm(
+					CFactory::_('Content')->set_($view['settings']->code, 'SITE_TOP_FORM', $this->setCustomViewForm(
 						$view['settings']->code,
 						$view['settings']->main_get->gettype, 1
-					);
-					$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_BOTTOM_FORM')]
-						= $this->setCustomViewForm(
+					));
+					CFactory::_('Content')->set_($view['settings']->code, 'SITE_BOTTOM_FORM', $this->setCustomViewForm(
 						$view['settings']->code,
 						$view['settings']->main_get->gettype, 2
-					);
+					));
 
 					// set headers based on the main get type
 					if ($view['settings']->main_get->gettype == 1)
@@ -1848,26 +1632,22 @@ class Infusion extends Interpretation
 							&& $view['settings']->php_controller != '//')
 						{
 							// SITE_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
-							$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_VIEW_CONTROLLER_HEADER')]
-								= $this->setFileHeader(
+							CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
 								'site.view.controller', $view['settings']->code
-							);
+							));
 						}
 						// SITE_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_VIEW_MODEL_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEW_MODEL_HEADER', $this->setFileHeader(
 							'site.view.model', $view['settings']->code
-						);
+						));
 						// SITE_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_VIEW_HTML_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEW_HTML_HEADER', $this->setFileHeader(
 							'site.view.html', $view['settings']->code
-						);
+						));
 						// SITE_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_VIEW_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEW_HEADER', $this->setFileHeader(
 							'site.view', $view['settings']->code
-						);
+						));
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
@@ -1878,46 +1658,40 @@ class Infusion extends Interpretation
 							&& $view['settings']->php_controller != '//')
 						{
 							// SITE_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
-							$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_VIEW_CONTROLLER_HEADER')]
-								= $this->setFileHeader(
+							CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
 								'site.views.controller', $view['settings']->code
-							);
+							));
 						}
 						// SITE_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_VIEWS_MODEL_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEWS_MODEL_HEADER', $this->setFileHeader(
 							'site.views.model', $view['settings']->code
-						);
+						));
 						// SITE_VIEWS_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_VIEWS_HTML_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEWS_HTML_HEADER', $this->setFileHeader(
 							'site.views.html', $view['settings']->code
-						);
+						));
 						// SITE_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the view
-						$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_VIEWS_HEADER')]
-							= $this->setFileHeader(
+						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEWS_HEADER', $this->setFileHeader(
 							'site.views', $view['settings']->code
-						);
+						));
 					}
 
 					// for plugin event TODO change event api signatures
-					$this->placeholders = CFactory::_('Placeholder')->active;
+					$placeholders = CFactory::_('Placeholder')->active;
 					$fileContentStatic = CFactory::_('Content')->active;
-					// $this->fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentDynamic = CFactory::_('Content')->_active;
 					// Trigger Event: jcb_ce_onAfterBuildSiteViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildSiteViewContent',
 						array(&$this->componentContext, &$view,
 							&$view['settings']->code,
 							&$fileContentStatic,
-							&$this->fileContentDynamic[$view['settings']->code],
-							&$this->placeholders, &$this->hhh)
+							&$fileContentDynamic[$view['settings']->code],
+							&$placeholders, &$this->hhh)
 					);
-					// for plugin event TODO change event api signatures
-					CFactory::_('Placeholder')->active = $this->placeholders;
-					CFactory::_('Content')->active = $fileContentStatic;
-					// CFactory::_('Content')->_active = $this->fileContentDynamic;
 					unset($fileContentStatic);
+					unset($fileContentDynamic);
+					unset($placeholders);
 				}
 
 				// setup the layouts
@@ -1926,10 +1700,10 @@ class Infusion extends Interpretation
 			else
 			{
 				// clear all site folder since none is needed
-				$this->removeSiteFolder = true;
+				CFactory::_('Config')->remove_site_folder = true;
 			}
 			// load the site statics
-			if (!$this->removeSiteFolder || !$this->removeSiteEditFolder)
+			if (!CFactory::_('Config')->remove_site_folder || !CFactory::_('Config')->remove_site_edit_folder)
 			{
 				CFactory::_('Config')->build_target = 'site';
 				// if no default site view was set, the redirect to root
@@ -1940,9 +1714,8 @@ class Infusion extends Interpretation
 				// set site custom script to helper class
 				// SITE_CUSTOM_HELPER_SCRIPT
 				CFactory::_('Content')->set('SITE_CUSTOM_HELPER_SCRIPT',
-					CFactory::_('Placeholder')->update(
-					CFactory::_('Customcode.Dispenser')->hub['component_php_helper_site'],
-					CFactory::_('Placeholder')->active
+					CFactory::_('Placeholder')->update_(
+					CFactory::_('Customcode.Dispenser')->hub['component_php_helper_site']
 				));
 				// SITE_GLOBAL_EVENT_HELPER
 				if (!CFactory::_('Content')->exist('SITE_GLOBAL_EVENT'))
@@ -1971,34 +1744,33 @@ class Infusion extends Interpretation
 						. 'public static function globalEvent($document)');
 					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '{');
 					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER',
-						PHP_EOL . CFactory::_('Placeholder')->update(
-							CFactory::_('Customcode.Dispenser')->hub['component_php_site_event'],
-							CFactory::_('Placeholder')->active
+						PHP_EOL . CFactory::_('Placeholder')->update_(
+							CFactory::_('Customcode.Dispenser')->hub['component_php_site_event']
 						));
 					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '}');
 				}
 			}
 
 			// PREINSTALLSCRIPT
-			CFactory::_('Content')->set('PREINSTALLSCRIPT',
+			CFactory::_('Content')->add('PREINSTALLSCRIPT',
 				CFactory::_('Customcode.Dispenser')->get(
 				'php_preflight', 'install', PHP_EOL, null, true
 			));
 
 			// PREUPDATESCRIPT
-			CFactory::_('Content')->set('PREUPDATESCRIPT',
+			CFactory::_('Content')->add('PREUPDATESCRIPT',
 				CFactory::_('Customcode.Dispenser')->get(
 				'php_preflight', 'update', PHP_EOL, null, true
 			));
 
 			// POSTINSTALLSCRIPT
-			CFactory::_('Content')->set('POSTINSTALLSCRIPT', $this->setPostInstallScript());
+			CFactory::_('Content')->add('POSTINSTALLSCRIPT', $this->setPostInstallScript());
 
 			// POSTUPDATESCRIPT
-			CFactory::_('Content')->set('POSTUPDATESCRIPT', $this->setPostUpdateScript());
+			CFactory::_('Content')->add('POSTUPDATESCRIPT', $this->setPostUpdateScript());
 
 			// UNINSTALLSCRIPT
-			CFactory::_('Content')->set('UNINSTALLSCRIPT', $this->setUninstallScript());
+			CFactory::_('Content')->add('UNINSTALLSCRIPT', $this->setUninstallScript());
 
 			// MOVEFOLDERSSCRIPT
 			CFactory::_('Content')->set('MOVEFOLDERSSCRIPT', $this->setMoveFolderScript());
@@ -2034,6 +1806,7 @@ class Infusion extends Interpretation
 			CFactory::_('Content')->set('ADMIN_POWER_HELPER', '');
 			CFactory::_('Content')->set('SITE_POWER_HELPER', '');
 			CFactory::_('Content')->set('CUSTOM_POWER_AUTOLOADER', '');
+
 			// infuse powers data if set
 			if (ArrayHelper::check(CFactory::_('Power')->active))
 			{
@@ -2049,10 +1822,7 @@ class Infusion extends Interpretation
 							array(&$this->componentContext, &$power, &$this)
 						);
 						// POWERCODE
-						$this->fileContentDynamic[$power->key][Placefix::_h('POWERCODE')]
-							= $this->getPowerCode($power);
-						// build the autoloader
-						$autoloader[implode('.', $power->_namespace_prefix)] = $power->_namespace_prefix;
+						CFactory::_('Content')->set_($power->key, 'POWERCODE', $this->getPowerCode($power));
 						// Trigger Event: jcb_ce_onAfterInfusePowerData
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterInfusePowerData',
@@ -2061,7 +1831,7 @@ class Infusion extends Interpretation
 					}
 				}
 				// now set the power autoloader
-				$this->setPowersAutoloader($autoloader, (!$this->removeSiteFolder || !$this->removeSiteEditFolder));
+				CFactory::_('Power.Autoloader')->set((!CFactory::_('Config')->remove_site_folder || !CFactory::_('Config')->remove_site_edit_folder));
 			}
 			// tweak system to set stuff to the module domain
 			$_backup_target     = CFactory::_('Config')->build_target;
@@ -2084,28 +1854,23 @@ class Infusion extends Interpretation
 						$this->langPrefix = $module->lang_prefix;
 						CFactory::_('Config')->set('lang_prefix', $module->lang_prefix);
 						// MODCODE
-						$this->fileContentDynamic[$module->key][Placefix::_h('MODCODE')]
-							= $this->getModCode($module);
+						CFactory::_('Content')->set_($module->key, 'MODCODE', $this->getModCode($module));
 						// DYNAMICGET
-						$this->fileContentDynamic[$module->key][Placefix::_h('DYNAMICGETS')]
-							= $this->setCustomViewCustomMethods(
+						CFactory::_('Content')->set_($module->key, 'DYNAMICGETS', $this->setCustomViewCustomMethods(
 							$module, $module->key
-						);
+						));
 						// HELPERCODE
 						if ($module->add_class_helper >= 1)
 						{
-							$this->fileContentDynamic[$module->key][Placefix::_h('HELPERCODE')]
-								= $this->getModHelperCode($module);
+							CFactory::_('Content')->set_($module->key, 'HELPERCODE', $this->getModHelperCode($module));
 						}
 						// MODDEFAULT
-						$this->fileContentDynamic[$module->key][Placefix::_h('MODDEFAULT')]
-							= $this->getModDefault($module, $module->key);
+						CFactory::_('Content')->set_($module->key, 'MODDEFAULT', $this->getModDefault($module, $module->key));
 						// only add install script if needed
 						if ($module->add_install_script)
 						{
 							// INSTALLCLASS
-							$this->fileContentDynamic[$module->key][Placefix::_h('INSTALLCLASS')]
-								= CFactory::_('Extension.InstallScript')->get($module);
+							CFactory::_('Content')->set_($module->key, 'INSTALLCLASS', CFactory::_('Extension.InstallScript')->get($module));
 						}
 						// FIELDSET
 						if (isset($module->form_files)
@@ -2120,18 +1885,18 @@ class Infusion extends Interpretation
 									foreach ($fieldsets as $fieldset => $fields)
 									{
 										// FIELDSET_ . $file.$field_name.$fieldset
-										$this->fileContentDynamic[$module->key][Placefix::_h('FIELDSET_'
-											. $file . $field_name . $fieldset)]
-											= $this->getExtensionFieldsetXML(
-											$module, $fields
+										CFactory::_('Content')->set_($module->key,
+											'FIELDSET_' . $file . $field_name . $fieldset,
+											$this->getExtensionFieldsetXML(
+												$module, $fields
+											)
 										);
 									}
 								}
 							}
 						}
 						// MAINXML
-						$this->fileContentDynamic[$module->key][Placefix::_h('MAINXML')]
-							= $this->getModuleMainXML($module);
+						CFactory::_('Content')->set_($module->key, 'MAINXML', $this->getModuleMainXML($module));
 						// Trigger Event: jcb_ce_onAfterInfuseModuleData
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterInfuseModuleData',
@@ -2157,14 +1922,12 @@ class Infusion extends Interpretation
 						$this->langPrefix = $plugin->lang_prefix;
 						CFactory::_('Config')->set('lang_prefix', $plugin->lang_prefix);
 						// MAINCLASS
-						$this->fileContentDynamic[$plugin->key][Placefix::_h('MAINCLASS')]
-							= $this->getPluginMainClass($plugin);
+						CFactory::_('Content')->set_($plugin->key, 'MAINCLASS', $this->getPluginMainClass($plugin));
 						// only add install script if needed
 						if ($plugin->add_install_script)
 						{
 							// INSTALLCLASS
-							$this->fileContentDynamic[$plugin->key][Placefix::_h('INSTALLCLASS')]
-								= CFactory::_('Extension.InstallScript')->get($plugin);
+							CFactory::_('Content')->set_($plugin->key, 'INSTALLCLASS', CFactory::_('Extension.InstallScript')->get($plugin));
 						}
 						// FIELDSET
 						if (isset($plugin->form_files)
@@ -2179,18 +1942,18 @@ class Infusion extends Interpretation
 									foreach ($fieldsets as $fieldset => $fields)
 									{
 										// FIELDSET_ . $file.$field_name.$fieldset
-										$this->fileContentDynamic[$plugin->key][Placefix::_h(
-											'FIELDSET_' . $file . $field_name . $fieldset)]
-											= $this->getExtensionFieldsetXML(
-											$plugin, $fields
+										CFactory::_('Content')->set_($plugin->key,
+											'FIELDSET_' . $file . $field_name . $fieldset,
+											$this->getExtensionFieldsetXML(
+												$plugin, $fields
+											)
 										);
 									}
 								}
 							}
 						}
 						// MAINXML
-						$this->fileContentDynamic[$plugin->key][Placefix::_h('MAINXML')]
-							= $this->getPluginMainXML($plugin);
+						CFactory::_('Content')->set_($plugin->key, 'MAINXML', $this->getPluginMainXML($plugin));
 						// Trigger Event: jcb_ce_onAfterInfusePluginData
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterInfusePluginData',
@@ -2205,21 +1968,19 @@ class Infusion extends Interpretation
 			$this->langPrefix = $_backup_langPrefix;
 			CFactory::_('Config')->set('lang_prefix', $_backup_langPrefix);
 			// for plugin event TODO change event api signatures
-			$this->placeholders = CFactory::_('Placeholder')->active;
+			$placeholders = CFactory::_('Placeholder')->active;
 			$fileContentStatic = CFactory::_('Content')->active;
-			// $this->fileContentDynamic = CFactory::_('Content')->_active;
+			$fileContentDynamic = CFactory::_('Content')->_active;
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterBuildFilesContent',
 				array(&$this->componentContext, &$this->componentData,
 					&$fileContentStatic, &$this->fileContentDynamic,
-					&$this->placeholders, &$this->hhh)
+					&$placeholders, &$this->hhh)
 			);
-			// for plugin event TODO change event api signatures
-			CFactory::_('Placeholder')->active = $this->placeholders;
-			CFactory::_('Content')->active = $fileContentStatic;
-			// CFactory::_('Content')->_active = $this->fileContentDynamic;
 			unset($fileContentStatic);
+			unset($fileContentDynamic);
+			unset($placeholders);
 
 			return true;
 		}
@@ -2238,6 +1999,7 @@ class Infusion extends Interpretation
 	{
 		// just to be safe, lets clear previous view placeholders
 		CFactory::_('Placeholder')->clearType('view');
+		CFactory::_('Placeholder')->clearType('views');
 
 		// VIEW <<<DYNAMIC>>>
 		if (isset($view->name_single) && $view->name_single != 'null')
@@ -2252,18 +2014,9 @@ class Infusion extends Interpretation
 			);
 
 			// set some place holder for the views
-			CFactory::_('Placeholder')->active[Placefix::_h('view')]
-				= $nameSingleCode;
-			CFactory::_('Placeholder')->active[Placefix::_h('View')]
-				= $name_single_first_uppercase;
-			CFactory::_('Placeholder')->active[Placefix::_h('VIEW')]
-				= $name_single_uppercase;
-			CFactory::_('Placeholder')->active[Placefix::_('view')]
-				= $nameSingleCode;
-			CFactory::_('Placeholder')->active[Placefix::_('View')]
-				= $name_single_first_uppercase;
-			CFactory::_('Placeholder')->active[Placefix::_('VIEW')]
-				= $name_single_uppercase;
+			CFactory::_('Placeholder')->set('view', $nameSingleCode);
+			CFactory::_('Placeholder')->set('View', $name_single_first_uppercase);
+			CFactory::_('Placeholder')->set('VIEW', $name_single_uppercase);
 		}
 
 		// VIEWS <<<DYNAMIC>>>
@@ -2278,59 +2031,38 @@ class Infusion extends Interpretation
 			);
 
 			// set some place holder for the views
-			CFactory::_('Placeholder')->active[Placefix::_h('views')]
-				= $nameListCode;
-			CFactory::_('Placeholder')->active[Placefix::_h('Views')]
-				= $name_list_first_uppercase;
-			CFactory::_('Placeholder')->active[Placefix::_h('VIEWS')]
-				= $name_list_uppercase;
-			CFactory::_('Placeholder')->active[Placefix::_('views')]
-				= $nameListCode;
-			CFactory::_('Placeholder')->active[Placefix::_('Views')]
-				= $name_list_first_uppercase;
-			CFactory::_('Placeholder')->active[Placefix::_('VIEWS')]
-				= $name_list_uppercase;
+			CFactory::_('Placeholder')->set('views', $nameListCode);
+			CFactory::_('Placeholder')->set('Views', $name_list_first_uppercase);
+			CFactory::_('Placeholder')->set('VIEWS', $name_list_uppercase);
 		}
 
 		// view <<<DYNAMIC>>>
 		if (isset($nameSingleCode))
 		{
-			$this->fileContentDynamic[$nameSingleCode][Placefix::_h('view')]
-				= $nameSingleCode;
-			$this->fileContentDynamic[$nameSingleCode][Placefix::_h('VIEW')]
-				= $name_single_uppercase;
-			$this->fileContentDynamic[$nameSingleCode][Placefix::_h('View')]
-				= $name_single_first_uppercase;
+			CFactory::_('Content')->set_($nameSingleCode, 'view', $nameSingleCode);
+			CFactory::_('Content')->set_($nameSingleCode, 'VIEW', $name_single_uppercase);
+			CFactory::_('Content')->set_($nameSingleCode, 'View', $name_single_first_uppercase);
 
 			if (isset($nameListCode))
 			{
-				$this->fileContentDynamic[$nameListCode][Placefix::_h('view')]
-					= $nameSingleCode;
-				$this->fileContentDynamic[$nameListCode][Placefix::_h('VIEW')]
-					= $name_single_uppercase;
-				$this->fileContentDynamic[$nameListCode][Placefix::_h('View')]
-					= $name_single_first_uppercase;
+				CFactory::_('Content')->set_($nameListCode, 'view', $nameSingleCode);
+				CFactory::_('Content')->set_($nameListCode, 'VIEW', $name_single_uppercase);
+				CFactory::_('Content')->set_($nameListCode, 'View', $name_single_first_uppercase);
 			}
 		}
 
 		// views <<<DYNAMIC>>>
 		if (isset($nameListCode))
 		{
-			$this->fileContentDynamic[$nameListCode][Placefix::_h('views')]
-				= $nameListCode;
-			$this->fileContentDynamic[$nameListCode][Placefix::_h('VIEWS')]
-				= $name_list_uppercase;
-			$this->fileContentDynamic[$nameListCode][Placefix::_h('Views')]
-				= $name_list_first_uppercase;
+			CFactory::_('Content')->set_($nameListCode, 'views', $nameListCode);
+			CFactory::_('Content')->set_($nameListCode, 'VIEWS', $name_list_uppercase);
+			CFactory::_('Content')->set_($nameListCode, 'Views', $name_list_first_uppercase);
 
 			if (isset($nameSingleCode))
 			{
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('views')]
-					= $nameListCode;
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('VIEWS')]
-					= $name_list_uppercase;
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('Views')]
-					= $name_list_first_uppercase;
+				CFactory::_('Content')->set_($nameSingleCode, 'views', $nameListCode);
+				CFactory::_('Content')->set_($nameSingleCode, 'VIEWS', $name_list_uppercase);
+				CFactory::_('Content')->set_($nameSingleCode, 'Views', $name_list_first_uppercase);
 			}
 		}
 	}
@@ -2367,7 +2099,7 @@ class Infusion extends Interpretation
 			);
 		}
 		// check the site lang is set
-		if ((!$this->removeSiteFolder || !$this->removeSiteEditFolder)
+		if ((!CFactory::_('Config')->remove_site_folder || !CFactory::_('Config')->remove_site_edit_folder)
 			&& $this->setLangSite())
 		{
 			$values[]               = array_values(
@@ -2378,7 +2110,7 @@ class Infusion extends Interpretation
 			);
 		}
 		// check the site system lang is set
-		if ((!$this->removeSiteFolder || !$this->removeSiteEditFolder)
+		if ((!CFactory::_('Config')->remove_site_folder || !CFactory::_('Config')->remove_site_edit_folder)
 			&& $this->setLangSiteSys())
 		{
 			$values[]                  = array_values(
@@ -2421,8 +2153,8 @@ class Infusion extends Interpretation
 					$t = '';
 					if (strpos($area, 'site') !== false)
 					{
-						if ($this->removeSiteFolder
-							&& $this->removeSiteEditFolder)
+						if (CFactory::_('Config')->remove_site_folder
+							&& CFactory::_('Config')->remove_site_edit_folder)
 						{
 							continue;
 						}
@@ -2491,7 +2223,7 @@ class Infusion extends Interpretation
 					$replace[Placefix::_h('ADMIN_LANGUAGES')]
 						= implode(PHP_EOL . Indent::_(3), $langXML['admin']);
 				}
-				if ((!$this->removeSiteFolder || !$this->removeSiteEditFolder)
+				if ((!CFactory::_('Config')->remove_site_folder || !CFactory::_('Config')->remove_site_edit_folder)
 					&& isset($langXML['site'])
 					&& ArrayHelper::check($langXML['site']))
 				{

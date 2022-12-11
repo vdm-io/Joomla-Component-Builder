@@ -105,6 +105,19 @@ class Content
 	}
 
 	/**
+	 * Remove content
+	 *
+	 * @param   string     $key     The main string key
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	public function remove(string $key)
+	{
+		unset($this->active[Placefix::_h($key)]);
+	}
+
+	/**
 	 * Set dynamic content
 	 *
 	 * @param   string    $view    The view key
@@ -122,15 +135,15 @@ class Content
 	/**
 	 * Get dynamic content
 	 *
-	 * @param   string    $view  The view key
-	 * @param   string    $key   The main string key
+	 * @param   string         $view  The view key
+	 * @param   string|null    $key   The main string key
 	 *
 	 * @return  mixed
 	 * @since 3.2.0
 	 */
-	public function get_(string $view, string $key = null)
+	public function get_(string $view, ?string $key = null)
 	{
-		if (!is_null($key))
+		if (is_string($key))
 		{
 			return $this->_active[$view][Placefix::_h($key)] ?? null;
 		}
@@ -140,16 +153,20 @@ class Content
 	/**
 	 * Does view key exist
 	 *
-	 * @param   string    $view    The view key
-	 * @param   string    $key     The main string key
+	 * @param   string         $view    The view key
+	 * @param   string|null    $key     The main string key
 	 *
 	 * @return  bool
 	 * @since 3.2.0
 	 */
-	public function exist_(string $view, string $key): bool
+	public function exist_(string $view, ?string $key = null): bool
 	{
-		if (isset($this->_active[$view]) &&
+		if (is_string($key) && isset($this->_active[$view]) &&
 			isset($this->_active[$view][Placefix::_h($key)]))
+		{
+			return true;
+		}
+		elseif (is_null($key) && isset($this->_active[$view]))
 		{
 			return true;
 		}
@@ -176,6 +193,27 @@ class Content
 		else
 		{
 			$this->_active[$view][Placefix::_h($key)] = $value;
+		}
+	}
+
+	/**
+	 * Remove dynamic content
+	 *
+	 * @param   string         $view    The view key
+	 * @param   string|null    $key     The main string key
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	public function remove_(string $view, ?string $key = null)
+	{
+		if (is_string($key))
+		{
+			unset($this->_active[$view][Placefix::_h($key)]);
+		}
+		else
+		{
+			unset($this->_active[$view]);
 		}
 	}
 

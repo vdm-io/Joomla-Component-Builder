@@ -403,9 +403,9 @@ class Fields extends Structure
 			}
 			// main lang prefix
 			$langView  = CFactory::_('Config')->lang_prefix . '_'
-				. CFactory::_('Placeholder')->active[Placefix::_h('VIEW')];
+				. CFactory::_('Placeholder')->get('VIEW');
 			$langViews = CFactory::_('Config')->lang_prefix . '_'
-				. CFactory::_('Placeholder')->active[Placefix::_h('VIEWS')];
+				. CFactory::_('Placeholder')->get('VIEWS');
 			// set default lang
 			CFactory::_('Language')->set(
 				CFactory::_('Config')->lang_target, $langView, $view['settings']->name_single
@@ -607,17 +607,16 @@ class Fields extends Structure
 		// set the custom table key
 		$dbkey = 'g';
 		// for plugin event TODO change event api signatures
-		$this->placeholders = CFactory::_('Placeholder')->active;
+		$placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onBeforeBuildFields
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildFields',
 			array(&$this->componentContext, &$dynamicFields, &$readOnly,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
-			      &$nameListCode, &$this->placeholders, &$langView,
+			      &$nameListCode, &$placeholders, &$langView,
 			      &$langViews)
 		);
-		// for plugin event TODO change event api signatures
-		CFactory::_('Placeholder')->active = $this->placeholders;
+		unset($placeholders);
 		// TODO we should add the global and local view switch if field for front end
 		foreach ($view['settings']->fields as $field)
 		{
@@ -628,17 +627,16 @@ class Fields extends Structure
 			);
 		}
 		// for plugin event TODO change event api signatures
-		$this->placeholders = CFactory::_('Placeholder')->active;
+		$placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onAfterBuildFields
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterBuildFields',
 			array(&$this->componentContext, &$dynamicFields, &$readOnly,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
-			      &$nameListCode, &$this->placeholders, &$langView,
+			      &$nameListCode, &$placeholders, &$langView,
 			      &$langViews)
 		);
-		// for plugin event TODO change event api signatures
-		CFactory::_('Placeholder')->active = $this->placeholders;
+		unset($placeholders);
 		// set the default fields
 		$fieldSet   = array();
 		$fieldSet[] = '<fieldset name="details">';
@@ -1026,17 +1024,16 @@ class Fields extends Structure
 		// set the custom table key
 		$dbkey = 'g';
 		// for plugin event TODO change event api signatures
-		$this->placeholders = CFactory::_('Placeholder')->active;
+		$placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onBeforeBuildFields
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildFields',
 			array(&$this->componentContext, &$dynamicFieldsXML, &$readOnlyXML,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
-			      &$nameListCode, &$this->placeholders, &$langView,
+			      &$nameListCode, &$placeholders, &$langView,
 			      &$langViews)
 		);
-		// for plugin event TODO change event api signatures
-		CFactory::_('Placeholder')->active = $this->placeholders;
+		unset($placeholders);
 		// TODO we should add the global and local view switch if field for front end
 		foreach ($view['settings']->fields as $field)
 		{
@@ -1047,17 +1044,16 @@ class Fields extends Structure
 			);
 		}
 		// for plugin event TODO change event api signatures
-		$this->placeholders = CFactory::_('Placeholder')->active;
+		$placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onAfterBuildFields
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterBuildFields',
 			array(&$this->componentContext, &$dynamicFieldsXML, &$readOnlyXML,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
-			      &$nameListCode, &$this->placeholders, &$langView,
+			      &$nameListCode, &$placeholders, &$langView,
 			      &$langViews)
 		);
-		// for plugin event TODO change event api signatures
-		CFactory::_('Placeholder')->active = $this->placeholders;
+		unset($placeholders);
 		// set the default fields
 		$XML         = new simpleXMLElement('<a/>');
 		$fieldSetXML = $XML->addChild('fieldset');
@@ -4752,11 +4748,11 @@ class Fields extends Structure
 				else
 				{
 					// get it from the field xml string
-					$listFieldName = (string) CFactory::_('Placeholder')->update(
+					$listFieldName = (string) CFactory::_('Placeholder')->update_(
 						GetHelper::between(
 							$field['settings']->xml, 'label="',
 							'"'
-						), CFactory::_('Placeholder')->active
+						)
 					);
 				}
 				// make sure there is no html in the list field name
@@ -4954,10 +4950,10 @@ class Fields extends Structure
 				$otherView  = $nameSingleCode;
 			}
 			// get the xml extension name
-			$_extension = CFactory::_('Placeholder')->update(
+			$_extension = CFactory::_('Placeholder')->update_(
 				GetHelper::between(
 					$field['settings']->xml, 'extension="', '"'
-				), CFactory::_('Placeholder')->active
+				)
 			);
 			// if they left out the extension for some reason
 			if (!StringHelper::check($_extension))
@@ -5332,12 +5328,11 @@ class Fields extends Structure
 		if (isset($data['custom']) && isset($data['custom']['extends'])
 			&& ((isset($data['custom']['prime_php'])
 					&& $data['custom']['prime_php'] == 1)
-				|| !isset(
-					$this->fileContentDynamic['customfield_' . $data['type']]
-				)
+				|| !CFactory::_('Content')->exist_('customfield_' . $data['type'])
 				|| !ArrayHelper::check(
-					$this->fileContentDynamic['customfield_' . $data['type']]
-				)))
+					CFactory::_('Content')->get_('customfield_' . $data['type'])
+				)
+			))
 		{
 			// set J prefix
 			$jprefix = 'J';
@@ -5416,18 +5411,17 @@ class Fields extends Structure
 				$replace[$globalPlaceholder] = $gloabalValue;
 			}
 			// start loading the field type
-			$this->fileContentDynamic['customfield_' . $data['type']] = array();
+			// $this->fileContentDynamic['customfield_' . $data['type']] = array();
 			// JPREFIX <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']][Placefix::_h('JPREFIX')]
-				= $jprefix;
+			CFactory::_('Content')->set_('customfield_' . $data['type'], 'JPREFIX', $jprefix);
 			// Type <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']][Placefix::_h('Type')]
-				= StringHelper::safe(
-				$data['custom']['type'], 'F'
+			CFactory::_('Content')->set_('customfield_' . $data['type'], 'Type',
+				StringHelper::safe(
+					$data['custom']['type'], 'F'
+				)
 			);
 			// type <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfield_' . $data['type']][Placefix::_h('type')]
-				= StringHelper::safe($data['custom']['type']);
+			CFactory::_('Content')->set_('customfield_' . $data['type'], 'type', StringHelper::safe($data['custom']['type']));
 			// is this a own custom field
 			if (isset($data['custom']['own_custom']))
 			{
@@ -5457,28 +5451,28 @@ class Fields extends Structure
 				);
 				// JFORM_TYPE_HEADER <<<DYNAMIC>>>
 				$add_default_header = true;
-				$this->fileContentDynamic['customfield_'
-				. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')]
-				                    = "//" . Line::_(
+				CFactory::_('Content')->set_('customfield_' . $data['type'], 'JFORM_TYPE_HEADER',
+					"//" . Line::_(
 						__LINE__,__CLASS__
 					) . " Import the " . $JFORM_extends
-					. " field type classes needed";
+					. " field type classes needed"
+				);
 				// JFORM_extens <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_'
-				. $data['type']][Placefix::_h('JFORM_extends')]
-					= $JFORM_extends;
+				CFactory::_('Content')->set_('customfield_' . $data['type'],
+					'JFORM_extends', $JFORM_extends
+				);
 				// JFORM_EXTENDS <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_'
-				. $data['type']][Placefix::_h('JFORM_EXTENDS')]
-					= StringHelper::safe(
-					$data['custom']['extends'], 'F'
+				CFactory::_('Content')->set_('customfield_' . $data['type'], 'JFORM_EXTENDS',
+					StringHelper::safe(
+						$data['custom']['extends'], 'F'
+					)
 				);
 				// JFORM_TYPE_PHP <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_'
-				. $data['type']][Placefix::_h('JFORM_TYPE_PHP')]
-					= PHP_EOL . PHP_EOL . Indent::_(1) . "//" . Line::_(
+				CFactory::_('Content')->set_('customfield_' . $data['type'], 'JFORM_TYPE_PHP',
+					PHP_EOL . PHP_EOL . Indent::_(1) . "//" . Line::_(
 						__LINE__,__CLASS__
-					) . " A " . $data['custom']['own_custom'] . " Field";
+					) . " A " . $data['custom']['own_custom'] . " Field"
+				);
 				// load the other PHP options
 				foreach (ComponentbuilderHelper::$phpFieldArray as $x)
 				{
@@ -5502,46 +5496,43 @@ class Fields extends Structure
 						// check if this is header text
 						if ('HEADER' === $x)
 						{
-							$this->fileContentDynamic['customfield_'
-							. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')]
-								.= PHP_EOL . CFactory::_('Placeholder')->update(
+							CFactory::_('Content')->add_('customfield_' . $data['type'], 'JFORM_TYPE_HEADER',
+								PHP_EOL . CFactory::_('Placeholder')->update(
 									$phpBucket, $replace
-								);
+								)
+							);
 							// stop default headers from loading
 							$add_default_header = false;
 						}
 						else
 						{
 							// JFORM_TYPE_PHP <<<DYNAMIC>>>
-							$this->fileContentDynamic['customfield_'
-							. $data['type']][Placefix::_h('JFORM_TYPE_PHP')]
-								.= PHP_EOL . CFactory::_('Placeholder')->update(
+							CFactory::_('Content')->add_('customfield_' . $data['type'], 'JFORM_TYPE_PHP',
+								PHP_EOL . CFactory::_('Placeholder')->update(
 									$phpBucket, $replace
-								);
+								)
+							);
 						}
 					}
 				}
 				// check if we should add default header
 				if ($add_default_header)
 				{
-					$this->fileContentDynamic['customfield_'
-					. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')]
-						.= PHP_EOL . "jimport('joomla.form.helper');";
-					$this->fileContentDynamic['customfield_'
-					. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')]
-						.= PHP_EOL . "JFormHelper::loadFieldClass('"
-						. $JFORM_extends . "');";
+					CFactory::_('Content')->add_('customfield_' . $data['type'], 'JFORM_TYPE_HEADER',
+						PHP_EOL . "jimport('joomla.form.helper');"
+					);
+					CFactory::_('Content')->add_('customfield_' . $data['type'], 'JFORM_TYPE_HEADER',
+						PHP_EOL . "JFormHelper::loadFieldClass('" . $JFORM_extends . "');"
+					);
 				}
 				// check the the JFormHelper::loadFieldClass(..) was set
-				elseif (strpos(
-						$this->fileContentDynamic['customfield_'
-						. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')], 'JFormHelper::loadFieldClass('
-					) === false)
+				elseif (strpos(CFactory::_('Content')->get_('customfield_' . $data['type'], 'JFORM_TYPE_HEADER'),
+						'JFormHelper::loadFieldClass(') === false)
 				{
-					$this->fileContentDynamic['customfield_'
-					. $data['type']][Placefix::_h('JFORM_TYPE_HEADER')]
-						.= PHP_EOL . "JFormHelper::loadFieldClass('"
-						. $JFORM_extends . "');";
+					CFactory::_('Content')->add_('customfield_' . $data['type'], 'JFORM_TYPE_HEADER',
+						PHP_EOL . "JFormHelper::loadFieldClass('"
+						. $JFORM_extends . "');"
+					);
 				}
 			}
 			else
@@ -5637,25 +5628,25 @@ class Fields extends Structure
 					// build the Group Control
 					$this->setGroupControl[$data['type']] = $groupLangName;
 					// JFORM_GETGROUPS_PHP <<<DYNAMIC>>>
-					$this->fileContentDynamic['customfield_'
-					. $data['type']][Placefix::_h('JFORM_GETGROUPS_PHP')]
-						= $phpCode;
+					CFactory::_('Content')->set_('customfield_' . $data['type'], 'JFORM_GETGROUPS_PHP',
+						$phpCode
+					);
 					// JFORM_GETEXCLUDED_PHP <<<DYNAMIC>>>
-					$this->fileContentDynamic['customfield_'
-					. $data['type']][Placefix::_h('JFORM_GETEXCLUDED_PHP')]
-						= $phpxCode;
+					CFactory::_('Content')->set_('customfield_' . $data['type'], 'JFORM_GETEXCLUDED_PHP',
+						$phpxCode
+					);
 				}
 				else
 				{
 					// JFORM_GETOPTIONS_PHP <<<DYNAMIC>>>
-					$this->fileContentDynamic['customfield_'
-					. $data['type']][Placefix::_h('JFORM_GETOPTIONS_PHP')]
-						= $phpCode;
+					CFactory::_('Content')->set_('customfield_' . $data['type'], 'JFORM_GETOPTIONS_PHP',
+						$phpCode
+					);
 				}
 				// type <<<DYNAMIC>>>
-				$this->fileContentDynamic['customfield_'
-				. $data['type']][Placefix::_h('ADD_BUTTON')]
-					= $this->setAddButtonToListField($data['custom']);
+				CFactory::_('Content')->set_('customfield_' . $data['type'], 'ADD_BUTTON',
+					$this->setAddButtonToListField($data['custom'])
+				);
 			}
 		}
 		// if this field gets used in plugin or module we should track it so if needed we can copy it over
@@ -6065,42 +6056,34 @@ class Fields extends Structure
 	public function setFilterFieldFile($getOptions, $filter)
 	{
 		// make sure it is not already been build
-		if (!isset(
-				$this->fileContentDynamic['customfilterfield_'
-				. $filter['filter_type']]
-			)
+		if (!CFactory::_('Content')->exist_('customfilterfield_' . $filter['filter_type'])
 			|| !ArrayHelper::check(
-				$this->fileContentDynamic['customfilterfield_'
-				. $filter['filter_type']]
+				CFactory::_('Content')->get_('customfilterfield_' . $filter['filter_type'])
 			)
 		)
 		{
 			// start loading the field type
-			$this->fileContentDynamic['customfilterfield_'
-			. $filter['filter_type']]
-				= array();
+			// $this->fileContentDynamic['customfilterfield_'
+			// . $filter['filter_type']]
+			// = array();
 			// JPREFIX <<DYNAMIC>>>
-			$this->fileContentDynamic['customfilterfield_'
-			. $filter['filter_type']][Placefix::_h('JPREFIX')]
-				= 'J';
+			CFactory::_('Content')->set_('customfilterfield_' . $filter['filter_type'], 'JPREFIX', 'J');
 			// Type <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfilterfield_'
-			. $filter['filter_type']][Placefix::_h('Type')]
-				= StringHelper::safe(
-				$filter['filter_type'], 'F'
+			CFactory::_('Content')->set_('customfilterfield_' . $filter['filter_type'], 'Type',
+				StringHelper::safe(
+					$filter['filter_type'], 'F'
+				)
 			);
 			// type <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfilterfield_'
-			. $filter['filter_type']][Placefix::_h('type')]
-				= StringHelper::safe($filter['filter_type']);
+			CFactory::_('Content')->set_('customfilterfield_' . $filter['filter_type'], 'type',
+				StringHelper::safe($filter['filter_type'])
+			);
 			// JFORM_GETOPTIONS_PHP <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfilterfield_'
-			. $filter['filter_type']][Placefix::_h('JFORM_GETOPTIONS_PHP')]
-				= $getOptions;
+			CFactory::_('Content')->set_('customfilterfield_' . $filter['filter_type'], 'JFORM_GETOPTIONS_PHP',
+				$getOptions
+			);
 			// ADD_BUTTON <<<DYNAMIC>>>
-			$this->fileContentDynamic['customfilterfield_'
-			. $filter['filter_type']][Placefix::_h('ADD_BUTTON')]
-				= '';
+			CFactory::_('Content')->set_('customfilterfield_' . $filter['filter_type'], 'ADD_BUTTON', '');
 			// now build the custom filter field type file
 			$target = array('admin' => 'customfilterfield');
 			$this->buildDynamique(
@@ -6153,8 +6136,8 @@ class Fields extends Structure
 					$fieldData['component'], Placefix::b()
 				) !== false) // should not be needed... but
 			{
-				$fieldData['component'] = CFactory::_('Placeholder')->update(
-					$fieldData['component'], CFactory::_('Placeholder')->active
+				$fieldData['component'] = CFactory::_('Placeholder')->update_(
+					$fieldData['component']
 				);
 			}
 			// get core permissions

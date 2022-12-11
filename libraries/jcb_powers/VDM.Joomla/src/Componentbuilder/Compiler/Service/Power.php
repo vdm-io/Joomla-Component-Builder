@@ -14,7 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Compiler\Power as CompilerPower;
+use VDM\Joomla\Componentbuilder\Compiler\Power as Powers;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Autoloader;
 
 
 /**
@@ -34,26 +35,47 @@ class Power implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
-		$container->alias(CompilerPower::class, 'Power')
-			->share('Power', [$this, 'getPower'], true);
+		$container->alias(Powers::class, 'Power')
+			->share('Power', [$this, 'getPowers'], true);
+
+		$container->alias(Autoloader::class, 'Power.Autoloader')
+			->share('Power.Autoloader', [$this, 'getAutoloader'], true);
 	}
 
 	/**
-	 * Get the Compiler Power
+	 * Get the Powers
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  CompilerPower
+	 * @return  Powers
 	 * @since 3.2.0
 	 */
-	public function getPower(Container $container): CompilerPower
+	public function getPowers(Container $container): Powers
 	{
-		return new CompilerPower(
+		return new Powers(
 			$container->get('Config'),
 			$container->get('Placeholder'),
 			$container->get('Customcode'),
 			$container->get('Customcode.Gui')
 		);
 	}
+
+	/**
+	 * Get the Compiler Autoloader
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Autoloader
+	 * @since 3.2.0
+	 */
+	public function getAutoloader(Container $container): Autoloader
+	{
+		return new Autoloader(
+			$container->get('Power'),
+			$container->get('Config'),
+			$container->get('Content')
+		);
+	}
+
 }
 

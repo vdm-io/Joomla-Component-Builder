@@ -13,8 +13,6 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 
 
 use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
@@ -57,6 +55,270 @@ class Placeholder implements PlaceholderInterface
 	}
 
 	/**
+	 * Set content
+	 *
+	 * @param   string  $key      The main string key
+	 * @param   mixed   $value    The values to set
+	 * @param   bool    $hash     Add the hash around the key
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	public function set(string $key, $value, bool $hash = true)
+	{
+		if ($hash)
+		{
+			$this->set_($key, $value);
+			$this->set_h($key, $value);
+		}
+		else
+		{
+			$this->active[$key] = $value;
+		}
+	}
+
+	/**
+	 * Get content by key
+	 *
+	 * @param   string  $key   The main string key
+	 *
+	 * @return  mixed
+	 * @since 3.2.0
+	 */
+	public function get(string $key)
+	{
+		return $this->active[$key] ?? $this->get_($key) ?? $this->get_h($key) ?? null;
+	}
+
+	/**
+	 * Does key exist at all in any variation
+	 *
+	 * @param   string  $key   The main string key
+	 *
+	 * @return  bool
+	 * @since 3.2.0
+	 */
+	public function exist(string $key): bool
+	{
+		if (isset($this->active[$key]) || $this->exist_($key) || $this->exist_h($key))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Add content
+	 *
+	 * @param   string  $key       The main string key
+	 * @param   mixed   $value     The values to set
+	 * @param   bool    $hash      Add the hash around the key
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	public function add(string $key, $value, bool $hash = true)
+	{
+		if ($hash)
+		{
+			$this->add_($key, $value);
+			$this->add_h($key, $value);
+		}
+		elseif (isset($this->active[$key]))
+		{
+			$this->active[$key] .= $value;
+		}
+		else
+		{
+			$this->active[$key] = $value;
+		}
+	}
+
+	/**
+	 * Remove content
+	 *
+	 * @param   string   $key   The main string key
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	public function remove(string $key)
+	{
+		if (isset($this->active[$key]))
+		{
+			unset($this->active[$key]);
+		}
+		else
+		{
+			$this->remove_($key);
+			$this->remove_h($key);
+		}
+	}
+
+	/**
+	 * Set content with [ [ [ ... ] ] ] hash
+	 *
+	 * @param   string  $key    The main string key
+	 * @param   mixed   $value  The values to set
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	public function set_(string $key, $value)
+	{
+		$this->active[Placefix::_($key)] = $value;
+	}
+
+	/**
+	 * Get content with [ [ [ ... ] ] ] hash
+	 *
+	 * @param   string  $key    The main string key
+	 *
+	 * @return  mixed
+	 * @since 3.2.0
+	 */
+	public function get_(string $key)
+	{
+		return $this->active[Placefix::_($key)] ?? null;
+	}
+
+	/**
+	 * Does key exist with [ [ [ ... ] ] ] hash
+	 *
+	 * @param   string  $key    The main string key
+	 *
+	 * @return  bool
+	 * @since 3.2.0
+	 */
+	public function exist_(string $key): bool
+	{
+		if (isset($this->active[Placefix::_($key)]))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Add content with [ [ [ ... ] ] ] hash
+	 *
+	 * @param   string  $key    The main string key
+	 * @param   mixed   $value  The values to set
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	public function add_(string $key, $value)
+	{
+		if (isset($this->active[Placefix::_($key)]))
+		{
+			$this->active[Placefix::_($key)] .= $value;
+		}
+		else
+		{
+			$this->active[Placefix::_($key)] = $value;
+		}
+	}
+
+	/**
+	 * Remove content with [ [ [ ... ] ] ] hash
+	 *
+	 * @param   string     $key     The main string key
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	public function remove_(string $key)
+	{
+		if ($this->exist_($key))
+		{
+			unset($this->active[Placefix::_($key)]);
+		}
+	}
+
+	/**
+	 * Set content with # # # hash
+	 *
+	 * @param   string  $key    The main string key
+	 * @param   mixed   $value  The values to set
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	public function set_h(string $key, $value)
+	{
+		$this->active[Placefix::_h($key)] = $value;
+	}
+
+	/**
+	 * Get content with # # # hash
+	 *
+	 * @param   string  $key    The main string key
+	 *
+	 * @return  mixed
+	 * @since 3.2.0
+	 */
+	public function get_h(string $key)
+	{
+		return $this->active[Placefix::_h($key)] ?? null;
+	}
+
+	/**
+	 * Does key exist with # # # hash
+	 *
+	 * @param   string  $key    The main string key
+	 *
+	 * @return  bool
+	 * @since 3.2.0
+	 */
+	public function exist_h(string $key): bool
+	{
+		if (isset($this->active[Placefix::_h($key)]))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Add content with # # # hash
+	 *
+	 * @param   string  $key    The main string key
+	 * @param   mixed   $value  The values to set
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	public function add_h(string $key, $value)
+	{
+		if ($this->exist_h($key))
+		{
+			$this->active[Placefix::_h($key)] .= $value;
+		}
+		else
+		{
+			$this->active[Placefix::_h($key)] = $value;
+		}
+	}
+
+	/**
+	 * Remove content with # # # hash
+	 *
+	 * @param   string     $key     The main string key
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	public function remove_h(string $key)
+	{
+		if ($this->exist_h($key))
+		{
+			unset($this->active[Placefix::_h($key)]);
+		}
+	}
+
+	/**
 	 * Set a type of placeholder with set of values
 	 *
 	 * @param   string  $key     The main string for placeholder key
@@ -76,8 +338,7 @@ class Placeholder implements PlaceholderInterface
 			$number = 0;
 			foreach ($values as $value)
 			{
-				$this->active[Placefix::_($key . $number)]
-					= $value;
+				$this->set($key . $number, $value);
 				$number++;
 			}
 		}
@@ -93,15 +354,18 @@ class Placeholder implements PlaceholderInterface
 	 */
 	public function clearType(string $key)
 	{
-		$key = Placefix::_($key);
+		$keys = [Placefix::_($key), Placefix::_h($key), $key];
 
-		$this->active = array_filter(
-			$this->active,
-			function(string $k) use($key){
-				return preg_replace('/\d/', '', $k) !== $key;
-			},
-			ARRAY_FILTER_USE_KEY
-		);
+		foreach ($keys as $_key)
+		{
+			$this->active = array_filter(
+				$this->active,
+				function (string $k) use ($_key) {
+					return preg_replace('/\d/', '', $k) !== $_key;
+				},
+				ARRAY_FILTER_USE_KEY
+			);
+		}
 	}
 
 	/**
@@ -124,9 +388,9 @@ class Placeholder implements PlaceholderInterface
 		// make sure the placeholders is an array
 		if (!ArrayHelper::check($placeholder))
 		{
-			// This is an error, TODO actually we need to add a kind of log here to know that this happened
 			return $data;
 		}
+
 		// continue with the work of replacement
 		if (1 == $action) // <-- just replace (default)
 		{
@@ -148,7 +412,6 @@ class Placeholder implements PlaceholderInterface
 			// only replace if the data has these placeholder values
 			if ($replace === true)
 			{
-
 				return str_replace(
 					array_keys($placeholder), array_values($placeholder), $data
 				);
@@ -174,6 +437,22 @@ class Placeholder implements PlaceholderInterface
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Update the data with the active placeholders
+	 *
+	 * @param   string  $data         The actual data
+	 *
+	 * @return  string
+	 * @since 3.2.0
+	 */
+	public function update_(string $data): string
+	{
+		// just replace the placeholders in data
+		return str_replace(
+			array_keys($this->active), array_values($this->active), $data
+		);
 	}
 
 	/**
@@ -239,7 +518,6 @@ class Placeholder implements PlaceholderInterface
 
 		return [ 'start' => "", 'end' => ""];
 	}
-
 
 }
 

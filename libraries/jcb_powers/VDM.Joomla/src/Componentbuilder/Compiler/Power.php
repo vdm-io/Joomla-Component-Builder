@@ -45,6 +45,22 @@ class Power implements PowerInterface
 	public array $active = [];
 
 	/**
+	 * All power namespaces
+	 *
+	 * @var    array
+	 * @since 3.2.0
+	 **/
+	public array $namespace = [];
+
+	/**
+	 * All composer namespaces
+	 *
+	 * @var    array
+	 * @since 3.2.0
+	 **/
+	public array $composer = [];
+
+	/**
 	 * The url to the power, if there is an error.
 	 *
 	 * @var   string
@@ -475,10 +491,13 @@ class Power implements PowerInterface
 		$namespace_array = array_map(function ($val) {
 			return $this->getCleanNamespace($val);
 		}, $namespace_array);
+
 		// set the actual class namespace
 		$this->active[$guid]->_namespace = implode('\\', $namespace_array);
-		// prefix values
-		$this->active[$guid]->_namespace_prefix = $path_array;
+
+		// set global namespaces for autoloader
+		$this->namespace[implode('.', $path_array)] = $path_array;
+
 		// get the parent folder (the first value in array)
 		$prefix_folder = implode('.', $path_array);
 
@@ -579,10 +598,10 @@ class Power implements PowerInterface
 				$this->active[$guid]->composer
 			)) ? json_decode($this->active[$guid]->composer, true) : null;
 
+		unset($this->active[$guid]->composer);
+
 		if (ArrayHelper::check($_composer))
 		{
-			$this->active[$guid]->composer = [];
-
 			foreach ($_composer as $composer)
 			{
 				if (isset($composer['access_point']) && StringHelper::check($composer['access_point']))
@@ -612,16 +631,14 @@ class Power implements PowerInterface
 								{
 									$namespace = $this->getCleanNamespace(explode(' as ', $namespace)[0]);
 								}
-								$this->active[$guid]->composer[$namespace] = $composer['access_point'];
+
+								// add composer namespaces for autoloader
+								$this->composer[$namespace] = $composer['access_point'];
 							}
 						}
 					}
 				}
 			}
-		}
-		else
-		{
-			$this->active[$guid]->composer = null;
 		}
 	}
 

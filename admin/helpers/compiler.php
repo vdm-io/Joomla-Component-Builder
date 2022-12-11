@@ -99,7 +99,7 @@ class Compiler extends Infusion
 				$this->repoPath = $this->params->get('git_folder_path', null);
 			}
 			// remove site folder if not needed (TODO add check if custom script was moved to site folder then we must do a more complex cleanup here)
-			if ($this->removeSiteFolder && $this->removeSiteEditFolder)
+			if (CFactory::_('Config')->remove_site_folder && CFactory::_('Config')->remove_site_edit_folder)
 			{
 				// first remove the files and folders
 				$this->removeFolder($this->componentPath . '/site');
@@ -397,9 +397,9 @@ class Compiler extends Infusion
 			// now we do the dynamic files
 			foreach ($this->newFiles['dynamic'] as $view => $files)
 			{
-				if (isset($this->fileContentDynamic[$view])
+				if (CFactory::_('Content')->exist_($view)
 					&& ArrayHelper::check(
-						$this->fileContentDynamic[$view]
+						CFactory::_('Content')->get_($view)
 					))
 				{
 					foreach ($files as $file)
@@ -417,7 +417,7 @@ class Compiler extends Infusion
 					}
 				}
 				// free up some memory
-				unset($this->fileContentDynamic[$view]);
+				CFactory::_('Content')->remove_($view);
 			}
 			// free up some memory
 			unset($this->newFiles['dynamic']);
@@ -498,7 +498,7 @@ class Compiler extends Infusion
 						}
 						// free up some memory
 						unset($this->newFiles[$module->key]);
-						unset($this->fileContentDynamic[$module->key]);
+						CFactory::_('Content')->remove_($module->key);
 					}
 				}
 			}
@@ -579,7 +579,7 @@ class Compiler extends Infusion
 						}
 						// free up some memory
 						unset($this->newFiles[$plugin->key]);
-						unset($this->fileContentDynamic[$plugin->key]);
+						CFactory::_('Content')->remove_($plugin->key);
 					}
 				}
 			}
@@ -607,7 +607,7 @@ class Compiler extends Infusion
 						}
 						// free up some memory
 						unset($this->newFiles[$power->key]);
-						unset($this->fileContentDynamic[$power->key]);
+						CFactory::_('Content')->remove_($power->key);
 					}
 				}
 			}
@@ -661,7 +661,7 @@ class Compiler extends Infusion
 		if ($view)
 		{
 			$answer = CFactory::_('Placeholder')->update(
-				$answer, $this->fileContentDynamic[$view], 3
+				$answer, CFactory::_('Content')->get_($view), 3
 			);
 		}
 		// check if this file needs extra care :)
@@ -1421,8 +1421,8 @@ class Compiler extends Infusion
 							$target['id']
 						);
 						$data        = $placeholder['start'] . PHP_EOL
-							. CFactory::_('Placeholder')->update(
-								$target['code'], CFactory::_('Placeholder')->active
+							. CFactory::_('Placeholder')->update_(
+								$target['code']
 							) . $placeholder['end'] . PHP_EOL;
 						if ($target['type'] == 2)
 						{

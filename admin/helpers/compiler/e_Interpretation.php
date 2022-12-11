@@ -277,8 +277,7 @@ class Interpretation extends Fields
 			if ($done)
 			{
 				// the text for the file BAKING
-				$this->fileContentDynamic['emailer_' . $component][Placefix::_h('BAKING')]
-					= ''; // <<-- to insure it gets updated
+				CFactory::_('Content')->set_('emailer_' . $component, 'BAKING', ''); // <<-- to insure it gets updated
 				// return the code need to load the abstract class
 				return PHP_EOL . "JLoader::register('" . $Component
 					. "Email', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/"
@@ -324,17 +323,14 @@ class Interpretation extends Fields
 	/**
 	 * set Lock License Per
 	 *
-	 * @param   type  $view
-	 * @param   type  $target
+	 * @param   string  $view
+	 * @param   string  $target
 	 */
 	public function setLockLicensePer(&$view, $target)
 	{
-		if ($this->componentData->add_license
-			&& $this->componentData->license_type == 3)
+		if ($this->componentData->add_license && $this->componentData->license_type == 3)
 		{
-			if (!isset(
-				$this->fileContentDynamic[$view][Placefix::_h('BOOLMETHOD')]
-			))
+			if (!CFactory::_('Content')->exist_($view, 'BOOLMETHOD'))
 			{
 				$boolMethod = 'get' . StringHelper::safe(
 						$this->uniquekey(3, false, 'ddd'), 'W'
@@ -343,25 +339,21 @@ class Interpretation extends Fields
 						$this->uniquekey(3), 'W'
 					);
 				// add it to the system
-				$this->fileContentDynamic[$view][Placefix::_h('LICENSE_LOCKED_SET_BOOL')]
-					= $this->setBoolLicenseLock($boolMethod, $globalbool);
-				$this->fileContentDynamic[$view][Placefix::_h('LICENSE_LOCKED_CHECK')]
-					= $this->checkStatmentLicenseLocked($boolMethod);
-				$this->fileContentDynamic[$view][Placefix::_h('LICENSE_TABLE_LOCKED_CHECK')]
-					= $this->checkStatmentLicenseLocked($boolMethod, '$table');
-				$this->fileContentDynamic[$view][Placefix::_h('BOOLMETHOD')]
-					= $boolMethod;
+				CFactory::_('Content')->set_($view, 'LICENSE_LOCKED_SET_BOOL',
+					$this->setBoolLicenseLock($boolMethod, $globalbool));
+				CFactory::_('Content')->set_($view, 'LICENSE_LOCKED_CHECK',
+					$this->checkStatmentLicenseLocked($boolMethod));
+				CFactory::_('Content')->set_($view, 'LICENSE_TABLE_LOCKED_CHECK',
+					$this->checkStatmentLicenseLocked($boolMethod, '$table'));
+				CFactory::_('Content')->set_($view, 'BOOLMETHOD', $boolMethod);
 			}
 		}
 		else
 		{
 			// don't add it to the system
-			$this->fileContentDynamic[$view][Placefix::_h('LICENSE_LOCKED_SET_BOOL')]
-				= '';
-			$this->fileContentDynamic[$view][Placefix::_h('LICENSE_LOCKED_CHECK')]
-				= '';
-			$this->fileContentDynamic[$view][Placefix::_h('LICENSE_TABLE_LOCKED_CHECK')]
-				= '';
+			CFactory::_('Content')->set_($view, 'LICENSE_LOCKED_SET_BOOL', '');
+			CFactory::_('Content')->set_($view, 'LICENSE_LOCKED_CHECK', '');
+			CFactory::_('Content')->set_($view, 'LICENSE_TABLE_LOCKED_CHECK', '');
 		}
 	}
 
@@ -834,8 +826,7 @@ class Interpretation extends Fields
 				$target = array('admin' => 'whmcs');
 				$done   = $this->buildDynamique($target, 'whmcs');
 				// the text for the file WHMCS_ENCRYPTION_BODY
-				$this->fileContentDynamic['whmcs'][Placefix::_h('WHMCS_ENCRYPTION_BODY')]
-					= $this->setWHMCSCryption();
+				CFactory::_('Content')->set_('whmcs', 'WHMCS_ENCRYPTION_BODY', $this->setWHMCSCryption());
 				// ENCRYPT_FILE
 				CFactory::_('Content')->set('WHMCS_ENCRYPT_FILE', PHP_EOL . Indent::_(3) . "<filename>whmcs.php</filename>");
 			}
@@ -1127,8 +1118,7 @@ class Interpretation extends Fields
 				$name   = explode('.xml', $name)[0];
 				$target = array('admin' => $name);
 				$this->buildDynamique($target, 'update_server');
-				$this->fileContentDynamic[$name][Placefix::_h('UPDATE_SERVER_XML')]
-					= implode(PHP_EOL, $updateXML);
+				CFactory::_('Content')->set_($name, 'UPDATE_SERVER_XML', implode(PHP_EOL, $updateXML));
 
 				// set the Update server file name
 				$this->updateServerFileName = $name;
@@ -1279,8 +1269,8 @@ class Interpretation extends Fields
 		// setup SQL
 		if (StringHelper::check($update['mysql']))
 		{
-			$update['mysql'] = CFactory::_('Placeholder')->update(
-				$update['mysql'], CFactory::_('Placeholder')->active
+			$update['mysql'] = CFactory::_('Placeholder')->update_(
+				$update['mysql']
 			);
 		}
 		// add dynamic SQL
@@ -1313,9 +1303,9 @@ class Interpretation extends Fields
 			$name   = StringHelper::safe($update['version']);
 			$target = array('admin' => $name);
 			$this->buildDynamique($target, 'sql_update', $update['version']);
-			$this->fileContentDynamic[$name . '_'
-			. $update['version']][Placefix::_h('UPDATE_VERSION_MYSQL')]
-				= $update['mysql'];
+			CFactory::_('Content')->set_($name . '_' . $update['version'], 'UPDATE_VERSION_MYSQL',
+				$update['mysql']
+			);
 		}
 		elseif (isset($update['url'])
 			&& StringHelper::check(
@@ -1428,8 +1418,7 @@ class Interpretation extends Fields
 				// HELP_SITE
 				CFactory::_('Content')->set('HELP_SITE', $this->setHelp(2));
 				// to make sure the file is updated TODO
-				$this->fileContentDynamic['help'][Placefix::_h('BLABLA')]
-					= 'blabla';
+				CFactory::_('Content')->set_('help', 'BLABLA', 'blabla');
 
 				return true;
 			}
@@ -2414,9 +2403,8 @@ class Interpretation extends Fields
 							. Indent::_(1) . "//" . Line::_(__Line__, __Class__)
 							. " Get data";
 						// set the selection
-						$getItem .= PHP_EOL . CFactory::_('Placeholder')->update(
-								$the_get['selection']['select'],
-								CFactory::_('Placeholder')->active
+						$getItem .= PHP_EOL . CFactory::_('Placeholder')->update_(
+								$the_get['selection']['select']
 							);
 					}
 					// load the from selection
@@ -3592,8 +3580,8 @@ class Interpretation extends Fields
 					$get->php_before_getitem
 				))
 			{
-				$getItem .= CFactory::_('Placeholder')->update(
-					$get->php_before_getitem, CFactory::_('Placeholder')->active
+				$getItem .= CFactory::_('Placeholder')->update_(
+					$get->php_before_getitem
 				);
 			}
 			// start loadin the get Item
@@ -3637,8 +3625,8 @@ class Interpretation extends Fields
 				&& isset($get->php_after_getitem)
 				&& StringHelper::check($get->php_after_getitem))
 			{
-				$getItem .= CFactory::_('Placeholder')->update(
-					$get->php_after_getitem, CFactory::_('Placeholder')->active
+				$getItem .= CFactory::_('Placeholder')->update_(
+					$get->php_after_getitem
 				);
 			}
 			// check the getItem string to see if we should still add set query to data
@@ -3856,8 +3844,8 @@ class Interpretation extends Fields
 			if ($get->addcalculation == 1)
 			{
 				$get->php_calculation = (array) explode(
-					PHP_EOL, CFactory::_('Placeholder')->update(
-					$get->php_calculation, CFactory::_('Placeholder')->active
+					PHP_EOL, CFactory::_('Placeholder')->update_(
+					$get->php_calculation
 				)
 				);
 				$getItem              .= PHP_EOL . Indent::_(1) . $tab
@@ -4003,8 +3991,8 @@ class Interpretation extends Fields
 							$view->php_getlistquery
 						))
 					{
-						$main .= CFactory::_('Placeholder')->update(
-							$view->php_getlistquery, CFactory::_('Placeholder')->active
+						$main .= CFactory::_('Placeholder')->update_(
+							$view->php_getlistquery
 						);
 					}
 					// SITE_GET_LIST_QUERY <<<DYNAMIC>>>
@@ -4019,8 +4007,8 @@ class Interpretation extends Fields
 							$view->php_before_getitems
 						))
 					{
-						$main .= CFactory::_('Placeholder')->update(
-							$view->php_before_getitems, CFactory::_('Placeholder')->active
+						$main .= CFactory::_('Placeholder')->update_(
+							$view->php_before_getitems
 						);
 					}
 					// load the object list
@@ -4039,8 +4027,8 @@ class Interpretation extends Fields
 							$view->php_after_getitems
 						))
 					{
-						$main .= CFactory::_('Placeholder')->update(
-							$view->php_after_getitems, CFactory::_('Placeholder')->active
+						$main .= CFactory::_('Placeholder')->update_(
+							$view->php_after_getitems
 						);
 					}
 					$main .= PHP_EOL . PHP_EOL . Indent::_(2)
@@ -4940,8 +4928,8 @@ class Interpretation extends Fields
 					$_tmp    = PHP_EOL . Indent::_(4) . implode(
 							PHP_EOL . Indent::_(4), $get->php_calculation
 						);
-					$getItem .= CFactory::_('Placeholder')->update(
-						$_tmp, CFactory::_('Placeholder')->active
+					$getItem .= CFactory::_('Placeholder')->update_(
+						$_tmp
 					);
 				}
 			}
@@ -5117,8 +5105,8 @@ class Interpretation extends Fields
 							PHP_EOL . Indent::_(2),
 							$view['settings']->php_jview_display
 						);
-					$method .= CFactory::_('Placeholder')->update(
-						$_tmp, CFactory::_('Placeholder')->active
+					$method .= CFactory::_('Placeholder')->update_(
+						$_tmp
 					);
 				}
 			}
@@ -5239,69 +5227,67 @@ class Interpretation extends Fields
 		$TARGET = StringHelper::safe(CFactory::_('Config')->build_target, 'U');
 
 		// set libraries $TARGET.'_LIBRARIES_LOADER
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_LIBRARIES_LOADER' )]
-			= $this->setLibrariesLoader($view);
+		CFactory::_('Content')->set_($view['settings']->code,$TARGET . '_LIBRARIES_LOADER',
+			$this->setLibrariesLoader($view)
+		);
 
 		// set uikit $TARGET.'_UIKIT_LOADER
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_UIKIT_LOADER' )]
-			= $this->setUikitLoader($view);
+		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_UIKIT_LOADER',
+			$this->setUikitLoader($view)
+		);
 
 		// set Google Charts $TARGET.'_GOOGLECHART_LOADER
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_GOOGLECHART_LOADER' )]
-			= $this->setGoogleChartLoader($view);
+		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_GOOGLECHART_LOADER',
+			$this->setGoogleChartLoader($view)
+		);
 
 		// set Footable FOOTABLE_LOADER
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_FOOTABLE_LOADER' )]
-			= $this->setFootableScriptsLoader($view);
+		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_FOOTABLE_LOADER',
+			$this->setFootableScriptsLoader($view)
+		);
 
 		// set metadata DOCUMENT_METADATA
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_DOCUMENT_METADATA' )]
-			= $this->setDocumentMetadata($view);
+		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_DOCUMENT_METADATA',
+			$this->setDocumentMetadata($view)
+		);
 
 		// set custom php scripting DOCUMENT_CUSTOM_PHP
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_DOCUMENT_CUSTOM_PHP' )]
-			= $this->setDocumentCustomPHP($view);
+		CFactory::_('Content')->set_($view['settings']->code,$TARGET . '_DOCUMENT_CUSTOM_PHP',
+			$this->setDocumentCustomPHP($view)
+		);
 
 		// set custom css DOCUMENT_CUSTOM_CSS
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_DOCUMENT_CUSTOM_CSS' )]
-			= $this->setDocumentCustomCSS($view);
+		CFactory::_('Content')->set_($view['settings']->code,$TARGET . '_DOCUMENT_CUSTOM_CSS',
+			$this->setDocumentCustomCSS($view)
+		);
 
 		// set custom javascript DOCUMENT_CUSTOM_JS
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_DOCUMENT_CUSTOM_JS' )]
-			= $this->setDocumentCustomJS($view);
+		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_DOCUMENT_CUSTOM_JS',
+			$this->setDocumentCustomJS($view)
+		);
 
 		// set custom css file VIEWCSS
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_VIEWCSS' )]
-			= $this->setCustomCSS($view);
+		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_VIEWCSS',
+			$this->setCustomCSS($view)
+		);
 
 		// incase no buttons are found
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h('SITE_JAVASCRIPT_FOR_BUTTONS')]
-			= '';
+		CFactory::_('Content')->set_($view['settings']->code, 'SITE_JAVASCRIPT_FOR_BUTTONS', '');
 
 		// set the custom buttons CUSTOM_BUTTONS
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_CUSTOM_BUTTONS' )]
-			= $this->setCustomButtons($view);
+		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_CUSTOM_BUTTONS',
+			$this->setCustomButtons($view)
+		);
 
 		// see if we should add get modules to the view.html
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_GET_MODULE' )]
-			= $this->setGetModules($view, $TARGET);
+		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_GET_MODULE',
+			$this->setGetModules($view, $TARGET)
+		);
 
 		// set a JavaScript file if needed
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_LIBRARIES_LOADER' )]
-			.= $this->setJavaScriptFile($view, $TARGET);
-
+		CFactory::_('Content')->add_($view['settings']->code, $TARGET . '_LIBRARIES_LOADER',
+			$this->setJavaScriptFile($view, $TARGET)
+		);
 		// fix just incase we missed it somewhere
 		CFactory::_('Config')->lang_target = $tmp;
 	}
@@ -5397,15 +5383,13 @@ class Interpretation extends Fields
 			$addModule[] = Indent::_(2) . "return false;";
 			$addModule[] = Indent::_(1) . "}";
 
-			$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-				. '_GET_MODULE_JIMPORT')]
-				= PHP_EOL . "jimport('joomla.application.module.helper');";
+			CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_GET_MODULE_JIMPORT',
+				PHP_EOL . "jimport('joomla.application.module.helper');"
+			);
 
 			return implode(PHP_EOL, $addModule);
 		}
-		$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-		. '_GET_MODULE_JIMPORT')]
-			= '';
+		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_GET_MODULE_JIMPORT', '');
 
 		return '';
 	}
@@ -5425,7 +5409,7 @@ class Interpretation extends Fields
 						PHP_EOL . Indent::_(2), $view['settings']->php_document
 					);
 
-				return CFactory::_('Placeholder')->update($_tmp, CFactory::_('Placeholder')->active);
+				return CFactory::_('Placeholder')->update_($_tmp);
 			}
 		}
 
@@ -5449,11 +5433,9 @@ class Interpretation extends Fields
 				$viewCodeName = $view['settings']->name_single_code;
 			}
 			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-			$this->fileContentDynamic[$viewCodeName][Placefix::_h($TARGET
-			. '_CUSTOM_BUTTONS_CONTROLLER' )] = '';
+			CFactory::_('Content')->set_($viewCodeName, $TARGET . '_CUSTOM_BUTTONS_CONTROLLER', '');
 			// set the custom buttons CUSTOM_BUTTONS_METHOD
-			$this->fileContentDynamic[$viewCodeName][Placefix::_h($TARGET
-			. '_CUSTOM_BUTTONS_METHOD' )] = '';
+			CFactory::_('Content')->set_($viewCodeName, $TARGET . '_CUSTOM_BUTTONS_METHOD', '');
 		}
 		elseif (3 == $type)
 		{
@@ -5461,13 +5443,9 @@ class Interpretation extends Fields
 			$viewCodeName  = $view['settings']->name_single_code;
 			$viewsCodeName = $view['settings']->name_list_code;
 			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER_LIST
-			$this->fileContentDynamic[$viewsCodeName][Placefix::_h($TARGET
-			. '_CUSTOM_BUTTONS_CONTROLLER_LIST' )]
-				= '';
+			CFactory::_('Content')->set_($viewsCodeName, $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST', '');
 			// set the custom buttons CUSTOM_BUTTONS_METHOD_LIST
-			$this->fileContentDynamic[$viewsCodeName][Placefix::_h($TARGET
-			. '_CUSTOM_BUTTONS_METHOD_LIST' )]
-				= '';
+			CFactory::_('Content')->set_($viewsCodeName, $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST', '');
 			// validate selection
 			$validateSelection = 'true';
 		}
@@ -5477,38 +5455,36 @@ class Interpretation extends Fields
 		if (CFactory::_('Config')->build_target === 'site')
 		{
 			// set the custom buttons SITE_TOP_BUTTON
-			$this->fileContentDynamic[$viewCodeName][Placefix::_h('SITE_TOP_BUTTON')]
-				= '';
+			CFactory::_('Content')->set_($viewCodeName, 'SITE_TOP_BUTTON', '');
 			// set the custom buttons SITE_BOTTOM_BUTTON
-			$this->fileContentDynamic[$viewCodeName][Placefix::_h('SITE_BOTTOM_BUTTON')]
-				= '';
+			CFactory::_('Content')->set_($viewCodeName, 'SITE_BOTTOM_BUTTON', '');
 			// load into place
 			switch ($view['settings']->button_position)
 			{
 				case 1:
 					// set buttons to top right of the view
-					$this->fileContentDynamic[$viewCodeName][Placefix::_h('SITE_TOP_BUTTON')]
-						= '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
+					CFactory::_('Content')->set_($viewCodeName, 'SITE_TOP_BUTTON',
+						'<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>'
+					);
 					break;
 				case 2:
 					// set buttons to top left of the view
-					$this->fileContentDynamic[$viewCodeName][Placefix::_h('SITE_TOP_BUTTON')]
-						= '<?php echo $this->toolbar->render(); ?>';
+					CFactory::_('Content')->set_($viewCodeName, 'SITE_TOP_BUTTON', '<?php echo $this->toolbar->render(); ?>');
 					break;
 				case 3:
 					// set buttons to buttom right of the view
-					$this->fileContentDynamic[$viewCodeName][Placefix::_h('SITE_BOTTOM_BUTTON')]
-						= '<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>';
+					CFactory::_('Content')->set_($viewCodeName, 'SITE_BOTTOM_BUTTON',
+						'<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>'
+					);
 					break;
 				case 4:
 					// set buttons to buttom left of the view
-					$this->fileContentDynamic[$viewCodeName][Placefix::_h('SITE_BOTTOM_BUTTON')]
-						= '<?php echo $this->toolbar->render(); ?>';
+					CFactory::_('Content')->set_($viewCodeName, 'SITE_BOTTOM_BUTTON', '<?php echo $this->toolbar->render(); ?>');
 					break;
 				case 5:
 					// set buttons to buttom left of the view
-					CFactory::_('Placeholder')->active[Placefix::_('SITE_TOOLBAR')]
-						= '<?php echo $this->toolbar->render(); ?>';
+					CFactory::_('Placeholder')->set_('SITE_TOOLBAR',
+						'<?php echo $this->toolbar->render(); ?>');
 					break;
 			}
 		}
@@ -5671,12 +5647,10 @@ class Interpretation extends Fields
 					&& $view['settings']->php_controller_list != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-					$this->fileContentDynamic[$viewsCodeName][Placefix::_h($TARGET
-					. '_CUSTOM_BUTTONS_CONTROLLER_LIST')]
-						= PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-							$view['settings']->php_controller_list,
-							CFactory::_('Placeholder')->active
-						);
+					CFactory::_('Content')->set_($viewsCodeName, $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST',
+						PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+							$view['settings']->php_controller_list
+						));
 				}
 				// load the model
 				if (isset($view['settings']->php_model_list)
@@ -5686,12 +5660,10 @@ class Interpretation extends Fields
 					&& $view['settings']->php_model_list != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_METHOD
-					$this->fileContentDynamic[$viewsCodeName][Placefix::_h($TARGET
-					. '_CUSTOM_BUTTONS_METHOD_LIST')]
-						= PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-							$view['settings']->php_model_list,
-							CFactory::_('Placeholder')->active
-						);
+					CFactory::_('Content')->set_($viewsCodeName,$TARGET
+					. '_CUSTOM_BUTTONS_METHOD_LIST', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+							$view['settings']->php_model_list
+						));
 				}
 			}
 			else
@@ -5703,12 +5675,10 @@ class Interpretation extends Fields
 					&& $view['settings']->php_controller != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-					$this->fileContentDynamic[$viewCodeName][Placefix::_h($TARGET
-					. '_CUSTOM_BUTTONS_CONTROLLER')]
-						= PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-							$view['settings']->php_controller,
-							CFactory::_('Placeholder')->active
-						);
+					CFactory::_('Content')->set_($viewCodeName,$TARGET
+					. '_CUSTOM_BUTTONS_CONTROLLER', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+							$view['settings']->php_controller
+						));
 					if ('site' === CFactory::_('Config')->build_target)
 					{
 						// add the controller for this view
@@ -5725,11 +5695,11 @@ class Interpretation extends Fields
 					&& $view['settings']->php_model != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_METHOD
-					$this->fileContentDynamic[$viewCodeName][Placefix::_h($TARGET
-					. '_CUSTOM_BUTTONS_METHOD')]
-						= PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-							$view['settings']->php_model, $this->placeholders
-						);
+					CFactory::_('Content')->set_($viewCodeName,$TARGET
+						. '_CUSTOM_BUTTONS_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+							$view['settings']->php_model
+						)
+					);
 				}
 			}
 		}
@@ -5754,9 +5724,9 @@ class Interpretation extends Fields
 					) === false))
 			{
 				// set the custom get form method  JAVASCRIPT_FOR_BUTTONS
-				$this->fileContentDynamic[$viewCodeName][Placefix::_h($TARGET
-					. '_JAVASCRIPT_FOR_BUTTONS')]
-					= $this->setJavaScriptForButtons();
+				CFactory::_('Content')->set_($viewCodeName,$TARGET
+					. '_JAVASCRIPT_FOR_BUTTONS', $this->setJavaScriptForButtons()
+				);
 			}
 			// insure the form is added (only if no form exist)
 			if (isset($view['settings']->default)
@@ -5810,8 +5780,8 @@ class Interpretation extends Fields
 		{
 			if (StringHelper::check($view['settings']->css))
 			{
-				return CFactory::_('Placeholder')->update(
-					$view['settings']->css, $this->placeholders
+				return CFactory::_('Placeholder')->update_(
+					$view['settings']->css
 				);
 			}
 		}
@@ -5841,8 +5811,8 @@ class Interpretation extends Fields
 						)
 					);
 
-				return $script . CFactory::_('Placeholder')->update(
-						$cssDocument, $this->placeholders
+				return $script . CFactory::_('Placeholder')->update_(
+						$cssDocument
 					) . PHP_EOL . Indent::_(2) . '");';
 			}
 		}
@@ -5879,11 +5849,10 @@ class Interpretation extends Fields
 					. $view['settings']->code . '.js';
 			}
 			// add script to file
-			$this->fileContentDynamic[$view['settings']->code][Placefix::_h($TARGET
-				. '_JAVASCRIPT_FILE')]
-				= CFactory::_('Placeholder')->update(
-				$view['settings']->javascript_file, $this->placeholders
-			);
+			CFactory::_('Content')->set_($view['settings']->code,$TARGET
+				. '_JAVASCRIPT_FILE', CFactory::_('Placeholder')->update_(
+				$view['settings']->javascript_file
+			));
 
 			// add script to view
 			return PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
@@ -5917,8 +5886,8 @@ class Interpretation extends Fields
 						)
 					);
 
-				return $script . CFactory::_('Placeholder')->update(
-						$jsDocument, $this->placeholders
+				return $script . CFactory::_('Placeholder')->update_(
+						$jsDocument
 					) . PHP_EOL . Indent::_(2) . '");';
 			}
 		}
@@ -6171,11 +6140,11 @@ class Interpretation extends Fields
 						$this->libraries[$id]->document
 					))
 				{
-					$setter .= PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
+					$setter .= PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 							str_replace(
 								'$document->', '$this->document->',
 								$this->libraries[$id]->document
-							), $this->placeholders
+							)
 						);
 				}
 				elseif (isset($this->libraries[$id])
@@ -6749,8 +6718,8 @@ class Interpretation extends Fields
 	{
 		if ($view['settings']->add_php_jview == 1)
 		{
-			return PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-					$view['settings']->php_jview, $this->placeholders
+			return PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+					$view['settings']->php_jview
 				);
 		}
 
@@ -6791,69 +6760,69 @@ class Interpretation extends Fields
 					) !== false);
 
 				// add pagination start
-				CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONSTART')]
-					= PHP_EOL
-					. '<?php if (isset($this->items) && isset($this->pagination) && isset($this->pagination->pagesTotal) && $this->pagination->pagesTotal > 1): ?>';
-				CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONSTART')]
-					.= PHP_EOL . Indent::_(1) . '<div class="pagination">';
-				CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONSTART')]
-					.= PHP_EOL . Indent::_(2)
-					. '<?php if ($this->params->def(\'show_pagination_results\', 1)) : ?>';
+				CFactory::_('Placeholder')->add_('PAGINATIONSTART', PHP_EOL
+					. '<?php if (isset($this->items) && isset($this->pagination) && isset($this->pagination->pagesTotal) && $this->pagination->pagesTotal > 1): ?>');
+				CFactory::_('Placeholder')->add_('PAGINATIONSTART',
+					PHP_EOL . Indent::_(1) . '<div class="pagination">');
+				CFactory::_('Placeholder')->add_('PAGINATIONSTART',
+					PHP_EOL . Indent::_(2)
+					. '<?php if ($this->params->def(\'show_pagination_results\', 1)) : ?>');
 
 				// add pagination end
-				CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONEND')]
-					= Indent::_(2) . '<?php endif; ?>';
+				CFactory::_('Placeholder')->set_('PAGINATIONEND',
+					Indent::_(2) . '<?php endif; ?>');
 				// only add if no custom page link is found
 				if (!$has_pageslinks)
 				{
 					if (CFactory::_('Config')->build_target === 'custom_admin')
 					{
-						CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONEND')]
-							.= PHP_EOL . Indent::_(2)
-							. '<?php echo $this->pagination->getListFooter(); ?>';
+						CFactory::_('Placeholder')->add_('PAGINATIONEND',
+							PHP_EOL . Indent::_(2)
+							. '<?php echo $this->pagination->getListFooter(); ?>');
 					}
 					else
 					{
-						CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONEND')]
-							.= PHP_EOL . Indent::_(2)
-							. '<?php echo $this->pagination->getPagesLinks(); ?>';
+						CFactory::_('Placeholder')->add_('PAGINATIONEND',
+							PHP_EOL . Indent::_(2)
+							. '<?php echo $this->pagination->getPagesLinks(); ?>');
 					}
 				}
-				CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONEND')]
-					.= PHP_EOL . Indent::_(1) . '</div>';
-				CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONEND')]
-					.= PHP_EOL . '<?php endif; ?>';
+				CFactory::_('Placeholder')->add_('PAGINATIONEND',
+					PHP_EOL . Indent::_(1) . '</div>');
+				CFactory::_('Placeholder')->add_('PAGINATIONEND',
+					PHP_EOL . '<?php endif; ?>');
 
 				// add limit box
-				CFactory::_('Placeholder')->active[Placefix::_('LIMITBOX')]
-					= '<?php echo $this->pagination->getLimitBox(); ?>';
+				CFactory::_('Placeholder')->set_('LIMITBOX',
+					'<?php echo $this->pagination->getLimitBox(); ?>');
 
 				// add pages counter
-				CFactory::_('Placeholder')->active[Placefix::_('PAGESCOUNTER')]
-					= '<?php echo $this->pagination->getPagesCounter(); ?>';
+				CFactory::_('Placeholder')->set_('PAGESCOUNTER',
+					'<?php echo $this->pagination->getPagesCounter(); ?>');
 
 				// add pages links
 				if (CFactory::_('Config')->build_target === 'custom_admin')
 				{
-					CFactory::_('Placeholder')->active[Placefix::_('PAGESLINKS')]
-						= '<?php echo $this->pagination->getListFooter(); ?>';
+					CFactory::_('Placeholder')->set_('PAGESLINKS',
+						'<?php echo $this->pagination->getListFooter(); ?>');
 				}
 				else
 				{
-					CFactory::_('Placeholder')->active[Placefix::_('PAGESLINKS')]
-						= '<?php echo $this->pagination->getPagesLinks(); ?>';
+					CFactory::_('Placeholder')->set_('PAGESLINKS',
+						'<?php echo $this->pagination->getPagesLinks(); ?>');
 				}
 
 				// build body
 				$body = array();
 				// Load the default values to the body
-				$body[] = CFactory::_('Placeholder')->update(
-					$view['settings']->default, $this->placeholders
+				$body[] = CFactory::_('Placeholder')->update_(
+					$view['settings']->default
 				);
+
 				// add pagination start
 				if (!$has_pagination_start)
 				{
-					$body[] = CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONSTART')];
+					$body[] = CFactory::_('Placeholder')->get_('PAGINATIONSTART');
 				}
 
 				if (!$has_limitbox && !$has_pagescounter)
@@ -6874,24 +6843,16 @@ class Interpretation extends Fields
 				// add pagination end
 				if (!$has_pagination_end)
 				{
-					$body[] = CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONEND')];
+					$body[] = CFactory::_('Placeholder')->get_('PAGINATIONEND');
 				}
+
 				// lets clear the placeholders just in case
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('LIMITBOX')]
-				);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('PAGESCOUNTER')]
-				);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('PAGESLINKS')]
-				);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONSTART')]
-				);
-				unset(
-					CFactory::_('Placeholder')->active[Placefix::_('PAGINATIONEND')]
-				);
+				CFactory::_('Placeholder')->remove_('LIMITBOX');
+				CFactory::_('Placeholder')->remove_('PAGESCOUNTER');
+				CFactory::_('Placeholder')->remove_('PAGESLINKS');
+				CFactory::_('Placeholder')->remove_('PAGINATIONSTART');
+				CFactory::_('Placeholder')->remove_('PAGINATIONEND');
+
 				// insure the form is added (only if no form exist)
 				if (strpos($view['settings']->default, '<form') === false)
 				{
@@ -6914,8 +6875,8 @@ class Interpretation extends Fields
 						= true;
 				}
 
-				return PHP_EOL . CFactory::_('Placeholder')->update(
-						$view['settings']->default, $this->placeholders
+				return PHP_EOL . CFactory::_('Placeholder')->update_(
+						$view['settings']->default
 					);
 			}
 		}
@@ -7026,7 +6987,7 @@ class Interpretation extends Fields
 						PHP_EOL, $view['settings']->php_view
 					);
 
-				return CFactory::_('Placeholder')->update($_tmp, $this->placeholders);
+				return CFactory::_('Placeholder')->update_($_tmp);
 			}
 		}
 
@@ -7058,17 +7019,15 @@ class Interpretation extends Fields
 					CFactory::_('Config')->build_target, 'U'
 				);
 				// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
-				$this->fileContentDynamic[$view['settings']->code . '_'
-				. $template][Placefix::_h($TARGET . '_TEMPLATE_BODY'
-				)]
-					= PHP_EOL . CFactory::_('Placeholder')->update(
-						$data['html'], $this->placeholders
-					);
+				CFactory::_('Content')->set_($view['settings']->code . '_'
+				. $template, $TARGET . '_TEMPLATE_BODY', PHP_EOL . CFactory::_('Placeholder')->update_(
+						$data['html']
+					));
 				// SITE_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
-				$this->fileContentDynamic[$view['settings']->code . '_'
-				. $template][Placefix::_h($TARGET . '_TEMPLATE_CODE_BODY'
-				)]
-					= $this->setCustomViewTemplateCode($data['php_view']);
+				CFactory::_('Content')->set_($view['settings']->code . '_'
+					. $template,$TARGET . '_TEMPLATE_CODE_BODY',
+					$this->setCustomViewTemplateCode($data['php_view'])
+				);
 			}
 		}
 	}
@@ -7082,7 +7041,7 @@ class Interpretation extends Fields
 			{
 				$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
 
-				return CFactory::_('Placeholder')->update($php_view, $this->placeholders);
+				return CFactory::_('Placeholder')->update_($php_view);
 			}
 		}
 
@@ -7110,31 +7069,29 @@ class Interpretation extends Fields
 				if (ArrayHelper::check($php_view))
 				{
 					$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
-					$this->fileContentDynamic[$layout][Placefix::_h($TARGET
-					. '_LAYOUT_CODE' )]
-					          = CFactory::_('Placeholder')->update(
-						$php_view, $this->placeholders
+					CFactory::_('Content')->set_($layout, $TARGET . '_LAYOUT_CODE',
+						CFactory::_('Placeholder')->update_(
+							$php_view
+						)
 					);
 				}
 				else
 				{
-					$this->fileContentDynamic[$layout][Placefix::_h($TARGET
-					. '_LAYOUT_CODE' )]
-						= '';
+					CFactory::_('Content')->set_($layout,$TARGET
+					. '_LAYOUT_CODE',  '');
 				}
 				// SITE_LAYOUT_BODY <<<DYNAMIC>>>
-				$this->fileContentDynamic[$layout][Placefix::_h($TARGET
-				. '_LAYOUT_BODY' )]
-					= PHP_EOL . CFactory::_('Placeholder')->update(
-						$data['html'], $this->placeholders
-					);
+				CFactory::_('Content')->set_($layout,$TARGET . '_LAYOUT_BODY',
+					PHP_EOL . CFactory::_('Placeholder')->update_(
+						$data['html']
+					)
+				);
 				// SITE_LAYOUT_HEADER <<<DYNAMIC>>>
-				$this->fileContentDynamic[$layout][Placefix::_h($TARGET
-				. '_LAYOUT_HEADER' )]
-					= (($header = $this->setFileHeader(
+				CFactory::_('Content')->set_($layout, $TARGET . '_LAYOUT_HEADER',
+					(($header = $this->setFileHeader(
 						str_replace('_', '.', CFactory::_('Config')->build_target) . '.layout',
-						$layout, false)
-					) !== false) ? PHP_EOL . PHP_EOL . $header : '';
+						$layout, false)) !== false) ? PHP_EOL . PHP_EOL . $header : ''
+				);
 			}
 		}
 	}
@@ -8942,9 +8899,8 @@ class Interpretation extends Fields
 				// load the custom script for the switch based on dynamic get
 				$routerSwitch[] = PHP_EOL . Indent::_(3) . "case '" . $view
 					. "':";
-				$routerSwitch[] = CFactory::_('Placeholder')->update(
-					$viewArray['settings']->main_get->php_router_parse,
-					$this->placeholders
+				$routerSwitch[] = CFactory::_('Placeholder')->update_(
+					$viewArray['settings']->main_get->php_router_parse
 				);
 				$routerSwitch[] = Indent::_(4) . "break;";
 
@@ -10624,9 +10580,8 @@ class Interpretation extends Fields
 				CFactory::_('Customcode.Dispenser')->hub['sql_uninstall']
 			))
 		{
-			$db .= CFactory::_('Placeholder')->update(
-					CFactory::_('Customcode.Dispenser')->hub['sql_uninstall'],
-					$this->placeholders
+			$db .= CFactory::_('Placeholder')->update_(
+					CFactory::_('Customcode.Dispenser')->hub['sql_uninstall']
 				) . PHP_EOL;
 			unset(CFactory::_('Customcode.Dispenser')->hub['sql_uninstall']);
 		}
@@ -11558,11 +11513,11 @@ class Interpretation extends Fields
 			{
 				// custom code
 				return PHP_EOL . Indent::_(3) . "<div>"
-					. CFactory::_('Placeholder')->update(
+					. CFactory::_('Placeholder')->update_(
 						str_replace(
 							array_keys($field), array_values($field),
 							$field_relations['set']
-						), $this->placeholders
+						)
 					) . PHP_EOL . Indent::_(3) . "</div>";
 			}
 			elseif (isset($field_relations['set'])
@@ -13527,16 +13482,12 @@ class Interpretation extends Fields
 			if (StringHelper::check($items))
 			{
 				// LAYOUTITEMS <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode . '_'
-				. $layoutName][Placefix::_h('LAYOUTITEMS')]
-					= $items;
+				CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'LAYOUTITEMS', $items);
 			}
 			else
 			{
 				// LAYOUTITEMS <<<DYNAMIC>>>
-				$this->fileContentDynamic[$nameSingleCode . '_'
-				. $layoutName][Placefix::_h('bogus')]
-					= 'boom';
+				CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'bogus', 'boom');
 			}
 		}
 	}
@@ -13568,38 +13519,36 @@ class Interpretation extends Fields
 				$items = '';
 			}
 			// set placeholder
-			$placeholder                                          = $this->placeholders;
+			$placeholder                                    = CFactory::_('Placeholder')->active;
 			$placeholder[Placefix::_h('LAYOUTITEMS')] = $items;
 			// OVERRIDE_LAYOUT_CODE <<<DYNAMIC>>>
 			$php_view = (array) explode(PHP_EOL, $data['php_view']);
 			if (ArrayHelper::check($php_view))
 			{
 				$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
-				$this->fileContentDynamic[$nameSingleCode . '_'
-				. $layoutName][Placefix::_h('OVERRIDE_LAYOUT_CODE')]
-				          = CFactory::_('Placeholder')->update(
-					$php_view, $placeholder
+				CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'OVERRIDE_LAYOUT_CODE',
+					CFactory::_('Placeholder')->update(
+						$php_view, $placeholder
+					)
 				);
 			}
 			else
 			{
-				$this->fileContentDynamic[$nameSingleCode . '_'
-				. $layoutName][Placefix::_h('OVERRIDE_LAYOUT_CODE')]
-					= '';
+				CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'OVERRIDE_LAYOUT_CODE', '');
 			}
 			// OVERRIDE_LAYOUT_BODY <<<DYNAMIC>>>
-			$this->fileContentDynamic[$nameSingleCode . '_'
-			. $layoutName][Placefix::_h('OVERRIDE_LAYOUT_BODY')]
-				= PHP_EOL . CFactory::_('Placeholder')->update(
+			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'OVERRIDE_LAYOUT_BODY',
+				PHP_EOL . CFactory::_('Placeholder')->update(
 					$data['html'], $placeholder
-				);
+				)
+			);
 			// OVERRIDE_LAYOUT_HEADER <<<DYNAMIC>>>
-			$this->fileContentDynamic[$nameSingleCode . '_'
-			. $layoutName][Placefix::_h('OVERRIDE_LAYOUT_HEADER')]
-				= (($header = $this->setFileHeader(
+			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'OVERRIDE_LAYOUT_HEADER',
+				(($header = $this->setFileHeader(
 					'override.layout',
 					$layoutName, false)
-				) !== false) ? PHP_EOL . PHP_EOL . $header : '';
+				) !== false) ? PHP_EOL . PHP_EOL . $header : ''
+			);
 
 			// since override was found
 			return true;
@@ -13761,9 +13710,9 @@ class Interpretation extends Fields
 			);
 			$functionName = StringHelper::safe($codeName, 'F');
 			// LAYOUTITEMSTABLE <<<DYNAMIC>>>
-			$this->fileContentDynamic[$nameSingleCode . '_'
-			. $layoutCodeName][Placefix::_h('LAYOUTITEMSTABLE')]
-				= $head . $body;
+			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutCodeName, 'LAYOUTITEMSTABLE',
+				$head . $body
+			);
 			// LAYOUTITEMSHEADER <<<DYNAMIC>>>
 			$headerscript = '//' . Line::_(__Line__, __Class__)
 				. ' set the edit URL';
@@ -13834,19 +13783,19 @@ class Interpretation extends Fields
 					. $name_single_code . "'"
 					. ');';
 			}
-			$this->fileContentDynamic[$nameSingleCode . '_'
-			. $layoutCodeName][Placefix::_h('LAYOUTITEMSHEADER')]
-				= $headerscript;
+			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutCodeName, 'LAYOUTITEMSHEADER',
+				$headerscript
+			);
 			// LINKEDVIEWITEMS <<<DYNAMIC>>>
-			$this->fileContentDynamic[$nameSingleCode][Placefix::_h('LINKEDVIEWITEMS')]
-				.= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
+			CFactory::_('Content')->add_($nameSingleCode, 'LINKEDVIEWITEMS',
+				PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Get Linked view data" . PHP_EOL . Indent::_(2)
 				. "\$this->" . $codeName . " = \$this->get('" . $functionName
-				. "');";
+				. "');"
+			);
 			// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
-			$this->fileContentDynamic[$nameSingleCode][Placefix::_h('LINKEDVIEWTABLESCRIPTS')]
-				= $this->setFootableScripts();
+			CFactory::_('Content')->set_($nameSingleCode, 'LINKEDVIEWTABLESCRIPTS', $this->setFootableScripts());
 			if (strpos($parentKey, '-R>') !== false
 				|| strpos($parentKey, '-A>') !== false)
 			{
@@ -13887,10 +13836,10 @@ class Interpretation extends Fields
 						= StringHelper::safe(
 						$_key . $this->uniquekey(4)
 					);
-					$this->fileContentDynamic[$nameSingleCode][Placefix::_h('LINKEDVIEWGLOBAL')]
-						.= PHP_EOL . Indent::_(2) . "\$this->"
-						. $globalKey[$parent_key] . " = \$item->" . $parent_key
-						. ";";
+					CFactory::_('Content')->add_($nameSingleCode, 'LINKEDVIEWGLOBAL',
+						PHP_EOL . Indent::_(2) . "\$this->"
+						. $globalKey[$parent_key] . " = \$item->" . $parent_key . ";"
+					);
 				}
 			}
 			else
@@ -13899,26 +13848,26 @@ class Interpretation extends Fields
 				$globalKey = StringHelper::safe(
 					$_key . $this->uniquekey(4)
 				);
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('LINKEDVIEWGLOBAL')]
-				           .= PHP_EOL . Indent::_(2) . "\$this->" . $globalKey
-					. " = \$item->" . $parent_key . ";";
+				CFactory::_('Content')->add_($nameSingleCode, 'LINKEDVIEWGLOBAL',
+					PHP_EOL . Indent::_(2) . "\$this->" . $globalKey
+					. " = \$item->" . $parent_key . ";"
+				);
 			}
 			// LINKEDVIEWMETHODS <<<DYNAMIC>>>
-			$this->fileContentDynamic[$nameSingleCode][Placefix::_h('LINKEDVIEWMETHODS')]
-				.= $this->setListQueryLinked(
-				$name_single_code, $name_list_code, $functionName, $key, $_key,
-				$parentKey,
-				$parent_key, $globalKey
+			CFactory::_('Content')->add_($nameSingleCode, 'LINKEDVIEWMETHODS',
+				$this->setListQueryLinked(
+					$name_single_code, $name_list_code, $functionName, $key, $_key,
+					$parentKey,
+					$parent_key, $globalKey
+				)
 			);
 		}
 		else
 		{
-			$this->fileContentDynamic[$nameSingleCode . '_'
-			. $layoutCodeName][Placefix::_h('LAYOUTITEMSTABLE')]
-				= 'oops! error.....';
-			$this->fileContentDynamic[$nameSingleCode . '_'
-			. $layoutCodeName][Placefix::_h('LAYOUTITEMSHEADER')]
-				= '';
+			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutCodeName, 'LAYOUTITEMSTABLE',
+				'oops! error.....'
+			);
+			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutCodeName, 'LAYOUTITEMSHEADER', '');
 		}
 	}
 
@@ -15319,8 +15268,8 @@ class Interpretation extends Fields
 					'php_import_headers', 'import_' . $nameListCode,
 					PHP_EOL . PHP_EOL, null, true,
 					// set a default script for those with no custom script
-					PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-						$header, $this->placeholders
+					PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+						$header
 					)
 				);
 			}
@@ -15550,59 +15499,47 @@ class Interpretation extends Fields
 		$this->buildDynamique($target, 'customimport');
 		// load the custom script to the files
 		// IMPORT_EXT_METHOD <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_EXT_METHOD')]
-			= CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_EXT_METHOD', CFactory::_('Customcode.Dispenser')->get(
 			'php_import_ext', 'import_' . $nameListCode, PHP_EOL, null,
 			true
-		);
+		));
 		// IMPORT_DISPLAY_METHOD_CUSTOM <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_DISPLAY_METHOD_CUSTOM')]
-			= CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_DISPLAY_METHOD_CUSTOM', CFactory::_('Customcode.Dispenser')->get(
 			'php_import_display', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
-		);
+		));
 		// IMPORT_SETDATA_METHOD <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_SETDATA_METHOD')]
-			= CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_SETDATA_METHOD', CFactory::_('Customcode.Dispenser')->get(
 			'php_import_setdata', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
-		);
+		));
 		// IMPORT_METHOD_CUSTOM <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_METHOD_CUSTOM')]
-			= CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_METHOD_CUSTOM', CFactory::_('Customcode.Dispenser')->get(
 			'php_import', 'import_' . $nameListCode, PHP_EOL, null,
 			true
-		);
+		));
 		// IMPORT_SAVE_METHOD <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_SAVE_METHOD')]
-			= CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_SAVE_METHOD', CFactory::_('Customcode.Dispenser')->get(
 			'php_import_save', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
-		);
+		));
 		// IMPORT_DEFAULT_VIEW_CUSTOM <<<DYNAMIC>>>
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('IMPORT_DEFAULT_VIEW_CUSTOM')]
-			= CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_DEFAULT_VIEW_CUSTOM', CFactory::_('Customcode.Dispenser')->get(
 			'html_import_view', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
-		);
+		));
 
 		// insure we have the view placeholders setup
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('VIEW')]
-			= 'IMPORT_' . CFactory::_('Placeholder')->active[Placefix::_h('VIEWS')];
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('View')]
-			= 'Import_' . CFactory::_('Placeholder')->active[Placefix::_h('views')];
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('view')]
-			= 'import_' . CFactory::_('Placeholder')->active[Placefix::_h('views')];
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('VIEWS')]
-			= 'IMPORT_' . CFactory::_('Placeholder')->active[Placefix::_h('VIEWS')];
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('Views')]
-			= 'Import_' . CFactory::_('Placeholder')->active[Placefix::_h('views')];
-		$this->fileContentDynamic['import_' . $nameListCode][Placefix::_h('views')]
-			= 'import_' . CFactory::_('Placeholder')->active[Placefix::_h('views')];
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'VIEW', 'IMPORT_' . CFactory::_('Placeholder')->get_h('VIEWS'));
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'View', 'Import_' . CFactory::_('Placeholder')->get_h('views'));
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'view', 'import_' . CFactory::_('Placeholder')->get_h('views'));
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'VIEWS', 'IMPORT_' . CFactory::_('Placeholder')->get_h('VIEWS'));
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'Views', 'Import_' . CFactory::_('Placeholder')->get_h('views'));
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'views', 'import_' . CFactory::_('Placeholder')->get_h('views'));
 	}
 
 	public function setListQuery(&$nameSingleCode, &$nameListCode)
@@ -16697,9 +16634,8 @@ class Interpretation extends Fields
 				CFactory::_('Customcode.Dispenser')->hub['view_footer'][$nameSingleCode]
 			))
 		{
-			$customFooterScript = PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-					CFactory::_('Customcode.Dispenser')->hub['view_footer'][$nameSingleCode],
-					$this->placeholders
+			$customFooterScript = PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+					CFactory::_('Customcode.Dispenser')->hub['view_footer'][$nameSingleCode]
 				);
 			if (strpos($customFooterScript, '<?php') === false)
 			{
@@ -16734,17 +16670,16 @@ class Interpretation extends Fields
 			$_path = '/administrator/components/com_' . $this->componentCodeName
 				. '/assets/js/' . $nameListCode . '.js';
 			// load the file to the list view
-			$this->fileContentDynamic[$nameListCode][Placefix::_h('ADMIN_ADD_JAVASCRIPT_FILE')]
-				= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
+			CFactory::_('Content')->set_($nameListCode, 'ADMIN_ADD_JAVASCRIPT_FILE', PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Add List View JavaScript File" . PHP_EOL . Indent::_(2)
-				. $this->setIncludeLibScript($_path);
+				. $this->setIncludeLibScript($_path)
+			);
 		}
 		else
 		{
 			$list_fileScript = '';
-			$this->fileContentDynamic[$nameListCode][Placefix::_h('ADMIN_ADD_JAVASCRIPT_FILE')]
-			                 = '';
+			CFactory::_('Content')->set_($nameListCode, 'ADMIN_ADD_JAVASCRIPT_FILE', '');
 		}
 		// minfy the script
 		if (CFactory::_('Config')->get('minify', 0) && isset($list_fileScript)
@@ -17877,8 +17812,8 @@ class Interpretation extends Fields
 			{
 				$methods .= PHP_EOL . PHP_EOL . Indent::_(1) . "//"
 					. Line::_(__Line__, __Class__) . " Used in " . $view . PHP_EOL;
-				$methods .= CFactory::_('Placeholder')->update(
-					$method, $this->placeholders
+				$methods .= CFactory::_('Placeholder')->update_(
+					$method
 				);
 			}
 		}
@@ -18890,25 +18825,18 @@ class Interpretation extends Fields
 				$otherView  = $nameSingleCode;
 			}
 			// set the OtherView value
-			$this->fileContentDynamic['category' . $otherView][Placefix::_h('otherview')]
-				= $otherView;
+			CFactory::_('Content')->set_('category' . $otherView, 'otherview', $otherView);
 			// load the category helper details in not already loaded
-			if (!isset(
-				$this->fileContentDynamic['category' . $otherView][Placefix::_h('view')]
-			))
+			if (!CFactory::_('Content')->exist_('category' . $otherView, 'view'))
 			{
 				// lets also set the category helper for this view
 				$target = array('site' => 'category' . $otherView);
 				$this->buildDynamique($target, 'category');
 				// insure the file gets updated
-				$this->fileContentDynamic['category' . $otherView][Placefix::_h('view')]
-					= $otherView;
-				$this->fileContentDynamic['category' . $otherView][Placefix::_h('View')]
-					= ucfirst($otherView);
-				$this->fileContentDynamic['category' . $otherView][Placefix::_h('views')]
-					= $otherViews;
-				$this->fileContentDynamic['category' . $otherView][Placefix::_h('Views')]
-					= ucfirst($otherViews);
+				CFactory::_('Content')->set_('category' . $otherView, 'view', $otherView);
+				CFactory::_('Content')->set_('category' . $otherView, 'View', ucfirst($otherView));
+				CFactory::_('Content')->set_('category' . $otherView, 'views', $otherViews);
+				CFactory::_('Content')->set_('category' . $otherView, 'Views', ucfirst($otherViews));
 				// set script to global helper file
 				$includeHelper   = array();
 				$includeHelper[] = "\n//" . Line::_(__Line__, __Class__)
@@ -19492,14 +19420,11 @@ class Interpretation extends Fields
 		$getForm[] = Indent::_(3) . "return false;";
 		$getForm[] = Indent::_(2) . "}";
 		// load license locker
-		if ($this->componentData->add_license
-			&& $this->componentData->license_type == 3
-			&& isset(
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('BOOLMETHOD')]
-			))
+		if ($this->componentData->add_license && $this->componentData->license_type == 3
+			&& CFactory::_('Content')->exist_($nameSingleCode, 'BOOLMETHOD'))
 		{
 			$getForm[] = $this->checkStatmentLicenseLocked(
-				$this->fileContentDynamic[$nameSingleCode][Placefix::_h('BOOLMETHOD')]
+				CFactory::_('Content')->get_($nameSingleCode, 'BOOLMETHOD')
 			);
 		}
 		// setup correct core target
@@ -22379,7 +22304,7 @@ class Interpretation extends Fields
 		if (ArrayHelper::check($headers))
 		{
 			// return the headers
-			return CFactory::_('Placeholder')->update(implode(PHP_EOL, $headers), $this->placeholders);
+			return CFactory::_('Placeholder')->update_(implode(PHP_EOL, $headers));
 		}
 
 		return $default;
@@ -22563,7 +22488,7 @@ class Interpretation extends Fields
 				) . ';';
 		}
 
-		return CFactory::_('Placeholder')->update($fix, $this->placeholders);
+		return CFactory::_('Placeholder')->update_($fix);
 	}
 
 	public function setSelectionTranslationFix($views, $Component, $tab = '')
@@ -22986,9 +22911,8 @@ class Interpretation extends Fields
 			);
 
 			// return the methods
-			return PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update(
-					$this->componentData->php_dashboard_methods,
-					$this->placeholders
+			return PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+					$this->componentData->php_dashboard_methods
 				);
 		}
 
@@ -23039,8 +22963,8 @@ class Interpretation extends Fields
 			foreach ($this->componentData->dashboard_tab as $data)
 			{
 				$builder[$data['name']][$data['header']]
-					= CFactory::_('Placeholder')->update(
-					$data['html'], $this->placeholders
+					= CFactory::_('Placeholder')->update_(
+					$data['html']
 				);
 			}
 			// since we have custom tabs we must load the tab structure around the cpanel
@@ -23138,13 +23062,11 @@ class Interpretation extends Fields
 						CFactory::_('Config')->build_target, 'U'
 					);
 					// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$this->componentCodeName . '_'
-					. $tempName][Placefix::_h('CUSTOM_ADMIN_TEMPLATE_BODY')]
-						= PHP_EOL . $html;
+					CFactory::_('Content')->set_($this->componentCodeName . '_' . $tempName,
+						'CUSTOM_ADMIN_TEMPLATE_BODY', PHP_EOL . $html);
 					// SITE_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
-					$this->fileContentDynamic[$this->componentCodeName . '_'
-					. $tempName][Placefix::_h('CUSTOM_ADMIN_TEMPLATE_CODE_BODY')]
-						= '';
+					CFactory::_('Content')->set_($this->componentCodeName . '_' . $tempName,
+						'CUSTOM_ADMIN_TEMPLATE_CODE_BODY', '');
 				}
 				$display[] = $tab . Indent::_(1)
 					. "<?php  echo JHtml::_('bootstrap.endAccordion'); ?>";
@@ -24167,6 +24089,8 @@ class Interpretation extends Fields
 		}
 		elseif (2 == $timer) // this is after the admin views are build
 		{
+			// for plugin event TODO change event api signatures
+			$placeholders = CFactory::_('Placeholder')->active;
 			// Trigger Event: jcb_ce_onBeforeSetConfigFieldsets
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeSetConfigFieldsets',
@@ -24174,7 +24098,7 @@ class Interpretation extends Fields
 					&$this->configFieldSets,
 					&$this->configFieldSetsCustomField,
 					&$this->componentData->config, &$this->extensionsParams,
-					&$this->placeholders)
+					&$placeholders)
 			);
 			// these field sets can only be added after admin view is build
 			$this->setGroupControlConfigFieldsets($lang);
@@ -24186,12 +24110,14 @@ class Interpretation extends Fields
 			// these are the coustom settings
 			$this->setCustomControlConfigFieldsets($lang);
 		}
+		// for plugin event TODO change event api signatures
+		$placeholders = CFactory::_('Placeholder')->active;
 		// Trigger Event: jcb_ce_onAfterSetConfigFieldsets
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterSetConfigFieldsets',
 			array(&$this->componentContext, &$timer, &$this->configFieldSets,
 				&$this->configFieldSetsCustomField, &$this->extensionsParams,
-				&$this->frontEndParams, &$this->placeholders)
+				&$this->frontEndParams, &$placeholders)
 		);
 	}
 
@@ -28012,7 +27938,7 @@ function vdm_dkim() {
 		// check if we have string
 		if (StringHelper::check($setter))
 		{
-			return CFactory::_('Placeholder')->update( CFactory::_('Placeholder')->update(
+			return CFactory::_('Placeholder')->update( CFactory::_('Placeholder')->update_(
 				str_replace(
 					'$this->document->', '$document->',
 					implode(
@@ -28022,8 +27948,7 @@ function vdm_dkim() {
 							(array) explode(PHP_EOL, $setter)
 						)
 					)
-				),
-				$this->placeholders
+				)
 			), CFactory::_('Content')->active);
 		}
 
@@ -28419,13 +28344,15 @@ function vdm_dkim() {
 
 	public function getPluginMainClass(&$plugin)
 	{
-		return
-			CFactory::_('Placeholder')->update(PHP_EOL . $plugin->head . PHP_EOL .
+		return CFactory::_('Placeholder')->update(
+			PHP_EOL . $plugin->head . PHP_EOL .
 			$plugin->comment . PHP_EOL . 'class ' .
 			$plugin->class_name . ' extends ' .
 			$plugin->extends . PHP_EOL . '{' . PHP_EOL .
 			$plugin->main_class_code . PHP_EOL .
-			"}" . PHP_EOL, CFactory::_('Content')->active);
+			"}" . PHP_EOL,
+			CFactory::_('Content')->active
+		);
 	}
 
 	public function getPluginMainXML(&$plugin)
@@ -28839,135 +28766,6 @@ function vdm_dkim() {
 		$code[] = '}' . PHP_EOL . PHP_EOL;
 
 		return CFactory::_('Placeholder')->update(implode(PHP_EOL, $code), CFactory::_('Content')->active);
-	}
-
-	public function setPowersAutoloader($namespace, $loadSite)
-	{
-		if (($size = ArrayHelper::check($namespace)) > 0)
-		{
-			// check if we are using a plugin
-			$use_plugin = CFactory::_('Content')->exist('PLUGIN_POWER_AUTOLOADER');
-			// build the methods
-			$autoloadNotSiteMethod = array();
-			$autoloadMethod = array();
-			// add only if we are not using a plugin
-			$tab_space = 2;
-			if (!$use_plugin)
-			{
-				$autoloadNotSiteMethod[] = PHP_EOL . PHP_EOL;
-				$tab_space = 0;
-			}
-			elseif (!$loadSite)
-			{
-				// we add code to prevent this plugin from triggering on the site area
-				$autoloadNotSiteMethod[] = PHP_EOL . Indent::_(2) . '//'
-					. Line::_(__Line__, __Class__) . ' do not run the autoloader in the site area';
-				$autoloadNotSiteMethod[] = Indent::_(2) . 'if ($this->app->isClient(\'site\'))';
-				$autoloadNotSiteMethod[] = Indent::_(2) . '{';
-				$autoloadNotSiteMethod[] = Indent::_(3) . 'return;';
-				$autoloadNotSiteMethod[] = Indent::_(2) . '}' . PHP_EOL;
-			}
-			// we start building the spl_autoload_register function call
-			$autoloadMethod[] = Indent::_($tab_space) . '//'
-				. Line::_(__Line__, __Class__) . ' register this component namespace';
-			$autoloadMethod[] = Indent::_($tab_space) . 'spl_autoload_register(function ($class) {';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '//'
-				. Line::_(__Line__, __Class__) . ' project-specific base directories and namespace prefix';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '$search = array(';
-			// ==== IMPORTANT NOTICE =====
-			// make sure the name space values are sorted from the longest string to the shortest
-			// so that the search do not mistakenly match a shorter namespace before a longer one
-			// that has the same short namespace for example:
-			//      NameSpace\SubName\Sub <- will always match first
-			//      NameSpace\SubName\SubSubName
-			// Should the shorter namespace be listed [first] it will match both of these:
-			//      NameSpace\SubName\Sub\ClassName
-			//      ^^^^^^^^^^^^^^^^^^^^^
-			//      NameSpace\SubName\SubSubName\ClassName
-			//      ^^^^^^^^^^^^^^^^^^^^^
-			uksort($namespace, function ($a, $b) {
-				return strlen($b) - strlen($a);
-			});
-			// counter to manage the comma in the actual array
-			$counter = 1;
-			foreach ($namespace as $base_dir => $prefix)
-			{
-				// don't add the ending comma on last value
-				if ($size == $counter)
-				{
-					$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . "'" . CFactory::_('Config')->get('jcb_powers_path', 'libraries/jcb_powers') . "/$base_dir' => '" . implode('\\\\', $prefix) . "'";
-				}
-				else
-				{
-					$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . "'" . CFactory::_('Config')->get('jcb_powers_path', 'libraries/jcb_powers') . "/$base_dir' => '" . implode('\\\\', $prefix) . "',";
-				}
-				$counter++;
-			}
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . ');';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '// Start the search and load if found';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '$found = false;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '$found_base_dir = "";';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '$found_len = 0;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . 'foreach ($search as $base_dir => $prefix)';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '{';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . '//'
-				. Line::_(__Line__, __Class__) . ' does the class use the namespace prefix?';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . '$len = strlen($prefix);';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . 'if (strncmp($prefix, $class, $len) === 0)';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . '{';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . '//'
-				. Line::_(__Line__, __Class__) . ' we have a match so load the values';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . '$found = true;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . '$found_base_dir = $base_dir;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . '$found_len = $len;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . '//'
-				. Line::_(__Line__, __Class__) . ' done here';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . 'break;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . '}';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '}';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '//'
-				. Line::_(__Line__, __Class__) . ' check if we found a match';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . 'if (!$found)';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '{';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . '//'
-				. Line::_(__Line__, __Class__) . ' no, move to the next registered autoloader';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . 'return;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '}';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '//'
-				. Line::_(__Line__, __Class__) . ' get the relative class name';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '$relative_class = substr($class, $found_len);';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '//'
-				. Line::_(__Line__, __Class__) . ' replace the namespace prefix with the base directory, replace namespace';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '// separators with directory separators in the relative class name, append';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '// with .php';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . "\$file = JPATH_ROOT . '/' . \$found_base_dir . '/src' . str_replace('\\\\', '/', \$relative_class) . '.php';";
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '//'
-				. Line::_(__Line__, __Class__) . ' if the file exists, require it';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . 'if (file_exists($file))';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '{';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . 'require $file;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '}';
-			$autoloadMethod[] = Indent::_($tab_space) . '});';
-			// create the method string
-			$autoloader = implode(PHP_EOL, $autoloadNotSiteMethod) . implode(PHP_EOL, $autoloadMethod);
-			// check if we are using a plugin
-			if ($use_plugin)
-			{
-				CFactory::_('Content')->set('PLUGIN_POWER_AUTOLOADER', PHP_EOL . $autoloader);
-			}
-			else
-			{
-				// load to events placeholders
-				CFactory::_('Content')->add('ADMIN_POWER_HELPER', $autoloader);
-				// load to site if needed
-				if ($loadSite)
-				{
-					CFactory::_('Content')->add('SITE_POWER_HELPER', $autoloader);
-				}
-			}
-			// to add to custom files
-			CFactory::_('Content')->add('CUSTOM_POWER_AUTOLOADER', PHP_EOL . implode(PHP_EOL, $autoloadMethod));
-		}
 	}
 
 	/**

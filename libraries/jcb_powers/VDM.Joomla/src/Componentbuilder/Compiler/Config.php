@@ -417,5 +417,27 @@ class Config extends BaseConfig
 		return false;
 	}
 
+	/**
+	 * Should we remove the site folder
+	 *
+	 * @return  bool  Switch to control the removal
+	 * @since 3.2.0
+	 */
+	protected function getRemovesitefolder(): bool
+	{
+		return false;
+	}
+
+	/**
+	 * Should we remove the site edit folder
+	 *
+	 * @return  bool  Switch to control the removal
+	 * @since 3.2.0
+	 */
+	protected function getRemovesiteeditfolder(): bool
+	{
+		return true;
+	}
+
 }
 
