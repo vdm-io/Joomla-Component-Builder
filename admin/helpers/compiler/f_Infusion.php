@@ -1802,37 +1802,10 @@ class Infusion extends Interpretation
 			{
 				CFactory::_('Content')->set('README', $this->componentData->readme);
 			}
-			// remove all the power placeholders
-			CFactory::_('Content')->set('ADMIN_POWER_HELPER', '');
-			CFactory::_('Content')->set('SITE_POWER_HELPER', '');
-			CFactory::_('Content')->set('CUSTOM_POWER_AUTOLOADER', '');
 
-			// infuse powers data if set
-			if (ArrayHelper::check(CFactory::_('Power')->active))
-			{
-				// start the autoloader
-				$autoloader = array();
-				foreach (CFactory::_('Power')->active as $power)
-				{
-					if (ObjectHelper::check($power))
-					{
-						// Trigger Event: jcb_ce_onBeforeInfusePowerData
-						CFactory::_('Event')->trigger(
-							'jcb_ce_onBeforeInfusePowerData',
-							array(&$this->componentContext, &$power, &$this)
-						);
-						// POWERCODE
-						CFactory::_('Content')->set_($power->key, 'POWERCODE', $this->getPowerCode($power));
-						// Trigger Event: jcb_ce_onAfterInfusePowerData
-						CFactory::_('Event')->trigger(
-							'jcb_ce_onAfterInfusePowerData',
-							array(&$this->componentContext, &$power, &$this)
-						);
-					}
-				}
-				// now set the power autoloader
-				CFactory::_('Power.Autoloader')->set((!CFactory::_('Config')->remove_site_folder || !CFactory::_('Config')->remove_site_edit_folder));
-			}
+			// Infuse POWERS
+			CFactory::_('Power.Infusion')->set();
+
 			// tweak system to set stuff to the module domain
 			$_backup_target     = CFactory::_('Config')->build_target;
 			$_backup_lang       = CFactory::_('Config')->lang_target;

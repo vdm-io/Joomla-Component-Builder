@@ -84,12 +84,15 @@ class Autoloader
 		if (($size = ArrayHelper::check($this->power->namespace)) > 0)
 		{
 			// set if we should load the autoloader on the site area
-			$loadSite = true;
+			$loadSite = (!$this->config->remove_site_folder || !$this->config->remove_site_edit_folder);
+
 			// check if we are using a plugin
 			$use_plugin = $this->content->exist('PLUGIN_POWER_AUTOLOADER');
+
 			// build the methods
 			$autoloadNotSiteMethod = array();
 			$autoloadMethod = array();
+
 			// add only if we are not using a plugin
 			$tab_space = 2;
 			if (!$use_plugin)
@@ -107,6 +110,7 @@ class Autoloader
 				$autoloadNotSiteMethod[] = Indent::_(3) . 'return;';
 				$autoloadNotSiteMethod[] = Indent::_(2) . '}' . PHP_EOL;
 			}
+
 			// we start building the spl_autoload_register function call
 			$autoloadMethod[] = Indent::_($tab_space) . '//'
 				. Line::_(__Line__, __Class__) . ' register this component namespace';
@@ -114,6 +118,7 @@ class Autoloader
 			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '//'
 				. Line::_(__Line__, __Class__) . ' project-specific base directories and namespace prefix';
 			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '$search = array(';
+
 			// ==== IMPORTANT NOTICE =====
 			// make sure the name space values are sorted from the longest string to the shortest
 			// so that the search do not mistakenly match a shorter namespace before a longer one
@@ -125,9 +130,11 @@ class Autoloader
 			//      ^^^^^^^^^^^^^^^^^^^^^
 			//      NameSpace\SubName\SubSubName\ClassName
 			//      ^^^^^^^^^^^^^^^^^^^^^
+
 			uksort($this->power->namespace, function ($a, $b) {
 				return strlen($b) - strlen($a);
 			});
+
 			// counter to manage the comma in the actual array
 			$counter = 1;
 			foreach ($this->power->namespace as $base_dir => $prefix)
@@ -188,8 +195,10 @@ class Autoloader
 			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . 'require $file;';
 			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '}';
 			$autoloadMethod[] = Indent::_($tab_space) . '});';
+
 			// create the method string
 			$autoloader = implode(PHP_EOL, $autoloadNotSiteMethod) . implode(PHP_EOL, $autoloadMethod);
+
 			// check if we are using a plugin
 			if ($use_plugin)
 			{
@@ -205,6 +214,7 @@ class Autoloader
 					$this->content->add('SITE_POWER_HELPER', $autoloader);
 				}
 			}
+
 			// to add to custom files
 			$this->content->add('CUSTOM_POWER_AUTOLOADER', PHP_EOL . implode(PHP_EOL, $autoloadMethod));
 		}

@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Power as Powers;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Infusion;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Autoloader;
 
 
@@ -40,6 +41,9 @@ class Power implements ServiceProviderInterface
 
 		$container->alias(Autoloader::class, 'Power.Autoloader')
 			->share('Power.Autoloader', [$this, 'getAutoloader'], true);
+
+		$container->alias(Infusion::class, 'Power.Infusion')
+			->share('Power.Infusion', [$this, 'getInfusion'], true);
 	}
 
 	/**
@@ -74,6 +78,26 @@ class Power implements ServiceProviderInterface
 			$container->get('Power'),
 			$container->get('Config'),
 			$container->get('Content')
+		);
+	}
+
+	/**
+	 * Get the Compiler Power Infusion
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Infusion
+	 * @since 3.2.0
+	 */
+	public function getInfusion(Container $container): Infusion
+	{
+		return new Infusion(
+			$container->get('Config'),
+			$container->get('Power'),
+			$container->get('Content'),
+			$container->get('Power.Autoloader'),
+			$container->get('Placeholder'),
+			$container->get('Event')
 		);
 	}
 
