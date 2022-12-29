@@ -5294,13 +5294,14 @@ class Fields extends Structure
 		}
 		$this->setLayoutBuilder($nameSingleCode, $tabName, $name, $field);
 
-		// only load fields we want to search
-		if ($dbSwitch && ComponentbuilderHelper::fieldCheck($typeName, 'search'))
+		// load all fields that are in the database
+		if ($dbSwitch)
 		{
-			// load a search array of view, field, and [encryption, type, tab]
-			CFactory::_('Registry')->set('all_search_fields.' . $nameSingleCode . '.' . $name,
+			// load array of view, field, and [encryption, type, tab]
+			CFactory::_('Registry')->set('all_component_fields.' . $nameSingleCode . '.' . $name,
 				[
 					'name' => $name,
+					'label' => $langLabel,
 					'type' => $typeName,
 					'title' => (isset($this->titleBuilder[$nameSingleCode]) && $name === $this->titleBuilder[$nameSingleCode]) ? true : false,
 					'list' => $nameListCode,

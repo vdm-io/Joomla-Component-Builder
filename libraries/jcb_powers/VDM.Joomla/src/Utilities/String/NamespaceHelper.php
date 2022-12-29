@@ -25,32 +25,44 @@ abstract class NamespaceHelper
 	/**
 	 * Making namespace safe
 	 *
-	 * @input	string       The you would like to make safe
+	 * @input    string   $string           The you would like to make safe
+	 * @input    bool     $removeNumbers    The switch to remove numbers
 	 *
 	 * @returns string on success
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function safe($string)
+	public static function safe(string $string, bool $removeNumbers = true)
 	{
-		// 0nly continue if we have a string
+		// 0nly continue if we have a string with length
 		if (StringHelper::check($string))
 		{
 			// make sure it has not numbers
-			$string = StringHelper::numbers($string);
+			if ($removeNumbers)
+			{
+				$string = StringHelper::numbers($string);
+			}
 
-			// Transliterate string TODO: look again as this make it lowercase
+			// Transliterate string TODO: look again as this makes it lowercase
 			// $string = StringHelper::transliterate($string);
 
 			// first remove all [\] backslashes
-			$string = str_replace('\\', '1', $string);
+			$string = str_replace('\\', '+', $string);
 
 			// remove all and keep only characters and [\] backslashes inside of the string
-			$string = trim( preg_replace("/[^A-Za-z1]/", '', $string), '1');
+			if ($removeNumbers)
+			{
+				$string = trim( preg_replace("/[^A-Za-z\+]/", '', $string), '+');
+			}
+			else
+			{
+				$string = trim( preg_replace("/[^A-Za-z0-9\+]/", '', $string), '+');
+			}
 
 			// place the [\] backslashes back
-			return trim( preg_replace("/1+/", '\\', $string));
+			return trim( preg_replace("/\++/", '\\', $string));
 		}
+
 		// not a string
 		return '';
 	}

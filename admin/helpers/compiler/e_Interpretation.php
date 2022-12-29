@@ -24403,7 +24403,7 @@ class Interpretation extends Fields
 		CFactory::_('Language')->set(
 			CFactory::_('Config')->lang_target, $lang . '_GLOBAL_DESC', "The Global Parameters"
 		);
-		// add auto checin if required
+		// add auto checkin if required
 		if ($this->addCheckin)
 		{
 			$this->configFieldSets[] = Indent::_(2) . "<field";

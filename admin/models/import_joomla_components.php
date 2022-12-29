@@ -1096,7 +1096,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				// check if we should use the phpseclib decryption
 				$phpseclip = (isset($this->packageInfo['phpseclib']) && $this->packageInfo['phpseclib']) ? true : $force;
 				// load phpseclib <https://phpseclib.com/docs/symmetric>
-				if($phpseclip && ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib3\Crypt\Rijndael)
+				if($phpseclip && ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib\Crypt\Rijndael)
 				{
 					// load the system password
 					ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($password, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');

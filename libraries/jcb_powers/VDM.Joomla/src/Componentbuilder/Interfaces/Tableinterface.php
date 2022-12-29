@@ -78,12 +78,13 @@ interface Tableinterface
 	/**
 	 * Get all fields of an area/view/table
 	 *
-	 * @param   string|null  $table  The area
+	 * @param   string  $table     The area
+	 * @param   bool    $default   Add the default fields
 	 *
-	 * @return  ?array
+	 * @return  array|null   On success an array of fields
 	 * @since 3.2.0
 	 */
-	public function fields(string $table): ?array;
+	public function fields(string $table, bool $default = false): ?array;
 
 }
 

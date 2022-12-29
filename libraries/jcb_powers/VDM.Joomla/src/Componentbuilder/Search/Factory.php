@@ -72,13 +72,11 @@ abstract class Factory implements FactoryInterface
 	 */
 	protected static function createContainer(): Container
 	{
-		$container = (new Container())
+		return (new Container())
 			->registerServiceProvider(new Search())
 			->registerServiceProvider(new Model())
 			->registerServiceProvider(new Database())
 			->registerServiceProvider(new Agent());
-
-		return $container;
 	}
 
 }

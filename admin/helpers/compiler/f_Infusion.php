@@ -1037,7 +1037,7 @@ class Infusion extends Interpretation
 			}
 
 			// all fields stored in database
-			CFactory::_('Content')->set('ARRAY_ALL_SEARCH_FIELDS', CFactory::_('Registry')->varExport('all_search_fields', 1));
+			CFactory::_('Content')->set('ALL_COMPONENT_FIELDS', CFactory::_('Registry')->varExport('all_component_fields', 1));
 
 			// setup the layouts
 			$this->setCustomViewLayouts();

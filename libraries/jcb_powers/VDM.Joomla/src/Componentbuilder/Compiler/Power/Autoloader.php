@@ -90,34 +90,34 @@ class Autoloader
 			$use_plugin = $this->content->exist('PLUGIN_POWER_AUTOLOADER');
 
 			// build the methods
-			$autoloadNotSiteMethod = array();
-			$autoloadMethod = array();
+			$autoload_not_site_method = [];
+			$autoload_method = [];
 
 			// add only if we are not using a plugin
 			$tab_space = 2;
 			if (!$use_plugin)
 			{
-				$autoloadNotSiteMethod[] = PHP_EOL . PHP_EOL;
+				$autoload_not_site_method[] = PHP_EOL . PHP_EOL;
 				$tab_space = 0;
 			}
 			elseif (!$loadSite)
 			{
 				// we add code to prevent this plugin from triggering on the site area
-				$autoloadNotSiteMethod[] = PHP_EOL . Indent::_(2) . '//'
+				$autoload_not_site_method[] = PHP_EOL . Indent::_(2) . '//'
 					. Line::_(__Line__, __Class__) . ' do not run the autoloader in the site area';
-				$autoloadNotSiteMethod[] = Indent::_(2) . 'if ($this->app->isClient(\'site\'))';
-				$autoloadNotSiteMethod[] = Indent::_(2) . '{';
-				$autoloadNotSiteMethod[] = Indent::_(3) . 'return;';
-				$autoloadNotSiteMethod[] = Indent::_(2) . '}' . PHP_EOL;
+				$autoload_not_site_method[] = Indent::_(2) . 'if ($this->app->isClient(\'site\'))';
+				$autoload_not_site_method[] = Indent::_(2) . '{';
+				$autoload_not_site_method[] = Indent::_(3) . 'return;';
+				$autoload_not_site_method[] = Indent::_(2) . '}' . PHP_EOL;
 			}
 
 			// we start building the spl_autoload_register function call
-			$autoloadMethod[] = Indent::_($tab_space) . '//'
+			$autoload_method[] = Indent::_($tab_space) . '//'
 				. Line::_(__Line__, __Class__) . ' register this component namespace';
-			$autoloadMethod[] = Indent::_($tab_space) . 'spl_autoload_register(function ($class) {';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '//'
+			$autoload_method[] = Indent::_($tab_space) . 'spl_autoload_register(function ($class) {';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '//'
 				. Line::_(__Line__, __Class__) . ' project-specific base directories and namespace prefix';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '$search = array(';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '$search = [';
 
 			// ==== IMPORTANT NOTICE =====
 			// make sure the name space values are sorted from the longest string to the shortest
@@ -142,62 +142,73 @@ class Autoloader
 				// don't add the ending comma on last value
 				if ($size == $counter)
 				{
-					$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . "'" . $this->config->get('jcb_powers_path', 'libraries/jcb_powers') . "/$base_dir' => '" . implode('\\\\', $prefix) . "'";
+					$autoload_method[] = Indent::_($tab_space) . Indent::_(2) . "'" . $this->config->get('jcb_powers_path', 'libraries/jcb_powers') . "/$base_dir' => '" . implode('\\\\', $prefix) . "'";
 				}
 				else
 				{
-					$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . "'" . $this->config->get('jcb_powers_path', 'libraries/jcb_powers') . "/$base_dir' => '" . implode('\\\\', $prefix) . "',";
+					$autoload_method[] = Indent::_($tab_space) . Indent::_(2) . "'" . $this->config->get('jcb_powers_path', 'libraries/jcb_powers') . "/$base_dir' => '" . implode('\\\\', $prefix) . "',";
 				}
 				$counter++;
 			}
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . ');';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '// Start the search and load if found';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '$found = false;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '$found_base_dir = "";';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '$found_len = 0;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . 'foreach ($search as $base_dir => $prefix)';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '{';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . '//'
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '];';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '// Start the search and load if found';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '$found = false;';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '$found_base_dir = "";';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '$found_len = 0;';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . 'foreach ($search as $base_dir => $prefix)';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '{';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(2) . '//'
 				. Line::_(__Line__, __Class__) . ' does the class use the namespace prefix?';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . '$len = strlen($prefix);';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . 'if (strncmp($prefix, $class, $len) === 0)';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . '{';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . '//'
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(2) . '$len = strlen($prefix);';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(2) . 'if (strncmp($prefix, $class, $len) === 0)';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(2) . '{';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(3) . '//'
 				. Line::_(__Line__, __Class__) . ' we have a match so load the values';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . '$found = true;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . '$found_base_dir = $base_dir;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . '$found_len = $len;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . '//'
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(3) . '$found = true;';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(3) . '$found_base_dir = $base_dir;';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(3) . '$found_len = $len;';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(3) . '//'
 				. Line::_(__Line__, __Class__) . ' done here';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(3) . 'break;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . '}';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '}';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '//'
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(3) . 'break;';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(2) . '}';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '}';
+
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '//'
 				. Line::_(__Line__, __Class__) . ' check if we found a match';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . 'if (!$found)';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '{';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . '//'
-				. Line::_(__Line__, __Class__) . ' no, move to the next registered autoloader';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . 'return;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '}';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '//'
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . 'if (!$found)';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '{';
+
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(2) . '//'
+				. Line::_(__Line__, __Class__) . ' not found so move to the next registered autoloader';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(2) . 'return;';
+
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '}';
+
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '//'
 				. Line::_(__Line__, __Class__) . ' get the relative class name';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '$relative_class = substr($class, $found_len);';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '//'
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '$relative_class = substr($class, $found_len);';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '//'
 				. Line::_(__Line__, __Class__) . ' replace the namespace prefix with the base directory, replace namespace';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '// separators with directory separators in the relative class name, append';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '// with .php';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . "\$file = JPATH_ROOT . '/' . \$found_base_dir . '/src' . str_replace('\\\\', '/', \$relative_class) . '.php';";
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '//'
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '// separators with directory separators in the relative class name, append';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '// with .php';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . "\$file = JPATH_ROOT . '/' . \$found_base_dir . '/src' . str_replace('\\\\', '/', \$relative_class) . '.php';";
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '//'
 				. Line::_(__Line__, __Class__) . ' if the file exists, require it';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . 'if (file_exists($file))';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '{';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(2) . 'require $file;';
-			$autoloadMethod[] = Indent::_($tab_space) . Indent::_(1) . '}';
-			$autoloadMethod[] = Indent::_($tab_space) . '});';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . 'if (file_exists($file))';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '{';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(2) . 'require $file;';
+			$autoload_method[] = Indent::_($tab_space) . Indent::_(1) . '}';
+			$autoload_method[] = Indent::_($tab_space) . '});';
+
+			// add the composer stuff here
+			$autoload_composer = '';
+			if (ArrayHelper::check($this->power->composer))
+			{
+				$autoload_composer = $this->getComposer($tab_space);
+			}
 
 			// create the method string
-			$autoloader = implode(PHP_EOL, $autoloadNotSiteMethod) . implode(PHP_EOL, $autoloadMethod);
+			$autoloader = $autoload_composer . implode(PHP_EOL, $autoload_not_site_method) . implode(PHP_EOL, $autoload_method);
 
 			// check if we are using a plugin
 			if ($use_plugin)
@@ -216,8 +227,52 @@ class Autoloader
 			}
 
 			// to add to custom files
-			$this->content->add('CUSTOM_POWER_AUTOLOADER', PHP_EOL . implode(PHP_EOL, $autoloadMethod));
+			$this->content->add('CUSTOM_POWER_AUTOLOADER', PHP_EOL . implode(PHP_EOL, $autoload_method));
 		}
+	}
+
+	/**
+	 * Get the composer autoloader routine
+	 *
+	 * @param string    $tabSpace    The dynamic tab spacer
+	 *
+	 * @return string
+	 * @since 3.2.0
+	 */
+	protected function getComposer(string $tabSpace): string
+	{
+		// load the composer routine
+		$composer_routine = [];
+
+		// counter to manage the comma in the actual array
+		$add_once = [];
+		foreach ($this->power->composer as $access_point)
+		{
+			// don't add the ending comma on last value
+			if (empty($add_once[$access_point]))
+			{
+				$composer_routine[] = Indent::_($tabSpace) . "\$composer_autoloader = JPATH_LIBRARIES . '/$access_point';";
+				$composer_routine[] = Indent::_($tabSpace) . 'if (file_exists($composer_autoloader))';
+				$composer_routine[] = Indent::_($tabSpace) . "{";
+				$composer_routine[] = Indent::_($tabSpace) . Indent::_(1) . 'require_once $composer_autoloader;';
+				$composer_routine[] = Indent::_($tabSpace) . "}";
+
+				$add_once[$access_point] = true;
+			}
+		}
+
+		if (count($add_once) == 1)
+		{
+			array_unshift($composer_routine, PHP_EOL . PHP_EOL . Indent::_($tabSpace) . '//'
+				. Line::_(__Line__, __Class__) . ' add the autoloader for the composer classes');
+		}
+		else
+		{
+			array_unshift($composer_routine, PHP_EOL . PHP_EOL . Indent::_($tabSpace) . '//'
+				. Line::_(__Line__, __Class__) . ' add the autoloaders for the composer classes');
+		}
+
+		return implode(PHP_EOL, $composer_routine);
 	}
 
 }

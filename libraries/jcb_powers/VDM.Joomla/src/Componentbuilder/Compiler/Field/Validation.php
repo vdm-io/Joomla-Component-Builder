@@ -130,12 +130,12 @@ class Validation
 						// open and set the validation rule
 						$this->registry->set("validation.rules.${validation_rule}",
 							$this->gui->set(
-								$this->placeholder->update(
+								$this->placeholder->update_(
 									$this->customcode->update(
 										base64_decode(
 											$php_code
 										)
-									), $this->placeholder->active
+									)
 								),
 								array(
 									'table' => 'validation_rule',

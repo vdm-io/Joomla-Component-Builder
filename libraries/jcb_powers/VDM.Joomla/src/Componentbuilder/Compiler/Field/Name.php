@@ -133,8 +133,8 @@ class Name
 							|| strpos($requeSt_id, '_request_catid') !== false)
 						{
 							// keep it then, don't change
-							$name = $this->placeholder->update(
-								$requeSt_id, $this->placeholder->active
+							$name = $this->placeholder->update_(
+								$requeSt_id
 							);
 						}
 						else
@@ -146,20 +146,20 @@ class Name
 						if (StringHelper::check($listViewName))
 						{
 							// check if we should use another Text Name as this views name
-							$otherName  = $this->placeholder->update(
+							$otherName  = $this->placeholder->update_(
 								GetHelper::between(
 									$field['settings']->xml, 'othername="', '"'
-								), $this->placeholder->active
+								)
 							);
-							$otherViews = $this->placeholder->update(
+							$otherViews = $this->placeholder->update_(
 								GetHelper::between(
 									$field['settings']->xml, 'views="', '"'
-								), $this->placeholder->active
+								)
 							);
-							$otherView  = $this->placeholder->update(
+							$otherView  = $this->placeholder->update_(
 								GetHelper::between(
 									$field['settings']->xml, 'view="', '"'
-								), $this->placeholder->active
+								)
 							);
 							// This is to link other view category
 							if (StringHelper::check($otherName)
@@ -198,10 +198,10 @@ class Name
 					{
 						// get value from xml
 						$xml = FieldHelper::safe(
-							$this->placeholder->update(
+							$this->placeholder->update_(
 								GetHelper::between(
 									$field['settings']->xml, 'name="', '"'
-								), $this->placeholder->active
+								)
 							)
 						);
 						// check if a value was found

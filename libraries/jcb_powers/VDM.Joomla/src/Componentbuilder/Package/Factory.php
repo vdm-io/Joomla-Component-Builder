@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Package;
 use Joomla\DI\Container;
 use VDM\Joomla\Componentbuilder\Service\Crypt;
 use VDM\Joomla\Componentbuilder\Package\Service\Database;
+use VDM\Joomla\Componentbuilder\Service\Server;
 use VDM\Joomla\Componentbuilder\Interfaces\FactoryInterface;
 
 
@@ -70,11 +71,10 @@ abstract class Factory implements FactoryInterface
 	 */
 	protected static function createContainer(): Container
 	{
-		$container = (new Container())
+		return (new Container())
 			->registerServiceProvider(new Database())
-			->registerServiceProvider(new Crypt());
-
-		return $container;
+			->registerServiceProvider(new Crypt())
+			->registerServiceProvider(new Server());
 	}
 
 }

@@ -14,10 +14,10 @@ namespace VDM\Joomla\Componentbuilder\Package\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Package\Database\Load as LoadDatabase;
 use VDM\Joomla\Componentbuilder\Database\Load;
-use VDM\Joomla\Componentbuilder\Package\Database\Insert as InsertDatabase;
 use VDM\Joomla\Componentbuilder\Database\Insert;
+use VDM\Joomla\Componentbuilder\Package\Database\Load as LoadDatabase;
+use VDM\Joomla\Componentbuilder\Package\Database\Insert as InsertDatabase;
 
 
 /**
@@ -40,11 +40,11 @@ class Database implements ServiceProviderInterface
 		$container->alias(Load::class, 'Load')
 			->share('Load', [$this, 'getLoad'], true);
 
-		$container->alias(LoadDatabase::class, 'Load.Database')
-			->share('Load.Database', [$this, 'getDatabaseLoad'], true);
-
 		$container->alias(Insert::class, 'Insert')
 			->share('Insert', [$this, 'getInsert'], true);
+
+		$container->alias(LoadDatabase::class, 'Load.Database')
+			->share('Load.Database', [$this, 'getDatabaseLoad'], true);
 
 		$container->alias(InsertDatabase::class, 'Insert.Database')
 			->share('Insert.Database', [$this, 'getDatabaseInsert'], true);
@@ -64,6 +64,19 @@ class Database implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get the Core Insert Database
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Insert
+	 * @since 3.2.0
+	 */
+	public function getInsert(Container $container): Insert
+	{
+		return new Insert();
+	}
+
+	/**
 	 * Get the Load Database
 	 *
 	 * @param   Container  $container  The DI container.
@@ -77,19 +90,6 @@ class Database implements ServiceProviderInterface
 			$container->get('Table'),
 			$container->get('Load')
 		);
-	}
-
-	/**
-	 * Get the Core Insert Database
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Insert
-	 * @since 3.2.0
-	 */
-	public function getInsert(Container $container): Insert
-	{
-		return new Insert();
 	}
 
 	/**

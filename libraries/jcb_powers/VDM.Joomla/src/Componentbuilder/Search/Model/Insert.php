@@ -12,8 +12,11 @@
 namespace VDM\Joomla\Componentbuilder\Search\Model;
 
 
-use VDM\Joomla\Componentbuilder\Search\Interfaces\ModelInterface;
-use VDM\Joomla\Componentbuilder\Search\Abstraction\Model;
+use VDM\Joomla\Componentbuilder\Search\Factory;
+use VDM\Joomla\Componentbuilder\Table;
+use VDM\Joomla\Componentbuilder\Search\Config;
+use VDM\Joomla\Componentbuilder\Interfaces\ModelInterface;
+use VDM\Joomla\Componentbuilder\Abstraction\Model;
 
 
 /**
@@ -23,6 +26,29 @@ use VDM\Joomla\Componentbuilder\Search\Abstraction\Model;
  */
 class Insert extends Model implements ModelInterface
 {
+	/**
+	 * Search Config
+	 *
+	 * @var    Config
+	 * @since 3.2.0
+	 */
+	protected Config $config;
+
+	/**
+	 * Constructor
+	 *
+	 * @param Config|null       $config           The search config object.
+	 * @param Table|null         $table            The search table object.
+	 *
+	 * @since 3.2.0
+	 */
+	public function __construct(?Config $config = null, ?Table $table = null)
+	{
+		parent::__construct($table ?? Factory::_('Table'));
+
+		$this->config = $config ?: Factory::_('Config');
+	}
+
 	/**
 	 * Model the value
 	 *          Example: $this->value(value, 'field_key', 'table_name');
@@ -39,7 +65,7 @@ class Insert extends Model implements ModelInterface
 		// set the table name
 		if (empty($table))
 		{
-			$table = $this->config->table_name;
+			$table = $this->getTable();
 		}
 
 		// check if this is a valid table
@@ -49,14 +75,26 @@ class Insert extends Model implements ModelInterface
 			switch($store)
 			{
 				case 'base64':
-					$value = \base64_encode($value);
+					$value = base64_encode($value);
 				break;
 				case 'json':
-					$value = \json_encode($value,  JSON_FORCE_OBJECT);
+					$value = json_encode($value,  JSON_FORCE_OBJECT);
 				break;
 			}
 		}
+
 		return $value;
+	}
+
+	/**
+	 * Get the current active table
+	 *
+	 * @return  string
+	 * @since 3.2.0
+	 */
+	protected function getTable(): string
+	{
+		return $this->config->table_name;
 	}
 
 }

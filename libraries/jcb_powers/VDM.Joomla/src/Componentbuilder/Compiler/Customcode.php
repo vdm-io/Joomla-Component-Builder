@@ -564,8 +564,8 @@ class Customcode implements CustomcodeInterface
 					var_dump($this->placeholder->active);
 				}
 				$code['[CUSTOM' . 'CODE=' . $key . ']'] = $placeholder['start']
-					. PHP_EOL . $this->placeholder->update(
-						$item['code'], $this->placeholder->active
+					. PHP_EOL . $this->placeholder->update_(
+						$item['code']
 					) . $placeholder['end'];
 			}
 			// always clear the args
@@ -596,8 +596,8 @@ class Customcode implements CustomcodeInterface
 			);
 			$code['[CUSTOM' . 'CODE=' . $keyPlaceholder . ']']
 			             = $placeholder['start'] . PHP_EOL
-				. $this->placeholder->update(
-					$item['code'], $this->placeholder->active
+				. $this->placeholder->update_(
+					$item['code']
 				) . $placeholder['end'];
 		}
 	}

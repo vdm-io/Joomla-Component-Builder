@@ -117,7 +117,7 @@ class Extractor
 		if (ArrayHelper::check($lang_string_targets))
 		{
 			// insure string is not broken
-			$content = $this->placeholder->update($content, $this->placeholder->active);
+			$content = $this->placeholder->update_($content);
 			// reset some buckets
 			$lang_holders = array();
 			$lang_check   = array();

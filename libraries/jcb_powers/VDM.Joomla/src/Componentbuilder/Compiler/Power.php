@@ -242,9 +242,8 @@ class Power implements PowerInterface
 				$this->active[$guid]->key         = $this->active[$guid]->id . '_' . $this->active[$guid]->target_type;
 
 				// now set the name
-				$this->active[$guid]->name = $this->placeholder->update(
-					$this->customcode->update($this->active[$guid]->name),
-					$this->placeholder->active
+				$this->active[$guid]->name = $this->placeholder->update_(
+					$this->customcode->update($this->active[$guid]->name)
 				);
 
 				// now set the code_name and class name
@@ -295,12 +294,12 @@ class Power implements PowerInterface
 					$guiMapper['field'] = 'licensing_template';
 					// base64 Decode code
 					$this->active[$guid]->licensing_template = $this->gui->set(
-							$this->placeholder->update(
+							$this->placeholder->update_(
 								$this->customcode->update(
 									base64_decode(
 										$this->active[$guid]->licensing_template
 									)
-								), $this->placeholder->active
+								)
 							),
 							$guiMapper
 						);
@@ -319,12 +318,12 @@ class Power implements PowerInterface
 
 					// base64 Decode code
 					$this->active[$guid]->head = $this->gui->set(
-							$this->placeholder->update(
+							$this->placeholder->update_(
 								$this->customcode->update(
 									base64_decode(
 										$this->active[$guid]->head
 									)
-								), $this->placeholder->active
+								)
 							),
 							$guiMapper
 						) . PHP_EOL;
@@ -338,9 +337,8 @@ class Power implements PowerInterface
 				$this->setComposer($guid);
 
 				// now set the description
-				$this->active[$guid]->description = (StringHelper::check($this->active[$guid]->description)) ? $this->placeholder->update(
+				$this->active[$guid]->description = (StringHelper::check($this->active[$guid]->description)) ? $this->placeholder->update_(
 					$this->customcode->update($this->active[$guid]->description),
-					$this->placeholder->active
 				) : '';
 
 				// add the main code if set
@@ -350,12 +348,12 @@ class Power implements PowerInterface
 					$guiMapper['field'] = 'main_class_code';
 					// base64 Decode code
 					$this->active[$guid]->main_class_code = $this->gui->set(
-						$this->placeholder->update(
+						$this->placeholder->update_(
 							$this->customcode->update(
 								base64_decode(
 									$this->active[$guid]->main_class_code
 								)
-							), $this->placeholder->active
+							)
 						),
 						$guiMapper
 					);
@@ -399,8 +397,8 @@ class Power implements PowerInterface
 	protected function setNamespace(string $guid)
 	{
 		// set namespace
-		$this->active[$guid]->namespace = $this->placeholder->update(
-			$this->active[$guid]->namespace, $this->placeholder->active
+		$this->active[$guid]->namespace = $this->placeholder->update_(
+			$this->active[$guid]->namespace
 		);
 
 		// validate namespace
@@ -614,8 +612,23 @@ class Power implements PowerInterface
 							if (isset($_namespace['use']) && StringHelper::check($_namespace['use']) &&
 								strpos($_namespace['use'], '\\') !== false)
 							{
-								// trim possible use or ; added to the namespace
-								$namespace = $this->getCleanNamespace($_namespace['use']);
+								// add the namespace to this access point
+								$as = 'default';
+								if (strpos($_namespace['use'], ' as ') !== false)
+								{
+									$namespace_as = explode(' as ', $_namespace['use']);
+									// make sure the AS value is set
+									if (count($namespace_as) == 2)
+									{
+										$as = trim(trim($namespace_as[1], ';'));
+									}
+									$namespace = $this->getCleanNamespace($namespace_as[0], false);
+								}
+								else
+								{
+									// trim possible use or ; added to the namespace
+									$namespace = $this->getCleanNamespace($_namespace['use'], false);
+								}
 
 								// check if still valid
 								if (!StringHelper::check($namespace))
@@ -624,13 +637,7 @@ class Power implements PowerInterface
 								}
 
 								// add to the header of the class
-								$this->addToHeader($guid, $this->getUseNamespace($namespace));
-
-								// add the namespace to this access point
-								if (strpos($namespace, ' as ') !== false)
-								{
-									$namespace = $this->getCleanNamespace(explode(' as ', $namespace)[0]);
-								}
+								$this->addToHeader($guid, $this->getUseNamespace($namespace, $as));
 
 								// add composer namespaces for autoloader
 								$this->composer[$namespace] = $composer['access_point'];
@@ -669,9 +676,8 @@ class Power implements PowerInterface
 				if ($implement == -1
 					&& StringHelper::check($this->active[$guid]->implements_custom))
 				{
-					$this->active[$guid]->implement_names[] = $this->placeholder->update(
-						$this->customcode->update($this->active[$guid]->implements_custom),
-						$this->placeholder->active
+					$this->active[$guid]->implement_names[] = $this->placeholder->update_(
+						$this->customcode->update($this->active[$guid]->implements_custom)
 					);
 					// just add this once
 					unset($this->active[$guid]->implements_custom);
@@ -710,9 +716,8 @@ class Power implements PowerInterface
 		if ($this->active[$guid]->extends == -1
 			&& StringHelper::check($this->active[$guid]->extends_custom))
 		{
-			$this->active[$guid]->extends_name = $this->placeholder->update(
-				$this->customcode->update($this->active[$guid]->extends_custom),
-				$this->placeholder->active
+			$this->active[$guid]->extends_name = $this->placeholder->update_(
+				$this->customcode->update($this->active[$guid]->extends_custom)
 			);
 			// just add once
 			unset($this->active[$guid]->extends_custom);
@@ -771,15 +776,16 @@ class Power implements PowerInterface
 	/**
 	 * Get Clean Namespace without use or ; as part of the name space
 	 *
-	 * @param string  $namespace  The actual name space
+	 * @param string  $namespace        The actual name space
+	 * @input bool    $removeNumbers    The switch to remove numers
 	 *
 	 * @return string
 	 * @since 3.2.0
 	 */
-	protected function getCleanNamespace(string $namespace): string
+	protected function getCleanNamespace(string $namespace, bool $removeNumbers = true): string
 	{
 		// trim possible (use) or (;) or (starting or ending \) added to the namespace
-		return NamespaceHelper::safe(str_replace(['use ', ';'], '', $namespace));
+		return NamespaceHelper::safe(str_replace(['use ', ';'], '', $namespace), $removeNumbers);
 	}
 
 	/**

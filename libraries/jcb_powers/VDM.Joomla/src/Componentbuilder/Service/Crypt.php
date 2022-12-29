@@ -14,9 +14,12 @@ namespace VDM\Joomla\Componentbuilder\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use phpseclibthree\Crypt\AES;
-use phpseclibthree\Crypt\Rijndael;
-use phpseclibthree\Crypt\DES;
+use phpseclib3\Crypt\AES;
+use phpseclib3\Crypt\Rijndael;
+use phpseclib3\Crypt\DES;
+use VDM\Joomla\Componentbuilder\Crypt as Crypto;
+use VDM\Joomla\Componentbuilder\Crypt\KeyLoader;
+use VDM\Joomla\Componentbuilder\Crypt\Random;
 
 
 /**
@@ -36,8 +39,18 @@ class Crypt implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
+		$container->alias(Crypto::class, 'Crypt')
+			->share('Crypt', [$this, 'getCrypt'], true);
+
+		$container->alias(Random::class, 'Crypt.Random')
+			->share('Crypt.Random', [$this, 'getRandom'], true);
+
+		$container->alias(KeyLoader::class, 'Crypt.Key')
+			->share('Crypt.Key', [$this, 'getKeyLoader'], true);
+
 		$container->alias(AES::class, 'Crypt.AES')
 			->share('Crypt.AES', [$this, 'getAesCBC'], true)
+			->share('Crypt.AES.CBC', [$this, 'getAesCBC'], true)
 			->share('Crypt.AES.CTR', [$this, 'getAesCTR'], true)
 			->share('Crypt.AES.ECB', [$this, 'getAesECB'], true)
 			->share('Crypt.AES.CBC3', [$this, 'getAesCBC3'], true)
@@ -48,6 +61,7 @@ class Crypt implements ServiceProviderInterface
 
 		$container->alias(Rijndael::class, 'Crypt.Rijndael')
 			->share('Crypt.Rijndael', [$this, 'getRijndaelCBC'], true)
+			->share('Crypt.Rijndael.CBC', [$this, 'getRijndaelCBC'], true)
 			->share('Crypt.Rijndael.CTR', [$this, 'getRijndaelCTR'], true)
 			->share('Crypt.Rijndael.ECB', [$this, 'getRijndaelECB'], true)
 			->share('Crypt.Rijndael.CBC3', [$this, 'getRijndaelCBC3'], true)
@@ -58,6 +72,7 @@ class Crypt implements ServiceProviderInterface
 
 		$container->alias(DES::class, 'Crypt.DES')
 			->share('Crypt.DES', [$this, 'getDesCBC'], true)
+			->share('Crypt.DES.CBC', [$this, 'getDesCBC'], true)
 			->share('Crypt.DES.CTR', [$this, 'getDesCTR'], true)
 			->share('Crypt.DES.ECB', [$this, 'getDesECB'], true)
 			->share('Crypt.DES.CBC3', [$this, 'getDesCBC3'], true)
@@ -66,6 +81,45 @@ class Crypt implements ServiceProviderInterface
 			->share('Crypt.DES.OFB', [$this, 'getDesOFB'], true)
 			->share('Crypt.DES.GCM', [$this, 'getDesGCM'], true)
 			->share('Crypt.DES.STREAM', [$this, 'getDesSTREAM'], true);
+	}
+
+	/**
+	 * Get the Crypto class
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Crypto
+	 * @since 3.2.0
+	 */
+	public function getCrypt(Container $container): Crypto
+	{
+		return new Crypto();
+	}
+
+	/**
+	 * Get the Random class
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Random
+	 * @since 3.2.0
+	 */
+	public function getRandom(Container $container): Random
+	{
+		return new Random();
+	}
+
+	/**
+	 * Get the KeyLoader class
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  KeyLoader
+	 * @since 3.2.0
+	 */
+	public function getKeyLoader(Container $container): KeyLoader
+	{
+		return new KeyLoader();
 	}
 
 	/**

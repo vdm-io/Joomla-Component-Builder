@@ -246,13 +246,13 @@ class Data
 							$field->initiator_on_save_model
 						);
 						$field->initiator_save     = explode(
-							PHP_EOL, $this->placeholder->update(
-							$this->customcode->update(
-								base64_decode(
-									$field->initiator_on_save_model
+							PHP_EOL, $this->placeholder->update_(
+								$this->customcode->update(
+									base64_decode(
+										$field->initiator_on_save_model
+									)
 								)
-							), $this->placeholder->active
-						)
+							)
 						);
 					}
 					if (StringHelper::check(
@@ -263,29 +263,29 @@ class Data
 							$field->initiator_on_get_model
 						);
 						$field->initiator_get     = explode(
-							PHP_EOL, $this->placeholder->update(
-							$this->customcode->update(
-								base64_decode(
-									$field->initiator_on_get_model
+							PHP_EOL, $this->placeholder->update_(
+								$this->customcode->update(
+									base64_decode(
+										$field->initiator_on_get_model
+									)
 								)
-							), $this->placeholder->active
-						)
+							)
 						);
 					}
 					// set the field modelling
 					$field->model_field['save'] = explode(
-						PHP_EOL, $this->placeholder->update(
-						$this->customcode->update(
-							base64_decode($field->on_save_model_field)
-						), $this->placeholder->active
-					)
+						PHP_EOL, $this->placeholder->update_(
+							$this->customcode->update(
+								base64_decode($field->on_save_model_field)
+							)
+						)
 					);
 					$field->model_field['get']  = explode(
-						PHP_EOL, $this->placeholder->update(
-						$this->customcode->update(
-							base64_decode($field->on_get_model_field)
-						), $this->placeholder->active
-					)
+						PHP_EOL, $this->placeholder->update_(
+							$this->customcode->update(
+								base64_decode($field->on_get_model_field)
+							)
+						)
 					);
 					// remove the original values
 					unset(

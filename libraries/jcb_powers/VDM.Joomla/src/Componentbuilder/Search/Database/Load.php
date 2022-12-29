@@ -141,7 +141,7 @@ class Load implements LoadInterface
 		}
 
 		// check if this is a valid table
-		if ($id > 0 && ($fields = $this->getFields($table)) !== null &&
+		if ($id > 0 && ($fields = $this->setDatabaseFields($table)) !== null &&
 			($item = $this->load->item(
 				$fields,  // select
 				['a' => $table],  // tables
@@ -174,7 +174,7 @@ class Load implements LoadInterface
 		}
 
 		// check if this is a valid table
-		if ( ($fields = $this->getFields($table)) !== null)
+		if ( ($fields = $this->setDatabaseFields($table)) !== null)
 		{
 			// add a key to the selection return set
 			$fields['key'] = 'id';
@@ -273,11 +273,13 @@ class Load implements LoadInterface
 	 * Get Fields ready to use in database call
 	 *
 	 * @param   string    $table  The table which fields we want to get
+	 * @param   string    $key    The table key to which the fields belong
+	 * @param   bool     $addId  The switch to add ID
 	 *
 	 * @return  array|null
 	 * @since 3.2.0
 	 */
-	protected function getFields(string $table, string $key = 'a', bool $addId = true): ?array
+	protected function setDatabaseFields(string $table, string $key = 'a', bool $addId = true): ?array
 	{
 		if (($fields = $this->table->fields($table)) !== null)
 		{
