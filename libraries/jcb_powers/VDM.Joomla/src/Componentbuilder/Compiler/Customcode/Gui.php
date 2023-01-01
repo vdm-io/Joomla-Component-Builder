@@ -204,7 +204,7 @@ class Gui implements GuiInterface
 				if (is_array($query) && count($query) >= 3)
 				{
 					// cleanup the newlines around the code
-					$code = trim(str_replace($first_line, '', $code), PHP_EOL)
+					$code = trim(str_replace($first_line, '', (string) $code), PHP_EOL)
 						. PHP_EOL;
 					// set the ID
 					$id = (int) $query[2];
@@ -243,14 +243,9 @@ class Gui implements GuiInterface
 	protected function check(string &$code): bool
 	{
 		// check for customcode placeholders
-		if (strpos($code, '$$$$') !== false)
-		{
-			// we do not add GUI wrapper placeholder to code
-			// that already has any customcode placeholders
-			return false;
-		}
-
-		return true;
+		// we do not add GUI wrapper placeholder to code
+		// that already has any customcode placeholders
+		return strpos($code, '$$$$') === false;
 	}
 
 }

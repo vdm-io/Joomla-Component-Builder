@@ -102,8 +102,8 @@ class Customcode
 						= true;
 				}
 
-				if (strpos($field->javascript_view_footer, "token") !== false
-					|| strpos($field->javascript_view_footer, "task=ajax") !== false)
+				if (strpos((string) $field->javascript_view_footer, "token") !== false
+					|| strpos((string) $field->javascript_view_footer, "task=ajax") !== false)
 				{
 					if (!isset($this->dispenser->hub['token']))
 					{
@@ -182,8 +182,8 @@ class Customcode
 				{
 					$field->javascript_views_footer_decoded = true;
 				}
-				if (strpos($field->javascript_views_footer, "token") !== false
-					|| strpos($field->javascript_views_footer, "task=ajax") !== false)
+				if (strpos((string) $field->javascript_views_footer, "token") !== false
+					|| strpos((string) $field->javascript_views_footer, "task=ajax") !== false)
 				{
 					if (!isset($this->dispenser->hub['token']))
 					{

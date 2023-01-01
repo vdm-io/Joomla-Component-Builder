@@ -166,7 +166,7 @@ class History implements HistoryInterface
 		// check the note
 		if (JsonHelper::check($object->version_note))
 		{
-			$version_note = json_decode($object->version_note, true);
+			$version_note = json_decode((string) $object->version_note, true);
 		}
 		else
 		{
@@ -183,7 +183,7 @@ class History implements HistoryInterface
 					)) !== false)
 				{
 					// last version that was used to build/compile
-					$this->tmp = json_decode($object->version_data);
+					$this->tmp = json_decode((string) $object->version_data);
 					// remove it from this component
 					unset($version_note['component'][$key]);
 				}

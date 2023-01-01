@@ -26,6 +26,11 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+
 /**
  * Mapping class
  */
@@ -102,7 +107,7 @@ class Mapping
 		// set the app to insure messages can be set
 		$this->app = JFactory::getApplication();
 		// check that we have data
-		if (ComponentbuilderHelper::checkArray($data))
+		if (ArrayHelper::check($data))
 		{
 			// make sure we have an id
 			if (isset($data['id']) && $data['id'] > 0)
@@ -117,15 +122,15 @@ class Mapping
 							{
 								case 'base64':
 									// set needed value
-									$this->$key = base64_decode($value);
+									$this->$key = base64_decode((string) $value);
 									break;
 								case 'json':
 									// set needed value
-									$this->$key = json_decode($value, true);
+									$this->$key = json_decode((string) $value, true);
 									break;
 								case 'safeString':
 									// set needed value
-									$this->$key = ComponentbuilderHelper::safeString($value);
+									$this->$key = StringHelper::check($value);
 									break;
 								default :
 									$this->$key = $value;
@@ -134,10 +139,10 @@ class Mapping
 						}
 					}
 					// get linked admin views
-					$addadmin_views = ComponentbuilderHelper::getVar('component_admin_views', $data['id'], 'joomla_component', 'addadmin_views');
-					if (ComponentbuilderHelper::checkJson($addadmin_views))
+					$addadmin_views = GetHelper::var('component_admin_views', $data['id'], 'joomla_component', 'addadmin_views');
+					if (JsonHelper::check($addadmin_views))
 					{
-						$this->addadmin_views = json_decode($addadmin_views, true);
+						$this->addadmin_views = json_decode((string)$addadmin_views, true);
 					}
 					// set the map of the views needed
 					if ($this->setMap())
@@ -173,7 +178,7 @@ class Mapping
 	{
 		// start parsing the sql dump data
 		$queries = JDatabaseDriver::splitSql($this->buildcompsql);
-		if (ComponentbuilderHelper::checkArray($queries))
+		if (ArrayHelper::check($queries))
 		{
 			foreach ($queries as $query)
 			{
@@ -208,7 +213,7 @@ class Mapping
 				}
 			}
 			// check if the mapping was done
-			if (ComponentbuilderHelper::checkArray($this->map))
+			if (ArrayHelper::check($this->map))
 			{
 				return true;
 			}
@@ -224,12 +229,12 @@ class Mapping
 		if (strpos($query, '`#__') !== false)
 		{
 			// get table name
-			$tableName = ComponentbuilderHelper::getBetween($query, '`#__', "`");
+			$tableName = GetHelper::between($query, '`#__', "`");
 		}
 		elseif (strpos($query, "'#__") !== false)
 		{
 			// get table name
-			$tableName = ComponentbuilderHelper::getBetween($query, "'#__", "'");
+			$tableName = GetHelper::between($query, "'#__", "'");
 		}
 		// if it still was not found
 		if (!isset($tableName) || !ComponentbuilderHelper::checkString($tableName))
@@ -267,12 +272,12 @@ class Mapping
 			if (0 === strpos($row, '`'))
 			{
 				// get field name
-				$name = ComponentbuilderHelper::getBetween($row, '`', '`');
+				$name = GetHelper::between($row, '`', '`');
 			}
 			if (0 === strpos($row, "'"))
 			{
 				// get field name
-				$name = ComponentbuilderHelper::getBetween($row, "'", "'");
+				$name = GetHelper::between($row, "'", "'");
 			}
 			// check if the name was found
 			if (ComponentbuilderHelper::checkString($name))
@@ -289,7 +294,7 @@ class Mapping
 				{
 					$field['row']		= $row;
 					$field['name']		= $name;
-					$field['label']		= ComponentbuilderHelper::safeString($name, 'W');
+					$field['label']		= StringHelper::check($name, 'W');
 					$field['fieldType']	= $fieldType;
 					$field['size']		= $this->getSize($row, $field);
 					$field['sizeOther']	= '';
@@ -319,7 +324,7 @@ class Mapping
 				}
 			}
 		}
-		if (ComponentbuilderHelper::checkArray($fields))
+		if (ArrayHelper::check($fields))
 		{
 			return $fields;
 		}
@@ -352,7 +357,7 @@ class Mapping
 	{
 		if (in_array($field['dataType'], $this->dataSize))
 		{
-			return ComponentbuilderHelper::getBetween($row, $field['dataType'].'(', ')');
+			return GetHelper::between($row, $field['dataType'].'(', ')');
 		}
 		return '';
 	}
@@ -365,12 +370,12 @@ class Mapping
 		// get default value
 		if (strpos($row, 'DEFAULT "') !== false) // to sure it this is correct...
 		{
-			return ComponentbuilderHelper::getBetween($row, 'DEFAULT "', '"');
+			return GetHelper::between($row, 'DEFAULT "', '"');
 		}
 		// get default value
 		if (strpos($row, "DEFAULT '") !== false)
 		{
-			return ComponentbuilderHelper::getBetween($row, "DEFAULT '", "'");
+			return GetHelper::between($row, "DEFAULT '", "'");
 		}
 		return '';
 	}

@@ -85,7 +85,7 @@ abstract class ArrayHelper
 	 * 
 	 * @since  3.1.1
 	 */
-	public static function intersect($a_array, $b_array)
+	public static function intersect($a_array, $b_array): bool
 	{
 		// flip the second array
 		$b_array = array_flip($b_array);

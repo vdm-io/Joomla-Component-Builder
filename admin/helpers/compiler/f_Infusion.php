@@ -103,7 +103,7 @@ class Infusion extends Interpretation
 
 			// COMPANYNAME
 			CFactory::_('Content')->set('COMPANYNAME', trim(
-				JFilterOutput::cleanText($this->componentData->companyname)
+				(string) JFilterOutput::cleanText($this->componentData->companyname)
 			));
 
 			// CREATIONDATE
@@ -121,31 +121,31 @@ class Infusion extends Interpretation
 
 			// AUTHOR
 			CFactory::_('Content')->set('AUTHOR', trim(
-				JFilterOutput::cleanText($this->componentData->author)
+				(string) JFilterOutput::cleanText($this->componentData->author)
 			));
 
 			// AUTHOREMAIL
-			CFactory::_('Content')->set('AUTHOREMAIL', trim($this->componentData->email));
+			CFactory::_('Content')->set('AUTHOREMAIL', trim((string) $this->componentData->email));
 
 			// AUTHORWEBSITE
-			CFactory::_('Content')->set('AUTHORWEBSITE', trim($this->componentData->website));
+			CFactory::_('Content')->set('AUTHORWEBSITE', trim((string) $this->componentData->website));
 
 			// COPYRIGHT
-			CFactory::_('Content')->set('COPYRIGHT', trim($this->componentData->copyright));
+			CFactory::_('Content')->set('COPYRIGHT', trim((string) $this->componentData->copyright));
 
 			// LICENSE
-			CFactory::_('Content')->set('LICENSE', trim($this->componentData->license));
+			CFactory::_('Content')->set('LICENSE', trim((string) $this->componentData->license));
 
 			// VERSION
-			CFactory::_('Content')->set('VERSION', trim($this->componentData->component_version));
+			CFactory::_('Content')->set('VERSION', trim((string) $this->componentData->component_version));
 			// set the actual global version
 			CFactory::_('Content')->set('ACTUALVERSION', CFactory::_('Content')->get('VERSION'));
 
 			// do some Tweaks to the version based on selected options
-			if (strpos(CFactory::_('Content')->get('VERSION'), '.') !== false)
+			if (strpos((string) CFactory::_('Content')->get('VERSION'), '.') !== false)
 			{
 				$versionArray = explode(
-					'.', CFactory::_('Content')->get('VERSION')
+					'.', (string) CFactory::_('Content')->get('VERSION')
 				);
 			}
 			// load only first two values
@@ -177,13 +177,13 @@ class Infusion extends Interpretation
 
 			// SHORT_DISCRIPTION
 			CFactory::_('Content')->set('SHORT_DESCRIPTION', trim(
-				JFilterOutput::cleanText(
+				(string) JFilterOutput::cleanText(
 					$this->componentData->short_description
 				)
 			));
 
 			// DESCRIPTION
-			CFactory::_('Content')->set('DESCRIPTION', trim($this->componentData->description));
+			CFactory::_('Content')->set('DESCRIPTION', trim((string) $this->componentData->description));
 
 			// COMP_IMAGE_TYPE
 			CFactory::_('Content')->set('COMP_IMAGE_TYPE', $this->setComponentImageType($this->componentData->image));
@@ -419,7 +419,7 @@ class Infusion extends Interpretation
 					))
 					{
 						CFactory::_('Content')->set_($nameSingleCode, 'DOCUMENT_CUSTOM_PHP', str_replace(
-							'$document->', '$this->document->', $phpDocument
+							'$document->', '$this->document->', (string) $phpDocument
 						));
 						// clear some memory
 						unset($phpDocument);
@@ -835,7 +835,7 @@ class Infusion extends Interpretation
 					{
 						// only minfy if no php is added to the footer script
 						if (CFactory::_('Config')->get('minify', 0)
-							&& strpos($footerScript, '<?php') === false)
+							&& strpos((string) $footerScript, '<?php') === false)
 						{
 							// minfy the script
 							$minifier = new JS;
@@ -1425,7 +1425,7 @@ class Infusion extends Interpretation
 					$target = array('admin' => 'a_rule_zi');
 					$this->buildDynamique($target, 'rule', $rule);
 					// set the JFormRule Name
-					CFactory::_('Content')->set_('a_rule_zi_' . $rule, 'Name', ucfirst($rule));
+					CFactory::_('Content')->set_('a_rule_zi_' . $rule, 'Name', ucfirst((string) $rule));
 					// set the JFormRule PHP
 					CFactory::_('Content')->set_('a_rule_zi_' . $rule, 'VALIDATION_RULE_METHODS', PHP_EOL . $_php);
 				}
@@ -2118,13 +2118,13 @@ class Infusion extends Interpretation
 			foreach ($this->languages['components'] as $tag => $areas)
 			{
 				// trim the tag
-				$tag = trim($tag);
+				$tag = trim((string) $tag);
 				foreach ($areas as $area => $languageStrings)
 				{
 					// set naming convention
 					$p = 'admin';
 					$t = '';
-					if (strpos($area, 'site') !== false)
+					if (strpos((string) $area, 'site') !== false)
 					{
 						if (CFactory::_('Config')->remove_site_folder
 							&& CFactory::_('Config')->remove_site_edit_folder)
@@ -2133,7 +2133,7 @@ class Infusion extends Interpretation
 						}
 						$p = 'site';
 					}
-					if (strpos($area, 'sys') !== false)
+					if (strpos((string) $area, 'sys') !== false)
 					{
 						$t = '.sys';
 					}

@@ -194,14 +194,7 @@ class Insert extends Database implements InsertInterface
 			// load only what is part of the columns set
 			foreach ($columns as $key)
 			{
-				if (isset($value->{$key}))
-				{
-					$row[] = $this->quote($value->{$key});
-				}
-				else
-				{
-					$row[] = '';
-				}
+				$row[] = isset($value->{$key}) ? $this->quote($value->{$key}) : '';
 			}
 
 			// add to query

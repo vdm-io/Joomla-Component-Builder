@@ -39,12 +39,12 @@ abstract class GuidHelper
 	 *
 	 * @since  3.0.9
 	 */
-	public static function get($trim = true)
+	public static function get(bool $trim = true): string
 	{
 		// Windows
-		if (function_exists('com_create_guid') === true)
+		if (function_exists('com_create_guid'))
 		{
-			if ($trim === true)
+			if ($trim)
 			{
 				return trim(com_create_guid(), '{}');
 			}
@@ -56,7 +56,7 @@ abstract class GuidHelper
 		$rbrace = $trim ? "" : chr(125);    // "}"
 
 		// OSX/Linux
-		if (function_exists('openssl_random_pseudo_bytes') === true)
+		if (function_exists('openssl_random_pseudo_bytes'))
 		{
 			$data = openssl_random_pseudo_bytes(16);
 			$data[6] = chr( ord($data[6]) & 0x0f | 0x40);    // set version to 0100
@@ -82,7 +82,7 @@ abstract class GuidHelper
 	 * Validate the Globally Unique Identifier ( and check if table already has this identifier)
 	 *
 	 * @param string       $guid
-	 * @param string       $table
+	 * @param string|null       $table
 	 * @param int            $id
 	 * @param string|null $component
 	 *
@@ -90,7 +90,7 @@ abstract class GuidHelper
 	 *
 	 * @since  3.0.9
 	 */
-	public static function valid($guid, $table = null, $id = 0, $component = null)
+	public static function valid($guid, ?string $table = null, int $id = 0, ?string $component = null): bool
 	{
 		// check if we have a string
 		if (self::validate($guid))
@@ -135,56 +135,53 @@ abstract class GuidHelper
 	 *
 	 * @param string           $guid
 	 * @param string           $table
-	 * @param string/array  $what
+	 * @param string|array  $what
 	 * @param string|null    $component
 	 *
 	 * @return mix
 	 *
 	 * @since  3.0.9
 	 */
-	public static function item($guid, $table, $what = 'a.id', $component = null)
+	public static function item($guid, $table, $what = 'a.id', ?string $component = null)
 	{
 		// check if we have a string
-		if (self::validate($guid))
+		// check if table already has this identifier
+		if (self::validate($guid) && StringHelper::check($table))
 		{
-			// check if table already has this identifier
-			if (StringHelper::check($table))
+			// check that we have the component code name
+			if (!is_string($component))
 			{
-				// check that we have the component code name
-				if (!is_string($component))
-				{
-					$component = (string) Helper::getCode();
-				}
-				// Get the database object and a new query object.
-				$db = Factory::getDbo();
-				$query = $db->getQuery(true);
+				$component = (string) Helper::getCode();
+			}
+			// Get the database object and a new query object.
+			$db = Factory::getDbo();
+			$query = $db->getQuery(true);
 
-				if (ArrayHelper::check($what))
+			if (ArrayHelper::check($what))
+			{
+				$query->select($db->quoteName($what));
+			}
+			else
+			{
+				$query->select($what);
+			}
+
+			$query->from($db->quoteName('#__' . (string) $component . '_' . (string) $table, 'a'))
+				->where($db->quoteName('a.guid') . ' = ' . $db->quote($guid));
+
+			// Set and query the database.
+			$db->setQuery($query);
+			$db->execute();
+
+			if ($db->getNumRows())
+			{
+				if (ArrayHelper::check($what) || $what === 'a.*')
 				{
-					$query->select($db->quoteName($what));
+					return $db->loadObject();
 				}
 				else
 				{
-					$query->select($what);
-				}
-
-				$query->from($db->quoteName('#__' . (string) $component . '_' . (string) $table, 'a'))
-					->where($db->quoteName('a.guid') . ' = ' . $db->quote($guid));
-
-				// Set and query the database.
-				$db->setQuery($query);
-				$db->execute();
-
-				if ($db->getNumRows())
-				{
-					if (ArrayHelper::check($what) || $what === 'a.*')
-					{
-						return $db->loadObject();
-					}
-					else
-					{
-						return $db->loadResult();
-					}
+					return $db->loadResult();
 				}
 			}
 		}

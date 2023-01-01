@@ -100,12 +100,7 @@ class Placeholder implements PlaceholderInterface
 	 */
 	public function exist(string $key): bool
 	{
-		if (isset($this->active[$key]) || $this->exist_($key) || $this->exist_h($key))
-		{
-			return true;
-		}
-
-		return false;
+		return isset($this->active[$key]) || $this->exist_($key) || $this->exist_h($key);
 	}
 
 	/**
@@ -193,11 +188,7 @@ class Placeholder implements PlaceholderInterface
 	 */
 	public function exist_(string $key): bool
 	{
-		if (isset($this->active[Placefix::_($key)]))
-		{
-			return true;
-		}
-		return false;
+		return isset($this->active[Placefix::_($key)]);
 	}
 
 	/**
@@ -274,11 +265,7 @@ class Placeholder implements PlaceholderInterface
 	 */
 	public function exist_h(string $key): bool
 	{
-		if (isset($this->active[Placefix::_h($key)]))
-		{
-			return true;
-		}
-		return false;
+		return isset($this->active[Placefix::_h($key)]);
 	}
 
 	/**
@@ -401,7 +388,7 @@ class Placeholder implements PlaceholderInterface
 		elseif (2 == $action) // <-- check if data string has placeholders
 		{
 			$replace = false;
-			foreach ($placeholder as $key => $val)
+			foreach (array_keys($placeholder) as $key)
 			{
 				if (strpos($data, $key) !== false)
 				{
@@ -410,7 +397,7 @@ class Placeholder implements PlaceholderInterface
 				}
 			}
 			// only replace if the data has these placeholder values
-			if ($replace === true)
+			if ($replace)
 			{
 				return str_replace(
 					array_keys($placeholder), array_values($placeholder), $data
@@ -420,7 +407,7 @@ class Placeholder implements PlaceholderInterface
 		elseif (3 == $action) // <-- remove placeholders not in data string
 		{
 			$replace = $placeholder;
-			foreach ($replace as $key => $val)
+			foreach (array_keys($replace) as $key)
 			{
 				if (strpos($data, $key) === false)
 				{

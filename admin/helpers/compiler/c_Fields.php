@@ -1956,9 +1956,9 @@ class Fields extends Structure
 					$optionSet = '';
 					if (strtolower($typeName) === 'groupedlist'
 						&& strpos(
-							$value, ','
+							(string) $value, ','
 						) !== false
-						&& strpos($value, '@@') !== false)
+						&& strpos((string) $value, '@@') !== false)
 					{
 						// reset the group temp arrays
 						$groups_  = array();
@@ -1966,7 +1966,7 @@ class Fields extends Structure
 						                  'option' => array());
 						$order_   = array();
 						// mulitpal options
-						$options = explode(',', $value);
+						$options = explode(',', (string) $value);
 						foreach ($options as $option)
 						{
 							if (strpos($option, '@@') !== false)
@@ -2106,10 +2106,10 @@ class Fields extends Structure
 							}
 						}
 					}
-					elseif (strpos($value, ',') !== false)
+					elseif (strpos((string) $value, ',') !== false)
 					{
 						// mulitpal options
-						$options = explode(',', $value);
+						$options = explode(',', (string) $value);
 						foreach ($options as $option)
 						{
 							if (strpos($option, '|') !== false)
@@ -2156,10 +2156,10 @@ class Fields extends Structure
 					else
 					{
 						// one option
-						if (strpos($value, '|') !== false)
+						if (strpos((string) $value, '|') !== false)
 						{
 							// has other value then text
-							list($v, $t) = explode('|', $value);
+							list($v, $t) = explode('|', (string) $value);
 							$langValue = $langView . '_'
 								. FieldHelper::safe(
 									$t, true
@@ -2283,11 +2283,11 @@ class Fields extends Structure
 				$field .= PHP_EOL . Indent::_(4)
 					. '<fieldset hidden="true" name="'
 					. $fieldAttributes['name'] . '_modal" repeat="true">';
-				if (strpos($fieldAttributes['fields'], ',') !== false)
+				if (strpos((string) $fieldAttributes['fields'], ',') !== false)
 				{
 					// mulitpal fields
 					$fieldsSets = (array) explode(
-						',', $fieldAttributes['fields']
+						',', (string) $fieldAttributes['fields']
 					);
 				}
 				elseif (is_numeric($fieldAttributes['fields']))
@@ -2449,11 +2449,11 @@ class Fields extends Structure
 				$field .= PHP_EOL . Indent::_(3) . $taber
 					. '<form hidden="true" name="list_'
 					. $fieldAttributes['name'] . '_modal" repeat="true">';
-				if (strpos($fieldAttributes['fields'], ',') !== false)
+				if (strpos((string) $fieldAttributes['fields'], ',') !== false)
 				{
 					// mulitpal fields
 					$fieldsSets = (array) explode(
-						',', $fieldAttributes['fields']
+						',', (string) $fieldAttributes['fields']
 					);
 				}
 				elseif (is_numeric($fieldAttributes['fields']))
@@ -2640,9 +2640,9 @@ class Fields extends Structure
 					$optionSet = '';
 					if (strtolower($typeName) === 'groupedlist'
 						&& strpos(
-							$value, ','
+							(string) $value, ','
 						) !== false
-						&& strpos($value, '@@') !== false)
+						&& strpos((string) $value, '@@') !== false)
 					{
 						// reset the group temp arrays
 						$groups_  = array();
@@ -2650,7 +2650,7 @@ class Fields extends Structure
 						                  'option' => array());
 						$order_   = array();
 						// mulitpal options
-						$options = explode(',', $value);
+						$options = explode(',', (string) $value);
 						foreach ($options as $option)
 						{
 							if (strpos($option, '@@') !== false)
@@ -2790,10 +2790,10 @@ class Fields extends Structure
 							}
 						}
 					}
-					elseif (strpos($value, ',') !== false)
+					elseif (strpos((string) $value, ',') !== false)
 					{
 						// mulitpal options
-						$options = explode(',', $value);
+						$options = explode(',', (string) $value);
 						foreach ($options as $option)
 						{
 							if (strpos($option, '|') !== false)
@@ -2840,10 +2840,10 @@ class Fields extends Structure
 					else
 					{
 						// one option
-						if (strpos($value, '|') !== false)
+						if (strpos((string) $value, '|') !== false)
 						{
 							// has other value then text
-							list($v, $t) = explode('|', $value);
+							list($v, $t) = explode('|', (string) $value);
 							$langValue = $langView . '_'
 								. FieldHelper::safe(
 									$t, true
@@ -2972,9 +2972,9 @@ class Fields extends Structure
 					);
 					if (strtolower($typeName) === 'groupedlist'
 						&& strpos(
-							$value, ','
+							(string) $value, ','
 						) !== false
-						&& strpos($value, '@@') !== false)
+						&& strpos((string) $value, '@@') !== false)
 					{
 						// reset the group temp arrays
 						$groups_  = array();
@@ -2982,7 +2982,7 @@ class Fields extends Structure
 						                  'option' => array());
 						$order_   = array();
 						// mulitpal options
-						$options = explode(',', $value);
+						$options = explode(',', (string) $value);
 						foreach ($options as $option)
 						{
 							if (strpos($option, '@@') !== false)
@@ -3125,10 +3125,10 @@ class Fields extends Structure
 							}
 						}
 					}
-					elseif (strpos($value, ',') !== false)
+					elseif (strpos((string) $value, ',') !== false)
 					{
 						// mulitpal options
-						$options = explode(',', $value);
+						$options = explode(',', (string) $value);
 						foreach ($options as $option)
 						{
 							$optionXML = $field->fieldXML->addChild('option');
@@ -3170,10 +3170,10 @@ class Fields extends Structure
 					{
 						// one option
 						$optionXML = $field->fieldXML->addChild('option');
-						if (strpos($value, '|') !== false)
+						if (strpos((string) $value, '|') !== false)
 						{
 							// has other value then text
-							list($v, $t) = explode('|', $value);
+							list($v, $t) = explode('|', (string) $value);
 							$langValue = $langView . '_'
 								. FieldHelper::safe(
 									$t, true
@@ -3279,11 +3279,11 @@ class Fields extends Structure
 				);
 				$fieldSetXML->addAttribute('repeat', 'true');
 
-				if (strpos($fieldAttributes['fields'], ',') !== false)
+				if (strpos((string) $fieldAttributes['fields'], ',') !== false)
 				{
 					// mulitpal fields
 					$fieldsSets = (array) explode(
-						',', $fieldAttributes['fields']
+						',', (string) $fieldAttributes['fields']
 					);
 				}
 				elseif (is_numeric($fieldAttributes['fields']))
@@ -3462,11 +3462,11 @@ class Fields extends Structure
 						$form, $attributes
 					);
 
-					if (strpos($fieldAttributes['fields'], ',') !== false)
+					if (strpos((string) $fieldAttributes['fields'], ',') !== false)
 					{
 						// multiple fields
 						$fieldsSets = (array) explode(
-							',', $fieldAttributes['fields']
+							',', (string) $fieldAttributes['fields']
 						);
 					}
 					elseif (is_numeric($fieldAttributes['fields']))
@@ -3657,9 +3657,9 @@ class Fields extends Structure
 					);
 					if (strtolower($typeName) === 'groupedlist'
 						&& strpos(
-							$value, ','
+							(string) $value, ','
 						) !== false
-						&& strpos($value, '@@') !== false)
+						&& strpos((string) $value, '@@') !== false)
 					{
 						// reset the group temp arrays
 						$groups_  = array();
@@ -3667,7 +3667,7 @@ class Fields extends Structure
 						                  'option' => array());
 						$order_   = array();
 						// mulitpal options
-						$options = explode(',', $value);
+						$options = explode(',', (string) $value);
 						foreach ($options as $option)
 						{
 							if (strpos($option, '@@') !== false)
@@ -3810,10 +3810,10 @@ class Fields extends Structure
 							}
 						}
 					}
-					elseif (strpos($value, ',') !== false)
+					elseif (strpos((string) $value, ',') !== false)
 					{
 						// municipal options
-						$options = explode(',', $value);
+						$options = explode(',', (string) $value);
 						foreach ($options as $option)
 						{
 							$optionXML = $field->fieldXML->addChild('option');
@@ -3855,10 +3855,10 @@ class Fields extends Structure
 					{
 						// one option
 						$optionXML = $field->fieldXML->addChild('option');
-						if (strpos($value, '|') !== false)
+						if (strpos((string) $value, '|') !== false)
 						{
 							// has other value then text
-							list($v, $t) = explode('|', $value);
+							list($v, $t) = explode('|', (string) $value);
 							$langValue = $langView . '_'
 								. FieldHelper::safe(
 									$t, true
@@ -4053,7 +4053,7 @@ class Fields extends Structure
 			foreach ($this->siteFields[$view][$field] as $codeString => $array)
 			{
 				// get the code array
-				$codeArray = explode('___', $codeString);
+				$codeArray = explode('___', (string) $codeString);
 				// set the code
 				$code = trim($codeArray[0]);
 				// set the decoding methods
@@ -4189,18 +4189,18 @@ class Fields extends Structure
 					);
 				}
 				// catch all PHP here
-				elseif (strpos($property['name'], 'type_php') !== false
+				elseif (strpos((string) $property['name'], 'type_php') !== false
 					&& $setCustom)
 				{
 					// set the line number
 					$phpLine = (int) preg_replace(
-						'/[^0-9]/', '', $property['name']
+						'/[^0-9]/', '', (string) $property['name']
 					);
 					// set the type key
 					$phpKey = (string) trim(
 						str_replace(
 							'type_', '',
-							preg_replace('/[0-9]+/', '', $property['name'])
+							preg_replace('/[0-9]+/', '', (string) $property['name'])
 						), '_'
 					);
 					// load the php for the custom field file
@@ -4619,7 +4619,7 @@ class Fields extends Structure
 						&& !is_numeric($number_check))
 					{
 						$number_check = str_replace(
-							',', '.', $field['settings']->datadefault_other
+							',', '.', (string) $field['settings']->datadefault_other
 						);
 					}
 					// check if we have a valid number value
@@ -4962,14 +4962,14 @@ class Fields extends Structure
 					. $otherView;
 			}
 			// check the context (does our target match)
-			if (strpos($_extension, '.') !== false)
+			if (strpos((string) $_extension, '.') !== false)
 			{
-				$target_view = trim(explode('.', $_extension)[1]);
+				$target_view = trim(explode('.', (string) $_extension)[1]);
 				// from my understanding the target extension view and the otherView must align
 				// so I will here check that it does, and if not raise an error message to fix this
 				if ($target_view !== $otherView)
 				{
-					$target_extension = trim(explode('.', $_extension)[0]);
+					$target_extension = trim(explode('.', (string) $_extension)[0]);
 					$correction       = $target_extension . '.' . $otherView;
 					$this->app->enqueueMessage(
 						JText::sprintf(
@@ -5242,7 +5242,7 @@ class Fields extends Structure
 			$filter_type_code     = StringHelper::safe(
 				$nameListCode . 'filter' . $name
 			);
-			$filter_type_code     = preg_replace('/_+/', '', $filter_type_code);
+			$filter_type_code     = preg_replace('/_+/', '', (string) $filter_type_code);
 			$filter_function_name = StringHelper::safe(
 				$name, 'F'
 			);
@@ -5338,10 +5338,10 @@ class Fields extends Structure
 			// set J prefix
 			$jprefix = 'J';
 			// check if this field has a dot in field type name
-			if (strpos($data['type'], '.') !== false)
+			if (strpos((string) $data['type'], '.') !== false)
 			{
 				// so we have name spacing in custom field type name
-				$dotTypeArray = explode('.', $data['type']);
+				$dotTypeArray = explode('.', (string) $data['type']);
 				// set the J prefix
 				if (count((array) $dotTypeArray) > 1)
 				{
@@ -5527,7 +5527,7 @@ class Fields extends Structure
 					);
 				}
 				// check the the JFormHelper::loadFieldClass(..) was set
-				elseif (strpos(CFactory::_('Content')->get_('customfield_' . $data['type'], 'JFORM_TYPE_HEADER'),
+				elseif (strpos((string) CFactory::_('Content')->get_('customfield_' . $data['type'], 'JFORM_TYPE_HEADER'),
 						'JFormHelper::loadFieldClass(') === false)
 				{
 					CFactory::_('Content')->add_('customfield_' . $data['type'], 'JFORM_TYPE_HEADER',
@@ -5873,7 +5873,7 @@ class Fields extends Structure
 							$field_filter_sets[] = Indent::_(3) . 'type="'
 								. $filter['type'] . '"';
 							// set css classname of this field
-							$filter['class'] = ucfirst($filter['type']);
+							$filter['class'] = ucfirst((string) $filter['type']);
 						}
 						else
 						{
@@ -5881,7 +5881,7 @@ class Fields extends Structure
 							$field_filter_sets[] = Indent::_(3) . 'type="'
 								. $filter['filter_type'] . '"';
 							// set css classname of this field
-							$filter['class'] = ucfirst($filter['filter_type']);
+							$filter['class'] = ucfirst((string) $filter['filter_type']);
 						}
 						$field_filter_sets[] = Indent::_(3) . 'name="'
 							. $filter['code'] . '"';
@@ -6124,17 +6124,17 @@ class Fields extends Structure
 				$fieldData['component'] = $local_component;
 			}
 			// check that the component has the com_ value in it
-			if (strpos($fieldData['component'], 'com_') === false
+			if (strpos((string) $fieldData['component'], 'com_') === false
 				|| strpos(
-					$fieldData['component'], '='
+					(string) $fieldData['component'], '='
 				) !== false)
 			{
 				$fieldData['component'] = "com_" . $fieldData['component'];
 			}
 			// make sure the component is update if # # # or [ [ [ component placeholder is used
-			if (strpos($fieldData['component'], Placefix::h()) !== false
+			if (strpos((string) $fieldData['component'], (string) Placefix::h()) !== false
 				|| strpos(
-					$fieldData['component'], Placefix::b()
+					(string) $fieldData['component'], (string) Placefix::b()
 				) !== false) // should not be needed... but
 			{
 				$fieldData['component'] = CFactory::_('Placeholder')->update_(

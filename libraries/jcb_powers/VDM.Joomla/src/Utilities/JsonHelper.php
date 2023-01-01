@@ -32,7 +32,7 @@ abstract class JsonHelper
 	{
 		if (StringHelper::check($string))
 		{
-			json_decode($string);
+			json_decode((string) $string);
 			return (json_last_error() === JSON_ERROR_NONE);
 		}
 
@@ -52,14 +52,14 @@ abstract class JsonHelper
 	{
 		// do some table foot work
 		$external = false;
-		if (strpos($table, '#__') !== false)
+		if (is_string($table) && strpos((string) $table, '#__') !== false)
 		{
 			$external = true;
-			$table = str_replace('#__', '', $table);
+			$table = str_replace('#__', '', (string) $table);
 		}
 
 		// check if string is JSON
-		$result = json_decode($value, true);
+		$result = json_decode((string) $value, true);
 		if (json_last_error() === JSON_ERROR_NONE)
 		{
 			// is JSON
@@ -92,7 +92,7 @@ abstract class JsonHelper
 				}
 				return (string) implode($separator, $result);
 			}
-			return (string) json_decode($value);
+			return (string) json_decode((string) $value);
 		}
 		return $value;
 	}

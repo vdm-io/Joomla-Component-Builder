@@ -99,7 +99,7 @@ class Reverse
 	{
 		// get local code if set
 		if ($id > 0 && $code = base64_decode(
-				GetHelper::var($table, $id, 'id', $field)
+				(string) GetHelper::var($table, $id, 'id', $field)
 			))
 		{
 			$string = $this->setReverse(
@@ -124,13 +124,9 @@ class Reverse
 	{
 		// get targets to search for
 		$lang_string_targets = array_filter(
-			$this->config->lang_string_targets, function ($get) use ($string) {
-				if (strpos($string, $get) !== false)
-				{
-					return true;
-				}
-
-				return false;
+			$this->config->lang_string_targets,
+			function ($get) use ($string) : bool {
+				return strpos($string, $get) !== false;
 			}
 		);
 		// check if we should continue

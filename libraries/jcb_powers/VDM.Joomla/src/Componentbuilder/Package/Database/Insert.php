@@ -172,7 +172,7 @@ class Insert
 			$success = true;
 			foreach ($items as $item)
 			{
-				if ($this->item($item, $table) !== true)
+				if (!$this->item($item, $table))
 				{
 					$success = false;
 					break;

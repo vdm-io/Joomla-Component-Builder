@@ -53,7 +53,7 @@ class TypeName
 			))
 		{
 			// search for own custom fields
-			if (strpos($field['settings']->type_name, '@') !== false)
+			if (strpos((string) $field['settings']->type_name, '@') !== false)
 			{
 				// set own custom field
 				$field['settings']->own_custom = $field['settings']->type_name;
@@ -66,8 +66,8 @@ class TypeName
 			);
 
 			// if custom (we must use the xml value)
-			if (strtolower($type_name) === 'custom'
-				|| strtolower($type_name) === 'customuser')
+			if (strtolower((string) $type_name) === 'custom'
+				|| strtolower((string) $type_name) === 'customuser')
 			{
 				$type = TypeHelper::safe(
 					GetHelper::between(

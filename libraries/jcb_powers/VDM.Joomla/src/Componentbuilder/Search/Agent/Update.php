@@ -83,9 +83,9 @@ class Update
 		// the possibility of updating sub-forms in sub-forms
 		if (ArrayHelper::check($value))
 		{
-			if (strpos($line, '.') !== false)
+			if (strpos((string) $line, '.') !== false)
 			{
-				$line = explode('.', $line);
+				$line = explode('.', (string) $line);
 			}
 			// first layer
 			foreach ($value as $keys => &$rows)

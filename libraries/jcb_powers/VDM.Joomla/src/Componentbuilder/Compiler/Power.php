@@ -297,7 +297,7 @@ class Power implements PowerInterface
 							$this->placeholder->update_(
 								$this->customcode->update(
 									base64_decode(
-										$this->active[$guid]->licensing_template
+										(string) $this->active[$guid]->licensing_template
 									)
 								)
 							),
@@ -321,7 +321,7 @@ class Power implements PowerInterface
 							$this->placeholder->update_(
 								$this->customcode->update(
 									base64_decode(
-										$this->active[$guid]->head
+										(string) $this->active[$guid]->head
 									)
 								)
 							),
@@ -351,7 +351,7 @@ class Power implements PowerInterface
 						$this->placeholder->update_(
 							$this->customcode->update(
 								base64_decode(
-									$this->active[$guid]->main_class_code
+									(string) $this->active[$guid]->main_class_code
 								)
 							)
 						),
@@ -391,10 +391,10 @@ class Power implements PowerInterface
 	 *
 	 * @param string  $guid  The global unique id of the power
 	 *
-	 * @return void
+	 * @return bool
 	 * @since 3.2.0
 	 */
-	protected function setNamespace(string $guid)
+	protected function setNamespace(string $guid): bool
 	{
 		// set namespace
 		$this->active[$guid]->namespace = $this->placeholder->update_(
@@ -407,7 +407,7 @@ class Power implements PowerInterface
 			// we raise an error message
 			$this->app->enqueueMessage(
 				Text::sprintf('COM_COMPONENTBUILDER_HTHREES_NAMESPACE_ERROR_SHTHREEPYOU_MUST_ATLEAST_HAVE_TWO_SECTIONS_IN_YOUR_NAMESPACE_YOU_JUST_HAVE_ONE_THIS_IS_AN_UNACCEPTABLE_ACTION_PLEASE_SEE_A_HREFS_PSRFOURA_FOR_MORE_INFOPPTHIS_S_WAS_THEREFORE_REMOVED_A_HREFSCLICK_HEREA_TO_FIX_THIS_ISSUEP',
-					ucfirst($this->active[$guid]->type), $this->active[$guid]->name, $this->active[$guid]->namespace,
+					ucfirst((string) $this->active[$guid]->type), $this->active[$guid]->name, $this->active[$guid]->namespace,
 					'"https://www.php-fig.org/psr/psr-4/" target="_blank"', $this->active[$guid]->type,
 					$this->fixUrl),
 				'Error'
@@ -429,7 +429,7 @@ class Power implements PowerInterface
 			// we raise an error message
 			$this->app->enqueueMessage(
 				Text::sprintf('COM_COMPONENTBUILDER_HTHREES_NAMESPACE_ERROR_SHTHREEPYOU_MUST_ATLEAST_HAVE_TWO_SECTIONS_IN_YOUR_NAMESPACE_YOU_JUST_HAVE_ONE_S_THIS_IS_AN_UNACCEPTABLE_ACTION_PLEASE_SEE_A_HREFS_PSRFOURA_FOR_MORE_INFOPPTHIS_S_WAS_THEREFORE_REMOVED_A_HREFSCLICK_HEREA_TO_FIX_THIS_ISSUEP',
-					ucfirst($this->active[$guid]->type), $this->active[$guid]->name, $this->active[$guid]->namespace,
+					ucfirst((string) $this->active[$guid]->type), $this->active[$guid]->name, $this->active[$guid]->namespace,
 					'"https://www.php-fig.org/psr/psr-4/" target="_blank"', $this->active[$guid]->type,
 					$this->fixUrl),
 				'Error'
@@ -472,7 +472,7 @@ class Power implements PowerInterface
 			// we raise an error message
 			$this->app->enqueueMessage(
 				Text::sprintf('COM_COMPONENTBUILDER_PS_NAMING_MISMATCH_ERROR_SPPTHE_S_NAME_IS_BSB_AND_THE_ENDING_FILE_NAME_IN_THE_NAMESPACE_IS_BSB_THIS_IS_BAD_CONVENTION_PLEASE_SEE_A_HREFS_PSRFOURA_FOR_MORE_INFOPPA_HREFSCLICK_HEREA_TO_FIX_THIS_ISSUEP',
-					ucfirst($this->active[$guid]->type), $this->active[$guid]->name, $this->active[$guid]->type, $this->active[$guid]->class_name, $this->active[$guid]->file_name,
+					ucfirst((string) $this->active[$guid]->type), $this->active[$guid]->name, $this->active[$guid]->type, $this->active[$guid]->class_name, $this->active[$guid]->file_name,
 					'"https://www.php-fig.org/psr/psr-4/" target="_blank"',
 					$this->fixUrl),
 				'Error'
@@ -533,20 +533,13 @@ class Power implements PowerInterface
 		$this->active[$guid]->use_selection = (isset($this->active[$guid]->use_selection)
 			&& JsonHelper::check(
 				$this->active[$guid]->use_selection
-			)) ? json_decode($this->active[$guid]->use_selection, true) : null;
+			)) ? json_decode((string) $this->active[$guid]->use_selection, true) : null;
 
 		if ($this->active[$guid]->use_selection)
 		{
 			$use = array_values(array_map(function ($u) use(&$as) {
 				// track the AS options
-				if (empty($u['as']))
-				{
-					$as[$u['use']] = 'default';
-				}
-				else
-				{
-					$as[$u['use']] = (string) $u['as'];
-				}
+				$as[$u['use']] = empty($u['as']) ? 'default' : (string) $u['as'];
 				// return the guid
 				return $u['use'];
 			}, $this->active[$guid]->use_selection));
@@ -567,7 +560,7 @@ class Power implements PowerInterface
 		$this->active[$guid]->load_selection = (isset($this->active[$guid]->load_selection)
 			&& JsonHelper::check(
 				$this->active[$guid]->load_selection
-			)) ? json_decode($this->active[$guid]->load_selection, true) : null;
+			)) ? json_decode((string) $this->active[$guid]->load_selection, true) : null;
 
 		if ($this->active[$guid]->load_selection)
 		{
@@ -594,7 +587,7 @@ class Power implements PowerInterface
 		$_composer = (isset($this->active[$guid]->composer)
 			&& JsonHelper::check(
 				$this->active[$guid]->composer
-			)) ? json_decode($this->active[$guid]->composer, true) : null;
+			)) ? json_decode((string) $this->active[$guid]->composer, true) : null;
 
 		unset($this->active[$guid]->composer);
 
@@ -602,46 +595,44 @@ class Power implements PowerInterface
 		{
 			foreach ($_composer as $composer)
 			{
-				if (isset($composer['access_point']) && StringHelper::check($composer['access_point']))
+				if (isset($composer['access_point']) && StringHelper::check($composer['access_point']) &&
+					isset($composer['namespace']) && ArrayHelper::check($composer['namespace']))
 				{
-					if (isset($composer['namespace']) && ArrayHelper::check($composer['namespace']))
+					foreach ($composer['namespace'] as $_namespace)
 					{
-						foreach ($composer['namespace'] as $_namespace)
+						// make sure we have a valid namespace
+						if (isset($_namespace['use']) && StringHelper::check($_namespace['use']) &&
+							strpos((string) $_namespace['use'], '\\') !== false)
 						{
-							// make sure we have a valid namespace
-							if (isset($_namespace['use']) && StringHelper::check($_namespace['use']) &&
-								strpos($_namespace['use'], '\\') !== false)
+							// add the namespace to this access point
+							$as = 'default';
+							if (strpos((string) $_namespace['use'], ' as ') !== false)
 							{
-								// add the namespace to this access point
-								$as = 'default';
-								if (strpos($_namespace['use'], ' as ') !== false)
+								$namespace_as = explode(' as ', (string) $_namespace['use']);
+								// make sure the AS value is set
+								if (count($namespace_as) == 2)
 								{
-									$namespace_as = explode(' as ', $_namespace['use']);
-									// make sure the AS value is set
-									if (count($namespace_as) == 2)
-									{
-										$as = trim(trim($namespace_as[1], ';'));
-									}
-									$namespace = $this->getCleanNamespace($namespace_as[0], false);
+									$as = trim(trim($namespace_as[1], ';'));
 								}
-								else
-								{
-									// trim possible use or ; added to the namespace
-									$namespace = $this->getCleanNamespace($_namespace['use'], false);
-								}
-
-								// check if still valid
-								if (!StringHelper::check($namespace))
-								{
-									continue;
-								}
-
-								// add to the header of the class
-								$this->addToHeader($guid, $this->getUseNamespace($namespace, $as));
-
-								// add composer namespaces for autoloader
-								$this->composer[$namespace] = $composer['access_point'];
+								$namespace = $this->getCleanNamespace($namespace_as[0], false);
 							}
+							else
+							{
+								// trim possible use or ; added to the namespace
+								$namespace = $this->getCleanNamespace($_namespace['use'], false);
+							}
+
+							// check if still valid
+							if (!StringHelper::check($namespace))
+							{
+								continue;
+							}
+
+							// add to the header of the class
+							$this->addToHeader($guid, $this->getUseNamespace($namespace, $as));
+
+							// add composer namespaces for autoloader
+							$this->composer[$namespace] = $composer['access_point'];
 						}
 					}
 				}
@@ -667,7 +658,7 @@ class Power implements PowerInterface
 		$this->active[$guid]->implements = (isset($this->active[$guid]->implements)
 			&& JsonHelper::check(
 				$this->active[$guid]->implements
-			)) ? json_decode($this->active[$guid]->implements, true) : null;
+			)) ? json_decode((string) $this->active[$guid]->implements, true) : null;
 
 		if ($this->active[$guid]->implements)
 		{
@@ -820,7 +811,7 @@ class Power implements PowerInterface
 	{
 		// check if it is already added manually
 		if (isset($this->active[$guid]->head) &&
-			strpos($this->active[$guid]->head, $string) === false)
+			strpos((string) $this->active[$guid]->head, $string) === false)
 		{
 			$this->active[$guid]->head .= $string . PHP_EOL;
 		}

@@ -30,7 +30,7 @@ abstract class Helper
 	 * @var    string
 	 * @since   3.0.11
 	 */
-	public static $option;
+	public static string $option;
 
 	/**
 	 * The component params list cache
@@ -38,19 +38,18 @@ abstract class Helper
 	 * @var    Registry[]
 	 * @since   3.0.11
 	 */
-	protected static $params = array();
+	protected static array $params = [];
 
 	/**
 	 * Gets the parameter object for the component
 	 *
-	 * @param   string       $option  The option for the component.
+	 * @param   string|null     $option  The option for the component.
 	 *
 	 * @return  Registry     A Registry object.
-	 *
 	 * @see     Registry
 	 * @since   3.0.11
 	 */
-	public static function getParams($option = null): Registry
+	public static function getParams(?string $option = null): Registry
 	{
 		// check that we have an option
 		if (empty($option))
@@ -73,10 +72,9 @@ abstract class Helper
 	 * @param   string|null      $default  The default return value if none is found
 	 *
 	 * @return  string|null      A component option
-	 *
 	 * @since   3.0.11
 	 */
-	public static function getOption($default = 'empty'): ?string
+	public static function getOption(string $default = 'empty'): ?string
 	{
 		if (empty(self::$option))
 		{
@@ -95,14 +93,13 @@ abstract class Helper
 	/**
 	 * Gets the component code name
 	 *
-	 * @param   string         $option   The option for the component.
+	 * @param   string|null    $option   The option for the component.
 	 * @param   string|null    $default  The default return value if none is found
 	 *
 	 * @return  string|null    A component code name
-	 *
 	 * @since   3.0.11
 	 */
-	public static function getCode($option = null, $default = null): ?string
+	public static function getCode(?string $option = null, ?string $default = null): ?string
 	{
 		// check that we have an option
 		if (empty($option))
@@ -128,7 +125,7 @@ abstract class Helper
 	 *
 	 * @since   3.0.11
 	 */
-	public static function get($option = null, $default = null): ?string
+	public static function get(string $option = null, string $default = null): ?string
 	{
 		// check that we have an option
 		// and get the code name from it
@@ -149,25 +146,43 @@ abstract class Helper
 	/**
 	 * Check if the helper class of this component has a method
 	 *
-	 * @param   String     $method  The method name to search for
-	 * @param   String     $option  The option for the component.
+	 * @param   string       $method  The method name to search for
+	 * @param   string|null  $option  The option for the component.
 	 *
 	 * @return  bool    true if method exist
 	 *
 	 * @since   3.0.11
 	 */
-	public static function methodExists($method, $option = null)
+	public static function methodExists(string $method, string $option = null): bool
 	{
 		// get the helper class
-		if (($helper = self::get($option, false)) !== false)
+		return ($helper = self::get($option, false)) !== false &&
+			method_exists($helper, $method);
+	}
+
+	/**
+	 * Check if the helper class of this component has a method, and call it with the arguments
+	 *
+	 * @param   string        $method     The method name to search for
+	 * @param   array         $arguments  The arguments for function.
+	 * @param   string|null   $option     The option for the component.
+	 *
+	 * @return  mixed    return whatever the method returns or null
+	 * @since   3.2.0
+	 */
+	public static function _(string $method, array $arguments = [], ?string $option = null)
+	{
+		// get the helper class
+		if (($helper = self::get($option, false)) !== false &&
+			method_exists($helper, $method))
 		{
-			if (method_exists($helper, $method))
-			{
-				return true;
-			}
+			// we know this is bad...
+			// so we need to move these
+			// functions to their own classes
+			return call_user_func_array([$helper, $method],  $arguments);
 		}
 
-		return false;
+		return null;
 	}
 
 }

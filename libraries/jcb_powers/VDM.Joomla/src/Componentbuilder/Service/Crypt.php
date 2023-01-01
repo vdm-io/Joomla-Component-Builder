@@ -20,6 +20,8 @@ use phpseclib3\Crypt\DES;
 use VDM\Joomla\Componentbuilder\Crypt as Crypto;
 use VDM\Joomla\Componentbuilder\Crypt\KeyLoader;
 use VDM\Joomla\Componentbuilder\Crypt\Random;
+use VDM\Joomla\Componentbuilder\Crypt\Password;
+use VDM\Joomla\Componentbuilder\Crypt\FOF;
 
 
 /**
@@ -44,6 +46,12 @@ class Crypt implements ServiceProviderInterface
 
 		$container->alias(Random::class, 'Crypt.Random')
 			->share('Crypt.Random', [$this, 'getRandom'], true);
+
+		$container->alias(Password::class, 'Crypt.Password')
+			->share('Crypt.Password', [$this, 'getPassword'], true);
+
+		$container->alias(FOF::class, 'Crypt.FOF')
+			->share('Crypt.FOF', [$this, 'getFOF'], true);
 
 		$container->alias(KeyLoader::class, 'Crypt.Key')
 			->share('Crypt.Key', [$this, 'getKeyLoader'], true);
@@ -93,7 +101,23 @@ class Crypt implements ServiceProviderInterface
 	 */
 	public function getCrypt(Container $container): Crypto
 	{
-		return new Crypto();
+		return new Crypto(
+			$container->get('Crypt.FOF'),
+			$container->get('Crypt.Password')
+		);
+	}
+
+	/**
+	 * Get the Password class
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Password
+	 * @since 3.2.0
+	 */
+	public function getPassword(Container $container): Password
+	{
+		return new Password();
 	}
 
 	/**
@@ -107,6 +131,22 @@ class Crypt implements ServiceProviderInterface
 	public function getRandom(Container $container): Random
 	{
 		return new Random();
+	}
+
+	/**
+	 * Get the FOF AES Cyper with CBC mode
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  FOF
+	 * @since 3.2.0
+	 */
+	public function getFOF(Container $container): FOF
+	{
+		return new FOF(
+			$container->get('Crypt.AES.CBC'),
+			$container->get('Crypt.Random')
+		);
 	}
 
 	/**

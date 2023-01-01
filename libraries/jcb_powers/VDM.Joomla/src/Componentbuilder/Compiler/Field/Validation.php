@@ -133,7 +133,7 @@ class Validation
 								$this->placeholder->update_(
 									$this->customcode->update(
 										base64_decode(
-											$php_code
+											(string) $php_code
 										)
 									)
 								),

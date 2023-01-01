@@ -404,8 +404,8 @@ class Agent
 			'&match_case=' . (int) $this->config->match_case .
 			'&whole_word=' . (int) $this->config->whole_word .
 			'&regex_search=' . (int) $this->config->regex_search .
-			'&search_value=' . (string) urlencode($this->config->search_value) .
-			'&replace_value=' . (string) urlencode($this->config->replace_value)));
+			'&search_value=' . (string) urlencode((string) $this->config->search_value) .
+			'&replace_value=' . (string) urlencode((string) $this->config->replace_value)));
 	}
 
 	/**

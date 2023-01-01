@@ -196,7 +196,7 @@ class Data
 				$field->type = $field->fieldtype;
 
 				// load the values form params
-				$field->xml = $this->customcode->update(json_decode($field->xml));
+				$field->xml = $this->customcode->update(json_decode((string) $field->xml));
 
 				// check if we have validate (validation rule and set it if found)
 				$this->validation->set($id, $field->xml);
@@ -204,7 +204,7 @@ class Data
 				// load the type values form type params
 				$field->properties = (isset($field->properties)
 					&& JsonHelper::check($field->properties))
-					? json_decode($field->properties, true) : null;
+					? json_decode((string) $field->properties, true) : null;
 				if (ArrayHelper::check($field->properties))
 				{
 					$field->properties = array_values($field->properties);
@@ -243,13 +243,13 @@ class Data
 					))
 					{
 						$field->initiator_save_key = md5(
-							$field->initiator_on_save_model
+							(string) $field->initiator_on_save_model
 						);
 						$field->initiator_save     = explode(
 							PHP_EOL, $this->placeholder->update_(
 								$this->customcode->update(
 									base64_decode(
-										$field->initiator_on_save_model
+										(string) $field->initiator_on_save_model
 									)
 								)
 							)
@@ -260,13 +260,13 @@ class Data
 					))
 					{
 						$field->initiator_get_key = md5(
-							$field->initiator_on_get_model
+							(string) $field->initiator_on_get_model
 						);
 						$field->initiator_get     = explode(
 							PHP_EOL, $this->placeholder->update_(
 								$this->customcode->update(
 									base64_decode(
-										$field->initiator_on_get_model
+										(string) $field->initiator_on_get_model
 									)
 								)
 							)
@@ -276,14 +276,14 @@ class Data
 					$field->model_field['save'] = explode(
 						PHP_EOL, $this->placeholder->update_(
 							$this->customcode->update(
-								base64_decode($field->on_save_model_field)
+								base64_decode((string) $field->on_save_model_field)
 							)
 						)
 					);
 					$field->model_field['get']  = explode(
 						PHP_EOL, $this->placeholder->update_(
 							$this->customcode->update(
-								base64_decode($field->on_get_model_field)
+								base64_decode((string) $field->on_get_model_field)
 							)
 						)
 					);

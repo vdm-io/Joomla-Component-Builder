@@ -32,7 +32,7 @@ abstract class NamespaceHelper
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function safe(string $string, bool $removeNumbers = true)
+	public static function safe(string $string, bool $removeNumbers = true): string
 	{
 		// 0nly continue if we have a string with length
 		if (StringHelper::check($string))
@@ -47,7 +47,7 @@ abstract class NamespaceHelper
 			// $string = StringHelper::transliterate($string);
 
 			// first remove all [\] backslashes
-			$string = str_replace('\\', '+', $string);
+			$string = str_replace('\\', '+', (string) $string);
 
 			// remove all and keep only characters and [\] backslashes inside of the string
 			if ($removeNumbers)

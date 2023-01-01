@@ -77,13 +77,13 @@ class Load extends Model implements ModelInterface
 			switch($store)
 			{
 				case 'base64':
-					$value = base64_decode($value);
+					$value = base64_decode((string) $value);
 				break;
 				case 'json':
 					// check if there is a json string
 					if (JsonHelper::check($value))
 					{
-						$value = json_decode($value, true);
+						$value = json_decode((string) $value, true);
 					}
 				break;
 			}

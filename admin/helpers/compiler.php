@@ -19,6 +19,7 @@ use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\FileHelper;
+use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\MathHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
@@ -33,7 +34,6 @@ ComponentbuilderHelper::autoLoader();
  */
 class Compiler extends Infusion
 {
-
 
 	/**
 	 * The Temp path
@@ -106,19 +106,17 @@ class Compiler extends Infusion
 				// clear form component xml
 				$xmlPath        = $this->componentPath . '/'
 					. CFactory::_('Content')->get('component') . '.xml';
-				$componentXML   = ComponentbuilderHelper::getFileContents(
-					$xmlPath
-				);
-				$textToSite     = ComponentbuilderHelper::getBetween(
+				$componentXML   = FileHelper::getContent($xmlPath);
+				$textToSite     = GetHelper::between(
 					$componentXML, '<files folder="site">', '</files>'
 				);
-				$textToSiteLang = ComponentbuilderHelper::getBetween(
+				$textToSiteLang = GetHelper::between(
 					$componentXML, '<languages folder="site">', '</languages>'
 				);
 				$componentXML   = str_replace(
 					array('<files folder="site">' . $textToSite . "</files>",
 					      '<languages folder="site">' . $textToSiteLang
-					      . "</languages>"), array('', ''), $componentXML
+					      . "</languages>"), array('', ''), (string) $componentXML
 				);
 				$this->writeFile($xmlPath, $componentXML);
 			}
@@ -383,7 +381,7 @@ class Compiler extends Infusion
 			&& ArrayHelper::check($this->newFiles['dynamic']))
 		{
 			// get the bom file
-			$bom = ComponentbuilderHelper::getFileContents($this->bomPath);
+			$bom = FileHelper::getContent($this->bomPath);
 			// first we do the static files
 			foreach ($this->newFiles['static'] as $static)
 			{
@@ -640,7 +638,7 @@ class Compiler extends Infusion
 			$php = "<?php\n";
 		}
 		// get content of the file
-		$string = ComponentbuilderHelper::getFileContents($path);
+		$string = FileHelper::getContent($path);
 		// Trigger Event: jcb_ce_onGetFileContents
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onGetFileContents',
@@ -648,10 +646,10 @@ class Compiler extends Infusion
 			      &$view)
 		);
 		// see if we should add a BOM
-		if (strpos($string, Placefix::_h('BOM')) !== false)
+		if (strpos((string) $string, (string) Placefix::_h('BOM')) !== false)
 		{
 			list($wast, $code) = explode(
-				Placefix::_h('BOM'), $string
+				Placefix::_h('BOM'), (string) $string
 			);
 			$string = $php . $bom . $code;
 		}
@@ -678,7 +676,7 @@ class Compiler extends Infusion
 		// add answer back to file
 		$this->writeFile($path, $answer);
 		// count the file lines
-		$this->lineCount = $this->lineCount + substr_count($answer, PHP_EOL);
+		$this->lineCount = $this->lineCount + substr_count((string) $answer, PHP_EOL);
 	}
 
 	/**
@@ -884,7 +882,7 @@ class Compiler extends Infusion
 			$this->buildReadMeData();
 		}
 		// get the file
-		$string = ComponentbuilderHelper::getFileContents($path);
+		$string = FileHelper::getContent($path);
 		// update the file
 		$answer = CFactory::_('Placeholder')->update($string, CFactory::_('Content')->active);
 		// add to zip array
@@ -1506,7 +1504,7 @@ class Compiler extends Infusion
 			$_commentType = " -->";
 		}
 		// escape the code
-		$code = explode(PHP_EOL, $target['code']);
+		$code = explode(PHP_EOL, (string) $target['code']);
 		$code = PHP_EOL . $commentType . implode(
 				$_commentType . PHP_EOL . $commentType, $code
 			) . $_commentType . PHP_EOL;
@@ -1540,10 +1538,10 @@ class Compiler extends Infusion
 		// move to the position where we should add the data
 		fseek($fpFile, $position);
 		// Add the data
-		fwrite($fpFile, $data);
+		fwrite($fpFile, (string) $data);
 		// truncate file at the end of the data that was added
 		$remove = MathHelper::bc(
-			'add', $position, mb_strlen($data, '8bit')
+			'add', $position, mb_strlen((string) $data, '8bit')
 		);
 		ftruncate($fpFile, $remove);
 		// check if this was a replacement of data

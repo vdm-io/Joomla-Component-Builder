@@ -144,7 +144,7 @@ class InstallScript implements GetScriptInterface
 					else
 					{
 						// get the flight key
-						$flight = str_replace('php_', '', $method);
+						$flight = str_replace('php_', '', (string) $method);
 						// load the script to our bucket
 						$this->{$flight . 'Bucket'}[$type][]  = $extension->{$method . '_' . $type};
 						// show that the method is active

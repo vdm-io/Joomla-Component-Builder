@@ -32,7 +32,6 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 class Interpretation extends Fields
 {
 
-
 	/**
 	 * The global config Field Sets
 	 *
@@ -245,7 +244,7 @@ class Interpretation extends Fields
 	 */
 	protected $alignmentOptions
 		= array(1 => 'left', 2 => 'right', 3 => 'fullwidth', 4 => 'above',
-		        5 => 'under', 6 => 'leftside', 7 => 'rightside');
+			5 => 'under', 6 => 'leftside', 7 => 'rightside');
 
 	/**
 	 * Constructor
@@ -511,12 +510,12 @@ class Interpretation extends Fields
 			if (!empty($this->componentData->whmcs_key) && $basickey
 				&& !is_numeric($this->componentData->whmcs_key)
 				&& $this->componentData->whmcs_key === base64_encode(
-					base64_decode($this->componentData->whmcs_key, true)
+					base64_decode((string) $this->componentData->whmcs_key, true)
 				))
 			{
 				// basic decrypt data whmcs_key.
 				$this->componentData->whmcs_key = rtrim(
-					$basic->decryptString($this->componentData->whmcs_key), "\0"
+					(string) $basic->decryptString($this->componentData->whmcs_key), "\0"
 				);
 				// set the needed string to connect to whmcs
 				$key["kasier"] = $this->componentData->whmcs_url;
@@ -1111,8 +1110,8 @@ class Interpretation extends Fields
 				$updateXML[] = '</updates>';
 				// UPDATE_SERVER_XML
 				$name   = substr(
-					$this->componentData->update_server_url,
-					strrpos($this->componentData->update_server_url, '/')
+					(string) $this->componentData->update_server_url,
+					strrpos((string) $this->componentData->update_server_url, '/')
 					+ 1
 				);
 				$name   = explode('.xml', $name)[0];
@@ -1164,7 +1163,7 @@ class Interpretation extends Fields
 			$newJ       = array();
 			$newJ['id'] = (int) CFactory::_('Config')->component_id;
 			$newJ['component_version']
-			            = $this->componentData->component_version;
+				= $this->componentData->component_version;
 			// update the component with the new dynamic SQL
 			$modelJ = ComponentbuilderHelper::getModel('joomla_component');
 			$modelJ->save($newJ); // <-- to insure the history is also updated
@@ -1223,19 +1222,19 @@ class Interpretation extends Fields
 				$paceholders    = array(
 					$this->componentData->component_version => $this->componentData->old_component_version,
 					str_replace(
-						'.', '-', $this->componentData->component_version
+						'.', '-', (string) $this->componentData->component_version
 					)                                       => str_replace(
-						'.', '-', $this->componentData->old_component_version
+						'.', '-', (string) $this->componentData->old_component_version
 					),
 					str_replace(
-						'.', '_', $this->componentData->component_version
+						'.', '_', (string) $this->componentData->component_version
 					)                                       => str_replace(
-						'.', '_', $this->componentData->old_component_version
+						'.', '_', (string) $this->componentData->old_component_version
 					),
 					str_replace(
-						'.', '', $this->componentData->component_version
+						'.', '', (string) $this->componentData->component_version
 					)                                       => str_replace(
-						'.', '', $this->componentData->old_component_version
+						'.', '', (string) $this->componentData->old_component_version
 					)
 				);
 				$update_['url'] = CFactory::_('Placeholder')->update(
@@ -1265,7 +1264,7 @@ class Interpretation extends Fields
 	public function setUpdateXMLSQL(&$update, &$updateXML, &$addDynamicSQL)
 	{
 		// ensure version naming is correct
-		$update['version'] = preg_replace('/[^0-9.]+/', '', $update['version']);
+		$update['version'] = preg_replace('/[^0-9.]+/', '', (string) $update['version']);
 		// setup SQL
 		if (StringHelper::check($update['mysql']))
 		{
@@ -1283,7 +1282,7 @@ class Interpretation extends Fields
 				&& $this->componentData->old_component_version
 				== $update['version']))
 		{
-			$searchMySQL = preg_replace('/\s+/', '', $update['mysql']);
+			$searchMySQL = preg_replace('/\s+/', '', (string) $update['mysql']);
 			// add the updates to the SQL only if not found
 			foreach ($this->updateSQLBuilder as $search => $query)
 			{
@@ -1293,7 +1292,7 @@ class Interpretation extends Fields
 				}
 			}
 			// make sure no unneeded white space is added
-			$update['mysql'] = trim($update['mysql']);
+			$update['mysql'] = trim((string) $update['mysql']);
 			// update has been added
 			$addDynamicSQL = false;
 		}
@@ -1327,15 +1326,15 @@ class Interpretation extends Fields
 			// check if we have advance options set
 			if (isset($update['update_server_adv']) && $update['update_server_adv'])
 			{
-				$u_element = (isset($update['update_element']) && strlen($update['update_element']) > 0)
+				$u_element = (isset($update['update_element']) && strlen((string) $update['update_element']) > 0)
 					? $update['update_element'] : $u_element;
-				$u_server_type = (isset($update['update_server_type']) && strlen($update['update_server_type']) > 0)
+				$u_server_type = (isset($update['update_server_type']) && strlen((string) $update['update_server_type']) > 0)
 					? $update['update_server_type'] : $u_server_type;
-				$u_state = (isset($update['update_state']) && strlen($update['update_state']) > 0)
+				$u_state = (isset($update['update_state']) && strlen((string) $update['update_state']) > 0)
 					? $update['update_state'] : $u_state;
-				$u_target_version = (isset($update['update_target_version']) && strlen($update['update_target_version']) > 0)
+				$u_target_version = (isset($update['update_target_version']) && strlen((string) $update['update_target_version']) > 0)
 					? $update['update_target_version'] : $u_target_version;
-				$u_client = (isset($update['update_client']) && strlen($update['update_client']) > 0)
+				$u_client = (isset($update['update_client']) && strlen((string) $update['update_client']) > 0)
 					? $update['update_client'] : $u_client;
 			}
 			// build update xml
@@ -2327,7 +2326,7 @@ class Interpretation extends Fields
 			if (!StringHelper::check($target)
 				|| $target === 'menu')
 			{
-				$field = str_replace('display="menu"', '', $field);
+				$field = str_replace('display="menu"', '', (string) $field);
 				// we update fields that have options if not only added to menu
 				if ($target !== 'menu'
 					&& strpos($field, 'Option Set. -->') !== false
@@ -2445,7 +2444,7 @@ class Interpretation extends Fields
 						$getItem .= " ' . \$db->quoteName('"
 							. $the_get['join_field'] . "') . ')');";
 
-						$check = current(explode(".", $the_get['on_field']));
+						$check = current(explode(".", (string) $the_get['on_field']));
 					}
 
 					// set the method defaults
@@ -2497,7 +2496,7 @@ class Interpretation extends Fields
 					. $string . $ter['table_key']
 				);
 				// check if we should load this again
-				if (strpos($get['selection']['select'], $ter['table_key'])
+				if (strpos((string) $get['selection']['select'], (string) $ter['table_key'])
 					!== false
 					&& !isset($this->loadTracker[$key]))
 				{
@@ -2506,7 +2505,7 @@ class Interpretation extends Fields
 					$as                      = '';
 					$felt                    = '';
 					list($as, $felt) = array_map(
-						'trim', explode('.', $ter['table_key'])
+						'trim', explode('.', (string) $ter['table_key'])
 					);
 					if ($get['as'] == $as)
 					{
@@ -2724,7 +2723,7 @@ class Interpretation extends Fields
 				. $field
 			);
 			// check if we should load this again
-			if (strpos($get['selection']['select'], $field) !== false
+			if (strpos((string) $get['selection']['select'], (string) $field) !== false
 				&& !isset($this->loadTracker[$key])
 				&& ArrayHelper::check($array['decode']))
 			{
@@ -2761,7 +2760,7 @@ class Interpretation extends Fields
 						$decoder = $string . "->" . $field . " = base64_decode("
 							. $string . "->" . $field . ");";
 					}
-					elseif (strpos($decode, '_encryption') !== false
+					elseif (strpos((string) $decode, '_encryption') !== false
 						|| 'expert_mode' === $decode)
 					{
 						foreach ($this->cryptionTypes as $cryptionType)
@@ -2793,7 +2792,7 @@ class Interpretation extends Fields
 								))
 								{
 									$_placeholder_for_field
-										         = array('[[[field]]]' => $string
+										= array('[[[field]]]' => $string
 										. "->" . $field);
 									$fieldDecode .= CFactory::_('Placeholder')->update(
 										PHP_EOL . Indent::_(1) . $tab
@@ -2856,7 +2855,7 @@ class Interpretation extends Fields
 				. $get['key'] . $string . $field
 			);
 			// check if we should load this again
-			if (strpos($get['selection']['select'], $field) !== false
+			if (strpos((string) $get['selection']['select'], (string) $field) !== false
 				&& !isset($this->loadTracker[$key]))
 			{
 				// set the key
@@ -2929,7 +2928,7 @@ class Interpretation extends Fields
 				. $field
 			);
 			// check if we should load this again
-			if (strpos($get['selection']['select'], $field) !== false
+			if (strpos((string) $get['selection']['select'], (string) $field) !== false
 				&& !isset($this->loadTracker[$key]))
 			{
 				// set the key
@@ -3013,7 +3012,7 @@ class Interpretation extends Fields
 	public function checkJoint(&$default, &$get, &$asBucket)
 	{
 		// check if this function is not linked to the main call
-		list($aJoin) = explode('.', $get['on_field']);
+		list($aJoin) = explode('.', (string) $get['on_field']);
 		if (ArrayHelper::check($asBucket)
 			&& in_array(
 				$aJoin, $asBucket
@@ -3043,10 +3042,10 @@ class Interpretation extends Fields
 				$as     = '';
 				$field  = '';
 				$string = '';
-				if (strpos($ter['table_key'], '.') !== false)
+				if (strpos((string) $ter['table_key'], '.') !== false)
 				{
 					list($as, $field) = array_map(
-						'trim', explode('.', $ter['table_key'])
+						'trim', explode('.', (string) $ter['table_key'])
 					);
 				}
 				switch ($ter['filter_type'])
@@ -3240,7 +3239,7 @@ class Interpretation extends Fields
 			foreach ($group as $gr)
 			{
 				list($as, $field) = array_map(
-					'trim', explode('.', $gr['table_key'])
+					'trim', explode('.', (string) $gr['table_key'])
 				);
 				// set the string
 				$string = "\$query->group('" . $gr['table_key'] . "');";
@@ -3273,7 +3272,7 @@ class Interpretation extends Fields
 			foreach ($order as $or)
 			{
 				list($as, $field) = array_map(
-					'trim', explode('.', $or['table_key'])
+					'trim', explode('.', (string) $or['table_key'])
 				);
 				// check if random
 				if ('RAND' === $or['direction'])
@@ -3319,13 +3318,13 @@ class Interpretation extends Fields
 				$field = '';
 				$value = '';
 				list($as, $field) = array_map(
-					'trim', explode('.', $whe['table_key'])
+					'trim', explode('.', (string) $whe['table_key'])
 				);
 				if (is_numeric($whe['value_key']))
 				{
 					$value = " " . $whe['value_key'] . "');";
 				}
-				elseif (strpos($whe['value_key'], '$') !== false)
+				elseif (strpos((string) $whe['value_key'], '$') !== false)
 				{
 					if ($whe['operator'] === 'IN'
 						|| $whe['operator'] === 'NOT IN')
@@ -3339,9 +3338,9 @@ class Interpretation extends Fields
 							. "));";
 					}
 				}
-				elseif (strpos($whe['value_key'], '.') !== false)
+				elseif (strpos((string) $whe['value_key'], '.') !== false)
 				{
-					if (strpos($whe['value_key'], "'") !== false)
+					if (strpos((string) $whe['value_key'], "'") !== false)
 					{
 						$value = " ' . \$db->quote(" . $whe['value_key']
 							. "));";
@@ -3469,9 +3468,9 @@ class Interpretation extends Fields
 	 */
 	public function removeAsDot($string, $type = '')
 	{
-		if (strpos($string, '.') !== false)
+		if (strpos((string) $string, '.') !== false)
 		{
-			list($dump, $field) = array_map('trim', explode('.', $string));
+			list($dump, $field) = array_map('trim', explode('.', (string) $string));
 		}
 		else
 		{
@@ -3844,7 +3843,7 @@ class Interpretation extends Fields
 			if ($get->addcalculation == 1)
 			{
 				$get->php_calculation = (array) explode(
-					PHP_EOL, CFactory::_('Placeholder')->update_(
+					PHP_EOL, (string) CFactory::_('Placeholder')->update_(
 					$get->php_calculation
 				)
 				);
@@ -3875,7 +3874,7 @@ class Interpretation extends Fields
 					. "\$this->_item[\$pk] = \$data;";
 			}
 			// only update if dispacher placholder is found
-			if (strpos($getItem, Placefix::_h('DISPATCHER'))
+			if (strpos($getItem, (string) Placefix::_h('DISPATCHER'))
 				!== false)
 			{
 				// check if the dispather should be added
@@ -3957,7 +3956,7 @@ class Interpretation extends Fields
 						$view, $view->code, '', 'custom'
 					);
 					$type
-					      = 'mixed  item data object on success, false on failure.';
+						= 'mixed  item data object on success, false on failure.';
 				}
 				elseif ($view->gettype == 4)
 				{
@@ -4043,7 +4042,7 @@ class Interpretation extends Fields
 						) . " return items";
 					$main .= PHP_EOL . Indent::_(2) . "return \$items;";
 					$type
-					      = 'mixed  An array of objects on success, false on failure.';
+						= 'mixed  An array of objects on success, false on failure.';
 				}
 				// load the main mehtod
 				$methods .= $this->setMainCustomMehtod(
@@ -4446,9 +4445,9 @@ class Interpretation extends Fields
 						}
 						// set joined values
 						$placeholders = array(Placefix::_h('TAB') => Indent::_(2),
-						                      Placefix::_h('STRING') => '$item');
+							Placefix::_h('STRING') => '$item');
 						$joinedChecker
-						              = (isset($this->otherJoin[CFactory::_('Config')->build_target][$default['code']][$default['as']])
+							= (isset($this->otherJoin[CFactory::_('Config')->build_target][$default['code']][$default['as']])
 							&& ArrayHelper::check(
 								$this->otherJoin[CFactory::_('Config')->build_target][$default['code']][$default['as']]
 							))
@@ -4659,7 +4658,7 @@ class Interpretation extends Fields
 			}
 		}
 		// only update if dispacher placholder is found
-		if (strpos($methods, Placefix::_h('DISPATCHER')) !== false)
+		if (strpos($methods, (string) Placefix::_h('DISPATCHER')) !== false)
 		{
 			// check if the dispather should be added
 			if (!isset($this->JEventDispatcher)
@@ -4686,8 +4685,8 @@ class Interpretation extends Fields
 		if (isset($get['key']) && isset($get['as']))
 		{
 			$key                  = substr(
-				StringHelper::safe(
-					preg_replace('/[0-9]+/', '', md5($get['key'])), 'F'
+				(string) StringHelper::safe(
+					preg_replace('/[0-9]+/', '', md5((string) $get['key'])), 'F'
 				), 0, 4
 			);
 			$method['on_field']   = (isset($get['on_field']))
@@ -4893,7 +4892,7 @@ class Interpretation extends Fields
 				}
 			}
 			// only update if dispacher placholder is found
-			if (strpos($getItem, Placefix::_h('DISPATCHER'))
+			if (strpos($getItem, (string) Placefix::_h('DISPATCHER'))
 				!== false)
 			{
 				// check if the dispather should be added
@@ -4921,7 +4920,7 @@ class Interpretation extends Fields
 			if ($get->addcalculation == 1)
 			{
 				$get->php_calculation = (array) explode(
-					PHP_EOL, $get->php_calculation
+					PHP_EOL, (string) $get->php_calculation
 				);
 				if (ArrayHelper::check($get->php_calculation))
 				{
@@ -5084,7 +5083,7 @@ class Interpretation extends Fields
 				foreach ($view['settings']->custom_get as $custom_get)
 				{
 					$custom_get_name = str_replace(
-						'get', '', $custom_get->getcustom
+						'get', '', (string) $custom_get->getcustom
 					);
 					$method          .= PHP_EOL . Indent::_(2) . "\$this->"
 						. StringHelper::safe($custom_get_name)
@@ -5095,7 +5094,7 @@ class Interpretation extends Fields
 			if ($view['settings']->add_php_jview_display == 1)
 			{
 				$view['settings']->php_jview_display = (array) explode(
-					PHP_EOL, $view['settings']->php_jview_display
+					PHP_EOL, (string) $view['settings']->php_jview_display
 				);
 				if (ArrayHelper::check(
 					$view['settings']->php_jview_display
@@ -5399,7 +5398,7 @@ class Interpretation extends Fields
 		if ($view['settings']->add_php_document == 1)
 		{
 			$view['settings']->php_document = (array) explode(
-				PHP_EOL, $view['settings']->php_document
+				PHP_EOL, (string) $view['settings']->php_document
 			);
 			if (ArrayHelper::check(
 				$view['settings']->php_document
@@ -5559,7 +5558,7 @@ class Interpretation extends Fields
 							. "JToolBarHelper::custom('" . $viewCodeName . "."
 							. $custom_button['method'] . "', '"
 							. $custom_button['icomoon'] . " custom-button-"
-							. strtolower($custom_button['method']) . "', '', '"
+							. strtolower((string) $custom_button['method']) . "', '', '"
 							. $keyLang
 							. "', false);";
 						$buttons[] = Indent::_(1) . $tab . Indent::_(1) . "}";
@@ -5601,7 +5600,7 @@ class Interpretation extends Fields
 								. "."
 								. $custom_button['method'] . "', '"
 								. $custom_button['icomoon'] . " custom-button-"
-								. strtolower($custom_button['method'])
+								. strtolower((string) $custom_button['method'])
 								. "', '', '"
 								. $keyLang . "', false);";
 							$this->onlyFunctionButton[$viewsCodeName][]
@@ -5626,7 +5625,7 @@ class Interpretation extends Fields
 								. "."
 								. $custom_button['method'] . "', '"
 								. $custom_button['icomoon'] . " custom-button-"
-								. strtolower($custom_button['method'])
+								. strtolower((string) $custom_button['method'])
 								. "', '', '"
 								. $keyLang . "', '" . $validateSelection
 								. "');";
@@ -5661,7 +5660,7 @@ class Interpretation extends Fields
 				{
 					// set the custom buttons CUSTOM_BUTTONS_METHOD
 					CFactory::_('Content')->set_($viewsCodeName,$TARGET
-					. '_CUSTOM_BUTTONS_METHOD_LIST', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+						. '_CUSTOM_BUTTONS_METHOD_LIST', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 							$view['settings']->php_model_list
 						));
 				}
@@ -5676,7 +5675,7 @@ class Interpretation extends Fields
 				{
 					// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
 					CFactory::_('Content')->set_($viewCodeName,$TARGET
-					. '_CUSTOM_BUTTONS_CONTROLLER', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+						. '_CUSTOM_BUTTONS_CONTROLLER', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 							$view['settings']->php_controller
 						));
 					if ('site' === CFactory::_('Config')->build_target)
@@ -5719,7 +5718,7 @@ class Interpretation extends Fields
 						$view['settings']->php_document
 					)
 					&& strpos(
-						$view['settings']->php_document,
+						(string) $view['settings']->php_document,
 						'/submitbutton.js'
 					) === false))
 			{
@@ -5731,7 +5730,7 @@ class Interpretation extends Fields
 			// insure the form is added (only if no form exist)
 			if (isset($view['settings']->default)
 				&& strpos(
-					$view['settings']->default, '<form'
+					(string) $view['settings']->default, '<form'
 				) === false)
 			{
 				$this->addCustomForm[CFactory::_('Config')->build_target][$viewCodeName]
@@ -5794,7 +5793,7 @@ class Interpretation extends Fields
 		if ($view['settings']->add_css_document == 1)
 		{
 			$view['settings']->css_document = (array) explode(
-				PHP_EOL, $view['settings']->css_document
+				PHP_EOL, (string) $view['settings']->css_document
 			);
 			if (ArrayHelper::check(
 				$view['settings']->css_document
@@ -5833,8 +5832,8 @@ class Interpretation extends Fields
 			// add file to view
 			$target = array(CFactory::_('Config')->build_target => $view['settings']->code);
 			$config = array(Placefix::_h('CREATIONDATE')                          => $created,
-			                Placefix::_h('BUILDDATE') => $modified,
-			                Placefix::_h('VERSION')                          => $view['settings']->version);
+				Placefix::_h('BUILDDATE') => $modified,
+				Placefix::_h('VERSION')                          => $view['settings']->version);
 			$this->buildDynamique($target, 'javascript_file', false, $config);
 			// set path
 			if ('site' === CFactory::_('Config')->build_target)
@@ -5869,7 +5868,7 @@ class Interpretation extends Fields
 		if ($view['settings']->add_js_document == 1)
 		{
 			$view['settings']->js_document = (array) explode(
-				PHP_EOL, $view['settings']->js_document
+				PHP_EOL, (string) $view['settings']->js_document
 			);
 			if (ArrayHelper::check(
 				$view['settings']->js_document
@@ -6143,7 +6142,7 @@ class Interpretation extends Fields
 					$setter .= PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 							str_replace(
 								'$document->', '$this->document->',
-								$this->libraries[$id]->document
+								(string) $this->libraries[$id]->document
 							)
 						);
 				}
@@ -6237,14 +6236,14 @@ class Interpretation extends Fields
 					// update the root path
 					$path = $this->getScriptRootPath($url['path']);
 					// load document script
-					$scripts[md5($url['path'])] = $this->setIncludeLibScript(
+					$scripts[md5((string) $url['path'])] = $this->setIncludeLibScript(
 						$path
 					);
 					// load url also if not building document
 					if (!$buildDoc)
 					{
 						// load document script
-						$scripts[md5($url['url'])] = $this->setIncludeLibScript(
+						$scripts[md5((string) $url['url'])] = $this->setIncludeLibScript(
 							$url['url'], false
 						);
 					}
@@ -6252,7 +6251,7 @@ class Interpretation extends Fields
 				else
 				{
 					// load document script
-					$scripts[md5($url['url'])] = $this->setIncludeLibScript(
+					$scripts[md5((string) $url['url'])] = $this->setIncludeLibScript(
 						$url['url'], false
 					);
 				}
@@ -6265,7 +6264,7 @@ class Interpretation extends Fields
 			// set all the files
 			foreach ($this->libraries[$id]->files as $file)
 			{
-				$path = '/' . trim($file['path'], '/');
+				$path = '/' . trim((string) $file['path'], '/');
 				// check if path has new file name (has extetion)
 				$pathInfo = pathinfo($path);
 				// update the root path
@@ -6280,9 +6279,9 @@ class Interpretation extends Fields
 				else
 				{
 					// load document script
-					$scripts[md5($path . '/' . trim($file['file'], '/'))]
+					$scripts[md5($path . '/' . trim((string) $file['file'], '/'))]
 						= $this->setIncludeLibScript(
-						$_path . '/' . trim($file['file'], '/')
+						$_path . '/' . trim((string) $file['file'], '/')
 					);
 				}
 			}
@@ -6298,7 +6297,7 @@ class Interpretation extends Fields
 			{
 				if (isset($folder['path']) && isset($folder['folder']))
 				{
-					$path = '/' . trim($folder['path'], '/');
+					$path = '/' . trim((string) $folder['path'], '/');
 					if (isset($folder['rename']) && 1 == $folder['rename'])
 					{
 						if ($_paths = FileHelper::getPaths(
@@ -6310,7 +6309,7 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$path = $path . '/' . trim($folder['folder'], '/');
+						$path = $path . '/' . trim((string) $folder['folder'], '/');
 						if ($_paths = FileHelper::getPaths(
 							$this->componentPath . $path
 						))
@@ -6328,9 +6327,9 @@ class Interpretation extends Fields
 				// load per path
 				foreach ($paths as $path)
 				{
-					$scripts[md5($root . '/' . trim($path, '/'))]
+					$scripts[md5($root . '/' . trim((string) $path, '/'))]
 						= $this->setIncludeLibScript(
-						$_root . '/' . trim($path, '/')
+						$_root . '/' . trim((string) $path, '/')
 					);
 				}
 			}
@@ -6362,7 +6361,7 @@ class Interpretation extends Fields
 		// insure we have the path info
 		if (!$pathInfo)
 		{
-			$pathInfo = pathinfo($path);
+			$pathInfo = pathinfo((string) $path);
 		}
 		// set the local string
 		$JURI = '';
@@ -6387,7 +6386,7 @@ class Interpretation extends Fields
 						. 'Helper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/css");';
 					break;
 				case 'php':
-					if (strpos($path, 'http') === false)
+					if (strpos((string) $path, 'http') === false)
 					{
 						return 'require_once("' . $path . '");';
 					}
@@ -6400,31 +6399,31 @@ class Interpretation extends Fields
 
 	protected function getScriptRootPath($root)
 	{
-		if (strpos($root, '/media/') !== false
-			&& strpos($root, '/admin/') === false
-			&& strpos($root, '/site/') === false)
+		if (strpos((string) $root, '/media/') !== false
+			&& strpos((string) $root, '/admin/') === false
+			&& strpos((string) $root, '/site/') === false)
 		{
 			return str_replace(
-				'/media/', '/media/com_' . CFactory::_('Config')->component_code_name . '/', $root
+				'/media/', '/media/com_' . CFactory::_('Config')->component_code_name . '/', (string) $root
 			);
 		}
-		elseif (strpos($root, '/media/') === false
-			&& strpos($root, '/admin/') !== false
-			&& strpos($root, '/site/') === false)
+		elseif (strpos((string) $root, '/media/') === false
+			&& strpos((string) $root, '/admin/') !== false
+			&& strpos((string) $root, '/site/') === false)
 		{
 			return str_replace(
 				'/admin/',
 				'/administrator/components/com_' . CFactory::_('Config')->component_code_name
-				. '/', $root
+				. '/', (string) $root
 			);
 		}
-		elseif (strpos($root, '/media/') === false
-			&& strpos($root, '/admin/') === false
-			&& strpos($root, '/site/') !== false)
+		elseif (strpos((string) $root, '/media/') === false
+			&& strpos((string) $root, '/admin/') === false
+			&& strpos((string) $root, '/site/') !== false)
 		{
 			return str_replace(
 				'/site/', '/components/com_' . CFactory::_('Config')->component_code_name . '/',
-				$root
+				(string) $root
 			);
 		}
 
@@ -6735,28 +6734,28 @@ class Interpretation extends Fields
 			{
 				// does this view have a custom limitbox position
 				$has_limitbox = (strpos(
-						$view['settings']->default,
-						Placefix::_('LIMITBOX')
+						(string) $view['settings']->default,
+						(string) Placefix::_('LIMITBOX')
 					) !== false);
 				// does this view have a custom pages counter position
 				$has_pagescounter = (strpos(
-						$view['settings']->default,
-						Placefix::_('PAGESCOUNTER')
+						(string) $view['settings']->default,
+						(string) Placefix::_('PAGESCOUNTER')
 					) !== false);
 				// does this view have a custom pages links position
 				$has_pageslinks = (strpos(
-						$view['settings']->default,
-						Placefix::_('PAGESLINKS')
+						(string) $view['settings']->default,
+						(string) Placefix::_('PAGESLINKS')
 					) !== false);
 				// does this view have a custom pagination start position
 				$has_pagination_start = (strpos(
-						$view['settings']->default,
-						Placefix::_('PAGINATIONSTART')
+						(string) $view['settings']->default,
+						(string) Placefix::_('PAGINATIONSTART')
 					) !== false);
 				// does this view have a custom pagination end position
 				$has_pagination_end = (strpos(
-						$view['settings']->default,
-						Placefix::_('PAGINATIONEND')
+						(string) $view['settings']->default,
+						(string) Placefix::_('PAGINATIONEND')
 					) !== false);
 
 				// add pagination start
@@ -6854,7 +6853,7 @@ class Interpretation extends Fields
 				CFactory::_('Placeholder')->remove_('PAGINATIONEND');
 
 				// insure the form is added (only if no form exist)
-				if (strpos($view['settings']->default, '<form') === false)
+				if (strpos((string) $view['settings']->default, '<form') === false)
 				{
 					$this->addCustomForm[CFactory::_('Config')->build_target][$view['settings']->code]
 						= true;
@@ -6868,7 +6867,7 @@ class Interpretation extends Fields
 				// insure the form is added (only if no form exist)
 				if ('site' !== CFactory::_('Config')->build_target
 					&& strpos(
-						$view['settings']->default, '<form'
+						(string) $view['settings']->default, '<form'
 					) === false)
 				{
 					$this->addCustomForm[CFactory::_('Config')->build_target][$view['settings']->code]
@@ -6946,7 +6945,7 @@ class Interpretation extends Fields
 		{
 			// add the script only if there is none set
 			if (strpos(
-					$view['settings']->default,
+					(string) $view['settings']->default,
 					'Joomla.submitbutton = function('
 				) === false)
 			{
@@ -6979,7 +6978,7 @@ class Interpretation extends Fields
 		if ($view['settings']->add_php_view == 1)
 		{
 			$view['settings']->php_view = (array) explode(
-				PHP_EOL, $view['settings']->php_view
+				PHP_EOL, (string) $view['settings']->php_view
 			);
 			if (ArrayHelper::check($view['settings']->php_view))
 			{
@@ -7011,8 +7010,8 @@ class Interpretation extends Fields
 				// build the file
 				$target = array(CFactory::_('Config')->build_target => $view['settings']->code);
 				$config = array(Placefix::_h('CREATIONDATE') => $created,
-				                Placefix::_h('BUILDDATE') => $modified,
-				                Placefix::_h('VERSION') => $view['settings']->version);
+					Placefix::_h('BUILDDATE') => $modified,
+					Placefix::_h('VERSION') => $view['settings']->version);
 				$this->buildDynamique($target, 'template', $template, $config);
 				// set the file data
 				$TARGET = StringHelper::safe(
@@ -7020,7 +7019,7 @@ class Interpretation extends Fields
 				);
 				// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
 				CFactory::_('Content')->set_($view['settings']->code . '_'
-				. $template, $TARGET . '_TEMPLATE_BODY', PHP_EOL . CFactory::_('Placeholder')->update_(
+					. $template, $TARGET . '_TEMPLATE_BODY', PHP_EOL . CFactory::_('Placeholder')->update_(
 						$data['html']
 					));
 				// SITE_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
@@ -7036,7 +7035,7 @@ class Interpretation extends Fields
 	{
 		if (StringHelper::check($php))
 		{
-			$php_view = (array) explode(PHP_EOL, $php);
+			$php_view = (array) explode(PHP_EOL, (string) $php);
 			if (ArrayHelper::check($php_view))
 			{
 				$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
@@ -7065,7 +7064,7 @@ class Interpretation extends Fields
 					CFactory::_('Config')->build_target, 'U'
 				);
 				// SITE_LAYOUT_CODE <<<DYNAMIC>>>
-				$php_view = (array) explode(PHP_EOL, $data['php_view']);
+				$php_view = (array) explode(PHP_EOL, (string) $data['php_view']);
 				if (ArrayHelper::check($php_view))
 				{
 					$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
@@ -7078,7 +7077,7 @@ class Interpretation extends Fields
 				else
 				{
 					CFactory::_('Content')->set_($layout,$TARGET
-					. '_LAYOUT_CODE',  '');
+						. '_LAYOUT_CODE',  '');
 				}
 				// SITE_LAYOUT_BODY <<<DYNAMIC>>>
 				CFactory::_('Content')->set_($layout,$TARGET . '_LAYOUT_BODY',
@@ -7089,8 +7088,8 @@ class Interpretation extends Fields
 				// SITE_LAYOUT_HEADER <<<DYNAMIC>>>
 				CFactory::_('Content')->set_($layout, $TARGET . '_LAYOUT_HEADER',
 					(($header = $this->setFileHeader(
-						str_replace('_', '.', CFactory::_('Config')->build_target) . '.layout',
-						$layout, false)) !== false) ? PHP_EOL . PHP_EOL . $header : ''
+							str_replace('_', '.', (string) CFactory::_('Config')->build_target) . '.layout',
+							$layout, false)) !== false) ? PHP_EOL . PHP_EOL . $header : ''
 				);
 			}
 		}
@@ -7126,7 +7125,7 @@ class Interpretation extends Fields
 							if (File::exists($doc['path']))
 							{
 								$string
-									            = FileHelper::getContent(
+									= FileHelper::getContent(
 									$doc['path']
 								);
 								$buket[$view][] = $this->getInbetweenStrings(
@@ -7256,7 +7255,7 @@ class Interpretation extends Fields
 					)
 					{
 						$_placeholder_for_field
-							    = array('[[[field]]]' => '$item->'
+							= array('[[[field]]]' => '$item->'
 							. $baseString);
 						$script .= CFactory::_('Placeholder')->update(
 							PHP_EOL . Indent::_(3) . implode(
@@ -7315,7 +7314,7 @@ class Interpretation extends Fields
 				{
 					$makeArray = ',true';
 				}
-				elseif (strpos($jsonString, 'group') !== false)
+				elseif (strpos((string) $jsonString, 'group') !== false)
 				{
 					$makeArray = ',true';
 				}
@@ -7553,7 +7552,7 @@ class Interpretation extends Fields
 					)
 					{
 						$_placeholder_for_field
-							    = array('[[[field]]]' => "\$data['"
+							= array('[[[field]]]' => "\$data['"
 							. $baseString . "']");
 						$script .= CFactory::_('Placeholder')->update(
 							PHP_EOL . Indent::_(2) . implode(
@@ -8683,7 +8682,7 @@ class Interpretation extends Fields
 			{
 				$core_access = 'access';
 				$accessHistory
-				             = ',{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"}';
+					= ',{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"}';
 			}
 			else
 			{
@@ -8936,7 +8935,7 @@ class Interpretation extends Fields
 							{
 								$viewTable = str_replace(
 									'#__' . CFactory::_('Config')->component_code_name . '_', '',
-									$get['selection']['table']
+									(string) $get['selection']['table']
 								);
 							}
 						}
@@ -10430,7 +10429,7 @@ class Interpretation extends Fields
 				{
 					// build the update array
 					$this->updateSQLBuilder["ALTERTABLE`#__" . $component . "_"
-					. $view . "`" . trim($easy['row_format'])]
+					. $view . "`" . trim((string) $easy['row_format'])]
 						= "ALTER TABLE `#__" . $component . "_" . $view . "`"
 						. $easy['row_format'] . ";";
 				}
@@ -10473,7 +10472,7 @@ class Interpretation extends Fields
 				)
 				{
 					$placeholders = array(Placefix::_('component') => $component,
-					                      Placefix::_('view') => $for);
+						Placefix::_('view') => $for);
 					$db           .= CFactory::_('Placeholder')->update(
 							$customSql, $placeholders
 						) . PHP_EOL . PHP_EOL;
@@ -11489,7 +11488,7 @@ class Interpretation extends Fields
 				{
 					$blankClass = '';
 					if (($join_item =
-						CFactory::_('Registry')->get('builder.list_join.' . $nameListCode . '.' . (int) $join)) !== null)
+							CFactory::_('Registry')->get('builder.list_join.' . $nameListCode . '.' . (int) $join)) !== null)
 					{
 						// code block
 						$field['[field=' . (int) $join . ']']
@@ -11516,7 +11515,7 @@ class Interpretation extends Fields
 					. CFactory::_('Placeholder')->update_(
 						str_replace(
 							array_keys($field), array_values($field),
-							$field_relations['set']
+							(string) $field_relations['set']
 						)
 					) . PHP_EOL . Indent::_(3) . "</div>";
 			}
@@ -12036,8 +12035,8 @@ class Interpretation extends Fields
 	{
 		// set component name
 		$component = $this->componentCodeName;
-		$Component = ucfirst($component);
-		$COMPONENT = strtoupper($component);
+		$Component = ucfirst((string) $component);
+		$COMPONENT = strtoupper((string) $component);
 		// set uppercase view
 		$VIEWS = strtoupper($nameListCode);
 		// build the body
@@ -12582,7 +12581,7 @@ class Interpretation extends Fields
 				$body .= $main;
 				$body .= PHP_EOL . Indent::_(2) . "</div>";
 				// add main body bottom div if needed
-				if (strlen($mainbottom) > 0)
+				if (strlen((string) $mainbottom) > 0)
 				{
 					// add the main bottom
 					$body .= PHP_EOL . Indent::_(2)
@@ -12636,7 +12635,7 @@ class Interpretation extends Fields
 			}
 			$body .= PHP_EOL . "</div>";
 			// check if left has been set
-			if (strlen($leftside) > 0)
+			if (strlen((string) $leftside) > 0)
 			{
 				$left = '<div class="span' . $sidewidth . '">' . $leftside
 					. PHP_EOL . "</div>";
@@ -12646,7 +12645,7 @@ class Interpretation extends Fields
 				$left = '';
 			}
 			// check if right has been set
-			if (strlen($rightside) > 0)
+			if (strlen((string) $rightside) > 0)
 			{
 				$right = '<div class="span' . $sidewidth . '">' . $rightside
 					. PHP_EOL . "</div>";
@@ -12703,12 +12702,12 @@ class Interpretation extends Fields
 				{
 					$keys[$linkedView['adminview']]
 						= array('key'       => $linkedView['key'],
-						        'parentKey' => $linkedView['parentkey']);
+						'parentKey' => $linkedView['parentkey']);
 				}
 				else
 				{
 					$keys[$linkedView['adminview']] = array('key'       => null,
-					                                        'parentKey' => null);
+						'parentKey' => null);
 				}
 				// set the button switches
 				if (isset($linkedView['addnew']))
@@ -13522,7 +13521,7 @@ class Interpretation extends Fields
 			$placeholder                                    = CFactory::_('Placeholder')->active;
 			$placeholder[Placefix::_h('LAYOUTITEMS')] = $items;
 			// OVERRIDE_LAYOUT_CODE <<<DYNAMIC>>>
-			$php_view = (array) explode(PHP_EOL, $data['php_view']);
+			$php_view = (array) explode(PHP_EOL, (string) $data['php_view']);
 			if (ArrayHelper::check($php_view))
 			{
 				$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
@@ -13545,9 +13544,9 @@ class Interpretation extends Fields
 			// OVERRIDE_LAYOUT_HEADER <<<DYNAMIC>>>
 			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'OVERRIDE_LAYOUT_HEADER',
 				(($header = $this->setFileHeader(
-					'override.layout',
-					$layoutName, false)
-				) !== false) ? PHP_EOL . PHP_EOL . $header : ''
+						'override.layout',
+						$layoutName, false)
+					) !== false) ? PHP_EOL . PHP_EOL . $header : ''
 			);
 
 			// since override was found
@@ -13796,28 +13795,28 @@ class Interpretation extends Fields
 			);
 			// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
 			CFactory::_('Content')->set_($nameSingleCode, 'LINKEDVIEWTABLESCRIPTS', $this->setFootableScripts());
-			if (strpos($parentKey, '-R>') !== false
-				|| strpos($parentKey, '-A>') !== false)
+			if (strpos((string) $parentKey, '-R>') !== false
+				|| strpos((string) $parentKey, '-A>') !== false)
 			{
-				list($parent_key) = explode('-', $parentKey);
+				list($parent_key) = explode('-', (string) $parentKey);
 			}
-			elseif (strpos($parentKey, '-OR>') !== false)
+			elseif (strpos((string) $parentKey, '-OR>') !== false)
 			{
 				// this is not good... (TODO)
-				$parent_keys = explode('-OR>', $parentKey);
+				$parent_keys = explode('-OR>', (string) $parentKey);
 			}
 			else
 			{
 				$parent_key = $parentKey;
 			}
 
-			if (strpos($key, '-R>') !== false || strpos($key, '-A>') !== false)
+			if (strpos((string) $key, '-R>') !== false || strpos((string) $key, '-A>') !== false)
 			{
-				list($_key) = explode('-', $key);
+				list($_key) = explode('-', (string) $key);
 			}
-			elseif (strpos($key, '-OR>') !== false)
+			elseif (strpos((string) $key, '-OR>') !== false)
 			{
-				$_key = str_replace('-OR>', '', $key);
+				$_key = str_replace('-OR>', '', (string) $key);
 			}
 			else
 			{
@@ -14438,14 +14437,14 @@ class Interpretation extends Fields
 		$query .= $this->setCustomQuery($nameListCode, $nameSingleCode);
 		if (StringHelper::check($globalKey) && $key
 			&& strpos(
-				$key, '-R>'
+				(string) $key, '-R>'
 			) === false
-			&& strpos($key, '-A>') === false
-			&& strpos($key, '-OR>') === false
+			&& strpos((string) $key, '-A>') === false
+			&& strpos((string) $key, '-OR>') === false
 			&& $parentKey
-			&& strpos($parentKey, '-R>') === false
-			&& strpos($parentKey, '-A>') === false
-			&& strpos($parentKey, '-OR>') === false)
+			&& strpos((string) $parentKey, '-R>') === false
+			&& strpos((string) $parentKey, '-A>') === false
+			&& strpos((string) $parentKey, '-OR>') === false)
 		{
 			$query .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -14470,13 +14469,13 @@ class Interpretation extends Fields
 				. " = -5');";
 			$query .= PHP_EOL . Indent::_(2) . "}";
 		}
-		elseif (strpos($parentKey, '-OR>') !== false
-			|| strpos($key, '-OR>') !== false)
+		elseif (strpos((string) $parentKey, '-OR>') !== false
+			|| strpos((string) $key, '-OR>') !== false)
 		{
 			// get both strings
-			if (strpos($key, '-OR>') !== false)
+			if (strpos((string) $key, '-OR>') !== false)
 			{
-				$ORarray = explode('-OR>', $key);
+				$ORarray = explode('-OR>', (string) $key);
 			}
 			else
 			{
@@ -14644,11 +14643,11 @@ class Interpretation extends Fields
 		// filter by child repetable field values
 		if (StringHelper::check($globalKey) && $key
 			&& strpos(
-				$key, '-R>'
+				(string) $key, '-R>'
 			) !== false
-			&& strpos($key, '-A>') === false)
+			&& strpos((string) $key, '-A>') === false)
 		{
-			list($field, $target) = explode('-R>', $key);
+			list($field, $target) = explode('-R>', (string) $key);
 			$query .= PHP_EOL . PHP_EOL . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Filter by " . $globalKey . " in this Repetable Field";
@@ -14688,9 +14687,9 @@ class Interpretation extends Fields
 		// filter by child array field values
 		if (StringHelper::check($globalKey) && $key
 			&& strpos(
-				$key, '-R>'
+				(string) $key, '-R>'
 			) === false
-			&& strpos($key, '-A>') !== false)
+			&& strpos((string) $key, '-A>') !== false)
 		{
 			$query .= PHP_EOL . PHP_EOL . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -14704,7 +14703,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(4)
 				. "foreach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . Indent::_(4) . "{";
-			list($bin, $target) = explode('-A>', $key);
+			list($bin, $target) = explode('-A>', (string) $key);
 			if (StringHelper::check($target))
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if ("
@@ -14756,11 +14755,11 @@ class Interpretation extends Fields
 		// filter by parent repetable field values
 		if (StringHelper::check($globalKey) && $key
 			&& strpos(
-				$parentKey, '-R>'
+				(string) $parentKey, '-R>'
 			) !== false
-			&& strpos($parentKey, '-A>') === false)
+			&& strpos((string) $parentKey, '-A>') === false)
 		{
-			list($bin, $target) = explode('-R>', $parentKey);
+			list($bin, $target) = explode('-R>', (string) $parentKey);
 			$query .= PHP_EOL . PHP_EOL . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Filter by " . $_key . " Repetable Field";
@@ -14801,9 +14800,9 @@ class Interpretation extends Fields
 		// filter by parent array field values
 		if (StringHelper::check($globalKey) && $key
 			&& strpos(
-				$parentKey, '-R>'
+				(string) $parentKey, '-R>'
 			) === false
-			&& strpos($parentKey, '-A>') !== false)
+			&& strpos((string) $parentKey, '-A>') !== false)
 		{
 			$query .= PHP_EOL . PHP_EOL . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -14817,7 +14816,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(4)
 				. "foreach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . Indent::_(4) . "{";
-			list($bin, $target) = explode('-A>', $parentKey);
+			list($bin, $target) = explode('-A>', (string) $parentKey);
 			if (StringHelper::check($target))
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if (\$item->" . $_key
@@ -15020,8 +15019,8 @@ class Interpretation extends Fields
 	public function setGetItemsModelMethod(&$nameSingleCode, &$nameListCode,
 	                                       $config
 	                                       = array('functionName' => 'getExportData',
-	                                               'docDesc'      => 'Method to get list export data.',
-	                                               'type'         => 'export')
+		                                       'docDesc'      => 'Method to get list export data.',
+		                                       'type'         => 'export')
 	)
 	{
 		// start the query string
@@ -15553,7 +15552,7 @@ class Interpretation extends Fields
 			$categoryCodeName = $this->categoryBuilder[$nameListCode]['code'];
 			$addCategory      = true;
 			$addCategoryFilter
-			                  = $this->categoryBuilder[$nameListCode]['filter'];
+				= $this->categoryBuilder[$nameListCode]['filter'];
 		}
 		else
 		{
@@ -15977,7 +15976,7 @@ class Interpretation extends Fields
 				{
 					$filterQuery .= PHP_EOL . Indent::_(2) . "//"
 						. Line::_(__Line__, __Class__) . " Filter by "
-						. ucwords($filter['code']) . ".";
+						. ucwords((string) $filter['code']) . ".";
 					// we only add multi filter option if new filter type
 					// and we have multi filter set for this field (2 = topbar)
 					if (isset($this->adminFilterType[$nameListCode])
@@ -16119,7 +16118,7 @@ class Interpretation extends Fields
 
 		$filterQuery .= PHP_EOL . Indent::_(3) . "//"
 			. Line::_(__Line__, __Class__) . " Filter by the "
-			. ucwords($filter['code']) . " Array.";
+			. ucwords((string) $filter['code']) . " Array.";
 
 		$filterQuery .= PHP_EOL . Indent::_(3)
 			. "\$query->where('" . $a . "." . $filter['code']
@@ -16176,7 +16175,7 @@ class Interpretation extends Fields
 							$behaviors[$matchName] = $targetBehavior;
 							$defaults[$matchName]  = $targetDefault;
 							$toggleSwitch[$matchName]
-							                       = ($condition['target_behavior']
+								= ($condition['target_behavior']
 								== 1
 								|| $condition['target_behavior'] == 2) ? true
 								: false;
@@ -16185,7 +16184,7 @@ class Interpretation extends Fields
 							// set function array
 							$functions[$uniqueVar][0] = $matchName;
 							$matchNames[$matchName]
-							                          = $condition['match_name'];
+								= $condition['match_name'];
 							// get the select value
 							$getValue[$matchName] = $this->getValueScript(
 								$condition['match_type'],
@@ -16224,20 +16223,20 @@ class Interpretation extends Fields
 									// set function array
 									$functions[$uniqueVar][] = $relationName;
 									$matchNames[$relationName]
-									                         = $relation['match_name'];
+										= $relation['match_name'];
 									// get the relation option
 									$relationOptions = $this->getOptionsScript(
 										$relation['match_type'],
 										$relation['match_options']
 									);
 									$getValue[$relationName]
-									                 = $this->getValueScript(
+										= $this->getValueScript(
 										$relation['match_type'],
 										$relation['match_name'],
 										$condition['match_extends'], $uniqueVar
 									);
 									$ifValue[$relationName]
-									                 = $this->ifValueScript(
+										= $this->ifValueScript(
 										$relationName,
 										$relation['match_behavior'],
 										$relation['match_type'],
@@ -16253,7 +16252,7 @@ class Interpretation extends Fields
 						$behaviors[$matchName] = $targetBehavior;
 						$defaults[$matchName]  = $targetDefault;
 						$toggleSwitch[$matchName]
-						                       = ($condition['target_behavior']
+							= ($condition['target_behavior']
 							== 1
 							|| $condition['target_behavior'] == 2) ? true
 							: false;
@@ -16663,8 +16662,8 @@ class Interpretation extends Fields
 			// add file to view
 			$_target = array(CFactory::_('Config')->build_target => $nameListCode);
 			$_config = array(Placefix::_h('CREATIONDATE') => $_created,
-			                 Placefix::_h('BUILDDATE') => $_modified,
-			                 Placefix::_h('VERSION') => $viewArray['settings']->version);
+				Placefix::_h('BUILDDATE') => $_modified,
+				Placefix::_h('VERSION') => $viewArray['settings']->version);
 			$this->buildDynamique($_target, 'javascript_file', false, $_config);
 			// set path
 			$_path = '/administrator/components/com_' . $this->componentCodeName
@@ -16757,7 +16756,7 @@ class Interpretation extends Fields
 				. PHP_EOL . '<script type="text/javascript">' . PHP_EOL
 				. $footerScript . PHP_EOL . "</script>";
 			$this->viewScriptBuilder[$nameSingleCode]['footerScript']
-			              = $footerScript;
+				= $footerScript;
 		}
 	}
 
@@ -16830,7 +16829,7 @@ class Interpretation extends Fields
 							if (in_array($target['name'], $currentTargets))
 							{
 								$this->targetRelationControl[$view][$target['name']]
-									   = array($relation['match_name'],
+									= array($relation['match_name'],
 									$condition['match_name']);
 								$found = true;
 								break;
@@ -17403,7 +17402,7 @@ class Interpretation extends Fields
 				|| !ComponentbuilderHelper::fieldCheck($type))
 			{
 				$optionsArray = array_map(
-					'trim', (array) explode(PHP_EOL, $options)
+					'trim', (array) explode(PHP_EOL, (string) $options)
 				);
 				if (!ArrayHelper::check($optionsArray))
 				{
@@ -17432,10 +17431,10 @@ class Interpretation extends Fields
 				);
 				if (StringHelper::check($keywords))
 				{
-					if (strpos($keywords, ',') !== false)
+					if (strpos((string) $keywords, ',') !== false)
 					{
 						$keywords = array_map(
-							'trim', (array) explode(',', $keywords)
+							'trim', (array) explode(',', (string) $keywords)
 						);
 						foreach ($keywords as $keyword)
 						{
@@ -17444,7 +17443,7 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$buket['keywords'][] = trim($keywords);
+						$buket['keywords'][] = trim((string) $keywords);
 					}
 				}
 				// check to ket string length if set
@@ -17691,7 +17690,7 @@ class Interpretation extends Fields
 					$valueArray[$task['task_name']][] = "\$"
 						. $task['value_name'] . "Value";
 					$getModel[$task['task_name']]
-					                                  = "\$result = \$this->getModel('ajax')->"
+						= "\$result = \$this->getModel('ajax')->"
 						. $task['method_name'] . "(" . Placefix::_("valueArray") . ");";
 					// check if null or zero is allowed
 					if (!isset($task['allow_zero']) || 1 != $task['allow_zero'])
@@ -17848,7 +17847,7 @@ class Interpretation extends Fields
 			$function = array();
 			// set component name
 			$component = $this->componentCodeName;
-			$Component = ucfirst($component);
+			$Component = ucfirst((string) $component);
 			foreach ($this->filterBuilder[$nameListCode] as $filter)
 			{
 				if ($filter['type'] != 'category'
@@ -18169,9 +18168,9 @@ class Interpretation extends Fields
 						$filter['custom']
 					)['JFORM_TYPE_PHP'];
 					// check for the [JHtml::_('select.option', '',] code
-					if (strpos($field_code, "JHtml::_('select.option', '',")
+					if (strpos((string) $field_code, "JHtml::_('select.option', '',")
 						!== false
-						&& strpos($field_code, '($this->multiple === false)')
+						&& strpos((string) $field_code, '($this->multiple === false)')
 						=== false)
 					{
 						// for now we just give an error message (don't fix it)
@@ -18180,10 +18179,10 @@ class Interpretation extends Fields
 							'Error'
 						);
 						$field_url
-							       = '"index.php?option=com_componentbuilder&view=fields&task=field.edit&id='
+							= '"index.php?option=com_componentbuilder&view=fields&task=field.edit&id='
 							. $filter['id'] . '" target="_blank"';
 						$field_fix
-							       = "<pre>if (\$this->multiple === false) { // <-- this if statement is needed";
+							= "<pre>if (\$this->multiple === false) { // <-- this if statement is needed";
 						$field_fix .= PHP_EOL . Indent::_(1)
 							. "\$options[] = JHtml::_('select.option', '', 'Select an option'); // <-- the empty option";
 						$field_fix .= PHP_EOL . "}</pre>";
@@ -18802,7 +18801,7 @@ class Interpretation extends Fields
 		{
 			// get the actual extention
 			$_extension = $this->categoryBuilder[$nameListCode]['extension'];
-			$_extension = explode('.', $_extension);
+			$_extension = explode('.', (string) $_extension);
 			// set component name
 			if (ArrayHelper::check($_extension))
 			{
@@ -18834,15 +18833,15 @@ class Interpretation extends Fields
 				$this->buildDynamique($target, 'category');
 				// insure the file gets updated
 				CFactory::_('Content')->set_('category' . $otherView, 'view', $otherView);
-				CFactory::_('Content')->set_('category' . $otherView, 'View', ucfirst($otherView));
+				CFactory::_('Content')->set_('category' . $otherView, 'View', ucfirst((string) $otherView));
 				CFactory::_('Content')->set_('category' . $otherView, 'views', $otherViews);
-				CFactory::_('Content')->set_('category' . $otherView, 'Views', ucfirst($otherViews));
+				CFactory::_('Content')->set_('category' . $otherView, 'Views', ucfirst((string) $otherViews));
 				// set script to global helper file
 				$includeHelper   = array();
 				$includeHelper[] = "\n//" . Line::_(__Line__, __Class__)
 					. "Insure this view category file is loaded.";
-				$includeHelper[] = "\$classname = '" . ucfirst($component)
-					. ucfirst($otherView) . "Categories';";
+				$includeHelper[] = "\$classname = '" . ucfirst((string) $component)
+					. ucfirst((string) $otherView) . "Categories';";
 				$includeHelper[] = "if (!class_exists(\$classname))";
 				$includeHelper[] = "{";
 				$includeHelper[] = Indent::_(1)
@@ -19963,7 +19962,7 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(4) . "\$form->setValue('" . $fieldName
 				. "', null, '');";
 			$allow[] = Indent::_(3) . "}";
-			$allow[] = Indent::_(3) . "elseif (" . ucfirst($component)
+			$allow[] = Indent::_(3) . "elseif (" . ucfirst((string) $component)
 				. "Helper::checkArray(\$val))";
 			$allow[] = Indent::_(3) . "{";
 			$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
@@ -20495,8 +20494,8 @@ class Interpretation extends Fields
 	{
 		// keep track of all fields already added
 		$donelist = array('id'         => true, 'search' => true,
-		                  'published'  => true, 'access' => true,
-		                  'created_by' => true, 'modified_by' => true);
+			'published'  => true, 'access' => true,
+			'created_by' => true, 'modified_by' => true);
 		// default filter fields
 		$fields = "'a.id','id'";
 		$fields .= "," . PHP_EOL . Indent::_(4) . "'a.published','published'";
@@ -20617,11 +20616,11 @@ class Interpretation extends Fields
 	public function setStoredId(&$nameSingleCode, &$nameListCode)
 	{
 		// set component name
-		$Component = ucwords($this->componentCodeName);
+		$Component = ucwords((string) $this->componentCodeName);
 		// keep track of all fields already added
 		$donelist = array('id'         => true, 'search' => true,
-		                  'published'  => true, 'access' => true,
-		                  'created_by' => true, 'modified_by' => true);
+			'published'  => true, 'access' => true,
+			'created_by' => true, 'modified_by' => true);
 		// set the defaults first
 		$stored = "//" . Line::_(__Line__, __Class__) . " Compile the store id.";
 		$stored .= PHP_EOL . Indent::_(2)
@@ -20846,7 +20845,7 @@ class Interpretation extends Fields
 
 			// build toolbar
 			$toolBar
-				     = "JFactory::getApplication()->input->set('hidemainmenu', true);";
+				= "JFactory::getApplication()->input->set('hidemainmenu', true);";
 			$toolBar .= PHP_EOL . Indent::_(2) . "JToolBarHelper::title(JText:"
 				. ":_('" . $viewNameLang_readonly . "'), '" . $nameSingleCode
 				. "');";
@@ -20875,7 +20874,7 @@ class Interpretation extends Fields
 			);
 			// build toolbar
 			$toolBar
-				     = "JFactory::getApplication()->input->set('hidemainmenu', true);";
+				= "JFactory::getApplication()->input->set('hidemainmenu', true);";
 			$toolBar .= PHP_EOL . Indent::_(2)
 				. "\$user = JFactory::getUser();";
 			$toolBar .= PHP_EOL . Indent::_(2) . "\$userId	= \$user->id;";
@@ -21709,7 +21708,7 @@ class Interpretation extends Fields
 						if ($item['method'] == 6)
 						{
 							$_placeholder_for_field
-								 = array('[[[field]]]' => "\$item->"
+								= array('[[[field]]]' => "\$item->"
 								. $item['name']);
 							$fix .= CFactory::_('Placeholder')->update(
 								PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
@@ -21870,13 +21869,13 @@ class Interpretation extends Fields
 							{
 								// check if this is a local table
 								if (strpos(
-										$item['custom']['table'],
+										(string) $item['custom']['table'],
 										'#__' . $this->componentCodeName . '_'
 									) !== false)
 								{
 									$keyTableNAme = str_replace(
 										'#__' . $this->componentCodeName . '_',
-										'', $item['custom']['table']
+										'', (string) $item['custom']['table']
 									);
 								}
 								else
@@ -22244,7 +22243,7 @@ class Interpretation extends Fields
 			case 'custom.admin.views':
 			case 'site.admin.view':
 				$headers[]
-					       = 'JHtml::addIncludePath(JPATH_COMPONENT.\'/helpers/html\');';
+					= 'JHtml::addIncludePath(JPATH_COMPONENT.\'/helpers/html\');';
 				$headers[] = 'JHtml::_(\'behavior.formvalidator\');';
 				$headers[] = 'JHtml::_(\'formbehavior.chosen\', \'select\');';
 				$headers[] = 'JHtml::_(\'behavior.keepalive\');';
@@ -22469,7 +22468,7 @@ class Interpretation extends Fields
 			// code
 			$code = (array) explode(
 				PHP_EOL, str_replace(
-					array_keys($field), array_values($field), $item['set']
+					array_keys($field), array_values($field), (string) $item['set']
 				)
 			);
 			$fix  .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . implode(
@@ -22483,7 +22482,7 @@ class Interpretation extends Fields
 				. Line::_(__Line__, __Class__) . " concatenate these fields";
 			$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "\$item->"
 				. $item['code'] . ' = ' . implode(
-					" . '" . str_replace("'", '&apos;', $item['set']) . "' . ",
+					" . '" . str_replace("'", '&apos;', (string) $item['set']) . "' . ",
 					$field
 				) . ';';
 		}
@@ -22613,7 +22612,7 @@ class Interpretation extends Fields
 
 	public function setRouterCase($viewsCodeName)
 	{
-		if (strlen($viewsCodeName) > 0)
+		if (strlen((string) $viewsCodeName) > 0)
 		{
 			$router = PHP_EOL . Indent::_(2) . "case '" . $viewsCodeName . "':";
 			$router .= PHP_EOL . Indent::_(3)
@@ -22800,7 +22799,7 @@ class Interpretation extends Fields
 						// set the extension key string, new convention (more stable)
 						$_key_extension = str_replace(
 							'.', '_po0O0oq_',
-							$this->categoryBuilder[$name_list]['extension']
+							(string) $this->categoryBuilder[$name_list]['extension']
 						);
 
 						// add to lang
@@ -22864,7 +22863,7 @@ class Interpretation extends Fields
 					. '/admin/assets/images/icons';
 				foreach ($this->iconBuilder as $icon => $path)
 				{
-					$array_buket = explode('.', $icon);
+					$array_buket = explode('.', (string) $icon);
 					if (count((array) $array_buket) == 3)
 					{
 						list($type, $name, $action) = $array_buket;
@@ -23377,7 +23376,7 @@ class Interpretation extends Fields
 						// get the extension array
 						$_extension_array = (array) explode(
 							'.',
-							$this->categoryBuilder[$nameListCode]['extension']
+							(string) $this->categoryBuilder[$nameListCode]['extension']
 						);
 						// set the menu selection
 						if (isset($_extension_array[1]))
@@ -23445,7 +23444,7 @@ class Interpretation extends Fields
 					$this->uninstallScriptBuilder[$nameSingleCode] = 'com_'
 						. $codeName . '.' . $nameSingleCode;
 					$this->uninstallScriptFields[$nameSingleCode]
-					                                               = $nameSingleCode;
+						= $nameSingleCode;
 				}
 			}
 			if (isset($this->lastCustomSubMenu)
@@ -23705,7 +23704,7 @@ class Interpretation extends Fields
 						$this->componentData->menu_prefix
 					))
 				{
-					$prefix = trim($this->componentData->menu_prefix) . ' ';
+					$prefix = trim((string) $this->componentData->menu_prefix) . ' ';
 				}
 			}
 			else
@@ -23714,7 +23713,7 @@ class Interpretation extends Fields
 				$addPrefix = $this->params->get('add_menu_prefix', 1);
 				if ($addPrefix == 1)
 				{
-					$prefix = trim($this->params->get('menu_prefix', '&#187;'))
+					$prefix = trim((string) $this->params->get('menu_prefix', '&#187;'))
 						. ' ';
 				}
 			}
@@ -23838,10 +23837,10 @@ class Interpretation extends Fields
 							'adminsys', $lang . '_' . $nameUpper, $menu['name']
 						);
 						// sanitize url
-						if (strpos($menu['link'], 'http') === false)
+						if (strpos((string) $menu['link'], 'http') === false)
 						{
 							$menu['link'] = str_replace(
-								'/administrator/index.php?', '', $menu['link']
+								'/administrator/index.php?', '', (string) $menu['link']
 							);
 							$menu['link'] = str_replace(
 								'administrator/index.php?', '', $menu['link']
@@ -23859,7 +23858,7 @@ class Interpretation extends Fields
 						}
 						// urlencode
 						$menu['link'] = htmlspecialchars(
-							$menu['link'], ENT_XML1, 'UTF-8'
+							(string) $menu['link'], ENT_XML1, 'UTF-8'
 						);
 						// add custom menu
 						$customMenu .= PHP_EOL . Indent::_(3) . '<menu link="'
@@ -23900,10 +23899,10 @@ class Interpretation extends Fields
 							'adminsys', $lang . '_' . $nameUpper, $menu['name']
 						);
 						// sanitize url
-						if (strpos($menu['link'], 'http') === false)
+						if (strpos((string) $menu['link'], 'http') === false)
 						{
 							$menu['link'] = str_replace(
-								'/administrator/index.php?', '', $menu['link']
+								'/administrator/index.php?', '', (string) $menu['link']
 							);
 							$menu['link'] = str_replace(
 								'administrator/index.php?', '', $menu['link']
@@ -23921,7 +23920,7 @@ class Interpretation extends Fields
 						}
 						// urlencode
 						$menu['link'] = htmlspecialchars(
-							$menu['link'], ENT_XML1, 'UTF-8'
+							(string) $menu['link'], ENT_XML1, 'UTF-8'
 						);
 						// add custom menu
 						$this->lastCustomMainMenu[$nr] = PHP_EOL . Indent::_(3)
@@ -23980,29 +23979,29 @@ class Interpretation extends Fields
 				// set place holders
 				$placeholders = array();
 				$placeholders[Placefix::_h('component')]
-				              = $this->componentCodeName;
+					= $this->componentCodeName;
 				$placeholders[Placefix::_h('Component')]
-				              = StringHelper::safe(
+					= StringHelper::safe(
 					$this->componentData->name_code, 'F'
 				);
 				$placeholders[Placefix::_h('COMPONENT')]
-				              = StringHelper::safe(
+					= StringHelper::safe(
 					$this->componentData->name_code, 'U'
 				);
 				$placeholders[Placefix::_h('view')]
-				              = $nameSingleCode;
+					= $nameSingleCode;
 				$placeholders[Placefix::_h('views')]
-				              = $nameListCode;
+					= $nameListCode;
 				$placeholders[Placefix::_('component')]
-				              = $this->componentCodeName;
+					= $this->componentCodeName;
 				$placeholders[Placefix::_('Component')]
-				              = $placeholders[Placefix::_h('Component')];
+					= $placeholders[Placefix::_h('Component')];
 				$placeholders[Placefix::_('COMPONENT')]
-				              = $placeholders[Placefix::_h('COMPONENT')];
+					= $placeholders[Placefix::_h('COMPONENT')];
 				$placeholders[Placefix::_('view')]
-				              = $nameSingleCode;
+					= $nameSingleCode;
 				$placeholders[Placefix::_('views')]
-				              = $nameListCode;
+					= $nameListCode;
 				// load the global placeholders
 				foreach (CFactory::_('Component.Placeholder')->get() as $globalPlaceholder => $gloabalValue)
 				{
@@ -24057,8 +24056,8 @@ class Interpretation extends Fields
 							))
 						{
 							// add array if found
-							if ((strpos($field['custom_value'], '["') !== false)
-								&& (strpos($field['custom_value'], '"]')
+							if ((strpos((string) $field['custom_value'], '["') !== false)
+								&& (strpos((string) $field['custom_value'], '"]')
 									!== false))
 							{
 								// load the Global checkin defautls
@@ -24154,7 +24153,7 @@ class Interpretation extends Fields
 				$viewRequest = 'name="' . $tabLower . '_request_id';
 				foreach ($tabFields as $et => $id_field)
 				{
-					if (strpos($id_field, $viewRequest) !== false)
+					if (strpos((string) $id_field, $viewRequest) !== false)
 					{
 						$this->setRequestValues(
 							$tabLower, $id_field, $viewRequest, 'id',
@@ -24162,7 +24161,7 @@ class Interpretation extends Fields
 						);
 						unset($tabFields[$et]);
 					}
-					elseif (strpos($id_field, '_request_id') !== false)
+					elseif (strpos((string) $id_field, '_request_id') !== false)
 					{
 						// not loaded to a tab "view" name
 						$_viewRequest = GetHelper::between(
@@ -24181,7 +24180,7 @@ class Interpretation extends Fields
 				$viewRequestC = 'name="' . $tabLower . '_request_catid';
 				foreach ($tabFields as $ci => $catid_field)
 				{
-					if (strpos($catid_field, $viewRequestC) !== false)
+					if (strpos((string) $catid_field, $viewRequestC) !== false)
 					{
 
 						$this->setRequestValues(
@@ -24190,7 +24189,7 @@ class Interpretation extends Fields
 						);
 						unset($tabFields[$ci]);
 					}
-					elseif (strpos($catid_field, '_request_catid') !== false)
+					elseif (strpos((string) $catid_field, '_request_catid') !== false)
 					{
 						// not loaded to a tab "view" name
 						$_viewRequestC = GetHelper::between(
@@ -24210,12 +24209,12 @@ class Interpretation extends Fields
 				$pageSettings = array();
 				foreach ($tabFields as $ct => $field)
 				{
-					if (strpos($field, $menuSetter) !== false)
+					if (strpos((string) $field, $menuSetter) !== false)
 					{
 						// set the values needed to insure route is done correclty
 						$this->hasMenuGlobal[$tabLower] = $menuSetter;
 					}
-					elseif (strpos($field, '_menu"') !== false)
+					elseif (strpos((string) $field, '_menu"') !== false)
 					{
 						// not loaded to a tab "view" name
 						$_tabLower = GetHelper::between(
@@ -24246,13 +24245,13 @@ class Interpretation extends Fields
 			// is not having special var
 			$key = $target;
 			// update field
-			$field = str_replace($search . '"', 'name="' . $key . '"', $field);
+			$field = str_replace($search . '"', 'name="' . $key . '"', (string) $field);
 		}
 		else
 		{
 			// update field
 			$field = str_replace(
-				$search . $key . '"', 'name="' . $key . '"', $field
+				$search . $key . '"', 'name="' . $key . '"', (string) $field
 			);
 		}
 		if (!isset($this->{$store}[$view]))
@@ -24289,7 +24288,7 @@ class Interpretation extends Fields
 					{
 						// remove this display since it is not used in Joomla
 						$bucket[] = str_replace(
-							'display="config"', '', $tabField
+							'display="config"', '', (string) $tabField
 						);
 					}
 				}
@@ -24577,16 +24576,16 @@ class Interpretation extends Fields
 				$COUNTER = StringHelper::safe($counter, 'U');
 				// set the dynamic values
 				$cbTitle   = htmlspecialchars(
-					$contributor['title'], ENT_XML1, 'UTF-8'
+					(string) $contributor['title'], ENT_XML1, 'UTF-8'
 				);
 				$cbName    = htmlspecialchars(
-					$contributor['name'], ENT_XML1, 'UTF-8'
+					(string) $contributor['name'], ENT_XML1, 'UTF-8'
 				);
 				$cbEmail   = htmlspecialchars(
-					$contributor['email'], ENT_XML1, 'UTF-8'
+					(string) $contributor['email'], ENT_XML1, 'UTF-8'
 				);
 				$cbWebsite = htmlspecialchars(
-					$contributor['website'], ENT_XML1, 'UTF-8'
+					(string) $contributor['website'], ENT_XML1, 'UTF-8'
 				); // StringHelper::html($contributor['website']);
 				// load to the $fieldsets
 				$this->configFieldSets[] = Indent::_(2)
@@ -24679,7 +24678,7 @@ class Interpretation extends Fields
 				$this->configFieldSets[] = Indent::_(2) . "</field>";
 				// add the contributor
 				$this->theContributors .= PHP_EOL . Indent::_(1) . "@"
-					. strtolower($contributor['title']) . Indent::_(2)
+					. strtolower((string) $contributor['title']) . Indent::_(2)
 					. $contributor['name'] . ' <' . $contributor['website']
 					. '>';
 				// setup lang
@@ -27188,7 +27187,7 @@ function vdm_dkim() {
 							{
 								$view['settings']->permissions = array();
 								$view['settings']->permissions[]
-								                               = $menucontrollerView;
+									= $menucontrollerView;
 							}
 							unset($menucontrollerView);
 						}
@@ -27200,7 +27199,7 @@ function vdm_dkim() {
 					{
 						// field permission options
 						$permission_options = array(1 => 'edit', 2 => 'access',
-						                            3 => 'view');
+							3 => 'view');
 						// check the fields for their permission settings
 						foreach ($view['settings']->fields as $field)
 						{
@@ -27477,7 +27476,7 @@ function vdm_dkim() {
 			foreach ($view['settings']->permissions as $permission)
 			{
 				// set acction name
-				$arr = explode('.', trim($permission['action']));
+				$arr = explode('.', trim((string) $permission['action']));
 				if ($arr[0] != 'core' || $arr[0] === 'view')
 				{
 					array_shift($arr);
@@ -27494,7 +27493,7 @@ function vdm_dkim() {
 					$action = $permission['action'];
 				}
 				// build action name
-				$actionNameBuilder = explode('.', trim($permission['action']));
+				$actionNameBuilder = explode('.', trim((string) $permission['action']));
 				array_shift($actionNameBuilder);
 				$nameBuilder = trim(implode('___', $actionNameBuilder));
 				$customName  = trim(implode(' ', $actionNameBuilder));
@@ -27697,7 +27696,7 @@ function vdm_dkim() {
 				}
 				// if core is not used update all core strings
 				$coreCheck                                    = explode(
-					'.', $action
+					'.', (string) $action
 				);
 				$coreCheck[0]                                 = 'core';
 				$coreTarget                                   = implode(
@@ -27834,7 +27833,7 @@ function vdm_dkim() {
 	{
 		$matches = array();
 		$regex   = "/$start([a-zA-Z0-9_]*)$end/";
-		preg_match_all($regex, $str, $matches);
+		preg_match_all($regex, (string) $str, $matches);
 
 		return $matches[1];
 	}
@@ -27849,9 +27848,9 @@ function vdm_dkim() {
 		$libraries = array(Placefix::_('MOD_LIBRARIES') => $this->getModLibCode($module));
 		$code      = CFactory::_('Placeholder')->update($module->mod_code, $libraries);
 		// check if component helper class should be added
-		if (strpos($code, $Helper . '::') !== false
+		if (strpos((string) $code, $Helper . '::') !== false
 			&& strpos(
-				$code,
+				(string) $code,
 				"/components/com_" . $component . "/helpers/" . $component
 				. ".php"
 			) === false)
@@ -28029,7 +28028,7 @@ function vdm_dkim() {
 			$this->languages['modules']                 = array();
 			$this->languages['modules'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = array();
 			$this->languages['modules'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['all']
-			                                            = $langContent;
+				= $langContent;
 			CFactory::_('Language')->setTarget($module->key, null);
 			// update insert the current lang in to DB
 			$this->setLangPlaceholders($values, $module->id, 'modules');
@@ -28420,7 +28419,7 @@ function vdm_dkim() {
 			$this->languages['plugins']                 = array();
 			$this->languages['plugins'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = array();
 			$this->languages['plugins'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['all']
-			                                            = $langContent;
+				= $langContent;
 			CFactory::_('Language')->setTarget($plugin->key, null);
 			// update insert the current lang in to DB
 			$this->setLangPlaceholders($values, $plugin->id, 'plugins');
@@ -28446,9 +28445,9 @@ function vdm_dkim() {
 					$tag = trim($tag);
 					foreach ($areas as $area => $languageStrings)
 					{
-						$file_name = $tag . '.plg_' . strtolower($plugin->group)
+						$file_name = $tag . '.plg_' . strtolower((string) $plugin->group)
 							. '_'
-							. strtolower($plugin->code_name) . '.ini';
+							. strtolower((string) $plugin->code_name) . '.ini';
 						// check if language should be added
 						if ($this->shouldLanguageBeAdded(
 							$tag, $languageStrings, $total,
@@ -28479,10 +28478,10 @@ function vdm_dkim() {
 							);
 							$this->writeFile(
 								$path . $tag . '.plg_' . strtolower(
-									$plugin->group
+									(string) $plugin->group
 								)
 								. '_'
-								. strtolower($plugin->code_name) . '.sys.ini',
+								. strtolower((string) $plugin->code_name) . '.sys.ini',
 								implode(PHP_EOL, $lang)
 							);
 							// set the line counter
@@ -28551,13 +28550,13 @@ function vdm_dkim() {
 			{
 				$xml .= PHP_EOL . Indent::_(2) . '<language tag="'
 					. $addTag . '">' . $addTag . '/' . $addTag . '.plg_'
-					. strtolower($plugin->group) . '_' . strtolower(
-						$plugin->code_name
+					. strtolower((string) $plugin->group) . '_' . strtolower(
+						(string) $plugin->code_name
 					) . '.ini</language>';
 				$xml .= PHP_EOL . Indent::_(2) . '<language tag="'
 					. $addTag . '">' . $addTag . '/' . $addTag . '.plg_'
-					. strtolower($plugin->group) . '_' . strtolower(
-						$plugin->code_name
+					. strtolower((string) $plugin->group) . '_' . strtolower(
+						(string) $plugin->code_name
 					) . '.sys.ini</language>';
 			}
 			$xml .= PHP_EOL . Indent::_(1) . '</languages>';
@@ -28651,16 +28650,16 @@ function vdm_dkim() {
 						if (!isset($plugin->add_rule_path[$field_name . $fieldset]))
 						{
 							$plugin->add_rule_path[$field_name . $fieldset] =
-								'/plugins/' . strtolower($plugin->group
-								) . '/' . strtolower($plugin->code_name)
+								'/plugins/' . strtolower((string) $plugin->group
+								) . '/' . strtolower((string) $plugin->code_name)
 								. '/rules';
 						}
 
 						if (!isset($plugin->add_field_path[$field_name . $fieldset]))
 						{
 							$plugin->add_field_path[$field_name . $fieldset] =
-								'/plugins/' . strtolower($plugin->group
-								) . '/' . strtolower($plugin->code_name)
+								'/plugins/' . strtolower((string) $plugin->group
+								) . '/' . strtolower((string) $plugin->code_name)
 								. '/fields';
 						}
 					}
@@ -28737,10 +28736,10 @@ function vdm_dkim() {
 		if (StringHelper::check($power->description))
 		{
 			// check if this is escaped
-			if (strpos($power->description, '/*') === false)
+			if (strpos((string) $power->description, '/*') === false)
 			{
 				// make this description escaped
-				$power->description = '/**' . PHP_EOL . ' * ' . implode(PHP_EOL . ' * ', explode(PHP_EOL, $power->description)) . PHP_EOL . ' */';
+				$power->description = '/**' . PHP_EOL . ' * ' . implode(PHP_EOL . ' * ', explode(PHP_EOL, (string) $power->description)) . PHP_EOL . ' */';
 			}
 			$code[] = PHP_EOL . $power->description;
 		}

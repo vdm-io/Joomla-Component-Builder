@@ -69,8 +69,8 @@ class LockBase implements LockBaseInterface
 				$locker['LOCK'.'BASE64((((' . $value . '))))']
 					= "base64_decode( preg_replace('/\s+/', ''," .
 					PHP_EOL . Indent::_(2) . "'" .
-					\wordwrap(
-						\base64_encode($value), 64, PHP_EOL . Indent::_(2), true
+					wordwrap(
+						base64_encode((string) $value), 64, PHP_EOL . Indent::_(2), true
 					) .
 					"'))";
 			}

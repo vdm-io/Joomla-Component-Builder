@@ -117,7 +117,7 @@ abstract class Engine
 	protected function lineCounter()
 	{
 		// we count every line we search
-		$this->config->line_counter = $this->config->line_counter + 1;
+		$this->config->line_counter += 1;
 	}
 }
 

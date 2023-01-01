@@ -34,13 +34,13 @@ abstract class ClassfunctionHelper
 	public static function safe($name)
 	{
 		// remove numbers if the first character is a number
-		if (is_numeric(substr($name, 0, 1)))
+		if (is_numeric(substr((string) $name, 0, 1)))
 		{
 			$name = StringHelper::numbers($name);
 		}
 
 		// remove all spaces and strange characters
-		return trim(preg_replace("/[^A-Za-z0-9_-]/", '', $name));
+		return trim(preg_replace("/[^A-Za-z0-9_-]/", '', (string) $name));
 	}
 
 }

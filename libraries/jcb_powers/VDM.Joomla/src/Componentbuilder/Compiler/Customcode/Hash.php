@@ -56,7 +56,7 @@ class Hash
 	public function set(string $script): string
 	{
 		// check if we should hash a string
-		if (\strpos($script, 'HASH' . 'STRING((((') !== false)
+		if (strpos($script, 'HASH' . 'STRING((((') !== false)
 		{
 			// get the strings
 			$values = GetHelper::allBetween(
@@ -67,14 +67,14 @@ class Hash
 			foreach ($values as $value)
 			{
 				$locker['HASH' . 'STRING((((' . $value . '))))']
-					= \md5($value);
+					= md5((string) $value);
 			}
 
 			// update the script
 			return $this->placeholder->update($script, $locker);
 		}
 		// check if we should hash a file
-		if (\strpos($script, 'HASH' . 'FILE((((') !== false)
+		if (strpos($script, 'HASH' . 'FILE((((') !== false)
 		{
 			// get the strings
 			$values = GetHelper::allBetween(
@@ -89,7 +89,7 @@ class Hash
 				{
 					// now we hash the file content
 					$locker['HASH' . 'FILE((((' . $path . '))))']
-						= \md5($value);
+						= md5((string) $value);
 				}
 				else
 				{

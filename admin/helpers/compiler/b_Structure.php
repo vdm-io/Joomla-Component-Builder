@@ -406,11 +406,11 @@ class Structure extends Get
 				. CFactory::_('Config')->joomla_version;
 			$this->componentBackupName = 'com_'
 				. $this->componentData->sales_name . '_v' . str_replace(
-					'.', '_', $this->componentData->component_version
+					'.', '_', (string) $this->componentData->component_version
 				) . '__J' . CFactory::_('Config')->joomla_version;
 			$this->componentFolderName = 'com_'
 				. $this->componentData->name_code . '_v' . str_replace(
-					'.', '_', $this->componentData->component_version
+					'.', '_', (string) $this->componentData->component_version
 				) . '__J' . CFactory::_('Config')->joomla_version;
 			// set component folder path
 			$this->componentPath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
@@ -761,7 +761,7 @@ class Structure extends Get
 						&& StringHelper::check($css))
 					{
 						// make sure this script does not have PHP
-						if (strpos($css, '<?php') === false)
+						if (strpos((string) $css, '<?php') === false)
 						{
 							// make sure the field is added
 							$module->add_scripts_field = true;
@@ -796,7 +796,7 @@ class Structure extends Get
 						&& StringHelper::check($javascript))
 					{
 						// make sure this script does not have PHP
-						if (strpos($javascript, '<?php') === false)
+						if (strpos((string) $javascript, '<?php') === false)
 						{
 							// make sure the field is added
 							$module->add_scripts_field = true;
@@ -924,9 +924,9 @@ class Structure extends Get
 								// check if we have an double fields naming set
 								$field_name_inner = '';
 								$field_name_outer = $field_name;
-								if (strpos($field_name, '.') !== false)
+								if (strpos((string) $field_name, '.') !== false)
 								{
-									$field_names = explode('.', $field_name);
+									$field_names = explode('.', (string) $field_name);
 									if (count((array) $field_names) == 2)
 									{
 										$field_name_outer = $field_names[0];
@@ -1124,7 +1124,7 @@ class Structure extends Get
 								))
 							{
 								// set file name
-								$fileName = basename($url['url']);
+								$fileName = basename((string) $url['url']);
 								// get the file contents
 								$data = FileHelper::getContent(
 									$url['url']
@@ -1333,9 +1333,9 @@ class Structure extends Get
 								// check if we have an double fields naming set
 								$field_name_inner = '';
 								$field_name_outer = $field_name;
-								if (strpos($field_name, '.') !== false)
+								if (strpos((string) $field_name, '.') !== false)
 								{
-									$field_names = explode('.', $field_name);
+									$field_names = explode('.', (string) $field_name);
 									if (count((array) $field_names) == 2)
 									{
 										$field_name_outer = $field_names[0];
@@ -1361,16 +1361,16 @@ class Structure extends Get
 										if (!isset($plugin->add_rule_path[$file . $field_name . $fieldset]))
 										{
 											$plugin->add_rule_path[$file . $field_name . $fieldset] =
-												'/plugins/' . strtolower($plugin->group
-												) . '/' . strtolower($plugin->code_name)
+												'/plugins/' . strtolower((string) $plugin->group
+												) . '/' . strtolower((string) $plugin->code_name)
 												. '/rules';
 										}
 
 										if (!isset($plugin->add_field_path[$file . $field_name . $fieldset]))
 										{
 											$plugin->add_field_path[$file . $field_name . $fieldset] =
-												'/plugins/' . strtolower($plugin->group
-												) . '/' . strtolower($plugin->code_name)
+												'/plugins/' . strtolower((string) $plugin->group
+												) . '/' . strtolower((string) $plugin->code_name)
 												. '/fields';
 										}
 									}
@@ -1515,7 +1515,7 @@ class Structure extends Get
 								))
 							{
 								// set file name
-								$fileName = basename($url['url']);
+								$fileName = basename((string) $url['url']);
 								// get the file contents
 								$data = FileHelper::getContent(
 									$url['url']
@@ -1636,7 +1636,7 @@ class Structure extends Get
 						$libFolder = strtolower(
 							preg_replace(
 								'/\s+/', '-',
-								StringHelper::safe(
+								(string) StringHelper::safe(
 									$library->name, 'filename', ' ', false
 								)
 							)
@@ -1660,7 +1660,7 @@ class Structure extends Get
 								// add local folder
 								$addLocalFolder = true;
 								// set file name
-								$fileName = basename($url['url']);
+								$fileName = basename((string) $url['url']);
 								// get the file contents
 								$data = FileHelper::getContent(
 									$url['url']
@@ -1742,10 +1742,10 @@ class Structure extends Get
 			&& StringHelper::check(
 				$this->componentData->dashboard
 			)
-			&& strpos($this->componentData->dashboard, '_') !== false)
+			&& strpos((string) $this->componentData->dashboard, '_') !== false)
 		{
 			// set the default view
-			$getter = explode('_', $this->componentData->dashboard);
+			$getter = explode('_', (string) $this->componentData->dashboard);
 			if (count((array) $getter) == 2 && is_numeric($getter[1]))
 			{
 				// the pointers
@@ -2061,7 +2061,7 @@ class Structure extends Get
 			$this->notNew[] = 'LICENSE.txt';
 			// do license check
 			$LICENSE        = false;
-			$licenseChecker = strtolower($this->componentData->license);
+			$licenseChecker = strtolower((string) $this->componentData->license);
 			if (strpos($licenseChecker, 'gnu') !== false
 				&& strpos(
 					$licenseChecker, '2'
@@ -2097,7 +2097,7 @@ class Structure extends Get
 					}
 					else
 					{
-						$new = str_replace($details->rename, $codeName, $item);
+						$new = str_replace($details->rename, $codeName, (string) $item);
 					}
 				}
 				else
@@ -2120,20 +2120,20 @@ class Structure extends Get
 				{
 					// set destination path
 					$zipPath = str_replace(
-						$details->_target['type'] . '/', '', $details->path
+						$details->_target['type'] . '/', '', (string) $details->path
 					);
 					$path    = str_replace(
 						$details->_target['type'] . '/',
 						$this->dynamicPaths[$details->_target['key']] . '/',
-						$details->path
+						(string) $details->path
 					);
 				}
 				else
 				{
 					// set destination path
-					$zipPath = str_replace('c0mp0n3nt/', '', $details->path);
+					$zipPath = str_replace('c0mp0n3nt/', '', (string) $details->path);
 					$path    = str_replace(
-						'c0mp0n3nt/', $this->componentPath . '/', $details->path
+						'c0mp0n3nt/', $this->componentPath . '/', (string) $details->path
 					);
 				}
 				// set the template folder path
@@ -2141,9 +2141,9 @@ class Structure extends Get
 					? (($details->custom !== 'full') ? $this->templatePathCustom
 						. '/' : '') : $this->templatePath . '/';
 				// set the final paths
-				$currentFullPath = (preg_match('/^[a-z]:/i', $item)) ? $item
+				$currentFullPath = (preg_match('/^[a-z]:/i', (string) $item)) ? $item
 					: $templatePath . '/' . $item;
-				$currentFullPath = str_replace('//', '/', $currentFullPath);
+				$currentFullPath = str_replace('//', '/', (string) $currentFullPath);
 				$packageFullPath = str_replace('//', '/', $path . '/' . $new);
 				$zipFullPath     = str_replace(
 					'//', '/', $zipPath . '/' . $new
@@ -2545,7 +2545,7 @@ class Structure extends Get
 			'trim',
 			explode(
 				',',
-				GetHelper::between(
+				(string) GetHelper::between(
 					$multi_field['settings']->xml, 'fields="', '"'
 				)
 			)
@@ -2578,7 +2578,7 @@ class Structure extends Get
 			&& StringHelper::check($view['settings']->created))
 		{
 			// first set the main date
-			$date = strtotime($view['settings']->created);
+			$date = strtotime((string) $view['settings']->created);
 		}
 		else
 		{
@@ -2604,7 +2604,7 @@ class Structure extends Get
 			&& StringHelper::check($view['settings']->modified)
 			&& '0000-00-00 00:00:00' !== $view['settings']->modified)
 		{
-			$date = strtotime($view['settings']->modified);
+			$date = strtotime((string) $view['settings']->modified);
 		}
 		else
 		{
@@ -2637,7 +2637,7 @@ class Structure extends Get
 							!== $field['settings']->modified)
 						{
 							$anotherDate = strtotime(
-								$field['settings']->modified
+								(string) $field['settings']->modified
 							);
 							if ($anotherDate > $date)
 							{
@@ -2662,7 +2662,7 @@ class Structure extends Get
 					!== $view['settings']->main_get->modified)
 				{
 					$anotherDate = strtotime(
-						$view['settings']->main_get->modified
+						(string) $view['settings']->main_get->modified
 					);
 					if ($anotherDate > $date)
 					{
@@ -2685,7 +2685,7 @@ class Structure extends Get
 					!== $view['settings']->main_get->modified)
 				{
 					$anotherDate = strtotime(
-						$view['settings']->main_get->modified
+						(string) $view['settings']->main_get->modified
 					);
 					if ($anotherDate > $date)
 					{
@@ -2745,20 +2745,20 @@ class Structure extends Get
 					{
 						// set destination path
 						$path = '';
-						if (strpos($details->path, 'VIEW') !== false)
+						if (strpos((string) $details->path, 'VIEW') !== false)
 						{
-							$path = str_replace('VIEW', $name, $details->path);
+							$path = str_replace('VIEW', $name, (string) $details->path);
 						}
 						else
 						{
 							$path = $details->path;
 						}
 						// make sure we have component to replace
-						if (strpos($path, 'c0mp0n3nt') !== false)
+						if (strpos((string) $path, 'c0mp0n3nt') !== false)
 						{
-							$zipPath = str_replace('c0mp0n3nt/', '', $path);
+							$zipPath = str_replace('c0mp0n3nt/', '', (string) $path);
 							$path    = str_replace(
-								'c0mp0n3nt/', $this->componentPath . '/', $path
+								'c0mp0n3nt/', $this->componentPath . '/', (string) $path
 							);
 						}
 						else
@@ -2786,7 +2786,7 @@ class Structure extends Get
 							if ($fileName)
 							{
 								$new  = str_replace(
-									$details->rename, $fileName, $item
+									$details->rename, $fileName, (string) $item
 								);
 								$name = $name . '_' . $fileName;
 							}
@@ -2797,7 +2797,7 @@ class Structure extends Get
 							else
 							{
 								$new = str_replace(
-									$details->rename, $name, $item
+									$details->rename, $name, (string) $item
 								);
 							}
 						}
@@ -2849,7 +2849,7 @@ class Structure extends Get
 		if (File::exists($custom_settings))
 		{
 			$version_data = json_decode(
-				FileHelper::getContent(
+				(string) FileHelper::getContent(
 					$custom_settings
 				)
 			);
@@ -2857,7 +2857,7 @@ class Structure extends Get
 		else
 		{
 			$version_data = json_decode(
-				FileHelper::getContent(
+				(string) FileHelper::getContent(
 					$this->templatePath . '/settings.json'
 				)
 			);
@@ -2938,7 +2938,7 @@ class Structure extends Get
 				if (isset($custom['path'])
 					&& StringHelper::check($custom['path']))
 				{
-					$custom['path'] = trim($custom['path'], '/');
+					$custom['path'] = trim((string) $custom['path'], '/');
 				}
 				// by default custom path is true
 				$customPath = 'custom';
@@ -2961,14 +2961,14 @@ class Structure extends Get
 					$customPath = 'full';
 				}
 				// make sure we use the correct name
-				$pathArray   = (array) explode('/', $custom['path']);
+				$pathArray   = (array) explode('/', (string) $custom['path']);
 				$firstFolder = array_values($pathArray)[0];
 				$lastFolder  = end($pathArray);
 				// only rename folder if last has folder name
 				if (isset($custom['rename']) && $custom['rename'] == 1)
 				{
 					$custom['path'] = str_replace(
-						'/' . $lastFolder, '', $custom['path']
+						'/' . $lastFolder, '', (string) $custom['path']
 					);
 					$rename         = 'new';
 					$newname        = $lastFolder;
@@ -2976,7 +2976,7 @@ class Structure extends Get
 				elseif ('full' === $customPath)
 				{
 					// make sure we use the correct name
-					$folderArray = (array) explode('/', $custom['folder']);
+					$folderArray = (array) explode('/', (string) $custom['folder']);
 					$lastFolder  = end($folderArray);
 					$rename      = 'new';
 					$newname     = $lastFolder;
@@ -2993,12 +2993,12 @@ class Structure extends Get
 					) . '_f' . $pointer_tracker;
 				$pointer_tracker++;
 				// fix custom path
-				$custom['path'] = ltrim($custom['path'], '/');
+				$custom['path'] = ltrim((string) $custom['path'], '/');
 				// set new folder to object
 				$version_data->move->static->{$key_pointer}          = new stdClass();
 				$version_data->move->static->{$key_pointer}->naam
 				                                                    = str_replace(
-					'//', '/', $custom['folder']
+					'//', '/', (string) $custom['folder']
 				);
 				$version_data->move->static->{$key_pointer}->path
 				                                                    = $_target_type
@@ -3084,14 +3084,14 @@ class Structure extends Get
 				// set new file to object
 				$version_data->move->static->{$key_pointer}       = new stdClass();
 				$version_data->move->static->{$key_pointer}->naam = str_replace(
-					'//', '/', $custom['file']
+					'//', '/', (string) $custom['file']
 				);
 				// update the dynamic component name placholders in file names
 				$custom['path'] = CFactory::_('Placeholder')->update_(
 					$custom['path']
 				);
 				// get the path info
-				$pathInfo = pathinfo($custom['path']);
+				$pathInfo = pathinfo((string) $custom['path']);
 				if (isset($pathInfo['extension']) && $pathInfo['extension'])
 				{
 					$pathInfo['dirname'] = trim($pathInfo['dirname'], '/');
@@ -3106,9 +3106,9 @@ class Structure extends Get
 				elseif ('full' === $customPath)
 				{
 					// fix custom path
-					$custom['path'] = ltrim($custom['path'], '/');
+					$custom['path'] = ltrim((string) $custom['path'], '/');
 					// get file array
-					$fileArray = (array) explode('/', $custom['file']);
+					$fileArray = (array) explode('/', (string) $custom['file']);
 					// set the info
 					$version_data->move->static->{$key_pointer}->path
 						                                                = $_target_type
@@ -3121,7 +3121,7 @@ class Structure extends Get
 				else
 				{
 					// fix custom path
-					$custom['path'] = ltrim($custom['path'], '/');
+					$custom['path'] = ltrim((string) $custom['path'], '/');
 					// set the info
 					$version_data->move->static->{$key_pointer}->path
 						                                               = $_target_type

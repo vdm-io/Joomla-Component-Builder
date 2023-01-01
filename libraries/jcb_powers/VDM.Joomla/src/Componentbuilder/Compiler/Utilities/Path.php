@@ -51,9 +51,9 @@ abstract class Path
 			}
 		}
 		// if just a string
-		elseif (StringHelper::check($values) && strpos($values, '\\') !== false)
+		elseif (StringHelper::check($values) && strpos((string) $values, '\\') !== false)
 		{
-			$values = str_replace('\\', '/', $values);
+			$values = str_replace('\\', '/', (string) $values);
 		}
 	}
 

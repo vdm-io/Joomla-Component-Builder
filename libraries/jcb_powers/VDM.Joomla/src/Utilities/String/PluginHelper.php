@@ -29,7 +29,7 @@ abstract class PluginHelper
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function safeFolderName($codeName, $group)
+	public static function safeFolderName(string $codeName, string $group): string
 	{
 		// editors-xtd group plugins must have a class with plgButton<PluginName> structure
 		if ($group === 'editors-xtd')
@@ -52,7 +52,7 @@ abstract class PluginHelper
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function safeClassName($codeName, $group)
+	public static function safeClassName(string $codeName, string $group): string
 	{
 		// editors-xtd group plugins must have a class with plgButton<PluginName> structure
 		if ($group === 'editors-xtd')
@@ -75,7 +75,7 @@ abstract class PluginHelper
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function safeInstallClassName($codeName, $group)
+	public static function safeInstallClassName(string $codeName, string $group): string
 	{
 		// editors-xtd group plugins must have a class with plgButton<PluginName> structure
 		if ($group === 'editors-xtd')
@@ -98,7 +98,7 @@ abstract class PluginHelper
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function safeLangPrefix($codeName, $group)
+	public static function safeLangPrefix(string $codeName, string $group): string
 	{
 		// editors-xtd group plugins must have a class with plgButton<PluginName> structure
 		if ($group === 'editors-xtd')

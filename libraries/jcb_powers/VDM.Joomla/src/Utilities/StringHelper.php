@@ -44,12 +44,7 @@ abstract class StringHelper
 	 */
 	public static function check($string): bool
 	{
-		if (is_string($string) && strlen($string) > 0)
-		{
-			return true;
-		}
-
-		return false;
+		return is_string($string) && strlen($string) > 0;
 	}
 
 	/**
@@ -65,8 +60,8 @@ abstract class StringHelper
 	{
 		if (self::check($string))
 		{
-			$initial = strlen($string);
-			$words = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
+			$initial = strlen((string) $string);
+			$words = preg_split('/([\s\n\r]+)/', (string) $string, null, PREG_SPLIT_DELIM_CAPTURE);
 			$words_count = count((array)$words);
 
 			$word_length = 0;
@@ -82,12 +77,12 @@ abstract class StringHelper
 
 			$newString	= implode(array_slice($words, 0, $last_word));
 			$final	= strlen($newString);
-			if ($initial != $final && $addTip)
+			if ($initial !== $final && $addTip)
 			{
 				$title = self::shorten($string, 400 , false);
 				return '<span class="hasTip" title="' . $title . '" style="cursor:help">' . trim($newString) . '...</span>';
 			}
-			elseif ($initial != $final && !$addTip)
+			elseif ($initial !== $final && !$addTip)
 			{
 				return trim($newString) . '...';
 			}
@@ -118,7 +113,7 @@ abstract class StringHelper
 			if ($type === 'filename')
 			{
 				// make sure VDM is not in the string
-				$string = str_replace('VDM', 'vDm', $string);
+				$string = str_replace('VDM', 'vDm', (string) $string);
 				// Remove anything which isn't a word, whitespace, number
 				// or any of the following caracters -_()
 				// If you don't need to handle multi-byte characters
@@ -131,7 +126,7 @@ abstract class StringHelper
 				return preg_replace('/\s+/', ' ', $string);
 			}
 			// remove all other characters
-			$string = trim($string);
+			$string = trim((string) $string);
 			$string = preg_replace('/'.$spacer.'+/', ' ', $string);
 			$string = preg_replace('/\s+/', ' ', $string);
 			// Transliterate string
@@ -150,7 +145,7 @@ abstract class StringHelper
 			if ($type === 'L' || $type === 'strtolower')
 			{
 				// replace white space with underscore
-				$string = preg_replace('/\s+/', $spacer, $string);
+				$string = preg_replace('/\s+/', (string) $spacer, $string);
 				// default is to return lower
 				return strtolower($string);
 			}
@@ -177,14 +172,14 @@ abstract class StringHelper
 			elseif ($type === 'U' || $type === 'strtoupper')
 			{
 					// replace white space with underscore
-					$string = preg_replace('/\s+/', $spacer, $string);
+					$string = preg_replace('/\s+/', (string) $spacer, $string);
 					// return all upper
 					return strtoupper($string);
 			}
 			elseif ($type === 'F' || $type === 'ucfirst')
 			{
 					// replace white space with underscore
-					$string = preg_replace('/\s+/', $spacer, $string);
+					$string = preg_replace('/\s+/', (string) $spacer, $string);
 					// return with first character to upper
 					return ucfirst(strtolower($string));
 			}
@@ -245,7 +240,7 @@ abstract class StringHelper
 			$string = $filter->clean(
 				html_entity_decode(
 					htmlentities(
-						$var,
+						(string) $var,
 						ENT_COMPAT,
 						$charset
 					)
@@ -276,21 +271,22 @@ abstract class StringHelper
 	public static function numbers($string)
 	{
 		// set numbers array
-		$numbers = array();
+		$numbers = [];
+		$search_replace= [];
 
 		// first get all numbers
-		preg_match_all('!\d+!', $string, $numbers);
+		preg_match_all('!\d+!', (string) $string, $numbers);
 
 		// check if we have any numbers
 		if (isset($numbers[0]) && ArrayHelper::check($numbers[0]))
 		{
 			foreach ($numbers[0] as $number)
 			{
-				$searchReplace[$number] = self::number((int)$number);
+				$search_replace[$number] = self::number((int)$number);
 			}
 
 			// now replace numbers in string
-			$string = str_replace(array_keys($searchReplace), array_values($searchReplace), $string);
+			$string = str_replace(array_keys($search_replace), array_values($search_replace), (string) $string);
 
 			// check if we missed any, strange if we did.
 			return self::numbers($string);
@@ -400,7 +396,7 @@ abstract class StringHelper
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function random($size)
+	public static function random($size): string
 	{
 		$bag = "abcefghijknopqrstuwxyzABCDDEFGHIJKLLMMNOPQRSTUVVWXYZabcddefghijkllmmnopqrstuvvwxyzABCEFGHIJKNOPQRSTUWXYZ";
 		$key = array();

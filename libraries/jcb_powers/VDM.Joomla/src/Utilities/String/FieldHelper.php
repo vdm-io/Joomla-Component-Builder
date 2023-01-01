@@ -57,13 +57,13 @@ abstract class FieldHelper
 			if (StringHelper::check($string))
 			{
 				// check that the first character is not a number
-				if (is_numeric(substr($string, 0, 1)))
+				if (is_numeric(substr((string)$string, 0, 1)))
 				{
 					$string = StringHelper::numbers($string);
 				}
 
 				// remove all other strange characters
-				$string = trim($string);
+				$string = trim((string) $string);
 				$string = preg_replace('/'.$spacer.'+/', ' ', $string);
 				$string = preg_replace('/\s+/', ' ', $string);
 
@@ -71,10 +71,10 @@ abstract class FieldHelper
 				$string = StringHelper::transliterate($string);
 
 				// remove all and keep only characters and numbers
-				$string = preg_replace("/[^A-Za-z0-9 ]/", '', $string);
+				$string = preg_replace("/[^A-Za-z0-9 ]/", '', (string) $string);
 
 				// replace white space with underscore (SAFEST OPTION)
-				$string = preg_replace('/\s+/', $spacer, $string);
+				$string = preg_replace('/\s+/', (string) $spacer, $string);
 
 				// return all caps
 				if ($allcap)

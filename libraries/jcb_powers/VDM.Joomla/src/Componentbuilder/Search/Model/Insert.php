@@ -75,7 +75,7 @@ class Insert extends Model implements ModelInterface
 			switch($store)
 			{
 				case 'base64':
-					$value = base64_encode($value);
+					$value = base64_encode((string) $value);
 				break;
 				case 'json':
 					$value = json_encode($value,  JSON_FORCE_OBJECT);

@@ -2589,7 +2589,11 @@ abstract class SymmetricKey
 
         $length = ord($text[strlen($text) - 1]);
 
-        if (!$length || $length > $this->block_size) {
+        if (!$length) {
+			// temp fix for FOFEncryptAes conversions
+	        // Added by Llewellyn van der Merwe <joomla@vdm.io>
+	        return rtrim($text, "\0");
+        } elseif ($length > $this->block_size) {
             throw new BadDecryptionException("The ciphertext has an invalid padding length ($length) compared to the block size ({$this->block_size})");
         }
 

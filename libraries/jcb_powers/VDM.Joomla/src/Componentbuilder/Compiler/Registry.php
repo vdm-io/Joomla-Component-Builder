@@ -61,7 +61,7 @@ class Registry extends BaseRegistry
 			// convert all array to []
 			$array = preg_split("/\r\n|\n|\r/", $data);
 			$array = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [NULL, ']$1', ' => ['], $array);
-			$data = join(PHP_EOL, array_filter(["["] + $array));
+			$data = implode(PHP_EOL, array_filter(["["] + $array));
 
 			// add needed indentation to the last ]
 			$data = preg_replace("/^(\])/m", Indent::_($default) . '$1', $data);
@@ -88,7 +88,7 @@ class Registry extends BaseRegistry
 		// update each found space (group) with one indentation
 		foreach (range(1, 11) as $space)
 		{
-			if (strlen($matches[$space]) > 0)
+			if (strlen((string) $matches[$space]) > 0)
 			{
 				$indent .= Indent::_(1);
 			}

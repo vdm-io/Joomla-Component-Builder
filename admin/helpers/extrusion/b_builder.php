@@ -26,6 +26,10 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\GetHelper;
+
 /**
  * Builder class
  */
@@ -102,7 +106,7 @@ class Builder extends Mapping
 	{
 		// set the view object
 		$object = new stdClass();
-		$object->system_name = ComponentbuilderHelper::safeString($name, 'W') . ' (dynamic build)';
+		$object->system_name = StringHelper::check($name, 'W') . ' (dynamic build)';
 		$object->name_single = $name;
 		$object->name_list = $name. 's';
 		$object->short_description = $name. ' view (dynamic build)';
@@ -257,14 +261,14 @@ class Builder extends Mapping
 		}
 		return false;
 	}
-	
+
 	/**
 	 *	get the field type id from system
 	 */
 	protected function getFieldType($fieldName)
 	{
 		// load the field settings
-		return ComponentbuilderHelper::getVar('fieldtype', $fieldName, 'name', 'id');
+		return GetHelper::var('fieldtype', $fieldName, 'name', 'id');
 	}
 	
 	/**

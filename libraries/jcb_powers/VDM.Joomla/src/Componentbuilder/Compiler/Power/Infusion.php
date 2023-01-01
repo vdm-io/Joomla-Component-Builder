@@ -166,10 +166,10 @@ class Infusion
 		if (StringHelper::check($power->description))
 		{
 			// check if this is escaped
-			if (strpos($power->description, '/*') === false)
+			if (strpos((string) $power->description, '/*') === false)
 			{
 				// make this description escaped
-				$power->description = '/**' . PHP_EOL . ' * ' . implode(PHP_EOL . ' * ', explode(PHP_EOL, $power->description)) . PHP_EOL . ' */';
+				$power->description = '/**' . PHP_EOL . ' * ' . implode(PHP_EOL . ' * ', explode(PHP_EOL, (string) $power->description)) . PHP_EOL . ' */';
 			}
 			$code[] = PHP_EOL . $power->description;
 		}

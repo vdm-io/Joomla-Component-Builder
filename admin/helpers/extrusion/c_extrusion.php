@@ -26,6 +26,9 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+
 /**
  * Extrusion class
  */
@@ -58,10 +61,10 @@ class Extrusion extends Builder
 	protected function setAdminViews(&$component_id)
 	{
 		// check if views were set
-		if (ComponentbuilderHelper::checkArray($this->views))
+		if (ArrayHelper::check($this->views))
 		{
 			$count = 0;
-			if (ComponentbuilderHelper::checkArray($this->addadmin_views))
+			if (ArrayHelper::check($this->addadmin_views))
 			{
 				$count = (int) count((array)$this->addadmin_views) + 3;
 			}
@@ -84,7 +87,7 @@ class Extrusion extends Builder
 				$this->addadmin_views['addadmin_views'.$pointer]['order'] = $pointer + 1;
 			}
 		}
-		if (isset($this->addadmin_views) && ComponentbuilderHelper::checkArray($this->addadmin_views))
+		if (isset($this->addadmin_views) && ArrayHelper::check($this->addadmin_views))
 		{
 			// set the field object
 			$object = new stdClass();
@@ -94,7 +97,7 @@ class Extrusion extends Builder
 			$object->created_by = $this->user->id;
 			$object->published = 1;
 			// check if it is already set
-			if ($item_id = ComponentbuilderHelper::getVar('component_admin_views', $component_id, 'joomla_component', 'id'))
+			if ($item_id = GetHelper::var('component_admin_views', $component_id, 'joomla_component', 'id'))
 			{
 				// set ID
 				$object->id = (int) $item_id;

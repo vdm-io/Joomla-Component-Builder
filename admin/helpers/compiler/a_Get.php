@@ -1076,7 +1076,7 @@ class Get
 			array(&$this->componentContext, &$this)
 		);
 		// make sure we have a version
-		if (strpos($this->componentData->component_version, '.')
+		if (strpos((string) $this->componentData->component_version, '.')
 			=== false)
 		{
 			$this->componentData->component_version = '1.0.0';
@@ -1090,7 +1090,7 @@ class Get
 		{
 			// set the new version
 			$version = (array) explode(
-				'.', $this->componentData->component_version
+				'.', (string) $this->componentData->component_version
 			);
 			// get last key
 			end($version);
@@ -1321,7 +1321,7 @@ class Get
 
 		// ensure version naming is correct
 		$this->component_version = preg_replace(
-			'/[^0-9.]+/', '', $component->component_version
+			'/[^0-9.]+/', '', (string) $component->component_version
 		);
 
 		// set the add targets
@@ -1337,7 +1337,7 @@ class Get
 				)
 				&& JsonHelper::check(
 					$component->{'add' . $addTarget}
-				)) ? json_decode($component->{'add' . $addTarget}, true) : null;
+				)) ? json_decode((string) $component->{'add' . $addTarget}, true) : null;
 			if (ArrayHelper::check(
 				$component->{'add' . $addTarget}
 			))
@@ -1383,7 +1383,7 @@ class Get
 				&& StringHelper::check($component->website))
 			{
 				$component->whmcs_buy_link = $component->website;
-				$component->whmcs_url      = rtrim($component->website, '/')
+				$component->whmcs_url      = rtrim((string) $component->website, '/')
 					. '/whmcs';
 			}
 			// none set
@@ -1413,7 +1413,7 @@ class Get
 		// set the addcustommenus data
 		$component->addcustommenus = (isset($component->addcustommenus)
 			&& JsonHelper::check($component->addcustommenus))
-			? json_decode($component->addcustommenus, true) : null;
+			? json_decode((string) $component->addcustommenus, true) : null;
 		if (ArrayHelper::check($component->addcustommenus))
 		{
 			$component->custommenus = array_values($component->addcustommenus);
@@ -1423,7 +1423,7 @@ class Get
 		// set the sql_tweak data
 		$component->sql_tweak = (isset($component->sql_tweak)
 			&& JsonHelper::check($component->sql_tweak))
-			? json_decode($component->sql_tweak, true) : null;
+			? json_decode((string) $component->sql_tweak, true) : null;
 		if (ArrayHelper::check($component->sql_tweak))
 		{
 			// build the tweak settings
@@ -1455,7 +1455,7 @@ class Get
 		// set the admin_view data
 		$component->addadmin_views = (isset($component->addadmin_views)
 			&& JsonHelper::check($component->addadmin_views))
-			? json_decode($component->addadmin_views, true) : null;
+			? json_decode((string) $component->addadmin_views, true) : null;
 		if (ArrayHelper::check($component->addadmin_views))
 		{
 			CFactory::_('Config')->lang_target = 'admin';
@@ -1549,7 +1549,7 @@ class Get
 		// set the site_view data
 		$component->addsite_views = (isset($component->addsite_views)
 			&& JsonHelper::check($component->addsite_views))
-			? json_decode($component->addsite_views, true) : null;
+			? json_decode((string) $component->addsite_views, true) : null;
 		if (ArrayHelper::check($component->addsite_views))
 		{
 			CFactory::_('Config')->lang_target = 'site';
@@ -1586,7 +1586,7 @@ class Get
 			= (isset($component->addcustom_admin_views)
 			&& JsonHelper::check(
 				$component->addcustom_admin_views
-			)) ? json_decode($component->addcustom_admin_views, true) : null;
+			)) ? json_decode((string) $component->addcustom_admin_views, true) : null;
 		if (ArrayHelper::check(
 			$component->addcustom_admin_views
 		))
@@ -1623,7 +1623,7 @@ class Get
 		// set the config data
 		$component->addconfig = (isset($component->addconfig)
 			&& JsonHelper::check($component->addconfig))
-			? json_decode($component->addconfig, true) : null;
+			? json_decode((string) $component->addconfig, true) : null;
 		if (ArrayHelper::check($component->addconfig))
 		{
 			$component->config = array_map(
@@ -1654,7 +1654,7 @@ class Get
 		// set the addcustommenus data
 		$component->addcontributors = (isset($component->addcontributors)
 			&& JsonHelper::check($component->addcontributors))
-			? json_decode($component->addcontributors, true) : null;
+			? json_decode((string) $component->addcontributors, true) : null;
 		if (ArrayHelper::check($component->addcontributors))
 		{
 			$this->addContributors   = true;
@@ -1667,7 +1667,7 @@ class Get
 		// set the addcustommenus data
 		$component->version_update = (isset($component->version_update)
 			&& JsonHelper::check($component->version_update))
-			? json_decode($component->version_update, true) : null;
+			? json_decode((string) $component->version_update, true) : null;
 		if (ArrayHelper::check($component->version_update))
 		{
 			$component->version_update = array_values(
@@ -1693,7 +1693,7 @@ class Get
 					))
 				{
 					$this->setUpdateSQL(
-						json_decode($old_admin_views->addadmin_views, true),
+						json_decode((string) $old_admin_views->addadmin_views, true),
 						$component->addadmin_views, 'adminview'
 					);
 				}
@@ -1701,7 +1701,7 @@ class Get
 				if (ObjectHelper::check($old_component))
 				{
 					$old_component_version = preg_replace(
-						'/[^0-9.]+/', '', $old_component->component_version
+						'/[^0-9.]+/', '', (string) $old_component->component_version
 					);
 					if ($old_component_version != $this->component_version)
 					{
@@ -1942,7 +1942,7 @@ class Get
 		if ($component->addreadme)
 		{
 			$component->readme = CFactory::_('Customcode')->update(
-				base64_decode($component->readme)
+				base64_decode((string) $component->readme)
 			);
 		}
 		else
@@ -1956,7 +1956,7 @@ class Get
 		// dashboard methods
 		$component->dashboard_tab = (isset($component->dashboard_tab)
 			&& JsonHelper::check($component->dashboard_tab))
-			? json_decode($component->dashboard_tab, true) : null;
+			? json_decode((string) $component->dashboard_tab, true) : null;
 		if (ArrayHelper::check($component->dashboard_tab))
 		{
 			$component->dashboard_tab = array_map(
@@ -1980,7 +1980,7 @@ class Get
 			// load the php for the dashboard model
 			$component->php_dashboard_methods = CFactory::_('Customcode.Gui')->set(
 				CFactory::_('Customcode')->update(
-					base64_decode($component->php_dashboard_methods)
+					base64_decode((string) $component->php_dashboard_methods)
 				),
 				array(
 					'table' => 'component_dashboard',
@@ -2029,15 +2029,15 @@ class Get
 				$component->toignore
 			))
 		{
-			if (strpos($component->toignore, ',') !== false)
+			if (strpos((string) $component->toignore, ',') !== false)
 			{
 				$component->toignore = array_map(
-					'trim', (array) explode(',', $component->toignore)
+					'trim', (array) explode(',', (string) $component->toignore)
 				);
 			}
 			else
 			{
-				$component->toignore = array(trim($component->toignore));
+				$component->toignore = array(trim((string) $component->toignore));
 			}
 		}
 		else
@@ -2048,7 +2048,7 @@ class Get
 		// get all modules
 		$component->addjoomla_modules = (isset($component->addjoomla_modules)
 			&& JsonHelper::check($component->addjoomla_modules))
-			? json_decode($component->addjoomla_modules, true) : null;
+			? json_decode((string) $component->addjoomla_modules, true) : null;
 		if (ArrayHelper::check($component->addjoomla_modules))
 		{
 			$joomla_modules = array_map(
@@ -2069,7 +2069,7 @@ class Get
 		// get all plugins
 		$component->addjoomla_plugins = (isset($component->addjoomla_plugins)
 			&& JsonHelper::check($component->addjoomla_plugins))
-			? json_decode($component->addjoomla_plugins, true) : null;
+			? json_decode((string) $component->addjoomla_plugins, true) : null;
 		if (ArrayHelper::check($component->addjoomla_plugins))
 		{
 			$joomla_plugins = array_map(
@@ -2228,7 +2228,7 @@ class Get
 
 			// check the length of the view name (+5 for com_ and _)
 			$name_length = CFactory::_('Config')->component_code_name_length + strlen(
-					$view->name_single_code
+					(string) $view->name_single_code
 				) + 5;
 			// when the name is larger than 49 we need to add the assets' table name fix
 			if ($name_length > 49)
@@ -2304,7 +2304,7 @@ class Get
 			// add the tables
 			$view->addtables = (isset($view->addtables)
 				&& JsonHelper::check($view->addtables))
-				? json_decode($view->addtables, true) : null;
+				? json_decode((string) $view->addtables, true) : null;
 			if (ArrayHelper::check($view->addtables))
 			{
 				$view->tables = array_values($view->addtables);
@@ -2316,7 +2316,7 @@ class Get
 			$view->customtabs
 			                                           = (isset($view->customtabs)
 				&& JsonHelper::check($view->customtabs))
-				? json_decode($view->customtabs, true) : null;
+				? json_decode((string) $view->customtabs, true) : null;
 			if (ArrayHelper::check($view->customtabs))
 			{
 				// setup custom tabs to global data sets
@@ -2355,8 +2355,8 @@ class Get
 							$_tab = Indent::_(1);
 						}
 						// check if the php of the tab is set, if not load it now
-						if (strpos($tab['html'], 'bootstrap.addTab') === false
-							&& strpos($tab['html'], 'bootstrap.endTab')
+						if (strpos((string) $tab['html'], 'bootstrap.addTab') === false
+							&& strpos((string) $tab['html'], 'bootstrap.endTab')
 							=== false)
 						{
 							// add the tab
@@ -2371,7 +2371,7 @@ class Get
 								. '<div class="span12">';
 							$tmp .= PHP_EOL . $_tab . Indent::_(4) . implode(
 									PHP_EOL . $_tab . Indent::_(4),
-									(array) explode(PHP_EOL, trim($tab['html']))
+									(array) explode(PHP_EOL, trim((string) $tab['html']))
 								);
 							$tmp .= PHP_EOL . $_tab . Indent::_(3) . '</div>';
 							$tmp .= PHP_EOL . $_tab . Indent::_(2) . '</div>';
@@ -2385,7 +2385,7 @@ class Get
 							$tab['html'] = PHP_EOL . $_tab . Indent::_(1)
 								. implode(
 									PHP_EOL . $_tab . Indent::_(1),
-									(array) explode(PHP_EOL, trim($tab['html']))
+									(array) explode(PHP_EOL, trim((string) $tab['html']))
 								);
 						}
 						// add the permissions if needed
@@ -2435,13 +2435,13 @@ class Get
 			// add the local tabs
 			$view->addtabs = (isset($view->addtabs)
 				&& JsonHelper::check($view->addtabs))
-				? json_decode($view->addtabs, true) : null;
+				? json_decode((string) $view->addtabs, true) : null;
 			if (ArrayHelper::check($view->addtabs))
 			{
 				$nr = 1;
 				foreach ($view->addtabs as $tab)
 				{
-					$view->tabs[$nr] = trim($tab['name']);
+					$view->tabs[$nr] = trim((string) $tab['name']);
 					$nr++;
 				}
 			}
@@ -2463,7 +2463,7 @@ class Get
 			// add permissions
 			$view->addpermissions = (isset($view->addpermissions)
 				&& JsonHelper::check($view->addpermissions))
-				? json_decode($view->addpermissions, true) : null;
+				? json_decode((string) $view->addpermissions, true) : null;
 			if (ArrayHelper::check($view->addpermissions))
 			{
 				$view->permissions = array_values($view->addpermissions);
@@ -2474,7 +2474,7 @@ class Get
 			// set fields
 			$view->addfields = (isset($view->addfields)
 				&& JsonHelper::check($view->addfields))
-				? json_decode($view->addfields, true) : null;
+				? json_decode((string) $view->addfields, true) : null;
 			if (ArrayHelper::check($view->addfields))
 			{
 				$ignoreFields = array();
@@ -2516,7 +2516,7 @@ class Get
 						))
 					{
 						$this->setUpdateSQL(
-							json_decode($old_view->addfields, true),
+							json_decode((string) $old_view->addfields, true),
 							$view->addfields, 'field', $view->name_single_code,
 							$ignoreFields
 						);
@@ -2600,7 +2600,7 @@ class Get
 								$tmpfield['settings']->xml
 									= CFactory::_('Customcode')->update(
 									json_decode(
-										$field['settings']->history->xml
+										(string) $field['settings']->history->xml
 									)
 								);
 								// add properties from current field as it is generic
@@ -2702,7 +2702,7 @@ class Get
 			// set the conditions
 			$view->addconditions = (isset($view->addconditions)
 				&& JsonHelper::check($view->addconditions))
-				? json_decode($view->addconditions, true) : null;
+				? json_decode((string) $view->addconditions, true) : null;
 			if (ArrayHelper::check($view->addconditions))
 			{
 				$view->conditions = array();
@@ -2805,7 +2805,7 @@ class Get
 			// set the relations
 			$view->addrelations = (isset($view->addrelations)
 				&& JsonHelper::check($view->addrelations))
-				? json_decode($view->addrelations, true) : null;
+				? json_decode((string) $view->addrelations, true) : null;
 			if (ArrayHelper::check($view->addrelations))
 			{
 				foreach ($view->addrelations as $nr => $relationsValue)
@@ -2853,7 +2853,7 @@ class Get
 							))
 						{
 							$check_column_name = trim(
-								strtolower($relationsValue['column_name'])
+								strtolower((string) $relationsValue['column_name'])
 							);
 							// confirm it should really make the over ride
 							if ('default' !== $check_column_name)
@@ -2886,7 +2886,7 @@ class Get
 			$view->addlinked_views
 			                                                 = (isset($view->addlinked_views)
 				&& JsonHelper::check($view->addlinked_views))
-				? json_decode($view->addlinked_views, true) : null;
+				? json_decode((string) $view->addlinked_views, true) : null;
 			if (ArrayHelper::check($view->addlinked_views))
 			{
 				// setup linked views to global data sets
@@ -2932,9 +2932,9 @@ class Get
 						true
 					);
 					// check if a token must be set
-					if (strpos($view->$scripter, "token") !== false
+					if (strpos((string) $view->$scripter, "token") !== false
 						|| strpos(
-							$view->$scripter, "task=ajax"
+							(string) $view->$scripter, "task=ajax"
 						) !== false)
 					{
 						if (!CFactory::_('Customcode.Dispenser')->hub['token'][$view->name_single_code])
@@ -3026,7 +3026,7 @@ class Get
 						$view->{$button_code_field}
 						                    = CFactory::_('Customcode.Gui')->set(
 							CFactory::_('Customcode')->update(
-								base64_decode($view->{$button_code_field})
+								base64_decode((string) $view->{$button_code_field})
 							),
 							$guiMapper
 						);
@@ -3040,7 +3040,7 @@ class Get
 				// set the button array
 				$view->custom_button = (isset($view->custom_button)
 					&& JsonHelper::check($view->custom_button))
-					? json_decode($view->custom_button, true) : null;
+					? json_decode((string) $view->custom_button, true) : null;
 				if (ArrayHelper::check($view->custom_button))
 				{
 					$view->custom_buttons = array_values($view->custom_button);
@@ -3059,7 +3059,7 @@ class Get
 				{
 					if (isset($view->$importScripter)
 						&& strlen(
-							$view->$importScripter
+							(string) $view->$importScripter
 						) > 0)
 					{
 						// update GUI mapper field
@@ -3109,7 +3109,7 @@ class Get
 				// check if controller input as been set
 				$view->ajax_input = (isset($view->ajax_input)
 					&& JsonHelper::check($view->ajax_input))
-					? json_decode($view->ajax_input, true) : null;
+					? json_decode((string) $view->ajax_input, true) : null;
 				if (ArrayHelper::check($view->ajax_input))
 				{
 					if ($addAjaxSite)
@@ -3161,7 +3161,7 @@ class Get
 				&& JsonHelper::check($view->alias_builder))
 			{
 				// get the aliasFields
-				$alias_fields = (array) json_decode($view->alias_builder, true);
+				$alias_fields = (array) json_decode((string) $view->alias_builder, true);
 				// get the active fields
 				$alias_fields = (array) array_filter(
 					$view->fields, function ($field) use ($alias_fields) {
@@ -3343,7 +3343,7 @@ class Get
 
 		// set the default data
 		$view->default = CFactory::_('Customcode.Gui')->set(
-			CFactory::_('Customcode')->update(base64_decode($view->default)),
+			CFactory::_('Customcode')->update(base64_decode((string) $view->default)),
 			$guiMapper
 		);
 		// load context if not set
@@ -3371,7 +3371,7 @@ class Get
 		// make sure json become array
 		if (JsonHelper::check($view->libraries))
 		{
-			$view->libraries = json_decode($view->libraries, true);
+			$view->libraries = json_decode((string) $view->libraries, true);
 		}
 		// if we have an array add it
 		if (ArrayHelper::check($view->libraries))
@@ -3444,7 +3444,7 @@ class Get
 		$view->main_get = $main_get[0];
 		// set the custom_get data
 		$view->custom_get = $this->setGetData(
-			json_decode($view->custom_get, true), $view->code, $view->context
+			json_decode((string) $view->custom_get, true), $view->code, $view->context
 		);
 		// set array adding array of scripts
 		$addArray = array('php_view', 'php_jview', 'php_jview_display',
@@ -3465,7 +3465,7 @@ class Get
 					$guiMapper['field'] = $scripter;
 					$view->$scripter    = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Customcode')->update(
-							base64_decode($view->$scripter)
+							base64_decode((string) $view->$scripter)
 						),
 						$guiMapper
 					);
@@ -3473,7 +3473,7 @@ class Get
 				else
 				{
 					$view->$scripter = CFactory::_('Customcode')->update(
-						base64_decode($view->$scripter)
+						base64_decode((string) $view->$scripter)
 					);
 				}
 				if (2 == $this->uikit || 1 == $this->uikit)
@@ -3548,7 +3548,7 @@ class Get
 			// check if controller input as been set
 			$view->ajax_input = (isset($view->ajax_input)
 				&& JsonHelper::check($view->ajax_input))
-				? json_decode($view->ajax_input, true) : null;
+				? json_decode((string) $view->ajax_input, true) : null;
 			if (ArrayHelper::check($view->ajax_input))
 			{
 				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller'][$view->code]
@@ -3605,7 +3605,7 @@ class Get
 					$guiMapper['field']         = $button_code_field;
 					$view->{$button_code_field} = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Customcode')->update(
-							base64_decode($view->{$button_code_field})
+							base64_decode((string) $view->{$button_code_field})
 						),
 						$guiMapper
 					);
@@ -3614,7 +3614,7 @@ class Get
 			// set the button array
 			$view->custom_button = (isset($view->custom_button)
 				&& JsonHelper::check($view->custom_button))
-				? json_decode($view->custom_button, true) : null;
+				? json_decode((string) $view->custom_button, true) : null;
 			if (ArrayHelper::check($view->custom_button))
 			{
 				$view->custom_buttons = array_values($view->custom_button);
@@ -3837,7 +3837,7 @@ class Get
 							$result->php_calculation
 							                    = CFactory::_('Customcode.Gui')->set(
 								CFactory::_('Customcode')->update(
-									base64_decode($result->php_calculation)
+									base64_decode((string) $result->php_calculation)
 								),
 								$guiMapper
 							);
@@ -3855,7 +3855,7 @@ class Get
 							$result->php_router_parse
 							                    = CFactory::_('Customcode.Gui')->set(
 								CFactory::_('Customcode')->update(
-									base64_decode($result->php_router_parse)
+									base64_decode((string) $result->php_router_parse)
 								),
 								$guiMapper
 							);
@@ -3911,7 +3911,7 @@ class Get
 									$result->{$script}
 										= CFactory::_('Customcode.Gui')->set(
 										CFactory::_('Customcode')->update(
-											base64_decode($result->{$script})
+											base64_decode((string) $result->{$script})
 										),
 										$guiMapper
 									);
@@ -3980,7 +3980,7 @@ class Get
 								$customQueryString
 									= CFactory::_('Customcode.Gui')->set(
 									CFactory::_('Customcode')->update(
-										base64_decode($result->php_custom_get)
+										base64_decode((string) $result->php_custom_get)
 									),
 									$guiMapper
 								);
@@ -3992,7 +3992,7 @@ class Get
 								if (StringHelper::check(
 										$_searchQuery
 									)
-									&& strpos($_searchQuery, '#__') !== false)
+									&& strpos((string) $_searchQuery, '#__') !== false)
 								{
 									$_queryName
 										= GetHelper::between(
@@ -4034,7 +4034,7 @@ class Get
 						{
 							// set join_view_table details
 							$result->join_view_table = json_decode(
-								$result->join_view_table, true
+								(string) $result->join_view_table, true
 							);
 							if (ArrayHelper::check(
 								$result->join_view_table
@@ -4049,12 +4049,12 @@ class Get
 										// array(on_field_as, on_field)
 										$bucket['on_field'] = array_map(
 											'trim',
-											explode('.', $op['on_field'])
+											explode('.', (string) $op['on_field'])
 										);
 										// array(join_field_as, join_field)
 										$bucket['join_field'] = array_map(
 											'trim',
-											explode('.', $op['join_field'])
+											explode('.', (string) $op['join_field'])
 										);
 										// triget filed that has table a relationship
 										if ($op['row_type'] == 1
@@ -4133,7 +4133,7 @@ class Get
 							unset($result->join_view_table);
 							// set join_db_table details
 							$result->join_db_table = json_decode(
-								$result->join_db_table, true
+								(string) $result->join_db_table, true
 							);
 							if (ArrayHelper::check(
 								$result->join_db_table
@@ -4148,12 +4148,12 @@ class Get
 										// array(on_field_as, on_field)
 										$bucket['on_field'] = array_map(
 											'trim',
-											explode('.', $op['on_field'])
+											explode('.', (string) $op['on_field'])
 										);
 										// array(join_field_as, join_field)
 										$bucket['join_field'] = array_map(
 											'trim',
-											explode('.', $op['join_field'])
+											explode('.', (string) $op['join_field'])
 										);
 										// triget filed that has table a relationship
 										if ($op['row_type'] == 1
@@ -4233,7 +4233,7 @@ class Get
 							unset($result->join_db_table);
 							// set filter details
 							$result->filter = json_decode(
-								$result->filter, true
+								(string) $result->filter, true
 							);
 							if (ArrayHelper::check(
 								$result->filter
@@ -4260,7 +4260,7 @@ class Get
 								}
 							}
 							// set where details
-							$result->where = json_decode($result->where, true);
+							$result->where = json_decode((string) $result->where, true);
 							if (ArrayHelper::check(
 								$result->where
 							))
@@ -4283,7 +4283,7 @@ class Get
 								unset($result->where);
 							}
 							// set order details
-							$result->order = json_decode($result->order, true);
+							$result->order = json_decode((string) $result->order, true);
 							if (!ArrayHelper::check(
 								$result->order
 							))
@@ -4291,7 +4291,7 @@ class Get
 								unset($result->order);
 							}
 							// set grouping
-							$result->group = json_decode($result->group, true);
+							$result->group = json_decode((string) $result->group, true);
 							if (!ArrayHelper::check(
 								$result->group
 							))
@@ -4300,7 +4300,7 @@ class Get
 							}
 							// set global details
 							$result->global = json_decode(
-								$result->global, true
+								(string) $result->global, true
 							);
 							if (!ArrayHelper::check(
 								$result->global
@@ -4327,7 +4327,7 @@ class Get
 							))
 						{
 							$result->plugin_events = json_decode(
-								$result->plugin_events, true
+								(string) $result->plugin_events, true
 							);
 						}
 						else
@@ -4427,15 +4427,15 @@ class Get
 						// by id (first remove backups)
 						$ids = $setting['ids'];
 						// now get the ids
-						if (strpos($ids, ',') !== false)
+						if (strpos((string) $ids, ',') !== false)
 						{
 							$id_array = (array) array_map(
-								'trim', explode(',', $ids)
+								'trim', explode(',', (string) $ids)
 							);
 						}
 						else
 						{
-							$id_array[] = trim($ids);
+							$id_array[] = trim((string) $ids);
 						}
 						$id_array_new = array();
 						// check for ranges
@@ -4937,7 +4937,7 @@ class Get
 			&& StringHelper::check($row->php_view))
 		{
 			$php_view = CFactory::_('Customcode.Gui')->set(
-				CFactory::_('Customcode')->update(base64_decode($row->php_view)),
+				CFactory::_('Customcode')->update(base64_decode((string) $row->php_view)),
 				array(
 					'table' => $table,
 					'field' => 'php_view',
@@ -4946,7 +4946,7 @@ class Get
 			);
 		}
 		$contnent = CFactory::_('Customcode.Gui')->set(
-			CFactory::_('Customcode')->update(base64_decode($row->{$table})),
+			CFactory::_('Customcode')->update(base64_decode((string) $row->{$table})),
 			array(
 				'table' => $table,
 				'field' => $table,
@@ -4968,7 +4968,7 @@ class Get
 			// make sure json become array
 			if (JsonHelper::check($row->libraries))
 			{
-				$row->libraries = json_decode($row->libraries, true);
+				$row->libraries = json_decode((string) $row->libraries, true);
 			}
 			// if we have an array add it
 			if (ArrayHelper::check($row->libraries))
@@ -5100,7 +5100,7 @@ class Get
 				{
 					// build the key
 					$k_ey = StringHelper::safe($row->alias);
-					$key  = preg_replace("/[^A-Za-z]/", '', $k_ey);
+					$key  = preg_replace("/[^A-Za-z]/", '', (string) $k_ey);
 					// set the keys
 					$this->dataWithAliasKeys[$table][$row->alias] = $row->id;
 					$this->dataWithAliasKeys[$table][$k_ey]       = $row->id;
@@ -5266,7 +5266,7 @@ class Get
 						)
 						&& JsonHelper::check(
 							$library->{'add' . $addTarget}
-						)) ? json_decode($library->{'add' . $addTarget}, true)
+						)) ? json_decode((string) $library->{'add' . $addTarget}, true)
 						: null;
 					if (ArrayHelper::check(
 						$library->{'add' . $addTarget}
@@ -5298,7 +5298,7 @@ class Get
 					$library->addconfig = (isset($library->addconfig)
 						&& JsonHelper::check(
 							$library->addconfig
-						)) ? json_decode($library->addconfig, true) : null;
+						)) ? json_decode((string) $library->addconfig, true) : null;
 					if (ArrayHelper::check($library->addconfig))
 					{
 						$library->config = array_map(
@@ -5325,7 +5325,7 @@ class Get
 					{
 						$library->document = CFactory::_('Customcode.Gui')->set(
 							CFactory::_('Customcode')->update(
-								base64_decode($library->php_setdocument)
+								base64_decode((string) $library->php_setdocument)
 							),
 							array(
 								'table' => 'library',
@@ -5342,7 +5342,7 @@ class Get
 					$library->addconditions = (isset($library->addconditions)
 						&& JsonHelper::check(
 							$library->addconditions
-						)) ? json_decode($library->addconditions, true) : null;
+						)) ? json_decode((string) $library->addconditions, true) : null;
 					if (ArrayHelper::check(
 						$library->addconditions
 					))
@@ -5446,7 +5446,7 @@ class Get
 					);
 				}
 				// get only selected values
-				$lines = explode(PHP_EOL, $_string);
+				$lines = explode(PHP_EOL, (string) $_string);
 				// make sure to set the string to *
 				$string = '*';
 			}
@@ -5615,9 +5615,9 @@ class Get
 					if ($counter === 'a')
 					{
 						// the main table fields
-						if (strpos($table['sourcemap'], PHP_EOL) !== false)
+						if (strpos((string) $table['sourcemap'], PHP_EOL) !== false)
 						{
-							$fields = explode(PHP_EOL, $table['sourcemap']);
+							$fields = explode(PHP_EOL, (string) $table['sourcemap']);
 							if (ArrayHelper::check($fields))
 							{
 								// reset array buckets
@@ -5670,9 +5670,9 @@ class Get
 					else
 					{
 						// the other tables
-						if (strpos($table['sourcemap'], PHP_EOL) !== false)
+						if (strpos((string) $table['sourcemap'], PHP_EOL) !== false)
 						{
-							$fields = explode(PHP_EOL, $table['sourcemap']);
+							$fields = explode(PHP_EOL, (string) $table['sourcemap']);
 							if (ArrayHelper::check($fields))
 							{
 								// reset array buckets
@@ -5887,7 +5887,7 @@ class Get
 			$bag = $newBag;
 		}
 		$key     = array();
-		$bagsize = strlen($bag) - 1;
+		$bagsize = strlen((string) $bag) - 1;
 		for ($i = 0; $i < $size; $i++)
 		{
 			$get   = rand(0, $bagsize);
@@ -6214,7 +6214,7 @@ class Get
 					{
 						$this->multiLangString[$string]['translation']
 							= json_decode(
-							$this->multiLangString[$string]['translation'], true
+							(string) $this->multiLangString[$string]['translation'], true
 						);
 					}
 					// if we have an array continue
@@ -6267,7 +6267,7 @@ class Get
 						))
 						{
 							$targets = (array) json_decode(
-								$this->multiLangString[$string][$target], true
+								(string) $this->multiLangString[$string][$target], true
 							);
 							// check if we should add the target ID
 							if (in_array($target_id, $targets))
@@ -6521,7 +6521,7 @@ class Get
 				{
 					if (JsonHelper::check($item[$target]))
 					{
-						$targets = (array) json_decode($item[$target], true);
+						$targets = (array) json_decode((string) $item[$target], true);
 						// if component is not found ignore this string, and do nothing
 						if (($key = array_search($target_id, $targets))
 							!== false)
@@ -6557,7 +6557,7 @@ class Get
 										))
 									{
 										$other_targets = (array) json_decode(
-											$item[$other_target], true
+											(string) $item[$other_target], true
 										);
 										// check if linked to other extensions
 										if (ArrayHelper::check(
@@ -6576,7 +6576,7 @@ class Get
 									))
 								{
 									$translation = json_decode(
-										$item['translation'], true
+										(string) $item['translation'], true
 									);
 									if (ArrayHelper::check(
 										$translation
@@ -6873,24 +6873,24 @@ class Get
 					$module->name, 'W'
 				);
 				// set langPrefix
-				$this->langPrefix = 'MOD_' . strtoupper($module->code_name);
+				$this->langPrefix = 'MOD_' . strtoupper((string) $module->code_name);
 				CFactory::_('Config')->set('lang_prefix', $this->langPrefix);
 				// set lang prefix
 				$module->lang_prefix = CFactory::_('Config')->lang_prefix;
 				// set module class name
-				$module->class_helper_name = 'Mod' . ucfirst($module->code_name)
+				$module->class_helper_name = 'Mod' . ucfirst((string) $module->code_name)
 					. 'Helper';
-				$module->class_data_name   = 'Mod' . ucfirst($module->code_name)
+				$module->class_data_name   = 'Mod' . ucfirst((string) $module->code_name)
 					. 'Data';
 				// set module install class name
 				$module->installer_class_name = 'mod_' . ucfirst(
-						$module->code_name
+						(string) $module->code_name
 					) . 'InstallerScript';
 				// set module folder name
-				$module->folder_name = 'mod_' . strtolower($module->code_name);
+				$module->folder_name = 'mod_' . strtolower((string) $module->code_name);
 				// set the zip name
 				$module->zip_name = $module->folder_name . '_v' . str_replace(
-						'.', '_', $module->module_version
+						'.', '_', (string) $module->module_version
 					) . '__J' . CFactory::_('Config')->joomla_version;
 				// set module file name
 				$module->file_name = $module->folder_name;
@@ -6903,14 +6903,14 @@ class Get
 				// set some placeholder for this module
 				CFactory::_('Placeholder')->set('Module_name', $module->official_name);
 				CFactory::_('Placeholder')->set('Module', ucfirst(
-					$module->code_name
+					(string) $module->code_name
 				));
 				CFactory::_('Placeholder')->set('module', strtolower(
-					$module->code_name
+					(string) $module->code_name
 				));
 				CFactory::_('Placeholder')->set('module.version', $module->module_version);
 				CFactory::_('Placeholder')->set('module_version', str_replace(
-					'.', '_', $module->module_version
+					'.', '_', (string) $module->module_version
 				));
 				// set description (TODO) add description field to module
 				if (!isset($module->description)
@@ -6936,9 +6936,9 @@ class Get
 					. " (v." . $module->module_version
 					. ")</h1> <div style='clear: both;'></div>"
 					. $module->description . "<p>Created by <a href='" . trim(
-						$component->website
+						(string) $component->website
 					) . "' target='_blank'>" . trim(
-						JFilterOutput::cleanText($component->author)
+						(string) JFilterOutput::cleanText($component->author)
 					) . "</a><br /><small>Development started "
 					. JFactory::getDate($module->created)->format("jS F, Y")
 					. "</small></p>";
@@ -6951,7 +6951,7 @@ class Get
 				if ($module->addreadme == 1 && !empty($module->readme))
 				{
 					$module->readme = CFactory::_('Placeholder')->update_(
-						CFactory::_('Customcode')->update(base64_decode($module->readme))
+						CFactory::_('Customcode')->update(base64_decode((string) $module->readme))
 					);
 				}
 				else
@@ -6962,7 +6962,7 @@ class Get
 				// get the custom_get
 				$module->custom_get = (isset($module->custom_get)
 					&& JsonHelper::check($module->custom_get))
-					? json_decode($module->custom_get, true) : null;
+					? json_decode((string) $module->custom_get, true) : null;
 				if (ArrayHelper::check($module->custom_get))
 				{
 					$module->custom_get = $this->setGetData(
@@ -6992,7 +6992,7 @@ class Get
 								CFactory::_('Placeholder')->update_(
 									CFactory::_('Customcode')->update(
 										base64_decode(
-											$module->class_helper_header
+											(string) $module->class_helper_header
 										)
 									)
 								),
@@ -7010,7 +7010,7 @@ class Get
 					$module->class_helper_code = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
-								base64_decode($module->class_helper_code)
+								base64_decode((string) $module->class_helper_code)
 							)
 						),
 						$guiMapper
@@ -7040,7 +7040,7 @@ class Get
 					$module->mod_code   = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
-								base64_decode($module->mod_code)
+								base64_decode((string) $module->mod_code)
 							)
 						),
 						$guiMapper
@@ -7054,7 +7054,7 @@ class Get
 					$module->mod_code .= PHP_EOL . "// load the default Tmpl";
 					$module->mod_code .= PHP_EOL
 						. "require JModuleHelper::getLayoutPath('mod_"
-						. strtolower($module->code_name)
+						. strtolower((string) $module->code_name)
 						. "', \$params->get('layout', 'default'));";
 				}
 				// base64 Decode default header
@@ -7068,7 +7068,7 @@ class Get
 					$module->default_header = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
-								base64_decode($module->default_header)
+								base64_decode((string) $module->default_header)
 							)
 						),
 						$guiMapper
@@ -7088,7 +7088,7 @@ class Get
 					$module->default    = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
-								base64_decode($module->default)
+								base64_decode((string) $module->default)
 							)
 						),
 						$guiMapper
@@ -7111,7 +7111,7 @@ class Get
 				// set the fields data
 				$module->fields = (isset($module->fields)
 					&& JsonHelper::check($module->fields))
-					? json_decode($module->fields, true) : null;
+					? json_decode((string) $module->fields, true) : null;
 				if (ArrayHelper::check($module->fields))
 				{
 					// ket global key
@@ -7142,7 +7142,7 @@ class Get
 								else
 								{
 									if ('fields_name' === $dynamic_field
-										&& strpos($form[$dynamic_field], '.')
+										&& strpos((string) $form[$dynamic_field], '.')
 										!== false)
 									{
 										$form[$dynamic_field]
@@ -7241,7 +7241,7 @@ class Get
 												'default="' . $old_default
 												. '"', 'default="'
 												. $field['custom_value'] . '"',
-												$field['settings']->xml
+												(string) $field['settings']->xml
 											);
 										}
 										else
@@ -7341,7 +7341,7 @@ class Get
 						)
 						&& JsonHelper::check(
 							$module->{'add' . $addTarget}
-						)) ? json_decode($module->{'add' . $addTarget}, true)
+						)) ? json_decode((string) $module->{'add' . $addTarget}, true)
 						: null;
 					if (ArrayHelper::check(
 						$module->{'add' . $addTarget}
@@ -7379,7 +7379,7 @@ class Get
 				// make sure json become array
 				if (JsonHelper::check($module->libraries))
 				{
-					$module->libraries = json_decode($module->libraries, true);
+					$module->libraries = json_decode((string) $module->libraries, true);
 				}
 				// if we have an array add it
 				if (ArrayHelper::check($module->libraries))
@@ -7435,7 +7435,7 @@ class Get
 								CFactory::_('Placeholder')->update_(
 									CFactory::_('Customcode')->update(
 										base64_decode(
-											$module->{$scriptMethod . '_'
+											(string) $module->{$scriptMethod . '_'
 											. $scriptType}
 										)
 									)
@@ -7458,7 +7458,7 @@ class Get
 					&& StringHelper::check($module->sql))
 				{
 					$module->sql = CFactory::_('Placeholder')->update_(
-						CFactory::_('Customcode')->update(base64_decode($module->sql))
+						CFactory::_('Customcode')->update(base64_decode((string) $module->sql))
 					);
 				}
 				else
@@ -7474,7 +7474,7 @@ class Get
 				{
 					$module->sql_uninstall = CFactory::_('Placeholder')->update_(
 						CFactory::_('Customcode')->update(
-							base64_decode($module->sql_uninstall)
+							base64_decode((string) $module->sql_uninstall)
 						)
 					);
 				}
@@ -7799,10 +7799,10 @@ class Get
 				);
 				// set the zip name
 				$plugin->zip_name = $plugin->folder_name . '_v' . str_replace(
-						'.', '_', $plugin->plugin_version
+						'.', '_', (string) $plugin->plugin_version
 					) . '__J' . CFactory::_('Config')->joomla_version;
 				// set plugin file name
-				$plugin->file_name = strtolower($plugin->code_name);
+				$plugin->file_name = strtolower((string) $plugin->code_name);
 				// set plugin context
 				$plugin->context = $plugin->folder_name . '.' . $plugin->id;
 				// set official_name lang strings
@@ -7812,14 +7812,14 @@ class Get
 				// set some placeholder for this plugin
 				CFactory::_('Placeholder')->set('Plugin_name', $plugin->official_name);
 				CFactory::_('Placeholder')->set('PLUGIN_NAME', $plugin->official_name);
-				CFactory::_('Placeholder')->set('Plugin', ucfirst($plugin->code_name));
-				CFactory::_('Placeholder')->set('plugin', strtolower($plugin->code_name));
-				CFactory::_('Placeholder')->set('Plugin_group', ucfirst($plugin->group));
-				CFactory::_('Placeholder')->set('plugin_group', strtolower($plugin->group));
+				CFactory::_('Placeholder')->set('Plugin', ucfirst((string) $plugin->code_name));
+				CFactory::_('Placeholder')->set('plugin', strtolower((string) $plugin->code_name));
+				CFactory::_('Placeholder')->set('Plugin_group', ucfirst((string) $plugin->group));
+				CFactory::_('Placeholder')->set('plugin_group', strtolower((string) $plugin->group));
 				CFactory::_('Placeholder')->set('plugin.version', $plugin->plugin_version);
 				CFactory::_('Placeholder')->set('VERSION', $plugin->plugin_version);
 				CFactory::_('Placeholder')->set('plugin_version', str_replace(
-					'.', '_', $plugin->plugin_version
+					'.', '_', (string) $plugin->plugin_version
 				));
 				// set description
 				CFactory::_('Placeholder')->set('DESCRIPTION', '');
@@ -7847,9 +7847,9 @@ class Get
 					. " (v." . $plugin->plugin_version
 					. ")</h1> <div style='clear: both;'></div>"
 					. $plugin->description . "<p>Created by <a href='" . trim(
-						$component->website
+						(string) $component->website
 					) . "' target='_blank'>" . trim(
-						JFilterOutput::cleanText($component->author)
+						(string) JFilterOutput::cleanText($component->author)
 					) . "</a><br /><small>Development started "
 					. JFactory::getDate($plugin->created)->format("jS F, Y")
 					. "</small></p>";
@@ -7862,7 +7862,7 @@ class Get
 				if ($plugin->addreadme == 1 && !empty($plugin->readme))
 				{
 					$plugin->readme = CFactory::_('Placeholder')->update_(
-						CFactory::_('Customcode')->update(base64_decode($plugin->readme))
+						CFactory::_('Customcode')->update(base64_decode((string) $plugin->readme))
 					);
 				}
 				else
@@ -7879,7 +7879,7 @@ class Get
 					$plugin->main_class_code = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
-								base64_decode($plugin->main_class_code)
+								base64_decode((string) $plugin->main_class_code)
 							)
 						),
 						$guiMapper
@@ -7894,7 +7894,7 @@ class Get
 					$plugin->head = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
-								base64_decode($plugin->head)
+								base64_decode((string) $plugin->head)
 							)
 						),
 						$guiMapper
@@ -7906,7 +7906,7 @@ class Get
 					$plugin->head = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
-								base64_decode($plugin->class_head)
+								base64_decode((string) $plugin->class_head)
 							)
 						),
 						array(
@@ -7924,7 +7924,7 @@ class Get
 					$plugin->comment = CFactory::_('Customcode.Gui')->set(
 						CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode')->update(
-								base64_decode($plugin->comment)
+								base64_decode((string) $plugin->comment)
 							)
 						),
 						array(
@@ -7947,7 +7947,7 @@ class Get
 				// set the fields data
 				$plugin->fields = (isset($plugin->fields)
 					&& JsonHelper::check($plugin->fields))
-					? json_decode($plugin->fields, true) : null;
+					? json_decode((string) $plugin->fields, true) : null;
 				if (ArrayHelper::check($plugin->fields))
 				{
 					// ket global key
@@ -7978,7 +7978,7 @@ class Get
 								else
 								{
 									if ('fields_name' === $dynamic_field
-										&& strpos($form[$dynamic_field], '.')
+										&& strpos((string) $form[$dynamic_field], '.')
 										!== false)
 									{
 										$form[$dynamic_field]
@@ -8077,7 +8077,7 @@ class Get
 												'default="' . $old_default
 												. '"', 'default="'
 												. $field['custom_value'] . '"',
-												$field['settings']->xml
+												(string) $field['settings']->xml
 											);
 										}
 										else
@@ -8177,7 +8177,7 @@ class Get
 						)
 						&& JsonHelper::check(
 							$plugin->{'add' . $addTarget}
-						)) ? json_decode($plugin->{'add' . $addTarget}, true)
+						)) ? json_decode((string) $plugin->{'add' . $addTarget}, true)
 						: null;
 					if (ArrayHelper::check(
 						$plugin->{'add' . $addTarget}
@@ -8231,7 +8231,7 @@ class Get
 								CFactory::_('Placeholder')->update_(
 									CFactory::_('Customcode')->update(
 										base64_decode(
-											$plugin->{$scriptMethod . '_'
+											(string) $plugin->{$scriptMethod . '_'
 											. $scriptType}
 										)
 									)
@@ -8254,7 +8254,7 @@ class Get
 					&& StringHelper::check($plugin->sql))
 				{
 					$plugin->sql = CFactory::_('Placeholder')->update_(
-						CFactory::_('Customcode')->update(base64_decode($plugin->sql))
+						CFactory::_('Customcode')->update(base64_decode((string) $plugin->sql))
 					);
 				}
 				else
@@ -8270,7 +8270,7 @@ class Get
 				{
 					$plugin->sql_uninstall = CFactory::_('Placeholder')->update_(
 						CFactory::_('Customcode')->update(
-							base64_decode($plugin->sql_uninstall)
+							base64_decode((string) $plugin->sql_uninstall)
 						)
 					);
 				}
@@ -8357,7 +8357,7 @@ class Get
 		$xml = '<?xml version="1.0" encoding="utf-8"?>';
 		$xml .= PHP_EOL . '<extension type="plugin" version="'
 			. $this->joomlaVersions[CFactory::_('Config')->joomla_version]['xml_version'] . '" group="'
-			. strtolower($plugin->group) . '" method="upgrade">';
+			. strtolower((string) $plugin->group) . '" method="upgrade">';
 		$xml .= PHP_EOL . Indent::_(1) . '<name>' . $plugin->lang_prefix
 			. '</name>';
 		$xml .= PHP_EOL . Indent::_(1) . '<creationDate>' . Placefix::_h('BUILDDATE') . '</creationDate>';

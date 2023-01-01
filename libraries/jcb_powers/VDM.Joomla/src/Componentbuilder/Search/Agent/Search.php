@@ -167,51 +167,39 @@ class Search implements SearchInterface
 									// forth layer
 									foreach ($ro as $k => $r)
 									{
-										if (StringHelper::check($r))
+										if (StringHelper::check($r) && ($_found = $this->string($r)) !== null)
 										{
-											if (($_found = $this->string($r)) !== null)
+											foreach ($_found as $_n => $_f)
 											{
-												foreach ($_found as $_n => $_f)
-												{
-													$found[$keys . '.' . $key . '.' . $ke . '.' . $k . '.' . $_n] = $_f;
-												}
+												$found[$keys . '.' . $key . '.' . $ke . '.' . $k . '.' . $_n] = $_f;
 											}
 										}
 									}
 								}
-								elseif (StringHelper::check($ro))
+								elseif (StringHelper::check($ro) && ($_found = $this->string($ro)) !== null)
 								{
-									if (($_found = $this->string($ro)) !== null)
+									foreach ($_found as $_n => $_f)
 									{
-										foreach ($_found as $_n => $_f)
-										{
-											$found[$keys. '.' . $key . '.' . $ke . '.' . $_n] = $_f;
-										}
+										$found[$keys. '.' . $key . '.' . $ke . '.' . $_n] = $_f;
 									}
 								}
 
 							}
 						}
-						elseif (StringHelper::check($row))
+						elseif (StringHelper::check($row) && ($_found = $this->string($row)) !== null)
 						{
-							if (($_found = $this->string($row)) !== null)
+							foreach ($_found as $_n => $_f)
 							{
-								foreach ($_found as $_n => $_f)
-								{
-									$found[$keys. '.' . $key . '.' . $_n] = $_f;
-								}
+								$found[$keys. '.' . $key . '.' . $_n] = $_f;
 							}
 						}
 					}
 				}
-				elseif (StringHelper::check($rows))
+				elseif (StringHelper::check($rows) && ($_found = $this->string($rows)) !== null)
 				{
-					if (($_found = $this->string($rows)) !== null)
+					foreach ($_found as $_n => $_f)
 					{
-						foreach ($_found as $_n => $_f)
-						{
-							$found[$keys. '.' . $_n] = $_f;
-						}
+						$found[$keys. '.' . $_n] = $_f;
 					}
 				}
 			}
@@ -308,7 +296,7 @@ class Search implements SearchInterface
 	protected function fieldCounter()
 	{
 		// we count every field we search
-		$this->config->field_counter = $this->config->field_counter + 1;
+		$this->config->field_counter += 1;
 	}
 }
 
