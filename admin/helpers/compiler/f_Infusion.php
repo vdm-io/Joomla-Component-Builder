@@ -23,6 +23,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Minify;
 
 /**
  * Infusion class
@@ -837,12 +838,8 @@ class Infusion extends Interpretation
 						if (CFactory::_('Config')->get('minify', 0)
 							&& strpos((string) $footerScript, '<?php') === false)
 						{
-							// minfy the script
-							$minifier = new JS;
-							$minifier->add($footerScript);
-							$footerScript = $minifier->minify();
-							// clear some memory
-							unset($minifier);
+							// minify the script
+							$footerScript = Minify::js($footerScript);
 						}
 						CFactory::_('Content')->set_($nameListCode, 'VIEWS_FOOTER_SCRIPT', PHP_EOL . '<script type="text/javascript">'
 							. $footerScript . "</script>");

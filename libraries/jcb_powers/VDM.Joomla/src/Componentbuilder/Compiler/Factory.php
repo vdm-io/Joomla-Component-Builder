@@ -17,6 +17,7 @@ use VDM\Joomla\Componentbuilder\Service\Crypt;
 use VDM\Joomla\Componentbuilder\Service\Server;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Database;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Model;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Mapper;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Event;
 use VDM\Joomla\Componentbuilder\Compiler\Service\History;
@@ -113,6 +114,7 @@ abstract class Factory implements FactoryInterface
 			->registerServiceProvider(new Server())
 			->registerServiceProvider(new Database())
 			->registerServiceProvider(new Model())
+			->registerServiceProvider(new Mapper())
 			->registerServiceProvider(new Compiler())
 			->registerServiceProvider(new Event())
 			->registerServiceProvider(new History())

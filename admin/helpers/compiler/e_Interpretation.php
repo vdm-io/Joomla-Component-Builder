@@ -25,6 +25,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Minify;
 
 /**
  * Compiler class
@@ -16680,32 +16681,26 @@ class Interpretation extends Fields
 			$list_fileScript = '';
 			CFactory::_('Content')->set_($nameListCode, 'ADMIN_ADD_JAVASCRIPT_FILE', '');
 		}
-		// minfy the script
+		// minify the script
 		if (CFactory::_('Config')->get('minify', 0) && isset($list_fileScript)
 			&& StringHelper::check($list_fileScript))
 		{
-			// minify the fielScript javscript
-			$minifier = new JS;
-			$minifier->add($list_fileScript);
-			$list_fileScript = $minifier->minify();
+			// minify the fileScript javascript
+			$list_fileScript = Minify::js($list_fileScript);
 		}
-		// minfy the script
+		// minify the script
 		if (CFactory::_('Config')->get('minify', 0) && isset($fileScript)
 			&& StringHelper::check($fileScript))
 		{
-			// minify the fielScript javscript
-			$minifier = new JS;
-			$minifier->add($fileScript);
-			$fileScript = $minifier->minify();
+			// minify the fileScript javascript
+			$fileScript = Minify::js($fileScript);
 		}
-		// minfy the script
+		// minify the script
 		if (CFactory::_('Config')->get('minify', 0) && isset($footerScript)
 			&& StringHelper::check($footerScript))
 		{
-			// minify the footerScript javscript
-			$minifier = new JS;
-			$minifier->add($footerScript);
-			$footerScript = $minifier->minify();
+			// minify the footerScript javascript
+			$footerScript = Minify::js($footerScript);
 		}
 		// make sure there is script to add
 		if (isset($list_fileScript)

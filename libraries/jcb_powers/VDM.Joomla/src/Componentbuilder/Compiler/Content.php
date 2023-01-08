@@ -13,6 +13,9 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 
 
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Componentbuilder\Interfaces\Mapperdoubleinterface;
+use VDM\Joomla\Componentbuilder\Interfaces\Mappersingleinterface;
+use VDM\Joomla\Componentbuilder\Abstraction\Mapper;
 
 
 /**
@@ -20,202 +23,45 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
  * 
  * @since 3.2.0
  */
-class Content
+class Content extends Mapper implements Mapperdoubleinterface, Mappersingleinterface
 {
 	/**
-	 * The Content
+	 * Model the key
 	 *
-	 * @var    array
-	 * @since 3.2.0
-	 **/
-	public array $active = [];
-
-	/**
-	 * The Dynamic Content
+	 * @param   string   $key  The key to model
 	 *
-	 * @var    array
-	 * @since 3.2.0
-	 **/
-	public array $_active = [];
-
-	/**
-	 * Set content
-	 *
-	 * @param   string  $key    The main string key
-	 * @param   mixed   $value  The values to set
-	 *
-	 * @return  void
+	 * @return  string
 	 * @since 3.2.0
 	 */
-	public function set(string $key, $value)
+	protected function key(string $key): string
 	{
-		$this->active[Placefix::_h($key)] = $value;
+		return Placefix::_h($key);
 	}
 
 	/**
-	 * Get content
+	 * Model the first key
 	 *
-	 * @param   string  $key    The main string key
-	 * @param   mixed   $value  The values to set
+	 * @param   string   $key  The first key to model
 	 *
-	 * @return  mixed
+	 * @return  string
 	 * @since 3.2.0
 	 */
-	public function get(string $key)
+	protected function firstKey(string $key): string
 	{
-		return $this->active[Placefix::_h($key)] ?? null;
+		return $key;
 	}
 
 	/**
-	 * Does key exist
+	 * Model the second key
 	 *
-	 * @param   string  $key    The main string key
+	 * @param   string   $key  The second key to model
 	 *
-	 * @return  bool
+	 * @return  string
 	 * @since 3.2.0
 	 */
-	public function exist(string $key): bool
+	protected function secondKey(string $key): string
 	{
-		if (isset($this->active[Placefix::_h($key)]))
-		{
-			return true;
-		}
-		return false;
+		return Placefix::_h($key);
 	}
-
-	/**
-	 * Add content
-	 *
-	 * @param   string  $key    The main string key
-	 * @param   mixed   $value  The values to set
-	 *
-	 * @return  void
-	 * @since 3.2.0
-	 */
-	public function add(string $key, $value)
-	{
-		if (isset($this->active[Placefix::_h($key)]))
-		{
-			$this->active[Placefix::_h($key)] .= $value;
-		}
-		else
-		{
-			$this->active[Placefix::_h($key)] = $value;
-		}
-	}
-
-	/**
-	 * Remove content
-	 *
-	 * @param   string     $key     The main string key
-	 *
-	 * @return  void
-	 * @since 3.2.0
-	 */
-	public function remove(string $key)
-	{
-		unset($this->active[Placefix::_h($key)]);
-	}
-
-	/**
-	 * Set dynamic content
-	 *
-	 * @param   string    $view    The view key
-	 * @param   string    $key     The main string key
-	 * @param   mixed     $value   The values to set
-	 *
-	 * @return  void
-	 * @since 3.2.0
-	 */
-	public function set_(string $view, string $key, $value)
-	{
-		$this->_active[$view][Placefix::_h($key)] = $value;
-	}
-
-	/**
-	 * Get dynamic content
-	 *
-	 * @param   string         $view  The view key
-	 * @param   string|null    $key   The main string key
-	 *
-	 * @return  mixed
-	 * @since 3.2.0
-	 */
-	public function get_(string $view, ?string $key = null)
-	{
-		if (is_string($key))
-		{
-			return $this->_active[$view][Placefix::_h($key)] ?? null;
-		}
-		return $this->_active[$view] ?? null;
-	}
-
-	/**
-	 * Does view key exist
-	 *
-	 * @param   string         $view    The view key
-	 * @param   string|null    $key     The main string key
-	 *
-	 * @return  bool
-	 * @since 3.2.0
-	 */
-	public function exist_(string $view, ?string $key = null): bool
-	{
-		if (is_string($key) && isset($this->_active[$view]) &&
-			isset($this->_active[$view][Placefix::_h($key)]))
-		{
-			return true;
-		}
-		elseif (is_null($key) && isset($this->_active[$view]))
-		{
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Add dynamic content
-	 *
-	 * @param   string    $view    The view key
-	 * @param   string    $key     The main string key
-	 * @param   mixed     $value   The values to set
-	 *
-	 * @return  void
-	 * @since 3.2.0
-	 */
-	public function add_(string $view, string $key, $value)
-	{
-		if (isset($this->_active[$view]) &&
-			isset($this->_active[$view][Placefix::_h($key)]))
-		{
-			$this->_active[$view][Placefix::_h($key)] .= $value;
-		}
-		else
-		{
-			$this->_active[$view][Placefix::_h($key)] = $value;
-		}
-	}
-
-	/**
-	 * Remove dynamic content
-	 *
-	 * @param   string         $view    The view key
-	 * @param   string|null    $key     The main string key
-	 *
-	 * @return  void
-	 * @since 3.2.0
-	 */
-	public function remove_(string $view, ?string $key = null)
-	{
-		if (is_string($key))
-		{
-			unset($this->_active[$view][Placefix::_h($key)]);
-		}
-		else
-		{
-			unset($this->_active[$view]);
-		}
-	}
-
 }
 

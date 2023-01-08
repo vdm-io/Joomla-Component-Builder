@@ -24,9 +24,9 @@ abstract class ArrayHelper
 	 *
 	 * @input	array   The array to check
 	 *
-	 * @returns bool/int  number of items in array on success
+	 * @returns int|false  number of items in array on success
 	 * 
-	 * @since  3.0.9
+	 * @since  3.2.0
 	 */
 	public static function check($array, $removeEmptyString = false)
 	{
@@ -35,17 +35,19 @@ abstract class ArrayHelper
 			// also make sure the empty strings are removed
 			if ($removeEmptyString)
 			{
-				foreach ($array as $key => $string)
+				$array = array_filter($array);
+
+				if (empty($array))
 				{
-					if (empty($string))
-					{
-						unset($array[$key]);
-					}
+					return false;
 				}
-				return self::check($array, false);
+
+				return count($array);
 			}
+
 			return $nr;
 		}
+
 		return false;
 	}
 
@@ -54,25 +56,25 @@ abstract class ArrayHelper
 	 *
 	 * @input	array   The arrays you would like to merge
 	 *
-	 * @returns array on success
+	 * @returns array|null  merged array on success
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function merge($arrays)
+	public static function merge($arrays): ?array
 	{
 		if(self::check($arrays))
 		{
-			$arrayBuket = array();
+			$merged = [];
 			foreach ($arrays as $array)
 			{
 				if (self::check($array))
 				{
-					$arrayBuket = array_merge($arrayBuket, $array);
+					$merged = array_merge($merged, $array);
 				}
 			}
-			return $arrayBuket;
+			return $merged;
 		}
-		return false;
+		return null;
 	}
 
 	/**

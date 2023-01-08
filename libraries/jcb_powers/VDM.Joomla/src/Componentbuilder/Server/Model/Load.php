@@ -101,6 +101,7 @@ class Load extends Model implements ModelInterface
 				break;
 			}
 		}
+
 		return $value;
 	}
 

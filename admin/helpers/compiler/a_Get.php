@@ -1557,7 +1557,7 @@ class Get
 			// build the site_views settings
 			$component->site_views = array_map(
 				function ($array) {
-					// has become a lacacy issue, can't remove this
+					// has become a legacy issue, can't remove this
 					$array['view']     = $array['siteview'];
 					$array['settings'] = $this->getCustomViewData(
 						$array['view']
@@ -1596,7 +1596,7 @@ class Get
 			// build the custom_admin_views settings
 			$component->custom_admin_views = array_map(
 				function ($array) {
-					// has become a lacacy issue, can't remove this
+					// has become a legacy issue, can't remove this
 					$array['view']     = $array['customadminview'];
 					$array['settings'] = $this->getCustomViewData(
 						$array['view'], 'custom_admin_view'

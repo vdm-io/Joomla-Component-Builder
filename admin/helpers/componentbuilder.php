@@ -24,7 +24,9 @@ spl_autoload_register(function ($class) {
 	// project-specific base directories and namespace prefix
 	$search = [
 		'libraries/jcb_powers/VDM.Joomla' => 'VDM\\Joomla',
-		'libraries/jcb_powers/VDM.Gitea' => 'VDM\\Gitea'
+		'libraries/jcb_powers/VDM.Minify' => 'VDM\\Minify',
+		'libraries/jcb_powers/VDM.Gitea' => 'VDM\\Gitea',
+		'libraries/jcb_powers/VDM.Psr' => 'VDM\\Psr'
 	];
 	// Start the search and load if found
 	$found = false;
@@ -1078,8 +1080,6 @@ abstract class ComponentbuilderHelper
 		{
 			// import the Joomla librarys
 			jimport('joomla.application.component.modellist');
-			// include class to minify js
-			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/js.php';
 		}
 		// load only if smart
 		if ('smart' === $type)
