@@ -608,10 +608,11 @@ class Fields extends Structure
 		$dbkey = 'g';
 		// for plugin event TODO change event api signatures
 		$placeholders = CFactory::_('Placeholder')->active;
+		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeBuildFields
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildFields',
-			array(&$this->componentContext, &$dynamicFields, &$readOnly,
+			array(&$component_context, &$dynamicFields, &$readOnly,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
 			      &$nameListCode, &$placeholders, &$langView,
 			      &$langViews)
@@ -631,7 +632,7 @@ class Fields extends Structure
 		// Trigger Event: jcb_ce_onAfterBuildFields
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterBuildFields',
-			array(&$this->componentContext, &$dynamicFields, &$readOnly,
+			array(&$component_context, &$dynamicFields, &$readOnly,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
 			      &$nameListCode, &$placeholders, &$langView,
 			      &$langViews)
@@ -1025,10 +1026,11 @@ class Fields extends Structure
 		$dbkey = 'g';
 		// for plugin event TODO change event api signatures
 		$placeholders = CFactory::_('Placeholder')->active;
+		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeBuildFields
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildFields',
-			array(&$this->componentContext, &$dynamicFieldsXML, &$readOnlyXML,
+			array(&$component_context, &$dynamicFieldsXML, &$readOnlyXML,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
 			      &$nameListCode, &$placeholders, &$langView,
 			      &$langViews)
@@ -1048,7 +1050,7 @@ class Fields extends Structure
 		// Trigger Event: jcb_ce_onAfterBuildFields
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterBuildFields',
-			array(&$this->componentContext, &$dynamicFieldsXML, &$readOnlyXML,
+			array(&$component_context, &$dynamicFieldsXML, &$readOnlyXML,
 			      &$dbkey, &$view, &$component, &$nameSingleCode,
 			      &$nameListCode, &$placeholders, &$langView,
 			      &$langViews)
@@ -3947,6 +3949,8 @@ class Fields extends Structure
 			$field['order_edit']
 				= $this->zeroOrderFix[$nameSingleCode][(int) $field['tab']];
 		}
+		// get the default fields
+		$default_fields = CFactory::_('Config')->default_fields;
 		// now build the layout
 		if (StringHelper::check($tabName)
 			&& strtolower($tabName) != 'publishing')
@@ -3971,7 +3975,7 @@ class Fields extends Structure
 					= $name;
 			}
 			// check if default fields were over written
-			if (in_array($name, $this->defaultFields))
+			if (in_array($name, $default_fields))
 			{
 				// just to eliminate
 				$this->movedPublishingFields[$nameSingleCode][$name] = $name;
@@ -3979,7 +3983,7 @@ class Fields extends Structure
 		}
 		elseif ($tabName === 'publishing' || $tabName === 'Publishing')
 		{
-			if (!in_array($name, $this->defaultFields))
+			if (!in_array($name, $default_fields))
 			{
 				if (isset($this->newPublishingFields[$nameSingleCode][(int) $field['alignment']][(int) $field['order_edit']]))
 				{
@@ -4021,7 +4025,7 @@ class Fields extends Structure
 					= $name;
 			}
 			// check if default fields were over written
-			if (in_array($name, $this->defaultFields))
+			if (in_array($name, $default_fields))
 			{
 				// just to eliminate
 				$this->movedPublishingFields[$nameSingleCode][$name] = $name;
@@ -4045,12 +4049,10 @@ class Fields extends Structure
 		$decode    = array('json', 'base64', 'basic_encryption',
 		                   'whmcs_encryption', 'medium_encryption', 'expert_mode');
 		$textareas = array('textarea', 'editor');
-		if (isset($this->siteFields[$view][$field])
-			&& ArrayHelper::check(
-				$this->siteFields[$view][$field]
-			))
+		if (($site_fields = CFactory::_('Registry')->
+			extract('builder.site_fields.' . $view . '.' . $field)) !== null)
 		{
-			foreach ($this->siteFields[$view][$field] as $codeString => $array)
+			foreach ($site_fields as $codeString => $site_field)
 			{
 				// get the code array
 				$codeArray = explode('___', (string) $codeString);
@@ -4059,40 +4061,40 @@ class Fields extends Structure
 				// set the decoding methods
 				if (in_array($set, $decode))
 				{
-					if (isset($this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']])
-						&& isset($this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']]['decode']))
+					if (isset($this->siteFieldData['decode'][$site_field->site][$code][$site_field->as][$site_field->key])
+						&& isset($this->siteFieldData['decode'][$site_field->site][$code][$site_field->as][$site_field->key]['decode']))
 					{
 						if (!in_array(
 							$set,
-							$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']]['decode']
+							$this->siteFieldData['decode'][$site_field->site][$code][$site_field->as][$site_field->key]['decode']
 						))
 						{
-							$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']]['decode'][]
+							$this->siteFieldData['decode'][$site_field->site][$code][$site_field->as][$site_field->key]['decode'][]
 								= $set;
 						}
 					}
 					else
 					{
-						$this->siteFieldData['decode'][$array['site']][$code][$array['as']][$array['key']]
-							= array('decode'     => array($set),
+						$this->siteFieldData['decode'][$site_field->site][$code][$site_field->as][$site_field->key]
+							= array('decode'     => [$set],
 							        'type'       => $type,
 							        'admin_view' => $view);
 					}
 				}
 				// set the uikit checker
-				if ((2 == $this->uikit || 1 == $this->uikit)
+				if ((2 == CFactory::_('Config')->uikit || 1 == CFactory::_('Config')->uikit)
 					&& in_array(
 						$type, $textareas
 					))
 				{
-					$this->siteFieldData['uikit'][$array['site']][$code][$array['as']][$array['key']]
-						= $array;
+					$this->siteFieldData['uikit'][$site_field->site][$code][$site_field->as][$site_field->key]
+						= (array) $site_field;
 				}
 				// set the textareas checker
 				if (in_array($type, $textareas))
 				{
-					$this->siteFieldData['textareas'][$array['site']][$code][$array['as']][$array['key']]
-						= $array;
+					$this->siteFieldData['textareas'][$site_field->site][$code][$site_field->as][$site_field->key]
+						= (array) $site_field;
 				}
 			}
 		}
@@ -4863,10 +4865,12 @@ class Fields extends Structure
 			}
 			$this->intFieldsBuilder[$nameSingleCode] .= ',"' . $name . '"';
 		}
+		// Get the default fields
+		$default_fields = CFactory::_('Config')->default_fields;
 		// set all dynamic field of this view
 		if ($dbSwitch && $typeName != 'category' && $typeName != 'repeatable'
 			&& $typeName != 'subform'
-			&& !in_array($name, $this->defaultFields))
+			&& !in_array($name, $default_fields))
 		{
 			if (!isset($this->dynamicfieldsBuilder[$nameSingleCode]))
 			{
@@ -5188,8 +5192,8 @@ class Fields extends Structure
 			// add the language only for new filter option
 			$filter_name_asc_lang  = '';
 			$filter_name_desc_lang = '';
-			if (isset($this->adminFilterType[$nameListCode])
-				&& $this->adminFilterType[$nameListCode] == 2)
+			if (CFactory::_('Registry')->
+				get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
 			{
 				// set the language strings for ascending
 				$filter_name_asc      = $listFieldName . ' ascending';
@@ -5248,8 +5252,8 @@ class Fields extends Structure
 			);
 			// add the language only for new filter option
 			$filter_name_select_lang = '';
-			if (isset($this->adminFilterType[$nameListCode])
-				&& $this->adminFilterType[$nameListCode] == 2)
+			if (CFactory::_('Registry')->
+				get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
 			{
 				// set the language strings for selection
 				$filter_name_select      = 'Select ' . $listFieldName;
@@ -5734,8 +5738,8 @@ class Fields extends Structure
 	public function setFieldFilterSet(&$nameSingleCode, &$nameListCode)
 	{
 		// check if this is the above/new filter option
-		if (isset($this->adminFilterType[$nameListCode])
-			&& $this->adminFilterType[$nameListCode] == 2)
+		if (CFactory::_('Registry')->
+			get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
 		{
 			// we first create the file
 			$target = array('admin' => 'filter_' . $nameListCode);
@@ -5930,8 +5934,8 @@ class Fields extends Structure
 	public function setFieldFilterListSet(&$nameSingleCode, &$nameListCode)
 	{
 		// check if this is the above/new filter option
-		if (isset($this->adminFilterType[$nameListCode])
-			&& $this->adminFilterType[$nameListCode] == 2)
+		if (CFactory::_('Registry')->
+			get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
 		{
 			// keep track of all fields already added
 			$donelist = array('ordering' => true, 'id' => true);
@@ -6437,11 +6441,11 @@ class Fields extends Structure
 
 			return $this->xmlIndent((string) $tidy, ' ', 8, true, false);
 		}
-		// set tidy waring atleast once
-		elseif (!$this->setTidyWarning)
+		// set tidy waring only once
+		elseif (CFactory::_('Config')->set_tidy_warning)
 		{
 			// set the warning only once
-			$this->setTidyWarning = true;
+			CFactory::_('Config')->set('set_tidy_warning', false);
 			// now set the warning
 			$this->app->enqueueMessage(
 				JText::_('<hr /><h3>Tidy Error</h3>'), 'Error'

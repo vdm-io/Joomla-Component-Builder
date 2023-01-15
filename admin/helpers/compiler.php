@@ -120,10 +120,12 @@ class Compiler extends Infusion
 				);
 				$this->writeFile($xmlPath, $componentXML);
 			}
+			// for plugin event TODO change event api signatures
+			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onBeforeUpdateFiles
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeUpdateFiles',
-				array(&$this->componentContext, &$this)
+				array(&$component_context, &$this)
 			);
 			// now update the files
 			if (!$this->updateFiles())
@@ -133,7 +135,7 @@ class Compiler extends Infusion
 			// Trigger Event: jcb_ce_onBeforeGetCustomCode
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeGetCustomCode',
-				array(&$this->componentContext, &$this)
+				array(&$component_context, &$this)
 			);
 			// now insert into the new files
 			if (CFactory::_('Customcode')->get())
@@ -141,7 +143,7 @@ class Compiler extends Infusion
 				// Trigger Event: jcb_ce_onBeforeAddCustomCode
 				CFactory::_('Event')->trigger(
 					'jcb_ce_onBeforeAddCustomCode',
-					array(&$this->componentContext, &$this)
+					array(&$component_context, &$this)
 				);
 
 				$this->addCustomCode();
@@ -149,7 +151,7 @@ class Compiler extends Infusion
 			// Trigger Event: jcb_ce_onBeforeSetLangFileData
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeSetLangFileData',
-				array(&$this->componentContext, &$this)
+				array(&$component_context, &$this)
 			);
 			// set the lang data now
 			$this->setLangFileData();
@@ -216,13 +218,15 @@ class Compiler extends Infusion
 			$message_fix['sql']         = JText::_(
 				'The <b>SQL</b> fix updates the #__assets table\'s column size on installation of the component and reverses it back to the Joomla default on uninstall of the component.'
 			);
+			// get the asset table fix switch
+			$add_assets_table_fix = CFactory::_('Config')->get('add_assets_table_fix', 0);
 			// set assets table rules column notice
-			if (CFactory::_('Config')->add_assets_table_fix)
+			if ($add_assets_table_fix)
 			{
 				$this->app->enqueueMessage(
 					JText::_('<hr /><h3>Assets Table Notice</h3>'), 'Notice'
 				);
-				$asset_table_fix_type = (CFactory::_('Config')->add_assets_table_fix == 2)
+				$asset_table_fix_type = ($add_assets_table_fix == 2)
 					? 'intelligent' : 'sql';
 				$this->app->enqueueMessage(
 					JText::sprintf(
@@ -241,13 +245,13 @@ class Compiler extends Infusion
 				$this->app->enqueueMessage(
 					JText::sprintf(
 						'The Joomla #__assets table\'s rules column has to be fixed for this component to work coherently. JCB has detected that in worse case the rules column in the #__assets table may require <b>%s</b> characters, and yet the Joomla default is only <b>varchar(5120)</b>. JCB has three option to resolve this issue, first <b>use less permissions</b> in your component, second use the <b>SQL</b> fix, or the <b>intelligent</b> fix. %s %s',
-						$this->accessWorseCase, $message_fix['intelligent'],
+						CFactory::_('Config')->access_worse_case, $message_fix['intelligent'],
 						$message_fix['sql']
 					), 'Warning'
 				);
 			}
 			// set assets table name column warning if not set
-			if (!CFactory::_('Config')->add_assets_table_fix && $this->addAssetsTableNameFix)
+			if (!$add_assets_table_fix && CFactory::_('Config')->add_assets_table_name_fix)
 			{
 				// only add if not already added
 				if ($this->accessSize < 30)
@@ -381,7 +385,7 @@ class Compiler extends Infusion
 			&& ArrayHelper::check($this->newFiles['dynamic']))
 		{
 			// get the bom file
-			$bom = FileHelper::getContent($this->bomPath);
+			$bom = FileHelper::getContent(CFactory::_('Config')->bom_path);
 			// first we do the static files
 			foreach ($this->newFiles['static'] as $static)
 			{
@@ -624,10 +628,12 @@ class Compiler extends Infusion
 	 */
 	protected function setFileContent(&$name, &$path, &$bom, $view = null)
 	{
+		// for plugin event TODO change event api signatures
+		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeSetFileContent',
-			array(&$this->componentContext, &$name, &$path, &$bom, &$view)
+			array(&$component_context, &$name, &$path, &$bom, &$view)
 		);
 		// set the file name
 		CFactory::_('Content')->set('FILENAME', $name);
@@ -642,7 +648,7 @@ class Compiler extends Infusion
 		// Trigger Event: jcb_ce_onGetFileContents
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onGetFileContents',
-			array(&$this->componentContext, &$string, &$name, &$path, &$bom,
+			array(&$component_context, &$string, &$name, &$path, &$bom,
 			      &$view)
 		);
 		// see if we should add a BOM
@@ -670,7 +676,7 @@ class Compiler extends Infusion
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeWriteFileContent',
-			array(&$this->componentContext, &$answer, &$name, &$path, &$bom,
+			array(&$component_context, &$answer, &$name, &$path, &$bom,
 			      &$view)
 		);
 		// add answer back to file
@@ -939,10 +945,12 @@ class Compiler extends Infusion
 			$repoFullPath = $this->repoPath . '/com_'
 				. $this->componentData->sales_name . '__joomla_'
 				. CFactory::_('Config')->get('version', 3);
+			// for plugin event TODO change event api signatures
+			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onBeforeUpdateRepo
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeUpdateRepo',
-				array(&$this->componentContext, &$this->componentPath,
+				array(&$component_context, &$this->componentPath,
 				      &$repoFullPath, &$this->componentData)
 			);
 			// remove old data
@@ -952,7 +960,7 @@ class Compiler extends Infusion
 			// Trigger Event: jcb_ce_onAfterUpdateRepo
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterUpdateRepo',
-				array(&$this->componentContext, &$this->componentPath,
+				array(&$component_context, &$this->componentPath,
 				      &$repoFullPath, &$this->componentData)
 			);
 
@@ -1040,10 +1048,12 @@ class Compiler extends Infusion
 		// the name of the zip file to create
 		$this->filepath['component'] = $this->tempPath . '/'
 			. $this->filepath['component-folder'] . '.zip';
+		// for plugin event TODO change event api signatures
+		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeZipComponent
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeZipComponent',
-			array(&$this->componentContext, &$this->componentPath,
+			array(&$component_context, &$this->componentPath,
 			      &$this->filepath['component'], &$this->tempPath,
 			      &$this->componentFolderName, &$this->componentData)
 		);
@@ -1057,7 +1067,7 @@ class Compiler extends Infusion
 			{
 				// Trigger Event: jcb_ce_onBeforeBackupZip
 				CFactory::_('Event')->trigger(
-					'jcb_ce_onBeforeBackupZip', array(&$this->componentContext,
+					'jcb_ce_onBeforeBackupZip', array(&$component_context,
 					                                  &$this->filepath['component'],
 					                                  &$this->tempPath,
 					                                  &$this->backupPath,
@@ -1080,7 +1090,7 @@ class Compiler extends Infusion
 					// Trigger Event: jcb_ce_onBeforeMoveToServer
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeMoveToServer',
-						array(&$this->componentContext,
+						array(&$component_context,
 						      &$this->filepath['component'], &$this->tempPath,
 						      &$this->componentSalesName, &$this->componentData)
 					);
@@ -1096,7 +1106,7 @@ class Compiler extends Infusion
 			// Trigger Event: jcb_ce_onAfterZipComponent
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterZipComponent',
-				array(&$this->componentContext, &$this->filepath['component'],
+				array(&$component_context, &$this->filepath['component'],
 				      &$this->tempPath, &$this->componentFolderName,
 				      &$this->componentData)
 			);

@@ -32,7 +32,7 @@ abstract class BaseConfig extends JoomlaRegistry
 	 * @var    Input
 	 * @since 3.2.0
 	 */
-	protected $input;
+	protected Input $input;
 
 	/**
 	 * The Params
@@ -66,12 +66,12 @@ abstract class BaseConfig extends JoomlaRegistry
 	/**
 	 * setting any config value
 	 *
-	 * @param   String  $key    The value's key/path name
+	 * @param   string  $key    The value's key/path name
 	 * @param  mixed    $value  Optional default value, returned if the internal value is null.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __set($key, $value)
+	public function __set(string $key, $value)
 	{
 		$this->set($key, $value);
 	}
@@ -79,12 +79,12 @@ abstract class BaseConfig extends JoomlaRegistry
 	/**
 	 * getting any valid value
 	 *
-	 * @param   String       $key     The value's key/path name
+	 * @param   string       $key     The value's key/path name
 	 *
 	 * @since 3.2.0
 	 * @throws  \InvalidArgumentException If $key is not a valid function name.
 	 */
-	public function __get($key)
+	public function __get(string $key)
 	{
 		// check if it has been set
 		if (($value = $this->get($key, '__N0T_S3T_Y3T_')) !== '__N0T_S3T_Y3T_')
@@ -98,7 +98,7 @@ abstract class BaseConfig extends JoomlaRegistry
 	/**
 	 * Get a config value.
 	 *
-	 * @param  string  $path     Registry path (e.g. joomla.content.showauthor)
+	 * @param  string  $path     Registry path (e.g. joomla_content_showauthor)
 	 * @param  mixed   $default  Optional default value, returned if the internal value is null.
 	 *
 	 * @return  mixed  Value of entry or null
@@ -117,7 +117,7 @@ abstract class BaseConfig extends JoomlaRegistry
 		}
 		elseif (method_exists($this, $method))
 		{
-			$value = $this->{$method}();
+			$value = $this->{$method}($default);
 
 			$this->set($path, $value);
 

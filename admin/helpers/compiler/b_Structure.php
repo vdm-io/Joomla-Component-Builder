@@ -431,10 +431,12 @@ class Structure extends Get
 			$this->buildPlugins();
 			// set the Joomla Version Data
 			$this->joomlaVersionData = $this->setJoomlaVersionData();
+			// for plugin event TODO change event api signatures
+			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onAfterSetJoomlaVersionData
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterSetJoomlaVersionData',
-				array(&$this->componentContext, &$this->joomlaVersionData)
+				array(&$component_context, &$this->joomlaVersionData)
 			);
 			// set the dashboard
 			$this->setDynamicDashboard();
@@ -472,10 +474,11 @@ class Structure extends Get
 		{
 			// for plugin event TODO change event api signatures
 			$this->powers = CFactory::_('Power')->active;
+			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onBeforeSetModules
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildPowers',
-				array(&$this->componentContext, &$this->powers)
+				array(&$component_context, &$this->powers)
 			);
 			// for plugin event TODO change event api signatures
 			CFactory::_('Power')->active = $this->powers;
@@ -590,10 +593,12 @@ class Structure extends Get
 	{
 		if (ArrayHelper::check($this->joomlaModules))
 		{
+			// for plugin event TODO change event api signatures
+			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onBeforeSetModules
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildModules',
-				array(&$this->componentContext, &$this->joomlaModules)
+				array(&$component_context, &$this->joomlaModules)
 			);
 			foreach ($this->joomlaModules as $module)
 			{
@@ -877,7 +882,7 @@ class Structure extends Get
 							$xml = '<?xml version="1.0" encoding="utf-8"?>';
 							$xml .= PHP_EOL . '<!--' . Line::_(__Line__, __Class__)
 								. ' default paths of ' . $file
-								. ' form points to ' . $this->componentCodeName
+								. ' form points to ' . CFactory::_('Config')->component_code_name
 								. ' -->';
 							// search if we must add the component path
 							$add_component_path = false;
@@ -1171,10 +1176,12 @@ class Structure extends Get
 	{
 		if (ArrayHelper::check($this->joomlaPlugins))
 		{
+			// for plugin event TODO change event api signatures
+			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onBeforeSetPlugins
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildPlugins',
-				array(&$this->componentContext, &$this->joomlaPlugins)
+				array(&$component_context, &$this->joomlaPlugins)
 			);
 			foreach ($this->joomlaPlugins as $plugin)
 			{
@@ -1585,12 +1592,14 @@ class Structure extends Get
 	 */
 	private function setLibraries()
 	{
-		if (ArrayHelper::check($this->libraries))
+		if (($libraries_ = CFactory::_('Registry')->extract('builder.libraries')) !== null)
 		{
+			// for plugin event TODO change event api signatures
+			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onBeforeSetLibraries
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeSetLibraries',
-				array(&$this->componentContext, &$this->libraries)
+				array(&$component_context, &$libraries_)
 			);
 			// creat the main component folder
 			if (!Folder::exists($this->componentPath))
@@ -1602,7 +1611,7 @@ class Structure extends Get
 			}
 			// create media path if not set
 			$this->createFolder($this->componentPath . '/media');
-			foreach ($this->libraries as $id => &$library)
+			foreach ($libraries_ as $id => &$library)
 			{
 				if (ObjectHelper::check($library))
 				{
@@ -1722,6 +1731,8 @@ class Structure extends Get
 							}
 						}
 					}
+					// update the global value just in case for now
+					CFactory::_('Registry')->set("builder.libraries.$id", $library);
 				}
 			}
 		}
@@ -2862,62 +2873,59 @@ class Structure extends Get
 				)
 			);
 		}
+		// set some defaults
+		$uikit = CFactory::_('Config')->get('uikit', 0);
+		$footable = CFactory::_('Config')->get('footable', false);
+		$add_eximport = CFactory::_('Config')->get('add_eximport', false);
 		// add custom folders
 		if ((isset($this->componentData->folders)
 				&& ArrayHelper::check(
 					$this->componentData->folders
-				))
-			|| $this->addEximport
-			|| $this->uikit
-			|| $this->footable)
+				)) || $add_eximport || $uikit || $footable)
 		{
-			if ($this->addEximport)
+			if ($add_eximport)
 			{
 				// move the import view folder in place
-				$importView                     = array('folder' => 'importViews',
+				$this->componentData->folders[] = array('folder' => 'importViews',
 				                                        'path'   => 'admin/views/import',
 				                                        'rename' => 1);
-				$this->componentData->folders[] = $importView;
 				// move the phpspreadsheet Folder (TODO we must move this to a library package)
-				$PHPExcel
-					                            = array('folderpath' => 'JPATH_LIBRARIES/phpspreadsheet/vendor',
+				$this->componentData->folders[] = array('folderpath' => 'JPATH_LIBRARIES/phpspreadsheet/vendor',
 					                                    'path'       => '/libraries/phpspreadsheet/',
 					                                    'rename'     => 0);
-				$this->componentData->folders[] = $PHPExcel;
 			}
-			if (2 == $this->uikit || 1 == $this->uikit)
+
+			// set uikit
+			if (2 == $uikit || 1 == $uikit)
 			{
 				// move the UIKIT Folder into place
-				$uikit                          = array('folder' => 'uikit-v2',
+				$this->componentData->folders[] = array('folder' => 'uikit-v2',
 				                                        'path'   => 'media',
 				                                        'rename' => 0);
-				$this->componentData->folders[] = $uikit;
 			}
-			if (2 == $this->uikit || 3 == $this->uikit)
+			if (2 == $uikit || 3 == $uikit)
 			{
 				// move the UIKIT-3 Folder into place
-				$uikit                          = array('folder' => 'uikit-v3',
+				$this->componentData->folders[] = array('folder' => 'uikit-v3',
 				                                        'path'   => 'media',
 				                                        'rename' => 0);
-				$this->componentData->folders[] = $uikit;
 			}
-			if ($this->footable
-				&& (!isset($this->footableVersion)
-					|| 2 == $this->footableVersion))
+
+			// set footable
+			$footable_version = CFactory::_('Config')->get('footable_version', 2);
+			if ($footable && 2 == $footable_version)
 			{
 				// move the footable folder into place
-				$footable                       = array('folder' => 'footable-v2',
+				$this->componentData->folders[] = array('folder' => 'footable-v2',
 				                                        'path'   => 'media',
 				                                        'rename' => 0);
-				$this->componentData->folders[] = $footable;
 			}
-			elseif ($this->footable && 3 == $this->footableVersion)
+			elseif ($footable && 3 == $footable_version)
 			{
 				// move the footable folder into place
-				$footable                       = array('folder' => 'footable-v3',
+				$this->componentData->folders[] = array('folder' => 'footable-v3',
 				                                        'path'   => 'media',
 				                                        'rename' => 0);
-				$this->componentData->folders[] = $footable;
 			}
 
 			// pointer tracker
@@ -3021,25 +3029,23 @@ class Structure extends Get
 			unset($this->componentData->folders);
 			unset($custom);
 		}
+		// get the google chart switch
+		$google_chart = CFactory::_('Config')->get('google_chart', false);
 		// add custom files
 		if ((isset($this->componentData->files)
 				&& ArrayHelper::check(
 					$this->componentData->files
-				))
-			|| $this->googlechart)
+				)) || $google_chart)
 		{
-			if ($this->googlechart)
+			if ($google_chart)
 			{
 				// move the google chart files
-				$googleChart                  = array('file'   => 'google.jsapi.js',
+				$this->componentData->files[] = array('file'   => 'google.jsapi.js',
 				                                      'path'   => 'media/js',
 				                                      'rename' => 0);
-				$this->componentData->files[] = $googleChart;
-				$googleChart
-				                              = array('file'   => 'chartbuilder.php',
+				$this->componentData->files[] = array('file'   => 'chartbuilder.php',
 				                                      'path'   => 'admin/helpers',
 				                                      'rename' => 0);
-				$this->componentData->files[] = $googleChart;
 			}
 
 			// pointer tracker

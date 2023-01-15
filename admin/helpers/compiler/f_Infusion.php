@@ -82,10 +82,11 @@ class Infusion extends Interpretation
 			$placeholders = CFactory::_('Placeholder')->active;
 			$fileContentStatic = CFactory::_('Content')->active;
 			$fileContentDynamic = CFactory::_('Content')->_active;
+			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onBeforeBuildFilesContent
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildFilesContent',
-				array(&$this->componentContext, &$this->componentData,
+				array(&$component_context, &$this->componentData,
 					&$fileContentStatic, &$fileContentDynamic,
 					&$placeholders, &$this->hhh)
 			);
@@ -365,7 +366,7 @@ class Infusion extends Interpretation
 					// Trigger Event: jcb_ce_onBeforeBuildAdminEditViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildAdminEditViewContent',
-						array(&$this->componentContext, &$view,
+						array(&$component_context, &$view,
 							&$nameSingleCode,
 							&$nameListCode,
 							&$fileContentStatic,
@@ -579,7 +580,7 @@ class Infusion extends Interpretation
 					// Trigger Event: jcb_ce_onAfterBuildAdminEditViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildAdminEditViewContent',
-						array(&$this->componentContext, &$view,
+						array(&$component_context, &$view,
 							&$nameSingleCode,
 							&$nameListCode,
 							&$fileContentStatic,
@@ -606,7 +607,7 @@ class Infusion extends Interpretation
 					// Trigger Event: jcb_ce_onBeforeBuildAdminListViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildAdminListViewContent',
-						array(&$this->componentContext, &$view,
+						array(&$component_context, &$view,
 							&$nameSingleCode,
 							&$nameListCode,
 							&$fileContentStatic,
@@ -876,7 +877,7 @@ class Infusion extends Interpretation
 					// Trigger Event: jcb_ce_onAfterBuildAdminListViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildAdminListViewContent',
-						array(&$this->componentContext, &$view,
+						array(&$component_context, &$view,
 							&$nameSingleCode,
 							&$nameListCode,
 							&$fileContentStatic,
@@ -1021,7 +1022,7 @@ class Infusion extends Interpretation
 				// Trigger Event: jcb_ce_onAfterBuildAdminViewContent
 				CFactory::_('Event')->trigger(
 					'jcb_ce_onAfterBuildAdminViewContent',
-					array(&$this->componentContext, &$view,
+					array(&$component_context, &$view,
 						&$nameSingleCode,
 						&$nameListCode,
 						&$fileContentStatic,
@@ -1088,7 +1089,7 @@ class Infusion extends Interpretation
 					// Trigger Event: jcb_ce_onBeforeBuildCustomAdminViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildCustomAdminViewContent',
-						array(&$this->componentContext, &$view,
+						array(&$component_context, &$view,
 							&$view['settings']->code,
 							&$fileContentStatic,
 							&$fileContentDynamic[$view['settings']->code],
@@ -1255,7 +1256,7 @@ class Infusion extends Interpretation
 					// Trigger Event: jcb_ce_onAfterBuildCustomAdminViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildCustomAdminViewContent',
-						array(&$this->componentContext, &$view,
+						array(&$component_context, &$view,
 							&$view['settings']->code,
 							&$fileContentStatic,
 							&$fileContentDynamic[$view['settings']->code],
@@ -1364,7 +1365,7 @@ class Infusion extends Interpretation
 			}
 
 			// add import
-			if (isset($this->addEximport) && $this->addEximport)
+			if (CFactory::_('Config')->get('add_eximport', false))
 			{
 				// setup import files
 				$target = array('admin' => 'import');
@@ -1384,7 +1385,7 @@ class Infusion extends Interpretation
 			}
 
 			// ensure that the ajax model and controller is set if needed
-			if (isset($this->addAjax) && $this->addAjax)
+			if (CFactory::_('Config')->get('add_ajax', false))
 			{
 				// setup Ajax files
 				$target = array('admin' => 'ajax');
@@ -1399,7 +1400,7 @@ class Infusion extends Interpretation
 			}
 
 			// ensure that the site ajax model and controller is set if needed
-			if (isset($this->addSiteAjax) && $this->addSiteAjax)
+			if (CFactory::_('Config')->get('add_site_ajax', false))
 			{
 				// setup Ajax files
 				$target = array('site' => 'ajax');
@@ -1486,7 +1487,7 @@ class Infusion extends Interpretation
 					// Trigger Event: jcb_ce_onBeforeBuildSiteViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildSiteViewContent',
-						array(&$this->componentContext, &$view,
+						array(&$component_context, &$view,
 							&$view['settings']->code,
 							&$fileContentStatic,
 							&$fileContentDynamic[$view['settings']->code],
@@ -1680,7 +1681,7 @@ class Infusion extends Interpretation
 					// Trigger Event: jcb_ce_onAfterBuildSiteViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildSiteViewContent',
-						array(&$this->componentContext, &$view,
+						array(&$component_context, &$view,
 							&$view['settings']->code,
 							&$fileContentStatic,
 							&$fileContentDynamic[$view['settings']->code],
@@ -1817,7 +1818,7 @@ class Infusion extends Interpretation
 						// Trigger Event: jcb_ce_onBeforeInfuseModuleData
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onBeforeInfuseModuleData',
-							array(&$this->componentContext, &$module, &$this)
+							array(&$component_context, &$module, &$this)
 						);
 						CFactory::_('Config')->build_target = $module->key;
 						CFactory::_('Config')->lang_target = $module->key;
@@ -1870,7 +1871,7 @@ class Infusion extends Interpretation
 						// Trigger Event: jcb_ce_onAfterInfuseModuleData
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterInfuseModuleData',
-							array(&$this->componentContext, &$module, &$this)
+							array(&$component_context, &$module, &$this)
 						);
 					}
 				}
@@ -1885,7 +1886,7 @@ class Infusion extends Interpretation
 						// Trigger Event: jcb_ce_onBeforeInfusePluginData
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onBeforeInfusePluginData',
-							array(&$this->componentContext, &$plugin, &$this)
+							array(&$component_context, &$plugin, &$this)
 						);
 						CFactory::_('Config')->build_target = $plugin->key;
 						CFactory::_('Config')->lang_target = $plugin->key;
@@ -1927,7 +1928,7 @@ class Infusion extends Interpretation
 						// Trigger Event: jcb_ce_onAfterInfusePluginData
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterInfusePluginData',
-							array(&$this->componentContext, &$plugin, &$this)
+							array(&$component_context, &$plugin, &$this)
 						);
 					}
 				}
@@ -1944,7 +1945,7 @@ class Infusion extends Interpretation
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterBuildFilesContent',
-				array(&$this->componentContext, &$this->componentData,
+				array(&$component_context, &$this->componentData,
 					&$fileContentStatic, &$this->fileContentDynamic,
 					&$placeholders, &$this->hhh)
 			);
@@ -2099,10 +2100,12 @@ class Infusion extends Interpretation
 		$this->purgeLanuageStrings($values, CFactory::_('Config')->component_id);
 		// path to INI file
 		$getPAth = $this->templatePath . '/en-GB.com_admin.ini';
+		// for plugin event TODO change event api signatures
+		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeBuildAllLangFiles
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildAllLangFiles',
-			array(&$this->componentContext, &$this->languages['components'],
+			array(&$component_context, &$this->languages['components'],
 				&$this->langTag)
 		);
 		// for plugin event TODO change event api signatures

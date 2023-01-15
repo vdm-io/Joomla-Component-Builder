@@ -50,6 +50,7 @@ class Get
 	 * The Joomla Versions
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Config')->joomla_versions;
 	 */
 	public $joomlaVersions = array(
 		3    => array('folder_key' => 3, 'xml_version' => 3.9), // only joomla 3
@@ -152,6 +153,7 @@ class Get
 	 * Assets table worse case
 	 *
 	 * @var     int
+	 * @deprecated 3.3 Use CFactory::_('Config')->access_worse_case;
 	 */
 	public $accessWorseCase;
 
@@ -159,6 +161,7 @@ class Get
 	 * Switch to add assets table name fix
 	 *
 	 * @var     bool
+	 * @deprecated 3.3 Use CFactory::_('Config')->add_assets_table_name_fix;
 	 */
 	public $addAssetsTableNameFix = false;
 
@@ -510,6 +513,7 @@ class Get
 	 * The Component version
 	 *
 	 * @var      string
+	 * @deprecated 3.3 Use CFactory::_('Config')->component_version;
 	 */
 	public $component_version;
 
@@ -517,6 +521,7 @@ class Get
 	 * The UIKIT Switch
 	 *
 	 * @var    boolean
+	 * @deprecated 3.3 Use CFactory::_('Config')->uikit;
 	 */
 	public $uikit = 0;
 
@@ -524,6 +529,7 @@ class Get
 	 * The UIKIT component checker
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.uikit_comp');
 	 */
 	public $uikitComp = array();
 
@@ -531,6 +537,7 @@ class Get
 	 * The FOOTABLE Switch
 	 *
 	 * @var      boolean
+	 * @deprecated 3.3 Use CFactory::_('Config')->footable;
 	 */
 	public $footable = false;
 
@@ -538,6 +545,7 @@ class Get
 	 * The FOOTABLE Version
 	 *
 	 * @var      int
+	 * @deprecated 3.3 Use CFactory::_('Config')->footable_version;
 	 */
 	public $footableVersion;
 
@@ -545,13 +553,15 @@ class Get
 	 * The Google Chart Switch per view
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.google_chart');
 	 */
-	public $googleChart = array();
+	public $googleChart = [];
 
 	/**
 	 * The Google Chart Switch
 	 *
 	 * @var     boolean
+	 * @deprecated 3.3 Use CFactory::_('Config')->google_chart;
 	 */
 	public $googlechart = false;
 
@@ -559,6 +569,7 @@ class Get
 	 * The Import & Export Switch
 	 *
 	 * @var      boolean
+	 * @deprecated 3.3 Use CFactory::_('Config')->add_eximport;
 	 */
 	public $addEximport = false;
 
@@ -580,6 +591,7 @@ class Get
 	 * The Tag & History Switch
 	 *
 	 * @var      boolean
+	 * @deprecated 3.3 Use CFactory::_('Config')->set_tag_history;
 	 */
 	public $setTagHistory = false;
 
@@ -587,6 +599,7 @@ class Get
 	 * The Joomla Fields Switch
 	 *
 	 * @var      boolean
+	 * @deprecated 3.3 Use CFactory::_('Config')->set_joomla_fields;
 	 */
 	public $setJoomlaFields = false;
 
@@ -594,13 +607,15 @@ class Get
 	 * The site edit views
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.site_edit_view.');
 	 */
-	public $siteEditView = array();
+	public $siteEditView = [];
 
 	/**
 	 * The admin list view filter type
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.admin_filter_type');
 	 */
 	public $adminFilterType = array();
 
@@ -632,6 +647,7 @@ class Get
 	 * The unique codes
 	 *
 	 * @var     array
+	 * @deprecated 3.3
 	 */
 	public $uniquecodes = array();
 
@@ -639,13 +655,15 @@ class Get
 	 * The unique keys
 	 *
 	 * @var     array
+	 * @deprecated 3.3
 	 */
 	public $uniquekeys = array();
 
 	/**
-	 * The Ad contributors Switch
+	 * The Add contributors Switch
 	 *
 	 * @var     boolean
+	 * @deprecated 3.3 Use CFactory::_('Config')->add_contributors;
 	 */
 	public $addContributors = false;
 
@@ -661,13 +679,15 @@ class Get
 	 * The Footable Script Builder
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.footable_scripts');
 	 */
-	public $footableScripts = array();
+	public $footableScripts = [];
 
 	/**
 	 * The pathe to the bom file to be used
 	 *
 	 * @var     string
+	 * @deprecated 3.3 Use CFactory::_('Config')->bom_path;
 	 */
 	public $bomPath;
 
@@ -675,8 +695,9 @@ class Get
 	 * The SQL Tweak of admin views
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.sql_tweak');
 	 */
-	public $sqlTweak = array();
+	public $sqlTweak = [];
 
 	/**
 	 * The validation rules that should be added
@@ -698,6 +719,7 @@ class Get
 	 * The admin views data array
 	 *
 	 * @var     array
+	 * @deprecated 3.3
 	 */
 	private $_adminViewData = array();
 
@@ -713,8 +735,9 @@ class Get
 	 * The custom alias builder
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.custom_alias');
 	 */
-	public $customAliasBuilder = array();
+	public $customAliasBuilder = [];
 
 	/**
 	 * The field builder type
@@ -755,7 +778,7 @@ class Get
 	 * The field relations values
 	 *
 	 * @var     array
-	 * @deprecate Use CFactory::_('Registry')->get('builder.field_relations');
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.field_relations');
 	 */
 	public $fieldRelations = array();
 
@@ -770,6 +793,7 @@ class Get
 	 * Default Fields
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Config')->default_fields;
 	 */
 	public $defaultFields
 		= array('created', 'created_by', 'modified', 'modified_by', 'published',
@@ -779,7 +803,7 @@ class Get
 	 * The list join fields
 	 *
 	 * @var     array
-	 * @deprecate Use CFactory::_('Registry')->get('builder.list_join');
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.list_join');
 	 */
 	public $listJoinBuilder = array();
 
@@ -787,7 +811,7 @@ class Get
 	 * The list head over ride
 	 *
 	 * @var     array
-	 * @deprecate Use CFactory::_('Registry')->get('builder.list_head_override');
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.list_head_override');
 	 */
 	public $listHeadOverRide = array();
 
@@ -795,6 +819,7 @@ class Get
 	 * The linked admin view tabs
 	 *
 	 * @var     array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.linked_admin_views');
 	 */
 	public $linkedAdminViews = array();
 
@@ -802,6 +827,7 @@ class Get
 	 * The custom admin view tabs
 	 *
 	 * @var     array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.custom_tabs');
 	 */
 	public $customTabs = array();
 
@@ -809,6 +835,7 @@ class Get
 	 * The Add Ajax Switch
 	 *
 	 * @var    boolean
+	 * @deprecate 3.3 Use CFactory::_('Config')->add_ajax
 	 */
 	public $addAjax = false;
 
@@ -816,6 +843,7 @@ class Get
 	 * The Add Site Ajax Switch
 	 *
 	 * @var     boolean
+	 * @deprecate 3.3 Use CFactory::_('Config')->add_site_ajax;
 	 */
 	public $addSiteAjax = false;
 
@@ -823,27 +851,31 @@ class Get
 	 * The get Module Script Switch
 	 *
 	 * @var    array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.get_module');
 	 */
-	public $getModule = array();
+	public $getModule = [];
 
 	/**
 	 * The template data
 	 *
 	 * @var    array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.template_data');
 	 */
-	public $templateData = array();
+	public $templateData = [];
 
 	/**
 	 * The layout data
 	 *
 	 * @var    array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.layout_data');
 	 */
-	public $layoutData = array();
+	public $layoutData = [];
 
 	/**
 	 * The Encryption Types
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Config')->cryption_types;
 	 */
 	public $cryptionTypes = array('basic', 'medium', 'whmcs', 'expert');
 
@@ -883,64 +915,73 @@ class Get
 	 * The site main get
 	 *
 	 * @var    array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.site_main_get');
 	 */
-	public $siteMainGet = array();
+	public $siteMainGet = [];
 
 	/**
 	 * The site dynamic get
 	 *
 	 * @var    array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.site_dynamic_get');
 	 */
-	public $siteDynamicGet = array();
+	public $siteDynamicGet = [];
 
 	/**
 	 * The get AS lookup
 	 *
 	 * @var    array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.get_as_lookup');
 	 */
-	public $getAsLookup = array();
+	public $getAsLookup = [];
 
 	/**
 	 * The site fields
 	 *
 	 * @var    array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.site_fields');
 	 */
-	public $siteFields = array();
+	public $siteFields = [];
 
 	/**
 	 * The add SQL
 	 *
 	 * @var    array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.add_sql');
 	 */
-	public $addSQL = array();
+	public $addSQL = [];
 
 	/**
 	 * The update SQL
 	 *
 	 * @var    array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.update_sql');
 	 */
-	public $updateSQL = array();
+	public $updateSQL = [];
 
 	/**
 	 * The data by alias keys
 	 *
 	 * @var    array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.data_with_alias_keys');
 	 */
-	protected $dataWithAliasKeys = array();
+	protected $dataWithAliasKeys = [];
 
 	/**
 	 * The Library Manager
 	 *
 	 * @var    array
+	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.library_manager');
 	 */
-	public $libManager = array();
+	public $libManager = [];
 
 	/**
 	 * The Libraries
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.libraries');
 	 */
-	public $libraries = array();
+	public $libraries = [];
 
 	/**
 	 * Is minify Enabled
@@ -962,6 +1003,7 @@ class Get
 	 * Set Tidy warning once switch
 	 *
 	 * @var    bool
+	 * @deprecated 3.3 Use CFactory::_('Config')->set_tidy_warning;
 	 */
 	public $setTidyWarning = false;
 
@@ -969,6 +1011,7 @@ class Get
 	 * mysql table setting keys
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Config')->mysql_table_keys;
 	 */
 	public $mysqlTableKeys
 		= array(
@@ -982,8 +1025,9 @@ class Get
 	 * mysql table settings
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.mysql_table_setting');
 	 */
-	public $mysqlTableSetting = array();
+	public $mysqlTableSetting = [];
 
 	/**
 	 * Constructor
@@ -1063,17 +1107,19 @@ class Get
 		// get the custom code from installed files
 		CFactory::_('Customcode.Extractor')->run();
 
+		// for plugin event TODO change event api signatures
+		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeGetComponentData
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeGetComponentData',
-			array(&$this->componentContext, &$this)
+			array(&$component_context, &$this)
 		);
 		// get the component data
 		$this->componentData = $this->getComponentData();
 		// Trigger Event: jcb_ce_onAfterGetComponentData
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterGetComponentData',
-			array(&$this->componentContext, &$this)
+			array(&$component_context, &$this)
 		);
 		// make sure we have a version
 		if (strpos((string) $this->componentData->component_version, '.')
@@ -1083,10 +1129,8 @@ class Get
 		}
 		// update the version
 		if (!isset($this->componentData->old_component_version)
-			&& (ArrayHelper::check($this->addSQL)
-				|| ArrayHelper::check(
-					$this->updateSQL
-				)))
+			&& (CFactory::_('Registry')->get('builder.add_sql', null)
+				|| CFactory::_('Registry')->get('builder.update_sql', null)))
 		{
 			// set the new version
 			$version = (array) explode(
@@ -1114,7 +1158,7 @@ class Get
 
 		// Trigger Event: jcb_ce_onBeforeGet
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onAfterGet', array(&$this->componentContext, &$this)
+			'jcb_ce_onAfterGet', array(&$component_context, &$this)
 		);
 
 		return true;
@@ -1228,11 +1272,13 @@ class Get
 		$query->where(
 			$this->db->quoteName('a.id') . ' = ' . (int) CFactory::_('Config')->component_id
 		);
-
+		// for plugin event TODO change event api signatures
+		$component_context = CFactory::_('Config')->component_context;
+		$component_id = CFactory::_('Config')->component_id;
 		// Trigger Event: jcb_ce_onBeforeQueryComponentData
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeQueryComponentData',
-			array(&$this->componentContext, &$this->componentID, &$query,
+			array(&$component_context, &$component_id, &$query,
 				&$this->db)
 		);
 
@@ -1245,65 +1291,7 @@ class Get
 		// Trigger Event: jcb_ce_onBeforeModelComponentData
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeModelComponentData',
-			array(&$this->componentContext, &$component)
-		);
-
-		// set updater
-		$updater = array(
-			'unique' => array(
-				'addadmin_views'        => array('table' => 'component_admin_views',
-				                                 'val'   => (int) $component->addadmin_views_id,
-				                                 'key'   => 'id'),
-				'addconfig'             => array('table' => 'component_config',
-				                                 'val'   => (int) CFactory::_('Config')->component_id,
-				                                 'key'   => 'joomla_component'),
-				'addcustom_admin_views' => array('table' => 'component_custom_admin_views',
-				                                 'val'   => (int) CFactory::_('Config')->component_id,
-				                                 'key'   => 'joomla_component'),
-				'addcustommenus'        => array('table' => 'component_custom_admin_menus',
-				                                 'val'   => (int) CFactory::_('Config')->component_id,
-				                                 'key'   => 'joomla_component'),
-				'addfiles'              => array('table' => 'component_files_folders',
-				                                 'val'   => (int) CFactory::_('Config')->component_id,
-				                                 'key'   => 'joomla_component'),
-				'addfolders'            => array('table' => 'component_files_folders',
-				                                 'val'   => (int) CFactory::_('Config')->component_id,
-				                                 'key'   => 'joomla_component'),
-				'addsite_views'         => array('table' => 'component_site_views',
-				                                 'val'   => (int) CFactory::_('Config')->component_id,
-				                                 'key'   => 'joomla_component'),
-				'dashboard_tab'         => array('table' => 'component_dashboard',
-				                                 'val'   => (int) CFactory::_('Config')->component_id,
-				                                 'key'   => 'joomla_component'),
-				'sql_tweak'             => array('table' => 'component_mysql_tweaks',
-				                                 'val'   => (int) CFactory::_('Config')->component_id,
-				                                 'key'   => 'joomla_component'),
-				'version_update'        => array('table' => 'component_updates',
-				                                 'val'   => (int) CFactory::_('Config')->component_id,
-				                                 'key'   => 'joomla_component')
-			),
-			'table'  => 'joomla_component',
-			'key'    => 'id',
-			'val'    => (int) CFactory::_('Config')->component_id
-		);
-		// repeatable fields to update
-		$searchRepeatables = array(
-			// repeatablefield => checker
-			'addadmin_views'        => 'adminview',
-			'addconfig'             => 'field',
-			'addcontributors'       => 'name',
-			'addcustom_admin_views' => 'customadminview',
-			'addcustommenus'        => 'name',
-			'addfiles'              => 'file',
-			'addfolders'            => 'folder',
-			'addsite_views'         => 'siteview',
-			'dashboard_tab'         => 'name',
-			'sql_tweak'             => 'adminview',
-			'version_update'        => 'version'
-		);
-		// update the repeatable fields
-		$component = ComponentbuilderHelper::convertRepeatableFields(
-			$component, $searchRepeatables, $updater
+			array(&$component_context, &$component)
 		);
 
 		// load the global placeholders
@@ -1320,8 +1308,9 @@ class Get
 		);
 
 		// ensure version naming is correct
-		$this->component_version = preg_replace(
-			'/[^0-9.]+/', '', (string) $component->component_version
+		CFactory::_('Config')->set('component_version', preg_replace(
+				'/[^0-9.]+/', '', (string) $component->component_version
+			)
 		);
 
 		// set the add targets
@@ -1363,7 +1352,7 @@ class Get
 		}
 
 		// set the uikit switch
-		$this->uikit = $component->adduikit;
+		CFactory::_('Config')->set('uikit', $component->adduikit);
 
 		// set whmcs links if needed
 		if (1 == $component->add_license
@@ -1404,10 +1393,10 @@ class Get
 		// set the footable switch
 		if ($component->addfootable)
 		{
-			$this->footable = true;
+			// force add footable
+			CFactory::_('Config')->set('footable ', true);
 			// add the version
-			$this->footableVersion = (1 == $component->addfootable
-				|| 2 == $component->addfootable) ? 2 : $component->addfootable;
+			CFactory::_('Config')->set('footable_version', (3 == $component->addfootable) ? 3 : 2);
 		}
 
 		// set the addcustommenus data
@@ -1501,27 +1490,23 @@ class Get
 						)
 						&& $array['edit_create_site_view'] > 0)
 					{
-						$this->siteEditView[$array['adminview']] = true;
+						CFactory::_('Registry')->set('builder.site_edit_view.' . $array['adminview'], true);
 						CFactory::_('Config')->lang_target = 'both';
 					}
 					// set the import/export option for this view
-					if (isset($array['port']) && $array['port']
-						&& !$this->addEximport)
+					if (isset($array['port']) && $array['port'])
 					{
-						$this->addEximport = true;
+						CFactory::_('Config')->set('add_eximport', true);
 					}
 					// set the history tracking option for this view
-					if (isset($array['history']) && $array['history']
-						&& !$this->setTagHistory)
+					if (isset($array['history']) && $array['history'])
 					{
-						$this->setTagHistory = true;
+						CFactory::_('Config')->set('set_tag_history', true);
 					}
 					// set the custom field integration for this view
-					if (isset($array['joomla_fields'])
-						&& $array['joomla_fields']
-						&& !$this->setJoomlaFields)
+					if (isset($array['joomla_fields']) && $array['joomla_fields'])
 					{
-						$this->setJoomlaFields = true;
+						CFactory::_('Config')->set('set_joomla_fields', true);
 					}
 					// has become a legacy issue, can't remove this
 					$array['view'] = $array['adminview'];
@@ -1530,16 +1515,17 @@ class Get
 						$array['view']
 					);
 					// set the filter option for this view
-					$this->adminFilterType[$array['settings']->name_list_code]
-						= 1; // Side (old) [default for now]
+					CFactory::_('Registry')-> // Side (old) [default for now]
+						set('builder.admin_filter_type.' . $array['settings']->name_list_code,
+							1);
 					if (isset($array['filter'])
 						&& is_numeric(
 							$array['filter']
-						)
-						&& $array['filter'] > 0)
+						) && $array['filter'] > 0)
 					{
-						$this->adminFilterType[$array['settings']->name_list_code]
-							= (int) $array['filter'];
+						CFactory::_('Registry')->
+							set('builder.admin_filter_type.' . $array['settings']->name_list_code,
+								(int) $array['filter']);
 					}
 
 					return $array;
@@ -1651,20 +1637,20 @@ class Get
 			unset($component->addconfig);
 		}
 
-		// set the addcustommenus data
+		// set the add contributors
 		$component->addcontributors = (isset($component->addcontributors)
 			&& JsonHelper::check($component->addcontributors))
 			? json_decode((string) $component->addcontributors, true) : null;
 		if (ArrayHelper::check($component->addcontributors))
 		{
-			$this->addContributors   = true;
+			CFactory::_('Config')->set('add_contributors', true);
 			$component->contributors = array_values(
 				$component->addcontributors
 			);
 		}
 		unset($component->addcontributors);
 
-		// set the addcustommenus data
+		// set the version updates
 		$component->version_update = (isset($component->version_update)
 			&& JsonHelper::check($component->version_update))
 			? json_decode((string) $component->version_update, true) : null;
@@ -1697,13 +1683,13 @@ class Get
 						$component->addadmin_views, 'adminview'
 					);
 				}
-				// check if a new version was manualy set
+				// check if a new version was manually set
 				if (ObjectHelper::check($old_component))
 				{
 					$old_component_version = preg_replace(
 						'/[^0-9.]+/', '', (string) $old_component->component_version
 					);
-					if ($old_component_version != $this->component_version)
+					if ($old_component_version != CFactory::_('Config')->component_version)
 					{
 						// yes, this is a new version, this mean there may be manual sql and must be checked and updated
 						$component->old_component_version
@@ -1931,11 +1917,9 @@ class Get
 		// bom
 		if (StringHelper::check($component->bom))
 		{
-			$this->bomPath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/' . $component->bom;
-		}
-		else
-		{
-			$this->bomPath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/default.txt';
+			CFactory::_('Config')->set('bom_path',
+				CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/' . $component->bom
+			);
 		}
 		unset($component->bom);
 		// README
@@ -1993,7 +1977,7 @@ class Get
 		{
 			$component->php_dashboard_methods = '';
 		}
-		// reset back to nowlang
+		// reset back to now lang
 		CFactory::_('Config')->lang_target = $nowLang;
 
 		// add the update/sales server FTP details if that is the expected protocol
@@ -2091,7 +2075,7 @@ class Get
 		// Trigger Event: jcb_ce_onAfterModelComponentData
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterModelComponentData',
-			array(&$this->componentContext, &$component)
+			array(&$component_context, &$component)
 		);
 
 		// return the found component data
@@ -2196,10 +2180,12 @@ class Get
 			);
 			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
+			// for plugin event TODO change event api signatures
+			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onBeforeQueryViewData
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeQueryViewData',
-				array(&$this->componentContext, &$id, &$query, &$this->db)
+				array(&$component_context, &$id, &$query, &$this->db)
 			);
 
 			// Reset the query using our newly populated query object.
@@ -2233,7 +2219,7 @@ class Get
 			// when the name is larger than 49 we need to add the assets' table name fix
 			if ($name_length > 49)
 			{
-				$this->addAssetsTableNameFix = true;
+				CFactory::_('Config')->set('add_assets_table_name_fix', true);
 			}
 
 			// set updater
@@ -2294,10 +2280,11 @@ class Get
 
 			// for plugin event TODO change event api signatures
 			$placeholders = CFactory::_('Placeholder')->active;
+			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onBeforeModelViewData
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeModelViewData',
-				array(&$this->componentContext, &$view, &$placeholders)
+				array(&$component_context, &$view, &$placeholders)
 			);
 			unset($placeholders);
 
@@ -2312,122 +2299,122 @@ class Get
 			unset($view->addtables);
 
 			// set custom tabs
-			$this->customTabs[$view->name_single_code] = null;
-			$view->customtabs
-			                                           = (isset($view->customtabs)
+			$view->customtabs = (isset($view->customtabs)
 				&& JsonHelper::check($view->customtabs))
 				? json_decode((string) $view->customtabs, true) : null;
 			if (ArrayHelper::check($view->customtabs))
 			{
 				// setup custom tabs to global data sets
-				$this->customTabs[$view->name_single_code] = array_map(
-					function ($tab) use (&$view) {
-						// set the view name
-						$tab['view'] = $view->name_single_code;
-						// load the dynamic data
-						$tab['html'] = CFactory::_('Placeholder')->update_(
-							CFactory::_('Customcode')->update($tab['html'])
-						);
-						// set the tab name
-						$tab['name'] = (isset($tab['name'])
-							&& StringHelper::check(
+				CFactory::_('Registry')->set('builder.custom_tabs.' . $view->name_single_code,
+					array_map(
+						function ($tab) use (&$view) {
+							// set the view name
+							$tab['view'] = $view->name_single_code;
+							// load the dynamic data
+							$tab['html'] = CFactory::_('Placeholder')->update_(
+								CFactory::_('Customcode')->update($tab['html'])
+							);
+							// set the tab name
+							$tab['name'] = (isset($tab['name'])
+								&& StringHelper::check(
+									$tab['name']
+								)) ? $tab['name'] : 'Tab';
+							// set lang
+							$tab['lang'] = CFactory::_('Config')->lang_prefix . '_'
+								. StringHelper::safe(
+									$tab['view'], 'U'
+								) . '_' . StringHelper::safe(
+									$tab['name'], 'U'
+								);
+							CFactory::_('Language')->set(
+								'both', $tab['lang'], $tab['name']
+							);
+							// set code name
+							$tab['code'] = StringHelper::safe(
 								$tab['name']
-							)) ? $tab['name'] : 'Tab';
-						// set lang
-						$tab['lang'] = CFactory::_('Config')->lang_prefix . '_'
-							. StringHelper::safe(
-								$tab['view'], 'U'
-							) . '_' . StringHelper::safe(
-								$tab['name'], 'U'
 							);
-						CFactory::_('Language')->set(
-							'both', $tab['lang'], $tab['name']
-						);
-						// set code name
-						$tab['code'] = StringHelper::safe(
-							$tab['name']
-						);
-						// check if the permissions for the tab should be added
-						$_tab = '';
-						if (isset($tab['permission'])
-							&& $tab['permission'] == 1)
-						{
-							$_tab = Indent::_(1);
-						}
-						// check if the php of the tab is set, if not load it now
-						if (strpos((string) $tab['html'], 'bootstrap.addTab') === false
-							&& strpos((string) $tab['html'], 'bootstrap.endTab')
-							=== false)
-						{
-							// add the tab
-							$tmp = PHP_EOL . $_tab . Indent::_(1)
-								. "<?php echo JHtml::_('bootstrap.addTab', '"
-								. $tab['view'] . "Tab', '" . $tab['code']
-								. "', JText::_('" . $tab['lang']
-								. "', true)); ?>";
-							$tmp .= PHP_EOL . $_tab . Indent::_(2)
-								. '<div class="row-fluid form-horizontal-desktop">';
-							$tmp .= PHP_EOL . $_tab . Indent::_(3)
-								. '<div class="span12">';
-							$tmp .= PHP_EOL . $_tab . Indent::_(4) . implode(
-									PHP_EOL . $_tab . Indent::_(4),
-									(array) explode(PHP_EOL, trim((string) $tab['html']))
-								);
-							$tmp .= PHP_EOL . $_tab . Indent::_(3) . '</div>';
-							$tmp .= PHP_EOL . $_tab . Indent::_(2) . '</div>';
-							$tmp .= PHP_EOL . $_tab . Indent::_(1)
-								. "<?php echo JHtml::_('bootstrap.endTab'); ?>";
-							// update html
-							$tab['html'] = $tmp;
-						}
-						else
-						{
-							$tab['html'] = PHP_EOL . $_tab . Indent::_(1)
-								. implode(
-									PHP_EOL . $_tab . Indent::_(1),
-									(array) explode(PHP_EOL, trim((string) $tab['html']))
-								);
-						}
-						// add the permissions if needed
-						if (isset($tab['permission'])
-							&& $tab['permission'] == 1)
-						{
-							$tmp = PHP_EOL . Indent::_(1)
-								. "<?php if (\$this->canDo->get('"
-								. $tab['view'] . "." . $tab['code']
-								. ".viewtab')) : ?>";
-							$tmp .= $tab['html'];
-							$tmp .= PHP_EOL . Indent::_(1) . "<?php endif; ?>";
-							// update html
-							$tab['html'] = $tmp;
-							// set lang for permissions
-							$tab['lang_permission']      = $tab['lang']
-								. '_TAB_PERMISSION';
-							$tab['lang_permission_desc'] = $tab['lang']
-								. '_TAB_PERMISSION_DESC';
-							$tab['lang_permission_title']
-							                             = CFactory::_('Placeholder')->get('Views') . ' View '
-								. $tab['name'] . ' Tab';
-							CFactory::_('Language')->set(
-								'both', $tab['lang_permission'],
+							// check if the permissions for the tab should be added
+							$_tab = '';
+							if (isset($tab['permission'])
+								&& $tab['permission'] == 1)
+							{
+								$_tab = Indent::_(1);
+							}
+							// check if the php of the tab is set, if not load it now
+							if (strpos((string) $tab['html'], 'bootstrap.addTab') === false
+								&& strpos((string) $tab['html'], 'bootstrap.endTab')
+								=== false)
+							{
+								// add the tab
+								$tmp = PHP_EOL . $_tab . Indent::_(1)
+									. "<?php echo JHtml::_('bootstrap.addTab', '"
+									. $tab['view'] . "Tab', '" . $tab['code']
+									. "', JText::_('" . $tab['lang']
+									. "', true)); ?>";
+								$tmp .= PHP_EOL . $_tab . Indent::_(2)
+									. '<div class="row-fluid form-horizontal-desktop">';
+								$tmp .= PHP_EOL . $_tab . Indent::_(3)
+									. '<div class="span12">';
+								$tmp .= PHP_EOL . $_tab . Indent::_(4) . implode(
+										PHP_EOL . $_tab . Indent::_(4),
+										(array) explode(PHP_EOL, trim((string) $tab['html']))
+									);
+								$tmp .= PHP_EOL . $_tab . Indent::_(3) . '</div>';
+								$tmp .= PHP_EOL . $_tab . Indent::_(2) . '</div>';
+								$tmp .= PHP_EOL . $_tab . Indent::_(1)
+									. "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+								// update html
+								$tab['html'] = $tmp;
+							}
+							else
+							{
+								$tab['html'] = PHP_EOL . $_tab . Indent::_(1)
+									. implode(
+										PHP_EOL . $_tab . Indent::_(1),
+										(array) explode(PHP_EOL, trim((string) $tab['html']))
+									);
+							}
+							// add the permissions if needed
+							if (isset($tab['permission'])
+								&& $tab['permission'] == 1)
+							{
+								$tmp = PHP_EOL . Indent::_(1)
+									. "<?php if (\$this->canDo->get('"
+									. $tab['view'] . "." . $tab['code']
+									. ".viewtab')) : ?>";
+								$tmp .= $tab['html'];
+								$tmp .= PHP_EOL . Indent::_(1) . "<?php endif; ?>";
+								// update html
+								$tab['html'] = $tmp;
+								// set lang for permissions
+								$tab['lang_permission']      = $tab['lang']
+									. '_TAB_PERMISSION';
+								$tab['lang_permission_desc'] = $tab['lang']
+									. '_TAB_PERMISSION_DESC';
 								$tab['lang_permission_title']
-							);
-							CFactory::_('Language')->set(
-								'both', $tab['lang_permission_desc'],
-								'Allow the users in this group to view '
-								. $tab['name'] . ' Tab of '
-								. CFactory::_('Placeholder')->get('views')
-							);
-							// set the sort key
-							$tab['sortKey']
-								= StringHelper::safe(
-								$tab['lang_permission_title']
-							);
-						}
+								                             = CFactory::_('Placeholder')->get('Views') . ' View '
+									. $tab['name'] . ' Tab';
+								CFactory::_('Language')->set(
+									'both', $tab['lang_permission'],
+									$tab['lang_permission_title']
+								);
+								CFactory::_('Language')->set(
+									'both', $tab['lang_permission_desc'],
+									'Allow the users in this group to view '
+									. $tab['name'] . ' Tab of '
+									. CFactory::_('Placeholder')->get('views')
+								);
+								// set the sort key
+								$tab['sortKey']
+									= StringHelper::safe(
+									$tab['lang_permission_title']
+								);
+							}
 
-						// return tab
-						return $tab;
-					}, array_values($view->customtabs)
+							// return tab
+							return $tab;
+						}, array_values($view->customtabs)
+					)
 				);
 			}
 			unset($view->customtabs);
@@ -2477,11 +2464,12 @@ class Get
 				? json_decode((string) $view->addfields, true) : null;
 			if (ArrayHelper::check($view->addfields))
 			{
-				$ignoreFields = array();
+				$ignore_fields = array();
+				$default_fields = CFactory::_('Config')->default_fields;
 				// load the field data
 				$view->fields = array_map(
 					function ($field) use (
-						&$view, &$ignoreFields
+						&$view, &$ignore_fields, &$default_fields
 					) {
 						// set the field details
 						CFactory::_('Field')->set(
@@ -2490,14 +2478,14 @@ class Get
 						);
 						// check if this field is a default field OR
 						// check if this is none database related field
-						if (in_array($field['base_name'], $this->defaultFields)
+						if (in_array($field['base_name'], $default_fields)
 							|| ComponentbuilderHelper::fieldCheck(
 								$field['type_name'], 'spacer'
 							)
 							|| (isset($field['list'])
 								&& $field['list'] == 2)) // 2 = none database
 						{
-							$ignoreFields[$field['field']] = $field['field'];
+							$ignore_fields[$field['field']] = $field['field'];
 						}
 
 						// return field
@@ -2518,7 +2506,7 @@ class Get
 						$this->setUpdateSQL(
 							json_decode((string) $old_view->addfields, true),
 							$view->addfields, 'field', $view->name_single_code,
-							$ignoreFields
+							$ignore_fields
 						);
 					}
 					// clear this data
@@ -2556,7 +2544,7 @@ class Get
 						$field, $view->name_list_code
 					);
 					// check if the field changed since the last compilation (default fields never change and are always added)
-					if (!isset($ignoreFields[$field['field']])
+					if (!isset($ignore_fields[$field['field']])
 						&& ObjectHelper::check(
 							$field['settings']->history
 						))
@@ -2667,32 +2655,32 @@ class Get
 				}
 				// loop the mysql table settings
 				foreach (
-					$this->mysqlTableKeys as $_mysqlTableKey => $_mysqlTableVal
+					CFactory::_('Config')->mysql_table_keys as $mysql_table_key => $mysql_table_val
 				)
 				{
 					// check if the table engine changed
-					if (isset($old_view->{'mysql_table_' . $_mysqlTableKey})
-						&& isset($view->{'mysql_table_' . $_mysqlTableKey}))
+					if (isset($old_view->{'mysql_table_' . $mysql_table_key})
+						&& isset($view->{'mysql_table_' . $mysql_table_key}))
 					{
 						$this->setUpdateSQL(
-							$old_view->{'mysql_table_' . $_mysqlTableKey},
-							$view->{'mysql_table_' . $_mysqlTableKey},
-							'table_' . $_mysqlTableKey, $view->name_single_code
+							$old_view->{'mysql_table_' . $mysql_table_key},
+							$view->{'mysql_table_' . $mysql_table_key},
+							'table_' . $mysql_table_key, $view->name_single_code
 						);
 					}
 					// check if there is no history on table engine, and it changed from the default/global
-					elseif (isset($view->{'mysql_table_' . $_mysqlTableKey})
+					elseif (isset($view->{'mysql_table_' . $mysql_table_key})
 						&& StringHelper::check(
-							$view->{'mysql_table_' . $_mysqlTableKey}
+							$view->{'mysql_table_' . $mysql_table_key}
 						)
 						&& !is_numeric(
-							$view->{'mysql_table_' . $_mysqlTableKey}
+							$view->{'mysql_table_' . $mysql_table_key}
 						))
 					{
 						$this->setUpdateSQL(
-							$_mysqlTableVal['default'],
-							$view->{'mysql_table_' . $_mysqlTableKey},
-							'table_' . $_mysqlTableKey, $view->name_single_code
+							$mysql_table_val['default'],
+							$view->{'mysql_table_' . $mysql_table_key},
+							'table_' . $mysql_table_key, $view->name_single_code
 						);
 					}
 				}
@@ -2882,22 +2870,22 @@ class Get
 			unset($view->addrelations);
 
 			// set linked views
-			$this->linkedAdminViews[$view->name_single_code] = null;
-			$view->addlinked_views
-			                                                 = (isset($view->addlinked_views)
+			$view->addlinked_views  = (isset($view->addlinked_views)
 				&& JsonHelper::check($view->addlinked_views))
 				? json_decode((string) $view->addlinked_views, true) : null;
 			if (ArrayHelper::check($view->addlinked_views))
 			{
 				// setup linked views to global data sets
-				$this->linkedAdminViews[$view->name_single_code] = array_values(
-					$view->addlinked_views
+				CFactory::_('Registry')->set('builder.linked_admin_views.' . $view->name_single_code,
+					array_values(
+						$view->addlinked_views
+					)
 				);
 			}
 			unset($view->addlinked_views);
 			// set the lang target
 			CFactory::_('Config')->lang_target = 'admin';
-			if (isset($this->siteEditView[$id]))
+			if (CFactory::_('Registry')->get('builder.site_edit_view..' . $id, false))
 			{
 				CFactory::_('Config')->lang_target = 'both';
 			}
@@ -3097,14 +3085,11 @@ class Get
 				CFactory::_('Customcode.Dispenser')->hub['token'][$view->name_single_code]
 					         = true;
 				$addAjaxSite = false;
-				if (isset($this->siteEditView[$id]) && $this->siteEditView[$id])
+				if (CFactory::_('Registry')->get('builder.site_edit_view..' . $id, false))
 				{
 					// we should add this site ajax to front ajax
 					$addAjaxSite = true;
-					if (!isset($this->addSiteAjax) || !$this->addSiteAjax)
-					{
-						$this->addSiteAjax = true;
-					}
+					CFactory::_('Config')->set('add_site_ajax', true);
 				}
 				// check if controller input as been set
 				$view->ajax_input = (isset($view->ajax_input)
@@ -3119,7 +3104,7 @@ class Get
 					}
 					CFactory::_('Customcode.Dispenser')->hub['admin']['ajax_controller'][$view->name_single_code]
 						           = array_values($view->ajax_input);
-					$this->addAjax = true;
+					CFactory::_('Config')->set('add_ajax', true);
 					unset($view->ajax_input);
 				}
 				if (StringHelper::check($view->php_ajaxmethod))
@@ -3148,13 +3133,14 @@ class Get
 							false
 						);
 					}
+					// switch ajax on
+					CFactory::_('Config')->set('add_ajax', true);
 					// unset anyway
 					unset($view->php_ajaxmethod);
-					$this->addAjax = true;
 				}
 			}
 			// activate alias builder
-			if (!isset($this->customAliasBuilder[$view->name_single_code])
+			if (!CFactory::_('Registry')->get('builder.custom_alias.' . $view->name_single_code, null)
 				&& isset($view->alias_builder_type)
 				&& 2 == $view->alias_builder_type
 				&& isset($view->alias_builder)
@@ -3165,26 +3151,27 @@ class Get
 				// get the active fields
 				$alias_fields = (array) array_filter(
 					$view->fields, function ($field) use ($alias_fields) {
-					// check if field is in view fields
-					if (in_array($field['field'], $alias_fields))
-					{
-						return true;
-					}
+						// check if field is in view fields
+						if (in_array($field['field'], $alias_fields))
+						{
+							return true;
+						}
 
-					return false;
-				}
+						return false;
+					}
 				);
 				// check if all is well
 				if (ArrayHelper::check($alias_fields))
 				{
 					// load the field names
-					$this->customAliasBuilder[$view->name_single_code]
-						= (array) array_map(
-						function ($field) use (&$view) {
-							return CFactory::_('Field.Name')->get(
-								$field, $view->name_list_code
-							);
-						}, $alias_fields
+					CFactory::_('Registry')->set('builder.custom_alias.' . $view->name_single_code,
+						(array) array_map(
+							function ($field) use (&$view) {
+								return CFactory::_('Field.Name')->get(
+									$field, $view->name_list_code
+								);
+							}, $alias_fields
+						)
 					);
 				}
 			}
@@ -3213,32 +3200,29 @@ class Get
 					unset($view->sql);
 				}
 			}
-			// load table settings
-			if (!isset($this->mysqlTableSetting[$view->name_single_code]))
-			{
-				$this->mysqlTableSetting[$view->name_single_code] = array();
-			}
 			// set mySql Table Settings
 			foreach (
-				$this->mysqlTableKeys as $_mysqlTableKey => $_mysqlTableVal
+				CFactory::_('Config')->mysql_table_keys as $mysql_table_key => $mysql_table_val
 			)
 			{
-				if (isset($view->{'mysql_table_' . $_mysqlTableKey})
+				if (isset($view->{'mysql_table_' . $mysql_table_key})
 					&& StringHelper::check(
-						$view->{'mysql_table_' . $_mysqlTableKey}
+						$view->{'mysql_table_' . $mysql_table_key}
 					)
-					&& !is_numeric($view->{'mysql_table_' . $_mysqlTableKey}))
+					&& !is_numeric($view->{'mysql_table_' . $mysql_table_key}))
 				{
-					$this->mysqlTableSetting[$view->name_single_code][$_mysqlTableKey]
-						= $view->{'mysql_table_' . $_mysqlTableKey};
+					CFactory::_('Registry')->set('builder.mysql_table_setting.' . $view->name_single_code . '.' .
+						$mysql_table_key, $view->{'mysql_table_' . $mysql_table_key}
+					);
 				}
 				else
 				{
-					$this->mysqlTableSetting[$view->name_single_code][$_mysqlTableKey]
-						= $_mysqlTableVal['default'];
+					CFactory::_('Registry')->set('builder.mysql_table_setting.' . $view->name_single_code . '.' .
+						$mysql_table_key,  $mysql_table_val['default']
+					);
 				}
 				// remove the table values since we moved to another object
-				unset($view->{'mysql_table_' . $_mysqlTableKey});
+				unset($view->{'mysql_table_' . $mysql_table_key});
 			}
 
 			// for plugin event TODO change event api signatures
@@ -3246,7 +3230,7 @@ class Get
 			// Trigger Event: jcb_ce_onAfterModelViewData
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterModelViewData',
-				array(&$this->componentContext, &$view, &$placeholders)
+				array(&$component_context, &$view, &$placeholders)
 			);
 			unset($placeholders);
 
@@ -3284,10 +3268,12 @@ class Get
 		$query->from('#__componentbuilder_' . $table . ' AS a');
 		$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
+		// for plugin event TODO change event api signatures
+		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeQueryCustomViewData
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeQueryCustomViewData',
-			array(&$this->componentContext, &$id, &$table, &$query, &$this->db)
+			array(&$component_context, &$id, &$table, &$query, &$this->db)
 		);
 
 		// Reset the query using our newly populated query object.
@@ -3304,37 +3290,7 @@ class Get
 		// Trigger Event: jcb_ce_onBeforeModelCustomViewData
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeModelCustomViewData',
-			array(&$this->componentContext, &$view, &$id, &$table)
-		);
-
-		if ($table === 'site_view')
-		{
-			CFactory::_('Config')->lang_target = 'site';
-			// repeatable fields to update
-			$searchRepeatables = array(
-				// repeatablefield => checker
-				'ajax_input'    => 'value_name',
-				'custom_button' => 'name'
-			);
-		}
-		else
-		{
-			CFactory::_('Config')->lang_target = 'admin';
-			// repeatable fields to update
-			$searchRepeatables = array(
-				// repeatablefield => checker
-				'custom_button' => 'name'
-			);
-		}
-		// set upater
-		$updater = array(
-			'table' => $table,
-			'key'   => 'id',
-			'val'   => (int) $id
-		);
-		// update the repeatable fields
-		$view = ComponentbuilderHelper::convertRepeatableFields(
-			$view, $searchRepeatables, $updater
+			array(&$component_context, &$view, &$id, &$table)
 		);
 
 		// set GUI mapper
@@ -3359,15 +3315,6 @@ class Get
 			// always make sure context is a safe string
 			$view->context = StringHelper::safe($view->context);
 		}
-		// load the library
-		if (!isset($this->libManager[CFactory::_('Config')->build_target]))
-		{
-			$this->libManager[CFactory::_('Config')->build_target] = array();
-		}
-		if (!isset($this->libManager[CFactory::_('Config')->build_target][$view->code]))
-		{
-			$this->libManager[CFactory::_('Config')->build_target][$view->code] = array();
-		}
 		// make sure json become array
 		if (JsonHelper::check($view->libraries))
 		{
@@ -3378,63 +3325,64 @@ class Get
 		{
 			foreach ($view->libraries as $library)
 			{
-				if (!isset($this->libManager[CFactory::_('Config')->build_target][$view->code][$library]))
+				if (!CFactory::_('Registry')->exists('builder.library_manager.' .
+					CFactory::_('Config')->build_target . '.' . $view->code . '.' . $library))
 				{
 					if ($this->getMediaLibrary((int) $library))
 					{
-						$this->libManager[CFactory::_('Config')->build_target][$view->code][(int) $library]
-							= true;
+						CFactory::_('Registry')->set('builder.library_manager.' .
+							CFactory::_('Config')->build_target . '.' .
+							$view->code . '.' . $library, true);
 					}
 				}
 			}
 		}
 		elseif (is_numeric($view->libraries)
-			&& !isset($this->libManager[CFactory::_('Config')->build_target][$view->code][(int) $view->libraries]))
+			&& !CFactory::_('Registry')->exists('builder.library_manager.' .
+				CFactory::_('Config')->build_target . '.' . $view->code . '.' . (int) $view->libraries))
 		{
 			if ($this->getMediaLibrary((int) $view->libraries))
 			{
-				$this->libManager[CFactory::_('Config')->build_target][$view->code][(int) $view->libraries]
-					= true;
+				CFactory::_('Registry')->set('builder.library_manager.' .
+					CFactory::_('Config')->build_target . '.' .
+					$view->code . '.' . (int) $view->libraries, true);
 			}
 		}
-		// setup template array
-		$this->templateData[CFactory::_('Config')->build_target][$view->code] = array();
 		// setup template and layout data
 		$this->setTemplateAndLayoutData($view->default, $view->code);
+		// get uikit switch
+		$uikit = CFactory::_('Config')->get('uikit', 0);
 		// insure the uikit components are loaded
-		if (2 == $this->uikit || 1 == $this->uikit)
+		if (2 == $uikit || 1 == $uikit)
 		{
-			if (!isset($this->uikitComp[$view->code]))
+			// set uikit to views
+			if (($found = ComponentbuilderHelper::getUikitComp(
+				$view->default, (array) CFactory::_('Registry')->get('builder.uikit_comp.' . $view->code, [])
+			)) !== false)
 			{
-				$this->uikitComp[$view->code] = array();
+				CFactory::_('Registry')->set('builder.uikit_comp.' . $view->code, $found);
 			}
-			$this->uikitComp[$view->code]
-				= ComponentbuilderHelper::getUikitComp(
-				$view->default, $this->uikitComp[$view->code]
-			);
 		}
 		// check for footable
-		if (!isset($this->footableScripts[CFactory::_('Config')->build_target][$view->code])
-			|| !$this->footableScripts[CFactory::_('Config')->build_target][$view->code])
+		if (!CFactory::_('Registry')->
+			exists('builder.footable_scripts.' . CFactory::_('Config')->build_target . '.' . $view->code))
 		{
-			$foundFoo = $this->getFootableScripts($view->default);
-			if ($foundFoo)
+			if ($this->getFootableScripts($view->default))
 			{
-				$this->footableScripts[CFactory::_('Config')->build_target][$view->code] = true;
-			}
-			if ($foundFoo && !$this->footableScripts)
-			{
-				$this->footable = true;
+				CFactory::_('Registry')->
+					set('builder.footable_scripts.' . CFactory::_('Config')->build_target . '.' . $view->code, true);
+
+				CFactory::_('Config')->set('footable ', true);
 			}
 		}
 		// check for get module
-		if (!isset($this->getModule[CFactory::_('Config')->build_target][$view->code])
-			|| !$this->getModule[CFactory::_('Config')->build_target][$view->code])
+		if (!CFactory::_('Registry')->
+			exists('builder.get_module.' . CFactory::_('Config')->build_target . '.' . $view->code))
 		{
-			$found = $this->getGetModule($view->default);
-			if ($found)
+			if ($this->getGetModule($view->default))
 			{
-				$this->getModule[CFactory::_('Config')->build_target][$view->code] = true;
+				CFactory::_('Registry')->
+					set('builder.get_module.' . CFactory::_('Config')->build_target . '.' . $view->code, true);
 			}
 		}
 		// set the main get data
@@ -3476,58 +3424,51 @@ class Get
 						base64_decode((string) $view->$scripter)
 					);
 				}
-				if (2 == $this->uikit || 1 == $this->uikit)
+				if (2 == $uikit || 1 == $uikit)
 				{
-					if (!isset($this->uikitComp[$view->code]))
-					{
-						$this->uikitComp[$view->code] = array();
-					}
 					// set uikit to views
-					$this->uikitComp[$view->code]
-						= ComponentbuilderHelper::getUikitComp(
-						$view->$scripter, $this->uikitComp[$view->code]
-					);
+					if (($found = ComponentbuilderHelper::getUikitComp(
+							$view->$scripter, (array) CFactory::_('Registry')->get('builder.uikit_comp.' . $view->code, [])
+						)) !== false)
+					{
+						CFactory::_('Registry')->set('builder.uikit_comp.' . $view->code, $found);
+					}
 				}
 
 				$this->setTemplateAndLayoutData($view->$scripter, $view->code);
 
 				// check for footable
-				if (!isset($this->footableScripts[CFactory::_('Config')->build_target][$view->code])
-					|| !$this->footableScripts[CFactory::_('Config')->build_target][$view->code])
+				if (!CFactory::_('Registry')->
+					exists('builder.footable_scripts.' . CFactory::_('Config')->build_target . '.' . $view->code))
 				{
-					$foundFoo = $this->getFootableScripts($view->$scripter);
-					if ($foundFoo)
+					if ($this->getFootableScripts($view->$scripter))
 					{
-						$this->footableScripts[CFactory::_('Config')->build_target][$view->code]
-							= true;
-					}
-					if ($foundFoo && !$this->footable)
-					{
-						$this->footable = true;
+						CFactory::_('Registry')->
+							set('builder.footable_scripts.' . CFactory::_('Config')->build_target . '.' . $view->code, true);
+
+						CFactory::_('Config')->set('footable ', true);
 					}
 				}
 				// check for google chart
-				if (!isset($this->googleChart[CFactory::_('Config')->build_target][$view->code])
-					|| !$this->googleChart[CFactory::_('Config')->build_target][$view->code])
+				if (!CFactory::_('Registry')->
+					exists('builder.google_chart.' . CFactory::_('Config')->build_target . '.' . $view->code))
 				{
-					$found = $this->getGoogleChart($view->$scripter);
-					if ($found)
+					if ($this->getGoogleChart($view->$scripter))
 					{
-						$this->googleChart[CFactory::_('Config')->build_target][$view->code] = true;
-					}
-					if ($found && !$this->googlechart)
-					{
-						$this->googlechart = true;
+						CFactory::_('Registry')->
+							set('builder.google_chart.' . CFactory::_('Config')->build_target . '.' . $view->code, true);
+
+						CFactory::_('Config')->set('google_chart', true);
 					}
 				}
 				// check for get module
-				if (!isset($this->getModule[CFactory::_('Config')->build_target][$view->code])
-					|| !$this->getModule[CFactory::_('Config')->build_target][$view->code])
+				if (!CFactory::_('Registry')->
+					exists('builder.get_module.' . CFactory::_('Config')->build_target . '.' . $view->code))
 				{
-					$found = $this->getGetModule($view->$scripter);
-					if ($found)
+					if ($this->getGetModule($view->$scripter))
 					{
-						$this->getModule[CFactory::_('Config')->build_target][$view->code] = true;
+						CFactory::_('Registry')->
+							set('builder.get_module.' . CFactory::_('Config')->build_target . '.' . $view->code, true);
 					}
 				}
 			}
@@ -3578,11 +3519,11 @@ class Get
 				// turn on ajax area
 				if ('site' === CFactory::_('Config')->build_target)
 				{
-					$this->addSiteAjax = true;
+					CFactory::_('Config')->set('add_site_ajax', true);
 				}
 				else
 				{
-					$this->addAjax = true;
+					CFactory::_('Config')->set('add_ajax', true);
 				}
 			}
 		}
@@ -3625,7 +3566,7 @@ class Get
 		// Trigger Event: jcb_ce_onAfterModelCustomViewData
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterModelCustomViewData',
-			array(&$this->componentContext, &$view)
+			array(&$component_context, &$view)
 		);
 
 		// return the found view data
@@ -3796,6 +3737,8 @@ class Get
 		if (ArrayHelper::check($ids))
 		{
 			$ids = implode(',', $ids);
+			// for plugin event TODO change event api signatures
+			$component_context = CFactory::_('Config')->component_context;
 			if (StringHelper::check($ids))
 			{
 				// Create a new query object.
@@ -3822,7 +3765,7 @@ class Get
 						// Trigger Event: jcb_ce_onBeforeModelDynamicGetData
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onBeforeModelDynamicGetData',
-							array(&$this->componentContext, &$result, &$result->id, &$view_code, &$context)
+							array(&$component_context, &$result, &$result->id, &$view_code, &$context)
 						);
 						// set GUI mapper id
 						$guiMapper['id'] = (int) $result->id;
@@ -4108,13 +4051,15 @@ class Get
 												|| isset($_part_of_a[$join_field[0]])
 												|| isset($_part_of_a[$on_field[0]]))
 											{
-												$this->siteMainGet[CFactory::_('Config')->build_target][$view_code][$option['as']]
-													= $option['as'];
+												CFactory::_('Registry')->
+													set('builder.site_main_get.' . CFactory::_('Config')->build_target .
+														'.' . $view_code . '.' . $option['as'], $option['as']);
 											}
 											else
 											{
-												$this->siteDynamicGet[CFactory::_('Config')->build_target][$view_code][$option['as']][$join_field[1]]
-													= $on_field[0];
+												CFactory::_('Registry')->
+													set('builder.site_dynamic_get.' . CFactory::_('Config')->build_target .
+														'.' . $view_code . '.' . $option['as'] . '.' . $join_field[1], $on_field[0]);
 											}
 										}
 										elseif ($option['row_type'] == 2)
@@ -4122,8 +4067,9 @@ class Get
 											$result->custom_get[] = $option;
 											if ($on_field[0] != 'a')
 											{
-												$this->siteDynamicGet[CFactory::_('Config')->build_target][$view_code][$option['as']][$join_field[1]]
-													= $on_field[0];
+												CFactory::_('Registry')->
+													set('builder.site_dynamic_get.' . CFactory::_('Config')->build_target .
+														'.' . $view_code . '.' . $option['as'] . '.' . $join_field[1], $on_field[0]);
 											}
 										}
 									}
@@ -4208,13 +4154,15 @@ class Get
 												|| isset($_part_of_a[$join_field[0]])
 												|| isset($_part_of_a[$on_field[0]]))
 											{
-												$this->siteMainGet[CFactory::_('Config')->build_target][$view_code][$option1['as']]
-													= $option1['as'];
+												CFactory::_('Registry')->
+													set('builder.site_main_get.' . CFactory::_('Config')->build_target .
+														'.' . $view_code . '.' . $option1['as'], $option1['as']);
 											}
 											else
 											{
-												$this->siteDynamicGet[CFactory::_('Config')->build_target][$view_code][$option1['as']][$join_field[1]]
-													= $on_field[0];
+												CFactory::_('Registry')->
+													set('builder.site_dynamic_get.' . CFactory::_('Config')->build_target .
+														'.' . $view_code . '.' . $option1['as'] . '.' . $join_field[1], $on_field[0]);
 											}
 										}
 										elseif ($option1['row_type'] == 2)
@@ -4222,8 +4170,9 @@ class Get
 											$result->custom_get[] = $option1;
 											if ($on_field[0] != 'a')
 											{
-												$this->siteDynamicGet[CFactory::_('Config')->build_target][$view_code][$option1['as']][$join_field[1]]
-													= $on_field[0];
+												CFactory::_('Registry')->
+													set('builder.site_dynamic_get.' . CFactory::_('Config')->build_target .
+														'.' . $view_code . '.' . $option1['as'] . '.' . $join_field[1], $on_field[0]);
 											}
 										}
 									}
@@ -4337,7 +4286,7 @@ class Get
 						// Trigger Event: jcb_ce_onAfterModelDynamicGetData
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterModelDynamicGetData',
-							array(&$this->componentContext, &$result, &$result->id, &$view_code, &$context)
+							array(&$component_context, &$result, &$result->id, &$view_code, &$context)
 						);
 					}
 
@@ -4396,7 +4345,7 @@ class Get
 	 * @deprecated 3.3 Use CFactory::_('Customcode.Dispenser')->get($first, $second, $prefix, $note, $unset, $default, $sufix);
 	 */
 	public function getCustomScriptBuilder($first, $second, $prefix = '',
-	                                       $note = null, $unset = null, $default = null, $sufix = ''
+		$note = null, $unset = null, $default = null, $sufix = ''
 	)
 	{
 		return CFactory::_('Customcode.Dispenser')->get($first, $second, $prefix, $note, $unset, $default, $sufix);
@@ -4466,21 +4415,21 @@ class Get
 						// final fixing to array
 						if (ArrayHelper::check($id_array))
 						{
-							// uniqe
+							// unique
 							$id_array = array_unique($id_array, SORT_NUMERIC);
 							// sort
 							sort($id_array, SORT_NUMERIC);
 							// now set it to global
-							$this->sqlTweak[(int) $setting['adminview']]['where']
-								= implode(',', $id_array);
+							CFactory::_('Registry')->
+								set('builder.sql_tweak.' . (int) $setting['adminview'] . '.where', implode(',', $id_array));
 						}
 					}
 				}
 				else
 				{
-					// remove all sql dump options
-					$this->sqlTweak[(int) $setting['adminview']]['remove']
-						= true;
+					// do not add sql dump options
+					CFactory::_('Registry')->
+						set('builder.sql_tweak.' . (int) $setting['adminview'] . '.add', false);
 				}
 			}
 		}
@@ -4629,60 +4578,39 @@ class Get
 				|| (is_numeric($new) && is_numeric($old)))
 			&& $new !== $old)
 		{
-			// the string changed, lets add to SQL update
-			if (!isset($this->updateSQL[$type])
-				|| !ArrayHelper::check($this->updateSQL[$type]))
-			{
-				$this->updateSQL[$type] = array();
-			}
 			// set at key
-			$this->updateSQL[$type][$key] = array('old' => $old, 'new' => $new);
+			CFactory::_('Registry')->set('builder.update_sql.' . $type . '.' . $key, ['old' => $old, 'new' => $new]);
 		}
 	}
 
 	/**
 	 * Set the add sql
 	 *
-	 * @param   string  $type  The type of values
-	 * @param   int     $item  The item id to add
-	 * @param   int     $key   The id/key where values changed
+	 * @param   string     $type  The type of values
+	 * @param   int        $item  The item id to add
+	 * @param   int|null   $key   The id/key where values changed
 	 *
 	 * @return void
 	 */
-	protected function setAddSQL($type, $item, $key)
+	protected function setAddSQL(string $type, int $item, ?int $key = null)
 	{
-		// we have a new item, lets add to SQL
-		if (!isset($this->addSQL[$type])
-			|| !ArrayHelper::check(
-				$this->addSQL[$type]
-			))
-		{
-			$this->addSQL[$type] = array();
-		}
 		// add key if found
 		if ($key)
 		{
-			if (!isset($this->addSQL[$type][$key])
-				|| !ArrayHelper::check(
-					$this->addSQL[$type][$key]
-				))
-			{
-				$this->addSQL[$type][$key] = array();
-			}
-			$this->addSQL[$type][$key][] = (int) $item;
+			CFactory::_('Registry')->set('builder.add_sql.' . $type . '.' . $key . '.' . $item, $item);
 		}
 		else
 		{
 			// convert adminview id to name
 			if ('adminview' === $type)
 			{
-				$this->addSQL[$type][] = StringHelper::safe(
+				CFactory::_('Registry')->set('builder.add_sql.' . $type, StringHelper::safe(
 					$this->getAdminViewData($item)->name_single
-				);
+				));
 			}
 			else
 			{
-				$this->addSQL[$type][] = (int) $item;
+				CFactory::_('Registry')->set('builder.add_sql.' . $type, $item);
 			}
 		}
 	}
@@ -4776,10 +4704,8 @@ class Get
 		{
 			foreach ($templates as $template)
 			{
-				if (!isset($this->templateData[CFactory::_('Config')->build_target][$view])
-					|| !array_key_exists(
-						$template, $this->templateData[CFactory::_('Config')->build_target][$view]
-					))
+				if (!CFactory::_('Registry')->
+					get('builder.template_data.' . CFactory::_('Config')->build_target . '.' . $view . '.' . $template, null))
 				{
 					$data = $this->getDataWithAlias(
 						$template, 'template', $view
@@ -4787,16 +4713,16 @@ class Get
 					if (ArrayHelper::check($data))
 					{
 						// load it to the template data array
-						$this->templateData[CFactory::_('Config')->build_target][$view][$template]
-							= $data;
+						CFactory::_('Registry')->
+							set('builder.template_data.' . CFactory::_('Config')->build_target . '.' . $view . '.' . $template, $data);
 						// call self to get child data
 						$again[] = array($data['html'], $view);
 						$again[] = array($data['php_view'], $view);
 					}
 				}
 				// check if we have the template set (and nothing yet found)
-				if (!$found
-					&& isset($this->templateData[CFactory::_('Config')->build_target][$view][$template]))
+				if (!$found && CFactory::_('Registry')->
+					get('builder.template_data.' . CFactory::_('Config')->build_target . '.' . $view . '.' . $template, null))
 				{
 					// something was found
 					$found = true;
@@ -4841,23 +4767,20 @@ class Get
 			}
 			foreach ($layouts as $layout)
 			{
-				if (!isset($this->layoutData[CFactory::_('Config')->build_target])
-					|| !ArrayHelper::check(
-						$this->layoutData[CFactory::_('Config')->build_target]
-					)
-					|| !array_key_exists(
-						$layout, $this->layoutData[CFactory::_('Config')->build_target]
-					))
+				if (!CFactory::_('Registry')->
+					get('builder.layout_data.' . CFactory::_('Config')->build_target . '.' . $layout, null))
 				{
 					$data = $this->getDataWithAlias($layout, 'layout', $view);
 					if (ArrayHelper::check($data))
 					{
 						// load it to the layout data array
-						$this->layoutData[CFactory::_('Config')->build_target][$layout] = $data;
+						CFactory::_('Registry')->
+							set('builder.layout_data.' . CFactory::_('Config')->build_target . '.' . $layout, $data);
 						// check if other target is set
 						if (CFactory::_('Config')->lang_target === 'both' && $_target)
 						{
-							$this->layoutData[$_target][$layout] = $data;
+							CFactory::_('Registry')->
+								set('builder.layout_data.' . $_target . '.' . $layout, $data);
 						}
 						// call self to get child data
 						$again[] = array($data['html'], $view);
@@ -4865,7 +4788,8 @@ class Get
 					}
 				}
 				// check if we have the layout set (and nothing yet found)
-				if (!$found && isset($this->layoutData[CFactory::_('Config')->build_target][$layout]))
+				if (!$found && CFactory::_('Registry')->
+					get('builder.layout_data.' . CFactory::_('Config')->build_target . '.' . $layout, null))
 				{
 					// something was found
 					$found = true;
@@ -4903,15 +4827,8 @@ class Get
 		$this->setDataWithAliasKeys($table);
 		// now check if key is found
 		$name = preg_replace("/[^A-Za-z]/", '', $n_ame);
-		if (isset($this->dataWithAliasKeys[$table][$name]))
-		{
-			$ID = $this->dataWithAliasKeys[$table][$name];
-		}
-		elseif (isset($this->dataWithAliasKeys[$table][$n_ame]))
-		{
-			$ID = $this->dataWithAliasKeys[$table][$n_ame];
-		}
-		else
+		if (($ID = CFactory::_('Registry')->get('builder.data_with_alias_keys.' . $table . '.' . $name, null)) === null &&
+			($ID = CFactory::_('Registry')->get('builder.data_with_alias_keys.' . $table . '.' . $n_ame, null)) === null)
 		{
 			return false;
 		}
@@ -4945,7 +4862,7 @@ class Get
 					'type'  => 'php')
 			);
 		}
-		$contnent = CFactory::_('Customcode.Gui')->set(
+		$content = CFactory::_('Customcode.Gui')->set(
 			CFactory::_('Customcode')->update(base64_decode((string) $row->{$table})),
 			array(
 				'table' => $table,
@@ -4956,15 +4873,6 @@ class Get
 		// load all targets
 		foreach ($_targets as $_target)
 		{
-			// load the library
-			if (!isset($this->libManager[$_target]))
-			{
-				$this->libManager[$_target] = array();
-			}
-			if (!isset($this->libManager[$_target][$view]))
-			{
-				$this->libManager[$_target][$view] = array();
-			}
 			// make sure json become array
 			if (JsonHelper::check($row->libraries))
 			{
@@ -4975,84 +4883,83 @@ class Get
 			{
 				foreach ($row->libraries as $library)
 				{
-					if (!isset($this->libManager[$_target][$view][$library]))
+					if (!CFactory::_('Registry')->exists('builder.library_manager.' .
+						$_target . '.' . $view . '.' . (int) $library))
 					{
 						if ($this->getMediaLibrary((int) $library))
 						{
-							$this->libManager[$_target][$view][(int) $library]
-								= true;
+							CFactory::_('Registry')->set('builder.library_manager.' .
+								$_target . '.' . $view . '.' . (int) $library, true);
 						}
 					}
 				}
 			}
 			elseif (is_numeric($row->libraries)
-				&& !isset($this->libManager[$_target][$view][(int) $row->libraries]))
+				&& !CFactory::_('Registry')->exists('builder.library_manager.' .
+					$_target . '.' . $view . '.' . (int) $row->libraries))
 			{
 				if ($this->getMediaLibrary((int) $row->libraries))
 				{
-					$this->libManager[$_target][$view][(int) $row->libraries]
-						= true;
+					CFactory::_('Registry')->set('builder.library_manager.' .
+						$_target . '.' . $view . '.' . (int) $row->libraries, true);
 				}
 			}
 			// set footable to views and turn it on
-			if (!isset($this->footableScripts[$_target][$view])
-				|| !$this->footableScripts[$_target][$view])
+			if (!CFactory::_('Registry')->
+				exists('builder.footable_scripts.' . $_target . '.' . $view))
 			{
-				$foundFoo = $this->getFootableScripts($contnent);
-				if ($foundFoo)
+				if ($this->getFootableScripts($content))
 				{
-					$this->footableScripts[$_target][$view] = true;
-				}
-				if ($foundFoo && !$this->footable)
-				{
-					$this->footable = true;
+					CFactory::_('Registry')->
+						set('builder.footable_scripts.' . $_target . '.' . $view, true);
+
+					CFactory::_('Config')->set('footable ', true);
 				}
 			}
 			// set google charts to views and turn it on
-			if (!isset($this->googleChart[$_target][$view])
-				|| !$this->googleChart[$_target][$view])
+			if (!CFactory::_('Registry')->
+				exists('builder.google_chart.' . $_target . '.' . $view))
 			{
 				$foundA = $this->getGoogleChart($php_view);
-				$foundB = $this->getGoogleChart($contnent);
+				$foundB = $this->getGoogleChart($content);
 				if ($foundA || $foundB)
 				{
-					$this->googleChart[$_target][$view] = true;
-				}
-				if ($foundA || $foundB && !$this->googlechart)
-				{
-					$this->googlechart = true;
+					CFactory::_('Registry')->
+						set('builder.google_chart.' . $_target . '.' . $view, true);
+
+					CFactory::_('Config')->set('google_chart', true);
 				}
 			}
 			// check for get module
-			if (!isset($this->getModule[$_target][$view])
-				|| !$this->getModule[$_target][$view])
+			if (!CFactory::_('Registry')->
+				exists('builder.get_module.' . $_target . '.' . $view))
 			{
 				$foundA = $this->getGetModule($php_view);
-				$foundB = $this->getGetModule($contnent);
+				$foundB = $this->getGetModule($content);
 				if ($foundA || $foundB)
 				{
-					$this->getModule[$_target][$view] = true;
+					CFactory::_('Registry')->
+						set('builder.get_module.' . $_target . '.' . $view, true);
 				}
 			}
 		}
 		// load UIKIT if needed
-		if (2 == $this->uikit || 1 == $this->uikit)
+		$uikit = CFactory::_('Config')->get('uikit', 0);
+		if (2 == $uikit || 1 == $uikit)
 		{
-			if (!isset($this->uikitComp[$view]))
-			{
-				$this->uikitComp[$view] = array();
-			}
 			// set uikit to views
-			$this->uikitComp[$view]
-				= ComponentbuilderHelper::getUikitComp(
-				$contnent, $this->uikitComp[$view]
-			);
+			if (($found = ComponentbuilderHelper::getUikitComp(
+					$content, (array) CFactory::_('Registry')->get('builder.uikit_comp.' . $view, [])
+				)) !== false)
+			{
+				CFactory::_('Registry')->set('builder.uikit_comp.' . $view, $found);
+			}
 		}
 
 		return array(
 			'id'       => $row->id,
 			'html'     => CFactory::_('Customcode.Gui')->set(
-				$contnent,
+				$content,
 				array(
 					'table' => $table,
 					'field' => $table,
@@ -5083,10 +4990,8 @@ class Get
 	protected function setDataWithAliasKeys($table)
 	{
 		// now check if key is found
-		if (!isset($this->dataWithAliasKeys[$table]))
+		if (!CFactory::_('Registry')->get('builder.data_with_alias_keys.' . $table, null))
 		{
-			// load this table keys
-			$this->dataWithAliasKeys[$table] = array();
 			// Create a new query object.
 			$query = $this->db->getQuery(true);
 			$query->select(array('a.id', 'a.alias'));
@@ -5102,9 +5007,9 @@ class Get
 					$k_ey = StringHelper::safe($row->alias);
 					$key  = preg_replace("/[^A-Za-z]/", '', (string) $k_ey);
 					// set the keys
-					$this->dataWithAliasKeys[$table][$row->alias] = $row->id;
-					$this->dataWithAliasKeys[$table][$k_ey]       = $row->id;
-					$this->dataWithAliasKeys[$table][$key]        = $row->id;
+					CFactory::_('Registry')->set('builder.data_with_alias_keys.' . $table . '.' . $row->alias, $row->id);
+					CFactory::_('Registry')->set('builder.data_with_alias_keys.' . $table . '.' . $k_ey, $row->id);
+					CFactory::_('Registry')->set('builder.data_with_alias_keys.' . $table . '.' . $key, $row->id);
 				}
 			}
 		}
@@ -5121,8 +5026,11 @@ class Get
 	protected function getMediaLibrary($id)
 	{
 		// check if the lib has already been set
-		if (!isset($this->libraries[$id]))
+		if (!CFactory::_('Registry')->exists("builder.libraries.$id"))
 		{
+			// get some switches
+			$uikit = CFactory::_('Config')->get('uikit', 0);
+			$footable_version = CFactory::_('Config')->get('footable_version', 0);
 			// make sure we should continue and that the lib is not already being loaded
 			switch ($id)
 			{
@@ -5130,38 +5038,37 @@ class Get
 					return false;
 					break;
 				case 3: // Uikit v3
-					if (2 == $this->uikit || 3 == $this->uikit)
+					if (2 == $uikit || 3 == $uikit)
 					{
 						// already being loaded
-						$this->libraries[$id] = false;
+						CFactory::_('Registry')->set("builder.libraries.$id", false);
 					}
 					break;
 				case 4: // Uikit v2
-					if (2 == $this->uikit || 1 == $this->uikit)
+					if (2 == $uikit || 1 == $uikit)
 					{
 						// already being loaded
-						$this->libraries[$id] = false;
+						CFactory::_('Registry')->set("builder.libraries.$id", false);
 					}
 					break;
 				case 5: // FooTable v2
-					if (!isset($this->footableVersion)
-						|| 2 == $this->footableVersion)
+					if (2 == $footable_version)
 					{
 						// already being loaded
-						$this->libraries[$id] = false;
+						CFactory::_('Registry')->set("builder.libraries.$id", false);
 					}
 					break;
 				case 6: // FooTable v3
-					if (3 == $this->footableVersion)
+					if (3 == $footable_version)
 					{
 						// already being loaded
-						$this->libraries[$id] = false;
+						CFactory::_('Registry')->set("builder.libraries.$id", false);
 					}
 					break;
 			}
 		}
 		// check if the lib has already been set
-		if (!isset($this->libraries[$id]))
+		if (!CFactory::_('Registry')->exists("builder.libraries.$id"))
 		{
 			$query = $this->db->getQuery(true);
 
@@ -5226,9 +5133,9 @@ class Get
 				// fall back on build-in features
 				$buildin = array(3 => array('uikit' => 3),
 				                 4 => array('uikit' => 1),
-				                 5 => array('footableVersion' => 2,
+				                 5 => array('footable_version' => 2,
 				                            'footable'        => true),
-				                 6 => array('footableVersion' => 3,
+				                 6 => array('footable_version' => 3,
 				                            'footable'        => true));
 				if (isset($buildin[$library->id])
 					&& ArrayHelper::check(
@@ -5238,7 +5145,11 @@ class Get
 					// set the lib switch
 					foreach ($buildin[$library->id] as $lib => $val)
 					{
-						$this->{$lib} = $val;
+						// ---- we are targeting these ----
+						// $this->uikit CFactory::_('Config')->uikit
+						// $this->footableVersion CFactory::_('Config')->footable_version
+						// $this->footable CFactory::_('Config')->footable
+						CFactory::_('Config')->set($lib, $val);
 					}
 					// since we are falling back on build-in feature
 					$library->how = 0;
@@ -5356,20 +5267,15 @@ class Get
 				unset($library->addconditions);
 				unset($library->addconfig);
 				// load to global lib
-				$this->libraries[$id] = $library;
+				CFactory::_('Registry')->set("builder.libraries.$id", $library);
 			}
 			else
 			{
-				$this->libraries[$id] = false;
+				CFactory::_('Registry')->set("builder.libraries.$id", false);
 			}
 		}
 		// if set return
-		if (isset($this->libraries[$id]))
-		{
-			return $this->libraries[$id];
-		}
-
-		return false;
+		return CFactory::_('Registry')->get("builder.libraries.$id", false);
 	}
 
 	/**
@@ -5479,7 +5385,7 @@ class Get
 					$get = trim($lineArray[0]);
 					$key = trim($lineArray[1]);
 					// only add the view (we must adapt this)
-					if (isset($this->getAsLookup[$method_key][$get])
+					if (CFactory::_('Registry')->exists('builder.get_as_lookup.' . $method_key . '.' . $get)
 						&& 'a' != $as
 						&& 1 == $row_type
 						&& 'view' === $type
@@ -5494,38 +5400,30 @@ class Get
 						$gets[] = $this->db->quote($get);
 						if (StringHelper::check($key))
 						{
-							$this->getAsLookup[$method_key][$get] = $key;
-							$keys[]
-							                                      = $this->db->quote(
-								$key
-							);
+							CFactory::_('Registry')->
+								set('builder.get_as_lookup.' . $method_key . '.' . $get, $key);
 						}
 						else
 						{
-							$key                                  = str_replace(
+							$key = str_replace(
 								$as . '.', '', $get
 							);
-							$this->getAsLookup[$method_key][$get] = $key;
-							$keys[]
-							                                      = $this->db->quote(
-								$key
-							);
+							CFactory::_('Registry')->
+								set('builder.get_as_lookup.' . $method_key . '.' . $get, $key);
 						}
+						// set the keys
+						$keys[] = $this->db->quote(
+							$key
+						);
 						// make sure we have the view name
 						if (StringHelper::check($view))
 						{
 							// prep the field name
 							$field = str_replace($as . '.', '', $get);
-							// make sure the array is set
-							if (!isset($this->siteFields[$view][$field]))
-							{
-								$this->siteFields[$view][$field] = array();
-							}
 							// load to the site fields memory bucket
-							$this->siteFields[$view][$field][$method_key . '___'
-							. $as]
-								= array('site' => $view_code, 'get' => $get,
-								        'as'   => $as, 'key' => $key);
+							CFactory::_('Registry')->
+								set('builder.site_fields.' . $view . '.' . $field . '.' . $method_key . '___' . $as,
+									['site' => $view_code, 'get' => $get, 'as'   => $as, 'key' => $key]);
 						}
 					}
 				}
@@ -5598,10 +5496,10 @@ class Get
 	 */
 	public function buildSqlDump($tables, $view, $view_id)
 	{
-		// first build a query statment to get all the data (insure it must be added - check the tweaking)
+		// first build a query statement to get all the data (insure it must be added - check the tweaking)
 		if (ArrayHelper::check($tables)
-			&& (!isset($this->sqlTweak[$view_id]['remove'])
-				|| !$this->sqlTweak[$view_id]['remove']))
+			&& CFactory::_('Registry')-> // default is to add
+			get('builder.sql_tweak.' . (int) $view_id . '.add', true))
 		{
 			$counter = 'a';
 			// Create a new query object.
@@ -5655,13 +5553,12 @@ class Get
 									$runQuery = true;
 								}
 								// we may need to filter the selection
-								if (isset($this->sqlTweak[$view_id]['where']))
+								if (($ids_ = CFactory::_('Registry')->
+									get('builder.sql_tweak.' . (int) $view_id . '.where', null)) !== null)
 								{
 									// add to query the where filter
 									$query->where(
-										'a.id IN ('
-										. $this->sqlTweak[$view_id]['where']
-										. ')'
+										'a.id IN (' . $ids_ . ')'
 									);
 								}
 							}
@@ -7366,16 +7263,6 @@ class Get
 					}
 					unset($module->{'add' . $addTarget});
 				}
-				// load the library
-				if (!isset($this->libManager[CFactory::_('Config')->build_target]))
-				{
-					$this->libManager[CFactory::_('Config')->build_target] = array();
-				}
-				if (!isset($this->libManager[CFactory::_('Config')->build_target][$module->code_name]))
-				{
-					$this->libManager[CFactory::_('Config')->build_target][$module->code_name]
-						= array();
-				}
 				// make sure json become array
 				if (JsonHelper::check($module->libraries))
 				{
@@ -7386,23 +7273,25 @@ class Get
 				{
 					foreach ($module->libraries as $library)
 					{
-						if (!isset($this->libManager[CFactory::_('Config')->build_target][$module->code_name][$library]))
+						if (!CFactory::_('Registry')->exists('builder.library_manager.' .
+							CFactory::_('Config')->build_target . '.' . $module->code_name . '.' . (int) $library))
 						{
 							if ($this->getMediaLibrary((int) $library))
 							{
-								$this->libManager[CFactory::_('Config')->build_target][$module->code_name][(int) $library]
-									= true;
+								CFactory::_('Registry')->set('builder.library_manager.' .
+									CFactory::_('Config')->build_target . '.' . $module->code_name . '.' . (int) $library, true);
 							}
 						}
 					}
 				}
 				elseif (is_numeric($module->libraries)
-					&& !isset($this->libManager[CFactory::_('Config')->build_target][$module->code_name][(int) $module->libraries]))
+					&& !CFactory::_('Registry')->exists('builder.library_manager.' .
+						CFactory::_('Config')->build_target . '.' . $module->code_name . '.' . (int) $module->libraries))
 				{
 					if ($this->getMediaLibrary((int) $module->libraries))
 					{
-						$this->libManager[CFactory::_('Config')->build_target][$module->code_name][(int) $module->libraries]
-							= true;
+						CFactory::_('Registry')->set('builder.library_manager.' .
+							CFactory::_('Config')->build_target . '.' . $module->code_name . '.' . (int) $module->libraries, true);
 					}
 				}
 				// add PHP in module install
