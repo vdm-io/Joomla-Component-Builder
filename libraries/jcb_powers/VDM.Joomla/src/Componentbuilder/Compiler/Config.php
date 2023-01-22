@@ -158,7 +158,7 @@ class Config extends BaseConfig
 	protected function getComponentcodenamelength(): int
 	{
 		// get component name length
-		return strlen($this->component_code_name);
+		return strlen((string) $this->component_code_name);
 	}
 
 	/**

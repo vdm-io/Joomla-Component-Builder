@@ -425,9 +425,8 @@
 			buttons="add,remove,move"
 			description="COM_COMPONENTBUILDER_POWER_USE_SELECTION_DESCRIPTION"
 			icon="list"
-			max="30"
-			min="0"
-			showon="type!:interface">
+			max="100"
+			min="0">
 			<form hidden="true" name="list_use_selection_modal" repeat="true">
 				<!-- Use Field. Type: Namespaces. (custom) -->
 				<field

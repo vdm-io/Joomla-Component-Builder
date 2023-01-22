@@ -263,7 +263,7 @@ class Dispenser implements DispenserInterface
 			$script .= $prefix . str_replace(
 				array_keys($this->placeholder->active),
 				array_values($this->placeholder->active),
-				$this->hub[$first][$second]
+				(string) $this->hub[$first][$second]
 			) . $suffix;
 			// clear some memory
 			if ($unset)

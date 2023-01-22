@@ -455,7 +455,7 @@ class Power implements PowerInterface
 			$this->active[$guid]->file_name = array_pop($src_array);
 
 			// namespace array
-			$namespace_array = array_merge($path_array, $src_array);
+			$namespace_array = [...$path_array, ...$src_array];
 		}
 		else
 		{
@@ -483,12 +483,16 @@ class Power implements PowerInterface
 		}
 
 		// make sure the arrays are namespace safe
-		$path_array      = array_map(function ($val) {
-			return $this->getCleanNamespace($val);
-		}, $path_array);
-		$namespace_array = array_map(function ($val) {
-			return $this->getCleanNamespace($val);
-		}, $namespace_array);
+		$path_array =
+			array_map(
+				fn($val) => $this->getCleanNamespace($val),
+				$path_array
+			);
+		$namespace_array =
+			array_map(
+				fn($val) => $this->getCleanNamespace($val),
+				$namespace_array
+			);
 
 		// set the actual class namespace
 		$this->active[$guid]->_namespace = implode('\\', $namespace_array);
@@ -504,9 +508,12 @@ class Power implements PowerInterface
 		if (ArrayHelper::check($src_array))
 		{
 			// make sure the arrays are namespace safe
-			$sub_folder = '/' . implode('/', array_map(function ($val) {
-					return $this->getCleanNamespace($val);
-				}, $src_array));
+			$sub_folder = '/' . implode('/',
+				array_map(
+					fn($val) => $this->getCleanNamespace($val),
+					$src_array
+				)
+			);
 		}
 
 		// now we set the paths
@@ -565,10 +572,11 @@ class Power implements PowerInterface
 		if ($this->active[$guid]->load_selection)
 		{
 			// load use ids
-			array_map(function ($power) {
+			array_map(
 				// just load it directly and be done with it
-				return $this->set($power['load']);
-			}, $this->active[$guid]->load_selection);
+				fn($power) => $this->set($power['load']),
+				$this->active[$guid]->load_selection
+			);
 		}
 	}
 

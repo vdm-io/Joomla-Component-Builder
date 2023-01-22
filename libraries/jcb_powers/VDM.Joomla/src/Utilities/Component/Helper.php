@@ -176,7 +176,7 @@ abstract class Helper
 		if (($helper = self::get($option, false)) !== false &&
 			method_exists($helper, $method))
 		{
-			// we know this is bad...
+			// we know this is not ideal...
 			// so we need to move these
 			// functions to their own classes
 			return call_user_func_array([$helper, $method],  $arguments);

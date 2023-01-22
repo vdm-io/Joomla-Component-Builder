@@ -29,6 +29,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Minify;
 
 /**
  * Compiler class
+ * @deprecated 3.3
  */
 class Interpretation extends Fields
 {
@@ -266,8 +267,7 @@ class Interpretation extends Fields
 	 */
 	public function addEmailHelper()
 	{
-		if (isset($this->componentData->add_email_helper)
-			&& $this->componentData->add_email_helper)
+		if (CFactory::_('Component')->get('add_email_helper'))
 		{
 			// set email helper in place with component name
 			$component = CFactory::_('Config')->component_code_name;
@@ -293,8 +293,7 @@ class Interpretation extends Fields
 	 */
 	public function setLockLicense()
 	{
-		if ($this->componentData->add_license
-			&& $this->componentData->license_type == 3)
+		if (CFactory::_('Component')->get('add_license', 0) == 3)
 		{
 			if (!CFactory::_('Content')->exist('HELPER_SITE_LICENSE_LOCK'))
 			{
@@ -328,7 +327,7 @@ class Interpretation extends Fields
 	 */
 	public function setLockLicensePer(&$view, $target)
 	{
-		if ($this->componentData->add_license && $this->componentData->license_type == 3)
+		if (CFactory::_('Component')->get('add_license', 0) == 3)
 		{
 			if (!CFactory::_('Content')->exist_($view, 'BOOLMETHOD'))
 			{
@@ -499,28 +498,25 @@ class Interpretation extends Fields
 	public function setWHMCSCryption()
 	{
 		// make sure we have the correct file
-		if (isset($this->componentData->whmcs_key)
-			&& StringHelper::check(
-				$this->componentData->whmcs_key
-			))
+		if (CFactory::_('Component')->isString('whmcs_key'))
 		{
 			// Get the basic encryption.
 			$basickey = ComponentbuilderHelper::getCryptKey('basic');
+			$key = CFactory::_('Component')->get('whmcs_key');
+
 			// Get the encryption object.
 			$basic = new FOFEncryptAes($basickey);
-			if (!empty($this->componentData->whmcs_key) && $basickey
-				&& !is_numeric($this->componentData->whmcs_key)
-				&& $this->componentData->whmcs_key === base64_encode(
-					base64_decode((string) $this->componentData->whmcs_key, true)
+			if ($basickey && $key === base64_encode(
+					base64_decode((string) $key, true)
 				))
 			{
 				// basic decrypt data whmcs_key.
-				$this->componentData->whmcs_key = rtrim(
-					(string) $basic->decryptString($this->componentData->whmcs_key), "\0"
+				$key = rtrim(
+					(string) $basic->decryptString($key), "\0"
 				);
 				// set the needed string to connect to whmcs
-				$key["kasier"] = $this->componentData->whmcs_url;
-				$key["geheim"] = $this->componentData->whmcs_key;
+				$key["kasier"] = CFactory::_('Component')->get('whmcs_url', '');
+				$key["geheim"] = $key;
 				$key["onthou"] = 1;
 				// prep the call info
 				$theKey = base64_encode(serialize($key));
@@ -816,11 +812,11 @@ class Interpretation extends Fields
 				&& ArrayHelper::check(
 					$this->whmcsFieldModeling
 				))
-			|| $this->componentData->add_license)
+			|| CFactory::_('Component')->get('add_license'))
 		{
 			if (isset($this->whmcsFieldModeling)
 				&& ArrayHelper::check($this->whmcsFieldModeling)
-				|| $this->componentData->add_license)
+				|| CFactory::_('Component')->get('add_license'))
 			{
 				// set whmcs encrypt file into place
 				$target = array('admin' => 'whmcs');
@@ -912,7 +908,7 @@ class Interpretation extends Fields
 			// add the whmcs option
 			if (isset($this->whmcsFieldModeling)
 				&& ArrayHelper::check($this->whmcsFieldModeling)
-				|| $this->componentData->add_license)
+				|| CFactory::_('Component')->get('add_license'))
 			{
 				$function[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " WHMCS Encryption Type";
@@ -1053,15 +1049,12 @@ class Interpretation extends Fields
 	 */
 	public function setVersionController()
 	{
-		if (ArrayHelper::check(
-				$this->componentData->version_update
-			)
+		if (CFactory::_('Component')->isArray('version_update')
 			|| ArrayHelper::check($this->updateSQLBuilder))
 		{
 			$updateXML = array();
 			// add the update server
-			if ($this->componentData->add_update_server
-				&& $this->componentData->update_server_target != 3)
+			if (CFactory::_('Component')->get('update_server_target', 3) != 3)
 			{
 				$updateXML[] = '<updates>';
 			}
@@ -1069,18 +1062,14 @@ class Interpretation extends Fields
 			// add the dynamic sql switch
 			$addDynamicSQL = true;
 			$addActive     = true;
-			if (ArrayHelper::check(
-				$this->componentData->version_update
-			))
+			if (CFactory::_('Component')->isArray('version_update'))
 			{
-				foreach (
-					$this->componentData->version_update as $nr => &$update
-				)
+				foreach (CFactory::_('Component')->get('version_update') as $nr => &$update)
 				{
 					$this->setUpdateXMLSQL($update, $updateXML, $addDynamicSQL);
 
 					if ($update['version']
-						== $this->componentData->component_version)
+						== CFactory::_('Component')->get('component_version'))
 					{
 						$addActive = false;
 					}
@@ -1105,14 +1094,13 @@ class Interpretation extends Fields
 				$this->setDynamicUpdateXMLSQL($updateXML, $addActive);
 			}
 			// add the update server file
-			if ($this->componentData->add_update_server
-				&& $this->componentData->update_server_target != 3)
+			if (CFactory::_('Component')->get('add_update_server', 3) != 3)
 			{
 				$updateXML[] = '</updates>';
 				// UPDATE_SERVER_XML
 				$name   = substr(
-					(string) $this->componentData->update_server_url,
-					strrpos((string) $this->componentData->update_server_url, '/')
+					(string) CFactory::_('Component')->get('update_server_url'),
+					strrpos((string) CFactory::_('Component')->get('update_server_url'), '/')
 					+ 1
 				);
 				$name   = explode('.xml', $name)[0];
@@ -1125,11 +1113,8 @@ class Interpretation extends Fields
 			}
 		}
 		// add the update server link to component XML
-		if ($this->componentData->add_update_server
-			&& isset($this->componentData->update_server_url)
-			&& StringHelper::check(
-				$this->componentData->update_server_url
-			))
+		if (CFactory::_('Component')->get('add_update_server')
+			&& CFactory::_('Component')->isString('update_server_url'))
 		{
 			// UPDATESERVER
 			$updateServer   = array();
@@ -1137,7 +1122,7 @@ class Interpretation extends Fields
 			$updateServer[] = Indent::_(2)
 				. '<server type="extension" enabled="1" element="com_'
 				. CFactory::_('Config')->component_code_name . '" name="'
-				. CFactory::_('Content')->get('Component_name') . '">' . $this->componentData->update_server_url
+				. CFactory::_('Content')->get('Component_name') . '">' . CFactory::_('Component')->get('update_server_url')
 				. '</server>';
 			$updateServer[] = Indent::_(1) . '</updateservers>';
 			// return the array to string
@@ -1155,7 +1140,7 @@ class Interpretation extends Fields
 		{
 			$buket = array();
 			$nr    = 0;
-			foreach ($this->componentData->version_update as $values)
+			foreach (CFactory::_('Component')->get('version_update') as $values)
 			{
 				$buket['version_update' . $nr] = $values;
 				$nr++;
@@ -1164,7 +1149,7 @@ class Interpretation extends Fields
 			$newJ       = array();
 			$newJ['id'] = (int) CFactory::_('Config')->component_id;
 			$newJ['component_version']
-				= $this->componentData->component_version;
+				= CFactory::_('Component')->get('component_version');
 			// update the component with the new dynamic SQL
 			$modelJ = ComponentbuilderHelper::getModel('joomla_component');
 			$modelJ->save($newJ); // <-- to insure the history is also updated
@@ -1173,10 +1158,9 @@ class Interpretation extends Fields
 
 			// update the component update table
 			$newU = array();
-			if (isset($this->componentData->version_update_id)
-				&& $this->componentData->version_update_id > 0)
+			if (CFactory::_('Component')->get('version_update_id', 0)  > 0)
 			{
-				$newU['id'] = (int) $this->componentData->version_update_id;
+				$newU['id'] = (int) CFactory::_('Component')->get('version_update_id', 0);
 			}
 			else
 			{
@@ -1203,7 +1187,7 @@ class Interpretation extends Fields
 		if ($current_version)
 		{
 			// setup new version
-			$update_['version'] = $this->componentData->component_version;
+			$update_['version'] = CFactory::_('Component')->get('component_version');
 			// setup SQL
 			$update_['mysql'] = '';
 			// setup URL
@@ -1212,7 +1196,7 @@ class Interpretation extends Fields
 		else
 		{
 			// setup new version
-			$update_['version'] = $this->componentData->old_component_version;
+			$update_['version'] = CFactory::_('Component')->get('old_component_version');
 			// setup SQL
 			$update_['mysql'] = trim(
 				implode(PHP_EOL . PHP_EOL, $this->updateSQLBuilder)
@@ -1221,21 +1205,21 @@ class Interpretation extends Fields
 			if (isset($this->lastupdateURL))
 			{
 				$paceholders    = array(
-					$this->componentData->component_version => $this->componentData->old_component_version,
+					CFactory::_('Component')->get('component_version') => CFactory::_('Component')->get('old_component_version'),
 					str_replace(
-						'.', '-', (string) $this->componentData->component_version
+						'.', '-', (string) CFactory::_('Component')->get('component_version')
 					)                                       => str_replace(
-						'.', '-', (string) $this->componentData->old_component_version
+						'.', '-', (string) CFactory::_('Component')->get('old_component_version')
 					),
 					str_replace(
-						'.', '_', (string) $this->componentData->component_version
+						'.', '_', (string) CFactory::_('Component')->get('component_version')
 					)                                       => str_replace(
-						'.', '_', (string) $this->componentData->old_component_version
+						'.', '_', (string) CFactory::_('Component')->get('old_component_version')
 					),
 					str_replace(
-						'.', '', (string) $this->componentData->component_version
+						'.', '', (string) CFactory::_('Component')->get('component_version')
 					)                                       => str_replace(
-						'.', '', (string) $this->componentData->old_component_version
+						'.', '', (string) CFactory::_('Component')->get('old_component_version')
 					)
 				);
 				$update_['url'] = CFactory::_('Placeholder')->update(
@@ -1249,8 +1233,8 @@ class Interpretation extends Fields
 			}
 		}
 		// stop it from being added double
-		$addDynamicSQL                         = false;
-		$this->componentData->version_update[] = $update_;
+		$addDynamicSQL = false;
+		CFactory::_('Component')->appendArray('version_update', $update_);
 		// add dynamic SQL
 		$this->setUpdateXMLSQL($update_, $updateXML, $addDynamicSQL);
 	}
@@ -1278,10 +1262,7 @@ class Interpretation extends Fields
 		if ($addDynamicSQL
 			&& ArrayHelper::check(
 				$this->updateSQLBuilder
-			)
-			&& (isset($this->componentData->old_component_version)
-				&& $this->componentData->old_component_version
-				== $update['version']))
+			) && CFactory::_('Component')->get('old_component_version') == $update['version'])
 		{
 			$searchMySQL = preg_replace('/\s+/', '', (string) $update['mysql']);
 			// add the updates to the SQL only if not found
@@ -1298,7 +1279,7 @@ class Interpretation extends Fields
 			$addDynamicSQL = false;
 		}
 		// setup import files
-		if ($update['version'] != $this->componentData->component_version)
+		if ($update['version'] != CFactory::_('Component')->get('component_version'))
 		{
 			$name   = StringHelper::safe($update['version']);
 			$target = array('admin' => $name);
@@ -1315,8 +1296,7 @@ class Interpretation extends Fields
 			$this->lastupdateURL = $update['url'];
 		}
 		// add the update server
-		if ($this->componentData->add_update_server
-			&& $this->componentData->update_server_target != 3)
+		if (CFactory::_('Component')->get('add_update_server', 3) != 3)
 		{
 			// we set the defaults
 			$u_element = 'com_' . CFactory::_('Config')->component_code_name;
@@ -5479,7 +5459,7 @@ class Interpretation extends Fields
 					CFactory::_('Content')->set_($viewCodeName, 'SITE_BOTTOM_BUTTON', '<?php echo $this->toolbar->render(); ?>');
 					break;
 				case 5:
-					// set buttons to buttom left of the view
+					// set buttons to custom placement of the view
 					CFactory::_('Placeholder')->set_('SITE_TOOLBAR',
 						'<?php echo $this->toolbar->render(); ?>');
 					break;
@@ -6514,7 +6494,7 @@ class Interpretation extends Fields
 		}
 		// load the components need
 		if ((2 == CFactory::_('Config')->uikit || 1 == CFactory::_('Config')->uikit)
-			&& ($data_ = CFactory::_('Registry')->extract('builder.uikit_comp.' .
+			&& ($data_ = CFactory::_('Registry')->get('builder.uikit_comp.' .
 				$view['settings']->code)) !== null)
 		{
 			$setter .= PHP_EOL . PHP_EOL . $tabV . Indent::_(2) . "//"
@@ -7629,17 +7609,14 @@ class Interpretation extends Fields
 	public function setComponentToContentTypes($action)
 	{
 		$script = '';
-		if (isset($this->componentData->admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->admin_views
-			))
+		if (CFactory::_('Component')->isArray('admin_views'))
 		{
 			// set component name
 			$component = CFactory::_('Config')->component_code_name;
 			// reset
 			$dbStuff = array();
 			// start loading the content type data
-			foreach ($this->componentData->admin_views as $viewData)
+			foreach (CFactory::_('Component')->get('admin_views') as $viewData)
 			{
 				// set main keys
 				$view = StringHelper::safe(
@@ -7880,10 +7857,7 @@ class Interpretation extends Fields
 		$script .= CFactory::_('Customcode.Dispenser')->get(
 			'php_postflight', 'update', PHP_EOL . PHP_EOL, null, true
 		);
-		if (isset($this->componentData->admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->admin_views
-			))
+		if (CFactory::_('Component')->isArray('admin_views'))
 		{
 			$script .= PHP_EOL . Indent::_(3)
 				. 'echo \'<a target="_blank" href="'
@@ -10607,7 +10581,8 @@ class Interpretation extends Fields
 	public function setLangAdmin()
 	{
 		// add final list of needed lang strings
-		$componentName = JFilterOutput::cleanText($this->componentData->name);
+		$componentName = CFactory::_('Component')->get('name');
+		$componentName = JFilterOutput::cleanText($componentName);
 		// for plugin event TODO change event api signatures
 		$langContent = CFactory::_('Language')->getTarget('admin');
 		$component_context = CFactory::_('Config')->component_context;
@@ -10705,15 +10680,15 @@ class Interpretation extends Fields
 			'admin', CFactory::_('Config')->lang_prefix . '_NOT_FOUND_OR_ACCESS_DENIED',
 			"Not found or access denied!"
 		);
-		if ($this->componentData->add_license
-			&& $this->componentData->license_type == 3)
+		if (CFactory::_('Component')->get('add_license')
+			&& CFactory::_('Component')->get('license_type') == 3)
 		{
 			CFactory::_('Language')->set(
 				'admin', 'NIE_REG_NIE',
 				"<br /><br /><center><h1>License not set for " . $componentName
 				. ".</h1><p>Notify your administrator!<br />The license can be obtained from <a href='"
-				. $this->componentData->whmcs_buy_link . "' target='_blank'>"
-				. $this->componentData->companyname . "</a>.</p></center>"
+				. CFactory::_('Component')->get('whmcs_buy_link') . "' target='_blank'>"
+				. CFactory::_('Component')->get('companyname') . "</a>.</p></center>"
 			);
 		}
 		// add the langug files needed to import and export data
@@ -10901,7 +10876,8 @@ class Interpretation extends Fields
 	public function setLangSite()
 	{
 		// add final list of needed lang strings
-		$componentName = JFilterOutput::cleanText($this->componentData->name);
+		$componentName = CFactory::_('Component')->get('name');
+		$componentName = JFilterOutput::cleanText($componentName);
 		// for plugin event TODO change event api signatures
 		$langContent = CFactory::_('Language')->getTarget('site');
 		$component_context = CFactory::_('Config')->component_context;
@@ -11001,7 +10977,8 @@ class Interpretation extends Fields
 	public function setLangSiteSys()
 	{
 		// add final list of needed lang strings
-		$componentName = JFilterOutput::cleanText($this->componentData->name);
+		$componentName = CFactory::_('Component')->get('name');
+		$componentName = JFilterOutput::cleanText($componentName);
 		// for plugin event TODO change event api signatures
 		$langContent = CFactory::_('Language')->getTarget('sitesys');
 		$component_context = CFactory::_('Config')->component_context;
@@ -11062,7 +11039,8 @@ class Interpretation extends Fields
 	public function setLangAdminSys()
 	{
 		// add final list of needed lang strings
-		$componentName = JFilterOutput::cleanText($this->componentData->name);
+		$componentName = CFactory::_('Component')->get('name');
+		$componentName = JFilterOutput::cleanText($componentName);
 		// for plugin event TODO change event api signatures
 		$langContent = CFactory::_('Language')->getTarget('adminsys');
 		$component_context = CFactory::_('Config')->component_context;
@@ -11111,14 +11089,9 @@ class Interpretation extends Fields
 
 	public function setCustomAdminViewListLink($view, $nameListCode)
 	{
-		if (isset($this->componentData->custom_admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->custom_admin_views
-			))
+		if (CFactory::_('Component')->isArray('custom_admin_views'))
 		{
-			foreach (
-				$this->componentData->custom_admin_views as $custom_admin_view
-			)
+			foreach (CFactory::_('Component')->get('custom_admin_views') as $custom_admin_view)
 			{
 				if (isset($custom_admin_view['adminviews'])
 					&& ArrayHelper::check(
@@ -13620,7 +13593,7 @@ class Interpretation extends Fields
 		extract($args, EXTR_PREFIX_SAME, "oops");
 		$single         = '';
 		$name_list_code = '';
-		foreach ($this->componentData->admin_views as $array)
+		foreach (CFactory::_('Component')->get('admin_views') as $array)
 		{
 			if ($array['adminview'] == $viewId)
 			{
@@ -18638,8 +18611,9 @@ class Interpretation extends Fields
 	protected function setDefaultBatchHelper(&$batch, &$nameSingleCode)
 	{
 		// set component name
+		$COPMONENT = CFactory::_('Component')->get('name_code');
 		$COPMONENT = StringHelper::safe(
-			$this->componentData->name_code, 'U'
+			$COPMONENT, 'U'
 		);
 		// set batch
 		$batch[] = PHP_EOL . Indent::_(2)
@@ -18698,9 +18672,8 @@ class Interpretation extends Fields
 			&& isset($this->categoryBuilder[$nameListCode]['extension']))
 		{
 			// set component name
-			$COPMONENT = StringHelper::safe(
-				$this->componentData->name_code, 'U'
-			);
+			$COPMONENT = CFactory::_('Component')->get('name_code');
+			$COPMONENT = StringHelper::safe($COPMONENT, 'U');
 			// set filter
 			$batch[] = PHP_EOL . Indent::_(2)
 				. "if (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
@@ -19347,7 +19320,7 @@ class Interpretation extends Fields
 		$getForm[] = Indent::_(3) . "return false;";
 		$getForm[] = Indent::_(2) . "}";
 		// load license locker
-		if ($this->componentData->add_license && $this->componentData->license_type == 3
+		if (CFactory::_('Component')->get('add_license') && CFactory::_('Component')->get('license_type') == 3
 			&& CFactory::_('Content')->exist_($nameSingleCode, 'BOOLMETHOD'))
 		{
 			$getForm[] = $this->checkStatmentLicenseLocked(
@@ -22600,15 +22573,12 @@ class Interpretation extends Fields
 
 	public function setDashboardIcons()
 	{
-		if (isset($this->componentData->admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->admin_views
-			))
+		if (CFactory::_('Component')->isArray('admin_views'))
 		{
 			$icons    = '';
 			$counter  = 0;
 			$catArray = array();
-			foreach ($this->componentData->admin_views as $view)
+			foreach (CFactory::_('Component')->get('admin_views') as $view)
 			{
 				$name_single = StringHelper::safe(
 					$view['settings']->name_single
@@ -22825,21 +22795,20 @@ class Interpretation extends Fields
 
 	public function setDashboardModelMethods()
 	{
-		if (isset($this->componentData->php_dashboard_methods)
-			&& StringHelper::check(
-				$this->componentData->php_dashboard_methods
-			))
+		if (CFactory::_('Component')->isString('php_dashboard_methods'))
 		{
+			// get hte value
+			$php_dashboard_methods = CFactory::_('Component')->get('php_dashboard_methods');
 			// get all the mothods that should load date to the view
 			$this->DashboardGetCustomData
 				= GetHelper::allBetween(
-				$this->componentData->php_dashboard_methods,
+				$php_dashboard_methods,
 				'public function get', '()'
 			);
 
 			// return the methods
 			return PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
-					$this->componentData->php_dashboard_methods
+					$php_dashboard_methods
 				);
 		}
 
@@ -22881,13 +22850,10 @@ class Interpretation extends Fields
 		$tab               = Indent::_(1);
 		$loadTabs          = false;
 		// check if we have custom tabs
-		if (isset($this->componentData->dashboard_tab)
-			&& ArrayHelper::check(
-				$this->componentData->dashboard_tab
-			))
+		if (CFactory::_('Component')->isArray('dashboard_tab'))
 		{
 			// build the tabs and accordians
-			foreach ($this->componentData->dashboard_tab as $data)
+			foreach (CFactory::_('Component')->get('dashboard_tab') as $data)
 			{
 				$builder[$data['name']][$data['header']]
 					= CFactory::_('Placeholder')->update_(
@@ -23016,12 +22982,9 @@ class Interpretation extends Fields
 	public function addCustomDashboardIcons(&$view, &$counter)
 	{
 		$icon = '';
-		if (isset($this->componentData->custom_admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->custom_admin_views
-			))
+		if (CFactory::_('Component')->isArray('custom_admin_views'))
 		{
-			foreach ($this->componentData->custom_admin_views as $nr => $menu)
+			foreach (CFactory::_('Component')->get('custom_admin_views') as $nr => $menu)
 			{
 				if (!isset($this->customAdminAdded[$menu['settings']->code])
 					&& isset($menu['dashboard_list'])
@@ -23092,12 +23055,9 @@ class Interpretation extends Fields
 			}
 		}
 		// see if we should have custom menus
-		if (isset($this->componentData->custommenus)
-			&& ArrayHelper::check(
-				$this->componentData->custommenus
-			))
+		if (CFactory::_('Component')->isArray('custommenus'))
 		{
-			foreach ($this->componentData->custommenus as $nr => $menu)
+			foreach (CFactory::_('Component')->get('custommenus') as $nr => $menu)
 			{
 				$nr        = $nr + 100;
 				$nameList  = StringHelper::safe(
@@ -23208,10 +23168,7 @@ class Interpretation extends Fields
 
 	public function setSubMenus()
 	{
-		if (isset($this->componentData->admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->admin_views
-			))
+		if (CFactory::_('Component')->isArray('admin_views'))
 		{
 			$menus = '';
 			// main lang prefix
@@ -23231,7 +23188,7 @@ class Interpretation extends Fields
 			}
 			$catArray = array();
 			// loop over all the admin views
-			foreach ($this->componentData->admin_views as $view)
+			foreach (CFactory::_('Component')->get('admin_views') as $view)
 			{
 				// set custom menu
 				$menus          .= $this->addCustomSubMenu(
@@ -23395,12 +23352,9 @@ class Interpretation extends Fields
 	{
 		// see if we should have custom menus
 		$custom = '';
-		if (isset($this->componentData->custom_admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->custom_admin_views
-			))
+		if (CFactory::_('Component')->isArray('custom_admin_views'))
 		{
-			foreach ($this->componentData->custom_admin_views as $nr => $menu)
+			foreach (CFactory::_('Component')->get('custom_admin_views') as $nr => $menu)
 			{
 				if (!isset($this->customAdminAdded[$menu['settings']->code]))
 				{
@@ -23413,12 +23367,9 @@ class Interpretation extends Fields
 				}
 			}
 		}
-		if (isset($this->componentData->custommenus)
-			&& ArrayHelper::check(
-				$this->componentData->custommenus
-			))
+		if (CFactory::_('Component')->isArray('custommenus'))
 		{
-			foreach ($this->componentData->custommenus as $nr => $menu)
+			foreach (CFactory::_('Component')->get('custommenus') as $nr => $menu)
 			{
 				if (($_custom = $this->setCustomAdminSubMenu(
 						$view, $codeName, $lang, $nr, $menu, 'customMenu'
@@ -23607,10 +23558,7 @@ class Interpretation extends Fields
 
 	public function setMainMenus()
 	{
-		if (isset($this->componentData->admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->admin_views
-			))
+		if (CFactory::_('Component')->isArray('admin_views'))
 		{
 			$menus = '';
 			// main lang prefix
@@ -23620,19 +23568,13 @@ class Interpretation extends Fields
 			// default prefix is none
 			$prefix = '';
 			// check if local is set
-			if (isset($this->componentData->add_menu_prefix)
-				&& is_numeric(
-					$this->componentData->add_menu_prefix
-				))
+			if (CFactory::_('Component')->isNumeric('add_menu_prefix'))
 			{
 				// set main menu prefix switch
-				$addPrefix = $this->componentData->add_menu_prefix;
-				if ($addPrefix == 1 && isset($this->componentData->menu_prefix)
-					&& StringHelper::check(
-						$this->componentData->menu_prefix
-					))
+				$addPrefix = CFactory::_('Component')->get('add_menu_prefix');
+				if ($addPrefix == 1 && CFactory::_('Component')->isString('menu_prefix'))
 				{
-					$prefix = trim((string) $this->componentData->menu_prefix) . ' ';
+					$prefix = trim((string) CFactory::_('Component')->get('menu_prefix')) . ' ';
 				}
 			}
 			else
@@ -23649,17 +23591,17 @@ class Interpretation extends Fields
 			if ($addPrefix == 1)
 			{
 				CFactory::_('Language')->set(
-					'adminsys', $lang, $prefix . $this->componentData->name
+					'adminsys', $lang, $prefix . CFactory::_('Component')->get('name')
 				);
 			}
 			else
 			{
 				CFactory::_('Language')->set(
-					'adminsys', $lang, $this->componentData->name
+					'adminsys', $lang, CFactory::_('Component')->get('name')
 				);
 			}
 			// loop over the admin views
-			foreach ($this->componentData->admin_views as $view)
+			foreach (CFactory::_('Component')->get('admin_views') as $view)
 			{
 				// set custom menu
 				$menus .= $this->addCustomMainMenu($view, $codeName, $lang);
@@ -23702,12 +23644,9 @@ class Interpretation extends Fields
 	{
 		$customMenu = '';
 		// see if we should have custom admin views
-		if (isset($this->componentData->custom_admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->custom_admin_views
-			))
+		if (CFactory::_('Component')->isArray('custom_admin_views'))
 		{
-			foreach ($this->componentData->custom_admin_views as $nr => $menu)
+			foreach (CFactory::_('Component')->get('custom_admin_views') as $nr => $menu)
 			{
 				if (!isset($this->customAdminAdded[$menu['settings']->code]))
 				{
@@ -23741,12 +23680,9 @@ class Interpretation extends Fields
 			}
 		}
 		// see if we should have custom menus
-		if (isset($this->componentData->custommenus)
-			&& ArrayHelper::check(
-				$this->componentData->custommenus
-			))
+		if (CFactory::_('Component')->isArray('custommenus'))
 		{
-			foreach ($this->componentData->custommenus as $nr => $menu)
+			foreach (CFactory::_('Component')->get('custommenus') as $nr => $menu)
 			{
 				$nr = $nr + 100;
 				if (isset($menu['mainmenu']) && $menu['mainmenu'] == 1
@@ -23889,18 +23825,15 @@ class Interpretation extends Fields
 		{
 			// start loading Global params
 			$autorName                = StringHelper::html(
-				$this->componentData->author
+				CFactory::_('Component')->get('author')
 			);
 			$autorEmail               = StringHelper::html(
-				$this->componentData->email
+				CFactory::_('Component')->get('email')
 			);
 			$this->extensionsParams[] = '"autorName":"' . $autorName
 				. '","autorEmail":"' . $autorEmail . '"';
 			// set the custom fields
-			if (isset($this->componentData->config)
-				&& ArrayHelper::check(
-					$this->componentData->config
-				))
+			if (CFactory::_('Component')->isArray('config'))
 			{
 				// set component code name
 				$component      = CFactory::_('Config')->component_code_name;
@@ -23912,11 +23845,11 @@ class Interpretation extends Fields
 					= CFactory::_('Config')->component_code_name;
 				$placeholders[Placefix::_h('Component')]
 					= StringHelper::safe(
-					$this->componentData->name_code, 'F'
+					CFactory::_('Component')->get('name_code'), 'F'
 				);
 				$placeholders[Placefix::_h('COMPONENT')]
 					= StringHelper::safe(
-					$this->componentData->name_code, 'U'
+					CFactory::_('Component')->get('name_code'), 'U'
 				);
 				$placeholders[Placefix::_h('view')]
 					= $nameSingleCode;
@@ -23941,17 +23874,21 @@ class Interpretation extends Fields
 				$viewType = 0;
 				// set the custom table key
 				$dbkey = 'g';
+				// TODO: change plubin signature
+				$config_ = CFactory::_('Component')->get('config');
 				// Trigger Event: jcb_ce_onBeforeSetConfigFieldsets
 				CFactory::_('Event')->trigger(
 					'jcb_ce_onBeforeSetConfigFieldsets',
 					array(&$component_context, &$timer,
 						&$this->configFieldSets,
 						&$this->configFieldSetsCustomField,
-						&$this->componentData->config,
+						&$config_,
 						&$this->extensionsParams, &$placeholders)
 				);
+				// update global values
+				CFactory::_('Component')->set('config', $config_);
 				// build the config fields
-				foreach ($this->componentData->config as $field)
+				foreach ($config_ as $field)
 				{
 					// get the xml string
 					$xmlField = $this->getFieldXMLString(
@@ -24020,15 +23957,18 @@ class Interpretation extends Fields
 		{
 			// for plugin event TODO change event api signatures
 			$placeholders = CFactory::_('Placeholder')->active;
+			$config_ = CFactory::_('Component')->get('config');
 			// Trigger Event: jcb_ce_onBeforeSetConfigFieldsets
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeSetConfigFieldsets',
 				array(&$component_context, &$timer,
 					&$this->configFieldSets,
 					&$this->configFieldSetsCustomField,
-					&$this->componentData->config, &$this->extensionsParams,
+					&$config_, &$this->extensionsParams,
 					&$placeholders)
 			);
+			// update global values
+			CFactory::_('Component')->set('config', $config_);
 			// these field sets can only be added after admin view is build
 			$this->setGroupControlConfigFieldsets($lang);
 			// these can be added anytime really (but looks best after groups
@@ -24054,13 +23994,10 @@ class Interpretation extends Fields
 	{
 		$front_end = array();
 		// do quick build of front-end views
-		if (isset($this->componentData->site_views)
-			&& ArrayHelper::check(
-				$this->componentData->site_views
-			))
+		if (CFactory::_('Component')->isArray('site_views'))
 		{
 			// load the names only to link the page params
-			foreach ($this->componentData->site_views as $siteView)
+			foreach (CFactory::_('Component')->get('site_views') as $siteView)
 			{
 				// now load the view name to the front-end array
 				$front_end[] = $siteView['settings']->name;
@@ -24491,13 +24428,10 @@ class Interpretation extends Fields
 		// set if contributors were added
 		$langCont = $lang . '_CONTRIBUTOR';
 		if (CFactory::_('Config')->get('add_contributors', false)
-			&& isset($this->componentData->contributors)
-			&& ArrayHelper::check(
-				$this->componentData->contributors
-			))
+			&& CFactory::_('Component')->isArray('contributors'))
 		{
 			foreach (
-				$this->componentData->contributors as $counter => $contributor
+				CFactory::_('Component')->get('contributors') as $counter => $contributor
 			)
 			{
 				// make sure we dont use 0
@@ -24633,7 +24567,7 @@ class Interpretation extends Fields
 			}
 		}
 		// add more contributors if required
-		if (1 == $this->componentData->emptycontributors)
+		if (1 == CFactory::_('Component')->get('emptycontributors', 0))
 		{
 			if (isset($counter))
 			{
@@ -24644,7 +24578,7 @@ class Interpretation extends Fields
 			{
 				$min = 1;
 			}
-			$max                   = $min + $this->componentData->number - 1;
+			$max = $min + CFactory::_('Component')->get('number') - 1;
 			$moreContributerFields = range($min, $max, 1);
 			foreach ($moreContributerFields as $counter)
 			{
@@ -24741,7 +24675,7 @@ class Interpretation extends Fields
 			}
 		}
 		if (CFactory::_('Config')->get('add_contributors', false)
-			|| $this->componentData->emptycontributors == 1)
+			|| CFactory::_('Component')->get('emptycontributors', 0) == 1)
 		{
 			// setup lang
 			CFactory::_('Language')->set(
@@ -25044,8 +24978,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 
 	public function setEmailHelperConfigFieldsets($lang)
 	{
-		if (isset($this->componentData->add_email_helper)
-			&& $this->componentData->add_email_helper)
+		if (CFactory::_('Component')->get('add_email_helper'))
 		{
 			// main lang prefix
 			$lang = $lang . '';
@@ -26407,7 +26340,7 @@ function vdm_dkim() {
 		if (CFactory::_('Config')->basic_encryption
 			|| CFactory::_('Config')->whmcs_encryption
 			|| CFactory::_('Config')->medium_encryption
-			|| $this->componentData->add_license
+			|| CFactory::_('Component')->get('add_license')
 			|| (isset($this->configFieldSetsCustomField['Encryption Settings'])
 				&& ArrayHelper::check(
 					$this->configFieldSetsCustomField['Encryption Settings']
@@ -26427,8 +26360,8 @@ function vdm_dkim() {
 			if ((CFactory::_('Config')->basic_encryption
 					|| CFactory::_('Config')->medium_encryption
 					|| CFactory::_('Config')->whmcs_encryption)
-				&& $this->componentData->add_license
-				&& $this->componentData->license_type == 3)
+				&& CFactory::_('Component')->get('add_license')
+				&& CFactory::_('Component')->get('license_type', 0) == 3)
 			{
 				CFactory::_('Language')->set(
 					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_LABEL',
@@ -26444,8 +26377,8 @@ function vdm_dkim() {
 			elseif ((CFactory::_('Config')->basic_encryption
 					|| CFactory::_('Config')->medium_encryption
 					|| CFactory::_('Config')->whmcs_encryption)
-				&& $this->componentData->add_license
-				&& $this->componentData->license_type == 2)
+				&& CFactory::_('Component')->get('add_license')
+				&& CFactory::_('Component')->get('license_type', 0) == 2)
 			{
 				CFactory::_('Language')->set(
 					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_LABEL',
@@ -26458,8 +26391,8 @@ function vdm_dkim() {
 				// add the next dynamic option
 				$dynamicAddFields[] = "Update & Encryption Settings";
 			}
-			elseif ($this->componentData->add_license
-				&& $this->componentData->license_type == 3)
+			elseif (CFactory::_('Component')->get('add_license')
+				&& CFactory::_('Component')->get('license_type', 0) == 3)
 			{
 				CFactory::_('Language')->set(
 					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_LABEL', "License Settings"
@@ -26471,8 +26404,8 @@ function vdm_dkim() {
 				// add the next dynamic option
 				$dynamicAddFields[] = "License Settings";
 			}
-			elseif ($this->componentData->add_license
-				&& $this->componentData->license_type == 2)
+			elseif (CFactory::_('Component')->get('add_license')
+				&& CFactory::_('Component')->get('license_type', 0) == 2)
 			{
 				CFactory::_('Language')->set(
 					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_LABEL', "Update Settings"
@@ -26574,61 +26507,61 @@ function vdm_dkim() {
 				);
 			}
 			if (CFactory::_('Config')->whmcs_encryption
-				|| $this->componentData->add_license)
+				|| CFactory::_('Component')->get('add_license'))
 			{
 				// set field lang label and description
-				if ($this->componentData->add_license
-					&& $this->componentData->license_type == 3)
+				if (CFactory::_('Component')->get('add_license')
+					&& CFactory::_('Component')->get('license_type', 0) == 3)
 				{
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_LABEL',
-						$this->componentData->companyname . " License Key"
+						CFactory::_('Component')->get('companyname', '') . " License Key"
 					);
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_DESC',
 						"Add the license key you recieved from "
-						. $this->componentData->companyname . " here."
+						. CFactory::_('Component')->get('companyname', '') . " here."
 					);
 				}
-				elseif ($this->componentData->add_license
-					&& $this->componentData->license_type == 2)
+				elseif (CFactory::_('Component')->get('add_license')
+					&& CFactory::_('Component')->get('license_type', 0) == 2)
 				{
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_LABEL',
-						$this->componentData->companyname . " Update Key"
+						CFactory::_('Component')->get('companyname', '') . " Update Key"
 					);
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_DESC',
 						"Add the update key you recieved from "
-						. $this->componentData->companyname . " here."
+						. CFactory::_('Component')->get('companyname', '') . " here."
 					);
 				}
 				else
 				{
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_LABEL',
-						$this->componentData->companyname . " Key"
+						CFactory::_('Component')->get('companyname', '') . " Key"
 					);
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_DESC',
 						"Add the key you recieved from "
-						. $this->componentData->companyname . " here."
+						. CFactory::_('Component')->get('companyname', '') . " here."
 					);
 				}
 				// ajust the notice based on license
-				if ($this->componentData->license_type == 3)
+				if (CFactory::_('Component')->get('license_type',0) == 3)
 				{
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_LABEL',
-						"Your " . $this->componentData->companyname
+						"Your " . CFactory::_('Component')->get('companyname','')
 						. " License Key"
 					);
 				}
-				elseif ($this->componentData->license_type == 2)
+				elseif (CFactory::_('Component')->get('license_type',0) == 2)
 				{
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_LABEL',
-						"Your " . $this->componentData->companyname
+						"Your " . CFactory::_('Component')->get('companyname','')
 						. " Update Key"
 					);
 				}
@@ -26638,7 +26571,7 @@ function vdm_dkim() {
 					{
 						CFactory::_('Language')->set(
 							CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_LABEL',
-							"Your " . $this->componentData->companyname
+							"Your " . CFactory::_('Component')->get('companyname','')
 							. " Field Encryption Key"
 						);
 					}
@@ -26646,7 +26579,7 @@ function vdm_dkim() {
 					{
 						CFactory::_('Language')->set(
 							CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_LABEL',
-							"Your " . $this->componentData->companyname . " Key"
+							"Your " . CFactory::_('Component')->get('companyname','') . " Key"
 						);
 					}
 				}
@@ -26656,11 +26589,11 @@ function vdm_dkim() {
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_DESC',
 						"You need to get this key from <a href='"
-						. $this->componentData->whmcs_buy_link
+						. CFactory::_('Component')->get('whmcs_buy_link','')
 						. "' target='_blank'>"
-						. $this->componentData->companyname
+						. CFactory::_('Component')->get('companyname','')
 						. "</a>.<br />When using the "
-						. $this->componentData->companyname
+						. CFactory::_('Component')->get('companyname','')
 						. " field encryption you can never change this key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>"
 					);
 				}
@@ -26669,9 +26602,9 @@ function vdm_dkim() {
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_DESC',
 						"You need to get this key from <a href='"
-						. $this->componentData->whmcs_buy_link
+						. CFactory::_('Component')->get('whmcs_buy_link','')
 						. "' target='_blank'>"
-						. $this->componentData->companyname . "</a>."
+						. CFactory::_('Component')->get('companyname','') . "</a>."
 					);
 				}
 				// set the fields
@@ -26911,13 +26844,10 @@ function vdm_dkim() {
 		$menuControllers = array('access', 'submenu', 'dashboard_list',
 			'dashboard_add');
 		// set the custom admin views permissions
-		if (isset($this->componentData->custom_admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->custom_admin_views
-			))
+		if (CFactory::_('Component')->isArray('custom_admin_views'))
 		{
 			foreach (
-				$this->componentData->custom_admin_views as $custom_admin_view
+				CFactory::_('Component')->get('custom_admin_views') as $custom_admin_view
 			)
 			{
 				// new custom permissions to access this view
@@ -26997,12 +26927,9 @@ function vdm_dkim() {
 			}
 		}
 		// set the site views permissions
-		if (isset($this->componentData->site_views)
-			&& ArrayHelper::check(
-				$this->componentData->site_views
-			))
+		if (CFactory::_('Component')->isArray('site_views'))
 		{
-			foreach ($this->componentData->site_views as $site_view)
+			foreach (CFactory::_('Component')->get('site_views') as $site_view)
 			{
 				// new custom permissions to access this view
 				$siteName  = $site_view['settings']->name;
@@ -27049,12 +26976,9 @@ function vdm_dkim() {
 				);
 			}
 		}
-		if (isset($this->componentData->admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->admin_views
-			))
+		if (CFactory::_('Component')->isArray('admin_views'))
 		{
-			foreach ($this->componentData->admin_views as $view)
+			foreach (CFactory::_('Component')->get('admin_views') as $view)
 			{
 				// set view name
 				$nameView  = StringHelper::safe(
@@ -27989,21 +27913,18 @@ function vdm_dkim() {
 						))
 						{
 							$lang = array_map(
-								function ($langstring, $placeholder) {
-									return $placeholder . '="' . $langstring
-										. '"';
-								}, array_values($languageStrings),
+								fn($langstring, $placeholder) => $placeholder . '="' . $langstring  . '"',
+								array_values($languageStrings),
 								array_keys($languageStrings)
 							);
 							// set path
-							$path = $module->folder_path . '/language/' . $tag
-								. '/';
+							$path = $module->folder_path . '/language/' . $tag . '/';
 							// create path if not exist
 							if (!Folder::exists($path))
 							{
 								Folder::create($path);
 								// count the folder created
-								$this->folderCount++;
+								CFactory::_('Counter')->folder++;
 							}
 							// add to language files (for now we add all to both TODO)
 							$this->writeFile(
@@ -28016,7 +27937,7 @@ function vdm_dkim() {
 								implode(PHP_EOL, $lang)
 							);
 							// set the line counter
-							$this->lineCount = $this->lineCount + count(
+							CFactory::_('Counter')->line += count(
 									(array) $lang
 								);
 							unset($lang);
@@ -28383,10 +28304,8 @@ function vdm_dkim() {
 						))
 						{
 							$lang = array_map(
-								function ($langstring, $placeholder) {
-									return $placeholder . '="' . $langstring
-										. '"';
-								}, array_values($languageStrings),
+								fn($langstring, $placeholder) => $placeholder . '="' . $langstring . '"',
+								array_values($languageStrings),
 								array_keys($languageStrings)
 							);
 							// set path
@@ -28397,7 +28316,7 @@ function vdm_dkim() {
 							{
 								Folder::create($path);
 								// count the folder created
-								$this->folderCount++;
+								CFactory::_('Counter')->folder++;
 							}
 							// add to language file
 							$this->writeFile(
@@ -28413,7 +28332,7 @@ function vdm_dkim() {
 								implode(PHP_EOL, $lang)
 							);
 							// set the line counter
-							$this->lineCount = $this->lineCount + count(
+							CFactory::_('Counter')->line += count(
 									(array) $lang
 								);
 							unset($lang);

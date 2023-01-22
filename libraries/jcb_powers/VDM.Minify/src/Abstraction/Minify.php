@@ -502,9 +502,9 @@ abstract class Minify
 
     protected static function str_replace_first($search, $replace, $subject)
     {
-        $pos = strpos($subject, $search);
+        $pos = strpos((string) $subject, (string) $search);
         if ($pos !== false) {
-            return substr_replace($subject, $replace, $pos, strlen($search));
+            return substr_replace((string) $subject, (string) $replace, $pos, strlen((string) $search));
         }
 
         return $subject;

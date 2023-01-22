@@ -28,15 +28,16 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 
 /**
  * Structure class
+ * @deprecated 3.3
  */
 class Structure extends Get
 {
-
 
 	/**
 	 * The folder counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3 Use CFactory::_('Counter')->folder;
 	 */
 	public $folderCount = 0;
 
@@ -44,6 +45,7 @@ class Structure extends Get
 	 * The file counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3 Use CFactory::_('Counter')->file;
 	 */
 	public $fileCount = 0;
 
@@ -51,6 +53,7 @@ class Structure extends Get
 	 * The page counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $pageCount = 0;
 
@@ -58,6 +61,8 @@ class Structure extends Get
 	 * The line counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
+	 * @deprecated 3.3 Use CFactory::_('Counter')->line;
 	 */
 	public $lineCount = 0;
 
@@ -65,6 +70,7 @@ class Structure extends Get
 	 * The field counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $fieldCount = 0;
 
@@ -72,6 +78,7 @@ class Structure extends Get
 	 * The seconds counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $seconds = 0;
 
@@ -79,6 +86,7 @@ class Structure extends Get
 	 * The actual seconds counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $actualSeconds = 0;
 
@@ -86,6 +94,7 @@ class Structure extends Get
 	 * The folder seconds counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $folderSeconds = 0;
 
@@ -93,6 +102,7 @@ class Structure extends Get
 	 * The file seconds counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $fileSeconds = 0;
 
@@ -100,6 +110,7 @@ class Structure extends Get
 	 * The line seconds counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $lineSeconds = 0;
 
@@ -107,6 +118,7 @@ class Structure extends Get
 	 * The seconds debugging counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $secondsDebugging = 0;
 
@@ -114,6 +126,7 @@ class Structure extends Get
 	 * The seconds planning counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $secondsPlanning = 0;
 
@@ -121,6 +134,7 @@ class Structure extends Get
 	 * The seconds mapping counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $secondsMapping = 0;
 
@@ -128,6 +142,7 @@ class Structure extends Get
 	 * The seconds office counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $secondsOffice = 0;
 
@@ -135,6 +150,7 @@ class Structure extends Get
 	 * The total hours counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $totalHours = 0;
 
@@ -142,6 +158,7 @@ class Structure extends Get
 	 * The debugging hours counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $debuggingHours = 0;
 
@@ -149,6 +166,7 @@ class Structure extends Get
 	 * The planning hours counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $planningHours = 0;
 
@@ -156,6 +174,7 @@ class Structure extends Get
 	 * The mapping hours counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $mappingHours = 0;
 
@@ -163,6 +182,7 @@ class Structure extends Get
 	 * The office hours counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $officeHours = 0;
 
@@ -170,6 +190,7 @@ class Structure extends Get
 	 * The actual Total Hours counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $actualTotalHours = 0;
 
@@ -177,6 +198,7 @@ class Structure extends Get
 	 * The actual hours spent counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $actualHoursSpent = 0;
 
@@ -184,6 +206,7 @@ class Structure extends Get
 	 * The actual days spent counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $actualDaysSpent = 0;
 
@@ -191,6 +214,7 @@ class Structure extends Get
 	 * The total days counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $totalDays = 0;
 
@@ -198,6 +222,7 @@ class Structure extends Get
 	 * The actual Total Days counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $actualTotalDays = 0;
 
@@ -205,6 +230,7 @@ class Structure extends Get
 	 * The project week time counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $projectWeekTime = 0;
 
@@ -212,6 +238,7 @@ class Structure extends Get
 	 * The project month time counter
 	 *
 	 * @var     int
+	 * @deprecated 3.3
 	 */
 	public $projectMonthTime = 0;
 
@@ -378,11 +405,11 @@ class Structure extends Get
 	 */
 	public function __construct()
 	{
-		// first we run the perent constructor
+		// first we run the parent constructor
 		if (parent::__construct())
 		{
 			// set the standard admin file
-			$this->stdRootFiles[] = $this->componentData->name_code . '.php';
+			$this->stdRootFiles[] = CFactory::_('Component')->get('name_code') . '.php';
 			// set incase no extra admin folder are loaded
 			CFactory::_('Content')->set('EXSTRA_ADMIN_FOLDERS', '');
 			// set incase no extra site folder are loaded
@@ -395,22 +422,20 @@ class Structure extends Get
 			CFactory::_('Content')->set('EXSTRA_SITE_FILES', '');
 			// set incase no extra media files are loaded
 			CFactory::_('Content')->set('EXSTRA_MEDIA_FILES', '');
-			// run global updater
-			ComponentbuilderHelper::runGlobalUpdater();
 			// set the template path
 			$this->templatePath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/joomla_'
-				. $this->joomlaVersions[CFactory::_('Config')->joomla_version]['folder_key'];
+				. CFactory::_('Config')->joomla_versions[CFactory::_('Config')->joomla_version]['folder_key'];
 			// set some default names
 			$this->componentSalesName  = 'com_'
-				. $this->componentData->sales_name . '__J'
+				. CFactory::_('Component')->get('sales_name') . '__J'
 				. CFactory::_('Config')->joomla_version;
 			$this->componentBackupName = 'com_'
-				. $this->componentData->sales_name . '_v' . str_replace(
-					'.', '_', (string) $this->componentData->component_version
+				. CFactory::_('Component')->get('sales_name') . '_v' . str_replace(
+					'.', '_', (string) CFactory::_('Component')->get('component_version')
 				) . '__J' . CFactory::_('Config')->joomla_version;
 			$this->componentFolderName = 'com_'
-				. $this->componentData->name_code . '_v' . str_replace(
-					'.', '_', (string) $this->componentData->component_version
+				. CFactory::_('Component')->get('name_code') . '_v' . str_replace(
+					'.', '_', (string) CFactory::_('Component')->get('component_version')
 				) . '__J' . CFactory::_('Config')->joomla_version;
 			// set component folder path
 			$this->componentPath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
@@ -526,7 +551,7 @@ class Structure extends Get
 					);
 					$this->newFiles[$power->key][] = $fileDetails;
 					// count the file created
-					$this->fileCount++;
+					CFactory::_('Counter')->file++;
 					if (!isset($htaccess[$power->path_jcb]))
 					{
 						// set the htaccess data
@@ -547,7 +572,7 @@ class Structure extends Get
 						);
 						$this->newFiles[$power->key][] = $fileDetails;
 						// count the file created
-						$this->fileCount++;
+						CFactory::_('Counter')->file++;
 						// now we must add the htaccess.txt file where the zip package my not get the [.] files
 						$fileDetails = array('path' => $power->full_path_jcb . '/htaccess.txt',
 						                     'name' => 'htaccess.txt',
@@ -557,7 +582,7 @@ class Structure extends Get
 						);
 						$this->newFiles[$power->key][] = $fileDetails;
 						// count the file created
-						$this->fileCount++;
+						CFactory::_('Counter')->file++;
 						// now we must add the web.config file
 						$fileDetails = array('path' => $power->full_path_jcb . '/web.config',
 						                     'name' => 'web.config',
@@ -574,7 +599,7 @@ class Structure extends Get
 						);
 						$this->newFiles[$power->key][] = $fileDetails;
 						// count the file created
-						$this->fileCount++;
+						CFactory::_('Counter')->file++;
 						// we set these files only once
 						$htaccess[$power->path_jcb] = true;
 					}
@@ -591,16 +616,17 @@ class Structure extends Get
 	 */
 	private function buildModules()
 	{
-		if (ArrayHelper::check($this->joomlaModules))
+		if (CFactory::_('Joomlamodule.Data')->exists())
 		{
 			// for plugin event TODO change event api signatures
 			$component_context = CFactory::_('Config')->component_context;
+			$modules = CFactory::_('Joomlamodule.Data')->get();
 			// Trigger Event: jcb_ce_onBeforeSetModules
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildModules',
-				array(&$component_context, &$this->joomlaModules)
+				array(&$component_context, &$modules)
 			);
-			foreach ($this->joomlaModules as $module)
+			foreach ($modules as $module)
 			{
 				if (ObjectHelper::check($module)
 					&& isset($module->folder_name)
@@ -633,7 +659,7 @@ class Structure extends Get
 					);
 					$this->newFiles[$module->key][] = $fileDetails;
 					// count the file created
-					$this->fileCount++;
+					CFactory::_('Counter')->file++;
 					// set custom_get
 					if ($module->custom_get)
 					{
@@ -661,7 +687,7 @@ class Structure extends Get
 						);
 						$this->newFiles[$module->key][] = $fileDetails;
 						// count the file created
-						$this->fileCount++;
+						CFactory::_('Counter')->file++;
 					}
 					// set helper file
 					if ($module->add_class_helper >= 1)
@@ -683,7 +709,7 @@ class Structure extends Get
 						);
 						$this->newFiles[$module->key][] = $fileDetails;
 						// count the file created
-						$this->fileCount++;
+						CFactory::_('Counter')->file++;
 					}
 					// set main xml file
 					$fileDetails = array('path' => $module->folder_path . '/'
@@ -696,7 +722,7 @@ class Structure extends Get
 					);
 					$this->newFiles[$module->key][] = $fileDetails;
 					// count the file created
-					$this->fileCount++;
+					CFactory::_('Counter')->file++;
 					// set tmpl folder
 					$this->createFolder($module->folder_path . '/tmpl');
 					// set default file
@@ -715,7 +741,7 @@ class Structure extends Get
 					);
 					$this->newFiles[$module->key][] = $fileDetails;
 					// count the file created
-					$this->fileCount++;
+					CFactory::_('Counter')->file++;
 					// set install script if needed
 					if ($module->add_install_script)
 					{
@@ -736,7 +762,7 @@ class Structure extends Get
 						);
 						$this->newFiles[$module->key][] = $fileDetails;
 						// count the file created
-						$this->fileCount++;
+						CFactory::_('Counter')->file++;
 					}
 					// set readme if found
 					if ($module->addreadme)
@@ -748,7 +774,7 @@ class Structure extends Get
 						$this->writeFile($fileDetails['path'], $module->readme);
 						$this->newFiles[$module->key][] = $fileDetails;
 						// count the file created
-						$this->fileCount++;
+						CFactory::_('Counter')->file++;
 					}
 					// set the folders target path
 					$target_path = '';
@@ -784,7 +810,7 @@ class Structure extends Get
 							);
 							$this->newFiles[$module->key][] = $fileDetails;
 							// count the file created
-							$this->fileCount++;
+							CFactory::_('Counter')->file++;
 							// add the field script
 							$field_script_bucket[] = Indent::_(2) . "//"
 								. Line::_(__Line__, __Class__) . " Custom CSS";
@@ -819,7 +845,7 @@ class Structure extends Get
 							);
 							$this->newFiles[$module->key][] = $fileDetails;
 							// count the file created
-							$this->fileCount++;
+							CFactory::_('Counter')->file++;
 							// add the field script
 							$field_script_bucket[] = Indent::_(2) . "//"
 								. Line::_(__Line__, __Class__) . " Custom JS";
@@ -851,7 +877,7 @@ class Structure extends Get
 							);
 							$this->newFiles[$module->key][] = $fileDetails;
 							// count the file created
-							$this->fileCount++;
+							CFactory::_('Counter')->file++;
 						}
 					}
 					// set rules folders if needed
@@ -1048,7 +1074,7 @@ class Structure extends Get
 							$this->writeFile($fileDetails['path'], $xml);
 							$this->newFiles[$module->key][] = $fileDetails;
 							// count the file created
-							$this->fileCount++;
+							CFactory::_('Counter')->file++;
 						}
 					}
 					// set SQL stuff if needed
@@ -1068,7 +1094,7 @@ class Structure extends Get
 								$module->sql
 							);
 							// count the file created
-							$this->fileCount++;
+							CFactory::_('Counter')->file++;
 						}
 						// now set the uninstall file
 						if ($module->add_sql_uninstall)
@@ -1079,7 +1105,7 @@ class Structure extends Get
 								$module->sql_uninstall
 							);
 							// count the file created
-							$this->fileCount++;
+							CFactory::_('Counter')->file++;
 						}
 					}
 					// creat the language folder
@@ -1095,10 +1121,10 @@ class Structure extends Get
 						// add to component files
 						foreach ($module->files as $file)
 						{
-							// set the path finder
+							// set the pathfinder
 							$file['target_type']          = $module->target_type;
 							$file['target_id']            = $module->id;
-							$this->componentData->files[] = $file;
+							CFactory::_('Component')->appendArray('files', $file);
 						}
 					}
 					// check if this lib has folders
@@ -1108,10 +1134,10 @@ class Structure extends Get
 						// add to component folders
 						foreach ($module->folders as $folder)
 						{
-							// set the path finder
+							// set the pathfinder
 							$folder['target_type']          = $module->target_type;
 							$folder['target_id']            = $module->id;
-							$this->componentData->folders[] = $folder;
+							CFactory::_('Component')->appendArray('folders', $folder);
 						}
 					}
 					// check if this module has urls
@@ -1157,7 +1183,7 @@ class Structure extends Get
 								// write data to path
 								$this->writeFile($url['path'], $data);
 								// count the file created
-								$this->fileCount++;
+								CFactory::_('Counter')->file++;
 							}
 						}
 					}
@@ -1174,16 +1200,17 @@ class Structure extends Get
 	 */
 	private function buildPlugins()
 	{
-		if (ArrayHelper::check($this->joomlaPlugins))
+		if (CFactory::_('Joomlaplugin.Data')->exists())
 		{
 			// for plugin event TODO change event api signatures
 			$component_context = CFactory::_('Config')->component_context;
+			$plugins = CFactory::_('Joomlaplugin.Data')->get();
 			// Trigger Event: jcb_ce_onBeforeSetPlugins
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeBuildPlugins',
-				array(&$component_context, &$this->joomlaPlugins)
+				array(&$component_context, &$plugins)
 			);
-			foreach ($this->joomlaPlugins as $plugin)
+			foreach ($plugins as $plugin)
 			{
 				if (ObjectHelper::check($plugin)
 					&& isset($plugin->folder_name)
@@ -1216,7 +1243,7 @@ class Structure extends Get
 					);
 					$this->newFiles[$plugin->key][] = $fileDetails;
 					// count the file created
-					$this->fileCount++;
+					CFactory::_('Counter')->file++;
 					// set main xml file
 					$fileDetails = array('path' => $plugin->folder_path . '/'
 						. $plugin->file_name . '.xml',
@@ -1228,7 +1255,7 @@ class Structure extends Get
 					);
 					$this->newFiles[$plugin->key][] = $fileDetails;
 					// count the file created
-					$this->fileCount++;
+					CFactory::_('Counter')->file++;
 					// set install script if needed
 					if ($plugin->add_install_script)
 					{
@@ -1249,7 +1276,7 @@ class Structure extends Get
 						);
 						$this->newFiles[$plugin->key][] = $fileDetails;
 						// count the file created
-						$this->fileCount++;
+						CFactory::_('Counter')->file++;
 					}
 					// set readme if found
 					if ($plugin->addreadme)
@@ -1261,7 +1288,7 @@ class Structure extends Get
 						$this->writeFile($fileDetails['path'], $plugin->readme);
 						$this->newFiles[$plugin->key][] = $fileDetails;
 						// count the file created
-						$this->fileCount++;
+						CFactory::_('Counter')->file++;
 					}
 					// set fields & rules folders if needed
 					if (isset($plugin->fields_rules_paths)
@@ -1441,7 +1468,7 @@ class Structure extends Get
 							$this->writeFile($fileDetails['path'], $xml);
 							$this->newFiles[$plugin->key][] = $fileDetails;
 							// count the file created
-							$this->fileCount++;
+							CFactory::_('Counter')->file++;
 						}
 					}
 					// set SQL stuff if needed
@@ -1461,7 +1488,7 @@ class Structure extends Get
 								$plugin->sql
 							);
 							// count the file created
-							$this->fileCount++;
+							CFactory::_('Counter')->file++;
 						}
 						// now set the uninstall file
 						if ($plugin->add_sql_uninstall)
@@ -1472,7 +1499,7 @@ class Structure extends Get
 								$plugin->sql_uninstall
 							);
 							// count the file created
-							$this->fileCount++;
+							CFactory::_('Counter')->file++;
 						}
 					}
 					// creat the language folder path
@@ -1491,7 +1518,7 @@ class Structure extends Get
 							// set the path finder
 							$file['target_type']          = $plugin->target_type;
 							$file['target_id']            = $plugin->id;
-							$this->componentData->files[] = $file;
+							CFactory::_('Component')->appendArray('files', $file);
 						}
 					}
 					// check if this lib has folders
@@ -1504,7 +1531,7 @@ class Structure extends Get
 							// set the path finder
 							$folder['target_type']          = $plugin->target_type;
 							$folder['target_id']            = $plugin->id;
-							$this->componentData->folders[] = $folder;
+							CFactory::_('Component')->appendArray('folders', $folder);
 						}
 					}
 					// check if this plugin has urls
@@ -1550,7 +1577,7 @@ class Structure extends Get
 								// write data to path
 								$this->writeFile($url['path'], $data);
 								// count the file created
-								$this->fileCount++;
+								CFactory::_('Counter')->file++;
 							}
 						}
 					}
@@ -1576,7 +1603,7 @@ class Structure extends Get
 				$path
 			);
 			// count the folder created
-			$this->folderCount++;
+			CFactory::_('Counter')->folder++;
 			// add index.html (boring I know)
 			$this->indexHTML(
 				$path, ''
@@ -1592,7 +1619,7 @@ class Structure extends Get
 	 */
 	private function setLibraries()
 	{
-		if (($libraries_ = CFactory::_('Registry')->extract('builder.libraries')) !== null)
+		if (($libraries_ = CFactory::_('Registry')->get('builder.libraries')) !== null)
 		{
 			// for plugin event TODO change event api signatures
 			$component_context = CFactory::_('Config')->component_context;
@@ -1606,7 +1633,7 @@ class Structure extends Get
 			{
 				Folder::create($this->componentPath);
 				// count the folder created
-				$this->folderCount++;
+				CFactory::_('Counter')->folder++;
 				$this->indexHTML('');
 			}
 			// create media path if not set
@@ -1622,7 +1649,7 @@ class Structure extends Get
 						// add to component files
 						foreach ($library->files as $file)
 						{
-							$this->componentData->files[] = $file;
+							CFactory::_('Component')->appendArray('files', $file);
 						}
 					}
 					// check if this lib has folders
@@ -1634,7 +1661,7 @@ class Structure extends Get
 						// add to component folders
 						foreach ($library->folders as $folder)
 						{
-							$this->componentData->folders[] = $folder;
+							CFactory::_('Component')->appendArray('folders', $folder);
 						}
 					}
 					// check if this lib has urls
@@ -1699,7 +1726,7 @@ class Structure extends Get
 								// write data to path
 								$this->writeFile($path, $data);
 								// count the file created
-								$this->fileCount++;
+								CFactory::_('Counter')->file++;
 							}
 						}
 						// only add if local
@@ -1719,15 +1746,13 @@ class Structure extends Get
 						foreach ($library->config as $cofig)
 						{
 							$found = array_filter(
-								$this->componentData->config,
-								function ($item) use ($cofig) {
-									return $item['field'] == $cofig['field'];
-								}
+								CFactory::_('Component')->get('config'),
+								fn($item) => $item['field'] == $cofig['field']
 							);
 							// set the config data if not found
 							if (!ArrayHelper::check($found))
 							{
-								$this->componentData->config[] = $cofig;
+								CFactory::_('Component')->appendArray('config', $cofig);
 							}
 						}
 					}
@@ -1747,16 +1772,13 @@ class Structure extends Get
 	private function setDynamicDashboard()
 	{
 		// only add the dynamic dashboard if all checks out
-		if (isset($this->componentData->dashboard_type)
-			&& 2 == $this->componentData->dashboard_type
-			&& isset($this->componentData->dashboard)
-			&& StringHelper::check(
-				$this->componentData->dashboard
-			)
-			&& strpos((string) $this->componentData->dashboard, '_') !== false)
+		if (CFactory::_('Component')->get('dashboard_type', 0) == 2
+			&& ($dashboard_ = CFactory::_('Component')->get('dashboard')) !== null
+			&& StringHelper::check($dashboard_)
+			&& strpos((string) $dashboard_, '_') !== false)
 		{
 			// set the default view
-			$getter = explode('_', (string) $this->componentData->dashboard);
+			$getter = explode('_', (string) $dashboard_);
 			if (count((array) $getter) == 2 && is_numeric($getter[1]))
 			{
 				// the pointers
@@ -1777,14 +1799,12 @@ class Structure extends Get
 						$targets[$t], 'w'
 					);
 					// set the dynamic dash
-					if (isset($this->componentData->{$targets[$t]})
-						&& ArrayHelper::check(
-							$this->componentData->{$targets[$t]}
-						))
+					if (($target_ = CFactory::_('Component')->get($targets[$t])) !== null
+						&& ArrayHelper::check($target_))
 					{
 						// search the target views
 						$dashboard = (array) array_filter(
-							$this->componentData->{$targets[$t]},
+							$target_,
 							function ($view) use ($id, $t, $types) {
 								if (isset($view[$types[$t]])
 									&& $id == $view[$types[$t]])
@@ -1821,7 +1841,7 @@ class Structure extends Get
 							$this->app->enqueueMessage(
 								JText::sprintf(
 									'The <b>%s</b> (<b>%s</b>) is not available in your component! Please insure to only used %s, for a dynamic dashboard, that are still linked to your component.',
-									$names[$t], $this->componentData->dashboard,
+									$names[$t], $dashboard_,
 									$type_names
 								), 'Error'
 							);
@@ -1836,7 +1856,7 @@ class Structure extends Get
 						$this->app->enqueueMessage(
 							JText::sprintf(
 								'The <b>%s</b> (<b>%s</b>) is not available in your component! Please insure to only used %s, for a dynamic dashboard, that are still linked to your component.',
-								$names[$t], $this->componentData->dashboard,
+								$names[$t], $dashboard_,
 								$type_names
 							), 'Error'
 						);
@@ -1851,7 +1871,7 @@ class Structure extends Get
 					$this->app->enqueueMessage(
 						JText::sprintf(
 							'The <b>%s</b> value for the dynamic dashboard is invalid.',
-							$this->componentData->dashboard
+							$dashboard_
 						), 'Error'
 					);
 				}
@@ -1865,7 +1885,7 @@ class Structure extends Get
 				$this->app->enqueueMessage(
 					JText::sprintf(
 						'The <b>%s</b> value for the dynamic dashboard is invalid.',
-						$this->componentData->dashboard
+						$dashboard_
 					), 'Error'
 				);
 			}
@@ -1873,8 +1893,8 @@ class Structure extends Get
 			if (StringHelper::check($this->dynamicDashboard))
 			{
 				// dynamic dashboard is used
-				$this->componentData->dashboard_tab         = '';
-				$this->componentData->php_dashboard_methods = '';
+				CFactory::_('Component')->remove('dashboard_tab');
+				CFactory::_('Component')->remove('php_dashboard_methods');
 			}
 		}
 	}
@@ -1907,7 +1927,7 @@ class Structure extends Get
 			{
 				Folder::create($this->componentPath);
 				// count the folder created
-				$this->folderCount++;
+				CFactory::_('Counter')->folder++;
 				$this->indexHTML('');
 			}
 			// now build all folders needed for this component
@@ -2072,7 +2092,7 @@ class Structure extends Get
 			$this->notNew[] = 'LICENSE.txt';
 			// do license check
 			$LICENSE        = false;
-			$licenseChecker = strtolower((string) $this->componentData->license);
+			$licenseChecker = strtolower((string) CFactory::_('Component')->get('license', ''));
 			if (strpos($licenseChecker, 'gnu') !== false
 				&& strpos(
 					$licenseChecker, '2'
@@ -2088,7 +2108,7 @@ class Structure extends Get
 			// do README check
 			$README = false;
 			// add the README file if needed
-			if ($this->componentData->addreadme)
+			if (CFactory::_('Component')->get('addreadme', false))
 			{
 				$README = true;
 			}
@@ -2188,7 +2208,7 @@ class Structure extends Get
 						// move the file to its place
 						File::copy($currentFullPath, $packageFullPath);
 						// count the file created
-						$this->fileCount++;
+						CFactory::_('Counter')->file++;
 						// store the new files
 						if (!in_array($ftem, $this->notNew))
 						{
@@ -2241,7 +2261,7 @@ class Structure extends Get
 							$currentFullPath, $packageFullPath, '', true
 						);
 						// count the folder created
-						$this->folderCount++;
+						CFactory::_('Counter')->folder++;
 					}
 				}
 				// only add if no target found since those belong to plugins and modules
@@ -2322,19 +2342,16 @@ class Structure extends Get
 				&& ObjectHelper::check(
 					$this->joomlaVersionData->move->dynamic
 				))
-			&& (isset($this->componentData->admin_views)
-				&& ArrayHelper::check(
-					$this->componentData->admin_views
-				)))
+			&& CFactory::_('Component')->isArray('admin_views'))
 		{
 			if (!StringHelper::check($this->dynamicDashboard))
 			{
 				// setup dashboard
-				$target = array('admin' => $this->componentData->name_code);
+				$target = array('admin' => CFactory::_('Component')->get('name_code'));
 				$this->buildDynamique($target, 'dashboard');
 			}
 			// now the rest of the views
-			foreach ($this->componentData->admin_views as $nr => $view)
+			foreach (CFactory::_('Component')->get('admin_views') as $nr => $view)
 			{
 				if (ObjectHelper::check($view['settings']))
 				{
@@ -2389,13 +2406,10 @@ class Structure extends Get
 				&& ObjectHelper::check(
 					$this->joomlaVersionData->move->dynamic
 				))
-			&& (isset($this->componentData->site_views)
-				&& ArrayHelper::check(
-					$this->componentData->site_views
-				)))
+			&& CFactory::_('Component')->isArray('site_views'))
 		{
 
-			foreach ($this->componentData->site_views as $nr => $view)
+			foreach (CFactory::_('Component')->get('site_views') as $nr => $view)
 			{
 				$created  = $this->getCreatedDate($view);
 				$modified = $this->getLastModifiedDate($view);
@@ -2424,12 +2438,9 @@ class Structure extends Get
 				&& ObjectHelper::check(
 					$this->joomlaVersionData->move->dynamic
 				))
-			&& (isset($this->componentData->custom_admin_views)
-				&& ArrayHelper::check(
-					$this->componentData->custom_admin_views
-				)))
+			&& CFactory::_('Component')->isArray('custom_admin_views'))
 		{
-			foreach ($this->componentData->custom_admin_views as $nr => $view)
+			foreach (CFactory::_('Component')->get('custom_admin_views') as $nr => $view)
 			{
 				$created  = $this->getCreatedDate($view);
 				$modified = $this->getLastModifiedDate($view);
@@ -2789,7 +2800,7 @@ class Structure extends Get
 							Folder::create($path);
 							$this->indexHTML($zipPath);
 							// count the folder created
-							$this->folderCount++;
+							CFactory::_('Counter')->folder++;
 						}
 						// do the file renaming
 						if ($details->rename)
@@ -2824,7 +2835,7 @@ class Structure extends Get
 								$path . '/' . $new
 							);
 							// count the file created
-							$this->fileCount++;
+							CFactory::_('Counter')->file++;
 						}
 						// setup array for new file
 						$newFIle = array('path' => $path . '/' . $new,
@@ -2878,37 +2889,35 @@ class Structure extends Get
 		$footable = CFactory::_('Config')->get('footable', false);
 		$add_eximport = CFactory::_('Config')->get('add_eximport', false);
 		// add custom folders
-		if ((isset($this->componentData->folders)
-				&& ArrayHelper::check(
-					$this->componentData->folders
-				)) || $add_eximport || $uikit || $footable)
+		if (CFactory::_('Component')->isArray('folders')
+			|| $add_eximport || $uikit || $footable)
 		{
 			if ($add_eximport)
 			{
 				// move the import view folder in place
-				$this->componentData->folders[] = array('folder' => 'importViews',
+				CFactory::_('Component')->appendArray('folders', array('folder' => 'importViews',
 				                                        'path'   => 'admin/views/import',
-				                                        'rename' => 1);
+				                                        'rename' => 1));
 				// move the phpspreadsheet Folder (TODO we must move this to a library package)
-				$this->componentData->folders[] = array('folderpath' => 'JPATH_LIBRARIES/phpspreadsheet/vendor',
+				CFactory::_('Component')->appendArray('folders', array('folderpath' => 'JPATH_LIBRARIES/phpspreadsheet/vendor',
 					                                    'path'       => '/libraries/phpspreadsheet/',
-					                                    'rename'     => 0);
+					                                    'rename'     => 0));
 			}
 
 			// set uikit
 			if (2 == $uikit || 1 == $uikit)
 			{
 				// move the UIKIT Folder into place
-				$this->componentData->folders[] = array('folder' => 'uikit-v2',
+				CFactory::_('Component')->appendArray('folders', array('folder' => 'uikit-v2',
 				                                        'path'   => 'media',
-				                                        'rename' => 0);
+				                                        'rename' => 0));
 			}
 			if (2 == $uikit || 3 == $uikit)
 			{
 				// move the UIKIT-3 Folder into place
-				$this->componentData->folders[] = array('folder' => 'uikit-v3',
+				CFactory::_('Component')->appendArray('folders', array('folder' => 'uikit-v3',
 				                                        'path'   => 'media',
-				                                        'rename' => 0);
+				                                        'rename' => 0));
 			}
 
 			// set footable
@@ -2916,21 +2925,21 @@ class Structure extends Get
 			if ($footable && 2 == $footable_version)
 			{
 				// move the footable folder into place
-				$this->componentData->folders[] = array('folder' => 'footable-v2',
+				CFactory::_('Component')->appendArray('folders', array('folder' => 'footable-v2',
 				                                        'path'   => 'media',
-				                                        'rename' => 0);
+				                                        'rename' => 0));
 			}
 			elseif ($footable && 3 == $footable_version)
 			{
 				// move the footable folder into place
-				$this->componentData->folders[] = array('folder' => 'footable-v3',
+				CFactory::_('Component')->appendArray('folders', array('folder' => 'footable-v3',
 				                                        'path'   => 'media',
-				                                        'rename' => 0);
+				                                        'rename' => 0));
 			}
 
 			// pointer tracker
 			$pointer_tracker = 'h';
-			foreach ($this->componentData->folders as $custom)
+			foreach (CFactory::_('Component')->get('folders') as $custom)
 			{
 				// check type of target type
 				$_target_type = 'c0mp0n3nt';
@@ -3026,31 +3035,29 @@ class Structure extends Get
 						        'type' => $custom['target_type']);
 				}
 			}
-			unset($this->componentData->folders);
+			CFactory::_('Component')->remove('folders');
 			unset($custom);
 		}
 		// get the google chart switch
 		$google_chart = CFactory::_('Config')->get('google_chart', false);
 		// add custom files
-		if ((isset($this->componentData->files)
-				&& ArrayHelper::check(
-					$this->componentData->files
-				)) || $google_chart)
+		if (CFactory::_('Component')->isArray('files')
+				|| $google_chart)
 		{
 			if ($google_chart)
 			{
 				// move the google chart files
-				$this->componentData->files[] = array('file'   => 'google.jsapi.js',
+				CFactory::_('Component')->appendArray('files', array('file'   => 'google.jsapi.js',
 				                                      'path'   => 'media/js',
-				                                      'rename' => 0);
-				$this->componentData->files[] = array('file'   => 'chartbuilder.php',
+				                                      'rename' => 0));
+				CFactory::_('Component')->appendArray('files', array('file'   => 'chartbuilder.php',
 				                                      'path'   => 'admin/helpers',
-				                                      'rename' => 0);
+				                                      'rename' => 0));
 			}
 
 			// pointer tracker
 			$pointer_tracker = 'h';
-			foreach ($this->componentData->files as $custom)
+			foreach (CFactory::_('Component')->get('files') as $custom)
 			{
 				// check type of target type
 				$_target_type = 'c0mp0n3nt';
@@ -3158,7 +3165,7 @@ class Structure extends Get
 					$this->updateFileContent[$key_pointer] = true;
 				}
 			}
-			unset($this->componentData->files);
+			CFactory::_('Component')->remove('files');
 			unset($custom);
 		}
 
@@ -3211,7 +3218,7 @@ class Structure extends Get
 				$root . $path . '/index.html'
 			);
 			// count the file created
-			$this->fileCount++;
+			CFactory::_('Counter')->file++;
 		}
 		else
 		{
@@ -3219,7 +3226,7 @@ class Structure extends Get
 				$this->templatePath . '/index.html', $root . '/index.html'
 			);
 			// count the file created
-			$this->fileCount++;
+			CFactory::_('Counter')->file++;
 		}
 	}
 

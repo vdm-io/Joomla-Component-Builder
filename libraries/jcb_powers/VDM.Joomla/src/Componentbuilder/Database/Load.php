@@ -326,9 +326,10 @@ class Load extends Database implements LoadInterface
 							$query->where($this->db->quoteName($key) . ' ' .
 								$value['operator'] . ' (' .
 									implode(',',
-										array_map(function ($val) {
-											return $this->quote($val);
-										}, $value['value'])
+										array_map(
+											fn($val) => $this->quote($val),
+											$value['value']
+										)
 									)
 								. ')'
 							);

@@ -158,7 +158,7 @@ class Paths
 				if (($path = $this->getModulePath($module_id)) !== false)
 				{
 					// set the path
-					$local_paths['module_' . str_replace('/', '_', $path)] = $path;
+					$local_paths['module_' . str_replace('/', '_', (string) $path)] = $path;
 				}
 			}
 		}
@@ -172,7 +172,7 @@ class Paths
 				if (($path = $this->getPluginPath($plugin_id)) !== false)
 				{
 					// set the path
-					$local_paths['plugin_' . str_replace('/', '_', $path)] = JPATH_ROOT . '/plugins/' . $path;
+					$local_paths['plugin_' . str_replace('/', '_', (string) $path)] = JPATH_ROOT . '/plugins/' . $path;
 				}
 			}
 		}
@@ -207,7 +207,8 @@ class Paths
 		{
 			$addjoomla_modules = (JsonHelper::check(
 				$addjoomla_modules
-			)) ? json_decode($addjoomla_modules, true) : null;
+			)) ? json_decode((string) $addjoomla_modules, true) : null;
+
 			if (ArrayHelper::check($addjoomla_modules))
 			{
 				$joomla_modules = array_filter(
@@ -226,9 +227,7 @@ class Paths
 				if (ArrayHelper::check($joomla_modules))
 				{
 					return array_map(
-						function ($array) {
-							return (int) $array['module'];
-						}, $joomla_modules
+						fn($array) => (int) $array['module'], $joomla_modules
 					);
 				}
 			}
@@ -283,7 +282,7 @@ class Paths
 					$module->name
 				);
 				// set module folder name
-				$module->folder_name = 'mod_' . strtolower($module->code_name);
+				$module->folder_name = 'mod_' . strtolower((string) $module->code_name);
 
 				// set the lang key
 				$this->extractor->langKeys[strtoupper($module->folder_name)] = 
@@ -322,7 +321,8 @@ class Paths
 		{
 			$addjoomla_plugins = (JsonHelper::check(
 				$addjoomla_plugins
-			)) ? json_decode($addjoomla_plugins, true) : null;
+			)) ? json_decode((string) $addjoomla_plugins, true) : null;
+
 			if (ArrayHelper::check($addjoomla_plugins))
 			{
 				$joomla_plugins = array_filter(
@@ -341,9 +341,7 @@ class Paths
 				if (ArrayHelper::check($joomla_plugins))
 				{
 					return array_map(
-						function ($array) {
-							return (int) $array['plugin'];
-						}, $joomla_plugins
+						fn($array) => (int) $array['plugin'], $joomla_plugins
 					);
 				}
 			}
@@ -408,9 +406,9 @@ class Paths
 				);
 
 				// set plugin folder name
-				$plugin->group = strtolower($plugin->group);
+				$plugin->group = strtolower((string) $plugin->group);
 				// set plugin file name
-				$plugin->file_name = strtolower($plugin->code_name);
+				$plugin->file_name = strtolower((string) $plugin->code_name);
 
 				// set the lang key
 				$this->extractor->langKeys['PLG_' . strtoupper(

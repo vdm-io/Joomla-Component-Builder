@@ -174,7 +174,7 @@ class Css extends Minify
         $matches = array();
         foreach ($importRegexes as $importRegex) {
             if (preg_match_all($importRegex, $content, $regexMatches, PREG_SET_ORDER)) {
-                $matches = array_merge($matches, $regexMatches);
+                $matches = [...$matches, ...$regexMatches];
             }
         }
 
@@ -390,7 +390,7 @@ class Css extends Minify
         $matches = array();
         foreach ($relativeRegexes as $relativeRegex) {
             if (preg_match_all($relativeRegex, $content, $regexMatches, PREG_SET_ORDER)) {
-                $matches = array_merge($matches, $regexMatches);
+                $matches = [...$matches, ...$regexMatches];
             }
         }
 
@@ -498,9 +498,7 @@ class Css extends Minify
 
         return preg_replace_callback(
             '/(?<=[: ])(' . implode('|', array_keys($colors)) . ')(?=[; }])/i',
-            function ($match) use ($colors) {
-                return $colors[strtoupper($match[0])];
-            },
+           fn($match) => $colors[strtoupper((string) $match[0])],
             $content
         );
     }
@@ -519,9 +517,7 @@ class Css extends Minify
             'bold' => 700,
         );
 
-        $callback = function ($match) use ($weights) {
-            return $match[1] . $weights[$match[2]];
-        };
+        $callback = fn($match) => $match[1] . $weights[$match[2]];
 
         return preg_replace_callback('/(font-weight\s*:\s*)(' . implode('|', array_keys($weights)) . ')(?=[;}])/', $callback, $content);
     }
@@ -662,7 +658,7 @@ class Css extends Minify
         $minifier = $this;
         $callback = function ($match) use ($minifier, $pattern, &$callback) {
             $function = $match[1];
-            $length = strlen($match[2]);
+            $length = strlen((string) $match[2]);
             $expr = '';
             $opened = 0;
 
@@ -710,7 +706,7 @@ class Css extends Minify
             '/(?<=^|[;}{])\s*(--[^:;{}"\'\s]+)\s*:([^;{}]+)/m',
             function ($match) use ($minifier) {
                 $placeholder = '--custom-' . count($minifier->extracted) . ':0';
-                $minifier->extracted[$placeholder] = $match[1] . ':' . trim($match[2]);
+                $minifier->extracted[$placeholder] = $match[1] . ':' . trim((string) $match[2]);
 
                 return $placeholder;
             }

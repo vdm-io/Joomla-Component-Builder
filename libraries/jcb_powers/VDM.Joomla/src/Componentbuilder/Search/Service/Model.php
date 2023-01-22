@@ -37,7 +37,6 @@ class Model implements ServiceProviderInterface
 	{
 		$container->alias(Load::class, 'Load.Model')
 			->share('Load.Model', [$this, 'getModelLoad'], true);
-
 		$container->alias(Insert::class, 'Insert.Model')
 			->share('Insert.Model', [$this, 'getModelInsert'], true);
 	}

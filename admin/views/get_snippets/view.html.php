@@ -92,7 +92,6 @@ class ComponentbuilderViewGet_snippets extends HtmlView
 		{
 			// Set the default uikit components in this view.
 			$uikitComp = array();
-			$uikitComp[] = 'UIkit.notify';
 			$uikitComp[] = 'data-uk-grid';
 		}
 

@@ -88,9 +88,10 @@ class CoreValidation implements CoreValidationInterface
 			}
 
 			// remove the Rule.php from the name
-			$this->rules = array_map( function ($name): string {
-				return str_replace(array('./','Rule.php'), '', $name);
-			}, $rules);
+			$this->rules = array_map(
+				fn($name): string => str_replace(array('./','Rule.php'), '', (string) $name),
+				$rules
+			);
 		}
 
 		// return rules if found
@@ -99,9 +100,10 @@ class CoreValidation implements CoreValidationInterface
 			// check if the names should be all lowercase
 			if ($lowercase)
 			{
-				return array_map( function($item): string {
-					return strtolower($item);
-				}, $this->rules);
+				return array_map(
+					fn($item): string => strtolower((string) $item),
+					$this->rules
+				);
 			}
 			return $this->rules;
 		}

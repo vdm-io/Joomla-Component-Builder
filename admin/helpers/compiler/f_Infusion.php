@@ -27,6 +27,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Minify;
 
 /**
  * Infusion class
+ * @deprecated 3.3
  */
 class Infusion extends Interpretation
 {
@@ -73,10 +74,7 @@ class Infusion extends Interpretation
 	 */
 	protected function buildFileContent()
 	{
-		if (isset($this->componentData->admin_views)
-			&& ArrayHelper::check(
-				$this->componentData->admin_views
-			))
+		if (CFactory::_('Component')->isArray('admin_views'))
 		{
 			// for plugin event TODO change event api signatures
 			$placeholders = CFactory::_('Placeholder')->active;
@@ -104,13 +102,14 @@ class Infusion extends Interpretation
 			CFactory::_('Content')->set('component', CFactory::_('Placeholder')->get('component'));
 
 			// COMPANYNAME
+			$companyname = CFactory::_('Component')->get('companyname');
 			CFactory::_('Content')->set('COMPANYNAME', trim(
-				(string) JFilterOutput::cleanText($this->componentData->companyname)
+				(string) JFilterOutput::cleanText($companyname)
 			));
 
 			// CREATIONDATE
 			CFactory::_('Content')->set('CREATIONDATE',
-				JFactory::getDate($this->componentData->created)->format(
+				JFactory::getDate(CFactory::_('Component')->get('created'))->format(
 				'jS F, Y'
 			));
 			CFactory::_('Content')->set('GLOBALCREATIONDATE',
@@ -122,24 +121,25 @@ class Infusion extends Interpretation
 				CFactory::_('Content')->get('BUILDDATE'));
 
 			// AUTHOR
+			$author = CFactory::_('Component')->get('author');
 			CFactory::_('Content')->set('AUTHOR', trim(
-				(string) JFilterOutput::cleanText($this->componentData->author)
+				(string) JFilterOutput::cleanText($author)
 			));
 
 			// AUTHOREMAIL
-			CFactory::_('Content')->set('AUTHOREMAIL', trim((string) $this->componentData->email));
+			CFactory::_('Content')->set('AUTHOREMAIL', trim((string) CFactory::_('Component')->get('email', '')));
 
 			// AUTHORWEBSITE
-			CFactory::_('Content')->set('AUTHORWEBSITE', trim((string) $this->componentData->website));
+			CFactory::_('Content')->set('AUTHORWEBSITE', trim((string) CFactory::_('Component')->get('website', '')));
 
 			// COPYRIGHT
-			CFactory::_('Content')->set('COPYRIGHT', trim((string) $this->componentData->copyright));
+			CFactory::_('Content')->set('COPYRIGHT', trim((string) CFactory::_('Component')->get('copyright', '')));
 
 			// LICENSE
-			CFactory::_('Content')->set('LICENSE', trim((string) $this->componentData->license));
+			CFactory::_('Content')->set('LICENSE', trim((string) CFactory::_('Component')->get('license', '')));
 
 			// VERSION
-			CFactory::_('Content')->set('VERSION', trim((string) $this->componentData->component_version));
+			CFactory::_('Content')->set('VERSION', trim((string) CFactory::_('Component')->get('component_version', '')));
 			// set the actual global version
 			CFactory::_('Content')->set('ACTUALVERSION', CFactory::_('Content')->get('VERSION'));
 
@@ -154,7 +154,7 @@ class Infusion extends Interpretation
 			if (isset($versionArray)
 				&& ArrayHelper::check(
 					$versionArray
-				) && $this->componentData->mvc_versiondate == 2)
+				) && CFactory::_('Component')->get('mvc_versiondate', 0) == 2)
 			{
 				CFactory::_('Content')->set('VERSION', $versionArray[0] . '.' . $versionArray[1] . '.x');
 			}
@@ -162,7 +162,7 @@ class Infusion extends Interpretation
 			elseif (isset($versionArray)
 				&& ArrayHelper::check(
 					$versionArray
-				) && $this->componentData->mvc_versiondate == 3)
+				) && CFactory::_('Component')->get('mvc_versiondate', 0) == 3)
 			{
 				CFactory::_('Content')->set('VERSION', $versionArray[0] . '.x.x');
 			}
@@ -175,20 +175,22 @@ class Infusion extends Interpretation
 			CFactory::_('Content')->set('XMLVERSION', $this->joomlaVersions[CFactory::_('Config')->joomla_version]['xml_version']);
 
 			// Component_name
-			CFactory::_('Content')->set('Component_name', JFilterOutput::cleanText($this->componentData->name));
+			$name = CFactory::_('Component')->get('name');
+			CFactory::_('Content')->set('Component_name', JFilterOutput::cleanText($name));
 
 			// SHORT_DISCRIPTION
+			$short_description = CFactory::_('Component')->get('short_description');
 			CFactory::_('Content')->set('SHORT_DESCRIPTION', trim(
 				(string) JFilterOutput::cleanText(
-					$this->componentData->short_description
+					$short_description
 				)
 			));
 
 			// DESCRIPTION
-			CFactory::_('Content')->set('DESCRIPTION', trim((string) $this->componentData->description));
+			CFactory::_('Content')->set('DESCRIPTION', trim((string) CFactory::_('Component')->get('description')));
 
 			// COMP_IMAGE_TYPE
-			CFactory::_('Content')->set('COMP_IMAGE_TYPE', $this->setComponentImageType($this->componentData->image));
+			CFactory::_('Content')->set('COMP_IMAGE_TYPE', $this->setComponentImageType(CFactory::_('Component')->get('image')));
 
 			// ACCESS_SECTIONS
 			CFactory::_('Content')->set('ACCESS_SECTIONS', $this->setAccessSections());
@@ -247,7 +249,7 @@ class Infusion extends Interpretation
 				CFactory::_('Content')->set('ADMIN_GLOBAL_EVENT_HELPER', '');
 			}
 			// now load the data for the global event if needed
-			if ($this->componentData->add_admin_event == 1)
+			if (CFactory::_('Component')->get('add_admin_event', 0) == 1)
 			{
 				// ADMIN_GLOBAL_EVENT
 				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT', PHP_EOL . PHP_EOL . '// Trigger the Global Admin Event');
@@ -272,7 +274,7 @@ class Infusion extends Interpretation
 			}
 
 			// now load the readme file if needed
-			if ($this->componentData->addreadme == 1)
+			if (CFactory::_('Component')->get('addreadme', 0) == 1)
 			{
 				CFactory::_('Content')->add('EXSTRA_ADMIN_FILES',
 					PHP_EOL . Indent::_(3)
@@ -282,7 +284,7 @@ class Infusion extends Interpretation
 			// HELPER_CREATEUSER
 			CFactory::_('Content')->add('HELPER_CREATEUSER',
 				$this->setCreateUserHelperMethod(
-				$this->componentData->creatuserhelper
+				CFactory::_('Component')->get('creatuserhelper')
 			));
 
 			// HELP
@@ -310,7 +312,7 @@ class Infusion extends Interpretation
 			$viewarray            = array();
 			$site_edit_view_array = array();
 			// start dynamic build
-			foreach ($this->componentData->admin_views as $view)
+			foreach (CFactory::_('Component')->get('admin_views') as $view)
 			{
 				// set the target
 				CFactory::_('Config')->build_target = 'admin';
@@ -1041,15 +1043,12 @@ class Infusion extends Interpretation
 			$this->setCustomViewLayouts();
 
 			// setup custom_admin_views and all needed stuff for the site
-			if (isset($this->componentData->custom_admin_views)
-				&& ArrayHelper::check(
-					$this->componentData->custom_admin_views
-				))
+			if (CFactory::_('Component')->isArray('custom_admin_views'))
 			{
 				CFactory::_('Config')->build_target = 'custom_admin';
 				CFactory::_('Config')->lang_target = 'admin';
 				// start dynamic build
-				foreach ($this->componentData->custom_admin_views as $view)
+				foreach (CFactory::_('Component')->get('custom_admin_views') as $view)
 				{
 					// for single views
 					CFactory::_('Content')->set_($view['settings']->code, 'SView', $view['settings']->Code);
@@ -1455,14 +1454,11 @@ class Infusion extends Interpretation
 			CFactory::_('Config')->lang_target = $keepLang;
 
 			// setup front-views and all needed stuff for the site
-			if (isset($this->componentData->site_views)
-				&& ArrayHelper::check(
-					$this->componentData->site_views
-				))
+			if (CFactory::_('Component')->isArray('site_views'))
 			{
 				CFactory::_('Config')->build_target = 'site';
 				// start dynamic build
-				foreach ($this->componentData->site_views as $view)
+				foreach (CFactory::_('Component')->get('site_views') as $view)
 				{
 					// for list views
 					CFactory::_('Content')->set_($view['settings']->code, 'SViews', $view['settings']->Code);
@@ -1725,7 +1721,7 @@ class Infusion extends Interpretation
 					CFactory::_('Content')->set('SITE_GLOBAL_EVENT_HELPER', '');
 				}
 				// now load the data for the global event if needed
-				if ($this->componentData->add_site_event == 1)
+				if (CFactory::_('Component')->get('add_site_event', 0) == 1)
 				{
 					CFactory::_('Content')->add('SITE_GLOBAL_EVENT', PHP_EOL . PHP_EOL . '// Trigger the Global Site Event');
 					CFactory::_('Content')->add('SITE_GLOBAL_EVENT',
@@ -1796,9 +1792,9 @@ class Infusion extends Interpretation
 			}
 
 			// README
-			if ($this->componentData->addreadme)
+			if (CFactory::_('Component')->get('addreadme'))
 			{
-				CFactory::_('Content')->set('README', $this->componentData->readme);
+				CFactory::_('Content')->set('README', CFactory::_('Component')->get('readme'));
 			}
 
 			// Infuse POWERS
@@ -1809,9 +1805,9 @@ class Infusion extends Interpretation
 			$_backup_lang       = CFactory::_('Config')->lang_target;
 			$_backup_langPrefix = CFactory::_('Config')->lang_prefix;
 			// infuse module data if set
-			if (ArrayHelper::check($this->joomlaModules))
+			if (CFactory::_('Joomlamodule.Data')->exists())
 			{
-				foreach ($this->joomlaModules as $module)
+				foreach (CFactory::_('Joomlamodule.Data')->get() as $module)
 				{
 					if (ObjectHelper::check($module))
 					{
@@ -1877,9 +1873,9 @@ class Infusion extends Interpretation
 				}
 			}
 			// infuse plugin data if set
-			if (ArrayHelper::check($this->joomlaPlugins))
+			if (CFactory::_('Joomlaplugin.Data')->exists())
 			{
-				foreach ($this->joomlaPlugins as $plugin)
+				foreach (CFactory::_('Joomlaplugin.Data')->get() as $plugin)
 				{
 					if (ObjectHelper::check($plugin))
 					{
@@ -1946,7 +1942,7 @@ class Infusion extends Interpretation
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterBuildFilesContent',
 				array(&$component_context, &$this->componentData,
-					&$fileContentStatic, &$this->fileContentDynamic,
+					&$fileContentStatic, &$fileContentDynamic,
 					&$placeholders, &$this->hhh)
 			);
 			unset($fileContentStatic);
@@ -2153,17 +2149,16 @@ class Infusion extends Interpretation
 						{
 							Folder::create($path);
 							// count the folder created
-							$this->folderCount++;
+							CFactory::_('Counter')->folder++;
 						}
 						// move the file to its place
 						File::copy($getPAth, $path . $file_name);
 						// count the file created
-						$this->fileCount++;
+						CFactory::_('Counter')->file++;
 						// add content to it
 						$lang = array_map(
-							function ($langstring, $placeholder) {
-								return $placeholder . '="' . $langstring . '"';
-							}, array_values($languageStrings),
+							fn($langstring, $placeholder) => $placeholder . '="' . $langstring . '"',
+							array_values($languageStrings),
 							array_keys($languageStrings)
 						);
 						// add to language file
@@ -2171,7 +2166,7 @@ class Infusion extends Interpretation
 							$path . $file_name, implode(PHP_EOL, $lang)
 						);
 						// set the line counter
-						$this->lineCount = $this->lineCount + count(
+						CFactory::_('Counter')->line += count(
 								(array) $lang
 							);
 						unset($lang);

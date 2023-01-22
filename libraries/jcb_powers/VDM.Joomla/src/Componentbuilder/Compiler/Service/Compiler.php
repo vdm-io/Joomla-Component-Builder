@@ -16,6 +16,7 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Compiler\Counter;
 
 
 /**
@@ -40,6 +41,9 @@ class Compiler implements ServiceProviderInterface
 
 		$container->alias(Registry::class, 'Registry')
 			->share('Registry', [$this, 'getRegistry'], true);
+
+		$container->alias(Counter::class, 'Counter')
+			->share('Counter', [$this, 'getCounter'], true);
 	}
 
 	/**
@@ -66,6 +70,19 @@ class Compiler implements ServiceProviderInterface
 	public function getRegistry(Container $container): Registry
 	{
 		return new Registry();
+	}
+
+	/**
+	 * Get the Compiler Counter
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Counter
+	 * @since 3.2.0
+	 */
+	public function getCounter(Container $container): Counter
+	{
+		return new Counter();
 	}
 
 }

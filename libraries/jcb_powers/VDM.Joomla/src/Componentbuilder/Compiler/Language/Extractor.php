@@ -104,9 +104,7 @@ class Extractor
 	{
 		// get targets to search for
 		$lang_string_targets = array_filter(
-			$this->config->lang_string_targets, function ($get) use ($content): bool {
-				return strpos($content, $get) !== false;
-			}
+			$this->config->lang_string_targets, fn($get): bool => strpos($content, (string) $get) !== false
 		);
 		// check if we should continue
 		if (ArrayHelper::check($lang_string_targets))

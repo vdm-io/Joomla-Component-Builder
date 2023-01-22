@@ -46,7 +46,7 @@ class Basic extends Engine implements SearchTypeInterface
 		parent::__construct($config);
 
 		// quote all regular expression characters
-		$searchValue = preg_quote($this->searchValue, '/');
+		$searchValue = preg_quote((string) $this->searchValue, '/');
 
 		$start = ''; $end = '';
 
@@ -54,9 +54,9 @@ class Basic extends Engine implements SearchTypeInterface
 		if ($this->wholeWord == 1)
 		{
 			// get first character of search string
-			$first = mb_substr($this->searchValue, 0, 1);
+			$first = mb_substr((string) $this->searchValue, 0, 1);
 			// get last character of search string
-			$last = mb_substr($this->searchValue, -1);
+			$last = mb_substr((string) $this->searchValue, -1);
 
 			// set the start boundary behavior
 			$start = '(\b)';
@@ -195,17 +195,10 @@ class Basic extends Engine implements SearchTypeInterface
 
 		$match = array_filter(
 			$match,
-			function ($found) {
-				return !empty($found);
-			}
+			fn($found) => !empty($found)
 		);
 
-		if (ArrayHelper::check($match))
-		{
-			return true;
-		}
-
-		return false;
+		return (bool) ArrayHelper::check($match);
 	}
 
 	/**
@@ -220,7 +213,7 @@ class Basic extends Engine implements SearchTypeInterface
 	{
 		if ($this->matchCase == 1)
 		{
-			if (strpos($value, $this->searchValue) !== false)
+			if (strpos($value, (string) $this->searchValue) !== false)
 			{
 				return trim(preg_replace(
 					$this->regexValue . 'm',
@@ -229,7 +222,7 @@ class Basic extends Engine implements SearchTypeInterface
 				));
 			}
 		}
-		elseif (stripos($value, $this->searchValue) !== false)
+		elseif (stripos($value, (string) $this->searchValue) !== false)
 		{
 			return trim(preg_replace(
 				$this->regexValue . 'm',
@@ -253,20 +246,20 @@ class Basic extends Engine implements SearchTypeInterface
 	{
 		if ($this->matchCase == 1)
 		{
-			if (strpos($value, $this->searchValue) !== false)
+			if (strpos($value, (string) $this->searchValue) !== false)
 			{
 				return preg_replace(
 					$this->regexValue . 'm',
-					$this->replaceValue,
+					(string) $this->replaceValue,
 					$value
 				);
 			}
 		}
-		elseif (stripos($value, $this->searchValue) !== false)
+		elseif (stripos($value, (string) $this->searchValue) !== false)
 		{
 			return preg_replace(
 				$this->regexValue . 'm',
-				$this->replaceValue,
+				(string) $this->replaceValue,
 				$value
 			);
 		}

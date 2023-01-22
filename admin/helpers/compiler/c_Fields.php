@@ -25,6 +25,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 
 /**
  * Compiler class
+ * @deprecated 3.3
  */
 class Fields extends Structure
 {
@@ -657,7 +658,7 @@ class Fields extends Structure
 			$fieldSet[] = Indent::_(3) . 'readonly="true"';
 			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if created is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['created']))
@@ -680,7 +681,7 @@ class Fields extends Structure
 			$fieldSet[] = Indent::_(3) . "filter=" . '"user_utc"';
 			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if created_by is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['created_by']))
@@ -700,7 +701,7 @@ class Fields extends Structure
 				. '_CREATED_BY_DESC"';
 			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if published is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['published']))
@@ -727,7 +728,7 @@ class Fields extends Structure
 			$fieldSet[] = Indent::_(4) . "JTRASHED</option>";
 			$fieldSet[] = Indent::_(2) . "</field>";
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if modified is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['modified']))
@@ -742,7 +743,7 @@ class Fields extends Structure
 			$fieldSet[] = Indent::_(3)
 				. 'size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />';
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if modified_by is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['modified_by']))
@@ -760,7 +761,7 @@ class Fields extends Structure
 			$fieldSet[] = Indent::_(3) . 'filter="unset"';
 			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// check if view has access
 		if (isset($this->accessBuilder[$nameSingleCode])
@@ -783,7 +784,7 @@ class Fields extends Structure
 			$fieldSet[] = Indent::_(3) . 'required="false"';
 			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if ordering is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['ordering']))
@@ -806,7 +807,7 @@ class Fields extends Structure
 			$fieldSet[] = Indent::_(3) . 'required="false"';
 			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if version is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['version']))
@@ -826,7 +827,7 @@ class Fields extends Structure
 			$fieldSet[] = Indent::_(3) . 'filter="unset"';
 			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$nameSingleCode])
@@ -850,7 +851,7 @@ class Fields extends Structure
 				$fieldSet[] = Indent::_(3) . 'cols="30"';
 				$fieldSet[] = Indent::_(2) . "/>";
 				// count the static field created
-				$this->fieldCount++;
+				CFactory::_('Counter')->field++;
 			}
 			// metadesc
 			if (!isset($this->fieldsNames[$nameSingleCode]['metadesc']))
@@ -868,7 +869,7 @@ class Fields extends Structure
 				$fieldSet[] = Indent::_(3) . 'cols="30"';
 				$fieldSet[] = Indent::_(2) . "/>";
 				// count the static field created
-				$this->fieldCount++;
+				CFactory::_('Counter')->field++;
 			}
 		}
 		// fix the permissions field "title" issue gh-629
@@ -895,7 +896,7 @@ class Fields extends Structure
 				. $nameSingleCode . '"';
 			$fieldSet[] = Indent::_(2) . "/>";
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 			// setup needed field values for layout
 			$field_array               = array();
 			$field_array['order_edit'] = 0;
@@ -956,7 +957,7 @@ class Fields extends Structure
 						. '<option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>';
 					$fieldSet[] = Indent::_(3) . '</field>';
 					// count the static field created
-					$this->fieldCount++;
+					CFactory::_('Counter')->field++;
 				}
 				// author
 				if (!isset($this->fieldsNames[$nameSingleCode]['author']))
@@ -971,7 +972,7 @@ class Fields extends Structure
 					$fieldSet[] = Indent::_(4) . 'size="20"';
 					$fieldSet[] = Indent::_(3) . "/>";
 					// count the static field created
-					$this->fieldCount++;
+					CFactory::_('Counter')->field++;
 				}
 				// rights
 				if (!isset($this->fieldsNames[$nameSingleCode]['rights']))
@@ -986,7 +987,7 @@ class Fields extends Structure
 					$fieldSet[] = Indent::_(4) . 'cols="30" rows="2"';
 					$fieldSet[] = Indent::_(3) . "/>";
 					// count the static field created
-					$this->fieldCount++;
+					CFactory::_('Counter')->field++;
 				}
 				$fieldSet[] = Indent::_(2) . "</fieldset>";
 				$fieldSet[] = Indent::_(1) . "</fields>";
@@ -1083,7 +1084,7 @@ class Fields extends Structure
 			$fieldXML   = $fieldSetXML->addChild('field');
 			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if created is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['created']))
@@ -1105,7 +1106,7 @@ class Fields extends Structure
 			$fieldXML = $fieldSetXML->addChild('field');
 			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if created_by is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['created_by']))
@@ -1124,7 +1125,7 @@ class Fields extends Structure
 			$fieldXML = $fieldSetXML->addChild('field');
 			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if published is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['published']))
@@ -1142,7 +1143,7 @@ class Fields extends Structure
 			$fieldXML = $fieldSetXML->addChild('field');
 			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 			foreach (
 				array('JPUBLISHED' => 1, 'JUNPUBLISHED' => 0, 'JARCHIVED' => 2,
 				      'JTRASHED'   => -2) as $text => $value
@@ -1174,7 +1175,7 @@ class Fields extends Structure
 			$fieldXML = $fieldSetXML->addChild('field');
 			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if modified_by is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['modified_by']))
@@ -1195,7 +1196,7 @@ class Fields extends Structure
 			$fieldXML = $fieldSetXML->addChild('field');
 			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// check if view has access
 		if (isset($this->accessBuilder[$nameSingleCode])
@@ -1220,7 +1221,7 @@ class Fields extends Structure
 			$fieldXML = $fieldSetXML->addChild('field');
 			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if ordering is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['ordering']))
@@ -1243,7 +1244,7 @@ class Fields extends Structure
 			$fieldXML = $fieldSetXML->addChild('field');
 			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// if version is not set
 		if (!isset($this->fieldsNames[$nameSingleCode]['version']))
@@ -1265,7 +1266,7 @@ class Fields extends Structure
 			$fieldXML = $fieldSetXML->addChild('field');
 			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 		}
 		// check if metadata is added to this view
 		if (isset($this->metadataBuilder[$nameSingleCode])
@@ -1293,7 +1294,7 @@ class Fields extends Structure
 					$fieldXML, $attributes
 				);
 				// count the static field created
-				$this->fieldCount++;
+				CFactory::_('Counter')->field++;
 			}
 			// metadesc
 			if (!isset($this->fieldsNames[$nameSingleCode]['metadesc']))
@@ -1310,7 +1311,7 @@ class Fields extends Structure
 					$fieldXML, $attributes
 				);
 				// count the static field created
-				$this->fieldCount++;
+				CFactory::_('Counter')->field++;
 			}
 		}
 		// fix the permissions field "title" issue gh-629
@@ -1345,7 +1346,7 @@ class Fields extends Structure
 			$fieldXML = $fieldSetXML->addChild('field');
 			ComponentbuilderHelper::xmlAddAttributes($fieldXML, $attributes);
 			// count the static field created
-			$this->fieldCount++;
+			CFactory::_('Counter')->field++;
 			// setup needed field values for layout
 			$field_array               = array();
 			$field_array['order_edit'] = 0;
@@ -1408,7 +1409,7 @@ class Fields extends Structure
 						$robots, $attributes
 					);
 					// count the static field created
-					$this->fieldCount++;
+					CFactory::_('Counter')->field++;
 					$options = array(
 						'JGLOBAL_USE_GLOBAL'       => '',
 						'JGLOBAL_INDEX_FOLLOW'     => 'index, follow',
@@ -1442,7 +1443,7 @@ class Fields extends Structure
 						$author, $attributes
 					);
 					// count the static field created
-					$this->fieldCount++;
+					CFactory::_('Counter')->field++;
 				}
 				// rights
 				if (!isset($this->fieldsNames[$nameSingleCode]['rights']))
@@ -1466,7 +1467,7 @@ class Fields extends Structure
 						$rights, $attributes
 					);
 					// count the static field created
-					$this->fieldCount++;
+					CFactory::_('Counter')->field++;
 				}
 			}
 		}
@@ -1890,7 +1891,7 @@ class Fields extends Structure
 		&$optionArray, $custom = null, $taber = ''
 	) {
 		// count the dynamic fields created
-		$this->fieldCount++;
+		CFactory::_('Counter')->field++;
 		// check what type of field builder to use
 		if (CFactory::_('Config')->get('field_builder_type', 2) == 1)
 		{
@@ -4780,13 +4781,8 @@ class Fields extends Structure
 			// load to list builder
 			if ($listSwitch)
 			{
-				// check if it does not exists
-				if (!CFactory::_('Registry')->exists('builder.list.' . $nameListCode))
-				{
-					CFactory::_('Registry')->set('builder.list.' . $nameListCode, []);
-				}
 				// append values
-				CFactory::_('Registry')->append('builder.list.' . $nameListCode, [
+				CFactory::_('Registry')->appendArray('builder.list.' . $nameListCode, [
 					'id'       => (int) $field['field'],
 					'type'     => $typeName,
 					'code'     => $name,

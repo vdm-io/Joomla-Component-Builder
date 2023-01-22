@@ -105,7 +105,7 @@ class Placeholder implements PlaceholderInterface
 			// open all the code
 			foreach ($bucket as $key => &$code)
 			{
-				$code = base64_decode($code);
+				$code = base64_decode((string) $code);
 			}
 		}
 
@@ -126,7 +126,7 @@ class Placeholder implements PlaceholderInterface
 			)) !== false
 			&& JsonHelper::check($_placeholders))
 		{
-			$_placeholders = json_decode($_placeholders, true);
+			$_placeholders = json_decode((string) $_placeholders, true);
 			if (ArrayHelper::check($_placeholders))
 			{
 				foreach ($_placeholders as $row)

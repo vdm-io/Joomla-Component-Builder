@@ -91,7 +91,7 @@ abstract class MathHelper
 			// loop the values and run bcadd
 			foreach($array as $val)
 			{
-				$value = bcadd($value, $val, $scale);
+				$value = bcadd($value, (string) $val, $scale);
 			}
 			return $value;
 		}

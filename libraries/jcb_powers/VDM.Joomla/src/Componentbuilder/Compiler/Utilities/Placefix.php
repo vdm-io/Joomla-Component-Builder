@@ -25,7 +25,7 @@ abstract class Placefix
 	 * @var     string
 	 * @since 3.2.0
 	 **/
-	private static $hhh = '#' . '#' . '#';
+	private static string $hhh = '#' . '#' . '#';
 
 	/**
 	 * The open prefix
@@ -33,7 +33,7 @@ abstract class Placefix
 	 * @var     string
 	 * @since 3.2.0
 	 **/
-	private static $bbb = '[' . '[' . '[';
+	private static string $bbb = '[' . '[' . '[';
 
 	/**
 	 * The close suffix
@@ -41,7 +41,7 @@ abstract class Placefix
 	 * @var     string
 	 * @since 3.2.0
 	 **/
-	private static $ddd = ']' . ']' . ']';
+	private static string $ddd = ']' . ']' . ']';
 
 	/**
 	 * Get a prefix and suffix added to given string

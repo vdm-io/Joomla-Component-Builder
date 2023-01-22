@@ -45,5 +45,106 @@ abstract class BaseRegistry extends JoomlaRegistry implements \JsonSerializable,
 		return $data->getIterator();
 	}
 
+	/**
+	 * Append value to a path in registry of an array
+	 *
+	 * @param  string  $path   Parent registry Path (e.g. joomla.content.showauthor)
+	 * @param  mixed   $value  Value of entry
+	 *
+	 * @return  mixed  The value of the that has been set.
+	 *
+	 * @since 3.2.0
+	 */
+	public function appendArray(string $path, $value)
+	{
+		// check if it does not exist
+		if (!$this->exists($path))
+		{
+			$this->set($path, []);
+		}
+
+		return $this->append($path, $value);
+	}
+
+	/**
+	 * Check if a registry path exists and is an array
+	 *
+	 * @param  string  $path  Registry path (e.g. joomla.content.showauthor)
+	 *
+	 * @return  boolean
+	 *
+	 * @since 3.2.0
+	 */
+	public function isArray(string $path): bool
+	{
+		// Return default value if path is empty
+		if (empty($path)) {
+			return false;
+		}
+
+		// get the value
+		if (($node = $this->get($path)) !== null
+			&& is_array($node)
+			&& $node !== [])
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if a registry path exists and is a string
+	 *
+	 * @param  string  $path  Registry path (e.g. joomla.content.showauthor)
+	 *
+	 * @return  boolean
+	 *
+	 * @since 3.2.0
+	 */
+	public function isString(string $path): bool
+	{
+		// Return default value if path is empty
+		if (empty($path)) {
+			return false;
+		}
+
+		// get the value
+		if (($node = $this->get($path)) !== null
+			&& is_string($node)
+			&& strlen((string) $node) > 0)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if a registry path exists and is numeric
+	 *
+	 * @param  string  $path  Registry path (e.g. joomla.content.showauthor)
+	 *
+	 * @return  boolean
+	 *
+	 * @since 3.2.0
+	 */
+	public function isNumeric(string $path): bool
+	{
+		// Return default value if path is empty
+		if (empty($path)) {
+			return false;
+		}
+
+		// get the value
+		if (($node = $this->get($path)) !== null
+			&& is_numeric($node))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 }
 

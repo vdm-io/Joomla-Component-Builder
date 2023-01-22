@@ -31,6 +31,7 @@ ComponentbuilderHelper::autoLoader();
 
 /**
  * Compiler class
+ * @deprecated 3.3
  */
 class Compiler extends Infusion
 {
@@ -79,7 +80,8 @@ class Compiler extends Infusion
 	{
 		// to check the compiler speed
 		$this->time_start = microtime(true);
-		// first we run the perent constructors
+		CFactory::_('Counter')->start();
+		// first we run the parent constructors
 		if (parent::__construct())
 		{
 			// set temp directory
@@ -271,8 +273,6 @@ class Compiler extends Infusion
 			}
 			// move the update server into place
 			$this->setUpdateServer();
-			// set the global counters
-			$this->setCountingStuff();
 			// build read me
 			$this->buildReadMe();
 			// set local repos
@@ -363,6 +363,7 @@ class Compiler extends Infusion
 			// end the timer here
 			$this->time_end        = microtime(true);
 			$this->secondsCompiled = $this->time_end - $this->time_start;
+			CFactory::_('Counter')->end();
 
 			// completed the compilation
 			return true;
@@ -424,9 +425,9 @@ class Compiler extends Infusion
 			// free up some memory
 			unset($this->newFiles['dynamic']);
 			// do modules if found
-			if (ArrayHelper::check($this->joomlaModules))
+			if (CFactory::_('Joomlamodule.Data')->exists())
 			{
-				foreach ($this->joomlaModules as $module)
+				foreach (CFactory::_('Joomlamodule.Data')->get() as $module)
 				{
 					if (ObjectHelper::check($module)
 						&& isset($this->newFiles[$module->key])
@@ -505,9 +506,9 @@ class Compiler extends Infusion
 				}
 			}
 			// do plugins if found
-			if (ArrayHelper::check($this->joomlaPlugins))
+			if (CFactory::_('Joomlaplugin.Data')->exists())
 			{
-				foreach ($this->joomlaPlugins as $plugin)
+				foreach (CFactory::_('Joomlaplugin.Data')->get() as $plugin)
 				{
 					if (ObjectHelper::check($plugin)
 						&& isset($this->newFiles[$plugin->key])
@@ -682,7 +683,7 @@ class Compiler extends Infusion
 		// add answer back to file
 		$this->writeFile($path, $answer);
 		// count the file lines
-		$this->lineCount = $this->lineCount + substr_count((string) $answer, PHP_EOL);
+		CFactory::_('Counter')->line += substr_count((string) $answer, PHP_EOL);
 	}
 
 	/**
@@ -694,8 +695,7 @@ class Compiler extends Infusion
 	protected function setUpdateServer()
 	{
 		// move the component update server to host
-		if ($this->componentData->add_update_server == 1
-			&& $this->componentData->update_server_target == 1
+		if (CFactory::_('Component')->get('add_update_server', 0) == 1
 			&& isset($this->updateServerFileName)
 			&& $this->dynamicIntegration)
 		{
@@ -703,23 +703,23 @@ class Compiler extends Infusion
 				. $this->updateServerFileName . '.xml';
 			// make sure we have the correct file
 			if (File::exists($update_server_xml_path)
-				&& isset($this->componentData->update_server))
+				&& ($update_server = CFactory::_('Component')->get('update_server')) !== null)
 			{
 				// move to server
 				ComponentbuilderHelper::moveToServer(
 					$update_server_xml_path,
 					$this->updateServerFileName . '.xml',
-					(int) $this->componentData->update_server,
-					$this->componentData->update_server_protocol
+					(int) $update_server,
+					CFactory::_('Component')->get('update_server_protocol')
 				);
 				// remove the local file
 				File::delete($update_server_xml_path);
 			}
 		}
 		// move the modules update server to host
-		if (ArrayHelper::check($this->joomlaModules))
+		if (CFactory::_('Joomlamodule.Data')->exists())
 		{
-			foreach ($this->joomlaModules as $module)
+			foreach (CFactory::_('Joomlamodule.Data')->get() as $module)
 			{
 				if (ObjectHelper::check($module)
 					&& isset($module->add_update_server)
@@ -750,9 +750,9 @@ class Compiler extends Infusion
 			}
 		}
 		// move the plugins update server to host
-		if (ArrayHelper::check($this->joomlaPlugins))
+		if (CFactory::_('Joomlaplugin.Data')->exists())
 		{
-			foreach ($this->joomlaPlugins as $plugin)
+			foreach (CFactory::_('Joomlaplugin.Data')->get() as $plugin)
 			{
 				if (ObjectHelper::check($plugin)
 					&& isset($plugin->add_update_server)
@@ -791,7 +791,7 @@ class Compiler extends Infusion
 			&& ArrayHelper::check(
 				$data['config']
 			)
-			&& $this->componentData->mvc_versiondate == 1)
+			&& CFactory::_('Component')->get('mvc_versiondate', 0) == 1)
 		{
 			foreach ($data['config'] as $key => $value)
 			{
@@ -820,40 +820,23 @@ class Compiler extends Infusion
 		CFactory::_('Content')->set('VERSION', CFactory::_('Content')->get('GLOBALVERSION'));
 	}
 
-	// set all global numbers
+	/**
+	 * Set all global numbers
+	 *
+	 * @return  void
+	 * @deprecated 3.3
+	 */
 	protected function setCountingStuff()
 	{
-		// what is the size in terms of an A4 book
-		$this->pageCount = round($this->lineCount / 56);
-		// setup the unrealistic numbers
-		$this->folderSeconds = $this->folderCount * 5;
-		$this->fileSeconds   = $this->fileCount * 5;
-		$this->lineSeconds   = $this->lineCount * 10;
-		$this->seconds       = $this->folderSeconds + $this->fileSeconds
-			+ $this->lineSeconds;
-		$this->totalHours    = round($this->seconds / 3600);
-		$this->totalDays     = round($this->totalHours / 8);
-		// setup the more realistic numbers
-		$this->secondsDebugging = $this->seconds / 4;
-		$this->secondsPlanning  = $this->seconds / 7;
-		$this->secondsMapping   = $this->seconds / 10;
-		$this->secondsOffice    = $this->seconds / 6;
-		$this->actualSeconds    = $this->folderSeconds + $this->fileSeconds
-			+ $this->lineSeconds + $this->secondsDebugging
-			+ $this->secondsPlanning + $this->secondsMapping
-			+ $this->secondsOffice;
-		$this->actualTotalHours = round($this->actualSeconds / 3600);
-		$this->actualTotalDays  = round($this->actualTotalHours / 8);
-		$this->debuggingHours   = round($this->secondsDebugging / 3600);
-		$this->planningHours    = round($this->secondsPlanning / 3600);
-		$this->mappingHours     = round($this->secondsMapping / 3600);
-		$this->officeHours      = round($this->secondsOffice / 3600);
-		// the actual time spent
-		$this->actualHoursSpent = $this->actualTotalHours - $this->totalHours;
-		$this->actualDaysSpent  = $this->actualTotalDays - $this->totalDays;
-		// calculate the projects actual time frame of completion
-		$this->projectWeekTime  = round($this->actualTotalDays / 5, 1);
-		$this->projectMonthTime = round($this->actualTotalDays / 24, 1);
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	private function buildReadMe()
@@ -864,7 +847,7 @@ class Compiler extends Infusion
 		{
 			if (('README.md' === $static['name']
 					|| 'README.txt' === $static['name'])
-				&& $this->componentData->addreadme
+				&& CFactory::_('Component')->get('addreadme')
 				&& File::exists($static['path']))
 			{
 				$this->setReadMe($static['path']);
@@ -882,10 +865,9 @@ class Compiler extends Infusion
 	{
 		// set readme data if not set already
 		if (!CFactory::_('Content')->exist('LINE_COUNT')
-			|| CFactory::_('Content')->get('LINE_COUNT')
-			!= $this->lineCount)
+			|| CFactory::_('Content')->get('LINE_COUNT') != CFactory::_('Counter')->line)
 		{
-			$this->buildReadMeData();
+			CFactory::_('Counter')->set();
 		}
 		// get the file
 		$string = FileHelper::getContent($path);
@@ -895,42 +877,23 @@ class Compiler extends Infusion
 		$this->writeFile($path, $answer);
 	}
 
+	/**
+	 * Build README data
+	 *
+	 * @return  void
+	 * @deprecated 3.3
+	 */
 	private function buildReadMeData()
 	{
-		// set some defaults
-		CFactory::_('Content')->set('LINE_COUNT', $this->lineCount);
-		CFactory::_('Content')->set('FIELD_COUNT', $this->fieldCount);
-		CFactory::_('Content')->set('FILE_COUNT', $this->fileCount);
-		CFactory::_('Content')->set('FOLDER_COUNT', $this->folderCount);
-		CFactory::_('Content')->set('PAGE_COUNT', $this->pageCount);
-		CFactory::_('Content')->set('folders', $this->folderSeconds);
-		CFactory::_('Content')->set('foldersSeconds', $this->folderSeconds);
-		CFactory::_('Content')->set('files', $this->fileSeconds);
-		CFactory::_('Content')->set('filesSeconds', $this->fileSeconds);
-		CFactory::_('Content')->set('lines', $this->lineSeconds);
-		CFactory::_('Content')->set('linesSeconds', $this->lineSeconds);
-		CFactory::_('Content')->set('seconds', $this->actualSeconds);
-		CFactory::_('Content')->set('actualSeconds', $this->actualSeconds);
-		CFactory::_('Content')->set('totalHours', $this->totalHours);
-		CFactory::_('Content')->set('totalDays', $this->totalDays);
-		CFactory::_('Content')->set('debugging', $this->secondsDebugging);
-		CFactory::_('Content')->set('secondsDebugging', $this->secondsDebugging);
-		CFactory::_('Content')->set('planning', $this->secondsPlanning);
-		CFactory::_('Content')->set('secondsPlanning', $this->secondsPlanning);
-		CFactory::_('Content')->set('mapping', $this->secondsMapping);
-		CFactory::_('Content')->set('secondsMapping', $this->secondsMapping);
-		CFactory::_('Content')->set('office', $this->secondsOffice);
-		CFactory::_('Content')->set('secondsOffice', $this->secondsOffice);
-		CFactory::_('Content')->set('actualTotalHours', $this->actualTotalHours);
-		CFactory::_('Content')->set('actualTotalDays', $this->actualTotalDays);
-		CFactory::_('Content')->set('debuggingHours', $this->debuggingHours);
-		CFactory::_('Content')->set('planningHours', $this->planningHours);
-		CFactory::_('Content')->set('mappingHours', $this->mappingHours);
-		CFactory::_('Content')->set('officeHours', $this->officeHours);
-		CFactory::_('Content')->set('actualHoursSpent', $this->actualHoursSpent);
-		CFactory::_('Content')->set('actualDaysSpent', $this->actualDaysSpent);
-		CFactory::_('Content')->set('projectWeekTime', $this->projectWeekTime);
-		CFactory::_('Content')->set('projectMonthTime', $this->projectMonthTime);
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	private function setLocalRepos()
@@ -943,7 +906,7 @@ class Compiler extends Infusion
 		{
 			// set the repo path
 			$repoFullPath = $this->repoPath . '/com_'
-				. $this->componentData->sales_name . '__joomla_'
+				. CFactory::_('Component')->get('sales_name') . '__joomla_'
 				. CFactory::_('Config')->get('version', 3);
 			// for plugin event TODO change event api signatures
 			$component_context = CFactory::_('Config')->component_context;
@@ -954,7 +917,7 @@ class Compiler extends Infusion
 				      &$repoFullPath, &$this->componentData)
 			);
 			// remove old data
-			$this->removeFolder($repoFullPath, $this->componentData->toignore);
+			$this->removeFolder($repoFullPath, CFactory::_('Component')->get('toignore'));
 			// set the new data
 			Folder::copy($this->componentPath, $repoFullPath, '', true);
 			// Trigger Event: jcb_ce_onAfterUpdateRepo
@@ -965,9 +928,9 @@ class Compiler extends Infusion
 			);
 
 			// move the modules to local folder repos
-			if (ArrayHelper::check($this->joomlaModules))
+			if (CFactory::_('Joomlamodule.Data')->exists())
 			{
-				foreach ($this->joomlaModules as $module)
+				foreach (CFactory::_('Joomlamodule.Data')->get() as $module)
 				{
 					if (ObjectHelper::check($module)
 						&& isset($module->file_name))
@@ -986,7 +949,7 @@ class Compiler extends Infusion
 						);
 						// remove old data
 						$this->removeFolder(
-							$repoFullPath, $this->componentData->toignore
+							$repoFullPath, CFactory::_('Component')->get('toignore')
 						);
 						// set the new data
 						Folder::copy(
@@ -1002,9 +965,9 @@ class Compiler extends Infusion
 				}
 			}
 			// move the plugins to local folder repos
-			if (ArrayHelper::check($this->joomlaPlugins))
+			if (CFactory::_('Joomlaplugin.Data')->exists())
 			{
-				foreach ($this->joomlaPlugins as $plugin)
+				foreach (CFactory::_('Joomlaplugin.Data')->get() as $plugin)
 				{
 					if (ObjectHelper::check($plugin)
 						&& isset($plugin->file_name))
@@ -1023,7 +986,7 @@ class Compiler extends Infusion
 						);
 						// remove old data
 						$this->removeFolder(
-							$repoFullPath, $this->componentData->toignore
+							$repoFullPath, CFactory::_('Component')->get('toignore')
 						);
 						// set the new data
 						Folder::copy(
@@ -1081,11 +1044,11 @@ class Compiler extends Infusion
 				);
 			}
 			// move to sales server host
-			if ($this->componentData->add_sales_server == 1
+			if (CFactory::_('Component')->get('add_sales_server', 0) == 1
 				&& $this->dynamicIntegration)
 			{
 				// make sure we have the correct file
-				if (isset($this->componentData->sales_server))
+				if (CFactory::_('Component')->get('sales_server'))
 				{
 					// Trigger Event: jcb_ce_onBeforeMoveToServer
 					CFactory::_('Event')->trigger(
@@ -1098,8 +1061,8 @@ class Compiler extends Infusion
 					ComponentbuilderHelper::moveToServer(
 						$this->filepath['component'],
 						$this->componentSalesName . '.zip',
-						(int) $this->componentData->sales_server,
-						$this->componentData->sales_server_protocol
+						(int) CFactory::_('Component')->get('sales_server'),
+						CFactory::_('Component')->get('sales_server_protocol')
 					);
 				}
 			}
@@ -1122,9 +1085,9 @@ class Compiler extends Infusion
 
 	private function zipModules()
 	{
-		if (ArrayHelper::check($this->joomlaModules))
+		if (CFactory::_('Joomlamodule.Data')->exists())
 		{
-			foreach ($this->joomlaModules as $module)
+			foreach (CFactory::_('Joomlamodule.Data')->get() as $module)
 			{
 				if (ObjectHelper::check($module)
 					&& isset($module->zip_name)
@@ -1216,9 +1179,9 @@ class Compiler extends Infusion
 
 	private function zipPlugins()
 	{
-		if (ArrayHelper::check($this->joomlaPlugins))
+		if (CFactory::_('Joomlaplugin.Data')->exists())
 		{
-			foreach ($this->joomlaPlugins as $plugin)
+			foreach (CFactory::_('Joomlaplugin.Data')->get() as $plugin)
 			{
 				if (ObjectHelper::check($plugin)
 					&& isset($plugin->zip_name)

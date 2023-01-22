@@ -136,7 +136,7 @@ class Gui implements GuiInterface
 					$config['prefix'] = PHP_EOL;
 				}
 				// add placeholder based on type of code
-				switch (strtolower($config['type']))
+				switch (strtolower((string) $config['type']))
 				{
 					// adding with html commenting
 					case 'html':
@@ -220,7 +220,7 @@ class Gui implements GuiInterface
 					$object           = new \stdClass();
 					$object->id       = $id;
 					$object->{$field} = base64_encode(
-						$code
+						(string) $code
 					); // (TODO) this may not always work...
 					// update the value in GUI
 					$this->db->updateObject(

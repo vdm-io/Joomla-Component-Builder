@@ -347,9 +347,7 @@ class Placeholder implements PlaceholderInterface
 		{
 			$this->active = array_filter(
 				$this->active,
-				function (string $k) use ($_key) {
-					return preg_replace('/\d/', '', $k) !== $_key;
-				},
+				fn(string $k) => preg_replace('/\d/', '', $k) !== $_key,
 				ARRAY_FILTER_USE_KEY
 			);
 		}

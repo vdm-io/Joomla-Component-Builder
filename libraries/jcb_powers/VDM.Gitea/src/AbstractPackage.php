@@ -30,7 +30,7 @@ abstract class AbstractPackage extends AbstractGiteaObject
 	{
 		parent::__construct($options, $client);
 
-		$this->package = \get_class($this);
+		$this->package = static::class;
 		$this->package = substr($this->package, strrpos($this->package, '\\') + 1);
 	}
 

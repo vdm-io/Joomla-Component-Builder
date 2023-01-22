@@ -327,7 +327,7 @@ class Extractor implements ExtractorInterface
 
 		// make sure we have the path correct (the script file is not in admin path for example)
 		// there may be more... will nead to keep our eye on this... since files could be moved during install
-		$file = str_replace('./', '', $file); # TODO (windows path issues)
+		$file = str_replace('./', '', (string) $file); # TODO (windows path issues)
 
 		if ($file !== 'script.php')
 		{
@@ -366,10 +366,10 @@ class Extractor implements ExtractorInterface
 
 					// check if the ending placeholder was found
 					if (isset($reading[$targetKey]) && $reading[$targetKey]
-						&& ((trim($lineContent) === $end
-							|| strpos($lineContent, $end) !== false)
-							|| (trim($lineContent) === $endHTML
-							|| strpos($lineContent, $endHTML) !== false)))
+						&& ((trim((string) $lineContent) === $end
+							|| strpos((string) $lineContent, $end) !== false)
+							|| (trim((string) $lineContent) === $endHTML
+							|| strpos((string) $lineContent, $endHTML) !== false)))
 					{
 						// trim the placeholder and if there is still data then load it
 						if (isset($endReplace)
@@ -411,7 +411,7 @@ class Extractor implements ExtractorInterface
 
 							$this->new[$pointer[$targetKey]][]
 							      = $this->db->quote(
-								base64_encode($c0de)
+								base64_encode((string) $c0de)
 							);  // 'code'
 
 							if ($_type == 2)
@@ -438,7 +438,7 @@ class Extractor implements ExtractorInterface
 
 							$this->existing[$pointer[$targetKey]]['fields'][]
 							      = $this->db->quoteName('code') . ' = '
-								. $this->db->quote(base64_encode($c0de));
+								. $this->db->quote(base64_encode((string) $c0de));
 
 							if ($_type == 2)
 							{
@@ -490,8 +490,8 @@ class Extractor implements ExtractorInterface
 
 					// see if the custom code line starts now with PHP/JS comment type
 					if ((!isset($reading[$targetKey]) || !$reading[$targetKey])
-						&& (($i === 1 && trim($lineContent) === $start)
-							|| strpos($lineContent, $start) !== false))
+						&& (($i === 1 && trim((string) $lineContent) === $start)
+							|| strpos((string) $lineContent, $start) !== false))
 					{
 						$commentType  = 1; // PHP/JS type
 						$startReplace = $start;
@@ -500,8 +500,8 @@ class Extractor implements ExtractorInterface
 					// see if the custom code line starts now with HTML comment type
 					elseif ((!isset($reading[$targetKey])
 							|| !$reading[$targetKey])
-						&& (($i === 1 && trim($lineContent) === $startHTML)
-							|| strpos($lineContent, $startHTML) !== false))
+						&& (($i === 1 && trim((string) $lineContent) === $startHTML)
+							|| strpos((string) $lineContent, $startHTML) !== false))
 					{
 						$commentType  = 2; // HTML type
 						$startReplace = $startHTML;
@@ -512,7 +512,7 @@ class Extractor implements ExtractorInterface
 					if ($commentType > 0)
 					{
 						// if we have all on one line we have a problem (don't load it TODO)
-						if (strpos($lineContent, $endReplace) !== false)
+						if (strpos((string) $lineContent, (string) $endReplace) !== false)
 						{
 							// reset found comment type
 							$commentType = 0;

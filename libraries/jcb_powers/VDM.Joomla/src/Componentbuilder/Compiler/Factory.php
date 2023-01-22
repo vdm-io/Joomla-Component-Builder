@@ -26,8 +26,14 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Power;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Component;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Adminview;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Library;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Customview;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Templatelayout;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Extension;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Field;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Joomlamodule;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Joomlaplugin;
 use VDM\Joomla\Componentbuilder\Interfaces\FactoryInterface;
 
 
@@ -123,8 +129,14 @@ abstract class Factory implements FactoryInterface
 			->registerServiceProvider(new Customcode())
 			->registerServiceProvider(new Power())
 			->registerServiceProvider(new Component())
+			->registerServiceProvider(new Adminview())
+			->registerServiceProvider(new Library())
+			->registerServiceProvider(new Customview())
+			->registerServiceProvider(new Templatelayout())
 			->registerServiceProvider(new Extension())
-			->registerServiceProvider(new Field());
+			->registerServiceProvider(new Field())
+			->registerServiceProvider(new Joomlamodule())
+			->registerServiceProvider(new Joomlaplugin());
 	}
 
 }

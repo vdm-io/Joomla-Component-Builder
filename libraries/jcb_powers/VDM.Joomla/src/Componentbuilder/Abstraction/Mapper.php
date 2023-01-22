@@ -50,7 +50,6 @@ abstract class Mapper implements Mapperdoubleinterface, Mappersingleinterface
 	 * Get content
 	 *
 	 * @param   string  $key    The main string key
-	 * @param   mixed   $value  The values to set
 	 *
 	 * @return  mixed
 	 * @since 3.2.0
@@ -148,8 +147,8 @@ abstract class Mapper implements Mapperdoubleinterface, Mappersingleinterface
 	/**
 	 * Get dynamic content
 	 *
-	 * @param   string    $firstKey     The first key
-	 * @param   string    $secondKey    The second key
+	 * @param   string        $firstKey     The first key
+	 * @param   string|null   $secondKey    The second key
 	 *
 	 * @return  mixed
 	 * @since 3.2.0

@@ -171,19 +171,19 @@ class ComponentbuilderControllerCompiler extends AdminController
 				}
 				$message[] = '<h2>Total time saved</h2>';
 				$message[] = '<ul>';
-				$message[] = '<li>Total folders created: <b>'.$model->compiler->folderCount.'</b></li>';
-				$message[] = '<li>Total files created: <b>'.$model->compiler->fileCount.'</b></li>';
-				$message[] = '<li>Total fields created: <b>'.$model->compiler->fieldCount.'</b></li>';
-				$message[] = '<li>Total lines written: <b>'.$model->compiler->lineCount.'</b></li>';
-				$message[] = '<li>A4 Book of: <b>'.$model->compiler->pageCount.' pages</b></li>';
+				$message[] = '<li>Total folders created: <b>#'.'##FOLDER_COUNT##'.'#</b></li>';
+				$message[] = '<li>Total files created: <b>#'.'##FILE_COUNT##'.'#</b></li>';
+				$message[] = '<li>Total fields created: <b>#'.'##FIELD_COUNT##'.'#</b></li>';
+				$message[] = '<li>Total lines written: <b>#'.'##LINE_COUNT##'.'#</b></li>';
+				$message[] = '<li>A4 Book of: <b>#'.'##PAGE_COUNT##'.'# pages</b></li>';
 				$message[] = '</ul>';
-				$message[] = '<p><b>'.$model->compiler->totalHours.' Hours</b> or <b>'.$model->compiler->totalDays.' Eight Hour Days</b> <em>(actual time you saved)</em><br />';
+				$message[] = '<p><b>#'.'##totalHours##'.'# Hours</b> or <b>#'.'##totalDays##'.'# Eight Hour Days</b> <em>(actual time you saved)</em><br />';
 				$message[] = '<small>(if creating a folder and file took <b>5 seconds</b> and writing one line of code took <b>10 seconds</b>, never making one mistake or taking any coffee break.)</small><br />';
-				$message[] = '<b>'.$model->compiler->actualHoursSpent.' Hours</b> or <b>'.$model->compiler->actualDaysSpent.' Eight Hour Days</b> <em>(the actual time you spent)</em><br />';
-				$message[] = '<small>(with the following break down: <b>debugging @'.$model->compiler->debuggingHours.'hours</b> = codingtime / 4; <b>planning @'.$model->compiler->planningHours.'hours</b> = codingtime / 7; <b>mapping @'.$model->compiler->mappingHours.'hours</b> = codingtime / 10; <b>office @'.$model->compiler->officeHours.'hours</b> = codingtime / 6;)</small></p>';
-				$message[] = '<p><b>'.$model->compiler->actualTotalHours.' Hours</b> or <b>'.$model->compiler->actualTotalDays.' Eight Hour Days</b> <em>(a total of the realistic time frame for this project)</em><br />';
+				$message[] = '<b>#'.'##actualHoursSpent##'.'# Hours</b> or <b>#'.'##actualDaysSpent##'.'# Eight Hour Days</b> <em>(the actual time you spent)</em><br />';
+				$message[] = '<small>(with the following break down: <b>debugging @#'.'##debuggingHours##'.'#hours</b> = codingtime / 4; <b>planning @#'.'##planningHours##'.'#hours</b> = codingtime / 7; <b>mapping @#'.'##mappingHours##'.'#hours</b> = codingtime / 10; <b>office @#'.'##officeHours##'.'#hours</b> = codingtime / 6;)</small></p>';
+				$message[] = '<p><b>#'.'##actualTotalHours##'.'# Hours</b> or <b>#'.'##actualTotalDays##'.'# Eight Hour Days</b> <em>(a total of the realistic time frame for this project)</em><br />';
 				$message[] = '<small>(if creating a folder and file took <b>5 seconds</b> and writing one line of code took <b>10 seconds</b>, with the normal everyday realities at the office, that includes the component planning, mapping & debugging.)</small></p>';
-				$message[] = '<p>Project duration: <b>'.$model->compiler->projectWeekTime. ' weeks</b> or <b>'.$model->compiler->projectMonthTime.' months</b></p>';
+				$message[] = '<p>Project duration: <b>'.$model->compiler->projectWeekTime. ' weeks</b> or <b>#'.'##projectMonthTime##'.'# months</b></p>';
 				// check if we have modules or plugins
 				if ($add_multi_install)
 				{
@@ -254,9 +254,14 @@ class ComponentbuilderControllerCompiler extends AdminController
 					$message[] = '<a class="btn btn-success" href="' . $url . '" ><span class="icon-download icon-white"></span>Download</a></p>';
 					$message[] = '<p><small><b>Remember!</b> This zip file is in your tmp folder and therefore publicly accessible until you click [Clear tmp]!</small> </p>';
 				}
-				$message[] = '<p><small>Compilation took <b>'.$model->compiler->secondsCompiled.'</b> seconds to complete.</small> </p>';
+				$message[] = '<p><small>Compilation took <b>#'.'##COMPILER_TIMER##'.'#</b> seconds to complete.</small> </p>';
 				// pass the message via the user state... wow this is painful
-				$app->setUserState('com_componentbuilder.success_message', implode(PHP_EOL, $message));
+				$app->setUserState('com_componentbuilder.success_message',
+					CFactory::_('Placeholder')->update(
+						implode(PHP_EOL, $message),
+						CFactory::_('Content')->active
+					)
+				);
 				// set redirect
 				$this->setRedirect($redirect_url, '<h2>Successful Build!</h2>', 'message');
 				$app->setUserState('com_componentbuilder.component_folder_name', $model->compiler->filepath['component-folder']);

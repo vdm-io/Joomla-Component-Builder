@@ -94,7 +94,7 @@ class Regex extends Engine implements SearchTypeInterface
 		{
 			return preg_replace(
 				$this->regexValue . 'm',
-				$this->replaceValue,
+				(string) $this->replaceValue,
 				$value
 			);
 		}
@@ -118,17 +118,10 @@ class Regex extends Engine implements SearchTypeInterface
 
 		$match = array_filter(
 			$match,
-			function ($found) {
-				return !empty($found);
-			}
+			fn($found) => !empty($found)
 		);
 
-		if (ArrayHelper::check($match))
-		{
-			return true;
-		}
-
-		return false;
+		return (bool) ArrayHelper::check($match);
 	}
 
 }

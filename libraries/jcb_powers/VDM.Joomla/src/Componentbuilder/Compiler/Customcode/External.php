@@ -135,18 +135,18 @@ class External implements ExternalInterface
 					// example: >{3|4
 					// will cut 3 rows at top and 4 rows at bottom
 					// if the external code has 8 or more lines
-					if (($pos = strpos($target, '>{')) !== false)
+					if (($pos = strpos((string) $target, '>{')) !== false)
 					{
 						// the length
-						$target_len = strlen($target);
+						$target_len = strlen((string) $target);
 						// where to cut
 						$cutting = $target_len - $pos;
 						// get the sequence
-						$sequence = substr($target, "-$cutting");
+						$sequence = substr((string) $target, "-$cutting");
 						// remove from the URL
-						$target_url = str_replace($sequence, '', $target);
+						$target_url = str_replace($sequence, '', (string) $target);
 						// set the cut key for this target if not set
-						$this->cutter[trim($target)] = str_replace('>{', '', $sequence);
+						$this->cutter[trim((string) $target)] = str_replace('>{', '', $sequence);
 					}
 					else
 					{

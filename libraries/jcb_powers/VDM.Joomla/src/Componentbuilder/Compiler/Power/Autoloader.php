@@ -131,9 +131,7 @@ class Autoloader
 			//      NameSpace\SubName\SubSubName\ClassName
 			//      ^^^^^^^^^^^^^^^^^^^^^
 
-			uksort($this->power->namespace, function ($a, $b) {
-				return strlen($b) - strlen($a);
-			});
+			uksort($this->power->namespace, fn($a, $b) => strlen((string) $b) - strlen((string) $a));
 
 			// counter to manage the comma in the actual array
 			$counter = 1;

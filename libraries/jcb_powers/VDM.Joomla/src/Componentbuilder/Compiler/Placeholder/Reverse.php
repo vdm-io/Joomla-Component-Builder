@@ -125,9 +125,7 @@ class Reverse
 		// get targets to search for
 		$lang_string_targets = array_filter(
 			$this->config->lang_string_targets,
-			function ($get) use ($string) : bool {
-				return strpos($string, $get) !== false;
-			}
+			fn($get): bool => strpos($string, (string) $get) !== false
 		);
 		// check if we should continue
 		if (ArrayHelper::check($lang_string_targets))

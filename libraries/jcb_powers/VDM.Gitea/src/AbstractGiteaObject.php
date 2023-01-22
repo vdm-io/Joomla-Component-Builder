@@ -58,7 +58,7 @@ abstract class AbstractGiteaObject
 		$this->options = $options ?: new Registry;
 		$this->client  = $client ?: (new HttpFactory)->getHttp($this->options);
 
-		$this->package = \get_class($this);
+		$this->package = static::class;
 		$this->package = substr($this->package, strrpos($this->package, '\\') + 1);
 	}
 
@@ -137,7 +137,7 @@ abstract class AbstractGiteaObject
 		if ($response->code != $expectedCode)
 		{
 			// Decode the error response and throw an exception.
-			$error   = json_decode($response->body);
+			$error   = json_decode((string) $response->body);
 			$message = isset($error->message) ? $error->message : 'Invalid response received from Gitea.';
 
 			throw new \DomainException($message, $response->code);
@@ -145,11 +145,11 @@ abstract class AbstractGiteaObject
 
 		if (JsonHelper::check($response->body))
 		{
-			$body = json_decode($response->body);
+			$body = json_decode((string) $response->body);
 
 			if (isset($body->content_base64))
 			{
-				$body->content = base64_decode($body->content_base64);
+				$body->content = base64_decode((string) $body->content_base64);
 			}
 		}
 		else

@@ -70,7 +70,7 @@ abstract class FileHelper
 		foreach ($files as $file)
 		{
 			$tmp = array();
-			$tmp['name'] = str_replace('./', '', $file);
+			$tmp['name'] = str_replace('./', '', (string) $file);
 			$tmp['data'] = self::getContent($file);
 			$tmp['time'] = filemtime($file);
 			$zipArray[] = $tmp;
@@ -222,7 +222,7 @@ abstract class FileHelper
 			chdir($joomla);
 
 			// return array of files
-			return array_map( function($file) { return str_replace('./', '/', $file); }, (array) ArrayHelper::merge($files));
+			return array_map( fn($file) => str_replace('./', '/', (string) $file), (array) ArrayHelper::merge($files));
 		}
 		return false;
 	}
@@ -253,7 +253,7 @@ abstract class FileHelper
 		$filePath = Helper::getParams()->get($target, $default);
 
 		// check the file path (revert to default only of not a hidden file path)
-		if ('hiddenfilepath' !== $target && strpos($filePath, JPATH_SITE) === false)
+		if ('hiddenfilepath' !== $target && strpos((string) $filePath, (string) JPATH_SITE) === false)
 		{
 			$filePath = $default;
 		}
@@ -297,9 +297,9 @@ abstract class FileHelper
 		// return the url
 		if ('url' === $type)
 		{
-			if (\strpos($filePath, JPATH_SITE) !== false)
+			if (\strpos((string) $filePath, (string) JPATH_SITE) !== false)
 			{
-				$filePath = trim( str_replace( JPATH_SITE, '', $filePath), '/');
+				$filePath = trim( str_replace( JPATH_SITE, '', (string) $filePath), '/');
 
 				return Uri::root() . $filePath . '/' . $fileName;
 			}
@@ -309,7 +309,7 @@ abstract class FileHelper
 		}
 
 		// sanitize the path
-		return '/' . trim( $filePath, '/' ) . '/' . $fileName;
+		return '/' . trim((string)  $filePath, '/' ) . '/' . $fileName;
 	}
 
 	/**

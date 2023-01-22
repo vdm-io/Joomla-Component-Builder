@@ -421,9 +421,9 @@ class JavaScript extends Minify
         $minifier = $this;
         $callback = function ($match) use ($minifier) {
             if (
-                substr($match[2], 0, 1) === '!' ||
-                strpos($match[2], '@license') !== false ||
-                strpos($match[2], '@preserve') !== false
+                substr((string) $match[2], 0, 1) === '!' ||
+                strpos((string) $match[2], '@license') !== false ||
+                strpos((string) $match[2], '@preserve') !== false
             ) {
                 // preserve multi-line comments that start with /*!
                 // or contain @license or @preserve annotations
@@ -735,9 +735,7 @@ class JavaScript extends Minify
         $escaped = array_map('preg_quote', $keywords, $delimiter);
 
         // add word boundaries
-        array_walk($keywords, function ($value) {
-            return '\b' . $value . '\b';
-        });
+        array_walk($keywords, fn($value) => '\b' . $value . '\b');
 
         $keywords = array_combine($keywords, $escaped);
 
@@ -820,7 +818,7 @@ class JavaScript extends Minify
          * character and check if it's a `.`
          */
         $callback = function ($match) {
-            if (trim($match[1]) === '.') {
+            if (trim((string) $match[1]) === '.') {
                 return $match[0];
             }
 

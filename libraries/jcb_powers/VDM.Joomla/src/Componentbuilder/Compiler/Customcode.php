@@ -213,9 +213,9 @@ class Customcode implements CustomcodeInterface
 						$id = (int) $key;
 					}
 					elseif (StringHelper::check($key)
-						&& strpos($key, '+') === false)
+						&& strpos((string) $key, '+') === false)
 					{
-						$getFuncName = trim($key);
+						$getFuncName = trim((string) $key);
 						if (!isset($this->functionNameMemory[$getFuncName]))
 						{
 							if (!$found_local = GetHelper::var(
@@ -232,10 +232,10 @@ class Customcode implements CustomcodeInterface
 					}
 					elseif (StringHelper::check($key)
 						&& strpos(
-							$key, '+'
+							(string) $key, '+'
 						) !== false)
 					{
-						$array = explode('+', $key);
+						$array = explode('+', (string) $key);
 						// set ID
 						if (is_numeric($array[0]))
 						{
@@ -278,13 +278,11 @@ class Customcode implements CustomcodeInterface
 									// update the function values with the custom code key placeholders (this allow the use of [] + and , in the values)
 									$this->data[$id]['args'][$key]
 										= array_map(
-										function ($_key) {
-											return $this->placeholder->update(
+											fn($_key) => $this->placeholder->update(
 												$_key,
 												$this->keys
-											);
-										}, (array) explode(',', $array[1])
-									);
+											), (array) explode(',', $array[1])
+										);
 								}
 								elseif (StringHelper::check(
 									$array[1]
@@ -428,7 +426,7 @@ class Customcode implements CustomcodeInterface
 			// open the code
 			foreach ($bucket as $nr => &$customCode)
 			{
-				$customCode['code'] = base64_decode($customCode['code']);
+				$customCode['code'] = base64_decode((string) $customCode['code']);
 				// always insure that the external code is loaded
 				$customCode['code'] = $this->external->set(
 					$customCode['code']
@@ -453,14 +451,14 @@ class Customcode implements CustomcodeInterface
 				if (isset($customCode['hashtarget']))
 				{
 					$customCode['hashtarget'] = explode(
-						"__", $customCode['hashtarget']
+						"__", (string) $customCode['hashtarget']
 					);
 					// is this a replace code, set end has array
 					if ($customCode['type'] == 1
-						&& strpos($customCode['hashendtarget'], '__') !== false)
+						&& strpos((string) $customCode['hashendtarget'], '__') !== false)
 					{
 						$customCode['hashendtarget'] = explode(
-							"__", $customCode['hashendtarget']
+							"__", (string) $customCode['hashendtarget']
 						);
 
 						// NOW see if this is an end of page target (TODO not sure if the string is always d41d8cd98f00b204e9800998ecf8427e)
@@ -581,9 +579,9 @@ class Customcode implements CustomcodeInterface
 			}
 			// check what type of place holders we should load here
 			$placeholderType = (int) $item['comment_type'] . '2';
-			if (stripos($item['code'], Placefix::b() . 'view') !== false
-				|| stripos($item['code'], Placefix::b() . 'sview') !== false
-				|| stripos($item['code'], Placefix::b() . 'arg') !== false)
+			if (stripos((string) $item['code'], Placefix::b() . 'view') !== false
+				|| stripos((string) $item['code'], Placefix::b() . 'sview') !== false
+				|| stripos((string) $item['code'], Placefix::b() . 'arg') !== false)
 			{
 				// if view is being set dynamicly then we can't update this code via IDE (TODO)
 				$placeholderType = 3;

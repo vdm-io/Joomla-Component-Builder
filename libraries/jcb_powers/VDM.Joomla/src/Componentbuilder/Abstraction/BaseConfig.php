@@ -108,7 +108,7 @@ abstract class BaseConfig extends JoomlaRegistry
 	public function get($path, $default = null)
 	{
 		// function name with no underscores
-		$method = 'get' . ucfirst(ClassfunctionHelper::safe(str_replace('_', '', $path)));
+		$method = 'get' . ucfirst((string) ClassfunctionHelper::safe(str_replace('_', '', $path)));
 
 		// check if it has been set
 		if (($value = parent::get($path, '__N0T_S3T_Y3T_')) !== '__N0T_S3T_Y3T_')
@@ -125,6 +125,27 @@ abstract class BaseConfig extends JoomlaRegistry
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Append value to a path in registry of an array
+	 *
+	 * @param  string  $path   Parent registry Path (e.g. joomla.content.showauthor)
+	 * @param  mixed   $value  Value of entry
+	 *
+	 * @return  mixed  The value of the that has been set.
+	 *
+	 * @since 3.2.0
+	 */
+	public function appendArray(string $path, $value)
+	{
+		// check if it does not exist
+		if (!$this->exists($path))
+		{
+			$this->set($path, []);
+		}
+
+		return $this->append($path, $value);
 	}
 
 }
