@@ -2681,70 +2681,38 @@ class Get
 	 * get the module xml template
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3
 	 */
 	public function getModuleXMLTemplate(&$module)
 	{
-		$xml = '<?xml version="1.0" encoding="utf-8"?>';
-		$xml .= PHP_EOL . '<extension type="module" version="'
-			. $this->joomlaVersions[CFactory::_('Config')->joomla_version]['xml_version'] . '" client="'
-			. $module->target_client . '" method="upgrade">';
-		$xml .= PHP_EOL . Indent::_(1) . '<name>' . $module->lang_prefix
-			. '</name>';
-		$xml .= PHP_EOL . Indent::_(1) . '<creationDate>' . Placefix::_h('BUILDDATE') . '</creationDate>';
-		$xml .= PHP_EOL . Indent::_(1) . '<author>' . Placefix::_h('AUTHOR') . '</author>';
-		$xml .= PHP_EOL . Indent::_(1) . '<authorEmail>' . Placefix::_h('AUTHOREMAIL') . '</authorEmail>';
-		$xml .= PHP_EOL . Indent::_(1) . '<authorUrl>' . Placefix::_h('AUTHORWEBSITE') . '</authorUrl>';
-		$xml .= PHP_EOL . Indent::_(1) . '<copyright>' . Placefix::_h('COPYRIGHT') . '</copyright>';
-		$xml .= PHP_EOL . Indent::_(1) . '<license>' . Placefix::_h('LICENSE') . '</license>';
-		$xml .= PHP_EOL . Indent::_(1) . '<version>' . $module->module_version
-			. '</version>';
-		$xml .= PHP_EOL . Indent::_(1) . '<description>' . $module->lang_prefix
-			. '_XML_DESCRIPTION</description>';
-		$xml .= Placefix::_h('MAINXML');
-		$xml .= PHP_EOL . '</extension>';
-
-		return $xml;
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
 	 * get the module admin custom script field
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3
 	 */
 	public function getModAdminVvvvvvvdm($fieldScriptBucket)
 	{
-		$form_field_class   = array();
-		$form_field_class[] = Placefix::_h('BOM') . PHP_EOL;
-		$form_field_class[] = "//" . Line::_(__Line__, __Class__)
-			. " No direct access to this file";
-		$form_field_class[] = "defined('_JEXEC') or die('Restricted access');";
-		$form_field_class[] = PHP_EOL . "use Joomla\CMS\Form\FormField;";
-		$form_field_class[] = "use Joomla\CMS\Factory;";
-		$form_field_class[] = PHP_EOL
-			. "class JFormFieldModadminvvvvvvvdm extends FormField";
-		$form_field_class[] = "{";
-		$form_field_class[] = Indent::_(1)
-			. "protected \$type = 'modadminvvvvvvvdm';";
-		$form_field_class[] = PHP_EOL . Indent::_(1)
-			. "protected function getLabel()";
-		$form_field_class[] = Indent::_(1) . "{";
-		$form_field_class[] = Indent::_(2) . "return;";
-		$form_field_class[] = Indent::_(1) . "}";
-		$form_field_class[] = PHP_EOL . Indent::_(1)
-			. "protected function getInput()";
-		$form_field_class[] = Indent::_(1) . "{";
-		$form_field_class[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-			. " Get the document";
-		$form_field_class[] = Indent::_(2)
-			. "\$document = Factory::getDocument();";
-		$form_field_class[] = implode(PHP_EOL, $fieldScriptBucket);
-		$form_field_class[] = Indent::_(2) . "return; // noting for now :)";
-		$form_field_class[] = Indent::_(1) . "}";
-		$form_field_class[] = "}";
-
-		return implode(PHP_EOL, $form_field_class);
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			JText::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
@@ -2810,7 +2778,7 @@ class Get
 	{
 		$xml = '<?xml version="1.0" encoding="utf-8"?>';
 		$xml .= PHP_EOL . '<extension type="plugin" version="'
-			. $this->joomlaVersions[CFactory::_('Config')->joomla_version]['xml_version'] . '" group="'
+			. CFactory::_('Config')->joomla_versions[CFactory::_('Config')->joomla_version]['xml_version'] . '" group="'
 			. strtolower((string) $plugin->group) . '" method="upgrade">';
 		$xml .= PHP_EOL . Indent::_(1) . '<name>' . $plugin->lang_prefix
 			. '</name>';

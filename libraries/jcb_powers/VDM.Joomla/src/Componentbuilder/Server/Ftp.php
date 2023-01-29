@@ -119,7 +119,7 @@ class Ftp implements Serverinterface
 			}
 			else
 			{
-				$options = array();
+				$options = [];
 			}
 			// get ftp object
 			if (isset($host) && $host != 'HOSTNAME' &&

@@ -14,7 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Compiler\Library\Data as LibraryData;
+use VDM\Joomla\Componentbuilder\Compiler\Library\Data;
+use VDM\Joomla\Componentbuilder\Compiler\Library\Builder;
 
 
 /**
@@ -34,8 +35,11 @@ class Library implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
-		$container->alias(LibraryData::class, 'Library.Data')
-			->share('Library.Data', [$this, 'getLibraryData'], true);
+		$container->alias(Data::class, 'Library.Data')
+			->share('Library.Data', [$this, 'getData'], true);
+
+		$container->alias(Builder::class, 'Library.Builder')
+			->share('Library.Builder', [$this, 'getBuilder'], true);
 	}
 
 	/**
@@ -43,18 +47,41 @@ class Library implements ServiceProviderInterface
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  LibraryData
+	 * @return  Data
 	 * @since 3.2.0
 	 */
-	public function getLibraryData(Container $container): LibraryData
+	public function getData(Container $container): Data
 	{
-		return new LibraryData(
+		return new Data(
 			$container->get('Config'),
 			$container->get('Registry'),
 			$container->get('Customcode'),
 			$container->get('Customcode.Gui'),
 			$container->get('Field.Data'),
 			$container->get('Model.Filesfolders')
+		);
+	}
+
+	/**
+	 * Get the Compiler Library Builder
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Builder
+	 * @since 3.2.0
+	 */
+	public function getBuilder(Container $container): Builder
+	{
+		return new Builder(
+			$container->get('Config'),
+			$container->get('Registry'),
+			$container->get('Event'),
+			$container->get('Component'),
+			$container->get('Content'),
+			$container->get('Utilities.Counter'),
+			$container->get('Utilities.Paths'),
+			$container->get('Utilities.Folder'),
+			$container->get('Utilities.File')
 		);
 	}
 

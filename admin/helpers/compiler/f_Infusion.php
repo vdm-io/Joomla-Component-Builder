@@ -172,7 +172,7 @@ class Infusion extends Interpretation
 			CFactory::_('Content')->set('GLOBALVERSION', CFactory::_('Content')->get('VERSION'));
 
 			// set the joomla target xml version
-			CFactory::_('Content')->set('XMLVERSION', $this->joomlaVersions[CFactory::_('Config')->joomla_version]['xml_version']);
+			CFactory::_('Content')->set('XMLVERSION', CFactory::_('Config')->joomla_versions[CFactory::_('Config')->joomla_version]['xml_version']);
 
 			// Component_name
 			$name = CFactory::_('Component')->get('name');
@@ -2095,7 +2095,7 @@ class Infusion extends Interpretation
 		// remove old unused language strings
 		$this->purgeLanuageStrings($values, CFactory::_('Config')->component_id);
 		// path to INI file
-		$getPAth = $this->templatePath . '/en-GB.com_admin.ini';
+		$getPAth = CFactory::_('Utilities.Paths')->template_path . '/en-GB.com_admin.ini';
 		// for plugin event TODO change event api signatures
 		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeBuildAllLangFiles
@@ -2143,18 +2143,18 @@ class Infusion extends Interpretation
 					))
 					{
 						// build the path to place the lang file
-						$path = $this->componentPath . '/' . $p . '/language/'
+						$path = CFactory::_('Utilities.Paths')->component_path . '/' . $p . '/language/'
 							. $tag . '/';
 						if (!Folder::exists($path))
 						{
 							Folder::create($path);
 							// count the folder created
-							CFactory::_('Counter')->folder++;
+							CFactory::_('Utilities.Counter')->folder++;
 						}
 						// move the file to its place
 						File::copy($getPAth, $path . $file_name);
 						// count the file created
-						CFactory::_('Counter')->file++;
+						CFactory::_('Utilities.Counter')->file++;
 						// add content to it
 						$lang = array_map(
 							fn($langstring, $placeholder) => $placeholder . '="' . $langstring . '"',
@@ -2162,11 +2162,11 @@ class Infusion extends Interpretation
 							array_keys($languageStrings)
 						);
 						// add to language file
-						$this->writeFile(
+						CFactory::_('Utilities.File')->write(
 							$path . $file_name, implode(PHP_EOL, $lang)
 						);
 						// set the line counter
-						CFactory::_('Counter')->line += count(
+						CFactory::_('Utilities.Counter')->line += count(
 								(array) $lang
 							);
 						unset($lang);
@@ -2199,7 +2199,7 @@ class Infusion extends Interpretation
 						= implode(PHP_EOL . Indent::_(2), $langXML['site']);
 				}
 				// build xml path
-				$xmlPath = $this->componentPath . '/' . CFactory::_('Config')->component_code_name
+				$xmlPath = CFactory::_('Utilities.Paths')->component_path . '/' . CFactory::_('Config')->component_code_name
 					. '.xml';
 				// get the content in xml
 				$componentXML = FileHelper::getContent(
@@ -2208,7 +2208,7 @@ class Infusion extends Interpretation
 				// update the xml content
 				$componentXML = CFactory::_('Placeholder')->update($componentXML, $replace);
 				// store the values back to xml
-				$this->writeFile($xmlPath, $componentXML);
+				CFactory::_('Utilities.File')->write($xmlPath, $componentXML);
 			}
 		}
 	}

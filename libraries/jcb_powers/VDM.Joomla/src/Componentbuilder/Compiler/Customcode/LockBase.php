@@ -62,7 +62,7 @@ class LockBase implements LockBaseInterface
 			$values = GetHelper::allBetween(
 				$script, 'LOCK'.'BASE64((((', '))))'
 			);
-			$locker = array();
+			$locker = [];
 			// convert them
 			foreach ($values as $value)
 			{

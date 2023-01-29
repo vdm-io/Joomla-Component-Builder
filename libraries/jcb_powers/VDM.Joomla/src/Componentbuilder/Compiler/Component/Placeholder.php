@@ -88,7 +88,7 @@ class Placeholder implements PlaceholderInterface
 		// load the db
 		$db = $this->db;
 		// reset bucket
-		$bucket = array();
+		$bucket = [];
 		// Create a new query object.
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.target', 'a.value')));

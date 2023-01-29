@@ -30,14 +30,14 @@ abstract class ArrayHelper
 	 */
 	public static function check($array, $removeEmptyString = false)
 	{
-		if (is_array($array) && ($nr = count((array)$array)) > 0)
+		if (is_array($array) && ($nr = count((array) $array)) > 0)
 		{
 			// also make sure the empty strings are removed
 			if ($removeEmptyString)
 			{
 				$array = array_filter($array);
 
-				if (empty($array))
+				if ($array === [])
 				{
 					return false;
 				}

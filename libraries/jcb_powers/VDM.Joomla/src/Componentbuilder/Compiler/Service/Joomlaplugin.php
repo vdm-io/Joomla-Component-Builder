@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Joomlaplugin\Data as JoomlaPluginData;
+use VDM\Joomla\Componentbuilder\Compiler\Joomlaplugin\Builder as JoomlaPluginBuilder;
 
 
 /**
@@ -36,6 +37,9 @@ class Joomlaplugin implements ServiceProviderInterface
 	{
 		$container->alias(JoomlaPluginData::class, 'Joomlaplugin.Data')
 			->share('Joomlaplugin.Data', [$this, 'getJoomlaPluginData'], true);
+
+		$container->alias(JoomlaPluginBuilder::class, 'Joomlaplugin.Builder')
+			->share('Joomlaplugin.Builder', [$this, 'getJoomlaPluginBuilder'], true);
 	}
 
 	/**
@@ -57,6 +61,30 @@ class Joomlaplugin implements ServiceProviderInterface
 			$container->get('Field'),
 			$container->get('Field.Name'),
 			$container->get('Model.Filesfolders')
+		);
+	}
+
+	/**
+	 * Get the Joomla Plugin Builder
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  JoomlaPluginBuilder
+	 * @since 3.2.0
+	 */
+	public function getJoomlaPluginBuilder(Container $container): JoomlaPluginBuilder
+	{
+		return new JoomlaPluginBuilder(
+			$container->get('Joomlaplugin.Data'),
+			$container->get('Component'),
+			$container->get('Config'),
+			$container->get('Registry'),
+			$container->get('Customcode.Dispenser'),
+			$container->get('Event'),
+			$container->get('Utilities.Counter'),
+			$container->get('Utilities.Folder'),
+			$container->get('Utilities.File'),
+			$container->get('Utilities.Files')
 		);
 	}
 

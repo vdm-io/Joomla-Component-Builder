@@ -191,14 +191,14 @@ const getSelectedItem = async (table, row, field, line) => {
 		formData.append('regex_search', regexObject.checked ? 1 : 0);
 
 		// get search value
-		if (mode == 1) {
-			// calling URL
-			postURL = UrlAjax + 'getSearchValue';
-		} else {
+		if (mode == 2) {
 			// add the line value
 			formData.append('line_nr', line);
 			// calling URL
 			postURL = UrlAjax + 'getReplaceValue';
+		} else {
+			// calling URL
+			postURL = UrlAjax + 'getSearchValue';
 		}
 
 		let options = {
@@ -613,6 +613,12 @@ const buttonUpdateAllStyleDisplay = async (value) => {
  * JS Function to execute (A) on search/replace text change , (B) on search options changes
  */
 const startSearch = (field, forced = false) => {
+	// check mode
+	let mode = modeObject.querySelector('input[type=\'radio\']:checked').value;
+	if (mode == 0) {
+		// reset the search area
+		window.location.href = UrlSearch;
+	}
 	// check if we have an Enter click
 	if (field && typeof field.code !== 'undefined' && field.code  === "Enter") {
 		forced = true;

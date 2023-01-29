@@ -45,11 +45,13 @@ abstract class Unique
 	 */
 	public static function get($size): string
 	{
-		$unique = end(self::$unique[$size]);
+		$unique = (isset(self::$unique[$size])) ? end(self::$unique[$size]) : null;
 
 		if(!$unique)
 		{
 			$unique = substr("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvv", 0, $size);
+
+			self::$unique[$size] = [];
 		}
 
 		while(in_array($unique, self::$unique[$size]))

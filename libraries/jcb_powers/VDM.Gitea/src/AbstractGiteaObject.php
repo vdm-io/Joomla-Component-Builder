@@ -83,7 +83,7 @@ abstract class AbstractGiteaObject
 		if ($this->options->get('access.token', false))
 		{
 			// Use oAuth authentication
-			$headers = $this->client->getOption('headers', array());
+			$headers = $this->client->getOption('headers', []);
 
 			if (!isset($headers['Authorization']))
 			{

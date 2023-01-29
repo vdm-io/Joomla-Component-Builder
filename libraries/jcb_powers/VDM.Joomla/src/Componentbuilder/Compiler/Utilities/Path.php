@@ -37,7 +37,7 @@ abstract class Path
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	public static function fix(&$values, $targets = array())
+	public static function fix(&$values, $targets = [])
 	{
 		// if multiple to gets searched and fixed
 		if (ArrayHelper::check($values) && ArrayHelper::check($targets))

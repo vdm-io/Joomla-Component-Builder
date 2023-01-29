@@ -131,7 +131,7 @@ class Reverse
 		if (ArrayHelper::check($lang_string_targets))
 		{
 			// start lang holder
-			$lang_holders = array();
+			$lang_holders = [];
 			// set the lang for both since we don't know what area is being targeted
 			$_tmp = $this->config->lang_target;
 			// set the lang based on target

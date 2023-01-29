@@ -128,6 +128,11 @@ class Infusion
 					// POWERCODE
 					$this->content->set_($power->key, 'POWERCODE', $this->get($power));
 
+					// POWERLINKER
+					// SOON WE STILL NEED TO THINK THIS OVER
+					// $this->content->set_($power->key, 'POWERLINKER', $this->linker($power));
+					$this->content->set_($power->key, 'POWERLINKER', '');
+
 					// Trigger Event: jcb_ce_onAfterInfusePowerData
 					$this->event->trigger(
 						'jcb_ce_onAfterInfusePowerData',
@@ -198,9 +203,83 @@ class Infusion
 			$code[] = $power->main_class_code;
 		}
 
-		$code[] = '}' . PHP_EOL . PHP_EOL;
+		$code[] = '}' . PHP_EOL;
 
 		return $this->placeholder->update(implode(PHP_EOL, $code), $this->content->active);
+	}
+
+	/**
+	 * Get the Power Linker
+	 *
+	 * @param object    $power A power object.
+	 *
+	 * @return string
+	 * @since 3.2.0
+	 */
+	protected function linker(object &$power): string
+	{
+		$map = [];
+		$body = [];
+
+		// set the LINKER
+		$map[] = '/******************| POWER LINKER |*******************|';
+		$map[] = '';
+		$map[] = '{';
+
+		// we build the JSON body
+		$body[] = '  "guid": "' . $power->guid . '"';
+
+		// load extends
+		if (GuidHelper::valid($power->extends))
+		{
+			$body[] = '  "extends": "' . $power->extends . '"';
+		}
+
+		// load implements
+		if (ArrayHelper::check($power->implements))
+		{
+			$sud = [];
+			foreach ($power->implements as $implement)
+			{
+				$sud[] = '    "' . $implement . '"';
+			}
+			$sud = implode(','. PHP_EOL, $sud);
+
+			$body[] = '  "implements": [' . PHP_EOL . $sud . PHP_EOL . '  ]';
+		}
+
+		// load (Use Selection)
+		if (ArrayHelper::check($power->use_selection))
+		{
+			$sud = [];
+			foreach ($power->use_selection as $use)
+			{
+				$sud[] = '    "' . $use['use'] . '"';
+			}
+			$sud = implode(','. PHP_EOL, $sud);
+
+			$body[] = '  "use": [' . PHP_EOL . $sud . PHP_EOL . '  ]';
+		}
+
+		// load (Load Selection)
+		if (ArrayHelper::check($power->load_selection))
+		{
+			$sud = [];
+			foreach ($power->load_selection as $load)
+			{
+				$sud[] = '    "' . $load['load'] . '"';
+			}
+			$sud = implode(','. PHP_EOL, $sud);
+
+			$body[] = '  "load": [' . PHP_EOL . $sud . PHP_EOL . '  ]';
+		}
+		$map[] = implode(','. PHP_EOL, $body);
+
+		$map[] = '}';
+		$map[] = '';
+		$map[] = '|******************| POWER LINKER |*******************/' . PHP_EOL . PHP_EOL;
+
+		return implode(PHP_EOL, $map);
 	}
 
 }

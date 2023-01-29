@@ -122,7 +122,7 @@ class External implements ExternalInterface
 				var_dump($string);
 			}
 			// target content
-			$bucket = array();
+			$bucket = [];
 			$found  = GetHelper::allBetween(
 				$string, '[EXTERNA' . 'LCODE=', ']'
 			);
@@ -342,17 +342,9 @@ class External implements ExternalInterface
 				);
 			}
 		}
+
 		// add to local bucket
-		if (isset($this->code[$target_key]))
-		{
-			// update the placeholder with the external code string
-			$bucket[$key] = $this->code[$target_key];
-		}
-		else
-		{
-			// remove the placeholder
-			$bucket[$key] = '';
-		}
+		$bucket[$key] = $this->code[$target_key] ?? '';
 	}
 
 	/**

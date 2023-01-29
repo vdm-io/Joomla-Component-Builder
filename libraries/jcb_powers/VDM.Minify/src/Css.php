@@ -171,15 +171,15 @@ class Css extends Minify
         );
 
         // find all relative imports in css
-        $matches = array();
+        $matches = [];
         foreach ($importRegexes as $importRegex) {
             if (preg_match_all($importRegex, $content, $regexMatches, PREG_SET_ORDER)) {
                 $matches = [...$matches, ...$regexMatches];
             }
         }
 
-        $search = array();
-        $replace = array();
+        $search = [];
+        $replace = [];
 
         // loop the matches
         foreach ($matches as $match) {
@@ -234,8 +234,8 @@ class Css extends Minify
     {
         $regex = '/url\((["\']?)(.+?)\\1\)/i';
         if ($this->importExtensions && preg_match_all($regex, $content, $matches, PREG_SET_ORDER)) {
-            $search = array();
-            $replace = array();
+            $search = [];
+            $replace = [];
 
             // loop the matches
             foreach ($matches as $match) {
@@ -277,7 +277,7 @@ class Css extends Minify
      *
      * @return string The minified data
      */
-    public function execute($path = null, $parents = array())
+    public function execute($path = null, $parents = [])
     {
         $content = '';
 
@@ -387,15 +387,15 @@ class Css extends Minify
         );
 
         // find all relative urls in css
-        $matches = array();
+        $matches = [];
         foreach ($relativeRegexes as $relativeRegex) {
             if (preg_match_all($relativeRegex, $content, $regexMatches, PREG_SET_ORDER)) {
                 $matches = [...$matches, ...$regexMatches];
             }
         }
 
-        $search = array();
-        $replace = array();
+        $search = [];
+        $replace = [];
 
         // loop all urls
         foreach ($matches as $match) {

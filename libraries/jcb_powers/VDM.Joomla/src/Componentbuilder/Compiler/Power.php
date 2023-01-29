@@ -542,7 +542,7 @@ class Power implements PowerInterface
 				$this->active[$guid]->use_selection
 			)) ? json_decode((string) $this->active[$guid]->use_selection, true) : null;
 
-		if ($this->active[$guid]->use_selection)
+		if (ArrayHelper::check($this->active[$guid]->use_selection))
 		{
 			$use = array_values(array_map(function ($u) use(&$as) {
 				// track the AS options
@@ -550,6 +550,10 @@ class Power implements PowerInterface
 				// return the guid
 				return $u['use'];
 			}, $this->active[$guid]->use_selection));
+		}
+		else
+		{
+			$this->active[$guid]->use_selection = null;
 		}
 	}
 
@@ -569,7 +573,7 @@ class Power implements PowerInterface
 				$this->active[$guid]->load_selection
 			)) ? json_decode((string) $this->active[$guid]->load_selection, true) : null;
 
-		if ($this->active[$guid]->load_selection)
+		if (ArrayHelper::check($this->active[$guid]->load_selection))
 		{
 			// load use ids
 			array_map(
@@ -577,6 +581,10 @@ class Power implements PowerInterface
 				fn($power) => $this->set($power['load']),
 				$this->active[$guid]->load_selection
 			);
+		}
+		else
+		{
+			$this->active[$guid]->load_selection = null;
 		}
 	}
 

@@ -272,7 +272,7 @@ class Fields
 							&& 'tag' !== $field['settings']->type_name)
 						{
 							// build temp field bucket
-							$tmpfield             = array();
+							$tmpfield             = [];
 							$tmpfield['settings'] = new \stdClass();
 
 							// convert the xml json string to normal string

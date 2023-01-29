@@ -137,7 +137,8 @@ class ComponentbuilderViewSearch extends HtmlView
 			// set the mode options
 			$options = [
 				1 => 'COM_COMPONENTBUILDER_SEARCH',
-				2 => 'COM_COMPONENTBUILDER_REPLACE'];
+				2 => 'COM_COMPONENTBUILDER_REPLACE',
+				0 => 'COM_COMPONENTBUILDER_CLEAR'];
 			// add to form
 			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)

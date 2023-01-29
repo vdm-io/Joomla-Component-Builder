@@ -67,7 +67,7 @@ abstract class JsonHelper
 			{
 				if (StringHelper::check($table))
 				{
-					$names = array();
+					$names = [];
 					foreach ($result as $val)
 					{
 						if ($external)

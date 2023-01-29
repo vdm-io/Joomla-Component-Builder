@@ -112,11 +112,11 @@ class Extractor
 			// insure string is not broken
 			$content = $this->placeholder->update_($content);
 			// reset some buckets
-			$lang_holders = array();
-			$lang_check   = array();
-			$lang_only    = array();
-			$js_text      = array();
-			$sc_text      = array();
+			$lang_holders = [];
+			$lang_check   = [];
+			$lang_only    = [];
+			$js_text      = [];
+			$sc_text      = [];
 			// first get the Joomla .JText._()
 			if (in_array('Joomla' . '.JText._(', $lang_string_targets))
 			{

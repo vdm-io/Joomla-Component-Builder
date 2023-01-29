@@ -283,7 +283,7 @@ class Dynamicget
 				// build relationship
 				$_relationship = array_map(
 					function ($op) use (&$_part_of_a) {
-						$bucket = array();
+						$bucket = [];
 						// array(on_field_as, on_field)
 						$bucket['on_field'] = array_map(
 							'trim',
@@ -386,11 +386,11 @@ class Dynamicget
 			))
 			{
 				// start the part of a table bucket
-				$_part_of_a = array();
+				$_part_of_a = [];
 				// build relationship
 				$_relationship = array_map(
 					function ($op) use (&$_part_of_a) {
-						$bucket = array();
+						$bucket = [];
 						// array(on_field_as, on_field)
 						$bucket['on_field'] = array_map(
 							'trim',

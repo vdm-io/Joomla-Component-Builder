@@ -1,0 +1,132 @@
+<?php
+/**
+ * @package    Joomla.Component.Builder
+ *
+ * @created    4th September, 2022
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
+ * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
+
+
+use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
+use VDM\Joomla\Componentbuilder\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Component;
+use VDM\Joomla\Componentbuilder\Interfaces\Mappersingleinterface;
+use VDM\Joomla\Componentbuilder\Abstraction\MapperSingle;
+
+
+/**
+ * Compiler Utilities Paths
+ * 
+ * @since 3.2.0
+ */
+class Paths extends MapperSingle implements Mappersingleinterface
+{
+	/**
+	 * Compiler Config
+	 *
+	 * @var    Config
+	 * @since 3.2.0
+	 **/
+	protected Config $config;
+
+	/**
+	 * Compiler Component
+	 *
+	 * @var    Component
+	 * @since 3.2.0
+	 **/
+	protected Component $component;
+
+	/**
+	 * Constructor
+	 *
+	 * @param Config|null        $config       The compiler config object.
+	 * @param Component|null     $component    The component class.
+	 *
+	 * @since 3.2.0
+	 */
+	public function __construct(?Config $config = null, ?Component $component = null)
+	{
+		$this->config = $config ?: Compiler::_('Config');
+		$this->component = $component ?: Compiler::_('Component');
+
+		// set the template path
+		$this->set('template_path',
+			$this->config->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/joomla_'
+			. $this->config->joomla_versions[$this->config->joomla_version]['folder_key']
+		);
+
+		// set component sales name
+		$this->set('component_sales_name',
+			'com_' . $this->component->get('sales_name') . '__J'
+			. $this->config->joomla_version
+		);
+
+		// set component backup name
+		$this->set('component_backup_name',
+			'com_' . $this->component->get('sales_name') . '_v' . str_replace(
+				'.', '_', (string) $this->component->get('component_version')
+			) . '__J' . $this->config->joomla_version
+		);
+
+		// set component folder name
+		$this->set('component_folder_name',
+			'com_' . $this->component->get('name_code') . '_v' . str_replace(
+				'.', '_', (string) $this->component->get('component_version')
+			) . '__J' . $this->config->joomla_version
+		);
+
+		// set component path
+		$this->set('component_path',
+			$this->config->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
+			. $this->get('component_folder_name')
+		);
+
+		// set the template path for custom TODO: just use custom_folder_path in config
+		$this->set('template_path_custom',
+			$this->config->get(
+				'custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR . '/custom'
+			)
+		);
+	}
+
+	/**
+	 * getting any valid paths
+	 *
+	 * @param   string       $key     The value's key/path name
+	 *
+	 * @return  string    The path found as a string
+	 * @since 3.2.0
+	 * @throws  \InvalidArgumentException If $key is not a valid function name.
+	 */
+	public function __get(string $key): string
+	{
+		// check if it has been set
+		if ($this->exist($key))
+		{
+			return $this->get($key);
+		}
+
+		throw new \InvalidArgumentException(sprintf('Path %s could not be found in the Paths Class.', $key));
+	}
+
+	/**
+	 * Model the key
+	 *
+	 * @param   string   $key  The key to model
+	 *
+	 * @return  string
+	 * @since 3.2.0
+	 */
+	protected function key(string $key): string
+	{
+		return $key;
+	}
+
+}
+

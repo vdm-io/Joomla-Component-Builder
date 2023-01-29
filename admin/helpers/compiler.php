@@ -80,7 +80,7 @@ class Compiler extends Infusion
 	{
 		// to check the compiler speed
 		$this->time_start = microtime(true);
-		CFactory::_('Counter')->start();
+		CFactory::_('Utilities.Counter')->start();
 		// first we run the parent constructors
 		if (parent::__construct())
 		{
@@ -104,9 +104,9 @@ class Compiler extends Infusion
 			if (CFactory::_('Config')->remove_site_folder && CFactory::_('Config')->remove_site_edit_folder)
 			{
 				// first remove the files and folders
-				$this->removeFolder($this->componentPath . '/site');
+				CFactory::_('Utilities.Folder')->remove(CFactory::_('Utilities.Paths')->component_path . '/site');
 				// clear form component xml
-				$xmlPath        = $this->componentPath . '/'
+				$xmlPath        = CFactory::_('Utilities.Paths')->component_path . '/'
 					. CFactory::_('Content')->get('component') . '.xml';
 				$componentXML   = FileHelper::getContent($xmlPath);
 				$textToSite     = GetHelper::between(
@@ -120,7 +120,7 @@ class Compiler extends Infusion
 					      '<languages folder="site">' . $textToSiteLang
 					      . "</languages>"), array('', ''), (string) $componentXML
 				);
-				$this->writeFile($xmlPath, $componentXML);
+				CFactory::_('Utilities.File')->write($xmlPath, $componentXML);
 			}
 			// for plugin event TODO change event api signatures
 			$component_context = CFactory::_('Config')->component_context;
@@ -363,7 +363,7 @@ class Compiler extends Infusion
 			// end the timer here
 			$this->time_end        = microtime(true);
 			$this->secondsCompiled = $this->time_end - $this->time_start;
-			CFactory::_('Counter')->end();
+			CFactory::_('Utilities.Counter')->end();
 
 			// completed the compilation
 			return true;
@@ -380,15 +380,13 @@ class Compiler extends Infusion
 	 */
 	protected function updateFiles()
 	{
-		if (isset($this->newFiles['static'])
-			&& ArrayHelper::check($this->newFiles['static'])
-			&& isset($this->newFiles['dynamic'])
-			&& ArrayHelper::check($this->newFiles['dynamic']))
+		if (CFactory::_('Utilities.Files')->exists('static')
+			&& CFactory::_('Utilities.Files')->exists('dynamic'))
 		{
 			// get the bom file
 			$bom = FileHelper::getContent(CFactory::_('Config')->bom_path);
 			// first we do the static files
-			foreach ($this->newFiles['static'] as $static)
+			foreach (CFactory::_('Utilities.Files')->get('static') as $static)
 			{
 				if (File::exists($static['path']))
 				{
@@ -398,7 +396,7 @@ class Compiler extends Infusion
 				}
 			}
 			// now we do the dynamic files
-			foreach ($this->newFiles['dynamic'] as $view => $files)
+			foreach (CFactory::_('Utilities.Files')->get('dynamic') as $view => $files)
 			{
 				if (CFactory::_('Content')->exist_($view)
 					&& ArrayHelper::check(
@@ -423,17 +421,14 @@ class Compiler extends Infusion
 				CFactory::_('Content')->remove_($view);
 			}
 			// free up some memory
-			unset($this->newFiles['dynamic']);
+			CFactory::_('Utilities.Files')->remove('dynamic');
 			// do modules if found
 			if (CFactory::_('Joomlamodule.Data')->exists())
 			{
 				foreach (CFactory::_('Joomlamodule.Data')->get() as $module)
 				{
 					if (ObjectHelper::check($module)
-						&& isset($this->newFiles[$module->key])
-						&& ArrayHelper::check(
-							$this->newFiles[$module->key]
-						))
+						&& CFactory::_('Utilities.Files')->exists($module->key))
 					{
 						// move field or rule if needed
 						if (isset($module->fields_rules_paths)
@@ -489,7 +484,7 @@ class Compiler extends Infusion
 							}
 						}
 						// update the module files
-						foreach ($this->newFiles[$module->key] as $module_file)
+						foreach (CFactory::_('Utilities.Files')->get($module->key) as $module_file)
 						{
 							if (File::exists($module_file['path']))
 							{
@@ -500,7 +495,7 @@ class Compiler extends Infusion
 							}
 						}
 						// free up some memory
-						unset($this->newFiles[$module->key]);
+						CFactory::_('Utilities.Files')->remove($module->key);
 						CFactory::_('Content')->remove_($module->key);
 					}
 				}
@@ -511,10 +506,7 @@ class Compiler extends Infusion
 				foreach (CFactory::_('Joomlaplugin.Data')->get() as $plugin)
 				{
 					if (ObjectHelper::check($plugin)
-						&& isset($this->newFiles[$plugin->key])
-						&& ArrayHelper::check(
-							$this->newFiles[$plugin->key]
-						))
+						&& CFactory::_('Utilities.Files')->exists($plugin->key))
 					{
 						// move field or rule if needed
 						if (isset($plugin->fields_rules_paths)
@@ -570,7 +562,7 @@ class Compiler extends Infusion
 							}
 						}
 						// update the plugin files
-						foreach ($this->newFiles[$plugin->key] as $plugin_file)
+						foreach (CFactory::_('Utilities.Files')->get($plugin->key) as $plugin_file)
 						{
 							if (File::exists($plugin_file['path']))
 							{
@@ -581,7 +573,7 @@ class Compiler extends Infusion
 							}
 						}
 						// free up some memory
-						unset($this->newFiles[$plugin->key]);
+						CFactory::_('Utilities.Files')->remove($plugin->key);
 						CFactory::_('Content')->remove_($plugin->key);
 					}
 				}
@@ -592,13 +584,10 @@ class Compiler extends Infusion
 				foreach (CFactory::_('Power')->active as $power)
 				{
 					if (ObjectHelper::check($power)
-						&& isset($this->newFiles[$power->key])
-						&& ArrayHelper::check(
-							$this->newFiles[$power->key]
-						))
+						&& CFactory::_('Utilities.Files')->exists($power->key))
 					{
 						// update the power files
-						foreach ($this->newFiles[$power->key] as $power_file)
+						foreach (CFactory::_('Utilities.Files')->get($power->key) as $power_file)
 						{
 							if (File::exists($power_file['path']))
 							{
@@ -609,7 +598,7 @@ class Compiler extends Infusion
 							}
 						}
 						// free up some memory
-						unset($this->newFiles[$power->key]);
+						CFactory::_('Utilities.Files')->remove($power->key);
 						CFactory::_('Content')->remove_($power->key);
 					}
 				}
@@ -681,9 +670,9 @@ class Compiler extends Infusion
 			      &$view)
 		);
 		// add answer back to file
-		$this->writeFile($path, $answer);
+		CFactory::_('Utilities.File')->write($path, $answer);
 		// count the file lines
-		CFactory::_('Counter')->line += substr_count((string) $answer, PHP_EOL);
+		CFactory::_('Utilities.Counter')->line += substr_count((string) $answer, PHP_EOL);
 	}
 
 	/**
@@ -699,7 +688,7 @@ class Compiler extends Infusion
 			&& isset($this->updateServerFileName)
 			&& $this->dynamicIntegration)
 		{
-			$update_server_xml_path = $this->componentPath . '/'
+			$update_server_xml_path = CFactory::_('Utilities.Paths')->component_path . '/'
 				. $this->updateServerFileName . '.xml';
 			// make sure we have the correct file
 			if (File::exists($update_server_xml_path)
@@ -843,7 +832,7 @@ class Compiler extends Infusion
 	{
 		// do a final run to update the readme file
 		$two = 0;
-		foreach ($this->newFiles['static'] as $static)
+		foreach (CFactory::_('Utilities.Files')->get('static') as $static)
 		{
 			if (('README.md' === $static['name']
 					|| 'README.txt' === $static['name'])
@@ -858,23 +847,23 @@ class Compiler extends Infusion
 				break;
 			}
 		}
-		unset($this->newFiles['static']);
+		CFactory::_('Utilities.Files')->remove('static');
 	}
 
 	private function setReadMe($path)
 	{
 		// set readme data if not set already
 		if (!CFactory::_('Content')->exist('LINE_COUNT')
-			|| CFactory::_('Content')->get('LINE_COUNT') != CFactory::_('Counter')->line)
+			|| CFactory::_('Content')->get('LINE_COUNT') != CFactory::_('Utilities.Counter')->line)
 		{
-			CFactory::_('Counter')->set();
+			CFactory::_('Utilities.Counter')->set();
 		}
 		// get the file
 		$string = FileHelper::getContent($path);
 		// update the file
 		$answer = CFactory::_('Placeholder')->update($string, CFactory::_('Content')->active);
 		// add to zip array
-		$this->writeFile($path, $answer);
+		CFactory::_('Utilities.File')->write($path, $answer);
 	}
 
 	/**
@@ -910,20 +899,21 @@ class Compiler extends Infusion
 				. CFactory::_('Config')->get('version', 3);
 			// for plugin event TODO change event api signatures
 			$component_context = CFactory::_('Config')->component_context;
+			$component_path = CFactory::_('Utilities.Paths')->component_path;
 			// Trigger Event: jcb_ce_onBeforeUpdateRepo
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onBeforeUpdateRepo',
-				array(&$component_context, &$this->componentPath,
+				array(&$component_context, &$component_path,
 				      &$repoFullPath, &$this->componentData)
 			);
 			// remove old data
-			$this->removeFolder($repoFullPath, CFactory::_('Component')->get('toignore'));
+			CFactory::_('Utilities.Folder')->remove($repoFullPath, CFactory::_('Component')->get('toignore'));
 			// set the new data
-			Folder::copy($this->componentPath, $repoFullPath, '', true);
+			Folder::copy(CFactory::_('Utilities.Paths')->component_path, $repoFullPath, '', true);
 			// Trigger Event: jcb_ce_onAfterUpdateRepo
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterUpdateRepo',
-				array(&$component_context, &$this->componentPath,
+				array(&$component_context, &$component_path,
 				      &$repoFullPath, &$this->componentData)
 			);
 
@@ -948,7 +938,7 @@ class Compiler extends Infusion
 							      &$repoFullPath, &$module)
 						);
 						// remove old data
-						$this->removeFolder(
+						CFactory::_('Utilities.Folder')->remove(
 							$repoFullPath, CFactory::_('Component')->get('toignore')
 						);
 						// set the new data
@@ -985,7 +975,7 @@ class Compiler extends Infusion
 							      &$repoFullPath, &$plugin)
 						);
 						// remove old data
-						$this->removeFolder(
+						CFactory::_('Utilities.Folder')->remove(
 							$repoFullPath, CFactory::_('Component')->get('toignore')
 						);
 						// set the new data
@@ -1007,22 +997,25 @@ class Compiler extends Infusion
 	private function zipComponent()
 	{
 		// Component Folder Name
-		$this->filepath['component-folder'] = $this->componentFolderName;
+		$this->filepath['component-folder'] = CFactory::_('Utilities.Paths')->component_folder_name;
 		// the name of the zip file to create
 		$this->filepath['component'] = $this->tempPath . '/'
 			. $this->filepath['component-folder'] . '.zip';
 		// for plugin event TODO change event api signatures
 		$component_context = CFactory::_('Config')->component_context;
+		$component_path = CFactory::_('Utilities.Paths')->component_path;
+		$component_sales_name = CFactory::_('Utilities.Paths')->component_sales_name;
+		$component_folder_name = CFactory::_('Utilities.Paths')->component_folder_name;
 		// Trigger Event: jcb_ce_onBeforeZipComponent
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeZipComponent',
-			array(&$component_context, &$this->componentPath,
+			array(&$component_context, &$component_path,
 			      &$this->filepath['component'], &$this->tempPath,
-			      &$this->componentFolderName, &$this->componentData)
+			      &$component_folder_name, &$this->componentData)
 		);
 		//create the zip file
 		if (FileHelper::zip(
-			$this->componentPath, $this->filepath['component']
+			CFactory::_('Utilities.Paths')->component_path, $this->filepath['component']
 		))
 		{
 			// now move to backup if zip was made and backup is required
@@ -1039,7 +1032,7 @@ class Compiler extends Infusion
 				// copy the zip to backup path
 				File::copy(
 					$this->filepath['component'],
-					$this->backupPath . '/' . $this->componentBackupName
+					$this->backupPath . '/' . CFactory::_('Utilities.Paths')->component_backup_name
 					. '.zip'
 				);
 			}
@@ -1055,12 +1048,12 @@ class Compiler extends Infusion
 						'jcb_ce_onBeforeMoveToServer',
 						array(&$component_context,
 						      &$this->filepath['component'], &$this->tempPath,
-						      &$this->componentSalesName, &$this->componentData)
+						      &$component_sales_name, &$this->componentData)
 					);
 					// move to server
 					ComponentbuilderHelper::moveToServer(
 						$this->filepath['component'],
-						$this->componentSalesName . '.zip',
+						$component_sales_name . '.zip',
 						(int) CFactory::_('Component')->get('sales_server'),
 						CFactory::_('Component')->get('sales_server_protocol')
 					);
@@ -1070,11 +1063,11 @@ class Compiler extends Infusion
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterZipComponent',
 				array(&$component_context, &$this->filepath['component'],
-				      &$this->tempPath, &$this->componentFolderName,
+				      &$this->tempPath, &$component_folder_name,
 				      &$this->componentData)
 			);
 			// remove the component folder since we are done
-			if ($this->removeFolder($this->componentPath))
+			if (CFactory::_('Utilities.Folder')->remove(CFactory::_('Utilities.Paths')->component_path))
 			{
 				return true;
 			}
@@ -1170,7 +1163,7 @@ class Compiler extends Infusion
 							                                 &$module)
 						);
 						// remove the module folder since we are done
-						$this->removeFolder($module->folder_path);
+						CFactory::_('Utilities.Folder')->remove($module->folder_path);
 					}
 				}
 			}
@@ -1264,7 +1257,7 @@ class Compiler extends Infusion
 							                                 &$plugin)
 						);
 						// remove the plugin folder since we are done
-						$this->removeFolder($plugin->folder_path);
+						CFactory::_('Utilities.Folder')->remove($plugin->folder_path);
 					}
 				}
 			}
@@ -1288,7 +1281,7 @@ class Compiler extends Infusion
 					$target['hashtarget'][1]
 				))
 			{
-				$file      = $this->componentPath . '/' . $target['path'];
+				$file      = CFactory::_('Utilities.Paths')->component_path . '/' . $target['path'];
 				$size      = (int) $target['hashtarget'][0];
 				$hash      = $target['hashtarget'][1];
 				$cut       = $size - 1;

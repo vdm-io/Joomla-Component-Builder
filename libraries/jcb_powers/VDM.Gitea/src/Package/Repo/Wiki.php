@@ -70,7 +70,7 @@ class Wiki extends AbstractPackage
 		$path = '/markdown';
 
 		// Get headers
-		$headers = $this->client->getOption('headers', array());
+		$headers = $this->client->getOption('headers', []);
 
 		$headers['accept'] = 'text/html';
 		$headers['Content-Type'] = 'application/json';

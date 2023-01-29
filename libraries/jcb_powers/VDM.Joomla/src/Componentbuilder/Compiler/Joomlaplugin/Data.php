@@ -669,17 +669,17 @@ class Data
 								if (!isset($plugin->form_files[$form['file']]))
 								{
 									$plugin->form_files[$form['file']]
-										= array();
+										= [];
 								}
 								if (!isset($plugin->form_files[$form['file']][$form['fields_name']]))
 								{
 									$plugin->form_files[$form['file']][$form['fields_name']]
-										= array();
+										= [];
 								}
 								if (!isset($plugin->form_files[$form['file']][$form['fields_name']][$form['fieldset']]))
 								{
 									$plugin->form_files[$form['file']][$form['fields_name']][$form['fieldset']]
-										= array();
+										= [];
 								}
 								// do some house cleaning (for fields)
 								foreach ($form['fields'] as $field)
@@ -701,12 +701,12 @@ class Data
 								if (!isset($plugin->config_fields[$form['fields_name']]))
 								{
 									$plugin->config_fields[$form['fields_name']]
-										= array();
+										= [];
 								}
 								if (!isset($plugin->config_fields[$form['fields_name']][$form['fieldset']]))
 								{
 									$plugin->config_fields[$form['fields_name']][$form['fieldset']]
-										= array();
+										= [];
 								}
 								// do some house cleaning (for fields)
 								foreach ($form['fields'] as $field)

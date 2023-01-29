@@ -114,10 +114,10 @@ class Converter implements ConverterInterface
         // $path could theoretically be empty (e.g. no path is given), in which
         // case it shouldn't expand to array(''), which would compare to one's
         // root /
-        $path1 = $path1 ? explode('/', $path1) : array();
-        $path2 = $path2 ? explode('/', $path2) : array();
+        $path1 = $path1 ? explode('/', $path1) : [];
+        $path2 = $path2 ? explode('/', $path2) : [];
 
-        $shared = array();
+        $shared = [];
 
         // compare paths & strip identical ancestors
         foreach ($path1 as $i => $chunk) {

@@ -31,7 +31,7 @@ abstract class ClassfunctionHelper
 	 * 
 	 * @since  3.0.9
 	 */
-	public static function safe($name)
+	public static function safe($name): string
 	{
 		// remove numbers if the first character is a number
 		if (is_numeric(substr((string) $name, 0, 1)))

@@ -37,7 +37,7 @@ class Structure extends Get
 	 * The folder counter
 	 *
 	 * @var     int
-	 * @deprecated 3.3 Use CFactory::_('Counter')->folder;
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Counter')->folder;
 	 */
 	public $folderCount = 0;
 
@@ -45,7 +45,7 @@ class Structure extends Get
 	 * The file counter
 	 *
 	 * @var     int
-	 * @deprecated 3.3 Use CFactory::_('Counter')->file;
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Counter')->file;
 	 */
 	public $fileCount = 0;
 
@@ -62,7 +62,7 @@ class Structure extends Get
 	 *
 	 * @var     int
 	 * @deprecated 3.3
-	 * @deprecated 3.3 Use CFactory::_('Counter')->line;
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Counter')->line;
 	 */
 	public $lineCount = 0;
 
@@ -246,6 +246,7 @@ class Structure extends Get
 	 * The template path
 	 *
 	 * @var     string
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Paths')->template_path;
 	 */
 	public $templatePath;
 
@@ -253,6 +254,7 @@ class Structure extends Get
 	 * The custom template path
 	 *
 	 * @var     string
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Paths')->template_path_custom;
 	 */
 	public $templatePathCustom;
 
@@ -313,6 +315,7 @@ class Structure extends Get
 	 * The Component Sales name
 	 *
 	 * @var      string
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Paths')->component_sales_name;
 	 */
 	public $componentSalesName;
 
@@ -320,6 +323,7 @@ class Structure extends Get
 	 * The Component Backup name
 	 *
 	 * @var      string
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Paths')->component_backup_name;
 	 */
 	public $componentBackupName;
 
@@ -327,6 +331,7 @@ class Structure extends Get
 	 * The Component Folder name
 	 *
 	 * @var      string
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Paths')->component_folder_name;
 	 */
 	public $componentFolderName;
 
@@ -334,6 +339,7 @@ class Structure extends Get
 	 * The Component path
 	 *
 	 * @var      string
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Paths')->component_path;
 	 */
 	public $componentPath;
 
@@ -341,6 +347,7 @@ class Structure extends Get
 	 * The Dynamic paths
 	 *
 	 * @var      array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('dynamic_paths');
 	 */
 	public $dynamicPaths = array();
 
@@ -362,6 +369,7 @@ class Structure extends Get
 	 * The new files
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Files');
 	 */
 	public $newFiles = array();
 
@@ -422,38 +430,16 @@ class Structure extends Get
 			CFactory::_('Content')->set('EXSTRA_SITE_FILES', '');
 			// set incase no extra media files are loaded
 			CFactory::_('Content')->set('EXSTRA_MEDIA_FILES', '');
-			// set the template path
-			$this->templatePath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/joomla_'
-				. CFactory::_('Config')->joomla_versions[CFactory::_('Config')->joomla_version]['folder_key'];
-			// set some default names
-			$this->componentSalesName  = 'com_'
-				. CFactory::_('Component')->get('sales_name') . '__J'
-				. CFactory::_('Config')->joomla_version;
-			$this->componentBackupName = 'com_'
-				. CFactory::_('Component')->get('sales_name') . '_v' . str_replace(
-					'.', '_', (string) CFactory::_('Component')->get('component_version')
-				) . '__J' . CFactory::_('Config')->joomla_version;
-			$this->componentFolderName = 'com_'
-				. CFactory::_('Component')->get('name_code') . '_v' . str_replace(
-					'.', '_', (string) CFactory::_('Component')->get('component_version')
-				) . '__J' . CFactory::_('Config')->joomla_version;
-			// set component folder path
-			$this->componentPath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
-				. $this->componentFolderName;
-			// set the template path for custom
-			$this->templatePathCustom = $this->params->get(
-				'custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR . '/custom'
-			);
 			// make sure there is no old build
-			$this->removeFolder($this->componentPath);
+			CFactory::_('Utilities.Folder')->remove(CFactory::_('Utilities.Paths')->component_path);
 			// load the libraries files/folders and url's
-			$this->setLibraries();
+			CFactory::_('Library.Builder')->run();
 			// load the powers files/folders
-			$this->buildPowers();
+			CFactory::_('Power.Builder')->run();
 			// load the module files/folders and url's
-			$this->buildModules();
+			CFactory::_('Joomlamodule.Builder')->run();
 			// load the plugin files/folders and url's
-			$this->buildPlugins();
+			CFactory::_('Joomlaplugin.Builder')->run();
 			// set the Joomla Version Data
 			$this->joomlaVersionData = $this->setJoomlaVersionData();
 			// for plugin event TODO change event api signatures
@@ -491,1276 +477,55 @@ class Structure extends Get
 	 * Build the Powers files, folders
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Power.Builder')->run();
 	 */
 	private function buildPowers()
 	{
-		if (ArrayHelper::check(CFactory::_('Power')->active))
-		{
-			// for plugin event TODO change event api signatures
-			$this->powers = CFactory::_('Power')->active;
-			$component_context = CFactory::_('Config')->component_context;
-			// Trigger Event: jcb_ce_onBeforeSetModules
-			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildPowers',
-				array(&$component_context, &$this->powers)
-			);
-			// for plugin event TODO change event api signatures
-			CFactory::_('Power')->active = $this->powers;
-			// we track the creation of htaccess files
-			$htaccess = array();
-			foreach (CFactory::_('Power')->active as $power)
-			{
-				if (ObjectHelper::check($power)
-					&& isset($power->path)
-					&& StringHelper::check(
-						$power->path
-					))
-				{
-					// activate dynamic folders
-					$this->setDynamicFolders();
-					// power path
-					$power->full_path        = $this->componentPath . '/'
-						. $power->path;
-					$power->full_path_jcb    = $this->componentPath . '/'
-						. $power->path_jcb;
-					$power->full_path_parent = $this->componentPath . '/'
-						. $power->path_parent;
-					// set the power paths
-					$this->dynamicPaths[$power->key] = $power->full_path_parent;
-					// create the power folder if it does not exist
-					// we do it like this to add html files to each part
-					$this->createFolder($power->full_path_jcb);
-					$this->createFolder($power->full_path_parent);
-					$this->createFolder($power->full_path);
-					// set power file
-					$fileDetails = array('path' => $power->full_path . '/'
-						. $power->file_name . '.php',
-					                     'name' => $power->file_name . '.php',
-					                     'zip' => $power->file_name . '.php');
-					$bom = '<?php' . PHP_EOL . '// A POWER FILE' .
-						PHP_EOL . Placefix::_h('BOM') . PHP_EOL;
-					// add custom override if found
-					if ($power->add_licensing_template == 2)
-					{
-						$bom = '<?php' . PHP_EOL . $power->licensing_template;
-					}
-					$this->writeFile(
-						$fileDetails['path'],
-						$bom . PHP_EOL . Placefix::_h('POWERCODE')
-					);
-					$this->newFiles[$power->key][] = $fileDetails;
-					// count the file created
-					CFactory::_('Counter')->file++;
-					if (!isset($htaccess[$power->path_jcb]))
-					{
-						// set the htaccess data
-						$data = '# Apache 2.4+' . PHP_EOL .
-							'<IfModule mod_authz_core.c>' . PHP_EOL .
-							'  Require all denied' . PHP_EOL .
-							'</IfModule>' . PHP_EOL . PHP_EOL .
-							'# Apache 2.0-2.2' . PHP_EOL .
-							'<IfModule !mod_authz_core.c>' . PHP_EOL .
-							'  Deny from all' . PHP_EOL .
-							'</IfModule>' . PHP_EOL;
-						// now we must add the .htaccess file
-						$fileDetails = array('path' => $power->full_path_jcb . '/.htaccess',
-						                     'name' => '.htaccess',
-						                     'zip'  => '.htaccess');
-						$this->writeFile(
-							$fileDetails['path'], $data
-						);
-						$this->newFiles[$power->key][] = $fileDetails;
-						// count the file created
-						CFactory::_('Counter')->file++;
-						// now we must add the htaccess.txt file where the zip package my not get the [.] files
-						$fileDetails = array('path' => $power->full_path_jcb . '/htaccess.txt',
-						                     'name' => 'htaccess.txt',
-						                     'zip'  => 'htaccess.txt');
-						$this->writeFile(
-							$fileDetails['path'], $data
-						);
-						$this->newFiles[$power->key][] = $fileDetails;
-						// count the file created
-						CFactory::_('Counter')->file++;
-						// now we must add the web.config file
-						$fileDetails = array('path' => $power->full_path_jcb . '/web.config',
-						                     'name' => 'web.config',
-						                     'zip'  => 'web.config');
-						$this->writeFile(
-							$fileDetails['path'],
-							'<?xml version="1.0"?>' . PHP_EOL .
-							'    <system.web>' . PHP_EOL .
-							'        <authorization>' . PHP_EOL .
-							'            <deny users="*" />' . PHP_EOL .
-							'        </authorization>' . PHP_EOL .
-							'    </system.web>' . PHP_EOL .
-							'</configuration>' . PHP_EOL
-						);
-						$this->newFiles[$power->key][] = $fileDetails;
-						// count the file created
-						CFactory::_('Counter')->file++;
-						// we set these files only once
-						$htaccess[$power->path_jcb] = true;
-					}
-				}
-			}
-		}
+		CFactory::_('Power.Builder')->run();
 	}
 
 	/**
 	 * Build the Modules files, folders, url's and config
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Joomlamodule.Builder')->run();
 	 */
 	private function buildModules()
 	{
-		if (CFactory::_('Joomlamodule.Data')->exists())
-		{
-			// for plugin event TODO change event api signatures
-			$component_context = CFactory::_('Config')->component_context;
-			$modules = CFactory::_('Joomlamodule.Data')->get();
-			// Trigger Event: jcb_ce_onBeforeSetModules
-			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildModules',
-				array(&$component_context, &$modules)
-			);
-			foreach ($modules as $module)
-			{
-				if (ObjectHelper::check($module)
-					&& isset($module->folder_name)
-					&& StringHelper::check(
-						$module->folder_name
-					))
-				{
-					// module path
-					$module->folder_path = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
-						. $module->folder_name;
-					// set the module paths
-					$this->dynamicPaths[$module->key] = $module->folder_path;
-					// make sure there is no old build
-					$this->removeFolder($module->folder_path);
-					// creat the main module folder
-					$this->createFolder($module->folder_path);
-					// set main mod file
-					$fileDetails = array('path' => $module->folder_path . '/'
-						. $module->file_name . '.php',
-					                     'name' => $module->file_name . '.php',
-					                     'zip'  => $module->file_name . '.php');
-					$this->writeFile(
-						$fileDetails['path'],
-						'<?php' . PHP_EOL . '// main modfile' .
-						PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
-						PHP_EOL . '// No direct access to this file' . PHP_EOL .
-						"defined('_JEXEC') or die('Restricted access');"
-						. PHP_EOL .
-						Placefix::_h('MODCODE')
-					);
-					$this->newFiles[$module->key][] = $fileDetails;
-					// count the file created
-					CFactory::_('Counter')->file++;
-					// set custom_get
-					if ($module->custom_get)
-					{
-						$fileDetails = array('path' => $module->folder_path
-							. '/data.php',
-						                     'name' => 'data.php',
-						                     'zip'  => 'data.php');
-						$this->writeFile(
-							$fileDetails['path'],
-							'<?php' . PHP_EOL . '// get data file' .
-							PHP_EOL . Placefix::_h('BOM') . PHP_EOL
-							.
-							PHP_EOL . '// No direct access to this file'
-							. PHP_EOL .
-							"defined('_JEXEC') or die('Restricted access');"
-							. PHP_EOL . PHP_EOL .
-							'/**' . PHP_EOL .
-							' * Module ' . $module->official_name . ' Data'
-							. PHP_EOL .
-							' */' . PHP_EOL .
-							"class " . $module->class_data_name
-							. ' extends \JObject' . PHP_EOL .
-							"{" . Placefix::_h('DYNAMICGETS') . "}"
-							. PHP_EOL
-						);
-						$this->newFiles[$module->key][] = $fileDetails;
-						// count the file created
-						CFactory::_('Counter')->file++;
-					}
-					// set helper file
-					if ($module->add_class_helper >= 1)
-					{
-						$fileDetails = array('path' => $module->folder_path
-							. '/helper.php',
-						                     'name' => 'helper.php',
-						                     'zip'  => 'helper.php');
-						$this->writeFile(
-							$fileDetails['path'],
-							'<?php' . PHP_EOL . '// helper file' .
-							PHP_EOL . Placefix::_h('BOM') . PHP_EOL
-							.
-							PHP_EOL . '// No direct access to this file'
-							. PHP_EOL .
-							"defined('_JEXEC') or die('Restricted access');"
-							. PHP_EOL .
-							Placefix::_h('HELPERCODE')
-						);
-						$this->newFiles[$module->key][] = $fileDetails;
-						// count the file created
-						CFactory::_('Counter')->file++;
-					}
-					// set main xml file
-					$fileDetails = array('path' => $module->folder_path . '/'
-						. $module->file_name . '.xml',
-					                     'name' => $module->file_name . '.xml',
-					                     'zip'  => $module->file_name . '.xml');
-					$this->writeFile(
-						$fileDetails['path'],
-						$this->getModuleXMLTemplate($module)
-					);
-					$this->newFiles[$module->key][] = $fileDetails;
-					// count the file created
-					CFactory::_('Counter')->file++;
-					// set tmpl folder
-					$this->createFolder($module->folder_path . '/tmpl');
-					// set default file
-					$fileDetails = array('path' => $module->folder_path
-						. '/tmpl/default.php',
-					                     'name' => 'default.php',
-					                     'zip'  => 'tmpl/default.php');
-					$this->writeFile(
-						$fileDetails['path'],
-						'<?php' . PHP_EOL . '// default tmpl' .
-						PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
-						PHP_EOL . '// No direct access to this file' . PHP_EOL .
-						"defined('_JEXEC') or die('Restricted access');"
-						. PHP_EOL .
-						Placefix::_h('MODDEFAULT')
-					);
-					$this->newFiles[$module->key][] = $fileDetails;
-					// count the file created
-					CFactory::_('Counter')->file++;
-					// set install script if needed
-					if ($module->add_install_script)
-					{
-						$fileDetails = array('path' => $module->folder_path
-							. '/script.php',
-						                     'name' => 'script.php',
-						                     'zip'  => 'script.php');
-						$this->writeFile(
-							$fileDetails['path'],
-							'<?php' . PHP_EOL . '// Script template' .
-							PHP_EOL . Placefix::_h('BOM') . PHP_EOL
-							.
-							PHP_EOL . '// No direct access to this file'
-							. PHP_EOL .
-							"defined('_JEXEC') or die('Restricted access');"
-							. PHP_EOL .
-							Placefix::_h('INSTALLCLASS')
-						);
-						$this->newFiles[$module->key][] = $fileDetails;
-						// count the file created
-						CFactory::_('Counter')->file++;
-					}
-					// set readme if found
-					if ($module->addreadme)
-					{
-						$fileDetails = array('path' => $module->folder_path
-							. '/README.md',
-						                     'name' => 'README.md',
-						                     'zip'  => 'README.md');
-						$this->writeFile($fileDetails['path'], $module->readme);
-						$this->newFiles[$module->key][] = $fileDetails;
-						// count the file created
-						CFactory::_('Counter')->file++;
-					}
-					// set the folders target path
-					$target_path = '';
-					if ($module->target_client === 'administrator')
-					{
-						$target_path = '/administrator';
-					}
-					// check if we have custom fields needed for scripts
-					$module->add_scripts_field = false;
-					$field_script_bucket       = array();
-					// add any css from the fields
-					if (($css = CFactory::_('Customcode.Dispenser')->get(
-							'css_view', $module->key
-						)) !== null
-						&& StringHelper::check($css))
-					{
-						// make sure this script does not have PHP
-						if (strpos((string) $css, '<?php') === false)
-						{
-							// make sure the field is added
-							$module->add_scripts_field = true;
-							// create the css folder
-							$this->createFolder($module->folder_path . '/css');
-							// add the CSS file
-							$fileDetails = array('path' => $module->folder_path
-								. '/css/mod_admin.css',
-							                     'name' => 'mod_admin.css',
-							                     'zip'  => 'mod_admin.css');
-							$this->writeFile(
-								$fileDetails['path'],
-								Placefix::_h('BOM') . PHP_EOL
-								. PHP_EOL . $css
-							);
-							$this->newFiles[$module->key][] = $fileDetails;
-							// count the file created
-							CFactory::_('Counter')->file++;
-							// add the field script
-							$field_script_bucket[] = Indent::_(2) . "//"
-								. Line::_(__Line__, __Class__) . " Custom CSS";
-							$field_script_bucket[] = Indent::_(2)
-								. "\$document->addStyleSheet('" . $target_path
-								. "/modules/" . $module->folder_name
-								. "/css/mod_admin.css', ['version' => 'auto', 'relative' => true]);";
-						}
-					}
-					// add any JavaScript from the fields
-					if (($javascript = CFactory::_('Customcode.Dispenser')->get(
-							'view_footer', $module->key
-						)) !== null
-						&& StringHelper::check($javascript))
-					{
-						// make sure this script does not have PHP
-						if (strpos((string) $javascript, '<?php') === false)
-						{
-							// make sure the field is added
-							$module->add_scripts_field = true;
-							// add the JavaScript file
-							$this->createFolder($module->folder_path . '/js');
-							// add the CSS file
-							$fileDetails = array('path' => $module->folder_path
-								. '/js/mod_admin.js',
-							                     'name' => 'mod_admin.js',
-							                     'zip'  => 'mod_admin.js');
-							$this->writeFile(
-								$fileDetails['path'],
-								Placefix::_h('BOM') . PHP_EOL
-								. PHP_EOL . $javascript
-							);
-							$this->newFiles[$module->key][] = $fileDetails;
-							// count the file created
-							CFactory::_('Counter')->file++;
-							// add the field script
-							$field_script_bucket[] = Indent::_(2) . "//"
-								. Line::_(__Line__, __Class__) . " Custom JS";
-							$field_script_bucket[] = Indent::_(2)
-								. "\$document->addScript('" . $target_path
-								. "/modules/" . $module->folder_name
-								. "/js/mod_admin.js', ['version' => 'auto', 'relative' => true]);";
-						}
-					}
-					// set fields folders if needed
-					if ($module->add_scripts_field
-						|| (isset($module->fields_rules_paths)
-							&& $module->fields_rules_paths == 2))
-					{
-						// create fields folder
-						$this->createFolder($module->folder_path . '/fields');
-						// add the custom script field
-						if ($module->add_scripts_field)
-						{
-							$fileDetails = array('path' => $module->folder_path
-								. '/fields/modadminvvvvvvvdm.php',
-							                     'name' => 'modadminvvvvvvvdm.php',
-							                     'zip'  => 'modadminvvvvvvvdm.php');
-							$this->writeFile(
-								$fileDetails['path'],
-								$this->getModAdminVvvvvvvdm(
-									$field_script_bucket
-								)
-							);
-							$this->newFiles[$module->key][] = $fileDetails;
-							// count the file created
-							CFactory::_('Counter')->file++;
-						}
-					}
-					// set rules folders if needed
-					if (isset($module->fields_rules_paths)
-						&& $module->fields_rules_paths == 2)
-					{
-						// create rules folder
-						$this->createFolder($module->folder_path . '/rules');
-					}
-					// set forms folder if needed
-					if (isset($module->form_files)
-						&& ArrayHelper::check(
-							$module->form_files
-						))
-					{
-						// create forms folder
-						$this->createFolder($module->folder_path . '/forms');
-						// set the template files
-						foreach ($module->form_files as $file => $fields)
-						{
-							// set file details
-							$fileDetails = array('path' => $module->folder_path
-								. '/forms/' . $file . '.xml',
-							                     'name' => $file . '.xml',
-							                     'zip'  => 'forms/' . $file
-								                     . '.xml');
-							// build basic XML
-							$xml = '<?xml version="1.0" encoding="utf-8"?>';
-							$xml .= PHP_EOL . '<!--' . Line::_(__Line__, __Class__)
-								. ' default paths of ' . $file
-								. ' form points to ' . CFactory::_('Config')->component_code_name
-								. ' -->';
-							// search if we must add the component path
-							$add_component_path = false;
-							foreach ($fields as $field_name => $fieldsets)
-							{
-								if (!$add_component_path)
-								{
-									foreach ($fieldsets as $fieldset => $field)
-									{
-										if (!$add_component_path
-											&& isset(
-												$module->fieldsets_paths[$file
-												. $field_name . $fieldset]
-											)
-											&& $module->fieldsets_paths[$file
-											. $field_name . $fieldset] == 1)
-										{
-											$add_component_path = true;
-										}
-									}
-								}
-							}
-							// only add if part of the component field types path is required
-							if ($add_component_path)
-							{
-								$xml .= PHP_EOL . '<form';
-								$xml .= PHP_EOL . Indent::_(1)
-									. 'addrulepath="/administrator/components/com_'
-									. CFactory::_('Config')->component_code_name
-									. '/models/rules"';
-								$xml .= PHP_EOL . Indent::_(1)
-									. 'addfieldpath="/administrator/components/com_'
-									. CFactory::_('Config')->component_code_name
-									. '/models/fields"';
-								$xml .= PHP_EOL . '>';
-							}
-							else
-							{
-								$xml .= PHP_EOL . '<form>';
-							}
-							// add the fields
-							foreach ($fields as $field_name => $fieldsets)
-							{
-								// check if we have an double fields naming set
-								$field_name_inner = '';
-								$field_name_outer = $field_name;
-								if (strpos((string) $field_name, '.') !== false)
-								{
-									$field_names = explode('.', (string) $field_name);
-									if (count((array) $field_names) == 2)
-									{
-										$field_name_outer = $field_names[0];
-										$field_name_inner = $field_names[1];
-									}
-								}
-								$xml .= PHP_EOL . Indent::_(1)
-									. '<fields name="' . $field_name_outer
-									. '">';
-								foreach ($fieldsets as $fieldset => $field)
-								{
-									// default to the field set name
-									$label = $fieldset;
-									if (isset($module->fieldsets_label[$file . $field_name . $fieldset]))
-									{
-										$label = $module->fieldsets_label[$file . $field_name . $fieldset];
-									}
-									// add path to module rules and custom fields
-									if (isset($module->fieldsets_paths[$file . $field_name . $fieldset])
-										&& ($module->fieldsets_paths[$file . $field_name . $fieldset] == 2
-											|| $module->fieldsets_paths[$file . $field_name . $fieldset] == 3))
-									{
-										if ($module->target == 2)
-										{
-											if (!isset($module->add_rule_path[$file . $field_name . $fieldset]))
-											{
-												$module->add_rule_path[$file . $field_name . $fieldset] =
-													'/administrator/modules/'
-													. $module->file_name . '/rules';
-											}
-
-											if (!isset($module->add_field_path[$file . $field_name . $fieldset]))
-											{
-												$module->add_field_path[$file . $field_name . $fieldset] =
-													'/administrator/modules/'
-													. $module->file_name . '/fields';
-											}
-										}
-										else
-										{
-											if (!isset($module->add_rule_path[$file . $field_name . $fieldset]))
-											{
-												$module->add_rule_path[$file . $field_name . $fieldset] =
-													'/modules/' . $module->file_name
-													. '/rules';
-											}
-
-											if (!isset($module->add_field_path[$file . $field_name . $fieldset]))
-											{
-												$module->add_field_path[$file . $field_name . $fieldset] =
-													'/modules/' . $module->file_name
-													. '/fields';
-											}
-										}
-									}
-									// add path to module rules and custom fields
-									if (isset($module->add_rule_path[$file . $field_name . $fieldset])
-										|| isset($module->add_field_path[$file . $field_name . $fieldset]))
-									{
-
-										$xml .= PHP_EOL . Indent::_(1) . '<!--'
-											. Line::_(__Line__, __Class__) . ' default paths of '
-											. $fieldset . ' fieldset points to the module -->';
-
-										$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
-											. $fieldset . '" label="' . $label . '"';
-
-										if (isset($module->add_rule_path[$file . $field_name . $fieldset]))
-										{
-											$xml .= PHP_EOL . Indent::_(2)
-												. 'addrulepath="' . $module->add_rule_path[$file . $field_name . $fieldset] . '"';
-										}
-
-										if (isset($module->add_field_path[$file . $field_name . $fieldset]))
-										{
-											$xml .= PHP_EOL . Indent::_(2)
-												. 'addfieldpath="' . $module->add_field_path[$file . $field_name . $fieldset] . '"';
-										}
-
-										$xml .= PHP_EOL . Indent::_(1) . '>';
-									}
-									else
-									{
-										$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
-											. $fieldset . '" label="' . $label . '">';
-									}
-									// check if we have an inner field set
-									if (StringHelper::check(
-										$field_name_inner
-									))
-									{
-										$xml .= PHP_EOL . Indent::_(1)
-											. '<fields name="'
-											. $field_name_inner . '">';
-									}
-									// add the placeholder of the fields
-									$xml .= Placefix::_h('FIELDSET_' . $file
-										. $field_name . $fieldset );
-									// check if we have an inner field set
-									if (StringHelper::check(
-										$field_name_inner
-									))
-									{
-										$xml .= PHP_EOL . Indent::_(1)
-											. '</fields>';
-									}
-									$xml .= PHP_EOL . Indent::_(1)
-										. '</fieldset>';
-								}
-								$xml .= PHP_EOL . Indent::_(1) . '</fields>';
-							}
-							$xml .= PHP_EOL . '</form>';
-							// add xml to file
-							$this->writeFile($fileDetails['path'], $xml);
-							$this->newFiles[$module->key][] = $fileDetails;
-							// count the file created
-							CFactory::_('Counter')->file++;
-						}
-					}
-					// set SQL stuff if needed
-					if ($module->add_sql || $module->add_sql_uninstall)
-					{
-						// create SQL folder
-						$this->createFolder($module->folder_path . '/sql');
-						// create mysql folder
-						$this->createFolder(
-							$module->folder_path . '/sql/mysql'
-						);
-						// now set the install file
-						if ($module->add_sql)
-						{
-							$this->writeFile(
-								$module->folder_path . '/sql/mysql/install.sql',
-								$module->sql
-							);
-							// count the file created
-							CFactory::_('Counter')->file++;
-						}
-						// now set the uninstall file
-						if ($module->add_sql_uninstall)
-						{
-							$this->writeFile(
-								$module->folder_path
-								. '/sql/mysql/uninstall.sql',
-								$module->sql_uninstall
-							);
-							// count the file created
-							CFactory::_('Counter')->file++;
-						}
-					}
-					// creat the language folder
-					$this->createFolder($module->folder_path . '/language');
-					// also create the lang tag folder
-					$this->createFolder(
-						$module->folder_path . '/language/' . CFactory::_('Config')->get('lang_tag', 'en-GB')
-					);
-					// check if this lib has files
-					if (isset($module->files)
-						&& ArrayHelper::check($module->files))
-					{
-						// add to component files
-						foreach ($module->files as $file)
-						{
-							// set the pathfinder
-							$file['target_type']          = $module->target_type;
-							$file['target_id']            = $module->id;
-							CFactory::_('Component')->appendArray('files', $file);
-						}
-					}
-					// check if this lib has folders
-					if (isset($module->folders)
-						&& ArrayHelper::check($module->folders))
-					{
-						// add to component folders
-						foreach ($module->folders as $folder)
-						{
-							// set the pathfinder
-							$folder['target_type']          = $module->target_type;
-							$folder['target_id']            = $module->id;
-							CFactory::_('Component')->appendArray('folders', $folder);
-						}
-					}
-					// check if this module has urls
-					if (isset($module->urls)
-						&& ArrayHelper::check($module->urls))
-					{
-						// add to component urls
-						foreach ($module->urls as $n => &$url)
-						{
-							// should we add the local folder
-							if (isset($url['type']) && $url['type'] > 1
-								&& isset($url['url'])
-								&& StringHelper::check(
-									$url['url']
-								))
-							{
-								// set file name
-								$fileName = basename((string) $url['url']);
-								// get the file contents
-								$data = FileHelper::getContent(
-									$url['url']
-								);
-								// build sub path
-								if (strpos($fileName, '.js') !== false)
-								{
-									$path = '/js';
-								}
-								elseif (strpos($fileName, '.css') !== false)
-								{
-									$path = '/css';
-								}
-								else
-								{
-									$path = '';
-								}
-								// create sub media path if not set
-								$this->createFolder(
-									$module->folder_path . $path
-								);
-								// set the path to module file
-								$url['path'] = $module->folder_path . $path
-									. '/' . $fileName; // we need this for later
-								// write data to path
-								$this->writeFile($url['path'], $data);
-								// count the file created
-								CFactory::_('Counter')->file++;
-							}
-						}
-					}
-				}
-			}
-		}
+		CFactory::_('Joomlamodule.Builder')->run();
 	}
 
 	/**
 	 * Build the Plugins files, folders, url's and config
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Joomlaplugin.Builder')->run();
 	 */
 	private function buildPlugins()
 	{
-		if (CFactory::_('Joomlaplugin.Data')->exists())
-		{
-			// for plugin event TODO change event api signatures
-			$component_context = CFactory::_('Config')->component_context;
-			$plugins = CFactory::_('Joomlaplugin.Data')->get();
-			// Trigger Event: jcb_ce_onBeforeSetPlugins
-			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildPlugins',
-				array(&$component_context, &$plugins)
-			);
-			foreach ($plugins as $plugin)
-			{
-				if (ObjectHelper::check($plugin)
-					&& isset($plugin->folder_name)
-					&& StringHelper::check(
-						$plugin->folder_name
-					))
-				{
-					// plugin path
-					$plugin->folder_path = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
-						. $plugin->folder_name;
-					// set the plugin paths
-					$this->dynamicPaths[$plugin->key] = $plugin->folder_path;
-					// make sure there is no old build
-					$this->removeFolder($plugin->folder_path);
-					// creat the main component folder
-					$this->createFolder($plugin->folder_path);
-					// set main class file
-					$fileDetails = array('path' => $plugin->folder_path . '/'
-						. $plugin->file_name . '.php',
-					                     'name' => $plugin->file_name . '.php',
-					                     'zip'  => $plugin->file_name . '.php');
-					$this->writeFile(
-						$fileDetails['path'],
-						'<?php' . PHP_EOL . '// Plugin main class template' .
-						PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
-						PHP_EOL . '// No direct access to this file' . PHP_EOL .
-						"defined('_JEXEC') or die('Restricted access');"
-						. PHP_EOL .
-						Placefix::_h('MAINCLASS')
-					);
-					$this->newFiles[$plugin->key][] = $fileDetails;
-					// count the file created
-					CFactory::_('Counter')->file++;
-					// set main xml file
-					$fileDetails = array('path' => $plugin->folder_path . '/'
-						. $plugin->file_name . '.xml',
-					                     'name' => $plugin->file_name . '.xml',
-					                     'zip'  => $plugin->file_name . '.xml');
-					$this->writeFile(
-						$fileDetails['path'],
-						$this->getPluginXMLTemplate($plugin)
-					);
-					$this->newFiles[$plugin->key][] = $fileDetails;
-					// count the file created
-					CFactory::_('Counter')->file++;
-					// set install script if needed
-					if ($plugin->add_install_script)
-					{
-						$fileDetails = array('path' => $plugin->folder_path
-							. '/script.php',
-						                     'name' => 'script.php',
-						                     'zip'  => 'script.php');
-						$this->writeFile(
-							$fileDetails['path'],
-							'<?php' . PHP_EOL . '// Script template' .
-							PHP_EOL . Placefix::_h('BOM') . PHP_EOL
-							.
-							PHP_EOL . '// No direct access to this file'
-							. PHP_EOL .
-							"defined('_JEXEC') or die('Restricted access');"
-							. PHP_EOL .
-							Placefix::_h('INSTALLCLASS')
-						);
-						$this->newFiles[$plugin->key][] = $fileDetails;
-						// count the file created
-						CFactory::_('Counter')->file++;
-					}
-					// set readme if found
-					if ($plugin->addreadme)
-					{
-						$fileDetails = array('path' => $plugin->folder_path
-							. '/README.md',
-						                     'name' => 'README.md',
-						                     'zip'  => 'README.md');
-						$this->writeFile($fileDetails['path'], $plugin->readme);
-						$this->newFiles[$plugin->key][] = $fileDetails;
-						// count the file created
-						CFactory::_('Counter')->file++;
-					}
-					// set fields & rules folders if needed
-					if (isset($plugin->fields_rules_paths)
-						&& $plugin->fields_rules_paths == 2)
-					{
-						// create fields folder
-						$this->createFolder($plugin->folder_path . '/fields');
-						// create rules folder
-						$this->createFolder($plugin->folder_path . '/rules');
-					}
-					// set forms folder if needed
-					if (isset($plugin->form_files)
-						&& ArrayHelper::check(
-							$plugin->form_files
-						))
-					{
-						// create forms folder
-						$this->createFolder($plugin->folder_path . '/forms');
-						// set the template files
-						foreach ($plugin->form_files as $file => $fields)
-						{
-							// set file details
-							$fileDetails = array('path' => $plugin->folder_path
-								. '/forms/' . $file . '.xml',
-							                     'name' => $file . '.xml',
-							                     'zip'  => 'forms/' . $file
-								                     . '.xml');
-							// biuld basic XML
-							$xml = '<?xml version="1.0" encoding="utf-8"?>';
-							$xml .= PHP_EOL . '<!--' . Line::_(__Line__, __Class__)
-								. ' default paths of ' . $file
-								. ' form points to ' . CFactory::_('Config')->component_code_name
-								. ' -->';
-							// search if we must add the component path
-							$add_component_path = false;
-							foreach ($fields as $field_name => $fieldsets)
-							{
-								if (!$add_component_path)
-								{
-									foreach ($fieldsets as $fieldset => $field)
-									{
-										if (!$add_component_path
-											&& isset(
-												$plugin->fieldsets_paths[$file
-												. $field_name . $fieldset]
-											)
-											&& $plugin->fieldsets_paths[$file
-											. $field_name . $fieldset] == 1)
-										{
-											$add_component_path = true;
-										}
-									}
-								}
-							}
-							// only add if part of the component field types path is required
-							if ($add_component_path)
-							{
-								$xml .= PHP_EOL . '<form';
-								$xml .= PHP_EOL . Indent::_(1)
-									. 'addrulepath="/administrator/components/com_'
-									. CFactory::_('Config')->component_code_name
-									. '/models/rules"';
-								$xml .= PHP_EOL . Indent::_(1)
-									. 'addfieldpath="/administrator/components/com_'
-									. CFactory::_('Config')->component_code_name
-									. '/models/fields"';
-								$xml .= PHP_EOL . '>';
-							}
-							else
-							{
-								$xml .= PHP_EOL . '<form>';
-							}
-							// add the fields
-							foreach ($fields as $field_name => $fieldsets)
-							{
-								// check if we have an double fields naming set
-								$field_name_inner = '';
-								$field_name_outer = $field_name;
-								if (strpos((string) $field_name, '.') !== false)
-								{
-									$field_names = explode('.', (string) $field_name);
-									if (count((array) $field_names) == 2)
-									{
-										$field_name_outer = $field_names[0];
-										$field_name_inner = $field_names[1];
-									}
-								}
-								$xml .= PHP_EOL . Indent::_(1)
-									. '<fields name="' . $field_name_outer
-									. '">';
-								foreach ($fieldsets as $fieldset => $field)
-								{
-									// default to the field set name
-									$label = $fieldset;
-									if (isset($plugin->fieldsets_label[$file . $field_name . $fieldset]))
-									{
-										$label = $plugin->fieldsets_label[$file . $field_name . $fieldset];
-									}
-									// add path to plugin rules and custom fields
-									if (isset($plugin->fieldsets_paths[$file . $field_name . $fieldset])
-										&& ($plugin->fieldsets_paths[$file . $field_name . $fieldset] == 2
-											|| $plugin->fieldsets_paths[$file . $field_name . $fieldset] == 3))
-									{
-										if (!isset($plugin->add_rule_path[$file . $field_name . $fieldset]))
-										{
-											$plugin->add_rule_path[$file . $field_name . $fieldset] =
-												'/plugins/' . strtolower((string) $plugin->group
-												) . '/' . strtolower((string) $plugin->code_name)
-												. '/rules';
-										}
-
-										if (!isset($plugin->add_field_path[$file . $field_name . $fieldset]))
-										{
-											$plugin->add_field_path[$file . $field_name . $fieldset] =
-												'/plugins/' . strtolower((string) $plugin->group
-												) . '/' . strtolower((string) $plugin->code_name)
-												. '/fields';
-										}
-									}
-									// add path to plugin rules and custom fields
-									if (isset($plugin->add_rule_path[$file . $field_name . $fieldset])
-										|| isset($plugin->add_field_path[$file . $field_name . $fieldset]))
-									{
-										$xml .= PHP_EOL . Indent::_(1) . '<!--'
-											. Line::_(__Line__, __Class__) . ' default paths of '
-											. $fieldset . ' fieldset points to the plugin -->';
-
-										$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
-											. $fieldset . '" label="' . $label . '"';
-
-										if (isset($plugin->add_rule_path[$file . $field_name . $fieldset]))
-										{
-											$xml .= PHP_EOL . Indent::_(2)
-												. 'addrulepath="' . $plugin->add_rule_path[$file . $field_name . $fieldset] . '"';
-										}
-
-										if (isset($plugin->add_field_path[$file . $field_name . $fieldset]))
-										{
-											$xml .= PHP_EOL . Indent::_(2)
-												. 'addfieldpath="' . $plugin->add_field_path[$file . $field_name . $fieldset] . '"';
-										}
-
-										$xml .= PHP_EOL . Indent::_(1) . '>';
-									}
-									else
-									{
-										$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
-											. $fieldset . '" label="' . $label . '">';
-									}
-									// check if we have an inner field set
-									if (StringHelper::check(
-										$field_name_inner
-									))
-									{
-										$xml .= PHP_EOL . Indent::_(1)
-											. '<fields name="'
-											. $field_name_inner . '">';
-									}
-									// add the placeholder of the fields
-									$xml .= Placefix::_h('FIELDSET_' . $file
-										. $field_name . $fieldset );
-									// check if we have an inner field set
-									if (StringHelper::check(
-										$field_name_inner
-									))
-									{
-										$xml .= PHP_EOL . Indent::_(1)
-											. '</fields>';
-									}
-									$xml .= PHP_EOL . Indent::_(1)
-										. '</fieldset>';
-								}
-								$xml .= PHP_EOL . Indent::_(1) . '</fields>';
-							}
-							$xml .= PHP_EOL . '</form>';
-							// add xml to file
-							$this->writeFile($fileDetails['path'], $xml);
-							$this->newFiles[$plugin->key][] = $fileDetails;
-							// count the file created
-							CFactory::_('Counter')->file++;
-						}
-					}
-					// set SQL stuff if needed
-					if ($plugin->add_sql || $plugin->add_sql_uninstall)
-					{
-						// create SQL folder
-						$this->createFolder($plugin->folder_path . '/sql');
-						// create mysql folder
-						$this->createFolder(
-							$plugin->folder_path . '/sql/mysql'
-						);
-						// now set the install file
-						if ($plugin->add_sql)
-						{
-							$this->writeFile(
-								$plugin->folder_path . '/sql/mysql/install.sql',
-								$plugin->sql
-							);
-							// count the file created
-							CFactory::_('Counter')->file++;
-						}
-						// now set the uninstall file
-						if ($plugin->add_sql_uninstall)
-						{
-							$this->writeFile(
-								$plugin->folder_path
-								. '/sql/mysql/uninstall.sql',
-								$plugin->sql_uninstall
-							);
-							// count the file created
-							CFactory::_('Counter')->file++;
-						}
-					}
-					// creat the language folder path
-					$this->createFolder($plugin->folder_path . '/language');
-					// also creat the lang tag folder path
-					$this->createFolder(
-						$plugin->folder_path . '/language/' . CFactory::_('Config')->get('lang_tag', 'en-GB')
-					);
-					// check if this lib has files
-					if (isset($plugin->files)
-						&& ArrayHelper::check($plugin->files))
-					{
-						// add to component files
-						foreach ($plugin->files as $file)
-						{
-							// set the path finder
-							$file['target_type']          = $plugin->target_type;
-							$file['target_id']            = $plugin->id;
-							CFactory::_('Component')->appendArray('files', $file);
-						}
-					}
-					// check if this lib has folders
-					if (isset($plugin->folders)
-						&& ArrayHelper::check($plugin->folders))
-					{
-						// add to component folders
-						foreach ($plugin->folders as $folder)
-						{
-							// set the path finder
-							$folder['target_type']          = $plugin->target_type;
-							$folder['target_id']            = $plugin->id;
-							CFactory::_('Component')->appendArray('folders', $folder);
-						}
-					}
-					// check if this plugin has urls
-					if (isset($plugin->urls)
-						&& ArrayHelper::check($plugin->urls))
-					{
-						// add to component urls
-						foreach ($plugin->urls as $n => &$url)
-						{
-							// should we add the local folder
-							if (isset($url['type']) && $url['type'] > 1
-								&& isset($url['url'])
-								&& StringHelper::check(
-									$url['url']
-								))
-							{
-								// set file name
-								$fileName = basename((string) $url['url']);
-								// get the file contents
-								$data = FileHelper::getContent(
-									$url['url']
-								);
-								// build sub path
-								if (strpos($fileName, '.js') !== false)
-								{
-									$path = '/js';
-								}
-								elseif (strpos($fileName, '.css') !== false)
-								{
-									$path = '/css';
-								}
-								else
-								{
-									$path = '';
-								}
-								// create sub media media folder path if not set
-								$this->createFolder(
-									$plugin->folder_path . $path
-								);
-								// set the path to plugin file
-								$url['path'] = $plugin->folder_path . $path
-									. '/' . $fileName; // we need this for later
-								// write data to path
-								$this->writeFile($url['path'], $data);
-								// count the file created
-								CFactory::_('Counter')->file++;
-							}
-						}
-					}
-				}
-			}
-		}
+		CFactory::_('Joomlaplugin.Builder')->run();
 	}
 
 	/**
 	 * Create Path if not exist
 	 *
 	 * @return void
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Folder')->create($path);
 	 */
 	private function createFolder($path)
 	{
-		// check if the path exist
-		if (!Folder::exists(
-			$path
-		))
-		{
-			// create the path
-			Folder::create(
-				$path
-			);
-			// count the folder created
-			CFactory::_('Counter')->folder++;
-			// add index.html (boring I know)
-			$this->indexHTML(
-				$path, ''
-			);
-		}
+		CFactory::_('Utilities.Folder')->create($path);
 	}
 
 	/**
 	 * Build the Libraries files, folders, url's and config
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Library.Builder')->run();
 	 */
 	private function setLibraries()
 	{
-		if (($libraries_ = CFactory::_('Registry')->get('builder.libraries')) !== null)
-		{
-			// for plugin event TODO change event api signatures
-			$component_context = CFactory::_('Config')->component_context;
-			// Trigger Event: jcb_ce_onBeforeSetLibraries
-			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeSetLibraries',
-				array(&$component_context, &$libraries_)
-			);
-			// creat the main component folder
-			if (!Folder::exists($this->componentPath))
-			{
-				Folder::create($this->componentPath);
-				// count the folder created
-				CFactory::_('Counter')->folder++;
-				$this->indexHTML('');
-			}
-			// create media path if not set
-			$this->createFolder($this->componentPath . '/media');
-			foreach ($libraries_ as $id => &$library)
-			{
-				if (ObjectHelper::check($library))
-				{
-					// check if this lib has files
-					if (isset($library->files)
-						&& ArrayHelper::check($library->files))
-					{
-						// add to component files
-						foreach ($library->files as $file)
-						{
-							CFactory::_('Component')->appendArray('files', $file);
-						}
-					}
-					// check if this lib has folders
-					if (isset($library->folders)
-						&& ArrayHelper::check(
-							$library->folders
-						))
-					{
-						// add to component folders
-						foreach ($library->folders as $folder)
-						{
-							CFactory::_('Component')->appendArray('folders', $folder);
-						}
-					}
-					// check if this lib has urls
-					if (isset($library->urls)
-						&& ArrayHelper::check($library->urls))
-					{
-						// build media folder path
-						$libFolder = strtolower(
-							preg_replace(
-								'/\s+/', '-',
-								(string) StringHelper::safe(
-									$library->name, 'filename', ' ', false
-								)
-							)
-						);
-						$mediaPath = '/media/' . $libFolder;
-						// should we add the local folder
-						$addLocalFolder = false;
-						// add to component urls
-						foreach ($library->urls as $n => &$url)
-						{
-							if (isset($url['type']) && $url['type'] > 1
-								&& isset($url['url'])
-								&& StringHelper::check(
-									$url['url']
-								))
-							{
-								// create media/lib path if not set
-								$this->createFolder(
-									$this->componentPath . $mediaPath
-								);
-								// add local folder
-								$addLocalFolder = true;
-								// set file name
-								$fileName = basename((string) $url['url']);
-								// get the file contents
-								$data = FileHelper::getContent(
-									$url['url']
-								);
-								// build sub path
-								if (strpos($fileName, '.js') !== false)
-								{
-									$path = '/js';
-								}
-								elseif (strpos($fileName, '.css') !== false)
-								{
-									$path = '/css';
-								}
-								else
-								{
-									$path = '';
-								}
-								// create sub media path if not set
-								$this->createFolder(
-									$this->componentPath . $mediaPath . $path
-								);
-								// set the path to library file
-								$url['path'] = $mediaPath . $path . '/'
-									. $fileName; // we need this for later
-								// set full path
-								$path = $this->componentPath . $url['path'];
-								// write data to path
-								$this->writeFile($path, $data);
-								// count the file created
-								CFactory::_('Counter')->file++;
-							}
-						}
-						// only add if local
-						if ($addLocalFolder)
-						{
-							// add folder to xml of media folders
-							CFactory::_('Content')->add('EXSTRA_MEDIA_FOLDERS',
-								PHP_EOL . Indent::_(2) . "<folder>"
-								. $libFolder . "</folder>");
-						}
-					}
-					// if config fields are found load into component config (avoiding duplicates)
-					if (isset($library->how) && $library->how > 1
-						&& isset($library->config)
-						&& ArrayHelper::check($library->config))
-					{
-						foreach ($library->config as $cofig)
-						{
-							$found = array_filter(
-								CFactory::_('Component')->get('config'),
-								fn($item) => $item['field'] == $cofig['field']
-							);
-							// set the config data if not found
-							if (!ArrayHelper::check($found))
-							{
-								CFactory::_('Component')->appendArray('config', $cofig);
-							}
-						}
-					}
-					// update the global value just in case for now
-					CFactory::_('Registry')->set("builder.libraries.$id", $library);
-				}
-			}
-		}
+		CFactory::_('Library.Builder')->run();
 	}
 
 	/**
@@ -1923,30 +688,30 @@ class Structure extends Get
 		))
 		{
 			// creat the main component folder
-			if (!Folder::exists($this->componentPath))
+			if (!Folder::exists(CFactory::_('Utilities.Paths')->component_path))
 			{
-				Folder::create($this->componentPath);
+				Folder::create(CFactory::_('Utilities.Paths')->component_path);
 				// count the folder created
-				CFactory::_('Counter')->folder++;
-				$this->indexHTML('');
+				CFactory::_('Utilities.Counter')->folder++;
+				CFactory::_('Utilities.File')->html('');
 			}
 			// now build all folders needed for this component
 			foreach ($this->joomlaVersionData->create as $main => $folders)
 			{
-				$this->createFolder($this->componentPath . '/' . $main);
+				CFactory::_('Utilities.Folder')->create(CFactory::_('Utilities.Paths')->component_path . '/' . $main);
 				if (ObjectHelper::check($folders))
 				{
 					foreach ($folders as $sub => $subFolders)
 					{
-						$this->createFolder(
-							$this->componentPath . '/' . $main . '/' . $sub
+						CFactory::_('Utilities.Folder')->create(
+							CFactory::_('Utilities.Paths')->component_path . '/' . $main . '/' . $sub
 						);
 						if (ObjectHelper::check($subFolders))
 						{
 							foreach ($subFolders as $sub_2 => $subFolders_2)
 							{
-								$this->createFolder(
-									$this->componentPath . '/' . $main . '/'
+								CFactory::_('Utilities.Folder')->create(
+									CFactory::_('Utilities.Paths')->component_path . '/' . $main . '/'
 									. $sub . '/' . $sub_2
 								);
 								if (ObjectHelper::check(
@@ -1957,8 +722,8 @@ class Structure extends Get
 										$subFolders_2 as $sub_3 => $subFolders_3
 									)
 									{
-										$this->createFolder(
-											$this->componentPath . '/' . $main
+										CFactory::_('Utilities.Folder')->create(
+											CFactory::_('Utilities.Paths')->component_path . '/' . $main
 											. '/' . $sub . '/' . $sub_2 . '/'
 											. $sub_3
 										);
@@ -1971,8 +736,8 @@ class Structure extends Get
 												$subFolders_4
 											)
 											{
-												$this->createFolder(
-													$this->componentPath . '/'
+												CFactory::_('Utilities.Folder')->create(
+													CFactory::_('Utilities.Paths')->component_path . '/'
 													. $main . '/' . $sub . '/'
 													. $sub_2 . '/' . $sub_3
 													. '/' . $sub_4
@@ -1986,8 +751,8 @@ class Structure extends Get
 													=> $subFolders_5
 													)
 													{
-														$this->createFolder(
-															$this->componentPath
+														CFactory::_('Utilities.Folder')->create(
+															CFactory::_('Utilities.Paths')->component_path
 															. '/' . $main . '/'
 															. $sub . '/'
 															. $sub_2 . '/'
@@ -2005,8 +770,8 @@ class Structure extends Get
 																$subFolders_6
 															)
 															{
-																$this->createFolder(
-																	$this->componentPath
+																CFactory::_('Utilities.Folder')->create(
+																	CFactory::_('Utilities.Paths')->component_path
 																	. '/'
 																	. $main
 																	. '/'
@@ -2034,8 +799,8 @@ class Structure extends Get
 																		$subFolders_7
 																	)
 																	{
-																		$this->createFolder(
-																			$this->componentPath
+																		CFactory::_('Utilities.Folder')->create(
+																			CFactory::_('Utilities.Paths')->component_path
 																			. '/'
 																			. $main
 																			. '/'
@@ -2155,7 +920,7 @@ class Structure extends Get
 					);
 					$path    = str_replace(
 						$details->_target['type'] . '/',
-						$this->dynamicPaths[$details->_target['key']] . '/',
+						CFactory::_('Registry')->get('dynamic_paths.' . $details->_target['key'], '') . '/',
 						(string) $details->path
 					);
 				}
@@ -2164,13 +929,13 @@ class Structure extends Get
 					// set destination path
 					$zipPath = str_replace('c0mp0n3nt/', '', (string) $details->path);
 					$path    = str_replace(
-						'c0mp0n3nt/', $this->componentPath . '/', (string) $details->path
+						'c0mp0n3nt/', CFactory::_('Utilities.Paths')->component_path . '/', (string) $details->path
 					);
 				}
 				// set the template folder path
 				$templatePath = (isset($details->custom) && $details->custom)
-					? (($details->custom !== 'full') ? $this->templatePathCustom
-						. '/' : '') : $this->templatePath . '/';
+					? (($details->custom !== 'full') ? CFactory::_('Utilities.Paths')->template_path_custom
+						. '/' : '') : CFactory::_('Utilities.Paths')->template_path . '/';
 				// set the final paths
 				$currentFullPath = (preg_match('/^[a-z]:/i', (string) $item)) ? $item
 					: $templatePath . '/' . $item;
@@ -2208,23 +973,29 @@ class Structure extends Get
 						// move the file to its place
 						File::copy($currentFullPath, $packageFullPath);
 						// count the file created
-						CFactory::_('Counter')->file++;
+						CFactory::_('Utilities.Counter')->file++;
 						// store the new files
 						if (!in_array($ftem, $this->notNew))
 						{
 							if (isset($details->_target))
 							{
-								$this->newFiles[$details->_target['key']][]
-									= array('path' => $packageFullPath,
-									        'name' => $new,
-									        'zip'  => $zipFullPath);
+								CFactory::_('Utilities.Files')->appendArray($details->_target['key'],
+									[
+										'path' => $packageFullPath,
+									    'name' => $new,
+									    'zip'  => $zipFullPath
+									]
+								);
 							}
 							else
 							{
-								$this->newFiles['static'][]
-									= array('path' => $packageFullPath,
-									        'name' => $new,
-									        'zip'  => $zipFullPath);
+								CFactory::_('Utilities.Files')->appendArray('static',
+									[
+										'path' => $packageFullPath,
+									    'name' => $new,
+									    'zip'  => $zipFullPath
+									]
+								);
 							}
 						}
 						// ensure we update this file if needed
@@ -2261,7 +1032,7 @@ class Structure extends Get
 							$currentFullPath, $packageFullPath, '', true
 						);
 						// count the folder created
-						CFactory::_('Counter')->folder++;
+						CFactory::_('Utilities.Counter')->folder++;
 					}
 				}
 				// only add if no target found since those belong to plugins and modules
@@ -2503,13 +1274,13 @@ class Structure extends Get
 				{
 					// check files exist
 					if (File::exists(
-						$this->componentPath . '/admin/models/fields/'
+						CFactory::_('Utilities.Paths')->component_path . '/admin/models/fields/'
 						. $field['type_name'] . '.php'
 					))
 					{
 						// copy the custom field
 						File::copy(
-							$this->componentPath . '/admin/models/fields/'
+							CFactory::_('Utilities.Paths')->component_path . '/admin/models/fields/'
 							. $field['type_name'] . '.php',
 							$path . '/fields/' . $field['type_name'] . '.php'
 						);
@@ -2530,14 +1301,14 @@ class Structure extends Get
 				{
 					// check files exist
 					if (File::exists(
-						$this->componentPath . '/admin/models/rules/'
+						CFactory::_('Utilities.Paths')->component_path . '/admin/models/rules/'
 						. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
 						. '.php'
 					))
 					{
 						// copy the custom field
 						File::copy(
-							$this->componentPath . '/admin/models/rules/'
+							CFactory::_('Utilities.Paths')->component_path . '/admin/models/rules/'
 							. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
 							. '.php', $path . '/rules/'
 							. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
@@ -2780,7 +1551,7 @@ class Structure extends Get
 						{
 							$zipPath = str_replace('c0mp0n3nt/', '', (string) $path);
 							$path    = str_replace(
-								'c0mp0n3nt/', $this->componentPath . '/', (string) $path
+								'c0mp0n3nt/', CFactory::_('Utilities.Paths')->component_path . '/', (string) $path
 							);
 						}
 						else
@@ -2798,9 +1569,9 @@ class Structure extends Get
 						if (!Folder::exists($path))
 						{
 							Folder::create($path);
-							$this->indexHTML($zipPath);
+							CFactory::_('Utilities.File')->html($zipPath);
 							// count the folder created
-							CFactory::_('Counter')->folder++;
+							CFactory::_('Utilities.Counter')->folder++;
 						}
 						// do the file renaming
 						if ($details->rename)
@@ -2831,11 +1602,16 @@ class Structure extends Get
 						{
 							// move the file to its place
 							File::copy(
-								$this->templatePath . '/' . $item,
+								CFactory::_('Utilities.Paths')->template_path . '/' . $item,
 								$path . '/' . $new
 							);
 							// count the file created
-							CFactory::_('Counter')->file++;
+							CFactory::_('Utilities.Counter')->file++;
+						}
+						// we can't have dots in a file name (oops)
+						if (strpos($name, '.') !== false)
+						{
+							$name = preg_replace('/[\.]+/', '_', (string) $name);
 						}
 						// setup array for new file
 						$newFIle = array('path' => $path . '/' . $new,
@@ -2846,7 +1622,7 @@ class Structure extends Get
 							$newFIle['config'] = $config;
 						}
 						// store the new files
-						$this->newFiles['dynamic'][$name][] = $newFIle;
+						CFactory::_('Utilities.Files')->appendArray('dynamic.' . $name, $newFIle);
 						// we have build atleast one
 						$build_status = true;
 					}
@@ -2866,7 +1642,7 @@ class Structure extends Get
 	private function setJoomlaVersionData()
 	{
 		// option to load other settings
-		$custom_settings = $this->templatePath . '/settings_' . CFactory::_('Config')->component_code_name . '.json';
+		$custom_settings = CFactory::_('Utilities.Paths')->template_path . '/settings_' . CFactory::_('Config')->component_code_name . '.json';
 		// set the version data
 		if (File::exists($custom_settings))
 		{
@@ -2880,7 +1656,7 @@ class Structure extends Get
 		{
 			$version_data = json_decode(
 				(string) FileHelper::getContent(
-					$this->templatePath . '/settings.json'
+					CFactory::_('Utilities.Paths')->template_path . '/settings.json'
 				)
 			);
 		}
@@ -3178,10 +1954,10 @@ class Structure extends Get
 	protected function setDynamicFolders()
 	{
 		// check if we should add the dynamic folder moving script to the installer script
-		if (!$this->setMoveFolders)
+		if (!CFactory::_('Registry')->get('set_move_folders_install_script'))
 		{
 			// add the setDynamicF0ld3rs() method to the install scipt.php file
-			$this->setMoveFolders = true;
+			CFactory::_('Registry')->set('set_move_folders_install_script', true);
 			// set message that this was done (will still add a tutorial link later)
 			$this->app->enqueueMessage(
 				JText::_(
@@ -3202,32 +1978,12 @@ class Structure extends Get
 	 * @param   string  $path  The path to place the index.html file in
 	 *
 	 * @return  void
+	 * @deprecated 3.3 Use CFactory::_('Utilities.File')->write($path, $root);
 	 *
 	 */
 	private function indexHTML($path, $root = 'component')
 	{
-		if ('component' === $root)
-		{
-			$root = $this->componentPath . '/';
-		}
-		// use path if exist
-		if (strlen($path) > 0)
-		{
-			File::copy(
-				$this->templatePath . '/index.html',
-				$root . $path . '/index.html'
-			);
-			// count the file created
-			CFactory::_('Counter')->file++;
-		}
-		else
-		{
-			File::copy(
-				$this->templatePath . '/index.html', $root . '/index.html'
-			);
-			// count the file created
-			CFactory::_('Counter')->file++;
-		}
+		CFactory::_('Utilities.File')->write($path, $root);
 	}
 
 	/**
@@ -3254,11 +2010,11 @@ class Structure extends Get
 	 * @param   boolean  $ignore  The files and folders to ignore
 	 *
 	 * @return  boolean   True if all is removed
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Utilities.Folder')->remove($dir, $ignore);
 	 */
 	protected function removeFolder($dir, $ignore = false)
 	{
-		return ComponentbuilderHelper::removeFolder($dir, $ignore);
+		return CFactory::_('Utilities.Folder')->remove($dir, $ignore);
 	}
 
 }

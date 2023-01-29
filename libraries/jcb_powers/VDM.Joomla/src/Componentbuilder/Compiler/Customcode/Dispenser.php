@@ -117,7 +117,7 @@ class Dispenser implements DispenserInterface
 	 * @since 3.2.0
 	 */
 	public function set(&$script, string $first, ?string $second = null, ?string $third = null,
-		array $config = array(), bool $base64 = true, bool $dynamic = true, bool $add = false): bool
+		array $config = [], bool $base64 = true, bool $dynamic = true, bool $add = false): bool
 	{
 		// only load if we have a string
 		if (!StringHelper::check($script))
@@ -132,7 +132,7 @@ class Dispenser implements DispenserInterface
 			// check if the script first key is set
 			if ($second && !isset($this->hub[$first]))
 			{
-				$this->hub[$first] = array();
+				$this->hub[$first] = [];
 			}
 			elseif ($add && !$second
 				&& !isset($this->hub[$first]))
@@ -143,7 +143,7 @@ class Dispenser implements DispenserInterface
 			if ($second && $third
 				&& !isset($this->hub[$first][$second]))
 			{
-				$this->hub[$first][$second] = array();
+				$this->hub[$first][$second] = [];
 			}
 			elseif ($add && $second && !$third
 				&& !isset($this->hub[$first][$second]))

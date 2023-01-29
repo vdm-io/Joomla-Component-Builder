@@ -399,7 +399,7 @@ abstract class StringHelper
 	public static function random($size): string
 	{
 		$bag = "abcefghijknopqrstuwxyzABCDDEFGHIJKLLMMNOPQRSTUVVWXYZabcddefghijkllmmnopqrstuvvwxyzABCEFGHIJKNOPQRSTUWXYZ";
-		$key = array();
+		$key = [];
 		$bagsize = strlen($bag) - 1;
 
 		for ($i = 0; $i < $size; $i++)

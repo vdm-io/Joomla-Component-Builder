@@ -170,7 +170,7 @@ class History implements HistoryInterface
 		}
 		else
 		{
-			$version_note = array('component' => array());
+			$version_note = array('component' => []);
 		}
 		// set watch
 		switch ($action)

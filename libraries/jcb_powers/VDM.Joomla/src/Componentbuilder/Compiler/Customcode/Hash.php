@@ -62,7 +62,7 @@ class Hash
 			$values = GetHelper::allBetween(
 				$script, 'HASH' . 'STRING((((', '))))'
 			);
-			$locker = array();
+			$locker = [];
 			// convert them
 			foreach ($values as $value)
 			{
@@ -80,7 +80,7 @@ class Hash
 			$values = GetHelper::allBetween(
 				$script, 'HASH' . 'FILE((((', '))))'
 			);
-			$locker = array();
+			$locker = [];
 			// convert them
 			foreach ($values as $path)
 			{

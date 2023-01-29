@@ -48,7 +48,7 @@ abstract class FileHelper
 	 *
 	 * @since  3.0.9
 	 */
-	public static function zip($workingDirectory, &$filepath)
+	public static function zip($workingDirectory, &$filepath): bool
 	{
 		// store the current joomla working directory
 		$joomla = getcwd();
@@ -65,11 +65,11 @@ abstract class FileHelper
 		// get a list of files in the current directory tree (also the hidden files)
 		$files = Folder::files('.', '', true, true, array('.svn', 'CVS', '.DS_Store', '__MACOSX'), array('.*~'));
 
-		$zipArray = array();
+		$zipArray = [];
 		// setup the zip array
 		foreach ($files as $file)
 		{
-			$tmp = array();
+			$tmp = [];
 			$tmp['name'] = str_replace('./', '', (string) $file);
 			$tmp['data'] = self::getContent($file);
 			$tmp['time'] = filemtime($file);
@@ -80,15 +80,10 @@ abstract class FileHelper
 		chdir($joomla);
 
 		// get the zip adapter
-		$adapter = new Archive();
-		$zip = $adapter->getAdapter('zip');
+		$zip = (new Archive())->getAdapter('zip');
 
 		//create the zip file
-		if ($zip->create($filepath, $zipArray))
-		{
-			return true;
-		}
-		return false;
+		return (bool) $zip->create($filepath, $zipArray);
 	}
 
 	/**
@@ -116,7 +111,7 @@ abstract class FileHelper
 				// start curl
 				$ch = curl_init();
 				// set the options
-				$options = array();
+				$options = [];
 				$options[CURLOPT_URL] = $path;
 				$options[CURLOPT_USERAGENT] = 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12';
 				$options[CURLOPT_RETURNTRANSFER] = TRUE;

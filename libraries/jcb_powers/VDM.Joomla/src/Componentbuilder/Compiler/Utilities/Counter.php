@@ -9,7 +9,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Compiler;
+namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
 
 
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
@@ -17,7 +17,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Content;
 
 
 /**
- * Compiler Counter
+ * Compiler Utilities Counter
  * 
  * @since 3.2.0
  */
@@ -300,7 +300,6 @@ class Counter
 		$this->timer = $this->end - $this->start;
 
 		// compiler time
-		$this->content->set('COMPILER_TIMER_START', $this->start);
 		$this->content->set('COMPILER_TIMER_END', $this->end);
 		$this->content->set('COMPILER_TIMER', $this->timer);
 	}
@@ -353,8 +352,6 @@ class Counter
 
 		// compiler time
 		$this->content->set('COMPILER_TIMER_START', $this->start);
-		$this->content->set('COMPILER_TIMER_END', $this->end);
-		$this->content->set('COMPILER_TIMER', $this->timer);
 	}
 
 	/**

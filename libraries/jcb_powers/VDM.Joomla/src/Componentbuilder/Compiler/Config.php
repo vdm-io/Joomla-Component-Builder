@@ -476,6 +476,21 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * get custom folder path
+	 *
+	 * @return  string  The custom folder path
+	 * @since 3.2.0
+	 */
+	protected function getCustomfolderpath(): string
+	{
+		// get the custom folder path
+		return $this->params->get(
+			'custom_folder_path',
+			JPATH_COMPONENT_ADMINISTRATOR . '/custom'
+		);
+	}
+
+	/**
 	 * get switch to add assets table fix
 	 *
 	 * @return  int  Switch number to add assets table fix

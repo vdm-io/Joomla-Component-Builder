@@ -94,8 +94,8 @@ class Sqldump
 							if (ArrayHelper::check($fields))
 							{
 								// reset array buckets
-								$sourceArray = array();
-								$targetArray = array();
+								$sourceArray = [];
+								$targetArray = [];
 								foreach ($fields as $field)
 								{
 									if (strpos($field, "=>") !== false)
@@ -148,8 +148,8 @@ class Sqldump
 							if (ArrayHelper::check($fields))
 							{
 								// reset array buckets
-								$sourceArray = array();
-								$targetArray = array();
+								$sourceArray = [];
+								$targetArray = [];
 								foreach ($fields as $field)
 								{
 									if (strpos($field, "=>") !== false)

@@ -32,14 +32,14 @@ abstract class Minify
      *
      * @var string[]
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * Array of patterns to match.
      *
      * @var string[]
      */
-    protected $patterns = array();
+    protected $patterns = [];
 
     /**
      * This array will hold content of strings and regular expressions that have
@@ -50,7 +50,7 @@ abstract class Minify
      *
      * @var string[]
      */
-    public $extracted = array();
+    public $extracted = [];
 
     /**
      * Init the minify class - optionally, code may be passed along already.
@@ -279,7 +279,7 @@ abstract class Minify
         $output = '';
         $processedOffset = 0;
         $positions = array_fill(0, count($this->patterns), -1);
-        $matches = array();
+        $matches = [];
 
         while ($processedOffset < $contentLength) {
             // find first match for all patterns
@@ -435,7 +435,7 @@ abstract class Minify
 
         $content = strtr($content, $this->extracted);
 
-        $this->extracted = array();
+        $this->extracted = [];
 
         return $content;
     }

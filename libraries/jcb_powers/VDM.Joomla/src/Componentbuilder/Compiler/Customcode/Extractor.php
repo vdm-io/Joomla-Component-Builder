@@ -328,15 +328,7 @@ class Extractor implements ExtractorInterface
 		// make sure we have the path correct (the script file is not in admin path for example)
 		// there may be more... will nead to keep our eye on this... since files could be moved during install
 		$file = str_replace('./', '', (string) $file); # TODO (windows path issues)
-
-		if ($file !== 'script.php')
-		{
-			$path = $target . '/' . $file;
-		}
-		else
-		{
-			$path = $file;
-		}
+		$path = $file !== 'script.php' ? $target . '/' . $file : $file;
 
 		// now we go line by line
 		foreach (new \SplFileObject($file) as $lineNumber => $lineContent)

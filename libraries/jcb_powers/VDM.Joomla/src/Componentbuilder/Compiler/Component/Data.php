@@ -87,6 +87,22 @@ class Data
 	protected Dispenser $dispenser;
 
 	/**
+	 * Compiler Customcode
+	 *
+	 * @var    Customcode
+	 * @since 3.2.0
+	 */
+	protected Customcode $customcode;
+
+	/**
+	 * Compiler Customcode in Gui
+	 *
+	 * @var    Gui
+	 * @since 3.2.0
+	 **/
+	protected Gui $gui;
+
+	/**
 	 * Compiler Field
 	 *
 	 * @var    Field
@@ -223,8 +239,7 @@ class Data
 		?Filesfolders $filesFolders = null, ?Historycomponent $history = null, ?Whmcs $whmcs = null,
 		?Sqltweaking $sqltweaking = null, ?Adminviews $adminviews = null, ?Siteviews $siteviews = null,
 		?Customadminviews $customadminviews = null, ?Joomlamodules $modules = null,
-		?Joomlaplugins $plugins = null,
-		?\JDatabaseDriver $db = null)
+		?Joomlaplugins $plugins = null, ?\JDatabaseDriver $db = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->event = $event ?: Compiler::_('Event');
@@ -709,16 +724,11 @@ class Data
 		unset($component->bom);
 
 		// README
-		if ($component->addreadme)
-		{
-			$component->readme = $this->customcode->update(
-				base64_decode((string) $component->readme)
-			);
-		}
-		else
-		{
-			$component->readme = '';
-		}
+		$component->readme =
+			$component->addreadme ?
+				$this->customcode->update(
+					base64_decode((string) $component->readme)
+				) : '';
 
 		// set lang now
 		$nowLang    = $this->config->lang_target;

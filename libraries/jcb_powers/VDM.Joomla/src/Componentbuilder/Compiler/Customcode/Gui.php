@@ -183,7 +183,7 @@ class Gui implements GuiInterface
 		// get file content
 		$file_conent = FileHelper::getContent($file);
 
-		$guiCode = array();
+		$guiCode = [];
 		// we add a new search for the GUI CODE Blocks
 		$guiCode[] = GetHelper::allBetween(
 			$file_conent, '/***[JCB' . 'GUI<>', '/***[/JCBGUI' . '$$$$]***/'

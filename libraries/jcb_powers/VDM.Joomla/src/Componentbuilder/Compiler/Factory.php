@@ -34,6 +34,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Extension;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Field;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Joomlamodule;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Joomlaplugin;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Utilities;
 use VDM\Joomla\Componentbuilder\Interfaces\FactoryInterface;
 
 
@@ -136,7 +137,8 @@ abstract class Factory implements FactoryInterface
 			->registerServiceProvider(new Extension())
 			->registerServiceProvider(new Field())
 			->registerServiceProvider(new Joomlamodule())
-			->registerServiceProvider(new Joomlaplugin());
+			->registerServiceProvider(new Joomlaplugin())
+			->registerServiceProvider(new Utilities());
 	}
 
 }

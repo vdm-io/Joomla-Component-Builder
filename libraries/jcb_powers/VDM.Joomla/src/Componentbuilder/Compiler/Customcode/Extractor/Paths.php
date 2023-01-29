@@ -130,7 +130,7 @@ class Paths
 	protected function load()
 	{
 		// set the local paths to search
-		$local_paths = array();
+		$local_paths = [];
 
 		// admin path
 		$local_paths['admin'] = JPATH_ADMINISTRATOR . '/components/com_'
@@ -213,15 +213,8 @@ class Paths
 			{
 				$joomla_modules = array_filter(
 					array_values($addjoomla_modules),
-					function ($array) {
-						// only load the modules whose target association call for it
-						if (!isset($array['target']) || $array['target'] != 2)
-						{
-							return true;
-						}
-
-						return false;
-					}
+					// only load the modules whose target association call for it
+					fn($array): bool => !isset($array['target']) || $array['target'] != 2
 				);
 				// if we have values we return IDs
 				if (ArrayHelper::check($joomla_modules))

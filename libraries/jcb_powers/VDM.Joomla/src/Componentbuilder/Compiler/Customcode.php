@@ -193,7 +193,7 @@ class Customcode implements CustomcodeInterface
 				var_dump($string);
 			}
 			// the ids found in this content
-			$bucket = array();
+			$bucket = [];
 			$found  = GetHelper::allBetween(
 				$string, '[CUSTO' . 'MCODE=', ']'
 			);
@@ -268,7 +268,7 @@ class Customcode implements CustomcodeInterface
 						{
 							if (!isset($this->data[$id]['args']))
 							{
-								$this->data[$id]['args'] = array();
+								$this->data[$id]['args'] = [];
 							}
 							// only load if not already loaded
 							if (!isset($this->data[$id]['args'][$key]))
@@ -289,7 +289,7 @@ class Customcode implements CustomcodeInterface
 								))
 								{
 									$this->data[$id]['args'][$key]
-										= array();
+										= [];
 									// update the function values with the custom code key placeholders (this allow the use of [] + and , in the values)
 									$this->data[$id]['args'][$key][]
 										= $this->placeholder->update(
@@ -415,7 +415,7 @@ class Customcode implements CustomcodeInterface
 				$this->db->quoteName('a.from_line') . ' ASC'
 			); // <--- insure we always add code from top of file
 			// reset custom code
-			$this->active = array();
+			$this->active = [];
 		}
 		$query->where($this->db->quoteName('a.published') . ' >= 1');
 		$this->db->setQuery($query);
@@ -502,7 +502,7 @@ class Customcode implements CustomcodeInterface
 	 */
 	protected function insert(array $ids, string $string, int $debug = 0): string
 	{
-		$code = array();
+		$code = [];
 		// load the code
 		foreach ($ids as $id)
 		{

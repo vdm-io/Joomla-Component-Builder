@@ -38,7 +38,7 @@ interface DispenserInterface
 	 * @since 3.2.0
 	 */
 	public function set(&$script, string $first, ?string $second = null, ?string $third = null,
-		array $config = array(), bool $base64 = true, bool $dynamic = true, bool $add = false): bool;
+		array $config = [], bool $base64 = true, bool $dynamic = true, bool $add = false): bool;
 
 	/**
 	 * Get the script from the customcode dispenser

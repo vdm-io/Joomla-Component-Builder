@@ -1234,9 +1234,10 @@ class Interpretation extends Fields
 		}
 		// stop it from being added double
 		$addDynamicSQL = false;
-		CFactory::_('Component')->appendArray('version_update', $update_);
 		// add dynamic SQL
 		$this->setUpdateXMLSQL($update_, $updateXML, $addDynamicSQL);
+
+		CFactory::_('Component')->appendArray('version_update', $update_);
 	}
 
 	/**
@@ -1249,7 +1250,7 @@ class Interpretation extends Fields
 	public function setUpdateXMLSQL(&$update, &$updateXML, &$addDynamicSQL)
 	{
 		// ensure version naming is correct
-		$update['version'] = preg_replace('/[^0-9.]+/', '', (string) $update['version']);
+		$update['version'] = preg_replace('/[^0-9\.]+/', '', (string) $update['version']);
 		// setup SQL
 		if (StringHelper::check($update['mysql']))
 		{
@@ -1284,7 +1285,8 @@ class Interpretation extends Fields
 			$name   = StringHelper::safe($update['version']);
 			$target = array('admin' => $name);
 			$this->buildDynamique($target, 'sql_update', $update['version']);
-			CFactory::_('Content')->set_($name . '_' . $update['version'], 'UPDATE_VERSION_MYSQL',
+			$_name = preg_replace('/[\.]+/', '_', (string) $update['version']);
+			CFactory::_('Content')->set_($name . '_' . $_name, 'UPDATE_VERSION_MYSQL',
 				$update['mysql']
 			);
 		}
@@ -6294,7 +6296,7 @@ class Interpretation extends Fields
 						if (isset($folder['rename']) && 1 == $folder['rename'])
 						{
 							if ($_paths = FileHelper::getPaths(
-								$this->componentPath . $path
+								CFactory::_('Utilities.Paths')->component_path . $path
 							))
 							{
 								$files[$path] = $_paths;
@@ -6304,7 +6306,7 @@ class Interpretation extends Fields
 						{
 							$path = $path . '/' . trim((string)$folder['folder'], '/');
 							if ($_paths = FileHelper::getPaths(
-								$this->componentPath . $path
+								CFactory::_('Utilities.Paths')->component_path . $path
 							))
 							{
 								$files[$path] = $_paths;
@@ -7087,7 +7089,7 @@ class Interpretation extends Fields
 
 	public function getReplacementNames()
 	{
-		foreach ($this->newFiles as $type => $files)
+		foreach (CFactory::_('Utilities.Files')->toArray() as $type => $files)
 		{
 			foreach ($files as $view => $file)
 			{
@@ -8512,7 +8514,7 @@ class Interpretation extends Fields
 
 	public function setMoveFolderScript()
 	{
-		if ($this->setMoveFolders)
+		if (CFactory::_('Registry')->get('set_move_folders_install_script'))
 		{
 			// reset script
 			$script   = array();
@@ -8530,7 +8532,7 @@ class Interpretation extends Fields
 
 	public function setMoveFolderMethod()
 	{
-		if ($this->setMoveFolders)
+		if (CFactory::_('Registry')->get('set_move_folders_install_script'))
 		{
 			// reset script
 			$script   = array();
@@ -22535,7 +22537,7 @@ class Interpretation extends Fields
 		$type = ComponentbuilderHelper::imageInfo($path);
 		if ($type)
 		{
-			$imagePath = $this->componentPath . '/admin/assets/images';
+			$imagePath = CFactory::_('Utilities.Paths')->component_path . '/admin/assets/images';
 			// move the image to its place
 			File::copy(
 				JPATH_SITE . '/' . $path,
@@ -22757,7 +22759,7 @@ class Interpretation extends Fields
 					$this->iconBuilder
 				))
 			{
-				$imagePath = $this->componentPath
+				$imagePath = CFactory::_('Utilities.Paths')->component_path
 					. '/admin/assets/images/icons';
 				foreach ($this->iconBuilder as $icon => $path)
 				{
@@ -27924,20 +27926,20 @@ function vdm_dkim() {
 							{
 								Folder::create($path);
 								// count the folder created
-								CFactory::_('Counter')->folder++;
+								CFactory::_('Utilities.Counter')->folder++;
 							}
 							// add to language files (for now we add all to both TODO)
-							$this->writeFile(
+							CFactory::_('Utilities.File')->write(
 								$path . $file_name,
 								implode(PHP_EOL, $lang)
 							);
-							$this->writeFile(
+							CFactory::_('Utilities.File')->write(
 								$path . $tag . '.' . $module->file_name
 								. '.sys.ini',
 								implode(PHP_EOL, $lang)
 							);
 							// set the line counter
-							CFactory::_('Counter')->line += count(
+							CFactory::_('Utilities.Counter')->line += count(
 									(array) $lang
 								);
 							unset($lang);
@@ -28316,14 +28318,14 @@ function vdm_dkim() {
 							{
 								Folder::create($path);
 								// count the folder created
-								CFactory::_('Counter')->folder++;
+								CFactory::_('Utilities.Counter')->folder++;
 							}
 							// add to language file
-							$this->writeFile(
+							CFactory::_('Utilities.File')->write(
 								$path . $file_name,
 								implode(PHP_EOL, $lang)
 							);
-							$this->writeFile(
+							CFactory::_('Utilities.File')->write(
 								$path . $tag . '.plg_' . strtolower(
 									(string) $plugin->group
 								)
@@ -28332,7 +28334,7 @@ function vdm_dkim() {
 								implode(PHP_EOL, $lang)
 							);
 							// set the line counter
-							CFactory::_('Counter')->line += count(
+							CFactory::_('Utilities.Counter')->line += count(
 									(array) $lang
 								);
 							unset($lang);

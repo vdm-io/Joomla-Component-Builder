@@ -110,7 +110,7 @@ class Sqltweaking
 					if (2 == $setting['add_sql_options'])
 					{
 						// rest always
-						$id_array = array();
+						$id_array = [];
 
 						// by id (first remove backups)
 						$ids = $setting['ids'];
@@ -126,7 +126,7 @@ class Sqltweaking
 						{
 							$id_array[] = trim((string) $ids);
 						}
-						$id_array_new = array();
+						$id_array_new = [];
 
 						// check for ranges
 						foreach ($id_array as $key => $id)

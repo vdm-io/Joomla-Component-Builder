@@ -294,15 +294,7 @@ class Data
 			$main_get = $this->dynamic->get(
 				array($item->main_get), $item->code, $item->context
 			);
-
-			if (ArrayHelper::check($main_get))
-			{
-				$item->main_get = $main_get[0];
-			}
-			else
-			{
-				$item->main_get = null;
-			}
+			$item->main_get = ArrayHelper::check($main_get) ? $main_get[0] : null;
 
 			// set the custom_get data
 			$item->custom_get = (isset($item->custom_get)
