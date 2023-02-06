@@ -431,7 +431,7 @@ class Model implements ServiceProviderInterface
 	public function getModelCustomalias(Container $container): Customalias
 	{
 		return new Customalias(
-			$container->get('Config'),
+			$container->get('Registry'),
 			$container->get('Field.Name')
 		);
 	}

@@ -147,10 +147,10 @@ class Builder
 		$this->registry = $registry ?: Compiler::_('Registry');
 		$this->dispenser = $dispenser ?: Compiler::_('Customcode.Dispenser');
 		$this->event = $event ?: Compiler::_('Event');
-		$this->counter = $counter ?? Compiler::_('Utilities.Counter');
-		$this->folder = $folder ?? Compiler::_('Utilities.Folder');
-		$this->file = $file ?? Compiler::_('Utilities.File');
-		$this->files = $files ?? Compiler::_('Utilities.Files');
+		$this->counter = $counter ?: Compiler::_('Utilities.Counter');
+		$this->folder = $folder ?: Compiler::_('Utilities.Folder');
+		$this->file = $file ?: Compiler::_('Utilities.File');
+		$this->files = $files ?: Compiler::_('Utilities.Files');
 	}
 
 	/**

@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Name as FieldName;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -27,12 +27,12 @@ use VDM\Joomla\Utilities\ArrayHelper;
 class Customalias
 {
 	/**
-	 * The compiler Config
+	 * The compiler Registry
 	 *
-	 * @var    Config
+	 * @var    Registry
 	 * @since 3.2.0
 	 */
-	protected Config $config;
+	protected Registry $registry;
 
 	/**
 	 * The compiler field name
@@ -45,14 +45,14 @@ class Customalias
 	/**
 	 * Constructor
 	 *
-	 * @param Config|null          $config        The compiler registry object.
-	 * @param FieldName|null          $fieldName        The compiler  field name object.
+	 * @param Registry|null        $registry        The compiler registry object.
+	 * @param FieldName|null       $fieldName       The compiler  field name object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?FieldName $fieldName = null)
+	public function __construct(?Registry $registry = null, ?FieldName $fieldName = null)
 	{
-		$this->config = $config ?: Compiler::_('Config');
+		$this->registry = $registry ?: Compiler::_('Registry');
 		$this->fieldName = $fieldName ?: Compiler::_('Field.Name');
 	}
 
@@ -66,7 +66,7 @@ class Customalias
 	 */
 	public function set(object &$item)
 	{
-		if (!$this->config->get('builder.custom_alias.' . $item->name_single_code, null)
+		if (!$this->registry->get('builder.custom_alias.' . $item->name_single_code, null)
 			&& isset($item->alias_builder_type) && 2 == $item->alias_builder_type
 			&& isset($item->alias_builder) && JsonHelper::check($item->alias_builder))
 		{
@@ -90,7 +90,7 @@ class Customalias
 			if (ArrayHelper::check($alias_fields))
 			{
 				// load the field names
-				$this->config->set('builder.custom_alias.' . $item->name_single_code,
+				$this->registry->set('builder.custom_alias.' . $item->name_single_code,
 					(array) array_map(
 						function ($field) use (&$item) {
 							return $this->fieldName->get(
