@@ -14,8 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
-use Joomla\Registry\Registry;
 use VDM\Gitea\Gitea;
+use Joomla\Registry\Registry;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 
 /**

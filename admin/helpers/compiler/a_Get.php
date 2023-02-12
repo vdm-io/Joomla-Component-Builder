@@ -19,7 +19,6 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
-use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Unique;
 
 /**
@@ -1140,7 +1139,7 @@ class Get
 			// set the old version
 			CFactory::_('Component')->set('old_component_version', CFactory::_('Component')->component_version);
 			// set the new version, and set update switch
-			CFactory::_('Component')->set('component_version ', implode(
+			CFactory::_('Component')->set('component_version', implode(
 				'.', $version
 			));
 		}
@@ -2772,7 +2771,7 @@ class Get
 	 * get the plugin xml template
 	 *
 	 * @return  string
-	 *
+	 * @deprecated 3.3
 	 */
 	public function getPluginXMLTemplate(&$plugin)
 	{
@@ -2804,7 +2803,6 @@ class Get
 	 * @param   int  $when  To set when to update
 	 *
 	 * @return  void
-	 *
 	 * @deprecated 3.3
 	 */
 	protected function setNewCustomCode($when = 1)
@@ -2826,7 +2824,6 @@ class Get
 	 * @param   int  $when  To set when to update
 	 *
 	 * @return  void
-	 *
 	 * @deprecated 3.3
 	 */
 	protected function setExistingCustomCode($when = 1)

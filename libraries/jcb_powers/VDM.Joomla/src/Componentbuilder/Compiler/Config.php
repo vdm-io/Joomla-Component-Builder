@@ -102,6 +102,17 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * get add checkin
+	 *
+	 * @return  bool  add checkin switch
+	 * @since 3.2.0
+	 */
+	protected function getAddcheckin(): bool
+	{
+		return false; // default is false
+	}
+
+	/**
 	 * get posted component id
 	 *
 	 * @return  int  Component id
@@ -169,7 +180,7 @@ class Config extends BaseConfig
 	 */
 	protected function getJoomlaversion(): int
 	{
-		return $this->input->post->get('joomla_version', 3, 'INT');
+		return 3; // $this->input->post->get('joomla_version', 3, 'INT');
 	}
 
 	/**
@@ -209,6 +220,17 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * get show advanced options switch
+	 *
+	 * @return  bool  show advanced options
+	 * @since 3.2.0
+	 */
+	protected function getShowadvancedoptions(): bool
+	{
+		return (bool) $this->input->post->get('show_advanced_options', 0, 'INT');
+	}
+
+	/**
 	 * get indentation value
 	 *
 	 * @return  string  Indentation value
@@ -216,7 +238,60 @@ class Config extends BaseConfig
 	 */
 	protected function getIndentationvalue(): string
 	{
-		return "\t"; // TODO add to GUI as an Global Option?
+		// if advanced options is active
+		if ($this->show_advanced_options)
+		{
+			$indentation_value = $this->input->post->get('indentation_value', 1, 'INT');
+
+			switch($indentation_value)
+			{
+				case 2:
+					// two spaces
+					return "  ";
+				break;
+				case 4:
+					// four spaces
+					return "    ";
+				break;
+			}
+		}
+
+		return "\t";
+	}
+
+	/**
+	 * get add build date switch
+	 *
+	 * @return  int  add build date options
+	 * @since 3.2.0
+	 */
+	protected function getAddbuilddate(): int
+	{
+		// if advanced options is active
+		if ($this->show_advanced_options)
+		{
+			// 1=default 2=manual 3=component
+			return $this->input->post->get('add_build_date', 1, 'INT');
+		}
+
+		return 1;
+	}
+
+	/**
+	 * get build date
+	 *
+	 * @return  string  build date
+	 * @since 3.2.0
+	 */
+	protected function getBuilddate(): string
+	{
+		// if advanced options is active and manual date selected
+		if ($this->show_advanced_options && $this->add_build_date == 2)
+		{
+			return $this->input->post->get('build_date', 'now', 'STRING');
+		}
+
+		return "now";
 	}
 
 	/**

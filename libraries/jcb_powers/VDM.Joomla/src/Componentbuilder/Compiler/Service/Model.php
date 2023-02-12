@@ -50,6 +50,8 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Sqltweaking;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Sqldump;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Whmcs;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Filesfolders;
+use VDM\Joomla\Componentbuilder\Compiler\Model\Modifieddate;
+use VDM\Joomla\Componentbuilder\Compiler\Model\Createdate;
 
 
 /**
@@ -173,6 +175,12 @@ class Model implements ServiceProviderInterface
 
 		$container->alias(Filesfolders::class, 'Model.Filesfolders')
 			->share('Model.Filesfolders', [$this, 'getModelFilesfolders'], true);
+
+		$container->alias(Modifieddate::class, 'Model.Modifieddate')
+			->share('Model.Modifieddate', [$this, 'getModifieddate'], true);
+
+		$container->alias(Createdate::class, 'Model.Createdate')
+			->share('Model.Createdate', [$this, 'getCreatedate'], true);
 
 		$container->alias(ServerLoad::class, 'Model.Server.Load')
 			->share('Model.Server.Load', [$this, 'getServerLoad'], true);
@@ -722,6 +730,32 @@ class Model implements ServiceProviderInterface
 	public function getModelWhmcs(Container $container): Whmcs
 	{
 		return new Whmcs();
+	}
+
+	/**
+	 * Get the modified date Model
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Modifieddate
+	 * @since 3.2.0
+	 */
+	public function getModifieddate(Container $container): Modifieddate
+	{
+		return new Modifieddate();
+	}
+
+	/**
+	 * Get the create date Model
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Createdate
+	 * @since 3.2.0
+	 */
+	public function getCreatedate(Container $container): Createdate
+	{
+		return new Createdate();
 	}
 
 	/**

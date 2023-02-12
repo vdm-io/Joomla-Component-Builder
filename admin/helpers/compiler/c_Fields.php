@@ -5443,7 +5443,7 @@ class Fields extends Structure
 				}
 				// load another file
 				$target = array('admin' => 'customfield');
-				$this->buildDynamique(
+				CFactory::_('Utilities.Structure')->build(
 					$target, 'fieldcustom', $data['custom']['type']
 				);
 				// get the extends name
@@ -5540,7 +5540,7 @@ class Fields extends Structure
 			{
 				// first build the custom field type file
 				$target = array('admin' => 'customfield');
-				$this->buildDynamique(
+				CFactory::_('Utilities.Structure')->build(
 					$target, 'field' . $data['custom']['extends'],
 					$data['custom']['type']
 				);
@@ -5739,7 +5739,7 @@ class Fields extends Structure
 		{
 			// we first create the file
 			$target = array('admin' => 'filter_' . $nameListCode);
-			$this->buildDynamique(
+			CFactory::_('Utilities.Structure')->build(
 				$target, 'filter'
 			);
 			// the search language string
@@ -6087,7 +6087,7 @@ class Fields extends Structure
 			CFactory::_('Content')->set_('customfilterfield_' . $filter['filter_type'], 'ADD_BUTTON', '');
 			// now build the custom filter field type file
 			$target = array('admin' => 'customfilterfield');
-			$this->buildDynamique(
+			CFactory::_('Utilities.Structure')->build(
 				$target, 'fieldlist',
 				$filter['filter_type']
 			);

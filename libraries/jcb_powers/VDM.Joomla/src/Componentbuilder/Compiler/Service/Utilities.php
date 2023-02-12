@@ -20,6 +20,10 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\File;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Paths;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Files;
+use VDM\Joomla\Componentbuilder\Utilities\Constantpaths;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Dynamicpath;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Pathfix;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Structure;
 
 
 /**
@@ -53,6 +57,18 @@ class Utilities implements ServiceProviderInterface
 
 		$container->alias(Files::class, 'Utilities.Files')
 			->share('Utilities.Files', [$this, 'getFiles'], true);
+
+		$container->alias(Constantpaths::class, 'Utilities.Constantpaths')
+			->share('Utilities.Constantpaths', [$this, 'getConstantpaths'], true);
+
+		$container->alias(Dynamicpath::class, 'Utilities.Dynamicpath')
+			->share('Utilities.Dynamicpath', [$this, 'getDynamicpath'], true);
+
+		$container->alias(Pathfix::class, 'Utilities.Pathfix')
+			->share('Utilities.Pathfix', [$this, 'getPathfix'], true);
+
+		$container->alias(Structure::class, 'Utilities.Structure')
+			->share('Utilities.Structure', [$this, 'getStructure'], true);
 	}
 
 	/**
@@ -128,6 +144,67 @@ class Utilities implements ServiceProviderInterface
 	public function getFiles(Container $container): Files
 	{
 		return new Files();
+	}
+
+	/**
+	 * Get the Constant Paths
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Constantpaths
+	 * @since 3.2.0
+	 */
+	public function getConstantpaths(Container $container): Constantpaths
+	{
+		return new Constantpaths();
+	}
+
+	/**
+	 * Get the Compiler Dynamic Path
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Dynamicpath
+	 * @since 3.2.0
+	 */
+	public function getDynamicpath(Container $container): Dynamicpath
+	{
+		return new Dynamicpath(
+			$container->get('Placeholder'),
+			$container->get('Utilities.Constantpaths')
+		);
+	}
+
+	/**
+	 * Get the Compiler Path Fixer
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Pathfix
+	 * @since 3.2.0
+	 */
+	public function getPathfix(Container $container): Pathfix
+	{
+		return new Pathfix();
+	}
+
+	/**
+	 * Get the Compiler Structure Dynamic Builder
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Structure
+	 * @since 3.2.0
+	 */
+	public function getStructure(Container $container): Structure
+	{
+		return new Structure(
+			$container->get('Component.Settings'),
+			$container->get('Utilities.Paths'),
+			$container->get('Utilities.Counter'),
+			$container->get('Utilities.File'),
+			$container->get('Utilities.Files')
+		);
 	}
 
 }

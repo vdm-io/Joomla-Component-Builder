@@ -32,11 +32,11 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 
 
 /**
- * Power Builder Class
+ * Power Structure Builder Class
  * 
  * @since 3.2.0
  */
-class Builder
+class Structure
 {
 	/**
 	 * we track the creation of htaccess files
@@ -166,7 +166,7 @@ class Builder
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	public function run()
+	public function build()
 	{
 		if (ArrayHelper::check($this->power->active))
 		{
@@ -315,7 +315,7 @@ class Builder
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	protected function setDynamicFolders()
+	private function setDynamicFolders()
 	{
 		// check if we should add the dynamic folder moving script to the installer script
 		if (!$this->registry->get('set_move_folders_install_script'))

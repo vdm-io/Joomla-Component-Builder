@@ -139,13 +139,8 @@ jQuery('<div id="compiling"></div>')
 				<div id="compilerForm">
 					<div>
 					<span class="notice" style="display:none; color:red;"><?php echo JText::_('COM_COMPONENTBUILDER_YOU_MUST_SELECT_A_COMPONENT'); ?></span><br />
-					<?php if ($this->Form): ?>
-						<?php foreach ($this->Form as $field): ?>
-						<div class="control-group">
-							<div class="control-label"><?php echo $field->label; ?></div>
-							<div class="controls"><?php echo $field->input; ?></div>
-						</div>
-						<?php endforeach; ?>
+					<?php if ($this->form): ?>
+						<?php echo $this->form->renderFieldset('builder'); ?>
 					<?php endif; ?>
 					</div>
 					<br />
@@ -158,6 +153,7 @@ jQuery('<div id="compiling"></div>')
 				</div>
 			</div>
 			<div class="span7">
+				<div id="advance-details"><?php echo $this->form->renderFieldset('advanced'); ?></div>
 				<div id="component-details"><?php echo $selectNotice; ?></div>
 				<?php echo JLayoutHelper::render('jcbnoticeboardtabs', array('id' => 'noticeboard' , 'active' => $noticeboardOptions[array_rand($noticeboardOptions)])); ?>
 			</div>

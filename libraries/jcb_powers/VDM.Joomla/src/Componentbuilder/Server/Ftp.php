@@ -28,10 +28,10 @@ class Ftp implements Serverinterface
 	/**
 	* The client object
 	 *
-	 * @var     FtpClient
+	 * @var     FtpClient|null
 	 * @since 3.2.0
 	 **/
-	protected FtpClient $client;
+	protected ?FtpClient $client = null;
 
 	/**
 	* The server details
@@ -82,11 +82,17 @@ class Ftp implements Serverinterface
 	 * @return  bool
 	 * @since 3.2.0
 	 **/
-	protected function connected(): bool
+	private function connected(): bool
 	{
 		// check if we have a connection
-		return ($this->client instanceof FtpClient && $this->client->isConnected()) || 
-			($this->client = $this->getClient()) !== null;
+		if ($this->client instanceof FtpClient && $this->client->isConnected())
+		{
+			return true;
+		}
+
+		$this->client = $this->getClient();
+
+		return $this->client instanceof FtpClient;
 	}
 
 	/**
@@ -95,7 +101,7 @@ class Ftp implements Serverinterface
 	 * @return  FtpClient|null
 	 * @since 3.2.0
 	 **/
-	protected function getClient(): ?FtpClient
+	private function getClient(): ?FtpClient
 	{
 		// make sure we have a string and it is not default or empty
 		if (StringHelper::check($this->details->signature))

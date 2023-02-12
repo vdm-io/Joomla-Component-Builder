@@ -143,5 +143,23 @@ class Server
 		return false;
 	}
 
+	/**
+	 * Move File to Server (Legacy Signature)
+	 *
+	 * @param   string    $localPath     The local path to the file
+	 * @param   string    $fileName      The actual file name
+	 * @param   int       $serverID      The server local id to use
+	 * @param   int       $protocol      The server protocol to use
+	 * @param   string    $permission    The permission validation area
+	 *
+	 * @return  bool      true on success
+	 * @since 3.2.0
+	 * @deprecated 4.0
+	 */
+	public function legacyMove($localPath, $fileName, $serverID, $protocol = null, $permission = 'core.export'): bool
+	{
+		return $this->move($serverID,  $localPath, $fileName, $protocol, $permission);
+	}
+
 }
 

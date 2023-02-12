@@ -25,8 +25,8 @@ use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Extractor\Paths;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder\Reverse;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Placeholder;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Pathfix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
-use VDM\Joomla\Componentbuilder\Compiler\Utilities\Path;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\ExtractorInterface;
 
 
@@ -180,6 +180,14 @@ class Extractor implements ExtractorInterface
 	protected Placeholder $componentPlaceholder;
 
 	/**
+	 * Compiler Component Pathfix
+	 *
+	 * @var    Pathfix
+	 * @since 3.2.0
+	 **/
+	protected Pathfix $pathfix;
+
+	/**
 	 * Current User Object
 	 *
 	 * @var    User
@@ -211,6 +219,7 @@ class Extractor implements ExtractorInterface
 	 * @param Paths|null              $paths       The compiler customcode extractor paths object.
 	 * @param Reverse|null            $reverse     The compiler placeholder reverse object.
 	 * @param Placeholder|null        $placeholder The compiler component placeholder object.
+	 * @param Pathfix|null            $pathfix     The compiler path fixing object.
 	 * @param User|null               $user        The current User object.
 	 * @param \JDatabaseDriver|null   $db          The Database Driver object.
 	 * @param CMSApplication|null     $app         The CMS Application object.
@@ -219,7 +228,7 @@ class Extractor implements ExtractorInterface
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Gui $gui = null, ?Paths $paths = null,
-		?Reverse $reverse = null, ?Placeholder $placeholder = null,
+		?Reverse $reverse = null, ?Placeholder $placeholder = null, ?Pathfix $pathfix = null,
 		?User $user = null, ?\JDatabaseDriver $db = null, ?CMSApplication $app = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
@@ -227,6 +236,7 @@ class Extractor implements ExtractorInterface
 		$this->paths = $paths ?: Compiler::_('Customcode.Extractor.Paths');
 		$this->reverse = $reverse ?: Compiler::_('Placeholder.Reverse');
 		$this->componentPlaceholder = $placeholder ?: Compiler::_('Component.Placeholder');
+		$this->pathfix = $pathfix ?: Compiler::_('Utilities.Pathfix');
 		$this->user = $user ?: Factory::getUser();
 		$this->db = $db ?: Factory::getDbo();
 		$this->app = $app ?: Factory::getApplication();
@@ -581,7 +591,7 @@ class Extractor implements ExtractorInterface
 							);
 
 						// for good practice
-						Path::fix($path);
+						$this->pathfix->set($path);
 
 						// all new records we can do a bulk insert
 						if ($i === 1 || !$id)

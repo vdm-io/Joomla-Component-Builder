@@ -33,11 +33,11 @@ use VDM\Joomla\Utilities\FileHelper;
 
 
 /**
- * Joomla Module Builder Class
+ * Joomla Module Structure Builder Class
  * 
  * @since 3.2.0
  */
-class Builder
+class Structure
 {
 	/**
 	 * Compiler Joomla Module Data Class
@@ -159,7 +159,7 @@ class Builder
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	public function run()
+	public function build()
 	{
 		if ($this->module->exists())
 		{

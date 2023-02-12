@@ -14,8 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Form\Form;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
+use Joomla\CMS\Form\Form;
 
 /**
  * Componentbuilder Html View class for the Search

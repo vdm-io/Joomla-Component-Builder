@@ -116,7 +116,8 @@ class Infusion extends Interpretation
 				CFactory::_('Content')->get('CREATIONDATE'));
 
 			// BUILDDATE
-			CFactory::_('Content')->set('BUILDDATE', JFactory::getDate()->format('jS F, Y'));
+			CFactory::_('Content')->set('BUILDDATE', JFactory::getDate(
+				CFactory::_('Config')->get('build_date', 'now'))->format('jS F, Y'));
 			CFactory::_('Content')->set('GLOBALBUILDDATE',
 				CFactory::_('Content')->get('BUILDDATE'));
 
@@ -1104,8 +1105,8 @@ class Infusion extends Interpretation
 					);
 
 					// check if this custom admin view is the default view
-					if ($this->dynamicDashboardType === 'custom_admin_views'
-						&& $this->dynamicDashboard === $view['settings']->code)
+					if (CFactory::_('Registry')->get('build.dashboard.type', '') === 'custom_admin_views'
+						&& CFactory::_('Registry')->get('build.dashboard', '') === $view['settings']->code)
 					{
 						// HIDEMAINMENU <<<DYNAMIC>>>
 						CFactory::_('Content')->set_($view['settings']->code, 'HIDEMAINMENU', '');
@@ -1328,7 +1329,7 @@ class Infusion extends Interpretation
 			$this->setVersionController();
 
 			// only set these if default dashboard it used
-			if (!StringHelper::check($this->dynamicDashboard))
+			if (!CFactory::_('Registry')->get('build.dashboard'))
 			{
 				// DASHBOARDVIEW
 				CFactory::_('Content')->set('DASHBOARDVIEW', CFactory::_('Config')->component_code_name);
@@ -1360,7 +1361,7 @@ class Infusion extends Interpretation
 			else
 			{
 				// DASHBOARDVIEW
-				CFactory::_('Content')->set('DASHBOARDVIEW', $this->dynamicDashboard);
+				CFactory::_('Content')->set('DASHBOARDVIEW', CFactory::_('Registry')->get('build.dashboard'));
 			}
 
 			// add import
@@ -1368,7 +1369,7 @@ class Infusion extends Interpretation
 			{
 				// setup import files
 				$target = array('admin' => 'import');
-				$this->buildDynamique($target, 'import');
+				CFactory::_('Utilities.Structure')->build($target, 'import');
 				// IMPORT_EXT_METHOD <<<DYNAMIC>>>
 				CFactory::_('Content')->set_('import', 'IMPORT_EXT_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 						ComponentbuilderHelper::getDynamicScripts('ext')
@@ -1388,7 +1389,7 @@ class Infusion extends Interpretation
 			{
 				// setup Ajax files
 				$target = array('admin' => 'ajax');
-				$this->buildDynamique($target, 'ajax');
+				CFactory::_('Utilities.Structure')->build($target, 'ajax');
 				// set the controller
 				CFactory::_('Content')->set_('ajax', 'REGISTER_AJAX_TASK', $this->setRegisterAjaxTask('admin'));
 				CFactory::_('Content')->set_('ajax', 'AJAX_INPUT_RETURN', $this->setAjaxInputReturn('admin'));
@@ -1403,7 +1404,7 @@ class Infusion extends Interpretation
 			{
 				// setup Ajax files
 				$target = array('site' => 'ajax');
-				$this->buildDynamique($target, 'ajax');
+				CFactory::_('Utilities.Structure')->build($target, 'ajax');
 				// set the controller
 				CFactory::_('Content')->set_('ajax', 'REGISTER_SITE_AJAX_TASK', $this->setRegisterAjaxTask('site'));
 				CFactory::_('Content')->set_('ajax', 'AJAX_SITE_INPUT_RETURN', $this->setAjaxInputReturn('site'));
@@ -1420,7 +1421,7 @@ class Infusion extends Interpretation
 				{
 					// setup rule file
 					$target = array('admin' => 'a_rule_zi');
-					$this->buildDynamique($target, 'rule', $rule);
+					CFactory::_('Utilities.Structure')->build($target, 'rule', $rule);
 					// set the JFormRule Name
 					CFactory::_('Content')->set_('a_rule_zi_' . $rule, 'Name', ucfirst((string) $rule));
 					// set the JFormRule PHP

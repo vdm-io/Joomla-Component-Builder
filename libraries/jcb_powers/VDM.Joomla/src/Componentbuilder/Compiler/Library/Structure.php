@@ -31,11 +31,11 @@ use VDM\Joomla\Utilities\FileHelper;
 
 
 /**
- * Library Builder Class
+ * Library Structure Builder Class
  * 
  * @since 3.2.0
  */
-class Builder
+class Structure
 {
 	/**
 	 * Compiler Config
@@ -147,7 +147,7 @@ class Builder
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	public function run()
+	public function build()
 	{
 		if (($libraries_ = $this->registry->get('builder.libraries')) !== null)
 		{

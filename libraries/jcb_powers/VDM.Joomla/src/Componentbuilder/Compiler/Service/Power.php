@@ -17,7 +17,7 @@ use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Power as Powers;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Infusion;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Autoloader;
-use VDM\Joomla\Componentbuilder\Compiler\Power\Builder;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Structure;
 
 
 /**
@@ -46,8 +46,8 @@ class Power implements ServiceProviderInterface
 		$container->alias(Infusion::class, 'Power.Infusion')
 			->share('Power.Infusion', [$this, 'getInfusion'], true);
 
-		$container->alias(Builder::class, 'Power.Builder')
-			->share('Power.Builder', [$this, 'getBuilder'], true);
+		$container->alias(Structure::class, 'Power.Structure')
+			->share('Power.Structure', [$this, 'getStructure'], true);
 	}
 
 	/**
@@ -106,16 +106,16 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Power Builder
+	 * Get the Compiler Power Structure Builder
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Builder
+	 * @return  Structure
 	 * @since 3.2.0
 	 */
-	public function getBuilder(Container $container): Builder
+	public function getStructure(Container $container): Structure
 	{
-		return new Builder(
+		return new Structure(
 			$container->get('Power'),
 			$container->get('Config'),
 			$container->get('Registry'),

@@ -273,7 +273,7 @@ class Interpretation extends Fields
 			$component = CFactory::_('Config')->component_code_name;
 			$Component = CFactory::_('Content')->get('Component');
 			$target    = array('admin' => 'emailer');
-			$done      = $this->buildDynamique($target, 'emailer', $component);
+			$done      = CFactory::_('Utilities.Structure')->build($target, 'emailer', $component);
 			if ($done)
 			{
 				// the text for the file BAKING
@@ -820,7 +820,7 @@ class Interpretation extends Fields
 			{
 				// set whmcs encrypt file into place
 				$target = array('admin' => 'whmcs');
-				$done   = $this->buildDynamique($target, 'whmcs');
+				$done   = CFactory::_('Utilities.Structure')->build($target, 'whmcs');
 				// the text for the file WHMCS_ENCRYPTION_BODY
 				CFactory::_('Content')->set_('whmcs', 'WHMCS_ENCRYPTION_BODY', $this->setWHMCSCryption());
 				// ENCRYPT_FILE
@@ -1105,7 +1105,7 @@ class Interpretation extends Fields
 				);
 				$name   = explode('.xml', $name)[0];
 				$target = array('admin' => $name);
-				$this->buildDynamique($target, 'update_server');
+				CFactory::_('Utilities.Structure')->build($target, 'update_server');
 				CFactory::_('Content')->set_($name, 'UPDATE_SERVER_XML', implode(PHP_EOL, $updateXML));
 
 				// set the Update server file name
@@ -1284,7 +1284,7 @@ class Interpretation extends Fields
 		{
 			$name   = StringHelper::safe($update['version']);
 			$target = array('admin' => $name);
-			$this->buildDynamique($target, 'sql_update', $update['version']);
+			CFactory::_('Utilities.Structure')->build($target, 'sql_update', $update['version']);
 			$_name = preg_replace('/[\.]+/', '_', (string) $update['version']);
 			CFactory::_('Content')->set_($name . '_' . $_name, 'UPDATE_VERSION_MYSQL',
 				$update['mysql']
@@ -1389,10 +1389,10 @@ class Interpretation extends Fields
 		{
 			// set help file into admin place
 			$target    = array('admin' => 'help');
-			$admindone = $this->buildDynamique($target, 'help');
+			$admindone = CFactory::_('Utilities.Structure')->build($target, 'help');
 			// set the help file into site place
 			$target   = array('site' => 'help');
-			$sitedone = $this->buildDynamique($target, 'help');
+			$sitedone = CFactory::_('Utilities.Structure')->build($target, 'help');
 			if ($admindone && $sitedone)
 			{
 				// HELP
@@ -2133,7 +2133,7 @@ class Interpretation extends Fields
 		// build the file target values
 		$target = array('site' => $nameSingleCode);
 		// build the edit.xml file
-		if ($this->buildDynamique($target, 'admin_menu'))
+		if (CFactory::_('Utilities.Structure')->build($target, 'admin_menu'))
 		{
 			// set the lang
 			$lang = StringHelper::safe(
@@ -2183,7 +2183,7 @@ class Interpretation extends Fields
 		// build the file target values
 		$target = array('site' => $view['settings']->code);
 		// build the default.xml file
-		if ($this->buildDynamique($target, 'menu'))
+		if (CFactory::_('Utilities.Structure')->build($target, 'menu'))
 		{
 			// set the lang
 			$lang = StringHelper::safe(
@@ -5471,9 +5471,11 @@ class Interpretation extends Fields
 		elseif (1 == $type)
 		{
 			// add this button only if this is not the default view
-			if ($this->dynamicDashboardType !== 'custom_admin_views'
-				|| ($this->dynamicDashboardType === 'custom_admin_views'
-					&& $this->dynamicDashboard !== $viewCodeName))
+			$dynamic_dashboard = CFactory::_('Registry')->get('build.dashboard', '');
+			$dynamic_dashboard_type = CFactory::_('Registry')->get('build.dashboard.type', '');
+			if ($dynamic_dashboard_type !== 'custom_admin_views'
+				|| ($dynamic_dashboard_type === 'custom_admin_views'
+					&& $dynamic_dashboard !== $viewCodeName))
 			{
 				$buttons[] = $tab . Indent::_(2)
 					. "//" . Line::_(__Line__, __Class__) . " add cpanel button";
@@ -5663,7 +5665,7 @@ class Interpretation extends Fields
 						// add the controller for this view
 						// build the file
 						$target = array(CFactory::_('Config')->build_target => $viewCodeName);
-						$this->buildDynamique($target, 'custom_form');
+						CFactory::_('Utilities.Structure')->build($target, 'custom_form');
 						// GET_FORM_CUSTOM
 					}
 				}
@@ -5807,14 +5809,14 @@ class Interpretation extends Fields
 			))
 		{
 			// get dates
-			$created  = $this->getCreatedDate($view);
-			$modified = $this->getLastModifiedDate($view);
+			$created  = CFactory::_('Model.Createdate')->get($view);
+			$modified = CFactory::_('Model.Modifieddate')->get($view);
 			// add file to view
 			$target = array(CFactory::_('Config')->build_target => $view['settings']->code);
 			$config = array(Placefix::_h('CREATIONDATE')                          => $created,
 				Placefix::_h('BUILDDATE') => $modified,
 				Placefix::_h('VERSION')                          => $view['settings']->version);
-			$this->buildDynamique($target, 'javascript_file', false, $config);
+			CFactory::_('Utilities.Structure')->build($target, 'javascript_file', false, $config);
 			// set path
 			if ('site' === CFactory::_('Config')->build_target)
 			{
@@ -6997,8 +6999,8 @@ class Interpretation extends Fields
 		if (($data_ = CFactory::_('Registry')->
 			extract('builder.template_data.' . CFactory::_('Config')->build_target . '.' . $view['settings']->code)) !== null)
 		{
-			$created  = $this->getCreatedDate($view);
-			$modified = $this->getLastModifiedDate($view);
+			$created  = CFactory::_('Model.Createdate')->get($view);
+			$modified = CFactory::_('Model.Modifieddate')->get($view);
 			foreach ($data_ as $template => $data)
 			{
 				// build the file
@@ -7006,7 +7008,7 @@ class Interpretation extends Fields
 				$config = array(Placefix::_h('CREATIONDATE') => $created,
 					Placefix::_h('BUILDDATE') => $modified,
 					Placefix::_h('VERSION') => $view['settings']->version);
-				$this->buildDynamique($target, 'template', $template, $config);
+				CFactory::_('Utilities.Structure')->build($target, 'template', $template, $config);
 				// set the file data
 				$TARGET = StringHelper::safe(
 					CFactory::_('Config')->build_target, 'U'
@@ -7050,7 +7052,7 @@ class Interpretation extends Fields
 			{
 				// build the file
 				$target = array(CFactory::_('Config')->build_target => $layout);
-				$this->buildDynamique($target, 'layout');
+				CFactory::_('Utilities.Structure')->build($target, 'layout');
 				// set the file data
 				$TARGET = StringHelper::safe(
 					CFactory::_('Config')->build_target, 'U'
@@ -13424,12 +13426,12 @@ class Interpretation extends Fields
 		{
 			// first build the layout file
 			$target = array('admin' => $nameSingleCode);
-			$this->buildDynamique($target, $type, $layoutName);
+			CFactory::_('Utilities.Structure')->build($target, $type, $layoutName);
 			// add to front if needed
 			if (CFactory::_('Config')->lang_target === 'both')
 			{
 				$target = array('site' => $nameSingleCode);
-				$this->buildDynamique($target, $type, $layoutName);
+				CFactory::_('Utilities.Structure')->build($target, $type, $layoutName);
 			}
 			if (StringHelper::check($items))
 			{
@@ -13458,12 +13460,12 @@ class Interpretation extends Fields
 		{
 			// first build the layout file
 			$target = array('admin' => $nameSingleCode);
-			$this->buildDynamique($target, 'layoutoverride', $layoutName);
+			CFactory::_('Utilities.Structure')->build($target, 'layoutoverride', $layoutName);
 			// add to front if needed
 			if (CFactory::_('Config')->lang_target === 'both')
 			{
 				$target = array('site' => $nameSingleCode);
-				$this->buildDynamique($target, 'layoutoverride', $layoutName);
+				CFactory::_('Utilities.Structure')->build($target, 'layoutoverride', $layoutName);
 			}
 			// make sure items is an empty string (should not be needed.. but)
 			if (!StringHelper::check($items))
@@ -15404,7 +15406,7 @@ class Interpretation extends Fields
 	{
 		// setup Ajax files
 		$target = array('admin' => 'import_' . $nameListCode);
-		$this->buildDynamique($target, 'customimport');
+		CFactory::_('Utilities.Structure')->build($target, 'customimport');
 		// load the custom script to the files
 		// IMPORT_EXT_METHOD <<<DYNAMIC>>>
 		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_EXT_METHOD', CFactory::_('Customcode.Dispenser')->get(
@@ -16566,14 +16568,14 @@ class Interpretation extends Fields
 			&& StringHelper::check($list_fileScript))
 		{
 			// get dates
-			$_created  = $this->getCreatedDate($viewArray);
-			$_modified = $this->getLastModifiedDate($viewArray);
+			$_created  = CFactory::_('Model.Createdate')->get($viewArray);
+			$_modified = CFactory::_('Model.Modifieddate')->get($viewArray);
 			// add file to view
 			$_target = array(CFactory::_('Config')->build_target => $nameListCode);
 			$_config = array(Placefix::_h('CREATIONDATE') => $_created,
 				Placefix::_h('BUILDDATE') => $_modified,
 				Placefix::_h('VERSION') => $viewArray['settings']->version);
-			$this->buildDynamique($_target, 'javascript_file', false, $_config);
+			CFactory::_('Utilities.Structure')->build($_target, 'javascript_file', false, $_config);
 			// set path
 			$_path = '/administrator/components/com_' . CFactory::_('Config')->component_code_name
 				. '/assets/js/' . $nameListCode . '.js';
@@ -18733,7 +18735,7 @@ class Interpretation extends Fields
 			{
 				// lets also set the category helper for this view
 				$target = array('site' => 'category' . $otherView);
-				$this->buildDynamique($target, 'category');
+				CFactory::_('Utilities.Structure')->build($target, 'category');
 				// insure the file gets updated
 				CFactory::_('Content')->set_('category' . $otherView, 'view', $otherView);
 				CFactory::_('Content')->set_('category' . $otherView, 'View', ucfirst((string) $otherView));
@@ -22951,7 +22953,7 @@ class Interpretation extends Fields
 					$slidecounter++;
 					// build the template file
 					$target = array('custom_admin' => CFactory::_('Config')->component_code_name);
-					$this->buildDynamique($target, 'template', $tempName);
+					CFactory::_('Utilities.Structure')->build($target, 'template', $tempName);
 					// set the file data
 					$TARGET = StringHelper::safe(
 						CFactory::_('Config')->build_target, 'U'
@@ -23178,7 +23180,7 @@ class Interpretation extends Fields
 			// set the code name
 			$codeName = CFactory::_('Config')->component_code_name;
 			// set default dashboard
-			if (!StringHelper::check($this->dynamicDashboard))
+			if (!CFactory::_('Registry')->get('build.dashboard'))
 			{
 				$menus .= "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang
 					. "_DASHBOARD'), 'index.php?option=com_" . $codeName
@@ -24272,7 +24274,7 @@ class Interpretation extends Fields
 			CFactory::_('Config')->lang_target, $lang . '_GLOBAL_DESC', "The Global Parameters"
 		);
 		// add auto checkin if required
-		if ($this->addCheckin)
+		if (CFactory::_('Config')->get('add_checkin', false))
 		{
 			$this->configFieldSets[] = Indent::_(2) . "<field";
 			$this->configFieldSets[] = Indent::_(3) . 'name="check_in"';

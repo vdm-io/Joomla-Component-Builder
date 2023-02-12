@@ -21,7 +21,7 @@ use VDM\Joomla\Utilities\StringHelper;
  * 
  * @since 3.2.0
  */
-abstract class Path
+class Pathfix
 {
 	/**
 	 * Fix the path to work in the JCB script <-- (main issue here)
@@ -37,7 +37,7 @@ abstract class Path
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	public static function fix(&$values, $targets = [])
+	public function set(&$values, array $targets = [])
 	{
 		// if multiple to gets searched and fixed
 		if (ArrayHelper::check($values) && ArrayHelper::check($targets))
@@ -46,7 +46,7 @@ abstract class Path
 			{
 				if (isset($values[$target]))
 				{
-					self::fix($values[$target], $targets);
+					$this->set($values[$target], $targets);
 				}
 			}
 		}

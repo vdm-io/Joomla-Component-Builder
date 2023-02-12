@@ -37,7 +37,7 @@ use VDM\Joomla\Utilities\FileHelper;
  * 
  * @since 3.2.0
  */
-class Builder
+class Structure
 {
 	/**
 	 * Compiler Joomla Plugin Data Class
@@ -159,7 +159,7 @@ class Builder
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	public function run()
+	public function build()
 	{
 		if ($this->plugin->exists())
 		{

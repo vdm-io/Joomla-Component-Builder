@@ -16,6 +16,7 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Table;
 
 
 /**
@@ -40,6 +41,9 @@ class Compiler implements ServiceProviderInterface
 
 		$container->alias(Registry::class, 'Registry')
 			->share('Registry', [$this, 'getRegistry'], true);
+
+		$container->alias(Table::class, 'Table')
+			->share('Table', [$this, 'getTable'], true);
 	}
 
 	/**
@@ -67,6 +71,20 @@ class Compiler implements ServiceProviderInterface
 	{
 		return new Registry();
 	}
+
+	/**
+	 * Get the Table
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Table
+	 * @since 3.2.0
+	 */
+	public function getTable(Container $container): Table
+	{
+		return new Table();
+	}
+
 
 }
 

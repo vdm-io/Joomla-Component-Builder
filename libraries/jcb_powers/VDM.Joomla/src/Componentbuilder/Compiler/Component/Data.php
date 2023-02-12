@@ -482,6 +482,21 @@ class Data
 			);
 		}
 
+		// build the build date
+		if ($this->config->get('add_build_date', 1) == 3)
+		{
+			if (empty($this->component->modified) ||
+				$this->component->modified == '0000-00-00' ||
+				$this->component->modified == '0000-00-00 00:00:00')
+			{
+				$this->config->set('build_date', $this->component->created);
+			}
+			else
+			{
+				$this->config->set('build_date', $this->component->modified);
+			}
+		}
+
 		// build update SQL
 		$this->history->set($component);
 

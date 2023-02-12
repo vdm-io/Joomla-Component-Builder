@@ -620,27 +620,33 @@ class Compiler extends Infusion
 	{
 		// for plugin event TODO change event api signatures
 		$component_context = CFactory::_('Config')->component_context;
+
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeSetFileContent',
 			array(&$component_context, &$name, &$path, &$bom, &$view)
 		);
+
 		// set the file name
 		CFactory::_('Content')->set('FILENAME', $name);
+
 		// check if the file should get PHP opening
 		$php = '';
 		if (ComponentbuilderHelper::checkFileType($name, 'php'))
 		{
 			$php = "<?php\n";
 		}
+
 		// get content of the file
 		$string = FileHelper::getContent($path);
+
 		// Trigger Event: jcb_ce_onGetFileContents
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onGetFileContents',
 			array(&$component_context, &$string, &$name, &$path, &$bom,
 			      &$view)
 		);
+
 		// see if we should add a BOM
 		if (strpos((string) $string, (string) Placefix::_h('BOM')) !== false)
 		{
@@ -649,8 +655,10 @@ class Compiler extends Infusion
 			);
 			$string = $php . $bom . $code;
 		}
+
 		// set the answer
 		$answer = CFactory::_('Placeholder')->update($string, CFactory::_('Content')->active, 3);
+
 		// set the dynamic answer
 		if ($view)
 		{
@@ -658,19 +666,23 @@ class Compiler extends Infusion
 				$answer, CFactory::_('Content')->get_($view), 3
 			);
 		}
+
 		// check if this file needs extra care :)
-		if (isset($this->updateFileContent[$path]))
+		if (CFactory::_('Registry')->exists('update.file.content.' . $path))
 		{
 			$answer = CFactory::_('Customcode')->update($answer);
 		}
+
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeWriteFileContent',
 			array(&$component_context, &$answer, &$name, &$path, &$bom,
 			      &$view)
 		);
+
 		// add answer back to file
 		CFactory::_('Utilities.File')->write($path, $answer);
+
 		// count the file lines
 		CFactory::_('Utilities.Counter')->line += substr_count((string) $answer, PHP_EOL);
 	}
@@ -695,7 +707,7 @@ class Compiler extends Infusion
 				&& ($update_server = CFactory::_('Component')->get('update_server')) !== null)
 			{
 				// move to server
-				ComponentbuilderHelper::moveToServer(
+				CFactory::_('Server')->legacyMove(
 					$update_server_xml_path,
 					$this->updateServerFileName . '.xml',
 					(int) $update_server,
@@ -726,7 +738,7 @@ class Compiler extends Infusion
 					))
 				{
 					// move to server
-					ComponentbuilderHelper::moveToServer(
+					CFactory::_('Server')->legacyMove(
 						$module->update_server_xml_path,
 						$module->update_server_xml_file_name,
 						(int) $module->update_server,
@@ -759,7 +771,7 @@ class Compiler extends Infusion
 					))
 				{
 					// move to server
-					ComponentbuilderHelper::moveToServer(
+					CFactory::_('Server')->legacyMove(
 						$plugin->update_server_xml_path,
 						$plugin->update_server_xml_file_name,
 						(int) $plugin->update_server,
@@ -1051,7 +1063,7 @@ class Compiler extends Infusion
 						      &$component_sales_name, &$this->componentData)
 					);
 					// move to server
-					ComponentbuilderHelper::moveToServer(
+					CFactory::_('Server')->legacyMove(
 						$this->filepath['component'],
 						$component_sales_name . '.zip',
 						(int) CFactory::_('Component')->get('sales_server'),
@@ -1146,7 +1158,7 @@ class Compiler extends Infusion
 									      &$module)
 								);
 								// move to server
-								ComponentbuilderHelper::moveToServer(
+								CFactory::_('Server')->legacyMove(
 									$this->filepath['modules'][$module->id],
 									$module->zip_name . '.zip',
 									(int) $module->sales_server,
@@ -1240,7 +1252,7 @@ class Compiler extends Infusion
 									      &$plugin)
 								);
 								// move to server
-								ComponentbuilderHelper::moveToServer(
+								CFactory::_('Server')->legacyMove(
 									$this->filepath['plugins'][$plugin->id],
 									$plugin->zip_name . '.zip',
 									(int) $plugin->sales_server,

@@ -15,7 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Library\Data;
-use VDM\Joomla\Componentbuilder\Compiler\Library\Builder;
+use VDM\Joomla\Componentbuilder\Compiler\Library\Structure;
 
 
 /**
@@ -38,8 +38,8 @@ class Library implements ServiceProviderInterface
 		$container->alias(Data::class, 'Library.Data')
 			->share('Library.Data', [$this, 'getData'], true);
 
-		$container->alias(Builder::class, 'Library.Builder')
-			->share('Library.Builder', [$this, 'getBuilder'], true);
+		$container->alias(Structure::class, 'Library.Structure')
+			->share('Library.Structure', [$this, 'getStructure'], true);
 	}
 
 	/**
@@ -63,16 +63,16 @@ class Library implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Library Builder
+	 * Get the Compiler Library Structure Builder
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Builder
+	 * @return  Structure
 	 * @since 3.2.0
 	 */
-	public function getBuilder(Container $container): Builder
+	public function getStructure(Container $container): Structure
 	{
-		return new Builder(
+		return new Structure(
 			$container->get('Config'),
 			$container->get('Registry'),
 			$container->get('Event'),

@@ -199,7 +199,8 @@ class Customcode implements ServiceProviderInterface
 			$container->get('Customcode.Gui'),
 			$container->get('Customcode.Extractor.Paths'),
 			$container->get('Placeholder.Reverse'),
-			$container->get('Component.Placeholder')
+			$container->get('Component.Placeholder'),
+			$container->get('Utilities.Pathfix')
 		);
 	}
 

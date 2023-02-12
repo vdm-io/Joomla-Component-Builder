@@ -134,6 +134,7 @@ class Power implements PowerInterface
 	 * @param \JDatabaseDriver|null   $db           The Database Driver object.
 	 * @param CMSApplication|null     $app          The CMS Application object.
 	 *
+	 * @throws \Exception
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Placeholder $placeholder = null,
@@ -170,20 +171,20 @@ class Power implements PowerInterface
 	/**
 	 * Get a power
 	 *
-	 * @param string   $guid    The global unique id of the power
-	 * @param int        $build    Force build switch (to override global switch)
+	 * @param string    $guid    The global unique id of the power
+	 * @param int       $build   Force build switch (to override global switch)
 	 *
-	 * @return mixed
+	 * @return object|null
 	 * @since 3.2.0
 	 */
-	public function get(string $guid, int $build = 0)
+	public function get(string $guid, int $build = 0): ?object
 	{
 		if (($this->config->get('add_power', true) || $build == 1) && $this->set($guid))
 		{
 			return $this->active[$guid];
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
@@ -194,38 +195,25 @@ class Power implements PowerInterface
 	 * @return bool  true on successful setting of a power
 	 * @since 3.2.0
 	 */
-	protected function set(string $guid): bool
+	private function set(string $guid): bool
 	{
 		// check if we have been here before
-		if (isset($this->state[$guid]))
+		if ($this->isPowerSet($guid))
 		{
 			return $this->state[$guid];
 		}
-		elseif (GuidHelper::valid($guid))
+		elseif ($this->isGuidValid($guid))
 		{
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
+			// get the power data
+			$this->active[$guid] = $this->getPowerData($guid);
 
-			// select all values
-			$query->select('a.*');
-
-			// from this table
-			$query->from('#__componentbuilder_power AS a');
-			$query->where($this->db->quoteName('a.guid') . ' = ' . $this->db->quote($guid));
-
-			$this->db->setQuery($query);
-			$this->db->execute();
-
-			if ($this->db->getNumRows())
+			if (is_object($this->active[$guid]))
 			{
 				// make sure that in recursion we
 				// don't try to load this power again
 				// since during the load of a power we also load
 				// all powers linked to it
 				$this->state[$guid] = true;
-
-				// get the power data
-				$this->active[$guid] = $this->db->loadObject();
 
 				// make sure to add any language strings found to all language files
 				// since we can't know where this is used at this point
@@ -284,54 +272,17 @@ class Power implements PowerInterface
 				$this->setExtend($guid, $use);
 
 				// set GUI mapper
-				$guiMapper = array('table' => 'power', 'id' => (int) $this->active[$guid]->id, 'type' => 'php');
+				$guiMapper = [
+					'table' => 'power',
+					'id' => (int) $this->active[$guid]->id,
+					'type' => 'php'
+				];
 
 				// add the licensing template 
-				if ($this->active[$guid]->add_licensing_template == 2 &&
-					StringHelper::check($this->active[$guid]->licensing_template))
-				{
-					// set GUI mapper field
-					$guiMapper['field'] = 'licensing_template';
-					// base64 Decode code
-					$this->active[$guid]->licensing_template = $this->gui->set(
-							$this->placeholder->update_(
-								$this->customcode->update(
-									base64_decode(
-										(string) $this->active[$guid]->licensing_template
-									)
-								)
-							),
-							$guiMapper
-						);
-				}
-				else
-				{
-					$this->active[$guid]->add_licensing_template = 1;
-					$this->active[$guid]->licensing_template = '';
-				}
+				$this->setLicensingTemplate($guid, $guiMapper);
 
 				// add the header script
-				if ($this->active[$guid]->add_head == 1)
-				{
-					// set GUI mapper field
-					$guiMapper['field'] = 'head';
-
-					// base64 Decode code
-					$this->active[$guid]->head = $this->gui->set(
-							$this->placeholder->update_(
-								$this->customcode->update(
-									base64_decode(
-										(string) $this->active[$guid]->head
-									)
-								)
-							),
-							$guiMapper
-						) . PHP_EOL;
-				}
-				else
-				{
-					$this->active[$guid]->head = '';
-				}
+				$this->setHeader($guid, $guiMapper);
 
 				// set composer
 				$this->setComposer($guid);
@@ -342,22 +293,7 @@ class Power implements PowerInterface
 				) : '';
 
 				// add the main code if set
-				if (StringHelper::check($this->active[$guid]->main_class_code))
-				{
-					// set GUI mapper field
-					$guiMapper['field'] = 'main_class_code';
-					// base64 Decode code
-					$this->active[$guid]->main_class_code = $this->gui->set(
-						$this->placeholder->update_(
-							$this->customcode->update(
-								base64_decode(
-									(string) $this->active[$guid]->main_class_code
-								)
-							)
-						),
-						$guiMapper
-					);
-				}
+				$this->setMainClassCode($guid, $guiMapper);
 
 				// load the use classes
 				$this->setUseAs($guid, $use, $as);
@@ -372,7 +308,7 @@ class Power implements PowerInterface
 		// we failed to get the power,
 		// so we raise an error message
 		// only if guid is valid
-		if (GuidHelper::valid($guid))
+		if ($this->isGuidValid($guid))
 		{
 			$this->app->enqueueMessage(
 				Text::sprintf('COM_COMPONENTBUILDER_PPOWER_BGUIDSB_NOT_FOUNDP', $guid),
@@ -387,6 +323,58 @@ class Power implements PowerInterface
 	}
 
 	/**
+	 * Check if the power is already set
+	 *
+	 * @param string  $guid  The global unique id of the power
+	 *
+	 * @return bool true if the power is already set
+	 * @since 3.2.0
+	 */
+	private function isPowerSet(string $guid): bool
+	{
+		return isset($this->state[$guid]);
+	}
+
+	/**
+	 * Validate the GUID
+	 *
+	 * @param string  $guid  The global unique id of the power
+	 *
+	 * @return bool true if the GUID is valid
+	 * @since 3.2.0
+	 */
+	private function isGuidValid(string $guid): bool
+	{
+		return GuidHelper::valid($guid);
+	}
+
+	/**
+	 * Get the power data from the database
+	 *
+	 * @param string  $guid  The global unique id of the power
+	 *
+	 * @return object|null The power data
+	 * @since 3.2.0
+	 */
+	private function getPowerData(string $guid): ?object
+	{
+		$query = $this->db->getQuery(true);
+		$query->select('a.*');
+		$query->from('#__componentbuilder_power AS a');
+		$query->where($this->db->quoteName('a.guid') . ' = ' . $this->db->quote($guid));
+
+		$this->db->setQuery($query);
+		$this->db->execute();
+
+		if ($this->db->getNumRows())
+		{
+			return $this->db->loadObject();
+		}
+
+		return null;
+	}
+
+	/**
 	 * Set the namespace for this power
 	 *
 	 * @param string  $guid  The global unique id of the power
@@ -394,7 +382,7 @@ class Power implements PowerInterface
 	 * @return bool
 	 * @since 3.2.0
 	 */
-	protected function setNamespace(string $guid): bool
+	private function setNamespace(string $guid): bool
 	{
 		// set namespace
 		$this->active[$guid]->namespace = $this->placeholder->update_(
@@ -534,7 +522,7 @@ class Power implements PowerInterface
 	 * @return void
 	 * @since 3.2.0
 	 */
-	protected function setUseSelection(string $guid, array &$use, array &$as)
+	private function setUseSelection(string $guid, array &$use, array &$as)
 	{
 		// check if we have use selection
 		$this->active[$guid]->use_selection = (isset($this->active[$guid]->use_selection)
@@ -565,7 +553,7 @@ class Power implements PowerInterface
 	 * @return void
 	 * @since 3.2.0
 	 */
-	protected function setLoadSelection(string $guid)
+	private function setLoadSelection(string $guid)
 	{
 		// check if we have load selection
 		$this->active[$guid]->load_selection = (isset($this->active[$guid]->load_selection)
@@ -592,12 +580,11 @@ class Power implements PowerInterface
 	 * Set Composer Linked Use and Access Point
 	 *
 	 * @param string  $guid  The global unique id of the power
-	 * @param array   $use   The use array
 	 *
 	 * @return void
 	 * @since 3.2.0
 	 */
-	protected function setComposer(string $guid)
+	private function setComposer(string $guid)
 	{
 		// does this have composer powers
 		$_composer = (isset($this->active[$guid]->composer)
@@ -665,7 +652,7 @@ class Power implements PowerInterface
 	 * @return void
 	 * @since 3.2.0
 	 */
-	protected function setImplements(string $guid, array &$use)
+	private function setImplements(string $guid, array &$use)
 	{
 		// see if we have implements
 		$this->active[$guid]->implement_names = [];
@@ -714,7 +701,7 @@ class Power implements PowerInterface
 	 * @return void
 	 * @since 3.2.0
 	 */
-	protected function setExtend(string $guid, array &$use)
+	private function setExtend(string $guid, array &$use)
 	{
 		// does this extend something
 		$this->active[$guid]->extends_name = null;
@@ -748,11 +735,12 @@ class Power implements PowerInterface
 	 *
 	 * @param string  $guid  The global unique id of the power
 	 * @param array   $use   The use array
+	 * @param array   $as    The use as array
 	 *
 	 * @return void
 	 * @since 3.2.0
 	 */
-	protected function setUseAs($guid, $use, $as)
+	private function setUseAs(string $guid, array $use, array $as)
 	{
 		// now add all the extra use statements
 		if (ArrayHelper::check($use))
@@ -784,12 +772,12 @@ class Power implements PowerInterface
 	 * Get Clean Namespace without use or ; as part of the name space
 	 *
 	 * @param string  $namespace        The actual name space
-	 * @input bool    $removeNumbers    The switch to remove numers
+	 * @param bool    $removeNumbers    The switch to remove numbers
 	 *
 	 * @return string
 	 * @since 3.2.0
 	 */
-	protected function getCleanNamespace(string $namespace, bool $removeNumbers = true): string
+	private function getCleanNamespace(string $namespace, bool $removeNumbers = true): string
 	{
 		// trim possible (use) or (;) or (starting or ending \) added to the namespace
 		return NamespaceHelper::safe(str_replace(['use ', ';'], '', $namespace), $removeNumbers);
@@ -804,7 +792,7 @@ class Power implements PowerInterface
 	 * @return string
 	 * @since 3.2.0
 	 */
-	protected function getUseNamespace(string $namespace, string $as = 'default'): string
+	private function getUseNamespace(string $namespace, string $as = 'default'): string
 	{
 		// check if it has an AS option
 		if ($as !== 'default')
@@ -823,13 +811,113 @@ class Power implements PowerInterface
 	 * @return void
 	 * @since 3.2.0
 	 */
-	protected function addToHeader(string $guid, string $string)
+	private function addToHeader(string $guid, string $string)
 	{
 		// check if it is already added manually
 		if (isset($this->active[$guid]->head) &&
 			strpos((string) $this->active[$guid]->head, $string) === false)
 		{
 			$this->active[$guid]->head .= $string . PHP_EOL;
+		}
+	}
+
+	/**
+	 * Set the power licensing template
+	 *
+	 * @param string  $guid       The global unique id of the power
+	 * @param array   $guiMapper  The gui mapper array
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	private function setLicensingTemplate(string $guid, array $guiMapper): void
+	{
+		if ($this->active[$guid]->add_licensing_template == 2 &&
+			StringHelper::check($this->active[$guid]->licensing_template))
+		{
+			// set GUI mapper field
+			$guiMapper['field'] = 'licensing_template';
+
+			// base64 Decode code
+			$this->active[$guid]->licensing_template = $this->gui->set(
+				$this->placeholder->update_(
+					$this->customcode->update(
+						base64_decode(
+							(string) $this->active[$guid]->licensing_template
+						)
+					)
+				),
+				$guiMapper
+			);
+		}
+		else
+		{
+			$this->active[$guid]->add_licensing_template = 1;
+			$this->active[$guid]->licensing_template = '';
+		}
+	}
+
+	/**
+	 * Set the power header script
+	 *
+	 * @param string  $guid       The global unique id of the power
+	 * @param array   $guiMapper  The gui mapper array
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	private function setHeader(string $guid, array $guiMapper): void
+	{
+		if ($this->active[$guid]->add_head == 1)
+		{
+			// set GUI mapper field
+			$guiMapper['field'] = 'head';
+
+			// base64 Decode code
+			$this->active[$guid]->head = $this->gui->set(
+				$this->placeholder->update_(
+					$this->customcode->update(
+						base64_decode(
+							(string) $this->active[$guid]->head
+						)
+					)
+				),
+				$guiMapper
+			) . PHP_EOL;
+		}
+		else
+		{
+			$this->active[$guid]->head = '';
+		}
+	}
+
+	/**
+	 * Set the power main class code
+	 *
+	 * @param string  $guid       The global unique id of the power
+	 * @param array   $guiMapper  The gui mapper array
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	private function setMainClassCode(string $guid, array $guiMapper): void
+	{
+		if (StringHelper::check($this->active[$guid]->main_class_code))
+		{
+			// set GUI mapper field
+			$guiMapper['field'] = 'main_class_code';
+
+			// base64 Decode code
+			$this->active[$guid]->main_class_code = $this->gui->set(
+				$this->placeholder->update_(
+					$this->customcode->update(
+						base64_decode(
+							(string) $this->active[$guid]->main_class_code
+						)
+					)
+				),
+				$guiMapper
+			);
 		}
 	}
 

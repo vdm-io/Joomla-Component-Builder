@@ -37,10 +37,10 @@ class Sftp implements Serverinterface
 	/**
 	* The client object
 	 *
-	 * @var     SftpClient
+	 * @var     SftpClient|null
 	 * @since 3.2.0
 	 **/
-	protected SftpClient $client;
+	protected ?SftpClient $client = null;
 
 	/**
 	* The server details
@@ -108,12 +108,31 @@ class Sftp implements Serverinterface
 	}
 
 	/**
+	 * Make sure we are connected
+	 *
+	 * @return  bool
+	 * @since 3.2.0
+	 **/
+	private function connected(): bool
+	{
+		// check if we have a connection
+		if ($this->client instanceof SftpClient && ($this->client->isConnected() || $this->client->ping()))
+		{
+			return true;
+		}
+
+		$this->client = $this->getClient();
+
+		return $this->client instanceof SftpClient;
+	}
+
+	/**
 	 * get the SftpClient object
 	 *
 	 * @return  SftpClient|null
 	 * @since 3.2.0
 	 **/
-	protected function getClient(): ?SftpClient
+	private function getClient(): ?SftpClient
 	{
 		// make sure we have a host value set
 		if (isset($this->details->host) && StringHelper::check($this->details->host) &&
@@ -166,19 +185,6 @@ class Sftp implements Serverinterface
 		}
 
 		return null;
-	}
-
-	/**
-	 * Make sure we are connected
-	 *
-	 * @return  bool
-	 * @since 3.2.0
-	 **/
-	protected function connected(): bool
-	{
-		// check if we have a connection
-		return ($this->client instanceof SftpClient && ($this->client->isConnected() || $this->client->ping())) ||
-			($this->client = $this->getClient()) !== null;
 	}
 
 }

@@ -56,43 +56,22 @@ class Paths extends MapperSingle implements Mappersingleinterface
 		$this->component = $component ?: Compiler::_('Component');
 
 		// set the template path
-		$this->set('template_path',
-			$this->config->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/joomla_'
-			. $this->config->joomla_versions[$this->config->joomla_version]['folder_key']
-		);
+		$this->setTemplatePath();
 
 		// set component sales name
-		$this->set('component_sales_name',
-			'com_' . $this->component->get('sales_name') . '__J'
-			. $this->config->joomla_version
-		);
+		$this->setComponentSalesName();
 
 		// set component backup name
-		$this->set('component_backup_name',
-			'com_' . $this->component->get('sales_name') . '_v' . str_replace(
-				'.', '_', (string) $this->component->get('component_version')
-			) . '__J' . $this->config->joomla_version
-		);
+		$this->setComponentBackupName();
 
 		// set component folder name
-		$this->set('component_folder_name',
-			'com_' . $this->component->get('name_code') . '_v' . str_replace(
-				'.', '_', (string) $this->component->get('component_version')
-			) . '__J' . $this->config->joomla_version
-		);
+		$this->setComponentFolderName();
 
 		// set component path
-		$this->set('component_path',
-			$this->config->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
-			. $this->get('component_folder_name')
-		);
+		$this->setComponentPath();
 
-		// set the template path for custom TODO: just use custom_folder_path in config
-		$this->set('template_path_custom',
-			$this->config->get(
-				'custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR . '/custom'
-			)
-		);
+		// set the template path for custom
+		$this->setTemplatePathCustom();
 	}
 
 	/**
@@ -126,6 +105,99 @@ class Paths extends MapperSingle implements Mappersingleinterface
 	protected function key(string $key): string
 	{
 		return $key;
+	}
+
+	/**
+	 * Set the template path
+	 *
+	 * @return void
+	 *
+	 * @since 3.2.0
+	 */
+	private function setTemplatePath(): void
+	{
+		$this->set('template_path',
+			$this->config->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/joomla_'
+			. $this->config->joomla_versions[$this->config->joomla_version]['folder_key']
+		);
+	}
+
+	/**
+	 * Set component sales name
+	 *
+	 * @return void
+	 *
+	 * @since 3.2.0
+	 */
+	private function setComponentSalesName(): void
+	{
+		$this->set('component_sales_name',
+			'com_' . $this->component->get('sales_name') . '__J'
+			. $this->config->joomla_version
+		);
+	}
+
+	/**
+	 * Set component backup name
+	 *
+	 * @return void
+	 *
+	 * @since 3.2.0
+	 */
+	private function setComponentBackupName(): void
+	{
+		$this->set('component_backup_name',
+			'com_' . $this->component->get('sales_name') . '_v' . str_replace(
+				'.', '_', (string) $this->component->get('component_version')
+			) . '__J' . $this->config->joomla_version
+		);
+	}
+
+	/**
+	 * Set component folder name
+	 *
+	 * @return void
+	 *
+	 * @since 3.2.0
+	 */
+	private function setComponentFolderName(): void
+	{
+		$this->set('component_folder_name',
+			'com_' . $this->component->get('name_code') . '_v' . str_replace(
+				'.', '_', (string) $this->component->get('component_version')
+			) . '__J' . $this->config->joomla_version
+		);
+	}
+
+	/**
+	 * Set component path
+	 *
+	 * @return void
+	 *
+	 * @since 3.2.0
+	 */
+	private function setComponentPath(): void
+	{
+		$this->set('component_path',
+			$this->config->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
+			. $this->get('component_folder_name')
+		);
+	}
+
+	/**
+	 * set the template path for custom TODO: just use custom_folder_path in config
+	 *
+	 * @return void
+	 *
+	 * @since 3.2.0
+	 */
+	private function setTemplatePathCustom(): void
+	{
+		$this->set('template_path_custom',
+			$this->config->get(
+				'custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR . '/custom'
+			)
+		);
 	}
 
 }

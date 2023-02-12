@@ -16,6 +16,8 @@ use Joomla\Registry\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Factory;
 use VDM\Joomla\Componentbuilder\Crypt;
 use VDM\Joomla\Componentbuilder\Table;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Componentbuilder\Interfaces\ModelInterface;
 use VDM\Joomla\Componentbuilder\Abstraction\Model;
 

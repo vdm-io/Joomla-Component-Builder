@@ -61,10 +61,10 @@ class Load
 	 * @param   int        $id         The item ID
 	 * @param   string   $field     The table field
 	 *
-	 * @return  object|null
+	 * @return  mixed|null
 	 * @since 3.2.0
 	 */
-	public function value(int $id, string $field): ?object
+	public function value(int $id, string $field)
 	{
 		if ($id > 0 && ($value = $this->db->value(
 				$this->setDatabaseFields([$field]), ['a' => 'server'], ['a.id' => $id]

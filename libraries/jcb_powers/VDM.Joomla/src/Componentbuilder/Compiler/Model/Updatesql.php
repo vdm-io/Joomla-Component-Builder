@@ -60,13 +60,13 @@ class Updatesql
 	 * @param   mixed        $old     The old values
 	 * @param   mixed        $new     The new values
 	 * @param   string       $type    The type of values
-	 * @param   int|null     $key     The id/key where values changed
+	 * @param   mixed        $key     The id/key where values changed
 	 * @param   array|null   $ignore  The ids to ignore
 	 *
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	public function set($old, $new, string $type, ?int $key = null, ?array $ignore = null)
+	public function set($old, $new, string $type, $key = null, ?array $ignore = null)
 	{
 		// check if there were new items added
 		if (ArrayHelper::check($new) && ArrayHelper::check($old))
@@ -206,12 +206,12 @@ class Updatesql
 	 *
 	 * @param   string     $type  The type of values
 	 * @param   int        $item  The item id to add
-	 * @param   int|null   $key   The id/key where values changed
+	 * @param   mixed      $key   The id/key where values changed
 	 *
 	 * @return void
 	 * @since 3.2.0
 	 */
-	protected function add(string $type, int $item, ?int $key = null)
+	protected function add(string $type, int $item, $key = null)
 	{
 		// add key if found
 		if ($key)

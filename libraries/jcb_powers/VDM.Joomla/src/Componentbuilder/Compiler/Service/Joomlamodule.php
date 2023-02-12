@@ -14,8 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Compiler\Joomlamodule\Data as JoomlaModuleData;
-use VDM\Joomla\Componentbuilder\Compiler\Joomlamodule\Builder as JoomlaModuleBuilder;
+use VDM\Joomla\Componentbuilder\Compiler\Joomlamodule\Data;
+use VDM\Joomla\Componentbuilder\Compiler\Joomlamodule\Structure;
 
 
 /**
@@ -35,11 +35,11 @@ class Joomlamodule implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
-		$container->alias(JoomlaModuleData::class, 'Joomlamodule.Data')
-			->share('Joomlamodule.Data', [$this, 'getJoomlaModuleData'], true);
+		$container->alias(Data::class, 'Joomlamodule.Data')
+			->share('Joomlamodule.Data', [$this, 'getData'], true);
 
-		$container->alias(JoomlaModuleBuilder::class, 'Joomlamodule.Builder')
-			->share('Joomlamodule.Builder', [$this, 'getJoomlaModuleBuilder'], true);
+		$container->alias(Structure::class, 'Joomlamodule.Structure')
+			->share('Joomlamodule.Structure', [$this, 'getStructure'], true);
 	}
 
 	/**
@@ -47,12 +47,12 @@ class Joomlamodule implements ServiceProviderInterface
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  JoomlaModuleData
+	 * @return  Data
 	 * @since 3.2.0
 	 */
-	public function getJoomlaModuleData(Container $container): JoomlaModuleData
+	public function getData(Container $container): Data
 	{
-		return new JoomlaModuleData(
+		return new Data(
 			$container->get('Config'),
 			$container->get('Customcode'),
 			$container->get('Customcode.Gui'),
@@ -67,16 +67,16 @@ class Joomlamodule implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Joomla Module Builder
+	 * Get the Joomla Module Structure Builder
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  JoomlaModuleBuilder
+	 * @return  Structure
 	 * @since 3.2.0
 	 */
-	public function getJoomlaModuleBuilder(Container $container): JoomlaModuleBuilder
+	public function getStructure(Container $container): Structure
 	{
-		return new JoomlaModuleBuilder(
+		return new Structure(
 			$container->get('Joomlamodule.Data'),
 			$container->get('Component'),
 			$container->get('Config'),
