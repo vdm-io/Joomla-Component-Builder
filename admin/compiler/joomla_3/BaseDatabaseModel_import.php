@@ -17,13 +17,9 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
-use Joomla\Utilities\ArrayHelper;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+###IMPORT_MODEL_HEADER###
 
-/**
+/***
  * ###Component### Import Base Database Model
  */
 class ###Component###ModelImport extends BaseDatabaseModel

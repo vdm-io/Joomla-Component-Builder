@@ -625,8 +625,7 @@ class Infusion extends Interpretation
 					if (isset($view['port']) && $view['port']
 						|| 1 == $view['settings']->add_custom_import)
 					{
-						$this->eximportView[$nameListCode]
-							= true;
+						$this->eximportView[$nameListCode] = true;
 						if (1 == $view['settings']->add_custom_import)
 						{
 							// this view has custom import scripting
@@ -1382,6 +1381,14 @@ class Infusion extends Interpretation
 				CFactory::_('Content')->set_('import', 'IMPORT_SAVE_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 						ComponentbuilderHelper::getDynamicScripts('save')
 					));
+				// IMPORT_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
+				CFactory::_('Content')->set_('import', 'IMPORT_CONTROLLER_HEADER', $this->setFileHeader(
+					'import.controller', 'import'
+				));
+				// IMPORT_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
+				CFactory::_('Content')->set_('import', 'IMPORT_MODEL_HEADER', $this->setFileHeader(
+					'import.model', 'import'
+				));
 			}
 
 			// ensure that the ajax model and controller is set if needed
@@ -1796,6 +1803,12 @@ class Infusion extends Interpretation
 			if (CFactory::_('Component')->get('addreadme'))
 			{
 				CFactory::_('Content')->set('README', CFactory::_('Component')->get('readme'));
+			}
+
+			// CHANGELOG
+			if (($changelog = CFactory::_('Component')->get('changelog')) !== null)
+			{
+				CFactory::_('Content')->set('CHANGELOG', $changelog);
 			}
 
 			// Infuse POWERS

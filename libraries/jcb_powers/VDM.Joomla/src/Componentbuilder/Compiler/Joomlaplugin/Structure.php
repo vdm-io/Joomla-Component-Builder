@@ -228,19 +228,17 @@ class Structure
 					// set install script if needed
 					if ($plugin->add_install_script)
 					{
-						$fileDetails = array('path' => $plugin->folder_path
-							. '/script.php',
-						                     'name' => 'script.php',
-						                     'zip'  => 'script.php');
+						$fileDetails = [
+							'path' => $plugin->folder_path . '/script.php',
+							'name' => 'script.php',
+							'zip'  => 'script.php'
+						];
 						$this->file->write(
 							$fileDetails['path'],
 							'<?php' . PHP_EOL . '// Script template' .
-							PHP_EOL . Placefix::_h('BOM') . PHP_EOL
-							.
-							PHP_EOL . '// No direct access to this file'
-							. PHP_EOL .
-							"defined('_JEXEC') or die('Restricted access');"
-							. PHP_EOL .
+							PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
+							PHP_EOL . '// No direct access to this file' . PHP_EOL .
+							"defined('_JEXEC') or die('Restricted access');" . PHP_EOL .
 							Placefix::_h('INSTALLCLASS')
 						);
 						$this->files->appendArray($plugin->key, $fileDetails);
@@ -252,10 +250,11 @@ class Structure
 					// set readme if found
 					if ($plugin->addreadme)
 					{
-						$fileDetails = array('path' => $plugin->folder_path
-							. '/README.md',
-						                     'name' => 'README.md',
-						                     'zip'  => 'README.md');
+						$fileDetails = [
+							'path' => $plugin->folder_path . '/README.md',
+							'name' => 'README.md',
+							'zip'  => 'README.md'
+						];
 						$this->file->write($fileDetails['path'], $plugin->readme);
 						$this->files->appendArray($plugin->key, $fileDetails);
 
@@ -287,11 +286,11 @@ class Structure
 						foreach ($plugin->form_files as $file => $fields)
 						{
 							// set file details
-							$fileDetails = array('path' => $plugin->folder_path
-								. '/forms/' . $file . '.xml',
-							                     'name' => $file . '.xml',
-							                     'zip'  => 'forms/' . $file
-								                     . '.xml');
+							$fileDetails = [
+								'path' => $plugin->folder_path . '/forms/' . $file . '.xml',
+								'name' => $file . '.xml',
+								'zip'  => 'forms/' . $file  . '.xml'
+							];
 
 							// build basic XML
 							$xml = '<?xml version="1.0" encoding="utf-8"?>';

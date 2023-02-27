@@ -31,6 +31,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Sqltweaking;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Adminviews;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Siteviews;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Customadminviews;
+use VDM\Joomla\Componentbuilder\Compiler\Model\Updateserver;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Joomlamodules;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Joomlaplugins;
 use VDM\Joomla\Utilities\StringHelper;
@@ -183,6 +184,14 @@ class Data
 	protected Customadminviews $customadminviews;
 
 	/**
+	 * The modelling Update Server
+	 *
+	 * @var    Updateserver
+	 * @since 3.2.0
+	 */
+	protected Updateserver $updateserver;
+
+	/**
 	 * The modelling Joomla Modules
 	 *
 	 * @var    Joomlamodules
@@ -226,6 +235,7 @@ class Data
 	 * @param Adminviews|null           $adminviews            The modelling adminviews object.
 	 * @param Siteviews|null            $siteviews             The modelling siteviews object.
 	 * @param Customadminviews|null     $customadminviews      The modelling customadminviews object.
+	 * @param Updateserver|null         $updateserver          The modelling update server object.
 	 * @param Joomlamodules|null        $modules               The modelling modules object.
 	 * @param Joomlaplugins|null        $plugins               The modelling plugins object.
 	 * @param \JDatabaseDriver|null     $db                    The database object.
@@ -238,8 +248,8 @@ class Data
 		?Field $field = null, ?FieldName $fieldName = null, ?UniqueName $uniqueName = null,
 		?Filesfolders $filesFolders = null, ?Historycomponent $history = null, ?Whmcs $whmcs = null,
 		?Sqltweaking $sqltweaking = null, ?Adminviews $adminviews = null, ?Siteviews $siteviews = null,
-		?Customadminviews $customadminviews = null, ?Joomlamodules $modules = null,
-		?Joomlaplugins $plugins = null, ?\JDatabaseDriver $db = null)
+		?Customadminviews $customadminviews = null, ?Updateserver $updateserver = null,
+		?Joomlamodules $modules = null, ?Joomlaplugins $plugins = null, ?\JDatabaseDriver $db = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->event = $event ?: Compiler::_('Event');
@@ -258,6 +268,7 @@ class Data
 		$this->adminviews = $adminviews ?: Compiler::_('Model.Adminviews');
 		$this->siteviews = $siteviews ?: Compiler::_('Model.Siteviews');
 		$this->customadminviews = $customadminviews ?: Compiler::_('Model.Customadminviews');
+		$this->updateserver = $updateserver ?: Compiler::_('Model.Updateserver');
 		$this->modules = $modules ?: Compiler::_('Model.Joomlamodules');
 		$this->plugins = $plugins ?: Compiler::_('Model.Joomlaplugins');
 		$this->db = $db ?: Factory::getDbo();
@@ -397,10 +408,10 @@ class Data
 		$this->whmcs->set($component);
 
 		// set the footable switch
-		if ($component->addfootable)
+		if ($component->addfootable > 0)
 		{
 			// force add footable
-			$this->config->set('footable ', true);
+			$this->config->set('footable', true);
 			// add the version
 			$this->config->set('footable_version', (3 == $component->addfootable) ? 3 : 2);
 		}
@@ -472,15 +483,7 @@ class Data
 		unset($component->addcontributors);
 
 		// set the version updates
-		$component->version_update = (isset($component->version_update)
-			&& JsonHelper::check($component->version_update))
-			? json_decode((string) $component->version_update, true) : null;
-		if (ArrayHelper::check($component->version_update))
-		{
-			$component->version_update = array_values(
-				$component->version_update
-			);
-		}
+		$this->updateserver->set($component);
 
 		// build the build date
 		if ($this->config->get('add_build_date', 1) == 3)
@@ -569,11 +572,8 @@ class Data
 		{
 			foreach ($addScriptTypes as $scriptType)
 			{
-				if (isset(
-						$component->{'add_' . $scriptMethod . '_' . $scriptType}
-					)
-					&& $component->{'add_' . $scriptMethod . '_' . $scriptType}
-					== 1
+				if (isset($component->{'add_' . $scriptMethod . '_' . $scriptType})
+					&& $component->{'add_' . $scriptMethod . '_' . $scriptType} == 1
 					&& StringHelper::check(
 						$component->{$scriptMethod . '_' . $scriptType}
 					))
@@ -795,14 +795,24 @@ class Data
 		// reset back to now lang
 		$this->config->lang_target = $nowLang;
 
+		// catch empty URL to update server TODO: we need to fix this in  better way later
+		if ($component->add_update_server == 1 && $component->update_server_target !== 3
+			&& (
+				!StringHelper::check($component->update_server_url)
+				|| strpos($component->update_server_url, 'http') === false
+			))
+		{
+			// we fall back to other, since we can't work with an empty update server URL
+			$component->add_update_server = 0;
+			$component->update_server_target = 3;
+		}
+
 		// add the update/sales server FTP details if that is the expected protocol
 		$serverArray = array('update_server', 'sales_server');
 		foreach ($serverArray as $server)
 		{
 			if ($component->{'add_' . $server} == 1
-				&& is_numeric(
-					$component->{$server}
-				)
+				&& is_numeric($component->{$server})
 				&& $component->{$server} > 0)
 			{
 				// get the server protocol

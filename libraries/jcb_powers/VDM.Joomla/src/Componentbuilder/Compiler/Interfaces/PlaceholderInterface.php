@@ -213,7 +213,7 @@ interface PlaceholderInterface
 	 * @return  string
 	 * @since 3.2.0
 	 */
-	public function update(string $data, array &$placeholder, int $action = 1): string;
+	public function update(string $data, array $placeholder, int $action = 1): string;
 
 	/**
 	 * Update the data with the active placeholders

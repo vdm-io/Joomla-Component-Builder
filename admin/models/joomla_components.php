@@ -15,6 +15,12 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
+use VDM\Joomla\Utilities\FileHelper;
+use VDM\Joomla\Utilities\ArrayHelper as JCBArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\JsonHelper;
 
 /**
  * Joomla_components List Model
@@ -112,14 +118,14 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			}
 
 			// has any data been set for this component
-			if (ComponentbuilderHelper::checkArray($pks))
+			if (JCBArrayHelper::check($pks))
 			{
 				// load the linked stuff
 				$this->getLinkedToComponents($pks);
 			}
 
 			// has any data been set for this component
-			if (isset($this->smartBox['joomla_component']) && ComponentbuilderHelper::checkArray($this->smartBox['joomla_component']))
+			if (isset($this->smartBox['joomla_component']) && JCBArrayHelper::check($this->smartBox['joomla_component']))
 			{
 				// set the folder and move the files of each component to the folder
 				return $this->smartCloner();
@@ -181,25 +187,22 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					$this->packageName = 'JCB_smartPackage';
 				}
 			}
+
 			// set the package path
 			$this->packagePath = rtrim($this->backupPath, '/') . '/' . $this->packageName;
 			$this->zipPath =  rtrim($this->zipPath, '/') . '/' . $this->packageName .'.zip';
-			if (JFolder::exists($this->packagePath))
+			if (FileHelper::exists($this->packagePath))
 			{
 				// remove if old folder is found
 				ComponentbuilderHelper::removeFolder($this->packagePath);
 			}
+
 			// create the folders
 			JFolder::create($this->packagePath);
-			// Get the basic encryption.
-			$basickey = ComponentbuilderHelper::getCryptKey('basic');
-			// Get the encryption object.
-			if ($basickey)
-			{
-				$basic = new FOFEncryptAes($basickey, 128);
-			}
+
 			// update $pks with returned IDs
 			$pks = array();
+
 			// start loading the components
 			$this->smartBox['joomla_component'] = array();
 			foreach ($items as $nr => &$item)
@@ -211,8 +214,10 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					unset($items[$nr]);
 					continue;
 				}
+
 				// make sure old fields are not exported any more
 				$this->removeOldComponentValues($item);
+
 				// build information data set
 				$this->info['name'][$item->id] = $item->name;
 				$this->info['short_description'][$item->id] = $item->short_description;
@@ -223,14 +228,15 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				$this->info['website'][$item->id] = $item->website;
 				$this->info['license'][$item->id] = $item->license;
 				$this->info['copyright'][$item->id] = $item->copyright;
+
 				// set the keys
-				if (isset($item->export_key) && ComponentbuilderHelper::checkString($item->export_key))
+				if (isset($item->export_key) && StringHelper::check($item->export_key))
 				{
 					// keep the key locked for exported data set
 					$export_key = $item->export_key;
-					if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
+					if (!is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
 					{
-						$export_key = rtrim($basic->decryptString($item->export_key), "\0");
+						$export_key = PackageFactory::_('Crypt')->decrypt($item->export_key, 'basic');
 					}
 					// make sure we have a string
 					if (strlen($export_key) > 4 )
@@ -238,27 +244,31 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						$this->key[$item->id] = $export_key;
 					}
 				}
+
 				// get name of this item key_name
 				if (isset($item->system_name))
 				{
-					$keyName = ComponentbuilderHelper::safeString($item->system_name, 'cAmel');
+					$keyName = StringHelper::safe($item->system_name, 'cAmel');
 				}
 				else
 				{
-					$keyName = ComponentbuilderHelper::safeString($item->name_code);
+					$keyName = StringHelper::safe($item->name_code);
 				}
+
 				// set the export buy links
-				if (isset($item->export_buy_link) && ComponentbuilderHelper::checkString($item->export_buy_link))
+				if (isset($item->export_buy_link) && StringHelper::check($item->export_buy_link))
 				{
 					// set the export buy link
 					$this->info['export_buy_link'][$item->id] = $item->export_buy_link;
 				}
+
 				// set the export buy links
-				if (isset($item->joomla_source_link) && ComponentbuilderHelper::checkString($item->joomla_source_link))
+				if (isset($item->joomla_source_link) && StringHelper::check($item->joomla_source_link))
 				{
 					// set the source link
 					$this->info['joomla_source_link'][$item->id] = $item->joomla_source_link;
 				}
+
 				// component image
 				$this->moveIt(array($item->image), 'image');
 				// set the custom code ID's
@@ -276,14 +286,14 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			}
 
 			// has any data been set for this component
-			if (ComponentbuilderHelper::checkArray($pks))
+			if (JCBArrayHelper::check($pks))
 			{
 				// load the linked stuff
 				$this->getLinkedToComponents($pks);
 			}
 
 			// has any data been set for this component
-			if (isset($this->smartBox['joomla_component']) && ComponentbuilderHelper::checkArray($this->smartBox['joomla_component']))
+			if (isset($this->smartBox['joomla_component']) && JCBArrayHelper::check($this->smartBox['joomla_component']))
 			{
 				// set the folder and move the files of each component to the folder
 				return $this->smartExportBuilder();
@@ -320,7 +330,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$this->setData($table, $pks, $field);
 		}
 		// add fields conditions and relations
-		if (isset($this->smartIDs['admin_view']) && ComponentbuilderHelper::checkArray($this->smartIDs['admin_view']))
+		if (isset($this->smartIDs['admin_view']) && JCBArrayHelper::check($this->smartIDs['admin_view']))
 		{
 			$this->setData('admin_fields', array_values($this->smartIDs['admin_view']), 'admin_view');
 			$this->setData('admin_fields_conditions', array_values($this->smartIDs['admin_view']), 'admin_view');
@@ -328,41 +338,41 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$this->setData('admin_custom_tabs', array_values($this->smartIDs['admin_view']), 'admin_view');
 		}
 		// add joomla module
-		if (isset($this->smartIDs['joomla_module']) && ComponentbuilderHelper::checkArray($this->smartIDs['joomla_module']))
+		if (isset($this->smartIDs['joomla_module']) && JCBArrayHelper::check($this->smartIDs['joomla_module']))
 		{
 			$this->setData('joomla_module', array_values($this->smartIDs['joomla_module']), 'id');
 			$this->setData('joomla_module_updates', array_values($this->smartIDs['joomla_module']), 'joomla_module');
 			$this->setData('joomla_module_files_folders_urls', array_values($this->smartIDs['joomla_module']), 'joomla_module');
 		}
 		// add joomla plugin
-		if (isset($this->smartIDs['joomla_plugin']) && ComponentbuilderHelper::checkArray($this->smartIDs['joomla_plugin']))
+		if (isset($this->smartIDs['joomla_plugin']) && JCBArrayHelper::check($this->smartIDs['joomla_plugin']))
 		{
 			$this->setData('joomla_plugin', array_values($this->smartIDs['joomla_plugin']), 'id');
 			$this->setData('joomla_plugin_updates', array_values($this->smartIDs['joomla_plugin']), 'joomla_plugin');
 			$this->setData('joomla_plugin_files_folders_urls', array_values($this->smartIDs['joomla_plugin']), 'joomla_plugin');
 		}
 		// add validation rules
-		if (isset($this->smartIDs['validation_rule']) && ComponentbuilderHelper::checkArray($this->smartIDs['validation_rule']))
+		if (isset($this->smartIDs['validation_rule']) && JCBArrayHelper::check($this->smartIDs['validation_rule']))
 		{
 			$this->setData('validation_rule', array_values($this->smartIDs['validation_rule']), 'name');
 		}
 		// add field types
-		if (isset($this->smartIDs['fieldtype']) && ComponentbuilderHelper::checkArray($this->smartIDs['fieldtype']))
+		if (isset($this->smartIDs['fieldtype']) && JCBArrayHelper::check($this->smartIDs['fieldtype']))
 		{
 			$this->setData('fieldtype', array_values($this->smartIDs['fieldtype']), 'id');
 		}
 		// add templates
-		if (isset($this->smartIDs['template']) && ComponentbuilderHelper::checkArray($this->smartIDs['template']))
+		if (isset($this->smartIDs['template']) && JCBArrayHelper::check($this->smartIDs['template']))
 		{
 			$this->setData('template', array_values($this->smartIDs['template']), 'id');
 		}
 		// add layouts
-		if (isset($this->smartIDs['layout']) && ComponentbuilderHelper::checkArray($this->smartIDs['layout']))
+		if (isset($this->smartIDs['layout']) && JCBArrayHelper::check($this->smartIDs['layout']))
 		{
 			$this->setData('layout', array_values($this->smartIDs['layout']), 'id');
 		}
 		// add dynamic get
-		if (isset($this->smartIDs['dynamic_get']) && ComponentbuilderHelper::checkArray($this->smartIDs['dynamic_get']))
+		if (isset($this->smartIDs['dynamic_get']) && JCBArrayHelper::check($this->smartIDs['dynamic_get']))
 		{
 			$this->setData('dynamic_get', array_values($this->smartIDs['dynamic_get']), 'id');
 		}
@@ -370,49 +380,49 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		if ('clone' !== $this->activeType)
 		{
 			// add class_property
-			if (isset($this->smartIDs['class_property']) && ComponentbuilderHelper::checkArray($this->smartIDs['class_property']))
+			if (isset($this->smartIDs['class_property']) && JCBArrayHelper::check($this->smartIDs['class_property']))
 			{
 				$this->setData('class_property', array_values($this->smartIDs['class_property']), 'id');
 			}
 			// add class_method
-			if (isset($this->smartIDs['class_method']) && ComponentbuilderHelper::checkArray($this->smartIDs['class_method']))
+			if (isset($this->smartIDs['class_method']) && JCBArrayHelper::check($this->smartIDs['class_method']))
 			{
 				$this->setData('class_method', array_values($this->smartIDs['class_method']), 'id');
 			}
 			// add joomla_plugin_group
-			if (isset($this->smartIDs['joomla_plugin_group']) && ComponentbuilderHelper::checkArray($this->smartIDs['joomla_plugin_group']))
+			if (isset($this->smartIDs['joomla_plugin_group']) && JCBArrayHelper::check($this->smartIDs['joomla_plugin_group']))
 			{
 				$this->setData('joomla_plugin_group', array_values($this->smartIDs['joomla_plugin_group']), 'id');
 			}
 			// add class_extends
-			if (isset($this->smartIDs['class_extends']) && ComponentbuilderHelper::checkArray($this->smartIDs['class_extends']))
+			if (isset($this->smartIDs['class_extends']) && JCBArrayHelper::check($this->smartIDs['class_extends']))
 			{
 				$this->setData('class_extends', array_values($this->smartIDs['class_extends']), 'id');
 			}
 			// add snippets
-			if (isset($this->smartIDs['snippet']) && ComponentbuilderHelper::checkArray($this->smartIDs['snippet']))
+			if (isset($this->smartIDs['snippet']) && JCBArrayHelper::check($this->smartIDs['snippet']))
 			{
 				$this->setData('snippet', array_values($this->smartIDs['snippet']), 'id');
 			}
 			// add custom code
-			if (isset($this->smartIDs['custom_code']) && ComponentbuilderHelper::checkArray($this->smartIDs['custom_code']))
+			if (isset($this->smartIDs['custom_code']) && JCBArrayHelper::check($this->smartIDs['custom_code']))
 			{
 				$this->setData('custom_code', array_values($this->smartIDs['custom_code']), 'id');
 			}
 			// add placeholder
-			if (isset($this->smartIDs['placeholder']) && ComponentbuilderHelper::checkArray($this->smartIDs['placeholder']))
+			if (isset($this->smartIDs['placeholder']) && JCBArrayHelper::check($this->smartIDs['placeholder']))
 			{
 				$this->setData('placeholder', array_values($this->smartIDs['placeholder']), 'id');
 			}
 			// add powers
-			if (isset($this->smartIDs['power']) && ComponentbuilderHelper::checkArray($this->smartIDs['power']))
+			if (isset($this->smartIDs['power']) && JCBArrayHelper::check($this->smartIDs['power']))
 			{
 				$this->setData('power', array_values($this->smartIDs['power']), 'guid');
 			}
 			// set limiter
 			$limit = 0;
 			// and add those custom codes found in custom codes
-			while (isset($this->smartIDs['custom_code']) && ComponentbuilderHelper::checkArray($this->smartIDs['custom_code']) && $limit < 100)
+			while (isset($this->smartIDs['custom_code']) && JCBArrayHelper::check($this->smartIDs['custom_code']) && $limit < 100)
 			{
 				$this->setData('custom_code', array_values($this->smartIDs['custom_code']), 'id');
 				// make sure we break
@@ -429,15 +439,15 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	protected function getComponents($pks)
 	{
 		// setup the query
-		if (ComponentbuilderHelper::checkArray($pks))
+		if (JCBArrayHelper::check($pks))
 		{
 			// Get the user object.
-			if (!ComponentbuilderHelper::checkObject($this->user))
+			if (!ObjectHelper::check($this->user))
 			{
 				$this->user = JFactory::getUser();
 			}
 			// Create a new query object.
-			if (!ComponentbuilderHelper::checkObject($this->_db))
+			if (!ObjectHelper::check($this->_db))
 			{
 				$this->_db = JFactory::getDBO();
 			}
@@ -468,10 +478,10 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				// load the items from db
 				$items = $this->_db->loadObjectList();
 				// check if we have items
-				if (ComponentbuilderHelper::checkArray($items))
+				if (JCBArrayHelper::check($items))
 				{
 					// set params
-					if (!ComponentbuilderHelper::checkObject($this->params))
+					if (!ObjectHelper::check($this->params))
 					{
 						$this->params = JComponentHelper::getParams('com_componentbuilder');
 					}
@@ -516,30 +526,30 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$this->smartIDs[$table] = array();
 		}
 		// convert if value is in json
-		if (ComponentbuilderHelper::checkJson($value))
+		if (JsonHelper::check($value))
 		{
 			$value = json_decode($value, true);
 		}
 		// now update the fields
-		if (ComponentbuilderHelper::checkArray($value))
+		if (JCBArrayHelper::check($value))
 		{
 			foreach ($value as $id)
 			{
-				if ($int && (ComponentbuilderHelper::checkString($id) || is_numeric($id)) && 0 !== (int) $id)
+				if ($int && (StringHelper::check($id) || is_numeric($id)) && 0 !== (int) $id)
 				{
 					$this->smartIDs[$table][(int) $id] = (int) $id;
 				}
-				elseif (!$int && ComponentbuilderHelper::checkString($id))
+				elseif (!$int && StringHelper::check($id))
 				{
 					$this->smartIDs[$table][$id] = $this->_db->quote($id);
 				}
 			}
 		}
-		elseif ($int && (ComponentbuilderHelper::checkString($value) || is_numeric($value)) && 0 !== (int) $value)
+		elseif ($int && (StringHelper::check($value) || is_numeric($value)) && 0 !== (int) $value)
 		{
 			$this->smartIDs[$table][(int) $value] = (int) $value;
 		}
-		elseif (!$int && ComponentbuilderHelper::checkString($value))
+		elseif (!$int && StringHelper::check($value))
 		{
 			$this->smartIDs[$table][$value] = $this->_db->quote($value);
 		}
@@ -555,12 +565,12 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		// the ids bucket
 		$bucket = array();
 		// if json convert to array
-		if (ComponentbuilderHelper::checkJson($values))
+		if (JsonHelper::check($values))
 		{
 			$values = json_decode($values, true);
 		}
 		// check that the array has values
-		if (ComponentbuilderHelper::checkArray($values))
+		if (JCBArrayHelper::check($values))
 		{
 			// check if the key is an array (targeting subform)
 			if ('subform' === $type && $key)
@@ -573,7 +583,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						{
 							$bucket[] = $value[$key];
 						}
-						elseif (ComponentbuilderHelper::checkString($value[$key]))
+						elseif (StringHelper::check($value[$key]))
 						{
 							if ('table' === $prep)
 							{
@@ -587,7 +597,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					}
 				}
 				// only return if we set the ids
-				if (ComponentbuilderHelper::checkArray($bucket))
+				if (JCBArrayHelper::check($bucket))
 				{
 					// now set the values back
 					return array_unique($bucket);
@@ -599,7 +609,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				$_key = explode('.', $key);
 				foreach ($values as $value)
 				{
-					if (isset($value[$_key[0]]) && ComponentbuilderHelper::checkArray($value[$_key[0]]))
+					if (isset($value[$_key[0]]) && JCBArrayHelper::check($value[$_key[0]]))
 					{
 						foreach ($value[$_key[0]] as $_value)
 						{
@@ -607,7 +617,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 							{
 								$bucket[] = $_value[$_key[1]];
 							}
-							elseif (ComponentbuilderHelper::checkString($_value[$_key[1]]))
+							elseif (StringHelper::check($_value[$_key[1]]))
 							{
 								if ('table' === $prep)
 								{
@@ -622,7 +632,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					}
 				}
 				// only return if we set the ids
-				if (ComponentbuilderHelper::checkArray($bucket))
+				if (JCBArrayHelper::check($bucket))
 				{
 					// now set the values back
 					return array_unique($bucket);
@@ -638,7 +648,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						{
 							return $value;
 						}
-						elseif (ComponentbuilderHelper::checkString($value))
+						elseif (StringHelper::check($value))
 						{
 							if ('table' === $prep)
 							{
@@ -659,11 +669,11 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				{
 					foreach ($values[$key] as $k => $val)
 					{
-						if (strpos($k, 'power_') !== false && ComponentbuilderHelper::checkArray($val))
+						if (strpos($k, 'power_') !== false && JCBArrayHelper::check($val))
 						{
 							foreach ($val as $v)
 							{
-								if (ComponentbuilderHelper::checkArray($v) && isset($v['power']))
+								if (JCBArrayHelper::check($v) && isset($v['power']))
 								{
 									$bucket[$v['power']] = $v['power'];
 								}
@@ -671,7 +681,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						}
 					}
 					// only return if we set the ids
-					if (ComponentbuilderHelper::checkArray($bucket))
+					if (JCBArrayHelper::check($bucket))
 					{
 						// now return the values back
 						return array_values($bucket);
@@ -690,7 +700,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	protected function setData($table, $values, $key, $string = false)
 	{
 		// lets check for json strings
-		if (ComponentbuilderHelper::checkJson($values))
+		if (JsonHelper::check($values))
 		{
 			$values = json_decode($values, true);
 		}
@@ -701,7 +711,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		}
 
 		// make sure we have an array of values
-		if (!ComponentbuilderHelper::checkArray($values, true) || !ComponentbuilderHelper::checkString($table) || !ComponentbuilderHelper::checkString($key))
+		if (!JCBArrayHelper::check($values, true) || !StringHelper::check($table) || !StringHelper::check($key))
 		{
 			return false;
 		}
@@ -752,7 +762,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			// reset the search array (only search for template/layouts)
 			$searchTLArray = array();
 			// check if we have items
-			if (ComponentbuilderHelper::checkArray($items))
+			if (JCBArrayHelper::check($items))
 			{
 				// set search array if site/custom admin view
 				if ('site_view' === $table || 'custom_admin_view' === $table)
@@ -904,7 +914,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					if ('component_modules' === $table)
 					{
 						// we remove those modules not part of the export
-						if (isset($item->addjoomla_modules) && ComponentbuilderHelper::checkJson($item->addjoomla_modules))
+						if (isset($item->addjoomla_modules) && JsonHelper::check($item->addjoomla_modules))
 						{
 							$item->addjoomla_modules = array_filter(
 								json_decode($item->addjoomla_modules, true),
@@ -925,7 +935,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					if ('component_plugins' === $table)
 					{
 						// we remove those plugins not part of the export
-						if (isset($item->addjoomla_plugins) && ComponentbuilderHelper::checkJson($item->addjoomla_plugins))
+						if (isset($item->addjoomla_plugins) && JsonHelper::check($item->addjoomla_plugins))
 						{
 							$item->addjoomla_plugins = array_filter(
 								json_decode($item->addjoomla_plugins, true),
@@ -1001,17 +1011,17 @@ class ComponentbuilderModelJoomla_components extends ListModel
 								$fieldsSets[] = (int) $fields;
 							}
 							// get fields
-							if (ComponentbuilderHelper::checkArray($fieldsSets))
+							if (JCBArrayHelper::check($fieldsSets))
 							{
 								$this->setData('field', $fieldsSets, 'id');
 							}
 						}
 						// check if validation rule is found
 						$validationRule = ComponentbuilderHelper::getBetween(json_decode($item->xml), 'validate="', '"');
-						if (ComponentbuilderHelper::checkString($validationRule))
+						if (StringHelper::check($validationRule))
 						{
 							// make sure it is lowercase
-							$validationRule = ComponentbuilderHelper::safeString($validationRule);
+							$validationRule = StringHelper::safe($validationRule);
 							// get core validation rules
 							if ($coreValidationRules = ComponentbuilderHelper::getExistingValidationRuleNames(true))
 							{
@@ -1025,7 +1035,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						}
 					}
 					// check if a search is required
-					if (isset($searchTLArray) && ComponentbuilderHelper::checkArray($searchTLArray)){
+					if (isset($searchTLArray) && JCBArrayHelper::check($searchTLArray)){
 
 						// add search array templates and layouts
 						foreach ($searchTLArray as $scripter => $add)
@@ -1181,7 +1191,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	protected function smartCloner()
 	{
 		// check if data is set
-		if (isset($this->smartBox) && ComponentbuilderHelper::checkArray($this->smartBox))
+		if (isset($this->smartBox) && JCBArrayHelper::check($this->smartBox))
 		{
 			// get the import_joomla_components
 			$model = ComponentbuilderHelper::getModel('import_joomla_components');
@@ -1190,7 +1200,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			// trigger the create new (clone) feature
 			$model->canmerge = 0;
 			// set some postfix
-			$model->postfix = ' ('.ComponentbuilderHelper::randomkey(2).')';
+			$model->postfix = ' ('.StringHelper::random(2).')';
 			// get App
 			$model->app = JFactory::getApplication();
 			// set user
@@ -1239,10 +1249,11 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	protected function smartExportBuilder()
 	{
 		// check if data is set
-		if (isset($this->smartBox) && ComponentbuilderHelper::checkArray($this->smartBox))
+		if (isset($this->smartBox) && JCBArrayHelper::check($this->smartBox))
 		{
 			// set db data
 			$data = serialize($this->smartBox);
+
 			// Set the key owner information
 			$this->info['source'] = array();
 			$this->info['source']['company'] = $this->params->get('export_company', null);
@@ -1251,26 +1262,16 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$this->info['source']['website'] = $this->params->get('export_website', null);
 			$this->info['source']['license'] = $this->params->get('export_license', null);
 			$this->info['source']['copyright'] = $this->params->get('export_copyright', null);
+
 			// lock the data if set
-			if (ComponentbuilderHelper::checkArray($this->key))
+			if (JCBArrayHelper::check($this->key))
 			{
 				// lock the data
 				$this->key = md5(implode('', $this->key));
-				// April 20, 2022 we moved away from FOF for good... sorry that it took this long
-				// $locker = new FOFEncryptAes($this->key, 128);
-				// $data = $locker->encryptString($data);
-				// load phpseclib <https://phpseclib.com/docs/symmetric>
-				if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib\Crypt\Rijndael)
-				{
-					// set the password
-					ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($this->key, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');
-					// lock the data
-					$data = base64_encode(ComponentbuilderHelper::crypt('AES', 'CBC')->encrypt($data));
-				}
-				else
-				{
-					return false;
-				}
+
+				// lock the data
+				$data = PackageFactory::_('Crypt')->encrypt($data, 'aes', $this->key);
+
 				// Set the key owner information
 				$this->info['getKeyFrom'] = array();
 				$this->info['getKeyFrom']['company'] = $this->info['source']['company'];
@@ -1280,13 +1281,16 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				$this->info['getKeyFrom']['license'] = $this->info['source']['license'];
 				$this->info['getKeyFrom']['copyright'] = $this->info['source']['copyright'];
 				// add buy link if only one link is set
-				if (isset($this->info['export_buy_link']) && ComponentbuilderHelper::checkArray($this->info['export_buy_link']) && count((array) $this->info['export_buy_link']) == 1)
+				if (isset($this->info['export_buy_link'])
+					&& JCBArrayHelper::check($this->info['export_buy_link'])
+					&& count((array) $this->info['export_buy_link']) == 1)
 				{
 					$this->info['getKeyFrom']['buy_link'] = array_values($this->info['export_buy_link'])[0];
 				}
 				else
 				{
-					// use global if more then one component is exported (since they now have one key), or if none has a buy link
+					// use global if more then one component is exported
+					// (since they now have one key), or if none has a buy link
 					$this->info['getKeyFrom']['buy_link'] = $this->params->get('export_buy_link', null);
 				}
 				// no remove the buy links
@@ -1294,75 +1298,82 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				// if we have multi links add them also
 				// we started adding this at v2.7.7
 				$this->info['key'] = true;
-				// we started adding this at v3.0.11 and v2.12.17
-				$this->info['phpseclib'] = true;
+				// Changed: 25th Feb. 2023 at v3.1.18
+				// $this->info['phpseclib'] = false;
+				// we started adding this at v3.1.18
+				$this->info['phpseclib3'] = true;
 			}
 			else
 			{
 				// we started adding this at v2.7.7
 				$this->info['key'] = false;
 				// we started adding this at v3.0.11 and v2.12.17
-				$this->info['phpseclib'] = false;
+				// $this->info['phpseclib'] = false;
+				// we started adding this at v3.1.18
+				$this->info['phpseclib3'] = false;
 				// base 64 encode the data
 				$data = base64_encode($data);
 			}
+
 			// set the path
 			$dbPath = $this->packagePath . '/db.vdm';
+
 			// write the db data to file in package
-			if (!ComponentbuilderHelper::writeFile($dbPath, wordwrap($data, 128, "\n", true)))
+			if (!FileHelper::write($dbPath, wordwrap($data, 128, "\n", true)))
 			{
 				return false;
 			}
-			// set info data
-			if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib\Crypt\Rijndael)
+
+			// lock the info data
+			$info = PackageFactory::_('Crypt')->encrypt(json_encode($this->info), 'local');
+
+			// set the path
+			$infoPath = $this->packagePath . '/info.vdm';
+
+			// write the info data to file in package
+			if (!FileHelper::write($infoPath, wordwrap($info, 128, "\n", true)))
 			{
-				// set system password
-				$db = 'COM_COMPONENTBUILDER_SZDEQZDMVSMHBTRWFIFTYTSQFLVVXJTMTHREEJTWOIXM';
-				$password = base64_decode(JText::sprintf($db, 'VjR', 'WV0aE9k'));
-				// set the password
-				ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($password, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');
-				// lock the data
-				$info = base64_encode(ComponentbuilderHelper::crypt('AES', 'CBC')->encrypt(json_encode($this->info)));
-				// set the path
-				$infoPath = $this->packagePath . '/info.vdm';
-				// write the info data to file in package
-				if (!ComponentbuilderHelper::writeFile($infoPath, wordwrap($info, 128, "\n", true)))
-				{
-						return false;
-				}
+					return false;
 			}
-			else
-			{
-				return false;
-			}
+
 			// lock all files
 			$this->lockFiles();
+
 			// remove old zip files with the same name
 			if (JFile::exists($this->zipPath))
 			{
 				// remove file if found
 				JFile::delete($this->zipPath);
 			}
+
 			// zip the folder
-			if (!ComponentbuilderHelper::zip($this->packagePath, $this->zipPath))
+			if (!FileHelper::zip($this->packagePath, $this->zipPath))
 			{
 				return false;
 			}
+
 			// move to remote server if needed
 			if (2 == $this->backupType)
 			{
-				if (!ComponentbuilderHelper::moveToServer($this->zipPath, $this->packageName.'.zip', $this->backupServer, null, 'joomla_component.export'))
+				if (!PackageFactory::_('Server')->legacyMove(
+					$this->zipPath, $this->packageName.'.zip',
+					$this->backupServer, null, 'joomla_component.export'
+					)
+				)
 				{
 					return false;
 				}
+
 				// remove the local file
 				JFile::delete($this->zipPath);
 			}
+
 			// remove the folder
 			if (!ComponentbuilderHelper::removeFolder($this->packagePath))
 			{
 				return false;
 			}
+
 			return true;
 		}
 		return false;
@@ -1376,25 +1387,27 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	protected function lockFiles()
 	{
 		// lock the data if set
-		if (ComponentbuilderHelper::checkString($this->key) && strlen($this->key) == 32)
+		if (StringHelper::check($this->key) && strlen($this->key) == 32)
 		{
-			// set secure password
-			ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($this->key, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');
 			// we must first store the current working directory
 			$joomla = getcwd();
+
 			// to avoid that it encrypt the db and info file again we must move per/folder
 			$folders = array('images', 'custom', 'dynamic');
+
 			// loop the folders
 			foreach ($folders as $folder)
 			{
 				// the sub path
 				$subPath = $this->packagePath.'/'.$folder;
+
 				// go to the package sub folder if found
-				if (JFolder::exists($subPath))
+				if (FileHelper::exists($subPath))
 				{
 					$this->lock($subPath);
 				}
 			}
+
 			// change back to working dir
 			chdir($joomla);
 		}
@@ -1409,16 +1422,21 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	{
 		// we are changing the working directory to the tmp path (important)
 		chdir($tmpPath);
+
 		// get a list of files in the current directory tree (all)
 		$files = JFolder::files('.', '.', true, true);
+
 		// read in the file content
 		foreach ($files as $file)
 		{
+			// get file content
+			$content = FileHelper::getContent($file);
+
 			// write the encrypted string back to file
-			if (!ComponentbuilderHelper::writeFile($file, wordwrap(base64_encode(ComponentbuilderHelper::crypt('AES', 'CBC')->encrypt(file_get_contents($file))), 128, "\n", true)))
-			{
-				// we should add error handler here in case file could not be locked
-			}
+			$content = PackageFactory::_('Crypt')->encrypt($content, 'eac', $this->key);
+
+			// store the encrypted file content in the same file
+			FileHelper::write($file, wordwrap($content, 128, "\n", true));
 		}
 	}
 
@@ -1430,10 +1448,11 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	protected function moveIt($paths, $type, $dynamic = false)
 	{
 		// make sure we have an array
-		if (!ComponentbuilderHelper::checkArray($paths))
+		if (!JCBArrayHelper::check($paths))
 		{
 			return false;
 		}
+
 		// set the name of the folder
 		if ('file' === $type || 'folder' === $type)
 		{
@@ -1452,19 +1471,22 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		{
 			return false;
 		}
+
 		// setup the type path
 		$tmpPath = str_replace('//', '/', $this->packagePath . '/' . $folderName);
+
 		// create type path if not set
-		if (!JFolder::exists($tmpPath))
+		if (!FileHelper::exists($tmpPath))
 		{
 			// create the folders if not found
 			JFolder::create($tmpPath);
 		}
+
 		// now move it
 		foreach ($paths as $item)
 		{
 			// make sure we have a string
-			if (ComponentbuilderHelper::checkString($item))
+			if (StringHelper::check($item))
 			{
 				// if the file type
 				if ('file' === $type)
@@ -1487,14 +1509,16 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						JFile::copy($customFilePath, $tmpFilePath);
 					}
 				}
+
 				// if the image type
 				if ('image' === $type)
 				{
 					$imageName = basename($item);
 					$imagePath = str_replace($imageName, '', $item);
 					$imageFolderPath = str_replace('//', '/', $this->packagePath.'/'. $imagePath);
+
 					// check if image folder exist
-					if (!JFolder::exists($imageFolderPath))
+					if (!FileHelper::exists($imageFolderPath))
 					{
 						// create the folders if not found
 						JFolder::create($imageFolderPath);
@@ -1507,6 +1531,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						JFile::copy($customImagePath, $tmpImagePath);
 					}
 				}
+
 				// if the folder type
 				if ('folder' === $type)
 				{
@@ -1521,7 +1546,8 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						$tmpFolderPath = str_replace('//', '/', $tmpPath.'/'.$item);
 						$customFolderPath = str_replace('//', '/', $this->customPath.'/'.$item);
 					}
-					if (!JFolder::exists($tmpFolderPath) && JFolder::exists($customFolderPath))
+
+					if (!FileHelper::exists($tmpFolderPath) && FileHelper::exists($customFolderPath))
 					{
 						// move the folder to its place
 						JFolder::copy($customFolderPath, $tmpFolderPath,'',true);
@@ -1574,14 +1600,14 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		if (!isset($this->fieldTypes[$id]))
 		{
 			$properties = ComponentbuilderHelper::getVar('fieldtype', $id, 'id', 'properties');
-			if (ComponentbuilderHelper::checkJson($properties))
+			if (JsonHelper::check($properties))
 			{
 				$properties = json_decode($properties, true);
 				foreach ($properties as $property)
 				{
 					if ('type' === $property['name'])
 					{
-						if (isset($property['example'])  && ComponentbuilderHelper::checkString($property['example']))
+						if (isset($property['example'])  && StringHelper::check($property['example']))
 						{
 							$this->fieldTypes[$id] = $property['example'];
 							break;
@@ -1592,7 +1618,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			// if not found
 			if (!isset($this->fieldTypes[$id]) && $name = ComponentbuilderHelper::getVar('fieldtype', $id, 'id', 'name'))
 			{
-				$this->fieldTypes[$id] = ComponentbuilderHelper::safeString($name);
+				$this->fieldTypes[$id] = StringHelper::safe($name);
 			}
 		}
 		// return the type
@@ -1619,31 +1645,31 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$default = base64_decode($default);
 		}
 		// set the Template data
-		$temp1 = ComponentbuilderHelper::getAllBetween($default, "\$this->loadTemplate('","')");
-		$temp2 = ComponentbuilderHelper::getAllBetween($default, '$this->loadTemplate("','")');
+		$temp1 = GetHelper::allBetween($default, "\$this->loadTemplate('","')");
+		$temp2 = GetHelper::allBetween($default, '$this->loadTemplate("','")');
 		$templates = array();
 		$again = array();
-		if (ComponentbuilderHelper::checkArray($temp1) && ComponentbuilderHelper::checkArray($temp2))
+		if (JCBArrayHelper::check($temp1) && JCBArrayHelper::check($temp2))
 		{
 			$templates = array_merge($temp1,$temp2);
 		}
 		else
 		{
-			if (ComponentbuilderHelper::checkArray($temp1))
+			if (JCBArrayHelper::check($temp1))
 			{
 				$templates = $temp1;
 			}
-			elseif (ComponentbuilderHelper::checkArray($temp2))
+			elseif (JCBArrayHelper::check($temp2))
 			{
 				$templates = $temp2;
 			}
 		}
-		if (ComponentbuilderHelper::checkArray($templates))
+		if (JCBArrayHelper::check($templates))
 		{
 			foreach ($templates as $template)
 			{
 				$data = $this->getDataWithAlias($template, 'template');
-				if (ComponentbuilderHelper::checkArray($data))
+				if (JCBArrayHelper::check($data))
 				{
 					if (!isset($this->smartIDs['template']) || !isset($this->smartIDs['template'][$data['id']]))
 					{
@@ -1656,29 +1682,29 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			}
 		}
 		// set  the layout data
-		$lay1 = ComponentbuilderHelper::getAllBetween($default, "JLayoutHelper::render('","',");
-		$lay2 = ComponentbuilderHelper::getAllBetween($default, 'JLayoutHelper::render("','",');
-		if (ComponentbuilderHelper::checkArray($lay1) && ComponentbuilderHelper::checkArray($lay2))
+		$lay1 = GetHelper::allBetween($default, "JLayoutHelper::render('","',");
+		$lay2 = GetHelper::allBetween($default, 'JLayoutHelper::render("','",');
+		if (JCBArrayHelper::check($lay1) && JCBArrayHelper::check($lay2))
 		{
 			$layouts = array_merge($lay1,$lay2);
 		}
 		else
 		{
-			if (ComponentbuilderHelper::checkArray($lay1))
+			if (JCBArrayHelper::check($lay1))
 			{
 				$layouts = $lay1;
 			}
-			elseif (ComponentbuilderHelper::checkArray($lay2))
+			elseif (JCBArrayHelper::check($lay2))
 			{
 				$layouts = $lay2;
 			}
 		}
-		if (isset($layouts) && ComponentbuilderHelper::checkArray($layouts))
+		if (isset($layouts) && JCBArrayHelper::check($layouts))
 		{
 			foreach ($layouts as $layout)
 			{
 				$data = $this->getDataWithAlias($layout, 'layout');
-				if (ComponentbuilderHelper::checkArray($data))
+				if (JCBArrayHelper::check($data))
 				{
 					if (!isset($this->smartIDs['layout']) || !isset($this->smartIDs['layout'][$data['id']]))
 					{
@@ -1690,7 +1716,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				}
 			}
 		}
-		if (ComponentbuilderHelper::checkArray($again))
+		if (JCBArrayHelper::check($again))
 		{
 			foreach ($again as $get)
 			{
@@ -1701,12 +1727,12 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		if ($user)
 		{
 			// add templates
-			if (isset($this->smartIDs['template']) && ComponentbuilderHelper::checkArray($this->smartIDs['template']))
+			if (isset($this->smartIDs['template']) && JCBArrayHelper::check($this->smartIDs['template']))
 			{
 				$this->setData('template', array_values($this->smartIDs['template']), 'id');
 			}
 			// add layouts
-			if (isset($this->smartIDs['layout']) && ComponentbuilderHelper::checkArray($this->smartIDs['layout']))
+			if (isset($this->smartIDs['layout']) && JCBArrayHelper::check($this->smartIDs['layout']))
 			{
 				$this->setData('layout', array_values($this->smartIDs['layout']), 'id');
 			}
@@ -1733,7 +1759,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		$rows = $this->_db->loadObjectList();
 		foreach ($rows as $row)
 		{
-			$k_ey = ComponentbuilderHelper::safeString($row->alias);
+			$k_ey = StringHelper::safe($row->alias);
 			$key = preg_replace("/[^A-Za-z]/", '', $k_ey);
 			$name = preg_replace("/[^A-Za-z]/", '', $n_ame);
 			if ($k_ey == $n_ame || $key == $name)
@@ -1794,8 +1820,8 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				if ('custom_code' === $type)
 				{
 					// search the value to see if it has custom code
-					$codeArray = ComponentbuilderHelper::getAllBetween($value, '[CUSTOMC' . 'ODE=',']');
-					if (ComponentbuilderHelper::checkArray($codeArray))
+					$codeArray = GetHelper::allBetween($value, '[CUSTOMC' . 'ODE=',']');
+					if (JCBArrayHelper::check($codeArray))
 					{
 						foreach ($codeArray as $func)
 						{
@@ -1813,7 +1839,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 								{
 									$this->setSmartIDs($func, $type);
 								}
-								elseif (ComponentbuilderHelper::checkString($func))
+								elseif (StringHelper::check($func))
 								{
 									if (($funcID = ComponentbuilderHelper::getVar($type, $func, 'function_name', 'id')) !== false && is_numeric($funcID))
 									{
@@ -1831,12 +1857,12 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				elseif ('placeholder' === $type)
 				{
 					// check if we already have the placeholder search array
-					if (!componentbuilderHelper::checkArray($this->placeholderM) && !componentbuilderHelper::checkArray($this->placeholderS))
+					if (!JCBArrayHelper::check($this->placeholderM) && !JCBArrayHelper::check($this->placeholderS))
 					{
 						$this->placeholderS = ComponentbuilderHelper::getVars($type, 1, 'published', 'target');
 					}
 					// only continue search if placeholders found
-					if (componentbuilderHelper::checkArray($this->placeholderS))
+					if (JCBArrayHelper::check($this->placeholderS))
 					{
 						foreach ($this->placeholderS as $remove => $placeholder)
 						{
@@ -1899,7 +1925,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		{
 			$items = $this->_db->loadObjectList();
 			// check if we have items
-			if (ComponentbuilderHelper::checkArray($items))
+			if (JCBArrayHelper::check($items))
 			{
 				if (!isset($this->smartBox['language_translation']))
 				{
@@ -1907,7 +1933,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				}
 				foreach ($items as $item)
 				{
-					if (!isset($this->smartBox['language_translation'][$item->id]) && ComponentbuilderHelper::checkJson($item->{$target}))
+					if (!isset($this->smartBox['language_translation'][$item->id]) && JsonHelper::check($item->{$target}))
 					{
 						$targets = json_decode($item->{$target}, true);
 						if (in_array($id, $targets))
@@ -1940,11 +1966,11 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		{
 			if (isset($item->system_name))
 			{
-				return ComponentbuilderHelper::safeString($item->system_name, 'cAmel');
+				return StringHelper::safe($item->system_name, 'cAmel');
 			}
 			else
 			{
-				return ComponentbuilderHelper::safeString($item->name_code);
+				return StringHelper::safe($item->name_code);
 			}
 		}
 	}
@@ -2747,7 +2773,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		$db = JFactory::getDbo();
 		// get the columns
 		$columns = $db->getTableColumns("#__componentbuilder_joomla_component");
-		if (ComponentbuilderHelper::checkArray($columns))
+		if (JCBArrayHelper::check($columns))
 		{
 			// remove the headers you don't import/export.
 			unset($columns['asset_id']);

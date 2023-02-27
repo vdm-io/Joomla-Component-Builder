@@ -813,50 +813,47 @@ class Data
 				$this->libraries->set($module->code_name, $module);
 
 				// add PHP in module install
-				$module->add_install_script = false;
-				$addScriptMethods           = array('php_preflight',
+				$module->add_install_script = true;
+				$addScriptMethods = [
+					'php_script',
+					'php_preflight',
 					'php_postflight',
-					'php_method');
-				$addScriptTypes             = array('install', 'update',
-					'uninstall');
+					'php_method'
+				];
+				$addScriptTypes = [
+					'install',
+					'update',
+					'uninstall'
+				];
 				// the next are php placeholders
 				$guiMapper['type'] = 'php';
 				foreach ($addScriptMethods as $scriptMethod)
 				{
 					foreach ($addScriptTypes as $scriptType)
 					{
-						if (isset(
-								$module->{'add_' . $scriptMethod . '_'
-								. $scriptType}
-							)
-							&& $module->{'add_' . $scriptMethod . '_'
-							. $scriptType} == 1
+						if (isset($module->{'add_' . $scriptMethod . '_' . $scriptType})
+							&& $module->{'add_' . $scriptMethod . '_' . $scriptType} == 1
 							&& StringHelper::check(
 								$module->{$scriptMethod . '_' . $scriptType}
 							))
 						{
 							// set GUI mapper field
-							$guiMapper['field']         = $scriptMethod . '_'
-								. $scriptType;
+							$guiMapper['field'] = $scriptMethod . '_' . $scriptType;
 							$module->{$scriptMethod . '_' . $scriptType} = $this->gui->set(
 								$this->placeholder->update_(
 									$this->customcode->update(
 										base64_decode(
-											(string) $module->{$scriptMethod . '_'
-											. $scriptType}
+											(string) $module->{$scriptMethod . '_' . $scriptType}
 										)
 									)
 								),
 								$guiMapper
 							);
-							$module->add_install_script = true;
 						}
 						else
 						{
 							unset($module->{$scriptMethod . '_' . $scriptType});
-							$module->{'add_' . $scriptMethod . '_'
-							. $scriptType}
-								= 0;
+							$module->{'add_' . $scriptMethod . '_' . $scriptType} = 0;
 						}
 					}
 				}

@@ -12,6 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Crypt;
 
 
+use Joomla\CMS\Language\Text;
 use VDM\Joomla\Utilities\Component\Helper;
 
 
@@ -34,12 +35,33 @@ class Password
 	 */
 	public function get(string $type, ?string $default = null): ?string
 	{
-		if (($password = Helper::_('getCryptKey', [$type, $default])) !== null)
+		// we have a local key for JCB only use
+		if ('local' === $type)
+		{
+			return $this->local();
+		}
+		elseif (($password = Helper::_('getCryptKey', [$type, $default])) !== null)
 		{
 			return $password;
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Get the local password
+	 *
+	 * @return  string
+	 * @since 3.2.0
+	 */
+	private function local(): string
+	{
+		return base64_decode(
+			Text::sprintf(
+				'COM_COMPONENTBUILDER_VJRZDESSMHBTRWFIFTYTWVZEROAESFLVVXJTMTHREEJTWOIXM',
+				'QzdmV', '9kQ'
+			)
+		);
 	}
 
 }

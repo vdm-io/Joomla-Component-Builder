@@ -15,7 +15,12 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 use VDM\Gitea\Gitea;
+use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
+use VDM\Joomla\Utilities\FileHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\StringHelper;
 use Joomla\Registry\Registry;
+use Joomla\CMS\Language\Text;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 
 /**
@@ -90,7 +95,7 @@ class ComponentbuilderModelAjax extends ListModel
 		// set the url
 		$url = "https://api.crowdin.com/api/project/$identifier/info?key=$key&json";
 		// get the details
-		if (($details = ComponentbuilderHelper::getFileContents($url, false)) !== false && ComponentbuilderHelper::checkJson($details))
+		if (($details = FileHelper::getContent($url, false)) !== false && JsonHelper::check($details))
 		{
 			$details = json_decode($details, true);
 			// check if there is an error
@@ -102,9 +107,9 @@ class ComponentbuilderModelAjax extends ListModel
 			if (isset($details['details']))
 			{
 				$html = '<div class="alert alert-success" id="crowdin_message">';
-				$html .= '<h1>' . JText::_('COM_COMPONENTBUILDER_COMPONENT_SUCCESSFULLY_LINKED') . '</h1>';
+				$html .= '<h1>' . Text::_('COM_COMPONENTBUILDER_COMPONENT_SUCCESSFULLY_LINKED') . '</h1>';
 				$html .= '<h3>' . $details['details']['name'] . '</h3>';
-				if (ComponentbuilderHelper::checkString($details['details']['description']))
+				if (StringHelper::check($details['details']['description']))
 				{
 					$html .= '<p>';
 					$html .= $details['details']['description'];
@@ -128,7 +133,7 @@ class ComponentbuilderModelAjax extends ListModel
 				$html .= '</b></li>';
 				$html .= '</ul>';
 				$html .= '</div>';
-				return array('html' => $html);
+				return ['html' => $html];
 			}
 		}
 		return false;
@@ -153,7 +158,7 @@ class ComponentbuilderModelAjax extends ListModel
 		$db->execute();
 		if ($db->loadRowList())
 		{
-			return array( 'html' => $this->componentDetailsDisplay($db->loadObject()));
+			return ['html' => $this->componentDetailsDisplay($db->loadObject())];
 		}
 		return false;
 	}
@@ -166,47 +171,26 @@ class ComponentbuilderModelAjax extends ListModel
 		// convert URL
 		$url = base64_decode($package);
 		$url = str_replace('.zip', '.info', $url);
+
 		// check if url exist
-		if ($info = ComponentbuilderHelper::getFileContents($url, false))
+		if ($info = FileHelper::getContent($url, false))
 		{
-			// Get the encryption object.
-			$db = 'COM_COMPONENTBUILDER_VJRZDESSMHBTRWFIFTYTWVZEROAESFLVVXJTMTHREEJTWOIXM';
-			$password = base64_decode(JText::sprintf($db, 'QzdmV', '9kQ'));
-			// we first use the new encryption
-			// load phpseclib <https://phpseclib.com/docs/symmetric>
-			$opened = false;
-			if(ComponentbuilderHelper::crypt('AES', 'CBC') instanceof \phpseclib\Crypt\Rijndael)
+			if ((($info_ = PackageFactory::_('Crypt')->decrypt($info, 'local')) !== null && JsonHelper::check($info_)) ||
+				(($info_ = PackageFactory::_('Crypt')->decrypt($info, 'local.legacy')) !== null && JsonHelper::check($info_)) ||
+				(($info_ = PackageFactory::_('Crypt')->decrypt($info, 'local.fof')) !== null && JsonHelper::check($info_)))
 			{
-				// load the system password
-				ComponentbuilderHelper::crypt('AES', 'CBC')->setPassword($password, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');
-				// open the info block
-				$_info = ComponentbuilderHelper::crypt('AES', 'CBC')->decrypt(base64_decode($info));
-				// check if we had success
-				if ($_info !== false)
-				{
-					$opened = true;
-				}
-			}
-			// check if we had success
-			if (!$opened && class_exists('FOFEncryptAes'))
-			{
-				$opener = new FOFEncryptAes($password, 128);
-				$_info = $opener->decryptString($info);
-				// check if we had success
-				if ($_info !== false)
-				{
-					$opened = true;
-					$_info = rtrim($_info, "\0");
-				}
-			}
-			// check if we have json
-			if ($opened && ComponentbuilderHelper::checkJson($_info))
-			{
-				$info = json_decode($_info, true);
-				return array('owner' => ComponentbuilderHelper::getPackageOwnerDetailsDisplay($info, true), 'packages' => ComponentbuilderHelper::getPackageComponentsDetailsDisplay($info));
+				$info = json_decode($info_, true);
+
+				return [
+					'owner' => PackageFactory::_('Display.Details')->owner($info, true),
+					'packages' => PackageFactory::_('Display.Details')->components($info)
+				];
 			}
 		}
-		return array('error' => JText::_('COM_COMPONENTBUILDER_JCB_PACKAGE_INFO_PATH_DOES_NOT_WORK_WE_ADVICE_YOU_BNOT_TO_CONTINUEB_WITH_THE_IMPORT_OF_THE_SELECTED_PACKAGE'));
+
+		return [
+			'error' => Text::_('COM_COMPONENTBUILDER_JCB_PACKAGE_INFO_PATH_DOES_NOT_WORK_WE_ADVICE_YOU_BNOT_TO_CONTINUEB_WITH_THE_IMPORT_OF_THE_SELECTED_PACKAGE')
+		];
 	}
 
 	/**
@@ -215,29 +199,29 @@ class ComponentbuilderModelAjax extends ListModel
 	protected function componentDetailsDisplay($object)
 	{
 		// set some vars
-		$image = (ComponentbuilderHelper::checkString($object->image)) ? '<img alt="Joomla Component Image" src="'. JURI::root() . $object->image . '" style="float: right;">': '';
-		$desc = (ComponentbuilderHelper::checkString($object->description)) ? $object->description : $object->short_description;
-		$placeholder = ($object->add_placeholders == 1) ? '<span class="btn btn-small btn-success"> ' . JText::_('COM_COMPONENTBUILDER_YES') . ' </span>' : '<span class="btn btn-small btn-danger"> ' .JText::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
-		$debug = ($object->debug_linenr == 1) ? '<span class="btn btn-small btn-success"> ' .JText::_('COM_COMPONENTBUILDER_YES') . '</span>'  : ' <span class="btn btn-small btn-danger"> ' .JText::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
+		$image = (StringHelper::check($object->image)) ? '<img alt="Joomla Component Image" src="'. JURI::root() . $object->image . '" style="float: right;">': '';
+		$desc = (StringHelper::check($object->description)) ? $object->description : $object->short_description;
+		$placeholder = ($object->add_placeholders == 1) ? '<span class="btn btn-small btn-success"> ' . Text::_('COM_COMPONENTBUILDER_YES') . ' </span>' : '<span class="btn btn-small btn-danger"> ' .Text::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
+		$debug = ($object->debug_linenr == 1) ? '<span class="btn btn-small btn-success"> ' .Text::_('COM_COMPONENTBUILDER_YES') . '</span>'  : ' <span class="btn btn-small btn-danger"> ' .Text::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
 		$html = array();
 		$html[] = '<h3>' . $object->name . ' (v' . $object->component_version . ')</h3>';
 		$html[] = '<p>' . $desc . $image . '</p>';
 		$html[] = '<ul>';
-		$html[] = '<li>' . JText::_('COM_COMPONENTBUILDER_COMPANY') . ': <b>' . $object->companyname . '</b></li>';
-		$html[] = '<li>' . JText::_('COM_COMPONENTBUILDER_AUTHOR') . ': <b>' . $object->author . '</b></li>';
-		$html[] = '<li>' . JText::_('COM_COMPONENTBUILDER_EMAIL') . ': <b>' . $object->email . '</b></li>';
-		$html[] = '<li>' . JText::_('COM_COMPONENTBUILDER_WEBSITE') . ': <b>' . $object->website . '</b></li>';
+		$html[] = '<li>' . Text::_('COM_COMPONENTBUILDER_COMPANY') . ': <b>' . $object->companyname . '</b></li>';
+		$html[] = '<li>' . Text::_('COM_COMPONENTBUILDER_AUTHOR') . ': <b>' . $object->author . '</b></li>';
+		$html[] = '<li>' . Text::_('COM_COMPONENTBUILDER_EMAIL') . ': <b>' . $object->email . '</b></li>';
+		$html[] = '<li>' . Text::_('COM_COMPONENTBUILDER_WEBSITE') . ': <b>' . $object->website . '</b></li>';
 		$html[] = '</ul>';
-		$html[] = '<h4>' . JText::_('COM_COMPONENTBUILDER_COMPONENT_GLOBAL_SETTINGS') . '</h4>';
+		$html[] = '<h4>' . Text::_('COM_COMPONENTBUILDER_COMPONENT_GLOBAL_SETTINGS') . '</h4>';
 		$html[] = '<p>';
-		$html[] = JText::_('COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS') . '<br />' . $placeholder . '<br />';
-		$html[] = JText::_('COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS') . '<br />' . $debug ;
+		$html[] = Text::_('COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS') . '<br />' . $placeholder . '<br />';
+		$html[] = Text::_('COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS') . '<br />' . $debug ;
 		$html[] = '</p>';
-		$html[] = '<h4>' . JText::_('COM_COMPONENTBUILDER_LICENSE') . '</h4>';
+		$html[] = '<h4>' . Text::_('COM_COMPONENTBUILDER_LICENSE') . '</h4>';
 		$html[] = '<p>' . $object->license . '</p>';
-		$html[] = '<h4>' . JText::_('COM_COMPONENTBUILDER_COPYRIGHT') . '</h4>';
+		$html[] = '<h4>' . Text::_('COM_COMPONENTBUILDER_COPYRIGHT') . '</h4>';
 		$html[] = '<p>' . $object->copyright . '<br /><br />';
-		$html[] = '<a href="index.php?option=com_componentbuilder&ref=compiler&view=joomla_components&task=joomla_component.edit&id=' . (int) $object->id . '" class="btn btn-small span12"><span class="icon-edit"></span> ' . JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' .$object->system_name . '</a></p>';
+		$html[] = '<a href="index.php?option=com_componentbuilder&ref=compiler&view=joomla_components&task=joomla_component.edit&id=' . (int) $object->id . '" class="btn btn-small span12"><span class="icon-edit"></span> ' . Text::_('COM_COMPONENTBUILDER_EDIT') . ' ' .$object->system_name . '</a></p>';
 		// now return the diplay
 		return implode("\n", $html);
 	}
@@ -247,7 +231,7 @@ class ComponentbuilderModelAjax extends ListModel
 	**/
 	public function getCronPath($type)
 	{
-		$result = array('error' => '<span style="color: red;">' . JText::_('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_SINCE_INCORRECT_TYPE_REQUESTED') . '</span>');
+		$result = array('error' => '<span style="color: red;">' . Text::_('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_SINCE_INCORRECT_TYPE_REQUESTED') . '</span>');
 		if ('backup' === $type)
 		{
 			$result['error'] = '<span style="color: red;">' . JText::sprintf('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_FOR_S', $type) . '</span>';
@@ -333,7 +317,7 @@ class ComponentbuilderModelAjax extends ListModel
 			return ['error' => $message];
 		}
 
-		return ['error' => JText::_('COM_COMPONENTBUILDER_THE_WIKI_CAN_ONLY_BE_LOADED_WHEN_YOUR_JCB_SYSTEM_HAS_INTERNET_CONNECTION')];
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_WIKI_CAN_ONLY_BE_LOADED_WHEN_YOUR_JCB_SYSTEM_HAS_INTERNET_CONNECTION')];
 	}
 
 	public function getVersion($version = null)
@@ -377,7 +361,7 @@ class ComponentbuilderModelAjax extends ListModel
 				// now check if this version is out dated
 				if ($current_version === $local_version)
 				{
-					return ['notice' => '<small><span style="color:green;"><span class="icon-shield"></span>' . JText::_('COM_COMPONENTBUILDER_UP_TO_DATE') . '</span></small>'];
+					return ['notice' => '<small><span style="color:green;"><span class="icon-shield"></span>' . Text::_('COM_COMPONENTBUILDER_UP_TO_DATE') . '</span></small>'];
 				}
 				else
 				{
@@ -388,15 +372,15 @@ class ComponentbuilderModelAjax extends ListModel
 						($local_array[0] == $current_array[0] && $local_array[1] > $current_array[1]) || 
 						($local_array[0] == $current_array[0] && $local_array[1] == $current_array[1] && $local_array[2] > $current_array[2]))
 					{
-						return ['notice' => '<small><span style="color:#F7B033;"><span class="icon-wrench"></span>' . JText::_('COM_COMPONENTBUILDER_BETA_RELEASE') . '</span></small>'];
+						return ['notice' => '<small><span style="color:#F7B033;"><span class="icon-wrench"></span>' . Text::_('COM_COMPONENTBUILDER_BETA_RELEASE') . '</span></small>'];
 					}
 					else
 					{
 						// download link of the latest version
 						$download = "https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/" . $tags[0]->name . ".zip?access_token=" . $token;
 
-						return ['notice' => '<small><span style="color:red;"><span class="icon-warning-circle"></span>' . JText::_('COM_COMPONENTBUILDER_OUT_OF_DATE') . '!</span> <a style="color:green;"  href="' .
-							$download . '" title="' . JText::_('COM_COMPONENTBUILDER_YOU_CAN_DIRECTLY_DOWNLOAD_THE_LATEST_UPDATE_OR_USE_THE_JOOMLA_UPDATE_AREA') . '">' . JText::_('COM_COMPONENTBUILDER_DOWNLOAD_UPDATE') . '!</a></small>'];
+						return ['notice' => '<small><span style="color:red;"><span class="icon-warning-circle"></span>' . Text::_('COM_COMPONENTBUILDER_OUT_OF_DATE') . '!</span> <a style="color:green;"  href="' .
+							$download . '" title="' . Text::_('COM_COMPONENTBUILDER_YOU_CAN_DIRECTLY_DOWNLOAD_THE_LATEST_UPDATE_OR_USE_THE_JOOMLA_UPDATE_AREA') . '">' . Text::_('COM_COMPONENTBUILDER_DOWNLOAD_UPDATE') . '!</a></small>'];
 					}
 				}
 			}
@@ -416,11 +400,12 @@ class ComponentbuilderModelAjax extends ListModel
 
 		if ($message)
 		{
-			return ['error' => $a . $message . $a_ . JText::_('COM_COMPONENTBUILDER_GET_TOKEN') . $_a];
+			return ['error' => $a . $message . $a_ . Text::_('COM_COMPONENTBUILDER_GET_TOKEN') . $_a];
 		}
 
-		return ['error' =>  $a . JText::_('COM_COMPONENTBUILDER_GET_TOKEN_FROM_VDM_TO_GET_UPDATE_NOTICE_AND_ADD_IT_TO_YOUR_GLOBAL_OPTIONS') . $a_ . JText::_('COM_COMPONENTBUILDER_GET_TOKEN') . $_a];
+		return ['error' =>  $a . Text::_('COM_COMPONENTBUILDER_GET_TOKEN_FROM_VDM_TO_GET_UPDATE_NOTICE_AND_ADD_IT_TO_YOUR_GLOBAL_OPTIONS') . $a_ . Text::_('COM_COMPONENTBUILDER_GET_TOKEN') . $_a];
 	}
+
 
 
 	// Used in joomla_module

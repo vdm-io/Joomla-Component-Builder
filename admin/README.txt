@@ -9,7 +9,7 @@ The Component Builder for [Joomla](https://extensions.joomla.org/extension/compo
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will save you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (3.1.17) with **ALL** its features and **ALL** concepts totally open-source and free! 
+You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (3.1.19) with **ALL** its features and **ALL** concepts totally open-source and free! 
 
 > Watch Quick Build of a Hello World component in [JCB on Youtube](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -99,18 +99,22 @@ To install these packages [watch this tutorial](https://vdm.bz/how-to-install-jc
 Where can you get support and help?
 ====================
 
-+ [The JCB Tutorials](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE)
-+ [German Basic Introduction](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wu0tDFxJtZFwW7AxA4JHQV7)
-+ [Hello World Tutorial](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
-+ [The JCB! Wiki](https://git.vdm.dev/joomla/Component-Builder/wiki)
-+ [Forum](https://vdm.bz/jcb-forum)
-+ [Report a Security Issue](https://www.joomlacomponentbuilder.com/report-security-issues)
-+ [Community Complaint](https://www.joomlacomponentbuilder.com/community-complaint)
-+ [Open Issue On Gitea](https://git.vdm.dev/joomla/Component-Builder/issues) ^^
-
-Since [JCB](https://www.joomlacomponentbuilder.com) has [become a community](https://git.vdm.dev/joomla/Component-Builder/src/branch/master/.github/SUPPORT.md) project [VDM.io](https://www.vdm.io/) is **no longer solely responsible** for support.
-
-We have started a [**JCB forum**](https://vdm.bz/jcb-forum) where you can post questions, about how things work, or if you need some kind of help in relation to your development of your components.
+- [Package](https://git.vdm.dev/joomla/pkg-component-builder).
+- [Download](https://git.vdm.dev/joomla/pkg-component-builder/archive/master.zip).
+- [Tutorials](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE).
+- [German](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wu0tDFxJtZFwW7AxA4JHQV7).
+- [Hello World](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45).
+- [Discussions](https://github.com/vdm-io/Joomla-Component-Builder/discussions).
+- [Wiki](https://git.vdm.dev/joomla/Component-Builder/wiki).
+- [Issues](https://git.vdm.dev/joomla/Component-Builder/issues).
+- [Issues Stream](https://t.me/jcb_issues). ^^
+- [Updates](https://t.me/jcb_updates).
+- [User Group](https://t.me/jcb_group).
+- [Announcement](https://t.me/Joomla_component_builder).
+- [Beta](https://git.vdm.dev/joomla-beta/pkg-component-builder).
+- [Nightly Build](https://git.vdm.dev/joomla-beta/pkg-component-builder/archive/master.zip).
+- [Community Complaint](https://www.joomlacomponentbuilder.com/community-complaint).
+- [Security](https://www.vdm.io/report-security-issues).
 
 ^^ Then if you run into any issues, related to the [JCB](https://git.vdm.dev/joomla/Component-Builder/issues) code, like bugs, **start by searching** the (*open & closed*) issues over on [Gitea](https://git.vdm.dev/joomla/Component-Builder/issues), and if the issue has not been mentioned before, **then only** open a new issue, following the [community guidelines](https://git.vdm.dev/joomla/Component-Builder/src/branch/master/.github/CONTRIBUTING.md).
 
@@ -140,14 +144,14 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 12th February, 2023
-+ *Version*: 3.1.17
++ *Last Build*: 27th February, 2023
++ *Version*: 3.1.19
 + *Copyright*: Copyright (C) 2015 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **364590**
-+ *Field count*: **2009**
-+ *File count*: **2325**
-+ *Folder count*: **409**
++ *Line count*: **366135**
++ *Field count*: **2021**
++ *File count*: **2339**
++ *Folder count*: **411**
 
 > This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](https://www.joomlacomponentbuilder.com).
 > Developed by [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)

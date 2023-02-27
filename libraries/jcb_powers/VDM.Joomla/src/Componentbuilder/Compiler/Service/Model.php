@@ -52,6 +52,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Whmcs;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Filesfolders;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Modifieddate;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Createdate;
+use VDM\Joomla\Componentbuilder\Compiler\Model\Updateserver;
 
 
 /**
@@ -173,14 +174,17 @@ class Model implements ServiceProviderInterface
 		$container->alias(Whmcs::class, 'Model.Whmcs')
 			->share('Model.Whmcs', [$this, 'getModelWhmcs'], true);
 
-		$container->alias(Filesfolders::class, 'Model.Filesfolders')
-			->share('Model.Filesfolders', [$this, 'getModelFilesfolders'], true);
-
 		$container->alias(Modifieddate::class, 'Model.Modifieddate')
 			->share('Model.Modifieddate', [$this, 'getModifieddate'], true);
 
 		$container->alias(Createdate::class, 'Model.Createdate')
 			->share('Model.Createdate', [$this, 'getCreatedate'], true);
+
+		$container->alias(Updateserver::class, 'Model.Updateserver')
+			->share('Model.Updateserver', [$this, 'getUpdateserver'], true);
+
+		$container->alias(Filesfolders::class, 'Model.Filesfolders')
+			->share('Model.Filesfolders', [$this, 'getModelFilesfolders'], true);
 
 		$container->alias(ServerLoad::class, 'Model.Server.Load')
 			->share('Model.Server.Load', [$this, 'getServerLoad'], true);
@@ -756,6 +760,21 @@ class Model implements ServiceProviderInterface
 	public function getCreatedate(Container $container): Createdate
 	{
 		return new Createdate();
+	}
+
+	/**
+	 * Get the update server Model
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Updateserver
+	 * @since 3.2.0
+	 */
+	public function getUpdateserver(Container $container): Updateserver
+	{
+		return new Updateserver(
+			$container->get('Registry')
+		);
 	}
 
 	/**

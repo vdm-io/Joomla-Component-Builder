@@ -392,11 +392,12 @@ abstract class StringHelper
 	/**
 	 * Random Key
 	 *
+	 * @input	 int  $size   The size of the random string
+	 *
 	 * @returns a string
-	 * 
 	 * @since  3.0.9
 	 */
-	public static function random($size): string
+	public static function random(int $size): string
 	{
 		$bag = "abcefghijknopqrstuwxyzABCDDEFGHIJKLLMMNOPQRSTUVVWXYZabcddefghijkllmmnopqrstuvvwxyzABCEFGHIJKNOPQRSTUWXYZ";
 		$key = [];

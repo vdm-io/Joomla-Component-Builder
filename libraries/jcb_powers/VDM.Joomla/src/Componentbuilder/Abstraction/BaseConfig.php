@@ -56,9 +56,6 @@ abstract class BaseConfig extends JoomlaRegistry
 		$this->input = $input ?: Factory::getApplication()->input;
 		$this->params = $params ?: Helper::getParams('com_componentbuilder');
 
-		// use underscore as the separator
-		$this->separator = '_';
-
 		// Instantiate the internal data object.
 		$this->data = new \stdClass();
 	}

@@ -307,19 +307,17 @@ class Structure
 					// set install script if needed
 					if ($module->add_install_script)
 					{
-						$fileDetails = array('path' => $module->folder_path
-							. '/script.php',
-						                     'name' => 'script.php',
-						                     'zip'  => 'script.php');
+						$fileDetails = [
+							'path' => $module->folder_path . '/script.php',
+							'name' => 'script.php',
+							'zip'  => 'script.php'
+						];
 						$this->file->write(
 							$fileDetails['path'],
 							'<?php' . PHP_EOL . '// Script template' .
-							PHP_EOL . Placefix::_h('BOM') . PHP_EOL
-							.
-							PHP_EOL . '// No direct access to this file'
-							. PHP_EOL .
-							"defined('_JEXEC') or die('Restricted access');"
-							. PHP_EOL .
+							PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
+							PHP_EOL . '// No direct access to this file' . PHP_EOL .
+							"defined('_JEXEC') or die('Restricted access');" . PHP_EOL .
 							Placefix::_h('INSTALLCLASS')
 						);
 						$this->files->appendArray($module->key, $fileDetails);
@@ -331,10 +329,11 @@ class Structure
 					// set readme if found
 					if ($module->addreadme)
 					{
-						$fileDetails = array('path' => $module->folder_path
-							. '/README.md',
-						                     'name' => 'README.md',
-						                     'zip'  => 'README.md');
+						$fileDetails = [
+							'path' => $module->folder_path . '/README.md',
+							'name' => 'README.md',
+							'zip'  => 'README.md'
+						];
 						$this->file->write($fileDetails['path'], $module->readme);
 						$this->files->appendArray($module->key, $fileDetails);
 
@@ -369,10 +368,11 @@ class Structure
 							$this->folder->create($module->folder_path . '/css');
 
 							// add the CSS file
-							$fileDetails = array('path' => $module->folder_path
-								. '/css/mod_admin.css',
-							                     'name' => 'mod_admin.css',
-							                     'zip'  => 'mod_admin.css');
+							$fileDetails = [
+								'path' => $module->folder_path . '/css/mod_admin.css',
+								'name' => 'mod_admin.css',
+								'zip'  => 'mod_admin.css'
+							];
 							$this->file->write(
 								$fileDetails['path'],
 								Placefix::_h('BOM') . PHP_EOL
@@ -409,10 +409,11 @@ class Structure
 							$this->folder->create($module->folder_path . '/js');
 
 							// add the CSS file
-							$fileDetails = array('path' => $module->folder_path
-								. '/js/mod_admin.js',
-							                     'name' => 'mod_admin.js',
-							                     'zip'  => 'mod_admin.js');
+							$fileDetails = [
+								'path' => $module->folder_path . '/js/mod_admin.js',
+								'name' => 'mod_admin.js',
+								'zip'  => 'mod_admin.js'
+							];
 							$this->file->write(
 								$fileDetails['path'],
 								Placefix::_h('BOM') . PHP_EOL
@@ -484,11 +485,11 @@ class Structure
 						foreach ($module->form_files as $file => $fields)
 						{
 							// set file details
-							$fileDetails = array('path' => $module->folder_path
-								. '/forms/' . $file . '.xml',
-							                     'name' => $file . '.xml',
-							                     'zip'  => 'forms/' . $file
-								                     . '.xml');
+							$fileDetails = [
+								'path' => $module->folder_path . '/forms/' . $file . '.xml',
+								'name' => $file . '.xml',
+								'zip'  => 'forms/' . $file . '.xml'
+							];
 
 							// build basic XML
 							$xml = '<?xml version="1.0" encoding="utf-8"?>';

@@ -207,6 +207,12 @@
 				"rename": false,
 				"type": "file"
 			},
+			"CHANGELOG.md": {
+				"naam": "CHANGELOG.md",
+				"path": "c0mp0n3nt/",
+				"rename": false,
+				"type": "file"
+			},
 			"headercheck.php": {
 				"naam": "headercheck.php",
 				"path": "c0mp0n3nt/site/helpers",

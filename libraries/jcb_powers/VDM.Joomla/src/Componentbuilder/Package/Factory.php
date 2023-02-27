@@ -16,6 +16,7 @@ use Joomla\DI\Container;
 use VDM\Joomla\Componentbuilder\Service\Crypt;
 use VDM\Joomla\Componentbuilder\Package\Service\Database;
 use VDM\Joomla\Componentbuilder\Service\Server;
+use VDM\Joomla\Componentbuilder\Package\Service\Display;
 use VDM\Joomla\Componentbuilder\Interfaces\FactoryInterface;
 
 
@@ -74,7 +75,8 @@ abstract class Factory implements FactoryInterface
 		return (new Container())
 			->registerServiceProvider(new Database())
 			->registerServiceProvider(new Crypt())
-			->registerServiceProvider(new Server());
+			->registerServiceProvider(new Server())
+			->registerServiceProvider(new Display());
 	}
 
 }

@@ -79,7 +79,7 @@ class Loader
 				$this->registry->
 					set('builder.footable_scripts.' . $target . '.' . $key, true);
 
-				$this->config->set('footable ', true);
+				$this->config->set('footable', true);
 			}
 		}
 

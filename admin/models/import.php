@@ -18,7 +18,7 @@ use Joomla\CMS\Filesystem\Folder;
 use Joomla\Utilities\ArrayHelper;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-/**
+/***
  * Componentbuilder Import Base Database Model
  */
 class ComponentbuilderModelImport extends BaseDatabaseModel

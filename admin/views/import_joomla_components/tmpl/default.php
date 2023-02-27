@@ -213,14 +213,14 @@ jQuery('<div id="loading"></div>')
 		</div>
 		<?php if ($hasOwner): ?>
 		<div class="well span6">
-			<?php echo ComponentbuilderHelper::getPackageOwnerDetailsDisplay($this->packageInfo); ?>
+			<?php echo \VDM\Joomla\Componentbuilder\Package\Factory::_('Display.Details')->owner($this->packageInfo); ?>
 		</div>
 		<?php endif; ?>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 		<?php if (isset($this->packageInfo['name']) && ComponentbuilderHelper::checkArray($this->packageInfo['name'])) : ?>
 		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'info', JText::sprintf('COM_COMPONENTBUILDER_S_BEING_IMPORTED', $comP)); ?>
-			<?php echo ComponentbuilderHelper::getPackageComponentsDetailsDisplay($this->packageInfo); ?>
+			<?php echo \VDM\Joomla\Componentbuilder\Package\Factory::_('Display.Details')->components($this->packageInfo); ?>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php endif; ?>
 

@@ -368,7 +368,7 @@ class Placeholder implements PlaceholderInterface
 	 * @return  string
 	 * @since 3.2.0
 	 */
-	public function update(string $data, array &$placeholder, int $action = 1): string
+	public function update(string $data, array $placeholder, int $action = 1): string
 	{
 		// make sure the placeholders is an array
 		if (!ArrayHelper::check($placeholder))

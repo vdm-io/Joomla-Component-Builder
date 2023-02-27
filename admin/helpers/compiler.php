@@ -707,12 +707,20 @@ class Compiler extends Infusion
 				&& ($update_server = CFactory::_('Component')->get('update_server')) !== null)
 			{
 				// move to server
-				CFactory::_('Server')->legacyMove(
+				if (!CFactory::_('Server')->legacyMove(
 					$update_server_xml_path,
 					$this->updateServerFileName . '.xml',
 					(int) $update_server,
 					CFactory::_('Component')->get('update_server_protocol')
-				);
+				))
+				{
+					$this->app->enqueueMessage(
+						JText::sprintf(
+							'Upload of component (%s) update server XML failed.',
+							CFactory::_('Component')->get('system_name')
+						), 'Error'
+					);
+				}
 				// remove the local file
 				File::delete($update_server_xml_path);
 			}
@@ -738,12 +746,20 @@ class Compiler extends Infusion
 					))
 				{
 					// move to server
-					CFactory::_('Server')->legacyMove(
+					if (!CFactory::_('Server')->legacyMove(
 						$module->update_server_xml_path,
 						$module->update_server_xml_file_name,
 						(int) $module->update_server,
 						$module->update_server_protocol
-					);
+					))
+					{
+						$this->app->enqueueMessage(
+							JText::sprintf(
+								'Upload of module (%s) update server XML failed.',
+								$module->name
+							), 'Error'
+						);
+					}
 					// remove the local file
 					File::delete($module->update_server_xml_path);
 				}
@@ -771,12 +787,20 @@ class Compiler extends Infusion
 					))
 				{
 					// move to server
-					CFactory::_('Server')->legacyMove(
+					if (!CFactory::_('Server')->legacyMove(
 						$plugin->update_server_xml_path,
 						$plugin->update_server_xml_file_name,
 						(int) $plugin->update_server,
 						$plugin->update_server_protocol
-					);
+					))
+					{
+						$this->app->enqueueMessage(
+							JText::sprintf(
+								'Upload of plugin (%s) update server XML failed.',
+								$plugin->name
+							), 'Error'
+						);
+					}
 					// remove the local file
 					File::delete($plugin->update_server_xml_path);
 				}
@@ -844,6 +868,13 @@ class Compiler extends Infusion
 	{
 		// do a final run to update the readme file
 		$two = 0;
+		// counter data if not set already
+		if (!CFactory::_('Content')->exist('LINE_COUNT')
+			|| CFactory::_('Content')->get('LINE_COUNT') != CFactory::_('Utilities.Counter')->line)
+		{
+			CFactory::_('Utilities.Counter')->set();
+		}
+		// search for the readme
 		foreach (CFactory::_('Utilities.Files')->get('static') as $static)
 		{
 			if (('README.md' === $static['name']
@@ -864,12 +895,6 @@ class Compiler extends Infusion
 
 	private function setReadMe($path)
 	{
-		// set readme data if not set already
-		if (!CFactory::_('Content')->exist('LINE_COUNT')
-			|| CFactory::_('Content')->get('LINE_COUNT') != CFactory::_('Utilities.Counter')->line)
-		{
-			CFactory::_('Utilities.Counter')->set();
-		}
 		// get the file
 		$string = FileHelper::getContent($path);
 		// update the file
@@ -1063,12 +1088,20 @@ class Compiler extends Infusion
 						      &$component_sales_name, &$this->componentData)
 					);
 					// move to server
-					CFactory::_('Server')->legacyMove(
+					if (!CFactory::_('Server')->legacyMove(
 						$this->filepath['component'],
 						$component_sales_name . '.zip',
 						(int) CFactory::_('Component')->get('sales_server'),
 						CFactory::_('Component')->get('sales_server_protocol')
-					);
+					))
+					{
+						$this->app->enqueueMessage(
+							JText::sprintf(
+								'Upload of component (%s) zip file failed.',
+								CFactory::_('Component')->get('system_name')
+							), 'Error'
+						);
+					}
 				}
 			}
 			// Trigger Event: jcb_ce_onAfterZipComponent
@@ -1158,12 +1191,20 @@ class Compiler extends Infusion
 									      &$module)
 								);
 								// move to server
-								CFactory::_('Server')->legacyMove(
+								if (!CFactory::_('Server')->legacyMove(
 									$this->filepath['modules'][$module->id],
 									$module->zip_name . '.zip',
 									(int) $module->sales_server,
 									$module->sales_server_protocol
-								);
+								))
+								{
+									$this->app->enqueueMessage(
+										JText::sprintf(
+											'Upload of module (%s) zip file failed.',
+											$module->name
+										), 'Error'
+									);
+								}
 							}
 						}
 						// Trigger Event: jcb_ce_onAfterZipModule
@@ -1252,12 +1293,20 @@ class Compiler extends Infusion
 									      &$plugin)
 								);
 								// move to server
-								CFactory::_('Server')->legacyMove(
+								if (!CFactory::_('Server')->legacyMove(
 									$this->filepath['plugins'][$plugin->id],
 									$plugin->zip_name . '.zip',
 									(int) $plugin->sales_server,
 									$plugin->sales_server_protocol
-								);
+								))
+								{
+									$this->app->enqueueMessage(
+										JText::sprintf(
+											'Upload of plugin (%s) zip file failed.',
+											$plugin->name
+										), 'Error'
+									);
+								}
 							}
 						}
 						// Trigger Event: jcb_ce_onAfterZipPlugin

@@ -162,6 +162,7 @@ class Component implements ServiceProviderInterface
 			$container->get('Model.Adminviews'),
 			$container->get('Model.Siteviews'),
 			$container->get('Model.Customadminviews'),
+			$container->get('Model.Updateserver'),
 			$container->get('Model.Joomlamodules'),
 			$container->get('Model.Joomlaplugins')
 		);

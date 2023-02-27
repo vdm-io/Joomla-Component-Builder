@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
 
 /**
  * Componentbuilder Import_joomla_components Base Controller

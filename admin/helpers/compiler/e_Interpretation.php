@@ -1064,7 +1064,8 @@ class Interpretation extends Fields
 			$addActive     = true;
 			if (CFactory::_('Component')->isArray('version_update'))
 			{
-				foreach (CFactory::_('Component')->get('version_update') as $nr => &$update)
+				$updates = CFactory::_('Component')->get('version_update');
+				foreach ($updates as $nr => &$update)
 				{
 					$this->setUpdateXMLSQL($update, $updateXML, $addDynamicSQL);
 
@@ -1074,6 +1075,7 @@ class Interpretation extends Fields
 						$addActive = false;
 					}
 				}
+				CFactory::_('Component')->set('version_update', $updates);
 			}
 			// add the dynamic sql if not already added
 			if ($addDynamicSQL
@@ -1094,7 +1096,7 @@ class Interpretation extends Fields
 				$this->setDynamicUpdateXMLSQL($updateXML, $addActive);
 			}
 			// add the update server file
-			if (CFactory::_('Component')->get('add_update_server', 3) != 3)
+			if (CFactory::_('Component')->get('update_server_target', 3) != 3)
 			{
 				$updateXML[] = '</updates>';
 				// UPDATE_SERVER_XML
@@ -15450,6 +15452,18 @@ class Interpretation extends Fields
 		CFactory::_('Content')->set_('import_' . $nameListCode, 'VIEWS', 'IMPORT_' . CFactory::_('Placeholder')->get_h('VIEWS'));
 		CFactory::_('Content')->set_('import_' . $nameListCode, 'Views', 'Import_' . CFactory::_('Placeholder')->get_h('views'));
 		CFactory::_('Content')->set_('import_' . $nameListCode, 'views', 'import_' . CFactory::_('Placeholder')->get_h('views'));
+
+		// IMPORT_CUSTOM_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_CUSTOM_CONTROLLER_HEADER', $this->setFileHeader(
+			'import.custom.controller',
+			$nameListCode
+		));
+
+		// IMPORT_CUSTOM_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
+		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_CUSTOM_MODEL_HEADER', $this->setFileHeader(
+			'import.custom.model',
+			$nameListCode
+		));
 	}
 
 	public function setListQuery(&$nameSingleCode, &$nameListCode)
@@ -22183,8 +22197,18 @@ class Interpretation extends Fields
 				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
 				break;
 			case 'custom.admin.view.controller':
+			case 'import.custom.controller':
+			case 'import.controller':
 				$headers[] = 'use Joomla\CMS\MVC\Controller\BaseController;';
 				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
+				break;
+			case 'import.custom.model':
+			case 'import.model':
+				$headers[] = 'use Joomla\CMS\MVC\Model\BaseDatabaseModel;';
+				$headers[] = 'use Joomla\CMS\Filesystem\File;';
+				$headers[] = 'use Joomla\CMS\Filesystem\Folder;';
+				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
+				$headers[] = 'use PhpOffice\PhpSpreadsheet\IOFactory;';
 				break;
 			case 'admin.views.controller':
 			case 'custom.admin.views.controller':

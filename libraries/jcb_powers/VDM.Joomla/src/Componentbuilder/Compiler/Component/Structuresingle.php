@@ -192,6 +192,9 @@ class Structuresingle
 			// do README check
 			$README = $this->doReadmeCheck();
 
+			// do CHANGELOG check
+			$CHANGELOG = $this->doChangelogCheck();
+
 			// start moving
 			foreach ($this->settings->single() as $target => $details)
 			{
@@ -204,6 +207,12 @@ class Structuresingle
 				// if not needed do not add
 				if (($details->naam === 'README.md' || $details->naam === 'README.txt')
 					&& !$README)
+				{
+					continue;
+				}
+
+				// if not needed do not add
+				if ($details->naam === 'CHANGELOG.md' && !$CHANGELOG)
 				{
 					continue;
 				}
@@ -264,12 +273,18 @@ class Structuresingle
 	 */
 	private function doReadmeCheck(): bool
 	{
-		if ($this->component->get('addreadme', false))
-		{
-			return true;
-		}
+		return (bool) $this->component->get('addreadme', false);
+	}
 
-		return false;
+	/**
+	 * Check if changelog must be added
+	 *
+	 * @return  bool
+	 * @since 3.2.0
+	 */
+	private function doChangelogCheck(): bool
+	{
+		return (bool) $this->component->get('changelog', false);
 	}
 
 	/**

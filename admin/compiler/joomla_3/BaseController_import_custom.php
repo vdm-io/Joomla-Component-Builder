@@ -17,8 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\Utilities\ArrayHelper;
+###IMPORT_CUSTOM_CONTROLLER_HEADER###
 
 /**
  * ###Component### ###View### Base Controller

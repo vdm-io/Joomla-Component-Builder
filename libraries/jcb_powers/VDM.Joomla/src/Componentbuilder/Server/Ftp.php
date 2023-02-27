@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Server;
 use Joomla\CMS\Client\FtpClient;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Componentbuilder\Interfaces\Serverinterface;
 
 
@@ -39,7 +40,7 @@ class Ftp implements Serverinterface
 	 * @var     object
 	 * @since 3.2.0
 	 **/
-	protected object $details;
+	protected ?object $details = null;
 
 	/**
 	 * set the server details
@@ -51,8 +52,15 @@ class Ftp implements Serverinterface
 	 **/
 	public function set(object $details): Ftp
 	{
-		// set the details
-		$this->details = $details;
+		// we need to make sure the if the details changed to get a new server client
+		if (!ObjectHelper::equal($details, $this->details))
+		{
+			// set the details
+			$this->details = $details;
+
+			// reset the client if it was set before
+			$this->client = null;
+		}
 
 		return $this;
 	}
