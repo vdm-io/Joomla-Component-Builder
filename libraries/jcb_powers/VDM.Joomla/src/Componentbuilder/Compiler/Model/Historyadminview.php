@@ -77,7 +77,7 @@ class Historyadminview
 	 */
 	public function set(object &$item)
 	{
-		if ($old = $this->history->get('admin_view', $item->id))
+		if (($old = $this->history->get('admin_view', $item->id)) !== null)
 		{
 			// check if the view name changed
 			if (StringHelper::check($old->name_single))

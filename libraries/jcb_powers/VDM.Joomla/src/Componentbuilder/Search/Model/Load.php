@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Search\Model;
 use VDM\Joomla\Componentbuilder\Search\Factory;
 use VDM\Joomla\Componentbuilder\Table;
 use VDM\Joomla\Componentbuilder\Search\Config;
+use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Interfaces\ModelInterface;
@@ -89,6 +90,42 @@ class Load extends Model implements ModelInterface
 			}
 		}
 		return $value;
+	}
+
+	/**
+	 * Validate before the value is modelled (basic, override in child class)
+	 *
+	 * @param   mixed         $value   The field value
+	 * @param   string|null   $field     The field key
+	 * @param   string|null   $table   The table
+	 *
+	 * @return  bool
+	 * @since 3.2.0
+	 */
+	protected function validateBefore(&$value, ?string $field = null, ?string $table = null): bool
+	{
+		return true;
+	}
+
+	/**
+	 * Validate after the value is modelled (basic, override in child class)
+	 *
+	 * @param   mixed         $value   The field value
+	 * @param   string|null   $field     The field key
+	 * @param   string|null   $table   The table
+	 *
+	 * @return  bool
+	 * @since 3.2.0
+	 */
+	protected function validateAfter(&$value, ?string $field = null, ?string $table = null): bool
+	{
+		// check values
+		if (StringHelper::check($value) || ArrayHelper::check($value, true))
+		{
+			return true;
+		}
+		// remove empty values
+		return false;
 	}
 
 	/**

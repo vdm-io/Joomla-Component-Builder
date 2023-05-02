@@ -18,6 +18,16 @@ namespace VDM\Joomla\Componentbuilder\Interfaces;
 interface Mapperdoubleinterface
 {
 	/**
+	 * Check if any values are set in the active array.
+	 *
+	 * @param   string|null  $firstKey  Optional. The first key to check for values.
+	 *
+	 * @return  bool  True if the active array or the specified subarray is not empty, false otherwise.
+	 * @since   3.2.0
+	 */
+	public function isActive_(string $firstKey = null): bool;
+
+	/**
 	 * Set dynamic content
 	 *
 	 * @param   string    $firstKey    The first key

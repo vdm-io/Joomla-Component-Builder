@@ -22,7 +22,7 @@ use VDM\Joomla\Componentbuilder\Abstraction\Database;
  * 
  * @since 3.2.0
  */
-class Load extends Database implements LoadInterface
+final class Load extends Database implements LoadInterface
 {
 	/**
 	 * Load data rows as an array of associated arrays

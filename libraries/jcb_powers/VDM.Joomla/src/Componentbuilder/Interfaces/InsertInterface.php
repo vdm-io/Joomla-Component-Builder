@@ -20,30 +20,41 @@ namespace VDM\Joomla\Componentbuilder\Interfaces;
 interface InsertInterface
 {
 	/**
-	 * Set rows to the database
+	 * Switch to prevent/allow defaults from being added.
+	 *
+	 * @param   bool    $trigger      toggle the defaults
+	 *
+	 * @return  void
+	 * @since   3.2.0
+	 **/
+	public function defaults(bool $trigger = true);
+
+	/**
+	 * Insert rows to the database (with remapping and filtering columns option)
 	 *
 	 * @param   array    $data      Dataset to store in database [array of arrays (key => value)]
 	 * @param   string   $table     The table where the data is being added
+	 * @param   array    $columns   Data columns for remapping and filtering
 	 *
 	 * @return  bool
 	 * @since   3.2.0
 	 **/
-	public function rows(array $data, string $table): bool;
+	public function rows(array $data, string $table, array $columns = []): bool;
 
 	/**
-	 * Set items to the database
+	 * Insert items to the database (with remapping and filtering columns option)
 	 *
 	 * @param   array    $data         Data to store in database (array of objects)
-	 * @param   array    $columns   Data columns
-	 * @param   string   $table         The table where the data is being added
+	 * @param   string   $table        The table where the data is being added
+	 * @param   array    $columns      Data columns for remapping and filtering
 	 *
 	 * @return  bool
 	 * @since   3.2.0
 	 **/
-	public function items(array $data, array $columns, string $table): bool;
+	public function items(array $data, string $table, array $columns = []): bool;
 
 	/**
-	 * Set row to the database
+	 * Insert row to the database
 	 *
 	 * @param   array    $data      Dataset to store in database (key => value)
 	 * @param   string   $table     The table where the data is being added
@@ -52,6 +63,17 @@ interface InsertInterface
 	 * @since   3.2.0
 	 **/
 	public function row(array $data, string $table): bool;
+
+	/**
+	 * Insert item to the database
+	 *
+	 * @param   object    $data     Dataset to store in database (key => value)
+	 * @param   string   $table     The table where the data is being added
+	 *
+	 * @return  bool
+	 * @since   3.2.0
+	 **/
+	public function item(object $data, string $table): bool;
 
 }
 

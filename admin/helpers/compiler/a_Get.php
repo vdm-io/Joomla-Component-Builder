@@ -1144,8 +1144,13 @@ class Get
 			));
 		}
 
-		// get powers *+*+*+*+*+*+*+*PRO
+		// load powers *+*+*+*+*+*+*+*
 		CFactory::_('Power')->load($this->linkedPowers);
+		// load any other super powers that was found
+		if (($super_powers = CFactory::_('Power.Extractor')->get_()) !== null)
+		{
+			CFactory::_('Power')->load($super_powers);
+		}
 		// set the percentage when a language can be added
 		$this->percentageLanguageAdd = (int) $this->params->get(
 			'percentagelanguageadd', 50

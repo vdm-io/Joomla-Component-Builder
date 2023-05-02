@@ -16,6 +16,7 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Database\Load;
 use VDM\Joomla\Componentbuilder\Database\Insert;
+use VDM\Joomla\Componentbuilder\Database\Update;
 
 
 /**
@@ -40,6 +41,9 @@ class Database implements ServiceProviderInterface
 
 		$container->alias(Insert::class, 'Insert')
 			->share('Insert', [$this, 'getInsert'], true);
+
+		$container->alias(Update::class, 'Update')
+			->share('Update', [$this, 'getUpdate'], true);
 	}
 
 	/**
@@ -68,5 +72,17 @@ class Database implements ServiceProviderInterface
 		return new Insert();
 	}
 
+	/**
+	 * Get the Core Update Database
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Update
+	 * @since 3.2.0
+	 */
+	public function getUpdate(Container $container): Update
+	{
+		return new Update();
+	}
 }
 

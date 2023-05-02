@@ -33,6 +33,17 @@ abstract class Mapper implements Mapperdoubleinterface, Mappersingleinterface
 	public array $active = [];
 
 	/**
+	 * Check if any values are set in the active array
+	 *
+	 * @return  bool  Returns true if the active array is not empty, false otherwise
+	 * @since   3.2.0
+	 */
+	public function isActive(): bool
+	{
+		return !empty($this->active);
+	}
+
+	/**
 	 * Set content
 	 *
 	 * @param   string  $key    The main string key
@@ -127,6 +138,32 @@ abstract class Mapper implements Mapperdoubleinterface, Mappersingleinterface
 	 * @since 3.2.0
 	 **/
 	public array $_active = [];
+
+	/**
+	 * Check if any values are set in the active array.
+	 *
+	 * @param   string|null  $firstKey  Optional. The first key to check for values.
+	 *
+	 * @return  bool  True if the active array or the specified subarray is not empty, false otherwise.
+	 * @since   3.2.0
+	 */
+	public function isActive_(string $firstKey = null): bool
+	{
+		// If a firstKey is provided, check if it has any values.
+		if (is_string($firstKey))
+		{
+			// Get the first key from the input parameter and check if it exists in the active array.
+			$firstKey = $this->firstKey($firstKey);
+			if (isset($this->_active[$firstKey]))
+			{
+				return !empty($this->_active[$firstKey]);
+			}
+			return false;
+		}
+
+		// If no firstKey is provided, check if the entire active array has any values.
+		return !empty($this->_active);
+	}
 
 	/**
 	 * Set dynamic content

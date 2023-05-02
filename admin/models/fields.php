@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\FormHelper as JCBFormHelper;
+use VDM\Joomla\Componentbuilder\Utilities\FilterHelper as JCBFilterHelper;
 
 /**
  * Fields List Model
@@ -63,7 +65,7 @@ class ComponentbuilderModelFields extends ListModel
 
 		// Create the "extension" filter
 		$form->setField(new SimpleXMLElement(
-			ComponentbuilderHelper::getExtensionGroupedListXml()
+			JCBFilterHelper::extensions()
 			),'filter');
 		$form->setValue(
 			'extension',
@@ -82,7 +84,7 @@ class ComponentbuilderModelFields extends ListModel
 			'' => '-  ' . JText::_('COM_COMPONENTBUILDER_NO_ADMIN_VIEWS_FOUND') . '  -'
 		);
 		// check if we have admin views (and limit to an extension if it is set)
-		if (($admin_views = ComponentbuilderHelper::getByTypeTheIdsSystemNames('admin_view', $this->state->get("filter.extension"))) !== false)
+		if (($admin_views = JCBFilterHelper::names('admin_view', $this->state->get("filter.extension"))) !== null)
 		{
 			$options = array(
 				'' => '-  ' . JText::_('COM_COMPONENTBUILDER_SELECT_ADMIN_VIEW') . '  -'
@@ -91,7 +93,7 @@ class ComponentbuilderModelFields extends ListModel
 			$options = $options + $admin_views;
 		}
 
-		$form->setField(ComponentbuilderHelper::getFieldXML($attributes, $options),'filter');
+		$form->setField(JCBFormHelper::xml($attributes, $options),'filter');
 		$form->setValue(
 			'admin_view',
 			'filter',
@@ -101,6 +103,7 @@ class ComponentbuilderModelFields extends ListModel
 
 		return $form;
 	}
+
 
 	/**
 	 * Method to auto-populate the model state.
@@ -379,7 +382,7 @@ class ComponentbuilderModelFields extends ListModel
 			{
 				// column name, and id
 				$type_extension = explode('__', $filter_extension);
-				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($type_extension[1], $type_extension[0])) !== false)
+				if (($ids = JCBFilterHelper::linked((int) $type_extension[1], (string) $type_extension[0])) !== null)
 				{
 					$field_ids = $ids;
 				}
@@ -395,7 +398,7 @@ class ComponentbuilderModelFields extends ListModel
 			$filter_admin_view = $this->state->get("filter.admin_view");
 			if ($get_ids && $filter_admin_view !== null && !empty($filter_admin_view))
 			{
-				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($filter_admin_view, 'admin_view')) !== false)
+				if (($ids = JCBFilterHelper::linked((int) $filter_admin_view, 'admin_view')) !== null)
 				{
 					// view will return less fields, so we ignore the component
 					$field_ids = $ids;
@@ -644,7 +647,7 @@ class ComponentbuilderModelFields extends ListModel
 			{
 				// column name, and id
 				$type_extension = explode('__', $filter_extension);
-				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($type_extension[1], $type_extension[0])) !== false)
+				if (($ids = JCBFilterHelper::linked((int) $type_extension[1], (string) $type_extension[0])) !== null)
 				{
 					$field_ids = $ids;
 				}
@@ -660,7 +663,7 @@ class ComponentbuilderModelFields extends ListModel
 			$filter_admin_view = $this->state->get("filter.admin_view");
 			if ($get_ids && $filter_admin_view !== null && !empty($filter_admin_view))
 			{
-				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($filter_admin_view, 'admin_view')) !== false)
+				if (($ids = JCBFilterHelper::linked((int) $filter_admin_view, 'admin_view')) !== null)
 				{
 					// view will return less fields, so we ignore the component
 					$field_ids = $ids;

@@ -67,7 +67,7 @@ $edit = "index.php?option=com_componentbuilder&view=powers&task=power.edit";
 			<?php else: ?>
 				<?php echo $this->escape($item->system_name); ?>
 			<?php endif; ?><br /><small>GUID: 
-			<?php echo $this->escape($item->guid); ?></small>
+			<?php echo $this->escape($item->guid); ?><?php if(isset($item->super_power_key)): ?><br />SPK: <?php echo $item->super_power_key; ?><?php endif; ?></small>
 			</div>
 		</td>
 		<td class="hidden-phone">
@@ -81,7 +81,8 @@ $edit = "index.php?option=com_componentbuilder&view=powers&task=power.edit";
 			<?php else: ?>
 				<?php echo $this->escape($item->extends_name); ?>
 			<?php endif; ?><?php elseif ($item->extends === '-1') : ?><br /><?php echo JText::_('COM_COMPONENTBUILDER_EXTENDS'); ?>: 
-			<?php echo $this->escape($item->extends_custom); ?><?php endif; ?>
+			<?php echo $this->escape($item->extends_custom); ?><?php endif; ?><br /><?php echo JText::_('COM_COMPONENTBUILDER_SUPER_POWER'); ?>: 
+			<?php echo JText::_($item->approved); ?>
 			</div>
 		</td>
 		<td class="hidden-phone">

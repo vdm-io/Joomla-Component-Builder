@@ -23,6 +23,7 @@ use VDM\Joomla\Utilities\String\FieldHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder\Reverse;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\GuiInterface;
 
 
@@ -50,6 +51,14 @@ class Gui implements GuiInterface
 	protected Reverse $reverse;
 
 	/**
+	 * Compiler Powers Parser
+	 *
+	 * @var    Parser
+	 * @since 3.2.0
+	 **/
+	protected Parser $parser;
+
+	/**
 	 * Database object to query local DB
 	 *
 	 * @var    \JDatabaseDriver
@@ -70,17 +79,19 @@ class Gui implements GuiInterface
 	 *
 	 * @param Config|null             $config  The compiler config object.
 	 * @param Reverse|null            $reverse The compiler placeholder reverse object.
+	 * @param Parser|null             $parser  The powers parser object.
 	 * @param \JDatabaseDriver|null   $db      The Database Driver object.
 	 * @param CMSApplication|null     $app     The CMS Application object.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Reverse $reverse = null,
+	public function __construct(?Config $config = null, ?Reverse $reverse = null, ?Parser $parser = null,
 		?\JDatabaseDriver $db = null, ?CMSApplication $app = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->reverse = $reverse ?: Compiler::_('Placeholder.Reverse');
+		$this->parser = $parser ?: Compiler::_('Power.Parser');
 		$this->db = $db ?: Factory::getDbo();
 		$this->app = $app ?: Factory::getApplication();
 	}
@@ -181,15 +192,18 @@ class Gui implements GuiInterface
 	public function search(string &$file, array &$placeholders, string &$today, string &$target)
 	{
 		// get file content
-		$file_conent = FileHelper::getContent($file);
+		$file_content = FileHelper::getContent($file);
+
+		// get the USE statements (to reverse engineer super power keys)
+		$use_statements = $this->parser->getUseStatements($file_content);
 
 		$guiCode = [];
 		// we add a new search for the GUI CODE Blocks
 		$guiCode[] = GetHelper::allBetween(
-			$file_conent, '/***[JCB' . 'GUI<>', '/***[/JCBGUI' . '$$$$]***/'
+			$file_content, '/***[JCB' . 'GUI<>', '/***[/JCBGUI' . '$$$$]***/'
 		);
 		$guiCode[] = GetHelper::allBetween(
-			$file_conent, '<!--[JCB' . 'GUI<>', '<!--[/JCBGUI' . '$$$$]-->'
+			$file_content, '<!--[JCB' . 'GUI<>', '<!--[/JCBGUI' . '$$$$]-->'
 		);
 
 		if (($guiCode = ArrayHelper::merge($guiCode)) !== false
@@ -214,7 +228,7 @@ class Gui implements GuiInterface
 					$table = StringHelper::safe($query[0]);
 					// reverse placeholder as much as we can
 					$code = $this->reverse->engine(
-						$code, $placeholders, $target, $id, $field, $table
+						$code, $placeholders, $target, $id, $field, $table, $use_statements
 					);
 					// update the GUI/Tables/Database
 					$object           = new \stdClass();

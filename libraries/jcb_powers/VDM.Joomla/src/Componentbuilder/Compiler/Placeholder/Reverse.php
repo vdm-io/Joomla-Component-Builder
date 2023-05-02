@@ -20,6 +20,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Language\Extractor;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor as Power;
 
 
 /**
@@ -62,40 +63,53 @@ class Reverse
 	protected Extractor $extractor;
 
 	/**
+	 * Super Power Extractor
+	 *
+	 * @var    Power
+	 * @since 3.2.0
+	 **/
+	protected Power $power;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Config|null          $config          The compiler config object.
 	 * @param Placeholder|null     $placeholder     The compiler placeholder object.
 	 * @param Language|null        $language        The compiler language object.
-	 * @param Extract|null         $extractor       The compiler language extractor object.
+	 * @param Extractor|null       $extractor       The compiler language extractor object.
+	 * @param Power|null           $power           The compiler power extractor object.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(
 		?Config $config = null, ?Placeholder $placeholder = null,
-		?Language $language = null, ?Extractor $extractor = null)
+		?Language $language = null, ?Extractor $extractor = null,
+		?Power $power = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
 		$this->language = $language ?: Compiler::_('Language');
 		$this->extractor = $extractor ?: Compiler::_('Language.Extractor');
+		$this->power = $power ?: Compiler::_('Power.Extractor');
 	}
 
 	/**
 	 * Reverse Engineer the dynamic placeholders (TODO hmmmm this is not ideal)
 	 *
-	 * @param   string     $string        The string to revers
-	 * @param   array      $placeholders  The values to search for
-	 * @param   string     $target        The target path type
-	 * @param   int|null   $id            The custom code id
-	 * @param   string     $field         The field name
-	 * @param   string     $table         The table name
+	 * @param   string       $string         The string to reverse
+	 * @param   array        $placeholders   The values to search for
+	 * @param   string       $target         The target path type
+	 * @param   int|null     $id             The custom code id
+	 * @param   string       $field          The field name
+	 * @param   string       $table          The table name
+	 * @param   array|null   $useStatements  The file use statements (needed for super powers)
 	 *
 	 * @return  string
 	 * @since 3.2.0
 	 */
 	public function engine(string $string, array &$placeholders,
-		string $target, ?int $id = null, string $field = 'code', string $table = 'custom_code'): string
+		string $target, ?int $id = null, string $field = 'code',
+		string $table = 'custom_code', ?array $useStatements = null): string
 	{
 		// get local code if set
 		if ($id > 0 && $code = base64_decode(
@@ -103,11 +117,110 @@ class Reverse
 			))
 		{
 			$string = $this->setReverse(
-				$string, $code, $target
+				$string, $code, $target, $useStatements
 			);
 		}
 
 		return $this->placeholder->update($string, $placeholders, 2);
+	}
+
+	/**
+	 * Reverse engineer the dynamic language, and super powers
+	 *
+	 * @param   string      $updateString   The string to update
+	 * @param   string      $string         The string to use language update
+	 * @param   string      $target         The target path type
+	 * @param   array|null  $useStatements  The file use statements (needed for super powers)
+	 *
+	 * @return  string
+	 * @since 3.2.0
+	 */
+	protected function setReverse(string $updateString, string $string,
+		string $target, ?array $useStatements): string
+	{
+		// we have to reverse engineer to super powers
+		$updateString = $this->reverseSuperPowers($updateString, $string, $useStatements);
+
+		// reverse engineer the language strings
+		$updateString = $this->reverseLanguage($updateString, $string, $target);
+
+		// reverse engineer the custom code (if possible)
+		// $updateString = $this->reverseCustomCode($updateString, $string); // TODO - we would like to also reverse basic customcode
+
+		return $updateString;
+	}
+
+	/**
+	 * Set the super powers keys for the reveres process
+	 *
+	 * @param   string      $updateString   The string to update
+	 * @param   string      $string         The string to use for super power update
+	 * @param   array|null  $useStatements  The file use statements (needed for super powers)
+	 *
+	 * @return  string
+	 * @since 3.2.0
+	 */
+	protected function reverseSuperPowers(string $updateString, string $string,
+		?array $useStatements): string
+	{
+		// only if we have use statements can we reverse engineer this
+		if ($useStatements !== null && ($powers = $this->power->reverse($string)) !== null &&
+			($reverse = $this->getReversePower($powers, $useStatements)) !== null)
+		{
+			return $this->placeholder->update($updateString, $reverse);
+		}
+
+		return $updateString;
+	}
+
+	/**
+	 * Set the super powers keys for the reveres process
+	 *
+	 * @param   array   $powers         The powers found in the database text
+	 * @param   array   $useStatements  The file use statements
+	 *
+	 * @return  array|null
+	 * @since 3.2.0
+	 */
+	protected function getReversePower(array $powers, array $useStatements): ?array
+	{
+		$matching_statements = [];
+		foreach ($useStatements as $use_statement)
+		{
+			$namespace = substr($use_statement, 4, -1); // remove 'use ' and ';'
+			$class_name = '';
+
+			// Check for 'as' alias
+			if (strpos($namespace, ' as ') !== false)
+			{
+				list($namespace, $class_name) = explode(' as ', $namespace);
+			}
+
+			// If there is no 'as' alias, get the class name from the last '\'
+			if (empty($class_name))
+			{
+				$last_slash = strrpos($namespace, '\\');
+				if ($last_slash !== false)
+				{
+					$class_name = substr($namespace, $last_slash + 1);
+				}
+			}
+
+			// Check if the namespace is in the powers array
+			if (in_array($namespace, $powers))
+			{
+				$guid = array_search($namespace, $powers);
+				$matching_statements[$class_name] =
+					'Super_'.'_'.'_' . str_replace('-', '_', $guid) . '_'.'_'.'_Power';
+			}
+		}
+
+		if ($matching_statements !== [])
+		{
+			return $matching_statements;
+		}
+
+		return null;
 	}
 
 	/**
@@ -120,7 +233,7 @@ class Reverse
 	 * @return  string
 	 * @since 3.2.0
 	 */
-	protected function setReverse(string $updateString, string $string, string $target): string
+	protected function reverseLanguage(string $updateString, string $string, string $target): string
 	{
 		// get targets to search for
 		$lang_string_targets = array_filter(
@@ -184,7 +297,7 @@ class Reverse
 					$string, $lang_string_target . "'", "'"
 				);
 				$lang_check[] = GetHelper::allBetween(
-					$string, $lang_string_target . "'", "'"
+					$string, $lang_string_target . '"', '"'
 				);
 			}
 			// merge arrays
@@ -233,5 +346,55 @@ class Reverse
 		return $updateString;
 	}
 
+	/**
+	 * Set the custom code placeholder for the reveres process
+	 *
+	 * @param   string      $updateString   The string to update
+	 * @param   string      $string         The string to use for super power update
+	 *
+	 * @return  string
+	 * @since 3.2.0
+	 */
+	protected function reverseCustomCode(string $updateString, string $string): string
+	{
+		// check if content has custom code place holder
+		if (strpos($string, '[CUSTO' . 'MCODE=') !== false)
+		{
+			$found  = GetHelper::allBetween(
+				$string, '[CUSTO' . 'MCODE=', ']'
+			);
+			$bucket = [];
+			if (ArrayHelper::check($found))
+			{
+				foreach ($found as $key)
+				{
+					// we only update those without args
+					if (is_numeric($key) && $get_func_name = GetHelper::var(
+						'custom_code', $key, 'id', 'function_name'
+					))
+					{
+						$bucket[$get_func_name] = (int) $key;
+					}
+					elseif (StringHelper::check($key)
+						&& strpos((string) $key, '+') === false)
+					{
+						$get_func_name = trim((string) $key);
+						if (isset($bucket[$get_func_name]) || !$found_local = GetHelper::var(
+							'custom_code', $get_func_name, 'function_name',
+							'id'
+						))
+						{
+							continue;
+						}
+						$bucket[$get_func_name] = (int) $found_local;
+					}
+				}
+				// TODO - we need to now get the customcode
+				// search and replace the customcode with the placeholder
+			}
+		}
+
+		return $updateString;
+	}
 }
 

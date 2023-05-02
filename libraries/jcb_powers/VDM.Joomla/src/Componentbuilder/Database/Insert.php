@@ -23,7 +23,7 @@ use VDM\Joomla\Componentbuilder\Abstraction\Database;
  * 
  * @since 3.2.0
  */
-class Insert extends Database implements InsertInterface
+final class Insert extends Database implements InsertInterface
 {
 	/**
 	 * Switch to set the defaults
@@ -31,33 +31,156 @@ class Insert extends Database implements InsertInterface
 	 * @var    bool
 	 * @since  1.2.0
 	 **/
-	public bool $defaults = true;
+	protected bool $defaults = true;
 
 	/**
-	 * Set rows to the database
+	 * Switch to prevent/allow defaults from being added.
+	 *
+	 * @param   bool    $trigger      toggle the defaults
+	 *
+	 * @return  void
+	 * @since   3.2.0
+	 **/
+	public function defaults(bool $trigger = true)
+	{
+		$this->defaults = $trigger;
+	}
+
+	/**
+	 * Insert rows to the database (with remapping and filtering columns option)
 	 *
 	 * @param   array    $data      Dataset to store in database [array of arrays (key => value)]
+	 * @param   string   $table     The table where the data is being added
+	 * @param   array    $columns   Data columns for remapping and filtering
+	 *
+	 * @return  bool
+	 * @since   3.2.0
+	 **/
+	public function rows(array $data, string $table, array $columns = []): bool
+	{
+		if (!ArrayHelper::check($data))
+		{
+			return false;
+		}
+
+		if ($columns === [])
+		{
+			$columns = $this->getArrayColumns($data);
+		}
+
+		return ($columns === []) ? false : $this->insert($data, $table, $columns, true);
+	}
+
+	/**
+	 * Insert items to the database (with remapping and filtering columns option)
+	 *
+	 * @param   array    $data         Data to store in database (array of objects)
+	 * @param   string   $table        The table where the data is being added
+	 * @param   array    $columns      Data columns for remapping and filtering
+	 *
+	 * @return  bool
+	 * @since   3.2.0
+	 **/
+	public function items(array $data, string $table, array $columns = []): bool
+	{
+		if (!ArrayHelper::check($data))
+		{
+			return false;
+		}
+
+		if ($columns === [])
+		{
+			$columns = $this->getObjectsColumns($data);
+		}
+
+		return ($columns === []) ? false : $this->insert($data, $table, $columns, false);
+	}
+
+	/**
+	 * Insert row to the database
+	 *
+	 * @param   array    $data      Dataset to store in database (key => value)
 	 * @param   string   $table     The table where the data is being added
 	 *
 	 * @return  bool
 	 * @since   3.2.0
 	 **/
-	public function rows(array $data, string $table): bool
+	public function row(array $data, string $table): bool
 	{
-		// get a query object
-		$query = $this->db->getQuery(true);
+		return $this->rows([$data], $table);
+	}
 
-		// get the first row
+	/**
+	 * Insert item to the database
+	 *
+	 * @param   object    $data     Dataset to store in database (key => value)
+	 * @param   string   $table     The table where the data is being added
+	 *
+	 * @return  bool
+	 * @since   3.2.0
+	 **/
+	public function item(object $data, string $table): bool
+	{
+		return $this->items([$data], $table);
+	}
+
+	/**
+	 * Get columns from data array
+	 *
+	 * @param   array   $data   Data array
+	 *
+	 * @return  array
+	 * @since   3.2.0
+	 **/
+	protected function getArrayColumns(array &$data): array
+	{
 		$row = array_values($data)[0];
 
-		// set the insert columns
 		if (!ArrayHelper::check($row))
 		{
-			return false;
+			return [];
 		}
 
 		$columns = array_keys($row);
 
+		return array_combine($columns, $columns);
+	}
+
+	/**
+	 * Get columns from data objects
+	 *
+	 * @param   array   $data   Data objects
+	 *
+	 * @return  array
+	 * @since   3.2.0
+	 **/
+	protected function getObjectsColumns(array &$data): array
+	{
+		$row = array_values($data)[0];
+
+		if (!is_object($row))
+		{
+			return [];
+		}
+
+		$columns = get_object_vars($row);
+
+		return array_combine(array_keys($columns), array_keys($columns));
+	}
+
+	/**
+	 * Insert data into the database
+	 *
+	 * @param   array   $data      Data to store in database
+	 * @param   string  $table     The table where the data is being added
+	 * @param   array   $columns   Data columns for remapping and filtering
+	 * @param   bool    $isArray   Whether the data is an array of arrays or an array of objects
+	 *
+	 * @return  bool
+	 * @since   3.2.0
+	 **/
+	protected function insert(array &$data, string $table, array $columns, bool $isArray): bool
+	{
 		// set joomla default columns
 		$add_created = false;
 		$add_version = false;
@@ -69,31 +192,37 @@ class Insert extends Database implements InsertInterface
 			// get the date
 			$date = (new Date())->toSql();
 
-			if (!in_array('created', $columns))
+			if (!isset($columns['created']))
 			{
-				$columns[] = 'created';
+				$columns['created'] = ' (o_O) ';
 				$add_created = true;
 			}
-			if (!in_array('version', $columns))
+
+			if (!isset($columns['version']))
 			{
-				$columns[] = 'version';
+				$columns['version'] = ' (o_O) ';
 				$add_version = true;
 			}
-			if (!in_array('published', $columns))
+
+			if (!isset($columns['version']))
 			{
-				$columns[] = 'published';
+				$columns['published'] = ' (o_O) ';
 				$add_published = true;
 			}
+			// the (o_O) prevents an empty value from being loaded
 		}
 
+		// get a query object
+		$query = $this->db->getQuery(true);
+
 		// set the query targets
-		$query->insert($this->db->quoteName($table))->columns($this->db->quoteName($columns));
+		$query->insert($this->db->quoteName($this->getTable($table)))->columns($this->db->quoteName(array_keys($columns)));
 
 		// limiting factor on the amount of rows to insert before we reset the query
 		$limit = 300;
 
 		// set the insert values
-		foreach ($data as $set)
+		foreach ($data as $nr => $value)
 		{
 			// check the limit
 			if ($limit <= 1)
@@ -109,13 +238,17 @@ class Insert extends Database implements InsertInterface
 				$query = $this->db->getQuery(true);
 
 				// set the query targets
-				$query->insert($this->db->quoteName($table))->columns($this->db->quoteName($columns));
+				$query->insert($this->db->quoteName($this->getTable($table)))->columns($this->db->quoteName(array_keys($columns)));
 			}
 
 			$row = [];
-			foreach ($set as $value)
+			foreach ($columns as $column => $key)
 			{
-				$row[] = $this->quote($value);
+				if (' (o_O) ' !== $key)
+				{
+					$row[] = ($isArray && isset($value[$key])) ? $this->quote($value[$key])
+						: ((!$isArray && isset($value->{$key})) ? $this->quote($value->{$key}) : '');
+				}
 			}
 
 			// set joomla default columns
@@ -123,78 +256,15 @@ class Insert extends Database implements InsertInterface
 			{
 				$row[] = $this->db->quote($date);
 			}
+
 			if ($add_version)
 			{
 				$row[] = 1;
 			}
+
 			if ($add_published)
 			{
 				$row[] = 1;
-			}
-
-			// add to query
-			$query->values(implode(',', $row));
-
-			// decrement the limiter
-			$limit--;
-		}
-
-		// execute the final query
-		$this->db->setQuery($query);
-		$this->db->execute();
-
-		// always reset the default switch
-		$this->defaults = true;
-
-		return true;
-	}
-
-	/**
-	 * Set items to the database
-	 *
-	 * @param   array    $data         Data to store in database (array of objects)
-	 * @param   array    $columns   Data columns
-	 * @param   string   $table         The table where the data is being added
-	 *
-	 * @return  bool
-	 * @since   3.2.0
-	 **/
-	public function items(array $data, array $columns, string $table): bool
-	{
-		// get a query object
-		$query = $this->db->getQuery(true);
-
-		// set the query targets
-		$query->insert($this->db->quoteName($table))->columns($this->db->quoteName(array_keys($columns)));
-
-		// limiting factor on the amount of rows to insert before we reset the query
-		$limit = 400;
-
-		// set the insert values
-		foreach ($data as $nr => $value)
-		{
-			// check the limit
-			if ($limit <= 1)
-			{
-				// execute and reset the query
-				$this->db->setQuery($query);
-				$this->db->execute();
-
-				// reset limit
-				$limit = 400;
-
-				// get a query object
-				$query = $this->db->getQuery(true);
-
-				// set the query targets
-				$query->insert($this->db->quoteName($table))->columns($this->db->quoteName(array_keys($columns)));
-			}
-
-			$row = [];
-			// load only what is part of the columns set
-			foreach ($columns as $key)
-			{
-				$row[] = isset($value->{$key}) ? $this->quote($value->{$key}) : '';
 			}
 
 			// add to query
@@ -211,89 +281,10 @@ class Insert extends Database implements InsertInterface
 		$this->db->setQuery($query);
 		$this->db->execute();
 
-		return true;
-	}
-
-	/**
-	 * Set row to the database
-	 *
-	 * @param   array    $data      Dataset to store in database (key => value)
-	 * @param   string   $table     The table where the data is being added
-	 *
-	 * @return  bool
-	 * @since   3.2.0
-	 **/
-	public function row(array $data, string $table): bool
-	{
-		// get a query object
-		$query = $this->db->getQuery(true);
-
-		$columns = array_keys($data);
-
-		// set joomla default columns
-		$add_created = false;
-		$add_version = false;
-		$add_published = false;
-
-		// check if we should load the defaults
-		if ($this->defaults)
-		{
-			// get the date
-			$date = (new Date())->toSql();
-
-			if (!in_array('created', $columns))
-			{
-				$columns[] = 'created';
-				$add_created = true;
-			}
-			if (!in_array('version', $columns))
-			{
-				$columns[] = 'version';
-				$add_version = true;
-			}
-			if (!in_array('published', $columns))
-			{
-				$columns[] = 'published';
-				$add_published = true;
-			}
-		}
-
-		// set the query targets
-		$query->insert($this->db->quoteName($table))->columns($this->db->quoteName($columns));
-
-		// set the insert values
-		$row = [];
-		foreach ($data as $value)
-		{
-			$row[] = $this->quote($value);
-		}
-
-		// set joomla default columns
-		if ($add_created)
-		{
-			$row[] = $this->db->quote($date);
-		}
-		if ($add_version)
-		{
-			$row[] = 1;
-		}
-		if ($add_published)
-		{
-			$row[] = 1;
-		}
-
-		// add to query
-		$query->values(implode(',', $row));
-
-		// execute the final query
-		$this->db->setQuery($query);
-		$this->db->execute();
-
 		// always reset the default switch
-		$this->defaults = true;
+		$this->defaults();
 
 		return true;
 	}
-
 }
 

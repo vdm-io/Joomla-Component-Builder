@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\FilterHelper as JCBFilterHelper;
+use VDM\Joomla\Componentbuilder\Utilities\FormHelper as JCBFormHelper;
 
 /**
  * Admin_views List Model
@@ -70,7 +72,7 @@ class ComponentbuilderModelAdmin_views extends ListModel
 			'' => '-  ' . JText::_('COM_COMPONENTBUILDER_NO_COMPONENTS_FOUND') . '  -'
 		);
 		// check if we have joomla components
-		if (($joomla_components = ComponentbuilderHelper::getByTypeTheIdsSystemNames('joomla_component')) !== false)
+		if (($joomla_components = JCBFilterHelper::names('joomla_component')) !== null)
 		{
 			$options = array(
 				'' => '-  ' . JText::_('COM_COMPONENTBUILDER_SELECT_COMPONENT') . '  -'
@@ -79,7 +81,7 @@ class ComponentbuilderModelAdmin_views extends ListModel
 			$options = $options + $joomla_components;
 		}
 
-		$form->setField(ComponentbuilderHelper::getFieldXML($attributes, $options),'filter');
+		$form->setField(JCBFormHelper::xml($attributes, $options),'filter');
 		$form->setValue(
 			'joomla_component',
 			'filter',
@@ -89,6 +91,7 @@ class ComponentbuilderModelAdmin_views extends ListModel
 
 		return $form;
 	}
+
 
 	/**
 	 * Method to auto-populate the model state.
@@ -354,7 +357,7 @@ class ComponentbuilderModelAdmin_views extends ListModel
 			$filter_joomla_component = $this->state->get("filter.joomla_component");
 			if ($filter_joomla_component !== null && !empty($filter_joomla_component))
 			{
-				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($filter_joomla_component, 'joomla_component_admin_views')) !== false)
+				if (($ids = JCBFilterHelper::linked((int) $filter_joomla_component, 'joomla_component_admin_views')) !== null)
 				{
 					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
 				}
@@ -589,7 +592,7 @@ class ComponentbuilderModelAdmin_views extends ListModel
 			$filter_joomla_component = $this->state->get("filter.joomla_component");
 			if ($filter_joomla_component !== null && !empty($filter_joomla_component))
 			{
-				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($filter_joomla_component, 'joomla_component_admin_views')) !== false)
+				if (($ids = JCBFilterHelper::linked((int) $filter_joomla_component, 'joomla_component_admin_views')) !== null)
 				{
 					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
 				}

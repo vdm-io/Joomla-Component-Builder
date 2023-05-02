@@ -14,6 +14,9 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\Component\Helper as JCBHelper;
+use VDM\Joomla\Componentbuilder\Utilities\FilterHelper as JCBFilterHelper;
+use VDM\Joomla\Componentbuilder\Utilities\FormHelper as JCBFormHelper;
 
 /**
  * Powers List Model
@@ -32,15 +35,122 @@ class ComponentbuilderModelPowers extends ListModel
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
 				'a.type','type',
-				'a.power_version','power_version',
-				'h.name','extends',
+				'a.approved','approved',
 				'a.system_name','system_name',
-				'a.namespace','namespace'
+				'a.namespace','namespace',
+				'a.power_version','power_version'
 			);
 		}
 
 		parent::__construct($config);
 	}
+
+	/**
+	 * Get the filter form - Override the parent method
+	 *
+	 * @param   array    $data      data
+	 * @param   boolean  $loadData  load current data
+	 *
+	 * @return  \JForm|boolean  The \JForm object or false on error
+	 *
+	 * @since   JCB 2.12.5
+	 */
+	public function getFilterForm($data = array(), $loadData = true)
+	{
+		// load form from the parent class
+		$form = parent::getFilterForm($data, $loadData);
+
+		// Create the "admin_view" filter
+		$attributes = array(
+			'name' => 'namegroup',
+			'type' => 'list',
+			'onchange' => 'this.form.submit();',
+		);
+		$options = array(
+			'' => '-  ' . JText::_('COM_COMPONENTBUILDER_NO_NAMESPACE_FOUND') . '  -'
+		);
+		// check if we have namespace (and limit to an extension if it is set)
+		if (($namespaces = JCBFilterHelper::namespaces()) !== null)
+		{
+			$options = array(
+				'' => '-  ' . JText::_('COM_COMPONENTBUILDER_SELECT_A_NAMESPACE') . '  -'
+			);
+			// make sure we do not lose the key values in normal merge
+			$options = $options + $namespaces;
+		}
+
+		$form->setField(JCBFormHelper::xml($attributes, $options),'filter');
+		$form->setValue(
+			'namegroup',
+			'filter',
+			$this->state->get("filter.namegroup")
+		);
+		array_push($this->filter_fields, 'namegroup');
+
+		// get the component params
+		$params = JCBHelper::getParams();
+		$activate  = $params->get('super_powers_repositories', 0);
+		if ($activate == 1)
+		{
+			$subform = $params->get('approved_paths', null);
+
+			// create approved paths filter
+			$attributes = array(
+				'name' => 'approved_paths',
+				'type' => 'list',
+				'onchange' => 'this.form.submit();',
+			);
+			$options = array(
+				'' => '-  ' . JText::_('COM_COMPONENTBUILDER_NO_PATHS_FOUND') . '  -'
+			);
+
+			// add the paths found in global settings
+			if (is_object($subform))
+			{
+				$core  = $params->get('super_powers_core', 'joomla/super-powers');
+
+				$options = array(
+					'' => '-  ' . JText::_('COM_COMPONENTBUILDER_SELECT_APPROVED_PATH') . '  -',
+					$core => $core
+				);
+
+				foreach ($subform as $value)
+				{
+					if (isset($value->owner) && strlen($value->owner) > 1 &&
+						isset($value->repo) && strlen($value->repo) > 1)
+					{
+						$value = trim($value->owner) . '/' . trim($value->repo);
+
+						$options[$value] = $value;
+					}
+				}
+			}
+
+			$form->setField(JCBFormHelper::xml($attributes, $options), 'filter');
+			$form->setValue(
+				'approved_paths',
+				'filter',
+				$this->state->get("filter.approved_paths")
+			);
+			array_push($this->filter_fields, 'approved_paths');
+		}
+
+		return $form;
+	}
+
+	/**
+	 * Check if a power can be used in linking
+	 *
+	 * @param   string    $type  the type of power
+	 *
+	 * @return  bool
+	 * @since   JCB 3.1.23
+	 */
+	protected function isSuperPower(string $type): bool
+	{
+		return in_array($type, ['class', 'abstract class', 'final class', 'trait']);
+	}
+
 
 	/**
 	 * Method to auto-populate the model state.
@@ -95,18 +205,11 @@ class ComponentbuilderModelPowers extends ListModel
 			$this->setState('filter.type', $type);
 		}
 
-		$power_version = $this->getUserStateFromRequest($this->context . '.filter.power_version', 'filter_power_version');
+		$approved = $this->getUserStateFromRequest($this->context . '.filter.approved', 'filter_approved');
 		if ($formSubmited)
 		{
-			$power_version = $app->input->post->get('power_version');
-			$this->setState('filter.power_version', $power_version);
-		}
-
-		$extends = $this->getUserStateFromRequest($this->context . '.filter.extends', 'filter_extends');
-		if ($formSubmited)
-		{
-			$extends = $app->input->post->get('extends');
-			$this->setState('filter.extends', $extends);
+			$approved = $app->input->post->get('approved');
+			$this->setState('filter.approved', $approved);
 		}
 
 		$system_name = $this->getUserStateFromRequest($this->context . '.filter.system_name', 'filter_system_name');
@@ -121,6 +224,13 @@ class ComponentbuilderModelPowers extends ListModel
 		{
 			$namespace = $app->input->post->get('namespace');
 			$this->setState('filter.namespace', $namespace);
+		}
+
+		$power_version = $this->getUserStateFromRequest($this->context . '.filter.power_version', 'filter_power_version');
+		if ($formSubmited)
+		{
+			$power_version = $app->input->post->get('power_version');
+			$this->setState('filter.power_version', $power_version);
 		}
 
 		// List state information.
@@ -158,6 +268,11 @@ class ComponentbuilderModelPowers extends ListModel
 					continue;
 				}
 
+				// create the GUID placeholder key
+				if ($this->isSuperPower($item->type))
+				{
+					$item->super_power_key = 'Super_'.'_'.'_' . str_replace('-', '_', $item->guid) . '_'.'_'.'_Power';
+				}
 				// remove dots
 				$item->namespace = str_replace('.','\\', $item->namespace);
 			}
@@ -170,6 +285,8 @@ class ComponentbuilderModelPowers extends ListModel
 			{
 				// convert type
 				$item->type = $this->selectionTranslation($item->type, 'type');
+				// convert approved
+				$item->approved = $this->selectionTranslation($item->approved, 'approved');
 			}
 		}
 
@@ -201,6 +318,19 @@ class ComponentbuilderModelPowers extends ListModel
 				return $typeArray[$value];
 			}
 		}
+		// Array of approved language strings
+		if ($name === 'approved')
+		{
+			$approvedArray = array(
+				0 => 'COM_COMPONENTBUILDER_POWER_NOT_APPROVED',
+				1 => 'COM_COMPONENTBUILDER_POWER_APPROVED'
+			);
+			// Now check if value is found in this array
+			if (isset($approvedArray[$value]) && ComponentbuilderHelper::checkString($approvedArray[$value]))
+			{
+				return $approvedArray[$value];
+			}
+		}
 		return $value;
 	}
 	
@@ -223,9 +353,43 @@ class ComponentbuilderModelPowers extends ListModel
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_power', 'a'));
 
+		// do not use these filters in the export method
+		if (!isset($_export) || !$_export)
+		{
+			// Filtering "namegroup"
+			$filter_namegroup = $this->state->get("filter.namegroup");
+			if ($filter_namegroup !== null && !empty($filter_namegroup))
+			{
+				if (($ids = JCBFilterHelper::namegroup($filter_namegroup)) !== null)
+				{
+					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
+				}
+				else
+				{
+					// there is none
+					$query->where($db->quoteName('a.id') . ' = ' . 0);
+				}
+			}
+
+			// Filtering "approved paths"
+			$filter_approved_paths = $this->state->get("filter.approved_paths");
+			if ($filter_approved_paths !== null && !empty($filter_approved_paths))
+			{
+				if (($ids = JCBFilterHelper::paths($filter_approved_paths)) !== null)
+				{
+					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
+				}
+				else
+				{
+					// there is none
+					$query->where($db->quoteName('a.id') . ' = ' . 0);
+				}
+			}
+		}
+
 		// From the componentbuilder_power table.
-		$query->select($db->quoteName(['h.name','h.id'],['extends_name','extends_id']));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_power', 'h') . ' ON (' . $db->quoteName('a.extends') . ' = ' . $db->quoteName('h.guid') . ')');
+		$query->select($db->quoteName(['g.name','g.id'],['extends_name','extends_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_power', 'g') . ' ON (' . $db->quoteName('a.extends') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
@@ -271,7 +435,7 @@ class ComponentbuilderModelPowers extends ListModel
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.system_name LIKE '.$search.' OR a.type LIKE '.$search.' OR a.description LIKE '.$search.' OR a.extends_custom LIKE '.$search.' OR a.extends LIKE '.$search.' OR a.guid LIKE '.$search.' OR a.name LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.type LIKE '.$search.' OR a.description LIKE '.$search.' OR a.extends LIKE '.$search.' OR a.extends_custom LIKE '.$search.' OR a.approved_paths LIKE '.$search.' OR a.guid LIKE '.$search.' OR a.name LIKE '.$search.')');
 			}
 		}
 
@@ -315,39 +479,22 @@ class ComponentbuilderModelPowers extends ListModel
 			// Filter by the Type Array.
 			$query->where('a.type IN (' . implode(',', $_type) . ')');
 		}
-		// Filter by Power_version.
-		$_power_version = $this->getState('filter.power_version');
-		if (is_numeric($_power_version))
+		// Filter by Approved.
+		$_approved = $this->getState('filter.approved');
+		if (is_numeric($_approved))
 		{
-			if (is_float($_power_version))
+			if (is_float($_approved))
 			{
-				$query->where('a.power_version = ' . (float) $_power_version);
+				$query->where('a.approved = ' . (float) $_approved);
 			}
 			else
 			{
-				$query->where('a.power_version = ' . (int) $_power_version);
+				$query->where('a.approved = ' . (int) $_approved);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_power_version))
+		elseif (ComponentbuilderHelper::checkString($_approved))
 		{
-			$query->where('a.power_version = ' . $db->quote($db->escape($_power_version)));
-		}
-		// Filter by Extends.
-		$_extends = $this->getState('filter.extends');
-		if (is_numeric($_extends))
-		{
-			if (is_float($_extends))
-			{
-				$query->where('a.extends = ' . (float) $_extends);
-			}
-			else
-			{
-				$query->where('a.extends = ' . (int) $_extends);
-			}
-		}
-		elseif (ComponentbuilderHelper::checkString($_extends))
-		{
-			$query->where('a.extends = ' . $db->quote($db->escape($_extends)));
+			$query->where('a.approved = ' . $db->quote($db->escape($_approved)));
 		}
 
 		// Add the list ordering clause.
@@ -400,10 +547,10 @@ class ComponentbuilderModelPowers extends ListModel
 		{
 			$id .= ':' . $_type;
 		}
-		$id .= ':' . $this->getState('filter.power_version');
-		$id .= ':' . $this->getState('filter.extends');
+		$id .= ':' . $this->getState('filter.approved');
 		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.namespace');
+		$id .= ':' . $this->getState('filter.power_version');
 
 		return parent::getStoreId($id);
 	}

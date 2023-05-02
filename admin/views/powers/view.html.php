@@ -141,6 +141,21 @@ class ComponentbuilderViewPowers extends HtmlView
 			// add Run Expansion button.
 			JToolBarHelper::custom('powers.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
 		}
+		if ($this->user->authorise('power.init', 'com_componentbuilder'))
+		{
+			// add Init button.
+			JToolBarHelper::custom('powers.initPowers', 'health custom-button-initpowers', '', 'COM_COMPONENTBUILDER_INIT', false);
+		}
+		if ($this->user->authorise('power.sync', 'com_componentbuilder'))
+		{
+			// add Sync button.
+			JToolBarHelper::custom('powers.syncPowers', 'loop custom-button-syncpowers', '', 'COM_COMPONENTBUILDER_SYNC', false);
+		}
+		if ($this->user->authorise('power.reset', 'com_componentbuilder'))
+		{
+			// add Reset button.
+			JToolBarHelper::custom('powers.resetPowers', 'joomla custom-button-resetpowers', '', 'COM_COMPONENTBUILDER_RESET', false);
+		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('powers');
@@ -195,43 +210,23 @@ class ComponentbuilderViewPowers extends HtmlView
 			);
 		}
 
-		// Only load Power Version batch if create, edit, and batch is allowed
+		// Only load Approved batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
-			// Set Power Version Selection
-			$this->power_versionOptions = JFormHelper::loadFieldType('powersfilterpowerversion')->options;
-			// We do some sanitation for Power Version filter
-			if (ComponentbuilderHelper::checkArray($this->power_versionOptions) &&
-				isset($this->power_versionOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->power_versionOptions[0]->value))
+			// Set Approved Selection
+			$this->approvedOptions = JFormHelper::loadFieldType('powersfilterapproved')->options;
+			// We do some sanitation for Approved filter
+			if (ComponentbuilderHelper::checkArray($this->approvedOptions) &&
+				isset($this->approvedOptions[0]->value) &&
+				!ComponentbuilderHelper::checkString($this->approvedOptions[0]->value))
 			{
-				unset($this->power_versionOptions[0]);
+				unset($this->approvedOptions[0]);
 			}
-			// Power Version Batch Selection
+			// Approved Batch Selection
 			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_POWER_POWER_VERSION_LABEL').' -',
-				'batch[power_version]',
-				JHtml::_('select.options', $this->power_versionOptions, 'value', 'text')
-			);
-		}
-
-		// Only load Extends Name batch if create, edit, and batch is allowed
-		if ($this->canBatch && $this->canCreate && $this->canEdit)
-		{
-			// Set Extends Name Selection
-			$this->extendsNameOptions = JFormHelper::loadFieldType('Classpowers')->options;
-			// We do some sanitation for Extends Name filter
-			if (ComponentbuilderHelper::checkArray($this->extendsNameOptions) &&
-				isset($this->extendsNameOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->extendsNameOptions[0]->value))
-			{
-				unset($this->extendsNameOptions[0]);
-			}
-			// Extends Name Batch Selection
-			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_POWER_EXTENDS_LABEL').' -',
-				'batch[extends]',
-				JHtml::_('select.options', $this->extendsNameOptions, 'value', 'text')
+				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_POWER_APPROVED_LABEL').' -',
+				'batch[approved]',
+				JHtml::_('select.options', $this->approvedOptions, 'value', 'text')
 			);
 		}
 	}

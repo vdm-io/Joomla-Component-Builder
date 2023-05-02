@@ -185,7 +185,8 @@ abstract class GuidHelper
 				}
 			}
 		}
-		return false;
+
+		return null;
 	}
 
 	/**

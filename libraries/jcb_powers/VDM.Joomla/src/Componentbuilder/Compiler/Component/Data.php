@@ -796,15 +796,16 @@ class Data
 		$this->config->lang_target = $nowLang;
 
 		// catch empty URL to update server TODO: we need to fix this in  better way later
-		if ($component->add_update_server == 1 && $component->update_server_target !== 3
+		if (empty($component->add_update_server) || ($component->add_update_server == 1 && $component->update_server_target != 3
 			&& (
 				!StringHelper::check($component->update_server_url)
 				|| strpos($component->update_server_url, 'http') === false
-			))
+			)))
 		{
 			// we fall back to other, since we can't work with an empty update server URL
 			$component->add_update_server = 0;
 			$component->update_server_target = 3;
+			$component->update_server_url = '';
 		}
 
 		// add the update/sales server FTP details if that is the expected protocol

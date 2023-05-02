@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\FormHelper as JCBFormHelper;
+use VDM\Joomla\Componentbuilder\Utilities\FilterHelper as JCBFilterHelper;
 
 /**
  * Language_translations List Model
@@ -55,7 +57,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 
 		// Create the "extension" filter
 		$form->setField(new SimpleXMLElement(
-			ComponentbuilderHelper::getExtensionGroupedListXml()
+			JCBFilterHelper::extensions()
 			),'filter');
 		$form->setValue(
 			'extension',
@@ -75,7 +77,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 			'' => '-  ' . JText::_('COM_COMPONENTBUILDER_NO_LANGUAGES_FOUND') . '  -'
 		);
 		// check if we have languages set
-		if (($languages = ComponentbuilderHelper::getAvailableLanguages()) !== false)
+		if (($languages = JCBFilterHelper::languages()) !== null)
 		{
 			$options = array(
 				'' => '-  ' . JText::_('COM_COMPONENTBUILDER_TRANSLATED_IN') . '  -',
@@ -85,7 +87,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 			$options = array_merge($options, $languages);
 		}
 
-		$form->setField(ComponentbuilderHelper::getFieldXML($attributes, $options),'filter');
+		$form->setField(JCBFormHelper::xml($attributes, $options),'filter');
 		$form->setValue(
 			'translated',
 			'filter',
@@ -114,7 +116,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 			$options = array_merge($options, $languages);
 		}
 
-		$form->setField(ComponentbuilderHelper::getFieldXML($attributes, $options),'filter');
+		$form->setField(JCBFormHelper::xml($attributes, $options),'filter');
 		$form->setValue(
 			'not_translated',
 			'filter',
@@ -300,7 +302,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 			$filter_translated = $this->state->get("filter.translated");
 			if ($filter_translated !== null && !empty($filter_translated))
 			{
-				if (($ids = ComponentbuilderHelper::getTranslationIds($filter_translated)) !== false)
+				if (($ids = JCBFilterHelper::translations($filter_translated)) !== null)
 				{
 					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
 				}
@@ -315,7 +317,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 			$filter_not_translated = $this->state->get("filter.not_translated");
 			if ($filter_not_translated !== null && !empty($filter_not_translated))
 			{
-				if (($ids = ComponentbuilderHelper::getTranslationIds($filter_not_translated, false)) !== false)
+				if (($ids = JCBFilterHelper::translations($filter_not_translated, false)) !== null)
 				{
 					$query->where($db->quoteName('a.id') . ' IN (' . implode(',',$ids) . ')');
 				}
@@ -332,7 +334,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 			{
 				// column name, and id
 				$type_extension = explode('__', $filter_extension);
-				if (($ids = ComponentbuilderHelper::getTranslationExtensionsIds($type_extension[1], $type_extension[0])) !== false)
+				if (($ids = JCBFilterHelper::translation((int) $type_extension[1], $type_extension[0])) !== null)
 				{
 					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
 				}
@@ -459,7 +461,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 			$filter_translated = $this->state->get("filter.translated");
 			if ($filter_translated !== null && !empty($filter_translated))
 			{
-				if (($ids = ComponentbuilderHelper::getTranslationIds($filter_translated)) !== false)
+				if (($ids = JCBFilterHelper::translations($filter_translated)) !== null)
 				{
 					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
 				}
@@ -474,7 +476,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 			$filter_not_translated = $this->state->get("filter.not_translated");
 			if ($filter_not_translated !== null && !empty($filter_not_translated))
 			{
-				if (($ids = ComponentbuilderHelper::getTranslationIds($filter_not_translated, false)) !== false)
+				if (($ids = JCBFilterHelper::translations($filter_not_translated, false)) !== null)
 				{
 					$query->where($db->quoteName('a.id') . ' IN (' . implode(',',$ids) . ')');
 				}
@@ -491,7 +493,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 			{
 				// column name, and id
 				$type_extension = explode('__', $filter_extension);
-				if (($ids = ComponentbuilderHelper::getTranslationExtensionsIds($type_extension[1], $type_extension[0])) !== false)
+				if (($ids = JCBFilterHelper::translation((int) $type_extension[1], $type_extension[0])) !== null)
 				{
 					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
 				}

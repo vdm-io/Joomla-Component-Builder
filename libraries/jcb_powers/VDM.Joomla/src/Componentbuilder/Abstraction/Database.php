@@ -65,6 +65,11 @@ abstract class Database
 	 **/
 	protected function quote($value)
 	{
+		if ($value === null) // hmm the null does pose an issue (will keep an eye on this)
+		{
+			return 'NULL';
+		}
+
 		if (is_numeric($value))
 		{
 			if (filter_var($value, FILTER_VALIDATE_INT))
@@ -76,12 +81,18 @@ abstract class Database
 				return (float) $value;
 			}
 		}
-		elseif (is_bool($value))
+		elseif (is_bool($value)) // not sure if this will work well (but its correct)
 		{
-			return (int) $value;
+			return $value ? 'TRUE' : 'FALSE';
 		}
 
-		// default just escape it
+		// For date and datetime values
+		if ($value instanceof \DateTime)
+		{
+			return $this->db->quote($value->format('Y-m-d H:i:s'));
+		}
+
+		// For other data types, just escape it
 		return $this->db->quote($value);
 	}
 

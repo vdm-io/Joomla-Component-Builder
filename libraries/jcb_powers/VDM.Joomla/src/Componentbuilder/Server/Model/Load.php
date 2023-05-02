@@ -108,7 +108,7 @@ class Load extends Model implements ModelInterface
 	}
 
 	/**
-	 * Validate the values (basic, override in child class)
+	 * Validate before the value is modelled
 	 *
 	 * @param   mixed         $value   The field value
 	 * @param   string|null   $field     The field key
@@ -117,9 +117,24 @@ class Load extends Model implements ModelInterface
 	 * @return  bool
 	 * @since 3.2.0
 	 */
-	protected function validate(&$value, ?string $field = null, ?string $table = null): bool
+	protected function validateBefore(&$value, ?string $field = null, ?string $table = null): bool
 	{
 		// remove none
+		return true;
+	}
+
+	/**
+	 * Validate after the value is modelled
+	 *
+	 * @param   mixed         $value   The field value
+	 * @param   string|null   $field     The field key
+	 * @param   string|null   $table   The table
+	 *
+	 * @return  bool
+	 * @since 3.2.0
+	 */
+	protected function validateAfter(&$value, ?string $field = null, ?string $table = null): bool
+	{
 		return true;
 	}
 

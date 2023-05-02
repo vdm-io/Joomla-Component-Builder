@@ -23,9 +23,9 @@ interface ModelInterface
 	 * Model the value
 	 *          Example: $this->value(value, 'value_key', 'table_name');
 	 *
-	 * @param   mixed           $value    The value to model
-	 * @param   string           $field      The field key
-	 * @param   string|null    $table     The table
+	 * @param   mixed          $value    The value to model
+	 * @param   string         $field    The field key
+	 * @param   string|null    $table    The table
 	 *
 	 * @return  mixed
 	 * @since 3.2.0
@@ -55,6 +55,30 @@ interface ModelInterface
 	 * @since 3.2.0
 	 */
 	public function items(?array $items = null, ?string $table = null): ?array;
+
+	/**
+	 * Model the values of an row
+	 *          Example: $this->item(Array, 'table_name');
+	 *
+	 * @param   array          $item      The item array
+	 * @param   string|null    $table     The table
+	 *
+	 * @return  array|null
+	 * @since 3.2.0
+	 */
+	public function row(array $item, ?string $table = null): ?array;
+
+	/**
+	 * Model the values of multiple rows
+	 *          Example: $this->items(Array, 'table_name');
+	 *
+	 * @param   array|null     $items    The array of item array
+	 * @param   string|null    $table    The table
+	 *
+	 * @return  array|null
+	 * @since 3.2.0
+	 */
+	public function rows(?array $items = null, ?string $table = null): ?array;
 
 	/**
 	 * Get last modeled ID

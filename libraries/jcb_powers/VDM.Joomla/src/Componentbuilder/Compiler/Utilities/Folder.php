@@ -60,12 +60,13 @@ class Folder
 	/**
 	 * Create Path if not exist
 	 *
-	 * @param   string   $path   The path to folder to create
+	 * @param   string   $path      The path to folder to create
+	 * @param   bool     $addHtml   The the switch to add the HTML
 	 *
 	 * @return void
 	 * @since 3.2.0
 	 */
-	public function create(string $path)
+	public function create(string $path, bool $addHtml = true)
 	{
 		// check if the path exist
 		if (!JoomlaFolder::exists($path))
@@ -78,10 +79,13 @@ class Folder
 			// count the folder created
 			$this->counter->folder++;
 
-			// add index.html (boring I know)
-			$this->file->html(
-				$path, ''
-			);
+			if ($addHtml)
+			{
+				// add index.html (boring I know)
+				$this->file->html(
+					$path, ''
+				);
+			}
 		}
 	}
 

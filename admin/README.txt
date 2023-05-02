@@ -9,7 +9,7 @@ The Component Builder for [Joomla](https://extensions.joomla.org/extension/compo
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will save you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (3.1.19) with **ALL** its features and **ALL** concepts totally open-source and free! 
+You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (3.1.24) with **ALL** its features and **ALL** concepts totally open-source and free! 
 
 > Watch Quick Build of a Hello World component in [JCB on Youtube](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -106,8 +106,8 @@ Where can you get support and help?
 - [Hello World](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45).
 - [Discussions](https://github.com/vdm-io/Joomla-Component-Builder/discussions).
 - [Wiki](https://git.vdm.dev/joomla/Component-Builder/wiki).
-- [Issues](https://git.vdm.dev/joomla/Component-Builder/issues).
-- [Issues Stream](https://t.me/jcb_issues). ^^
+- [Issues](https://git.vdm.dev/joomla/Component-Builder/issues). ^^
+- [Issues Stream](https://t.me/jcb_issues).
 - [Updates](https://t.me/jcb_updates).
 - [User Group](https://t.me/jcb_group).
 - [Announcement](https://t.me/Joomla_component_builder).
@@ -144,14 +144,14 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 27th February, 2023
-+ *Version*: 3.1.19
++ *Last Build*: 2nd May, 2023
++ *Version*: 3.1.24
 + *Copyright*: Copyright (C) 2015 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **366135**
-+ *Field count*: **2021**
-+ *File count*: **2339**
-+ *Folder count*: **411**
++ *Line count*: **557762**
++ *Field count*: **2041**
++ *File count*: **3930**
++ *Folder count*: **432**
 
 > This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](https://www.joomlacomponentbuilder.com).
 > Developed by [Llewellyn van der Merwe](mailto:llewellyn@joomlacomponentbuilder.com)

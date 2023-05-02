@@ -16,6 +16,9 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\String\ClassfunctionHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Power Admin Model
@@ -63,6 +66,15 @@ class ComponentbuilderModelPower extends AdminModel
 			'fullwidth' => array(
 				'add_licensing_template',
 				'licensing_template'
+			)
+		),
+		'super_power' => array(
+			'left' => array(
+				'approved',
+				'approved_paths'
+			),
+			'right' => array(
+				'note_approved_paths'
 			)
 		),
 		'composer' => array(
@@ -202,6 +214,14 @@ class ComponentbuilderModelPower extends AdminModel
 				$item->main_class_code = base64_decode($item->main_class_code);
 			}
 
+			if (!empty($item->method_selection))
+			{
+				// Convert the method_selection field to an array.
+				$method_selection = new Registry;
+				$method_selection->loadString($item->method_selection);
+				$item->method_selection = $method_selection->toArray();
+			}
+
 			if (!empty($item->load_selection))
 			{
 				// Convert the load_selection field to an array.
@@ -234,20 +254,18 @@ class ComponentbuilderModelPower extends AdminModel
 				$item->implements = $implements->toArray();
 			}
 
-			if (!empty($item->method_selection))
-			{
-				// Convert the method_selection field to an array.
-				$method_selection = new Registry;
-				$method_selection->loadString($item->method_selection);
-				$item->method_selection = $method_selection->toArray();
-			}
-
 			if (!empty($item->use_selection))
 			{
 				// Convert the use_selection field to an array.
 				$use_selection = new Registry;
 				$use_selection->loadString($item->use_selection);
 				$item->use_selection = $use_selection->toArray();
+			}
+
+			if (!empty($item->approved_paths))
+			{
+				// JSON Decode approved_paths.
+				$item->approved_paths = json_decode($item->approved_paths);
 			}
 
 
@@ -1003,24 +1021,30 @@ class ComponentbuilderModelPower extends AdminModel
 			$data['metadata'] = (string) $metadata;
 		}
 
+		// Set the empty approved_paths item to data
+		if (!isset($data['approved_paths']))
+		{
+			$data['approved_paths'] = '';
+		}
+
 		// check if the name has placeholder
 		if (strpos($data['name'], '[[[') === false && strpos($data['name'], '###') === false)
 		{
 			// make sure the name is safe to be used as a function name
-			$data['name'] = ComponentbuilderHelper::safeClassFunctionName($data['name']);
+			$data['name'] = ClassfunctionHelper::safe($data['name']);
 		}
 		// if system name is empty create from name
-		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
+		if (empty($data['system_name']) || !UtilitiesStringHelper::check($data['system_name']))
 		{
 			$data['system_name'] = $data['name'];
 		}
 		// must set the version if empty
-		if (empty($data['power_version']) && $data['id'] > 0 && ($power_version = ComponentbuilderHelper::getVar('power', $data['id'], 'id', 'power_version')) !== false)
+		if (empty($data['power_version']) && $data['id'] > 0 && ($power_version = GetHelper::var('power', $data['id'], 'id', 'power_version')) !== false)
 		{
 			$data['power_version'] = $power_version;
 		}
 		// we must preserve versions (so that a change to the version number must result in save as copy)
-		elseif ($data['id'] > 0 && ($old_version = ComponentbuilderHelper::getVar('power', $data['id'], 'id', 'power_version')) && $data['power_version'] != $old_version)
+		elseif ($data['id'] > 0 && ($old_version = GetHelper::var('power', $data['id'], 'id', 'power_version')) && $data['power_version'] != $old_version)
 		{
 			// lets check if we already have this version
 			if (($existing_id = ComponentbuilderHelper::checkExist('power', ['power_version' => $data['power_version'], 'name' => $data['name'], 'namespace' => $data['namespace']])) !== false)
@@ -1050,6 +1074,19 @@ class ComponentbuilderModelPower extends AdminModel
 			$data['guid'] = (string) ComponentbuilderHelper::GUID();
 		}
 
+
+		// Set the method_selection items to data.
+		if (isset($data['method_selection']) && is_array($data['method_selection']))
+		{
+			$method_selection = new JRegistry;
+			$method_selection->loadArray($data['method_selection']);
+			$data['method_selection'] = (string) $method_selection;
+		}
+		elseif (!isset($data['method_selection']))
+		{
+			// Set the empty method_selection to data
+			$data['method_selection'] = '';
+		}
 
 		// Set the load_selection items to data.
 		if (isset($data['load_selection']) && is_array($data['load_selection']))
@@ -1103,19 +1140,6 @@ class ComponentbuilderModelPower extends AdminModel
 			$data['implements'] = '';
 		}
 
-		// Set the method_selection items to data.
-		if (isset($data['method_selection']) && is_array($data['method_selection']))
-		{
-			$method_selection = new JRegistry;
-			$method_selection->loadArray($data['method_selection']);
-			$data['method_selection'] = (string) $method_selection;
-		}
-		elseif (!isset($data['method_selection']))
-		{
-			// Set the empty method_selection to data
-			$data['method_selection'] = '';
-		}
-
 		// Set the use_selection items to data.
 		if (isset($data['use_selection']) && is_array($data['use_selection']))
 		{
@@ -1127,6 +1151,12 @@ class ComponentbuilderModelPower extends AdminModel
 		{
 			// Set the empty use_selection to data
 			$data['use_selection'] = '';
+		}
+
+		// Set the approved_paths string to JSON string.
+		if (isset($data['approved_paths']))
+		{
+			$data['approved_paths'] = (string) json_encode($data['approved_paths']);
 		}
 
 		// Set the licensing_template string to base64 string.

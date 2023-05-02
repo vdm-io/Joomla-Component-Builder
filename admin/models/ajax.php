@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
-use VDM\Gitea\Gitea;
+use VDM\Joomla\Gitea\Factory as GiteaFactory;
 use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\JsonHelper;
@@ -175,11 +175,18 @@ class ComponentbuilderModelAjax extends ListModel
 		// check if url exist
 		if ($info = FileHelper::getContent($url, false))
 		{
-			if ((($info_ = PackageFactory::_('Crypt')->decrypt($info, 'local')) !== null && JsonHelper::check($info_)) ||
-				(($info_ = PackageFactory::_('Crypt')->decrypt($info, 'local.legacy')) !== null && JsonHelper::check($info_)) ||
-				(($info_ = PackageFactory::_('Crypt')->decrypt($info, 'local.fof')) !== null && JsonHelper::check($info_)))
+			$_info = PackageFactory::_('Crypt')->decrypt($info, 'local.legacy');
+
+			// check if we had success
+			if (!JsonHelper::check($_info))
 			{
-				$info = json_decode($info_, true);
+				$_info = PackageFactory::_('Crypt')->decrypt($info, 'local.fof');
+			}
+
+			// check if we have json
+			if (JsonHelper::check($_info))
+			{
+				$info = json_decode($_info, true);
 
 				return [
 					'owner' => PackageFactory::_('Display.Details')->owner($info, true),
@@ -268,25 +275,16 @@ class ComponentbuilderModelAjax extends ListModel
 
 	public function getWiki($name = 'Home')
 	{
-		// get the token if set
-		$token = JComponentHelper::getParams('com_componentbuilder')->get('gitea_token', false);
-
-		// setup a registry
-		$options = new Registry;
-
-		// only add if token is set
-		if ($token)
-		{
-			$options->set('access.token', $token);
-		}
-
 		try
 		{
-			// get gitea object
-			$gitea = new Gitea($options);
+			// load the API details
+			GiteaFactory::_('Gitea.Repository.Wiki')->load_('https://git.vdm.dev', '');
 
-			// get the gitea wiki page TODO: we hard coded the page name
-			$page = $gitea->repo->wiki->getHtml('joomla', 'Component-Builder', 'Home');
+			// get the gitea wiki page im markdown
+			$wiki = GiteaFactory::_('Gitea.Repository.Wiki')->get('joomla', 'Component-Builder', 'Home');
+
+			// now render the page in HTML
+			$page = GiteaFactory::_('Gitea.Miscellaneous.Markdown')->render($wiki->content, true);
 		}
 		catch (DomainException $e)
 		{
@@ -323,20 +321,18 @@ class ComponentbuilderModelAjax extends ListModel
 	public function getVersion($version = null)
 	{
 		// get the token if set
-		$token = JComponentHelper::getParams('com_componentbuilder')->get('gitea_token', false);
+		$token = $this->app_params->get('gitea_token', false);
+
 		// only add if token is set
 		if ($token)
 		{
-			// setup a registry
-			$options = new Registry;
-			$options->set('access.token', $token);
-			// get the gitea http
 			try
 			{
-				// get gitea object
-				$gitea = new Gitea($options);
-				// get a list of all the repos tags
-				$tags = $gitea->repo->getListTags('joomla', 'Component-Builder');
+				// load the API details
+				GiteaFactory::_('Gitea.Repository.Tags')->load_('https://git.vdm.dev', $token);
+
+				// get the repository tags
+				$tags = GiteaFactory::_('Gitea.Repository.Tags')->list('joomla', 'Component-Builder');
 			}
 			catch (DomainException $e)
 			{

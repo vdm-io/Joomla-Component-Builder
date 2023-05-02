@@ -356,6 +356,45 @@ class ComponentbuilderViewCompiler extends HtmlView
 				$form->setField($xml, null, true, 'advanced');
 			}
 
+			// powers repository attributes
+			$attributes = [
+				'type' => 'radio',
+				'name' => 'powers_repository',
+				'label' => 'COM_COMPONENTBUILDER_ACTIVATE_SUPER_POWERS',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_THIS_ADDS_POWERS_TO_A_LOCAL_REPOSITORY_FOLDER_ALL_BAPPROVEDB_POWERS_LINKED_TO_THIS_COMPONENT_WILL_BE_MOVED_TO_YOUR_BLOCALB_POWERS_REPOSITORY_FOLDER_INTO_THEIR_SELECTIVE_TARGET_PATHS_THIS_LOCAL_FOLDER_PATH_MUST_BE_SET_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_BSUPER_POWERB_TAB',
+				'default' => '2',
+				'showon' => 'show_advanced_options:1'];
+			// start the repository options
+			$options = [
+				'2' => 'COM_COMPONENTBUILDER_GLOBAL',
+				'1' => 'COM_COMPONENTBUILDER_YES',
+				'0' => 'COM_COMPONENTBUILDER_NO'];
+
+			// add to form
+			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'advanced');
+			}
+
+			// powers local path to repositories attributes
+			$attributes = [
+				'type' => 'text',
+				'name' => 'local_powers_repository_path',
+				'label' => 'COM_COMPONENTBUILDER_LOCAL_POWERS_REPOSITORY_PATH',
+				'class' => 'btn-group btn-group-yesno',
+				'description' => 'COM_COMPONENTBUILDER_HERE_YOU_CAN_SET_THE_PATH_TO_THE_SUPER_POWERS_LOCAL_REPOSITORY_FOLDER_WHERE_BLAYERCOREB_AND_ALL_TARGETED_BLAYEROWNB_SUB_PATHS_WILL_BE_PLACED_WITH_THEIR_SELECTIVE_BSWITCHAPPROVEDB_POWERS',
+				'default' => $this->params->get('local_powers_repository_path', ''),
+				'showon' => 'show_advanced_options:1[AND]powers_repository:1'];
+
+			// add to form
+			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'advanced');
+			}
+
 			// Indentation attributes
 			$attributes = [
 				'type' => 'radio',

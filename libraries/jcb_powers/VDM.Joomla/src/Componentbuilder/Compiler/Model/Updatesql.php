@@ -223,8 +223,8 @@ class Updatesql
 			// convert admin view id to name
 			if ('adminview' === $type)
 			{
-				$this->registry->set('builder.add_sql.' . $type,
-					$this->name($item)
+				$this->registry->set('builder.add_sql.' . $type . '.' . $this->name($item),
+					$item
 				);
 			}
 			else

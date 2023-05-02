@@ -603,6 +603,31 @@ class Compiler extends Infusion
 					}
 				}
 			}
+			// do super powers details if found
+			if (ArrayHelper::check(CFactory::_('Power')->superpowers))
+			{
+				foreach (CFactory::_('Power')->superpowers as $path => $powers)
+				{
+					$key = StringHelper::safe($path);
+					if (CFactory::_('Utilities.Files')->exists($key))
+					{
+						// update the power files
+						foreach (CFactory::_('Utilities.Files')->get($key) as $power_file)
+						{
+							if (File::exists($power_file['path']))
+							{
+								$this->setFileContent(
+									$power_file['name'], $power_file['path'],
+									$bom, $key
+								);
+							}
+						}
+						// free up some memory
+						CFactory::_('Utilities.Files')->remove($key);
+						CFactory::_('Content')->remove_($key);
+					}
+				}
+			}
 
 			return true;
 		}
@@ -679,6 +704,9 @@ class Compiler extends Infusion
 			array(&$component_context, &$answer, &$name, &$path, &$bom,
 			      &$view)
 		);
+
+		// inject any super powers found
+		$answer = CFactory::_('Power.Injector')->power($answer);
 
 		// add answer back to file
 		CFactory::_('Utilities.File')->write($path, $answer);
@@ -1384,7 +1412,7 @@ class Compiler extends Infusion
 						if ($found && !$foundEnd)
 						{
 							$replace[] = (int) $lineBites[$lineNumber];
-							// we musk keep last three lines to dynamic find target entry
+							// we must keep last three lines to dynamic find target entry
 							$fingerPrint[$lineNumber] = trim($lineContent);
 							// check lines each time if it fits our target
 							if (count((array) $fingerPrint) === $sizeEnd
@@ -1413,7 +1441,7 @@ class Compiler extends Infusion
 						{
 							$replace[] = (int) $lineBites[$lineNumber];
 						}
-						// we musk keep last three lines to dynamic find target entry
+						// we must keep last three lines to dynamic find target entry
 						$fingerPrint[$lineNumber] = trim($lineContent);
 						// check lines each time if it fits our target
 						if (count((array) $fingerPrint) === $size && !$found)
@@ -1535,7 +1563,7 @@ class Compiler extends Infusion
 		$code = PHP_EOL . $commentType . implode(
 				$_commentType . PHP_EOL . $commentType, $code
 			) . $_commentType . PHP_EOL;
-		// get place holders
+		// get placeholders
 		$placeholder = CFactory::_('Placeholder')->keys(
 			(int) $target['comment_type'] . $target['type'], $target['id']
 		);
@@ -1554,37 +1582,55 @@ class Compiler extends Infusion
 		$this->addDataToFile($file, $data, (int) array_sum($bitBucket));
 	}
 
-	// Thanks to http://stackoverflow.com/a/16813550/1429677
-	protected function addDataToFile($file, $data, $position, $replace = null)
+	/**
+	 * Inserts or replaces data in a file at a specific position.
+	 *    Thanks to http://stackoverflow.com/a/16813550/1429677
+	 *
+	 * @param string    $file      The path of the file to modify
+	 * @param string    $data      The data to insert or replace
+	 * @param int       $position  The position in the file where the data should be inserted or replaced
+	 * @param int|null  $replace   The number of bytes to replace; if null, data will be inserted
+	 *
+	 * @return void
+	 * @throws RuntimeException if unable to open the file
+	 */
+	protected function addDataToFile(string $file, string $data, int $position, ?int $replace = null)
 	{
-		// start the process
-		$fpFile = fopen($file, "rw+");
-		$fpTemp = fopen('php://temp', "rw+");
-		// make a copy of the file
-		stream_copy_to_stream($fpFile, $fpTemp);
-		// move to the position where we should add the data
-		fseek($fpFile, $position);
-		// Add the data
-		fwrite($fpFile, (string) $data);
-		// truncate file at the end of the data that was added
-		$remove = MathHelper::bc(
-			'add', $position, mb_strlen((string) $data, '8bit')
-		);
-		ftruncate($fpFile, $remove);
-		// check if this was a replacement of data
-		if ($replace)
+		// Open the file and a temporary stream
+		$actual_file = fopen($file, "rw+");
+		if ($actual_file === false)
 		{
-			$position = MathHelper::bc(
-				'add', $position, $replace
-			);
+			throw new RuntimeException("Unable to open the file: {$file}");
 		}
-		// move to the position of the data that should remain below the new data
-		fseek($fpTemp, $position);
-		// copy that remaining data to the file
-		stream_copy_to_stream($fpTemp, $fpFile); // @Jack
-		// done close both files
-		fclose($fpFile);
-		fclose($fpTemp);
+
+		$temp_file = fopen('php://temp', "rw+");
+
+		// Make a copy of the file in the temporary stream
+		stream_copy_to_stream($actual_file, $temp_file);
+
+		// Move to the position where the data should be added
+		fseek($actual_file, $position);
+
+		// Add the data
+		fwrite($actual_file, $data);
+
+		// Truncate the file at the end of the added data if replacing
+		$data_length = mb_strlen($data, '8bit');
+		$remove = MathHelper::bc('add', $position, $data_length);
+		ftruncate($actual_file, $remove);
+
+		// check if this was a replacement of data
+		$position = MathHelper::bc('add', $position, $replace ?: 0);
+
+		// Move to the position of the remaining data in the temporary stream
+		fseek($temp_file, $position);
+
+		// Copy the remaining data from the temporary stream to the file
+		stream_copy_to_stream($temp_file, $actual_file);
+
+		// Close both file handles
+		fclose($actual_file);
+		fclose($temp_file);
 
 		// any help to improve this is welcome...
 	}

@@ -124,39 +124,10 @@ class Dispenser implements DispenserInterface
 		{
 			return false;
 		}
-		// this needs refactoring (TODO)
-		if (!isset($this->hub[$first])
-			|| ($second
-				&& !isset($this->hub[$first][$second])))
-		{
-			// check if the script first key is set
-			if ($second && !isset($this->hub[$first]))
-			{
-				$this->hub[$first] = [];
-			}
-			elseif ($add && !$second
-				&& !isset($this->hub[$first]))
-			{
-				$this->hub[$first] = '';
-			}
-			// check if the script second key is set
-			if ($second && $third
-				&& !isset($this->hub[$first][$second]))
-			{
-				$this->hub[$first][$second] = [];
-			}
-			elseif ($add && $second && !$third
-				&& !isset($this->hub[$first][$second]))
-			{
-				$this->hub[$first][$second] = '';
-			}
-			// check if the script third key is set
-			if ($add && $second && $third
-				&& !isset($this->hub[$first][$second][$third]))
-			{
-				$this->hub[$first][$second][$third] = '';
-			}
-		}
+
+		// init all needed arrays
+		$this->initHub($first, $second, $third, $add);
+
 		// prep the script string
 		if ($base64 && $dynamic)
 		{
@@ -166,7 +137,7 @@ class Dispenser implements DispenserInterface
 		{
 			$script = base64_decode($script);
 		}
-		elseif ($dynamic) // this does not happen (just incase)
+		elseif ($dynamic) // this does not happen (just in-case)
 		{
 			$script = $this->customcode->update($script);
 		}
@@ -178,49 +149,15 @@ class Dispenser implements DispenserInterface
 			{
 				$script = $this->gui->set($script, $config);
 			}
+
 			// add Dynamic HASHING option of a file/string
 			$script = $this->hash->set($script);
+
 			// add base64 locking option of a string
 			$script = $this->base64->set($script);
+
 			// load the script
-			if ($first && $second && $third)
-			{
-				// now act on loading option
-				if ($add)
-				{
-					$this->hub[$first][$second][$third]
-						.= $script;
-				}
-				else
-				{
-					$this->hub[$first][$second][$third]
-						= $script;
-				}
-			}
-			elseif ($first && $second)
-			{
-				// now act on loading option
-				if ($add)
-				{
-					$this->hub[$first][$second] .= $script;
-				}
-				else
-				{
-					$this->hub[$first][$second] = $script;
-				}
-			}
-			else
-			{
-				// now act on loading option
-				if ($add)
-				{
-					$this->hub[$first] .= $script;
-				}
-				else
-				{
-					$this->hub[$first] = $script;
-				}
-			}
+			$this->setHub($script, $first, $second, $third, $add);
 
 			return true;
 		}
@@ -240,7 +177,6 @@ class Dispenser implements DispenserInterface
 	 * @param string       $suffix   The suffix to add after the script if found
 	 *
 	 * @return  mixed  The string/script if found or the default value if not found
-	 *
 	 * @since 3.2.0
 	 */
 	public function get(string $first, string $second, string $prefix = '', ?string $note = null,
@@ -280,5 +216,70 @@ class Dispenser implements DispenserInterface
 		return $script;
 	}
 
+	/**
+	 * Make sure the hub arrays are all set
+	 *
+	 * @param   string       $first    The first key
+	 * @param   string|null  $second   The second key (if not set we use only first key)
+	 * @param   string|null  $third    The third key (if not set we use only first and second key)
+	 * @param   bool         $add      The switch to add to exiting instead of replace
+	 *                                    default: false
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	protected function initHub(string $first, ?string $second = null, ?string $third = null, bool $add = false)
+	{
+		if (!isset($this->hub[$first]))
+		{
+			$this->hub[$first] = ($second !== null || $add) ? ($second !== null ? [] : '') : [];
+		}
+
+		if ($second !== null && !isset($this->hub[$first][$second]))
+		{
+			$this->hub[$first][$second] = ($third !== null || $add) ? ($third !== null ? [] : '') : [];
+		}
+
+		if ($third !== null && !isset($this->hub[$first][$second][$third]))
+		{
+			$this->hub[$first][$second][$third] = $add ? '' : [];
+		}
+	}
+
+	/**
+	 * Set a script in the hub
+	 *
+	 * @param   string       $script   The script
+	 * @param   string       $first    The first key
+	 * @param   string|null  $second   The second key (if not set we use only first key)
+	 * @param   string|null  $third    The third key (if not set we use only first and second key)
+	 * @param   bool         $add      The switch to add to exiting instead of replace
+	 *                                    default: false
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	protected function setHub(string $script, string $first, ?string $second = null, ?string $third = null, bool $add = false)
+	{
+		// Load the script
+		if ($second !== null)
+		{
+			if ($third !== null)
+			{
+				$this->hub[$first][$second][$third] =
+					$add ? $this->hub[$first][$second][$third] . $script : $script;
+			}
+			else
+			{
+				$this->hub[$first][$second] =
+					$add ? $this->hub[$first][$second] . $script : $script;
+			}
+		}
+		else
+		{
+			$this->hub[$first] =
+				$add ? $this->hub[$first] . $script : $script;
+		}
+	}
 }
 

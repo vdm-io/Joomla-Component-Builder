@@ -39,16 +39,9 @@
 			onchange="this.form.submit();"
 		/>
 		<field
-			type="powersfilterpowerversion"
-			name="power_version"
-			label="COM_COMPONENTBUILDER_POWER_POWER_VERSION_LABEL"
-			multiple="false"
-			onchange="this.form.submit();"
-		/>
-		<field
-			type="classpowers"
-			name="extends"
-			label="COM_COMPONENTBUILDER_POWER_EXTENDS_LABEL"
+			type="powersfilterapproved"
+			name="approved"
+			label="COM_COMPONENTBUILDER_POWER_APPROVED_LABEL"
 			multiple="false"
 			onchange="this.form.submit();"
 		/>

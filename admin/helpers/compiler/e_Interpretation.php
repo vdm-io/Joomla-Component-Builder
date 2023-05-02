@@ -1050,7 +1050,7 @@ class Interpretation extends Fields
 	public function setVersionController()
 	{
 		if (CFactory::_('Component')->isArray('version_update')
-			|| ArrayHelper::check($this->updateSQLBuilder))
+			|| CFactory::_('Builder.Update.Mysql')->isActive())
 		{
 			$updateXML = array();
 			// add the update server
@@ -1079,18 +1079,13 @@ class Interpretation extends Fields
 			}
 			// add the dynamic sql if not already added
 			if ($addDynamicSQL
-				&& ArrayHelper::check(
-					$this->updateSQLBuilder
-				))
+				&& CFactory::_('Builder.Update.Mysql')->isActive())
 			{
 				// add the dynamic sql
 				$this->setDynamicUpdateXMLSQL($updateXML);
 			}
 			// add the new active version if needed
-			if ($addActive
-				&& ArrayHelper::check(
-					$this->updateSQLBuilder
-				))
+			if ($addActive && CFactory::_('Builder.Update.Mysql')->isActive())
 			{
 				// add the dynamic sql
 				$this->setDynamicUpdateXMLSQL($updateXML, $addActive);
@@ -1138,7 +1133,7 @@ class Interpretation extends Fields
 			CFactory::_('Content')->set('UPDATESERVER', '');
 		}
 		// ensure to update Component version data
-		if (ArrayHelper::check($this->updateSQLBuilder))
+		if (CFactory::_('Builder.Update.Mysql')->isActive())
 		{
 			$buket = array();
 			$nr    = 0;
@@ -1201,7 +1196,7 @@ class Interpretation extends Fields
 			$update_['version'] = CFactory::_('Component')->get('old_component_version');
 			// setup SQL
 			$update_['mysql'] = trim(
-				implode(PHP_EOL . PHP_EOL, $this->updateSQLBuilder)
+				implode(PHP_EOL . PHP_EOL, CFactory::_('Builder.Update.Mysql')->active)
 			);
 			// setup URL
 			if (isset($this->lastupdateURL))
@@ -1263,13 +1258,12 @@ class Interpretation extends Fields
 		// add dynamic SQL
 		$force = false;
 		if ($addDynamicSQL
-			&& ArrayHelper::check(
-				$this->updateSQLBuilder
-			) && CFactory::_('Component')->get('old_component_version') == $update['version'])
+			&& CFactory::_('Builder.Update.Mysql')->isActive()
+			&& CFactory::_('Component')->get('old_component_version') == $update['version'])
 		{
 			$searchMySQL = preg_replace('/\s+/', '', (string) $update['mysql']);
 			// add the updates to the SQL only if not found
-			foreach ($this->updateSQLBuilder as $search => $query)
+			foreach (CFactory::_('Builder.Update.Mysql')->active as $search => $query)
 			{
 				if (strpos($searchMySQL, $search) === false)
 				{
@@ -7072,11 +7066,11 @@ class Interpretation extends Fields
 				}
 				else
 				{
-					CFactory::_('Content')->set_($layout,$TARGET
+					CFactory::_('Content')->set_($layout, $TARGET
 						. '_LAYOUT_CODE',  '');
 				}
 				// SITE_LAYOUT_BODY <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($layout,$TARGET . '_LAYOUT_BODY',
+				CFactory::_('Content')->set_($layout, $TARGET . '_LAYOUT_BODY',
 					PHP_EOL . CFactory::_('Placeholder')->update_(
 						$data->html
 					)
@@ -7321,7 +7315,7 @@ class Interpretation extends Fields
 			}
 		}
 		// add the tag get options
-		if (isset($this->tagsBuilder[$view]))
+		if (CFactory::_('Registry')->get('builder.tags.' . $view))
 		{
 			$script .= PHP_EOL . PHP_EOL . Indent::_(3)
 				. "if (!empty(\$item->id))";
@@ -7574,8 +7568,7 @@ class Interpretation extends Fields
 		// set component name
 		$component = CFactory::_('Config')->component_code_name;
 		// add the tags observer
-		if (isset($this->tagsBuilder[$view])
-			&& StringHelper::check($this->tagsBuilder[$view]))
+		if (CFactory::_('Registry')->get('builder.tags.' . $view))
 		{
 			$oserver .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Adding Tag Options";
@@ -7584,10 +7577,7 @@ class Interpretation extends Fields
 				. $component . "." . $view . "'));";
 		}
 		// add the history/version observer
-		if (isset($this->historyBuilder[$view])
-			&& StringHelper::check(
-				$this->historyBuilder[$view]
-			))
+		if (CFactory::_('Registry')->exists('builder.history.' . $view))
 		{
 			$oserver .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Adding History Options";
@@ -8599,22 +8589,14 @@ class Interpretation extends Fields
 	public function getContentType($view, $component)
 	{
 		// add if history is to be kept or if tags is added
-		if ((isset($this->historyBuilder[$view])
-				&& StringHelper::check(
-					$this->historyBuilder[$view]
-				))
-			|| (isset($this->tagsBuilder[$view])
-				&& StringHelper::check(
-					$this->tagsBuilder[$view]
-				)))
+		if (CFactory::_('Registry')->exists('builder.history.' . $view)
+			|| CFactory::_('Registry')->get('builder.tags.' . $view))
 		{
 			// reset array
 			$array = array();
 			// set needed defaults
-			$alias            = (array_key_exists($view, $this->aliasBuilder))
-				? $this->aliasBuilder[$view] : 'null';
-			$title            = (array_key_exists($view, $this->titleBuilder))
-				? $this->titleBuilder[$view] : 'null';
+			$alias            = CFactory::_('Registry')->get('builder.alias.' . $view, 'null');
+			$title            = CFactory::_('Registry')->get('builder.title.' . $view, 'null');
 			$category         = (array_key_exists($view, $this->catCodeBuilder))
 				? $this->catCodeBuilder[$view]['code'] : 'null';
 			$categoryHistory  = (array_key_exists($view, $this->catCodeBuilder))
@@ -8626,35 +8608,21 @@ class Interpretation extends Fields
 				$component, 'F'
 			);
 			$View             = StringHelper::safe($view, 'F');
-			$maintext         = (isset($this->maintextBuilder[$view])
-				&& StringHelper::check(
-					$this->maintextBuilder[$view]
-				)) ? $this->maintextBuilder[$view] : 'null';
-			$hiddenFields     = (isset($this->hiddenFieldsBuilder[$view])
-				&& StringHelper::check(
-					$this->hiddenFieldsBuilder[$view]
-				)) ? $this->hiddenFieldsBuilder[$view] : '';
-			$dynamicfields    = (isset($this->dynamicfieldsBuilder[$view])
-				&& StringHelper::check(
-					$this->dynamicfieldsBuilder[$view]
-				)) ? $this->dynamicfieldsBuilder[$view] : '';
-			$intFields        = (isset($this->intFieldsBuilder[$view])
-				&& StringHelper::check(
-					$this->intFieldsBuilder[$view]
-				)) ? $this->intFieldsBuilder[$view] : '';
-			$customfieldlinks = (isset($this->customFieldLinksBuilder[$view])
-				&& StringHelper::check(
-					$this->customFieldLinksBuilder[$view]
-				)) ? $this->customFieldLinksBuilder[$view] : '';
+			$maintext         = CFactory::_('Registry')->get('builder.main_text_field.' . $view, 'null');
+			$hiddenFields     = (CFactory::_('Registry')->isArray('builder.hidden_fields.' . $view))
+				? implode('', CFactory::_('Registry')->get('builder.hidden_fields.' . $view)) : '';
+			$dynamicfields    = (CFactory::_('Registry')->isArray('builder.dynamic_fields.' . $view))
+				? implode(',', CFactory::_('Registry')->get('builder.dynamic_fields.' . $view)) : '';
+			$intFields        = (CFactory::_('Registry')->isArray('builder.integer_fields.' . $view))
+				? implode('', CFactory::_('Registry')->get('builder.integer_fields.' . $view)) : '';
+			$customfieldlinks = (CFactory::_('Registry')->isArray('builder.custom_field_links.' . $view))
+				? implode('', CFactory::_('Registry')->get('builder.custom_field_links.' . $view)) : '';
 			// build uninstall script for content types
 			$this->uninstallScriptBuilder[$View] = 'com_' . $component . '.'
 				. $view;
 			$this->uninstallScriptContent[$view] = $view;
 			// check if this view has metadata
-			if (isset($this->metadataBuilder[$view])
-				&& StringHelper::check(
-					$this->metadataBuilder[$view]
-				))
+			if (CFactory::_('Registry')->isString('builder.meta_data.' . $view))
 			{
 				$core_metadata = 'metadata';
 				$core_metakey  = 'metakey';
@@ -8667,10 +8635,7 @@ class Interpretation extends Fields
 				$core_metadesc = 'null';
 			}
 			// check if view has access
-			if (isset($this->accessBuilder[$view])
-				&& StringHelper::check(
-					$this->accessBuilder[$view]
-				))
+			if (CFactory::_('Registry')->exists('builder.access_switch.' . $view))
 			{
 				$core_access = 'access';
 				$accessHistory
@@ -8766,10 +8731,7 @@ class Interpretation extends Fields
 	)
 	{
 		// add if tags is added, also for all front item views
-		if (((isset($this->tagsBuilder[$nameSingleCode])
-					&& StringHelper::check(
-						$this->tagsBuilder[$nameSingleCode]
-					))
+		if ((CFactory::_('Registry')->get('builder.tags.' . $nameSingleCode)
 				|| $front)
 			&& (!in_array($nameSingleCode, $this->setRouterHelpDone)))
 		{
@@ -9258,7 +9220,8 @@ class Interpretation extends Fields
 		// set needed defaults
 		$title     = false;
 		$titles    = array();
-		$alias     = false;
+		// only load alias if set in this view
+		$alias     = CFactory::_('Registry')->get('builder.alias.' . $nameSingleCode);
 		$category  = false;
 		$batchcopy = array();
 		$VIEW      = StringHelper::safe($nameSingleCode, 'U');
@@ -9277,22 +9240,17 @@ class Interpretation extends Fields
 			$category = $this->catCodeBuilder[$nameSingleCode]['code'];
 		}
 
-		// only load alias if set in this view
-		if (array_key_exists($nameSingleCode, $this->aliasBuilder))
-		{
-			$alias = $this->aliasBuilder[$nameSingleCode];
-		}
 		// only load title if set in this view
-		if (($customAliasBuilder = CFactory::_('Registry')->get('builder.custom_alias.' . $nameSingleCode, null)) !== null)
+		if (($customAliasBuilder = CFactory::_('Registry')->get('builder.custom_alias.' . $nameSingleCode)) !== null)
 		{
 			$titles = array_values(
 				$customAliasBuilder
 			);
 			$title  = true;
 		}
-		elseif (array_key_exists($nameSingleCode, $this->titleBuilder))
+		elseif (CFactory::_('Registry')->exists('builder.title.' . $nameSingleCode))
 		{
-			$titles = array($this->titleBuilder[$nameSingleCode]);
+			$titles = [CFactory::_('Registry')->get('builder.title.' . $nameSingleCode)];
 			$title  = true;
 		}
 		// se the dynamic title
@@ -9652,13 +9610,13 @@ class Interpretation extends Fields
 	{
 		$fixUnique = array();
 		// only load this if these two items are set
-		if (array_key_exists($nameSingleCode, $this->aliasBuilder)
-			&& (array_key_exists($nameSingleCode, $this->titleBuilder)
-				|| CFactory::_('Registry')->get('builder.custom_alias.' . $nameSingleCode, null)))
+		if (CFactory::_('Registry')->exists('builder.alias.' . $nameSingleCode)
+			&& (CFactory::_('Registry')->exists('builder.title.' . $nameSingleCode)
+				|| CFactory::_('Registry')->exists('builder.custom_alias.' . $nameSingleCode)))
 		{
 			// set needed defaults
 			$setCategory = false;
-			$alias       = $this->aliasBuilder[$nameSingleCode];
+			$alias       = CFactory::_('Registry')->get('builder.alias.' . $nameSingleCode);
 			$VIEW        = StringHelper::safe(
 				$nameSingleCode, 'U'
 			);
@@ -9668,19 +9626,15 @@ class Interpretation extends Fields
 				$setCategory = true;
 			}
 			// set the title stuff
-			if (($customAliasBuilder = CFactory::_('Registry')->get('builder.custom_alias.' . $nameSingleCode, null)) !== null)
+			if (($customAliasBuilder = CFactory::_('Registry')->get('builder.custom_alias.' . $nameSingleCode)) !== null)
 			{
 				$titles = array_values(
 					$customAliasBuilder
 				);
-				if (isset($this->titleBuilder[$nameSingleCode]))
-				{
-					// $titles[] = $this->titleBuilder[$nameSingleCode]; // TODO this may be unexpected
-				}
 			}
 			else
 			{
-				$titles = array($this->titleBuilder[$nameSingleCode]);
+				$titles = [CFactory::_('Registry')->get('builder.title.' . $nameSingleCode)];
 			}
 			// start building the fix
 			$fixUnique[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
@@ -9861,9 +9815,9 @@ class Interpretation extends Fields
 	public function setGenerateNewTitle($nameSingleCode)
 	{
 		// if category is added to this view then do nothing
-		if (array_key_exists($nameSingleCode, $this->aliasBuilder)
-			&& (array_key_exists($nameSingleCode, $this->titleBuilder)
-				|| CFactory::_('Registry')->get('builder.custom_alias.' . $nameSingleCode, null)))
+		if (CFactory::_('Registry')->exists('builder.alias.' . $nameSingleCode)
+			&& (CFactory::_('Registry')->exists('builder.title.' . $nameSingleCode)
+				|| CFactory::_('Registry')->exists('builder.custom_alias.' . $nameSingleCode)))
 		{
 			// get component name
 			$Component = CFactory::_('Content')->get('Component');
@@ -9935,7 +9889,7 @@ class Interpretation extends Fields
 
 			return implode(PHP_EOL, $newFunction);
 		}
-		elseif (array_key_exists($nameSingleCode, $this->titleBuilder))
+		elseif (CFactory::_('Registry')->exists('builder.title.' . $nameSingleCode))
 		{
 			$newFunction   = array();
 			$newFunction[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
@@ -9973,18 +9927,18 @@ class Interpretation extends Fields
 	public function setGenerateNewAlias($nameSingleCode)
 	{
 		// make sure this view has an alias
-		if (isset($this->aliasBuilder[$nameSingleCode]))
+		if (CFactory::_('Registry')->exists('builder.alias.' . $nameSingleCode))
 		{
 			// set the title stuff
-			if (($customAliasBuilder = CFactory::_('Registry')->get('builder.custom_alias.' . $nameSingleCode, null)) !== null)
+			if (($customAliasBuilder = CFactory::_('Registry')->get('builder.custom_alias.' . $nameSingleCode)) !== null)
 			{
 				$titles = array_values(
 					$customAliasBuilder
 				);
 			}
-			elseif (isset($this->titleBuilder[$nameSingleCode]))
+			elseif (CFactory::_('Registry')->exists('builder.title.' . $nameSingleCode))
 			{
-				$titles = array($this->titleBuilder[$nameSingleCode]);
+				$titles = [CFactory::_('Registry')->get('builder.title.' . $nameSingleCode)];
 			}
 			// reset the bucket
 			$titleData = array();
@@ -9999,7 +9953,7 @@ class Interpretation extends Fields
 			else
 			{
 				$titleData
-					= array("'-'"); // just incase some mad man does not set a title/customAlias (we fall back on the date)
+					= array("'-'"); // just encase some mad man does not set a title/customAlias (we fall back on the date)
 			}
 			// rest the new function
 			$newFunction   = array();
@@ -10050,17 +10004,16 @@ class Interpretation extends Fields
 
 	public function setInstall()
 	{
-		if (isset($this->queryBuilder)
-			&& ArrayHelper::check(
-				$this->queryBuilder
-			))
+		if (($database_tables = CFactory::_('Registry')->get('builder.database_tables')) !== null)
 		{
 			// set the main db prefix
 			$component = CFactory::_('Config')->component_code_name;
 			// start building the db
 			$db = '';
-			foreach ($this->queryBuilder as $view => $fields)
+			foreach ($database_tables as $view => $fields)
 			{
+				// cast the object to an array TODO we must update all to use the object
+				$fields = (array) $fields;
 				// build the uninstallation array
 				$this->uninstallBuilder[] = "DROP TABLE IF EXISTS `#__"
 					. $component . "_" . $view . "`;";
@@ -10073,14 +10026,14 @@ class Interpretation extends Fields
 				if (($old_table_name = CFactory::_('Registry')->
 					get('builder.update_sql.table_name.' . $view . '.old', null)) !== null)
 				{
-					$this->updateSQLBuilder["RENAMETABLE`#__" . $component . "_"
-					. $old_table_name . "`"]
-						= "RENAME TABLE `#__" . $component . "_"
-						. $old_table_name . "` to `#__" . $component . "_"
-						. $view . "`;";
+					$key_ = "RENAMETABLE`#__" . $component . "_" . $old_table_name . "`";
+					$value_ = "RENAME TABLE `#__" . $component . "_" . $old_table_name . "` to `#__"
+						. $component . "_" . $view . "`;";
+
+					CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
 				}
 				// check if default field was over written
-				if (!isset($this->fieldsNames[$view]['id']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.id'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`id` INT(11) NOT NULL AUTO_INCREMENT,";
@@ -10091,6 +10044,8 @@ class Interpretation extends Fields
 				$last_name = 'asset_id';
 				foreach ($fields as $field => $data)
 				{
+					// cast the object to an array TODO we must update all to use the object
+					$data = (array) $data;
 					// set default
 					$default = $data['default'];
 					if ($default === 'Other')
@@ -10148,18 +10103,14 @@ class Interpretation extends Fields
 						get('builder.add_sql.field.' . $view . '.' . $data['ID'], null))
 					{
 						// to soon....
-						//$this->updateSQLBuilder["ALTERTABLE`#__" . $component
-						//. "_" . $view . "`ADDCOLUMNIFNOTEXISTS`" . $field . "`"]
-						//	= "ALTER TABLE `#__" . $component . "_" . $view
-						//	. "` ADD COLUMN IF NOT EXISTS `" . $field . "` " . $data['type']
-						//	. $lenght . " " . $default . " AFTER `" . $last_name
-						//	. "`;";
-						$this->updateSQLBuilder["ALTERTABLE`#__" . $component
-						. "_" . $view . "`ADD`" . $field . "`"]
-							= "ALTER TABLE `#__" . $component . "_" . $view
-							. "` ADD `" . $field . "` " . $data['type']
-							. $lenght . " " . $default . " AFTER `" . $last_name
-							. "`;";
+						// $key_ = "ALTERTABLE`#__" . $component . "_" . $view . "`ADDCOLUMNIFNOTEXISTS`" . $field . "`";
+						// $value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` ADD COLUMN IF NOT EXISTS `" . $field . "` " . $data['type']
+						//	. $lenght . " " . $default . " AFTER `" . $last_name . "`;";
+						$key_ = "ALTERTABLE`#__" . $component . "_" . $view . "`ADD`" . $field . "`";
+						$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` ADD `" . $field . "` " . $data['type']
+							. $lenght . " " . $default . " AFTER `" . $last_name . "`;";
+
+						CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
 					}
 					// check if the field has changed name and/or data type and lenght
 					elseif (CFactory::_('Registry')->
@@ -10175,112 +10126,107 @@ class Interpretation extends Fields
 						{
 							$oldName = $field;
 						}
+
 						// now set the update SQL
-						$this->updateSQLBuilder["ALTERTABLE`#__" . $component
-						. "_" . $view . "`CHANGE`" . $oldName . "``" . $field
-						. "`"]
-							= "ALTER TABLE `#__" . $component . "_" . $view
-							. "` CHANGE `" . $oldName . "` `" . $field . "` "
-							. $data['type'] . $lenght . " " . $default . ";";
+						$key_ = "ALTERTABLE`#__" . $component . "_" . $view . "`CHANGE`" . $oldName . "``"
+							. $field . "`";
+						$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` CHANGE `" . $oldName . "` `"
+							. $field . "` " . $data['type'] . $lenght . " " . $default . ";";
+
+						CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
 					}
 					// be sure to track the last name used :)
 					$last_name = $field;
 				}
 				// check if default field was overwritten
-				if (!isset($this->fieldsNames[$view]['params']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.params'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1) . "`params` text NULL,";
 				}
 				// check if default field was overwritten
-				if (!isset($this->fieldsNames[$view]['published']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.published'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`published` TINYINT(3) NOT NULL DEFAULT 1,";
 				}
 				// check if default field was overwritten
-				if (!isset($this->fieldsNames[$view]['created_by']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.created_by'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`created_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was overwritten
-				if (!isset($this->fieldsNames[$view]['modified_by']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.modified_by'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was overwritten
-				if (!isset($this->fieldsNames[$view]['created']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.created'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was overwritten
-				if (!isset($this->fieldsNames[$view]['modified']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.modified'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was overwritten
-				if (!isset($this->fieldsNames[$view]['checked_out']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.checked_out'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`checked_out` int(11) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was overwritten
-				if (!isset($this->fieldsNames[$view]['checked_out_time']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.checked_out_time'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was overwritten
-				if (!isset($this->fieldsNames[$view]['version']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.version'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`version` INT(10) unsigned NOT NULL DEFAULT 1,";
 				}
 				// check if default field was overwritten
-				if (!isset($this->fieldsNames[$view]['hits']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.hits'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`hits` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if view has access
-				if (isset($this->accessBuilder[$view])
-					&& StringHelper::check(
-						$this->accessBuilder[$view]
-					)
-					&& !isset($this->fieldsNames[$view]['access']))
+				if (CFactory::_('Registry')->exists('builder.access_switch.' . $view)
+					&& !CFactory::_('Registry')->isString('builder.field_names.' . $view . '.access'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`access` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was overwritten
-				if (!isset($this->fieldsNames[$view]['ordering']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.ordering'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`ordering` INT(11) NOT NULL DEFAULT 0,";
 				}
 				// check if metadata is added to this view
-				if (isset($this->metadataBuilder[$view])
-					&& StringHelper::check(
-						$this->metadataBuilder[$view]
-					))
+				if (CFactory::_('Registry')->isString('builder.meta_data.' . $view))
 				{
 					// check if default field was overwritten
-					if (!isset($this->fieldsNames[$view]['metakey']))
+					if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.metakey'))
 					{
 						$db_ .= PHP_EOL . Indent::_(1)
 							. "`metakey` TEXT NOT NULL,";
 					}
 					// check if default field was overwritten
-					if (!isset($this->fieldsNames[$view]['metadesc']))
+					if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.metadesc'))
 					{
 						$db_ .= PHP_EOL . Indent::_(1)
 							. "`metadesc` TEXT NOT NULL,";
 					}
 					// check if default field was overwritten
-					if (!isset($this->fieldsNames[$view]['metadata']))
+					if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.metadata'))
 					{
 						$db_ .= PHP_EOL . Indent::_(1)
 							. "`metadata` TEXT NOT NULL,";
@@ -10290,34 +10236,27 @@ class Interpretation extends Fields
 				$db_ .= PHP_EOL . Indent::_(1) . "PRIMARY KEY  (`id`)";
 				// check if a key was set for any of the default fields then we should not set it again
 				$check_keys_set = array();
-				if (isset($this->dbUniqueKeys[$view])
-					&& ArrayHelper::check(
-						$this->dbUniqueKeys[$view]
-					))
+				if (CFactory::_('Registry')->isArray('builder.database_unique_keys.' . $view))
 				{
-					foreach ($this->dbUniqueKeys[$view] as $nr => $key)
+					foreach (CFactory::_('Registry')->get('builder.database_unique_keys.' . $view) as $nr => $key)
 					{
-						$db_                  .= "," . PHP_EOL . Indent::_(1)
+						$db_ .= "," . PHP_EOL . Indent::_(1)
 							. "UNIQUE KEY `idx_" . $key . "` (`" . $key . "`)";
 						$check_keys_set[$key] = $key;
 					}
 				}
-				if (isset($this->dbKeys[$view])
-					&& ArrayHelper::check($this->dbKeys[$view]))
+				if (CFactory::_('Registry')->isArray('builder.database_keys.' . $view))
 				{
-					foreach ($this->dbKeys[$view] as $nr => $key)
+					foreach (CFactory::_('Registry')->get('builder.database_keys.' . $view) as $nr => $key)
 					{
-						$db_                  .= "," . PHP_EOL . Indent::_(1)
+						$db_ .= "," . PHP_EOL . Indent::_(1)
 							. "KEY `idx_" . $key . "` (`" . $key . "`)";
 						$check_keys_set[$key] = $key;
 					}
 				}
 				// check if view has access
 				if (!isset($check_keys_set['access'])
-					&& isset($this->accessBuilder[$view])
-					&& StringHelper::check(
-						$this->accessBuilder[$view]
-					))
+					&& CFactory::_('Registry')->exists('builder.access_switch.' . $view))
 				{
 					$db_ .= "," . PHP_EOL . Indent::_(1)
 						. "KEY `idx_access` (`access`)";
@@ -10376,9 +10315,8 @@ class Interpretation extends Fields
 					get('builder.add_sql.adminview.' . $view, null))
 				{
 					// build the update array
-					$this->updateSQLBuilder["CREATETABLEIFNOTEXISTS`#__"
-					. $component . "_" . $view . "`"]
-						= $db_;
+					$key_ = "CREATETABLEIFNOTEXISTS`#__" . $component . "_" . $view . "`";
+					CFactory::_('Builder.Update.Mysql')->set($key_, $db_);
 				}
 				// check if the table row_format has changed
 				if (StringHelper::check($easy['row_format'])
@@ -10386,20 +10324,18 @@ class Interpretation extends Fields
 					get('builder.update_sql.table_row_format.' . $view, null))
 				{
 					// build the update array
-					$this->updateSQLBuilder["ALTERTABLE`#__" . $component . "_"
-					. $view . "`" . trim((string) $easy['row_format'])]
-						= "ALTER TABLE `#__" . $component . "_" . $view . "`"
-						. $easy['row_format'] . ";";
+					$key_ = "ALTERTABLE`#__" . $component . "_" . $view . "`" . trim((string) $easy['row_format']);
+					$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "`" . $easy['row_format'] . ";";
+					CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
 				}
 				// check if the table engine has changed
 				if (CFactory::_('Registry')->
 					get('builder.update_sql.table_engine.' . $view, null))
 				{
 					// build the update array
-					$this->updateSQLBuilder["ALTERTABLE`#__" . $component . "_"
-					. $view . "`ENGINE=" . $easy['engine']]
-						= "ALTER TABLE `#__" . $component . "_" . $view
-						. "` ENGINE = " . $easy['engine'] . ";";
+					$key_ = "ALTERTABLE`#__" . $component . "_" . $view . "`ENGINE=" . $easy['engine'];
+					$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` ENGINE = " . $easy['engine'] . ";";
+					CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
 				}
 				// check if the table charset OR collation has changed (must be updated together)
 				if (CFactory::_('Registry')->
@@ -10408,12 +10344,12 @@ class Interpretation extends Fields
 					get('builder.update_sql.table_collate.' . $view, null))
 				{
 					// build the update array
-					$this->updateSQLBuilder["ALTERTABLE`#__" . $component . "_"
-					. $view . "CONVERTTOCHARACTERSET" . $easy['charset']
-					. "COLLATE" . $easy['collate']]
-						= "ALTER TABLE `#__" . $component . "_" . $view
-						. "` CONVERT TO CHARACTER SET " . $easy['charset']
-						. " COLLATE " . $easy['collate'] . ";";
+					$key_ = "ALTERTABLE`#__" . $component . "_" . $view . "CONVERTTOCHARACTERSET"
+						. $easy['charset'] . "COLLATE" . $easy['collate'];
+					$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` CONVERT TO CHARACTER SET "
+						. $easy['charset'] . " COLLATE " . $easy['collate'] . ";";
+
+					CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
 				}
 
 				// add to main DB string
@@ -10521,10 +10457,7 @@ class Interpretation extends Fields
 	public function setUninstall()
 	{
 		$db = '';
-		if (isset($this->queryBuilder)
-			&& ArrayHelper::check(
-				$this->queryBuilder
-			))
+		if (CFactory::_('Registry')->exists('builder.database_tables'))
 		{
 			foreach ($this->uninstallBuilder as $line)
 			{
@@ -11197,7 +11130,7 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . Indent::_(1)
 				. '<tr class="row<?php echo $i % 2; ?>">';
 			// only load if not over written
-			if (!isset($this->fieldsNames[$nameSingleCode]['ordering']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.ordering'))
 			{
 				$body .= PHP_EOL . Indent::_(2)
 					. '<td class="order nowrap center hidden-phone">';
@@ -11284,7 +11217,7 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . Indent::_(2) . "</td>";
 			// check if this view has fields that should not be escaped
 			$doNotEscape = false;
-			if (isset($this->doNotEscape[$nameListCode]))
+			if (CFactory::_('Registry')->exists('builder.do_not_escape.' . $nameListCode))
 			{
 				$doNotEscape = true;
 			}
@@ -11323,7 +11256,7 @@ class Interpretation extends Fields
 				}
 			}
 			// add the defaults
-			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
 			{
 				$body .= PHP_EOL . Indent::_(2) . '<td class="center">';
 				// check if the item has permissions.
@@ -11369,7 +11302,7 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(2) . "<?php endif; ?>";
 				$body .= PHP_EOL . Indent::_(2) . "</td>";
 			}
-			if (!isset($this->fieldsNames[$nameSingleCode]['id']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.id'))
 			{
 				$body .= PHP_EOL . Indent::_(2) . '<td class="'
 					. $this->getListFieldClass(
@@ -11752,7 +11685,7 @@ class Interpretation extends Fields
 		}
 		elseif ($doNotEscape)
 		{
-			if (in_array($item['code'], $this->doNotEscape[$nameListCode]))
+			if (CFactory::_('Registry')->exists('builder.do_not_escape.' . $nameListCode . '.' . $item['code']))
 			{
 				return '$item->' . $item['code'];
 			}
@@ -11979,9 +11912,7 @@ class Interpretation extends Fields
 	 */
 	protected function getListFieldClass($name, $nameListCode, $default = '')
 	{
-		return (isset($this->listFieldClass[$nameListCode])
-			&& isset($this->listFieldClass[$nameListCode][$name]))
-			? $this->listFieldClass[$nameListCode][$name] : $default;
+		return CFactory::_('Registry')->get('builder.list_field_class.' . $nameListCode . '.' . $name, $default);
 	}
 
 	/**
@@ -12206,7 +12137,7 @@ class Interpretation extends Fields
 			$head = '<tr>';
 			$head .= PHP_EOL . Indent::_(1)
 				. "<?php if (\$this->canEdit&& \$this->canState): ?>";
-			if (!isset($this->fieldsNames[$nameSingleCode]['ordering']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.ordering'))
 			{
 				$head .= PHP_EOL . Indent::_(2)
 					. '<th width="1%" class="nowrap center hidden-phone">';
@@ -12297,7 +12228,7 @@ class Interpretation extends Fields
 				}
 			}
 			// set default
-			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
 			{
 				$head .= PHP_EOL . Indent::_(1)
 					. "<?php if (\$this->canState): ?>";
@@ -12316,7 +12247,7 @@ class Interpretation extends Fields
 				$head .= PHP_EOL . Indent::_(2) . "</th>";
 				$head .= PHP_EOL . Indent::_(1) . "<?php endif; ?>";
 			}
-			if (!isset($this->fieldsNames[$nameSingleCode]['id']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.id'))
 			{
 				$head .= PHP_EOL . Indent::_(1)
 					. '<th width="5" class="nowrap center hidden-phone" >';
@@ -12355,22 +12286,19 @@ class Interpretation extends Fields
 	public function getTabLayoutFieldsArray($nameSingleCode)
 	{
 		// check if the load build is set for this view
-		if (isset($this->layoutBuilder[$nameSingleCode])
-			&& ArrayHelper::check(
-				$this->layoutBuilder[$nameSingleCode]
-			))
+		if (CFactory::_('Registry')->exists('builder.layout.' . $nameSingleCode))
 		{
+			$layout_builder = (array) CFactory::_('Registry')->get('builder.layout.' . $nameSingleCode);
 			$layoutArray = array();
-			foreach (
-				$this->layoutBuilder[$nameSingleCode] as $layout =>
-				$alignments
-			)
+			foreach ($layout_builder as $layout => $alignments)
 			{
+				$alignments = (array) $alignments;
 				// sort the alignments
 				ksort($alignments);
 				$alignmentArray = array();
 				foreach ($alignments as $alignment => $fields)
 				{
+					$fields = (array) $fields;
 					// sort the fields
 					ksort($fields);
 					$fieldArray = array();
@@ -12417,10 +12345,7 @@ class Interpretation extends Fields
 		$langView = $this->langPrefix . '_'
 			. StringHelper::safe($nameSingleCode, 'U');
 		// check if the load build is set for this view
-		if (isset($this->layoutBuilder[$nameSingleCode])
-			&& ArrayHelper::check(
-				$this->layoutBuilder[$nameSingleCode]
-			))
+		if (CFactory::_('Registry')->exists('builder.layout.' . $nameSingleCode))
 		{
 			// reset the linked keys
 			$keys                 = array();
@@ -12649,8 +12574,7 @@ class Interpretation extends Fields
 				// get the tab name
 				$tabName = $view['settings']->tabs[(int) $linkedView['tab']];
 				// update the tab counter
-				$this->tabCounter[$nameSingleCode][$linkedView['tab']]
-					= $tabName;
+				CFactory::_('Registry')->set('builder.tab_counter.' . $nameSingleCode . '.' . $linkedView['tab'], $tabName);
 				// add the linked view
 				$linkedTab[$linkedView['adminview']] = $linkedView['tab'];
 				// set the keys if values are set
@@ -12711,9 +12635,10 @@ class Interpretation extends Fields
 		// start tabs
 		$tabs = array();
 		// sort the tabs based on key order
-		ksort($this->tabCounter[$nameSingleCode]);
+		$tab_counter = (array) CFactory::_('Registry')->get('builder.tab_counter.' . $nameSingleCode);
+		ksort($tab_counter);
 		// start tab building loop
-		foreach ($this->tabCounter[$nameSingleCode] as $tabNr => $tabName)
+		foreach ($tab_counter as $tabNr => $tabName)
 		{
 			$tabWidth  = 12;
 			$lrCounter = 0;
@@ -12740,10 +12665,10 @@ class Interpretation extends Fields
 				}
 			}
 			// build layout these are actual fields
-			if ($buildLayout)
+			if ($buildLayout && CFactory::_('Registry')->exists('builder.layout.' . $nameSingleCode . '.' . $tabName))
 			{
 				// sort to make sure it loads left first
-				$alignments = $this->layoutBuilder[$nameSingleCode][$tabName];
+				$alignments = (array) CFactory::_('Registry')->get('builder.layout.' . $nameSingleCode . '.' . $tabName);
 				ksort($alignments);
 				foreach ($alignments as $alignment => $names)
 				{
@@ -12754,6 +12679,7 @@ class Interpretation extends Fields
 					$items       = '';
 					$itemCounter = 0;
 					// sort the names based on order of keys
+					$names = (array) $names;
 					ksort($names);
 					// build the items array for this alignment
 					foreach ($names as $nr => $name)
@@ -12991,12 +12917,10 @@ class Interpretation extends Fields
 		// Setup the default (custom) fields
 		// only load (1 => 'left', 2 => 'right')
 		$fieldsAddedRight = false;
-		if (isset($this->newPublishingFields[$nameSingleCode]))
+		if (CFactory::_('Registry')->exists('builder.new_publishing_fields.' . $nameSingleCode))
 		{
-			foreach (
-				$this->newPublishingFields[$nameSingleCode] as $df_alignment
-			=> $df_items
-			)
+			$new_published_fields = (array) CFactory::_('Registry')->get('builder.new_publishing_fields.' . $nameSingleCode);
+			foreach ($new_published_fields as $df_alignment => $df_items)
 			{
 				foreach ($df_items as $df_order => $df_name)
 				{
@@ -13038,17 +12962,14 @@ class Interpretation extends Fields
 		{
 			foreach ($defaultFields as $defaultField)
 			{
-				if (!isset($this->movedPublishingFields[$nameSingleCode][$defaultField]))
+				if (!CFactory::_('Registry')->exists('builder.moved_publishing_fields.' . $nameSingleCode . '.' . $defaultField))
 				{
 					if ($defaultField != 'access')
 					{
 						$items[$d_alignment][] = $defaultField;
 					}
 					elseif ($defaultField === 'access'
-						&& isset($this->accessBuilder[$nameSingleCode])
-						&& StringHelper::check(
-							$this->accessBuilder[$nameSingleCode]
-						))
+						&& CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode))
 					{
 						$items[$d_alignment][] = $defaultField;
 					}
@@ -13056,10 +12977,7 @@ class Interpretation extends Fields
 			}
 		}
 		// check if metadata is added to this view
-		if (isset($this->metadataBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->metadataBuilder[$nameSingleCode]
-			))
+		if (CFactory::_('Registry')->exists('builder.meta_data.' . $nameSingleCode))
 		{
 			// set default publishing tab code name
 			$tabCodeNameLeft  = 'publishing';
@@ -13296,8 +13214,7 @@ class Interpretation extends Fields
 
 		// make sure we dont load it to a view with the name component (as this will cause conflict with Joomla conventions)
 		if ($nameSingleCode != 'component'
-			&& isset($this->hasPermissions[$nameSingleCode])
-			&& $this->hasPermissions[$nameSingleCode])
+			&& CFactory::_('Registry')->exists('builder.has_permissions.' . $nameSingleCode))
 		{
 			// set permissions tab lang
 			$tabLangName = $langView . '_PERMISSION';
@@ -13927,7 +13844,7 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . Indent::_(1) . '<tr>';
 			// check if this view has fields that should not be escaped
 			$doNotEscape = false;
-			if (isset($this->doNotEscape[$nameListCode]))
+			if (CFactory::_('Registry')->exists('builder.do_not_escape.' . $nameListCode))
 			{
 				$doNotEscape = true;
 			}
@@ -13971,7 +13888,7 @@ class Interpretation extends Fields
 				: 'data-value';
 
 			// add the defaults
-			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
 			{
 				$counter++;
 				// add the defaults
@@ -14034,7 +13951,7 @@ class Interpretation extends Fields
 			}
 
 			// add the defaults
-			if (!isset($this->fieldsNames[$nameSingleCode]['id']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.id'))
 			{
 				$counter++;
 				$body .= PHP_EOL . Indent::_(2)
@@ -14239,7 +14156,7 @@ class Interpretation extends Fields
 			$data_hide = (2 == $footable_version)
 				? 'data-hide="phone,tablet"' : 'data-breakpoints="xs sm md"';
 			// add the defaults
-			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
 			{
 				$head .= PHP_EOL . Indent::_(2) . '<th width="10" ' . $data_hide
 					. '>';
@@ -14249,7 +14166,7 @@ class Interpretation extends Fields
 			}
 
 			// add the defaults
-			if (!isset($this->fieldsNames[$nameSingleCode]['id']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.id'))
 			{
 				$data_type = (2 == $footable_version)
 					? 'data-type="numeric"'
@@ -14437,10 +14354,7 @@ class Interpretation extends Fields
 				$query .= PHP_EOL . Indent::_(2) . "}";
 			}
 		}
-		if (isset($this->accessBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->accessBuilder[$nameSingleCode]
-			))
+		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode))
 		{
 			$query .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -14450,7 +14364,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(2)
 				. "\$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');";
 			// check if the access field was over ridden
-			if (!isset($this->fieldsNames[$nameSingleCode]['access']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
 			{
 				// component helper name
 				$Helper = CFactory::_('Content')->get('Component') . 'Helper';
@@ -15064,10 +14978,7 @@ class Interpretation extends Fields
 				$query .= PHP_EOL . Indent::_(3) . "}";
 			}
 			// add access levels if the view has access set
-			if (isset($this->accessBuilder[$nameSingleCode])
-				&& StringHelper::check(
-					$this->accessBuilder[$nameSingleCode]
-				))
+			if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode))
 			{
 				$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(
 						__LINE__,__CLASS__
@@ -15535,10 +15446,7 @@ class Interpretation extends Fields
 		$query .= PHP_EOL . Indent::_(3)
 			. "\$query->where('(a.published = 0 OR a.published = 1)');";
 		$query .= PHP_EOL . Indent::_(2) . "}";
-		if (isset($this->accessBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->accessBuilder[$nameSingleCode]
-			))
+		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode))
 		{
 			$query .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -15548,7 +15456,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(2)
 				. "\$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');";
 			// check if the access field was over ridden
-			if (!isset($this->fieldsNames[$nameSingleCode]['access']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
 			{
 				// component helper name
 				$Helper = CFactory::_('Content')->get('Component') . 'Helper';
@@ -15783,23 +15691,12 @@ class Interpretation extends Fields
 			foreach ($this->customBuilder[$nameListCode] as $filter)
 			{
 				// only load this if table is set
-				if ((isset($this->customBuilderList[$nameListCode])
-						&& ArrayHelper::check(
-							$this->customBuilderList[$nameListCode]
-						)
-						&& in_array(
-							$filter['code'],
-							$this->customBuilderList[$nameListCode]
-						)
+				if ((CFactory::_('Registry')->exists('builder.custom_list.' . $nameSingleCode . '.' . $filter['code'])
 						&& isset($filter['custom']['table'])
-						&& StringHelper::check(
-							$filter['custom']['table']
-						)
+						&& StringHelper::check($filter['custom']['table'])
 						&& $filter['method'] == 0)
 					|| ($just_text && isset($filter['custom']['table'])
-						&& StringHelper::check(
-							$filter['custom']['table']
-						)
+						&& StringHelper::check($filter['custom']['table'])
 						&& $filter['method'] == 0))
 				{
 					$query .= PHP_EOL . PHP_EOL . Indent::_(2) . $tab . "//"
@@ -18154,25 +18051,24 @@ class Interpretation extends Fields
 		$fields[] = Indent::_(1) . " */";
 		$fields[] = Indent::_(1) . "protected function getUniqueFields()";
 		$fields[] = Indent::_(1) . "{";
-		if (isset($this->dbUniqueKeys[$view])
-			&& ArrayHelper::check($this->dbUniqueKeys[$view]))
+		if (CFactory::_('Registry')->isArray('builder.database_unique_keys.' . $view))
 		{
 			// if guid should also be added
-			if (isset($this->dbUniqueGuid[$view]))
+			if (CFactory::_('Registry')->get('builder.database_unique_guid.' . $view))
 			{
 				$fields[] = Indent::_(2) . "return array('" . implode(
-						"','", $this->dbUniqueKeys[$view]
+						"','", CFactory::_('Registry')->get('builder.database_unique_keys.' . $view)
 					) . "', 'guid');";
 			}
 			else
 			{
 				$fields[] = Indent::_(2) . "return array('" . implode(
-						"','", $this->dbUniqueKeys[$view]
+						"','", CFactory::_('Registry')->get('builder.database_unique_keys.' . $view)
 					) . "');";
 			}
 		}
 		// if only GUID is found
-		elseif (isset($this->dbUniqueGuid[$view]))
+		elseif (CFactory::_('Registry')->get('builder.database_unique_guid.' . $view))
 		{
 			$fields[] = Indent::_(2) . "return array('guid');";
 		}
@@ -18395,11 +18291,8 @@ class Interpretation extends Fields
 			$filter[] = Indent::_(3) . ");";
 			$filter[] = Indent::_(2) . "}";
 			// check if view has access
-			if (isset($this->accessBuilder[$nameSingleCode])
-				&& StringHelper::check(
-					$this->accessBuilder[$nameSingleCode]
-				)
-				&& !isset($this->fieldsNames[$nameSingleCode]['access']))
+			if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode)
+				&& !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
 			{
 				$filter[] = PHP_EOL . Indent::_(2) . "JHtmlSidebar::addFilter(";
 				$filter[] = Indent::_(3) . "JText:"
@@ -18649,11 +18542,8 @@ class Interpretation extends Fields
 		$batch[] = Indent::_(3) . ");";
 		$batch[] = Indent::_(2) . "}";
 		// check if view has access
-		if (isset($this->accessBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->accessBuilder[$nameSingleCode]
-			)
-			&& !isset($this->fieldsNames[$nameSingleCode]['access']))
+		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode)
+			&& !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
 		{
 			$batch[] = PHP_EOL . Indent::_(2)
 				. "//" . Line::_(__Line__, __Class__)
@@ -20418,10 +20308,7 @@ class Interpretation extends Fields
 		// default filter fields
 		$fields = "'a.id','id'";
 		$fields .= "," . PHP_EOL . Indent::_(4) . "'a.published','published'";
-		if (isset($this->accessBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->accessBuilder[$nameSingleCode]
-			))
+		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode))
 		{
 			$fields .= "," . PHP_EOL . Indent::_(4) . "'a.access','access'";
 		}
@@ -20547,17 +20434,14 @@ class Interpretation extends Fields
 		$stored .= PHP_EOL . Indent::_(2)
 			. "\$id .= ':' . \$this->getState('filter.search');";
 		// add this if not already added
-		if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
 		{
 			$stored .= PHP_EOL . Indent::_(2)
 				. "\$id .= ':' . \$this->getState('filter.published');";
 		}
 		// add if view calls for it, and not already added
-		if (isset($this->accessBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->accessBuilder[$nameSingleCode]
-			)
-			&& !isset($this->fieldsNames[$nameSingleCode]['access']))
+		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode)
+			&& !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
 		{
 			// the side bar option is single
 			if (CFactory::_('Registry')->
@@ -20576,13 +20460,13 @@ class Interpretation extends Fields
 		$stored .= PHP_EOL . Indent::_(2)
 			. "\$id .= ':' . \$this->getState('filter.ordering');";
 		// add this if not already added
-		if (!isset($this->fieldsNames[$nameSingleCode]['created_by']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.created_by'))
 		{
 			$stored .= PHP_EOL . Indent::_(2)
 				. "\$id .= ':' . \$this->getState('filter.created_by');";
 		}
 		// add this if not already added
-		if (!isset($this->fieldsNames[$nameSingleCode]['modified_by']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.modified_by'))
 		{
 			$stored .= PHP_EOL . Indent::_(2)
 				. "\$id .= ':' . \$this->getState('filter.modified_by');";
@@ -20973,10 +20857,7 @@ class Interpretation extends Fields
 					$this->permissionBuilder['global'][$core['core.edit']]
 				))
 			{
-				if ($coreLoad && isset($this->historyBuilder[$nameSingleCode])
-					&& StringHelper::check(
-						$this->historyBuilder[$nameSingleCode]
-					))
+				if ($coreLoad && CFactory::_('Registry')->exists('builder.history.' . $nameSingleCode))
 				{
 					$toolBar .= PHP_EOL . Indent::_(4)
 						. "\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('"
@@ -20994,10 +20875,7 @@ class Interpretation extends Fields
 			}
 			else
 			{
-				if ($coreLoad && isset($this->historyBuilder[$nameSingleCode])
-					&& StringHelper::check(
-						$this->historyBuilder[$nameSingleCode]
-					))
+				if ($coreLoad && CFactory::_('Registry')->exists('builder.history.' . $nameSingleCode))
 				{
 					$toolBar .= PHP_EOL . Indent::_(4)
 						. "\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('"
@@ -21195,7 +21073,7 @@ class Interpretation extends Fields
 		// start filter
 		$filter = array('type' => 'text');
 		// if access is not set add its default filter here
-		if (!isset($this->fieldsNames[$nameSingleCode]['access']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
 		{
 			$filter['code'] = "access";
 			$state          .= $this->getPopulateStateFilterCode(
@@ -21203,7 +21081,7 @@ class Interpretation extends Fields
 			);
 		}
 		// if published is not set add its default filter here
-		if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
 		{
 			$filter['code'] = "published";
 			$state          .= $this->getPopulateStateFilterCode(
@@ -21211,7 +21089,7 @@ class Interpretation extends Fields
 			);
 		}
 		// if created_by is not set add its default filter here
-		if (!isset($this->fieldsNames[$nameSingleCode]['created_by']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.created_by'))
 		{
 			$filter['code'] = "created_by";
 			$state          .= $this->getPopulateStateFilterCode(
@@ -21219,7 +21097,7 @@ class Interpretation extends Fields
 			);
 		}
 		// if created is not set add its default filter here
-		if (!isset($this->fieldsNames[$nameSingleCode]['created']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.created'))
 		{
 			$filter['code'] = "created";
 			$state          .= $this->getPopulateStateFilterCode(
@@ -21442,7 +21320,7 @@ class Interpretation extends Fields
 				. PHP_EOL;
 		}
 		// add the tags if needed
-		if (isset($this->tagsBuilder[$nameSingleCode]))
+		if (CFactory::_('Registry')->get('builder.tags.' . $nameSingleCode))
 		{
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "//"
 				. Line::_(
@@ -22287,7 +22165,7 @@ class Interpretation extends Fields
 			}
 			// add accessLevels switch
 			$add_access_levels = false;
-			if (in_array($nameListCode, $this->accessBuilder))
+			if (CFactory::_('Registry')->exists('builder.access_switch_list.' . $nameListCode))
 			{
 				// is found so add it
 				$add_access_levels = true;

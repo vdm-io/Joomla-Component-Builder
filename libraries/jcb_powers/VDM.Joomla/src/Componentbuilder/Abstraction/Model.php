@@ -67,7 +67,7 @@ abstract class Model
 
 	/**
 	 * Model the values of an item
-	 *          Example: $this->item('table_name', Object);
+	 *          Example: $this->item(Object, 'table_name');
 	 *
 	 * @param   object         $item      The item object
 	 * @param   string|null    $table     The table
@@ -83,35 +83,42 @@ abstract class Model
 			$table = $this->getTable();
 		}
 
-		// field counter
-		$field_number = 0;
-
-		// check if this is a valid table
-		if (($fields = $this->getTableFields($table)) !== null)
+		if (($fields = $this->getTableFields($table, true)) !== null)
 		{
+			// field counter
+			$field_number = 0;
+
+			// check if this is a valid table
+			$item_bucket = new \stdClass();
+
 			foreach ($fields as $field)
 			{
 				// model a value if it exists
 				if(isset($item->{$field}))
 				{
+					if (!$this->validateBefore($item->{$field}, $field, $table))
+					{
+						continue;
+					}
+
 					$item->{$field} = $this->value($item->{$field}, $field, $table);
 
-					if ($this->validate($item->{$field}))
+					if (!$this->validateAfter($item->{$field}, $field, $table))
 					{
-						$field_number++;
+						continue;
 					}
-					else
-					{
-						unset($item->{$field});
-					}
+
+					$item_bucket->{$field} = $item->{$field};
+
+					$field_number++;
 				}
 			}
-		}
 
-		// all items must have more than one field or its empty (1 = id)
-		if ($field_number > 1)
-		{
-			return $item;
+			// all items must have more than one field or its empty (1 = id or guid)
+			if ($field_number > 1)
+			{
+				return $item_bucket;
+			}
 		}
 
 		return null;
@@ -144,7 +151,110 @@ abstract class Model
 				if (($item = $this->item($item, $table)) !== null)
 				{
 					// add the last ID
-					$this->last[$table] = $item->id;
+					$this->last[$table] = $item->id ?? $this->last[$table] ?? null;
+				}
+				else
+				{
+					unset($items[$id]);
+				}
+			}
+
+			if (ArrayHelper::check($items))
+			{
+				return $items;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Model the values of an row
+	 *          Example: $this->item(Array, 'table_name');
+	 *
+	 * @param   array          $item      The item array
+	 * @param   string|null    $table     The table
+	 *
+	 * @return  array|null
+	 * @since 3.2.0
+	 */
+	public function row(array $item, ?string $table = null): ?array
+	{
+		// set the table name
+		if (empty($table))
+		{
+			$table = $this->getTable();
+		}
+
+		if (($fields = $this->getTableFields($table, true)) !== null)
+		{
+			// field counter
+			$field_number = 0;
+
+			// check if this is a valid table
+			$item_bucket = [];
+
+			foreach ($fields as $field)
+			{
+				// model a value if it exists
+				if(isset($item[$field]))
+				{
+					if (!$this->validateBefore($item[$field], $field, $table))
+					{
+						continue;
+					}
+
+					$item[$field] = $this->value($item[$field], $field, $table);
+
+					if (!$this->validateAfter($item[$field], $field, $table))
+					{
+						continue;
+					}
+
+					$item_bucket[$field] = $item[$field];
+
+					$field_number++;
+				}
+			}
+
+			// all items must have more than one field or its empty (1 = id or guid)
+			if ($field_number > 1)
+			{
+				return $item_bucket;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Model the values of multiple rows
+	 *          Example: $this->items(Array, 'table_name');
+	 *
+	 * @param   array|null     $items    The array of item array
+	 * @param   string|null    $table    The table
+	 *
+	 * @return  array|null
+	 * @since 3.2.0
+	 */
+	public function rows(?array $items = null, ?string $table = null): ?array
+	{
+		// check if this is a valid table
+		if (ArrayHelper::check($items))
+		{
+			// set the table name
+			if (empty($table))
+			{
+				$table = $this->getTable();
+			}
+
+			foreach ($items as $id => &$item)
+			{
+				// model the item
+				if (($item = $this->row($item, $table)) !== null)
+				{
+					// add the last ID
+					$this->last[$table] = $item['id'] ?? $this->last[$table] ?? null;
 				}
 				else
 				{
@@ -188,7 +298,21 @@ abstract class Model
 	}
 
 	/**
-	 * Validate the values (basic, override in child class)
+	 * Get the current active table's fields (including defaults)
+	 *
+	 * @param   string  $table     The area
+	 * @param   bool    $default   Add the default fields
+	 *
+	 * @return  array
+	 * @since 3.2.0
+	 */
+	protected function getTableFields(string $table, bool $default = false): ?array
+	{
+		return $this->table->fields($table, $default);
+	}
+
+	/**
+	 * Validate before the value is modelled (basic, override in child class)
 	 *
 	 * @param   mixed         $value   The field value
 	 * @param   string|null   $field     The field key
@@ -197,29 +321,19 @@ abstract class Model
 	 * @return  bool
 	 * @since 3.2.0
 	 */
-	protected function validate(&$value, ?string $field = null, ?string $table = null): bool
-	{
-		// check values
-		if (StringHelper::check($value) || ArrayHelper::check($value, true))
-		{
-			return true;
-		}
-		// remove empty values
-		return false;
-	}
+	abstract protected function validateBefore(&$value, ?string $field = null, ?string $table = null): bool;
 
 	/**
-	 * Get the current active table's fields
+	 * Validate after the value is modelled (basic, override in child class)
 	 *
-	 * @param   string     $table     The table
+	 * @param   mixed         $value   The field value
+	 * @param   string|null   $field     The field key
+	 * @param   string|null   $table   The table
 	 *
-	 * @return  array
+	 * @return  bool
 	 * @since 3.2.0
 	 */
-	protected function getTableFields(string $table): ?array
-	{
-		return $this->table->fields($table);
-	}
+	abstract protected function validateAfter(&$value, ?string $field = null, ?string $table = null): bool;
 
 	/**
 	 * Get the current active table

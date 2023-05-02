@@ -17,6 +17,9 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Power;
 use VDM\Joomla\Componentbuilder\Compiler\Content;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Autoloader;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Repo\Readme as RepoReadme;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Repos\Readme as ReposReadme;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Utilities\StringHelper;
@@ -63,6 +66,30 @@ class Infusion
 	protected Autoloader $autoloader;
 
 	/**
+	 * Compiler Powers Parser
+	 *
+	 * @var    Parser
+	 * @since 3.2.0
+	 **/
+	protected Parser $parser;
+
+	/**
+	 * Compiler Powers Repo Readme Builder
+	 *
+	 * @var    RepoReadme
+	 * @since 3.2.0
+	 **/
+	protected RepoReadme $reporeadme;
+
+	/**
+	 * Compiler Powers Repos Readme Builder
+	 *
+	 * @var    ReposReadme
+	 * @since 3.2.0
+	 **/
+	protected ReposReadme $reposreadme;
+
+	/**
 	 * Compiler Placeholder
 	 *
 	 * @var    Placeholder
@@ -79,24 +106,59 @@ class Infusion
 	protected Event $event;
 
 	/**
+	 * Power linker values
+	 *
+	 * @var    array
+	 * @since 3.2.0
+	 **/
+	protected array $linker = [
+		'add_head' => 'add_head',
+		'unchanged_composer' => 'composer',
+		'unchanged_description' => 'description',
+		'extends' => 'extends',
+		'unchanged_extends_custom' => 'extends_custom',
+		'guid' => 'guid',
+		'unchanged_head' => 'head',
+		'use_selection' => 'use_selection',
+		'implements' => 'implements',
+		'unchanged_implements_custom' => 'implements_custom',
+		'load_selection' => 'load_selection',
+		'name' => 'name',
+		'power_version' => 'power_version',
+		'system_name' => 'system_name',
+		'type' => 'type',
+		'unchanged_namespace' => 'namespace',
+		'unchanged_composer' => 'composer',
+		'add_licensing_template' => 'add_licensing_template',
+		'unchanged_licensing_template' => 'licensing_template'
+	];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Config|null        $config       The Config object.
 	 * @param Power|null         $power        The power object.
 	 * @param Content|null       $content      The compiler content object.
 	 * @param Autoloader|null    $autoloader   The powers autoloader object.
+	 * @param Parser|null        $parser       The powers parser object.
+	 * @param RepoReadme|null    $reporeadme   The powers repo readme builder object.
+	 * @param ReposReadme|null   $reposreadme  The powers repos readme builder object.
 	 * @param Placeholder|null   $placeholder  The placeholder object.
 	 * @param Event|null         $event        The events object.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Power $power = null, ?Content $content = null,
-		?Autoloader $autoloader = null, ?Placeholder $placeholder = null, ?Event $event = null)
+		?Autoloader $autoloader = null, ?Parser $parser = null, ?RepoReadme $reporeadme = null,
+		?ReposReadme $reposreadme = null, ?Placeholder $placeholder = null, ?Event $event = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->power = $power ?: Compiler::_('Power');
 		$this->content = $content ?: Compiler::_('Content');
 		$this->autoloader = $autoloader ?: Compiler::_('Power.Autoloader');
+		$this->parser = $parser ?: Compiler::_('Power.Parser');
+		$this->reporeadme = $reporeadme ?: Compiler::_('Power.Repo.Readme');
+		$this->reposreadme = $reposreadme ?: Compiler::_('Power.Repos.Readme');
 		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
 		$this->event = $event ?: Compiler::_('Event');
 	}
@@ -108,6 +170,90 @@ class Infusion
 	 * @since 3.2.0
 	 */
 	public function set()
+	{
+		// parse all powers main code
+		$this->parsePowers();
+
+		// set the powers
+		$this->setSuperPowers();
+
+		// set the powers
+		$this->setPowers();
+	}
+
+	/**
+	 * We parse the powers to get the class map of all methods
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	private function parsePowers()
+	{
+		// we only do this if super powers are active
+		if ($this->config->add_super_powers && ArrayHelper::check($this->power->superpowers))
+		{
+			foreach ($this->power->active as $n => &$power)
+			{
+				if (ObjectHelper::check($power) && isset($power->main_class_code) &&
+					StringHelper::check($power->main_class_code))
+				{
+					// only parse those approved
+					if ($power->approved == 1)
+					{
+						$power->main_class_code = $this->placeholder->update($power->main_class_code, $this->content->active);
+						$power->parsed_class_code = $this->parser->code($power->main_class_code);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Set the Super Powers details
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	private function setSuperPowers()
+	{
+		// infuse super powers details if set
+		if ($this->config->add_super_powers && ArrayHelper::check($this->power->superpowers))
+		{
+			// TODO we need to update the event signatures
+			$context = $this->config->component_context;
+
+			foreach ($this->power->superpowers as $path => $powers)
+			{
+				$key = StringHelper::safe($path);
+
+				// Trigger Event: jcb_ce_onBeforeInfuseSuperPowerDetails
+				$this->event->trigger(
+					'jcb_ce_onBeforeInfuseSuperPowerDetails',
+					array(&$context, &$path, &$key, &$powers)
+				);
+
+				// POWERREADME
+				$this->content->set_($key, 'POWERREADME', $this->reposreadme->get($powers));
+
+				// POWERINDEX
+				$this->content->set_($key, 'POWERINDEX', $this->index($powers));
+
+				// Trigger Event: jcb_ce_onAfterInfuseSuperPowerDetails
+				$this->event->trigger(
+					'jcb_ce_onAfterInfuseSuperPowerDetails',
+					array(&$context, &$path, &$key, &$powers)
+				);
+			}
+		}
+	}
+
+	/**
+	 * Set the Powers code
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	private function setPowers()
 	{
 		// infuse powers data if set
 		if (ArrayHelper::check($this->power->active))
@@ -126,12 +272,16 @@ class Infusion
 					);
 
 					// POWERCODE
-					$this->content->set_($power->key, 'POWERCODE', $this->get($power));
+					$this->content->set_($power->key, 'POWERCODE', $this->code($power));
+
+					// CODEPOWER
+					$this->content->set_($power->key, 'CODEPOWER', $this->raw($power));
 
 					// POWERLINKER
-					// SOON WE STILL NEED TO THINK THIS OVER
-					// $this->content->set_($power->key, 'POWERLINKER', $this->linker($power));
-					$this->content->set_($power->key, 'POWERLINKER', '');
+					$this->content->set_($power->key, 'POWERLINKER', $this->linker($power));
+
+					// POWERLINKER
+					$this->content->set_($power->key, 'POWERREADME', $this->reporeadme->get($power));
 
 					// Trigger Event: jcb_ce_onAfterInfusePowerData
 					$this->event->trigger(
@@ -147,6 +297,19 @@ class Infusion
 	}
 
 	/**
+	 * Build the Super Power Index
+	 *
+	 * @param array    $powers All powers of this super power.
+	 *
+	 * @return string
+	 * @since 3.2.0
+	 */
+	private function index(array &$powers): string
+	{
+		return json_encode($powers, JSON_PRETTY_PRINT);
+	}
+
+	/**
 	 * Get the Power code
 	 *
 	 * @param object    $power A power object.
@@ -154,7 +317,7 @@ class Infusion
 	 * @return string
 	 * @since 3.2.0
 	 */
-	protected function get(object &$power): string
+	private function code(object &$power): string
 	{
 		$code = [];
 
@@ -209,6 +372,24 @@ class Infusion
 	}
 
 	/**
+	 * Get the Raw (unchanged) Power code
+	 *
+	 * @param object    $power A power object.
+	 *
+	 * @return string
+	 * @since 3.2.0
+	 */
+	private function raw(object &$power): string
+	{
+		// add the raw main code if set
+		if (isset($power->unchanged_main_class_code) && StringHelper::check($power->unchanged_main_class_code))
+		{
+			return $power->unchanged_main_class_code;
+		}
+		return '';
+	}
+
+	/**
 	 * Get the Power Linker
 	 *
 	 * @param object    $power A power object.
@@ -216,70 +397,20 @@ class Infusion
 	 * @return string
 	 * @since 3.2.0
 	 */
-	protected function linker(object &$power): string
+	private function linker(object &$power): string
 	{
-		$map = [];
-		$body = [];
+		$linker = [];
 
-		// set the LINKER
-		$map[] = '/******************| POWER LINKER |*******************|';
-		$map[] = '';
-		$map[] = '{';
-
-		// we build the JSON body
-		$body[] = '  "guid": "' . $power->guid . '"';
-
-		// load extends
-		if (GuidHelper::valid($power->extends))
+		// set the linking values
+		foreach ($power as $key => $value)
 		{
-			$body[] = '  "extends": "' . $power->extends . '"';
-		}
-
-		// load implements
-		if (ArrayHelper::check($power->implements))
-		{
-			$sud = [];
-			foreach ($power->implements as $implement)
+			if (isset($this->linker[$key]))
 			{
-				$sud[] = '    "' . $implement . '"';
+				$linker[$this->linker[$key]] = $value;
 			}
-			$sud = implode(','. PHP_EOL, $sud);
-
-			$body[] = '  "implements": [' . PHP_EOL . $sud . PHP_EOL . '  ]';
 		}
 
-		// load (Use Selection)
-		if (ArrayHelper::check($power->use_selection))
-		{
-			$sud = [];
-			foreach ($power->use_selection as $use)
-			{
-				$sud[] = '    "' . $use['use'] . '"';
-			}
-			$sud = implode(','. PHP_EOL, $sud);
-
-			$body[] = '  "use": [' . PHP_EOL . $sud . PHP_EOL . '  ]';
-		}
-
-		// load (Load Selection)
-		if (ArrayHelper::check($power->load_selection))
-		{
-			$sud = [];
-			foreach ($power->load_selection as $load)
-			{
-				$sud[] = '    "' . $load['load'] . '"';
-			}
-			$sud = implode(','. PHP_EOL, $sud);
-
-			$body[] = '  "load": [' . PHP_EOL . $sud . PHP_EOL . '  ]';
-		}
-		$map[] = implode(','. PHP_EOL, $body);
-
-		$map[] = '}';
-		$map[] = '';
-		$map[] = '|******************| POWER LINKER |*******************/' . PHP_EOL . PHP_EOL;
-
-		return implode(PHP_EOL, $map);
+		return json_encode($linker, JSON_PRETTY_PRINT);
 	}
 
 }

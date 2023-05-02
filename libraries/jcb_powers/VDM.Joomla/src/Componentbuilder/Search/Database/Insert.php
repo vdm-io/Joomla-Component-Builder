@@ -115,7 +115,7 @@ class Insert implements InsertInterface
 
 	/**
 	 * Set values to a given table
-	 *          Example: $this->item(Object, 23, 'table_name');
+	 *          Example: $this->item(Object, 'table_name');
 	 *
 	 * @param   object        $item    The item to save
 	 * @param   string|null   $table   The table

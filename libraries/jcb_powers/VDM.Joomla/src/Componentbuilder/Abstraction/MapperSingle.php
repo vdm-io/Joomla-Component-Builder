@@ -32,6 +32,17 @@ abstract class MapperSingle implements Mappersingleinterface
 	public array $active = [];
 
 	/**
+	 * Check if any values are set in the active array
+	 *
+	 * @return  bool  Returns true if the active array is not empty, false otherwise
+	 * @since   3.2.0
+	 */
+	public function isActive(): bool
+	{
+		return !empty($this->active);
+	}
+
+	/**
 	 * Set content
 	 *
 	 * @param   string  $key    The main string key

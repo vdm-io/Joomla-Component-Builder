@@ -772,9 +772,7 @@ class Model implements ServiceProviderInterface
 	 */
 	public function getUpdateserver(Container $container): Updateserver
 	{
-		return new Updateserver(
-			$container->get('Registry')
-		);
+		return new Updateserver();
 	}
 
 	/**

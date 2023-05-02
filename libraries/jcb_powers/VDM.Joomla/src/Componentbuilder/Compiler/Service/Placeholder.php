@@ -71,7 +71,8 @@ class Placeholder implements ServiceProviderInterface
 			$container->get('Config'),
 			$container->get('Placeholder'),
 			$container->get('Language'),
-			$container->get('Language.Extractor')
+			$container->get('Language.Extractor'),
+			$container->get('Power.Extractor')
 		);
 	}
 }

@@ -58,6 +58,17 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * get Gitea Access Token
+	 *
+	 * @return  string  the access token
+	 * @since 3.2.0
+	 */
+	protected function getGiteatoken(): ?string
+	{
+		return $this->params->get('access.token');
+	}
+
+	/**
 	 * get add contributors switch
 	 *
 	 * @return  bool  Add contributors switch
@@ -539,6 +550,68 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * Get local super powers repository path
+	 *
+	 * @return  string The path to the local repository
+	 * @since 3.2.0
+	 */
+	protected function getLocalpowersrepositorypath(): string
+	{
+		$default = $this->tmp_path . '/super_powers';
+
+		if (!$this->add_super_powers)
+		{
+			return $default;
+		}
+
+		$global = $this->params->get('local_powers_repository_path', $default);
+
+		if (!$this->show_advanced_options)
+		{
+			return $global;
+		}
+
+		$value = $this->input->post->get('powers_repository', 2, 'INT');
+
+		return $value == 1
+			? $this->input->post->get('local_powers_repository_path', $global, 'PATH')
+			: $global;
+	}
+
+	/**
+	 * Get super power approved paths
+	 *
+	 * @return  array The approved paths to the repositories on Gitea
+	 * @since 3.2.0
+	 */
+	protected function getApprovedpaths(): array
+	{
+		$default = (object) ['owner' => 'joomla', 'repo' => 'super-powers', 'branch' => 'master'];
+
+		if (!$this->add_own_powers)
+		{
+			return [$default];
+		}
+
+		$paths = $this->params->get('approved_paths');
+
+		$approved = [];
+		if (!empty($paths))
+		{
+			foreach ($paths as $path)
+			{
+				// we make sure to get only the objects
+				$approved[] = $path;
+			}
+		}
+
+		// finally we add the default
+		$approved[] = $default;
+
+		return $approved;
+	}
+
+	/**
 	 * get bom path
 	 *
 	 * @return  string  The bom path
@@ -659,6 +732,42 @@ class Config extends BaseConfig
 			return (bool) GetHelper::var('joomla_component', $this->component_id, 'id', 'add_powers');
 		}
 		return (bool) $value;
+	}
+
+	/**
+	 * Get switch to add super powers
+	 *
+	 * @return  bool  Switch to add super powers
+	 * @since 3.2.0
+	 */
+	protected function getAddsuperpowers(): bool
+	{
+		$default = (bool) $this->params->get('powers_repository', 0);
+
+		if (!$this->show_advanced_options)
+		{
+			return $default;
+		}
+
+		$value = $this->input->post->get('powers_repository', 2, 'INT');
+
+		return $value == 2 ? $default : (bool) $value;
+	}
+
+	/**
+	 * Get switch to add own super powers
+	 *
+	 * @return  bool  Switch to add own super powers
+	 * @since 3.2.0
+	 */
+	protected function getAddownpowers(): bool
+	{
+		if ($this->add_super_powers)
+		{
+			return (bool) $this->params->get('super_powers_repositories', 0);
+		}
+
+		return false;
 	}
 
 	/**

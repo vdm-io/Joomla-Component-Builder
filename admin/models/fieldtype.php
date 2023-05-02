@@ -271,7 +271,7 @@ class ComponentbuilderModelFieldtype extends AdminModel
 			{
 				// column name, and id
 				$type_extension = explode('__', $filter_extension);
-				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($type_extension[1], $type_extension[0])) !== false)
+				if (($ids = JCBFilterHelper::linked((int) $type_extension[1], (string) $type_extension[0])) !== null)
 				{
 					$field_ids = $ids;
 				}
@@ -287,7 +287,7 @@ class ComponentbuilderModelFieldtype extends AdminModel
 			$filter_admin_view = $this->state->get("filter.admin_view");
 			if ($get_ids && $filter_admin_view !== null && !empty($filter_admin_view))
 			{
-				if (($ids = ComponentbuilderHelper::getAreaLinkedIDs($filter_admin_view, 'admin_view')) !== false)
+				if (($ids = JCBFilterHelper::linked((int) $filter_admin_view, 'admin_view')) !== null)
 				{
 					// view will return less fields, so we ignore the component
 					$field_ids = $ids;

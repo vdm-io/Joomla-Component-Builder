@@ -11,6 +11,7 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+use VDM\Joomla\Utilities\StringHelper;
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.formvalidator');
@@ -125,7 +126,7 @@ jQuery('<div id="compiling"></div>')
 <?php else : ?>
 <div id="j-main-container">
 <?php endif; ?>
-	<?php if (ComponentbuilderHelper::checkString($this->SuccessMessage)): ?>
+	<?php if (StringHelper::check($this->SuccessMessage)): ?>
 		<div class="alert alert-success">
 		<button type="button" class="close" data-dismiss="alert">×</button>
 			<?php echo $this->SuccessMessage; ?>

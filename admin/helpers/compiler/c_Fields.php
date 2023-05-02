@@ -34,6 +34,7 @@ class Fields extends Structure
 	 * Metadate Switch
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.meta_data');
 	 */
 	public $metadataBuilder = array();
 
@@ -41,6 +42,7 @@ class Fields extends Structure
 	 * View access Switch
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.access_switch');
 	 */
 	public $accessBuilder = array();
 
@@ -48,6 +50,7 @@ class Fields extends Structure
 	 * edit view tabs counter
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.tab_counter');
 	 */
 	public $tabCounter = array();
 
@@ -55,6 +58,7 @@ class Fields extends Structure
 	 * layout builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.layout');
 	 */
 	public $layoutBuilder = array();
 
@@ -62,6 +66,7 @@ class Fields extends Structure
 	 * permissions builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.has_permissions');
 	 */
 	public $hasPermissions = array();
 
@@ -83,6 +88,7 @@ class Fields extends Structure
 	 * list of fields that are not being escaped
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.do_not_escape');
 	 */
 	public $doNotEscape = array();
 
@@ -90,6 +96,7 @@ class Fields extends Structure
 	 * list of classes used in the list view for the fields
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->set('builder.list_field_class');
 	 */
 	public $listFieldClass = array();
 
@@ -97,6 +104,7 @@ class Fields extends Structure
 	 * tags builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.tags');
 	 */
 	public $tagsBuilder = array();
 
@@ -104,6 +112,7 @@ class Fields extends Structure
 	 * query builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.database_tables');
 	 */
 	public $queryBuilder = array();
 
@@ -111,6 +120,7 @@ class Fields extends Structure
 	 * unique keys for database field
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.database_unique_keys');
 	 */
 	public $dbUniqueKeys = array();
 
@@ -118,6 +128,7 @@ class Fields extends Structure
 	 * unique guid swtich
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.database_unique_guid');
 	 */
 	public $dbUniqueGuid = array();
 
@@ -125,6 +136,7 @@ class Fields extends Structure
 	 * keys for database field
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.database_keys');
 	 */
 	public $dbKeys = array();
 
@@ -132,6 +144,7 @@ class Fields extends Structure
 	 * history builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.history');
 	 */
 	public $historyBuilder = array();
 
@@ -139,6 +152,7 @@ class Fields extends Structure
 	 * alias builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 CFactory::_('Registry')->get('builder.alias');
 	 */
 	public $aliasBuilder = array();
 
@@ -146,6 +160,7 @@ class Fields extends Structure
 	 * title builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 CFactory::_('Registry')->get('builder.title');
 	 */
 	public $titleBuilder = array();
 
@@ -161,6 +176,7 @@ class Fields extends Structure
 	 * custom Builder List
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.custom_list');
 	 */
 	public $customBuilderList = array();
 
@@ -168,6 +184,7 @@ class Fields extends Structure
 	 * Hidden Fields Builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.hidden_fields');
 	 */
 	public $hiddenFieldsBuilder = array();
 
@@ -175,6 +192,7 @@ class Fields extends Structure
 	 * INT Field Builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.integer_fields');
 	 */
 	public $intFieldsBuilder = array();
 
@@ -182,6 +200,7 @@ class Fields extends Structure
 	 * Dynamic Fields Builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.dynamic_fields');
 	 */
 	public $dynamicfieldsBuilder = array();
 
@@ -189,6 +208,7 @@ class Fields extends Structure
 	 * Main text Builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.main_text_field');
 	 */
 	public $maintextBuilder = array();
 
@@ -203,6 +223,7 @@ class Fields extends Structure
 	 * Custom Field Links Builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.custom_field_links');
 	 */
 	public $customFieldLinksBuilder = array();
 
@@ -357,6 +378,7 @@ class Fields extends Structure
 	 * Set Field Names
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.field_names');
 	 */
 	public $fieldsNames = array();
 
@@ -364,6 +386,7 @@ class Fields extends Structure
 	 * Default Fields set to publishing
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->set('builder.new_publishing_fields');
 	 */
 	public $newPublishingFields = array();
 
@@ -371,6 +394,7 @@ class Fields extends Structure
 	 * Default Fields set to publishing
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.moved_publishing_fields');
 	 */
 	public $movedPublishingFields = array();
 
@@ -386,7 +410,7 @@ class Fields extends Structure
 	 *
 	 */
 	public function setFieldSet($view, $component, $nameSingleCode,
-		$nameListCode
+	                            $nameListCode
 	) {
 		// setup the fieldset of this view
 		if (isset($view['settings']->fields)
@@ -395,12 +419,13 @@ class Fields extends Structure
 			// add metadata to the view
 			if (isset($view['metadata']) && $view['metadata'])
 			{
-				$this->metadataBuilder[$nameSingleCode] = $nameListCode;
+				CFactory::_('Registry')->set('builder.meta_data.' . $nameSingleCode, $nameListCode);
 			}
 			// add access to the view
 			if (isset($view['access']) && $view['access'])
 			{
-				$this->accessBuilder[$nameSingleCode] = $nameListCode;
+				CFactory::_('Registry')->set('builder.access_switch.' . $nameSingleCode, true);
+				CFactory::_('Registry')->set('builder.access_switch_list.' . $nameListCode, true);
 			}
 			// main lang prefix
 			$langView  = CFactory::_('Config')->lang_prefix . '_'
@@ -593,7 +618,7 @@ class Fields extends Structure
 	 *
 	 */
 	protected function stringFieldSet($view, $component, $nameSingleCode,
-		$nameListCode, $langView, $langViews
+	                                  $nameListCode, $langView, $langViews
 	) {
 		// set the read only
 		$readOnly = false;
@@ -614,9 +639,9 @@ class Fields extends Structure
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildFields',
 			array(&$component_context, &$dynamicFields, &$readOnly,
-			      &$dbkey, &$view, &$component, &$nameSingleCode,
-			      &$nameListCode, &$placeholders, &$langView,
-			      &$langViews)
+				&$dbkey, &$view, &$component, &$nameSingleCode,
+				&$nameListCode, &$placeholders, &$langView,
+				&$langViews)
 		);
 		unset($placeholders);
 		// TODO we should add the global and local view switch if field for front end
@@ -634,9 +659,9 @@ class Fields extends Structure
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterBuildFields',
 			array(&$component_context, &$dynamicFields, &$readOnly,
-			      &$dbkey, &$view, &$component, &$nameSingleCode,
-			      &$nameListCode, &$placeholders, &$langView,
-			      &$langViews)
+				&$dbkey, &$view, &$component, &$nameSingleCode,
+				&$nameListCode, &$placeholders, &$langView,
+				&$langViews)
 		);
 		unset($placeholders);
 		// set the default fields
@@ -647,7 +672,7 @@ class Fields extends Structure
 		$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 			. " Id Field. Type: Text (joomla) -->";
 		// if id is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['id']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.id'))
 		{
 			$fieldSet[] = Indent::_(2) . "<field";
 			$fieldSet[] = Indent::_(3) . "name=" . '"id"';
@@ -661,7 +686,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if created is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['created']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.created'))
 		{
 			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Date Created Field. Type: Calendar (joomla) -->";
@@ -684,7 +709,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if created_by is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['created_by']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.created_by'))
 		{
 			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " User Created Field. Type: User (joomla) -->";
@@ -704,7 +729,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if published is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
 		{
 			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Published Field. Type: List (joomla) -->";
@@ -731,7 +756,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if modified is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['modified']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.modified'))
 		{
 			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Date Modified Field. Type: Calendar (joomla) -->";
@@ -746,7 +771,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if modified_by is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['modified_by']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.modified_by'))
 		{
 			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " User Modified Field. Type: User (joomla) -->";
@@ -764,11 +789,8 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// check if view has access
-		if (isset($this->accessBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->accessBuilder[$nameSingleCode]
-			)
-			&& !isset($this->fieldsNames[$nameSingleCode]['access']))
+		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode)
+			&& !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
 		{
 			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Access Field. Type: Accesslevel (joomla) -->";
@@ -787,7 +809,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if ordering is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['ordering']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.ordering'))
 		{
 			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Ordering Field. Type: Numbers (joomla) -->";
@@ -810,7 +832,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if version is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['version']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.version'))
 		{
 			$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 				. " Version Field. Type: Text (joomla) -->";
@@ -830,13 +852,10 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// check if metadata is added to this view
-		if (isset($this->metadataBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->metadataBuilder[$nameSingleCode]
-			))
+		if (CFactory::_('Registry')->isString('builder.meta_data.' . $nameSingleCode))
 		{
 			// metakey
-			if (!isset($this->fieldsNames[$nameSingleCode]['metakey']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.metakey'))
 			{
 				$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 					. " Metakey Field. Type: Textarea (joomla) -->";
@@ -854,7 +873,7 @@ class Fields extends Structure
 				CFactory::_('Utilities.Counter')->field++;
 			}
 			// metadesc
-			if (!isset($this->fieldsNames[$nameSingleCode]['metadesc']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.metadesc'))
 			{
 				$fieldSet[] = Indent::_(2) . "<!--" . Line::_(__Line__, __Class__)
 					. " Metadesc Field. Type: Textarea (joomla) -->";
@@ -874,7 +893,7 @@ class Fields extends Structure
 		}
 		// fix the permissions field "title" issue gh-629
 		// check if the the title is not already set
-		if (!isset($this->fieldsNames[$nameSingleCode]['title'])
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.title')
 			&& $this->hasPermissionsSet($view, $nameSingleCode))
 		{
 			// set the field/tab name
@@ -916,14 +935,11 @@ class Fields extends Structure
 		// close fieldset
 		$fieldSet[] = Indent::_(1) . "</fieldset>";
 		// check if metadata is added to this view
-		if (isset($this->metadataBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->metadataBuilder[$nameSingleCode]
-			))
+		if (CFactory::_('Registry')->isString('builder.meta_data.' . $nameSingleCode))
 		{
-			if (!isset($this->fieldsNames[$nameSingleCode]['robots'])
-				|| !isset($this->fieldsNames[$nameSingleCode]['rights'])
-				|| !isset($this->fieldsNames[$nameSingleCode]['author']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.robots')
+				|| !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.rights')
+				|| !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.author'))
 			{
 				$fieldSet[] = PHP_EOL . Indent::_(1) . "<!--" . Line::_(
 						__LINE__,__CLASS__
@@ -934,7 +950,7 @@ class Fields extends Structure
 				$fieldSet[] = Indent::_(3)
 					. 'label="JGLOBAL_FIELDSET_METADATA_OPTIONS">';
 				// robots
-				if (!isset($this->fieldsNames[$nameSingleCode]['robots']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.robots'))
 				{
 					$fieldSet[] = Indent::_(3) . "<!--" . Line::_(
 							__LINE__,__CLASS__
@@ -960,7 +976,7 @@ class Fields extends Structure
 					CFactory::_('Utilities.Counter')->field++;
 				}
 				// author
-				if (!isset($this->fieldsNames[$nameSingleCode]['author']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.author'))
 				{
 					$fieldSet[] = Indent::_(3) . "<!--" . Line::_(
 							__LINE__,__CLASS__
@@ -975,7 +991,7 @@ class Fields extends Structure
 					CFactory::_('Utilities.Counter')->field++;
 				}
 				// rights
-				if (!isset($this->fieldsNames[$nameSingleCode]['rights']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.rights'))
 				{
 					$fieldSet[] = Indent::_(3) . "<!--" . Line::_(
 							__LINE__,__CLASS__
@@ -1012,7 +1028,7 @@ class Fields extends Structure
 	 *
 	 */
 	protected function simpleXMLFieldSet($view, $component, $nameSingleCode,
-		$nameListCode, $langView, $langViews
+	                                     $nameListCode, $langView, $langViews
 	) {
 		// set the read only
 		$readOnlyXML = array();
@@ -1032,9 +1048,9 @@ class Fields extends Structure
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onBeforeBuildFields',
 			array(&$component_context, &$dynamicFieldsXML, &$readOnlyXML,
-			      &$dbkey, &$view, &$component, &$nameSingleCode,
-			      &$nameListCode, &$placeholders, &$langView,
-			      &$langViews)
+				&$dbkey, &$view, &$component, &$nameSingleCode,
+				&$nameListCode, &$placeholders, &$langView,
+				&$langViews)
 		);
 		unset($placeholders);
 		// TODO we should add the global and local view switch if field for front end
@@ -1052,9 +1068,9 @@ class Fields extends Structure
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onAfterBuildFields',
 			array(&$component_context, &$dynamicFieldsXML, &$readOnlyXML,
-			      &$dbkey, &$view, &$component, &$nameSingleCode,
-			      &$nameListCode, &$placeholders, &$langView,
-			      &$langViews)
+				&$dbkey, &$view, &$component, &$nameSingleCode,
+				&$nameListCode, &$placeholders, &$langView,
+				&$langViews)
 		);
 		unset($placeholders);
 		// set the default fields
@@ -1069,7 +1085,7 @@ class Fields extends Structure
 			Line::_(__Line__, __Class__) . " Id Field. Type: Text (joomla)"
 		);
 		// if id is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['id']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.id'))
 		{
 			$attributes = array(
 				'name'        => 'id',
@@ -1087,7 +1103,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if created is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['created']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.created'))
 		{
 			$attributes = array(
 				'name'        => 'created',
@@ -1109,7 +1125,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if created_by is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['created_by']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.created_by'))
 		{
 			$attributes = array(
 				'name'        => 'created_by',
@@ -1128,7 +1144,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if published is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
 		{
 			$attributes = array(
 				'name'  => 'published',
@@ -1146,7 +1162,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 			foreach (
 				array('JPUBLISHED' => 1, 'JUNPUBLISHED' => 0, 'JARCHIVED' => 2,
-				      'JTRASHED'   => -2) as $text => $value
+					'JTRASHED'   => -2) as $text => $value
 			)
 			{
 				$optionXML = $fieldXML->addChild('option');
@@ -1155,7 +1171,7 @@ class Fields extends Structure
 			}
 		}
 		// if modified is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['modified']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.modified'))
 		{
 			$attributes = array(
 				'name'        => 'modified',
@@ -1178,7 +1194,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if modified_by is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['modified_by']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.modified_by'))
 		{
 			$attributes = array(
 				'name'        => 'modified_by',
@@ -1199,11 +1215,8 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// check if view has access
-		if (isset($this->accessBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->accessBuilder[$nameSingleCode]
-			)
-			&& !isset($this->fieldsNames[$nameSingleCode]['access']))
+		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode)
+			&& !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
 		{
 			$attributes = array(
 				'name'        => 'access',
@@ -1224,7 +1237,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if ordering is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['ordering']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.ordering'))
 		{
 			$attributes = array(
 				'name'        => 'ordering',
@@ -1247,7 +1260,7 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// if version is not set
-		if (!isset($this->fieldsNames[$nameSingleCode]['version']))
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.version'))
 		{
 			$attributes = array(
 				'name'        => 'version',
@@ -1269,13 +1282,10 @@ class Fields extends Structure
 			CFactory::_('Utilities.Counter')->field++;
 		}
 		// check if metadata is added to this view
-		if (isset($this->metadataBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->metadataBuilder[$nameSingleCode]
-			))
+		if (CFactory::_('Registry')->isString('builder.meta_data.' . $nameSingleCode))
 		{
 			// metakey
-			if (!isset($this->fieldsNames[$nameSingleCode]['metakey']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.metakey'))
 			{
 				$attributes = array(
 					'name'        => 'metakey',
@@ -1297,7 +1307,7 @@ class Fields extends Structure
 				CFactory::_('Utilities.Counter')->field++;
 			}
 			// metadesc
-			if (!isset($this->fieldsNames[$nameSingleCode]['metadesc']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.metadesc'))
 			{
 				$attributes['name']        = 'metadesc';
 				$attributes['label']       = 'JFIELD_META_DESCRIPTION_LABEL';
@@ -1316,7 +1326,7 @@ class Fields extends Structure
 		}
 		// fix the permissions field "title" issue gh-629
 		// check if the the title is not already set
-		if (!isset($this->fieldsNames[$nameSingleCode]['title'])
+		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.title')
 			&& $this->hasPermissionsSet($view, $nameSingleCode))
 		{
 			// set the field/tab name
@@ -1369,14 +1379,11 @@ class Fields extends Structure
 			}
 		}
 		// check if metadata is added to this view
-		if (isset($this->metadataBuilder[$nameSingleCode])
-			&& StringHelper::check(
-				$this->metadataBuilder[$nameSingleCode]
-			))
+		if (CFactory::_('Registry')->isString('builder.meta_data.' . $nameSingleCode))
 		{
-			if (!isset($this->fieldsNames[$nameSingleCode]['robots'])
-				|| !isset($this->fieldsNames[$nameSingleCode]['author'])
-				|| !isset($this->fieldsNames[$nameSingleCode]['rights']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.robots')
+				|| !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.author')
+				|| !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.rights'))
 			{
 				ComponentbuilderHelper::xmlComment(
 					$fieldSetXML, Line::_(__Line__, __Class__) . " Metadata Fields"
@@ -1392,7 +1399,7 @@ class Fields extends Structure
 					'label', 'JGLOBAL_FIELDSET_METADATA_OPTIONS'
 				);
 				// robots
-				if (!isset($this->fieldsNames[$nameSingleCode]['robots']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.robots'))
 				{
 					ComponentbuilderHelper::xmlComment(
 						$fieldsFieldSetXML, Line::_(__Line__, __Class__)
@@ -1425,7 +1432,7 @@ class Fields extends Structure
 					}
 				}
 				// author
-				if (!isset($this->fieldsNames[$nameSingleCode]['author']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.author'))
 				{
 					ComponentbuilderHelper::xmlComment(
 						$fieldsFieldSetXML, Line::_(__Line__, __Class__)
@@ -1446,7 +1453,7 @@ class Fields extends Structure
 					CFactory::_('Utilities.Counter')->field++;
 				}
 				// rights
-				if (!isset($this->fieldsNames[$nameSingleCode]['rights']))
+				if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.rights'))
 				{
 					ComponentbuilderHelper::xmlComment(
 						$fieldsFieldSetXML, Line::_(__Line__, __Class__)
@@ -1488,16 +1495,14 @@ class Fields extends Structure
 	protected function hasPermissionsSet(&$view, &$nameSingleCode)
 	{
 		// first check if we have checked this already
-		if (!isset($this->hasPermissions[$nameSingleCode]))
+		if (!CFactory::_('Registry')->exists('builder.has_permissions.' . $nameSingleCode))
 		{
-			// default is false
-			$this->hasPermissions[$nameSingleCode] = false;
 			// when a view has history, it has permissions
 			// since it tracks the version access
 			if (isset($view['history']) && $view['history'] == 1)
 			{
 				// set the permission for later
-				$this->hasPermissions[$nameSingleCode] = true;
+				CFactory::_('Registry')->set('builder.has_permissions.' . $nameSingleCode, true);
 
 				// break out here
 				return true;
@@ -1520,7 +1525,7 @@ class Fields extends Structure
 						))
 					{
 						// set the permission for later
-						$this->hasPermissions[$nameSingleCode] = true;
+						CFactory::_('Registry')->set('builder.has_permissions.' . $nameSingleCode, true);
 
 						// break out here
 						return true;
@@ -1543,7 +1548,7 @@ class Fields extends Structure
 						))
 					{
 						// set the permission for later
-						$this->hasPermissions[$nameSingleCode] = true;
+						CFactory::_('Registry')->set('builder.has_permissions.' . $nameSingleCode, true);
 
 						// break out here
 						return true;
@@ -1552,7 +1557,7 @@ class Fields extends Structure
 			}
 		}
 
-		return $this->hasPermissions[$nameSingleCode];
+		return CFactory::_('Registry')->exists('builder.has_permissions.' . $nameSingleCode);
 	}
 
 	/**
@@ -1565,7 +1570,7 @@ class Fields extends Structure
 	 */
 	public function setFieldsNames(&$view, &$name)
 	{
-		$this->fieldsNames[$view][$name] = $name;
+		CFactory::_('Registry')->set('builder.field_names.' . $view . '.' . $name, $name);
 	}
 
 	/**
@@ -1585,7 +1590,7 @@ class Fields extends Structure
 	 *
 	 */
 	public function setDynamicField(&$field, &$view, &$viewType, &$langView,
-		&$nameSingleCode, &$nameListCode, &$placeholders, &$dbkey, $build
+	                                &$nameSingleCode, &$nameListCode, &$placeholders, &$dbkey, $build
 	) {
 		// set default return
 		if (CFactory::_('Config')->get('field_builder_type', 2) == 1)
@@ -1764,8 +1769,8 @@ class Fields extends Structure
 	 *
 	 */
 	public function getFieldsetXML(&$fields, &$langView, &$nameSingleCode,
-		&$nameListCode, &$placeholders, &$dbkey, $build = false,
-		$return_type = 1
+	                               &$nameListCode, &$placeholders, &$dbkey, $build = false,
+	                               $return_type = 1
 	) {
 		// set some defaults
 		$view     = '';
@@ -1828,8 +1833,8 @@ class Fields extends Structure
 	 *
 	 */
 	public function getFieldXMLString(&$field, &$view, &$viewType, &$langView,
-		&$nameSingleCode, &$nameListCode, &$placeholders, &$dbkey,
-		$build = false
+	                                  &$nameSingleCode, &$nameListCode, &$placeholders, &$dbkey,
+	                                  $build = false
 	) {
 		// check the field builder type
 		$xmlField = '';
@@ -1887,8 +1892,8 @@ class Fields extends Structure
 	 *
 	 */
 	private function setField($setType, &$fieldAttributes, &$name, &$typeName,
-		&$langView, &$nameSingleCode, &$nameListCode, $placeholders,
-		&$optionArray, $custom = null, $taber = ''
+	                          &$langView, &$nameSingleCode, &$nameListCode, $placeholders,
+	                          &$optionArray, $custom = null, $taber = ''
 	) {
 		// count the dynamic fields created
 		CFactory::_('Utilities.Counter')->field++;
@@ -1932,8 +1937,8 @@ class Fields extends Structure
 	 *
 	 */
 	protected function stringSetField($setType, &$fieldAttributes, &$name,
-		&$typeName, &$langView, &$nameSingleCode, &$nameListCode,
-		$placeholders, &$optionArray, $custom = null, $taber = ''
+	                                  &$typeName, &$langView, &$nameSingleCode, &$nameListCode,
+	                                  $placeholders, &$optionArray, $custom = null, $taber = ''
 	) {
 		$field = '';
 		if ($setType === 'option')
@@ -1966,7 +1971,7 @@ class Fields extends Structure
 						// reset the group temp arrays
 						$groups_  = array();
 						$grouped_ = array('group'  => array(),
-						                  'option' => array());
+							'option' => array());
 						$order_   = array();
 						// mulitpal options
 						$options = explode(',', (string) $value);
@@ -2401,9 +2406,9 @@ class Fields extends Structure
 									}
 									// set the custom array
 									$data = array('type'   => $r_typeName,
-									              'code'   => $r_name,
-									              'lang'   => $r_listLangName,
-									              'custom' => $custom);
+										'code'   => $r_name,
+										'lang'   => $r_listLangName,
+										'custom' => $custom);
 									// set the custom field file
 									$this->setCustomFieldTypeFile(
 										$data, $nameListCode,
@@ -2592,9 +2597,9 @@ class Fields extends Structure
 									}
 									// set the custom array
 									$data = array('type'   => $r_typeName,
-									              'code'   => $r_name,
-									              'lang'   => $r_listLangName,
-									              'custom' => $custom);
+										'code'   => $r_name,
+										'lang'   => $r_listLangName,
+										'custom' => $custom);
 									// set the custom field file
 									$this->setCustomFieldTypeFile(
 										$data, $nameListCode,
@@ -2650,7 +2655,7 @@ class Fields extends Structure
 						// reset the group temp arrays
 						$groups_  = array();
 						$grouped_ = array('group'  => array(),
-						                  'option' => array());
+							'option' => array());
 						$order_   = array();
 						// mulitpal options
 						$options = explode(',', (string) $value);
@@ -2918,7 +2923,7 @@ class Fields extends Structure
 					. StringHelper::safe($name, 'U');
 				// set the custom array
 				$data = array('type' => $typeName, 'code' => $name,
-				              'lang' => $listLangName, 'custom' => $custom);
+					'lang' => $listLangName, 'custom' => $custom);
 				// set the custom field file
 				$this->setCustomFieldTypeFile(
 					$data, $nameListCode, $nameSingleCode
@@ -2948,8 +2953,8 @@ class Fields extends Structure
 	 *
 	 */
 	protected function simpleXMLSetField($setType, &$fieldAttributes, &$name,
-		&$typeName, &$langView, &$nameSingleCode, &$nameListCode,
-		$placeholders, &$optionArray, $custom = null
+	                                     &$typeName, &$langView, &$nameSingleCode, &$nameListCode,
+	                                     $placeholders, &$optionArray, $custom = null
 	) {
 		$field = new stdClass();
 		if ($setType === 'option')
@@ -2982,7 +2987,7 @@ class Fields extends Structure
 						// reset the group temp arrays
 						$groups_  = array();
 						$grouped_ = array('group'  => array(),
-						                  'option' => array());
+							'option' => array());
 						$order_   = array();
 						// mulitpal options
 						$options = explode(',', (string) $value);
@@ -3028,7 +3033,7 @@ class Fields extends Structure
 									// now add to option set
 									$grouped_['group'][$valueKeyArray[2]][]
 										= array('value' => $valueKeyArray[0],
-										        'text'  => $langValue);
+										'text'  => $langValue);
 									$optionArray[$valueKeyArray[0]]
 										= $langValue;
 									// set order
@@ -3049,7 +3054,7 @@ class Fields extends Structure
 									// now add to option set
 									$grouped_['option'][$valueKeyArray[0]]
 										= array('value' => $valueKeyArray[0],
-										        'text'  => $langValue);
+										'text'  => $langValue);
 									$optionArray[$valueKeyArray[0]]
 										= $langValue;
 									// set order
@@ -3070,8 +3075,8 @@ class Fields extends Structure
 								);
 								// now add to option set
 								$grouped_['option'][$option]
-									                  = array('value' => $option,
-									                          'text'  => $langValue);
+									= array('value' => $option,
+									'text'  => $langValue);
 								$optionArray[$option] = $langValue;
 								// set order
 								$order_['option' . $option] = $option;
@@ -3397,9 +3402,9 @@ class Fields extends Structure
 									}
 									// set the custom array
 									$data = array('type'   => $r_typeName,
-									              'code'   => $r_name,
-									              'lang'   => $r_listLangName,
-									              'custom' => $custom);
+										'code'   => $r_name,
+										'lang'   => $r_listLangName,
+										'custom' => $custom);
 									// set the custom field file
 									$this->setCustomFieldTypeFile(
 										$data, $nameListCode,
@@ -3610,9 +3615,9 @@ class Fields extends Structure
 										}
 										// set the custom array
 										$data = array('type'   => $r_typeName,
-										              'code'   => $r_name,
-										              'lang'   => $r_listLangName,
-										              'custom' => $custom);
+											'code'   => $r_name,
+											'lang'   => $r_listLangName,
+											'custom' => $custom);
 										// set the custom field file
 										$this->setCustomFieldTypeFile(
 											$data, $nameListCode,
@@ -3667,7 +3672,7 @@ class Fields extends Structure
 						// reset the group temp arrays
 						$groups_  = array();
 						$grouped_ = array('group'  => array(),
-						                  'option' => array());
+							'option' => array());
 						$order_   = array();
 						// mulitpal options
 						$options = explode(',', (string) $value);
@@ -3713,7 +3718,7 @@ class Fields extends Structure
 									// now add to option set
 									$grouped_['group'][$valueKeyArray[2]][]
 										= array('value' => $valueKeyArray[0],
-										        'text'  => $langValue);
+										'text'  => $langValue);
 									$optionArray[$valueKeyArray[0]]
 										= $langValue;
 									// set order
@@ -3734,7 +3739,7 @@ class Fields extends Structure
 									// now add to option set
 									$grouped_['option'][$valueKeyArray[0]]
 										= array('value' => $valueKeyArray[0],
-										        'text'  => $langValue);
+										'text'  => $langValue);
 									$optionArray[$valueKeyArray[0]]
 										= $langValue;
 									// set order
@@ -3755,8 +3760,8 @@ class Fields extends Structure
 								);
 								// now add to option set
 								$grouped_['option'][$option]
-									                  = array('value' => $option,
-									                          'text'  => $langValue);
+									= array('value' => $option,
+									'text'  => $langValue);
 								$optionArray[$option] = $langValue;
 								// set order
 								$order_['option' . $option] = $option;
@@ -3904,7 +3909,7 @@ class Fields extends Structure
 					. StringHelper::safe($name, 'U');
 				// set the custom array
 				$data = array('type' => $typeName, 'code' => $name,
-				              'lang' => $listLangName, 'custom' => $custom);
+					'lang' => $listLangName, 'custom' => $custom);
 				// set the custom field file
 				$this->setCustomFieldTypeFile(
 					$data, $nameListCode, $nameSingleCode
@@ -3927,28 +3932,22 @@ class Fields extends Structure
 	 *
 	 */
 	public function setLayoutBuilder(&$nameSingleCode, &$tabName, &$name,
-		&$field
+	                                 &$field
 	) {
 		// first fix the zero order
 		// to insure it lands before all the other fields
 		// as zero is expected to behave
 		if ($field['order_edit'] == 0)
 		{
-			if (!isset($this->zeroOrderFix[$nameSingleCode]))
+			// get the value
+			$zero_counter = CFactory::_('Registry')->get('builder.zero_order_fix.' . $nameSingleCode . '.' . $field['tab'], -999);
+			if ($zero_counter != -999)
 			{
-				$this->zeroOrderFix[$nameSingleCode] = array();
+				$zero_counter++;
 			}
-			if (!isset($this->zeroOrderFix[$nameSingleCode][(int) $field['tab']]))
-			{
-				$this->zeroOrderFix[$nameSingleCode][(int) $field['tab']]
-					= -999;
-			}
-			else
-			{
-				$this->zeroOrderFix[$nameSingleCode][(int) $field['tab']]++;
-			}
-			$field['order_edit']
-				= $this->zeroOrderFix[$nameSingleCode][(int) $field['tab']];
+			$field['order_edit'] = $zero_counter;
+			// set the value
+			CFactory::_('Registry')->set('builder.zero_order_fix.' . $nameSingleCode . '.' . $field['tab'], $zero_counter);
 		}
 		// get the default fields
 		$default_fields = CFactory::_('Config')->default_fields;
@@ -3956,80 +3955,98 @@ class Fields extends Structure
 		if (StringHelper::check($tabName)
 			&& strtolower($tabName) != 'publishing')
 		{
-			$this->tabCounter[$nameSingleCode][(int) $field['tab']]
-				= $tabName;
-			if (isset($this->layoutBuilder[$nameSingleCode][$tabName][(int) $field['alignment']][(int) $field['order_edit']]))
+			CFactory::_('Registry')->set('builder.tab_counter.' . $nameSingleCode . '.' . $field['tab'], $tabName);
+			if (CFactory::_('Registry')->exists('builder.layout.' . $nameSingleCode . '.' . $tabName . '.'
+				. $field['alignment'] . '.' . $field['order_edit']))
 			{
 				$size = (int) count(
-						(array) $this->layoutBuilder[$nameSingleCode][$tabName][(int) $field['alignment']]
+						(array) CFactory::_('Registry')->get('builder.layout.' . $nameSingleCode . '.' . $tabName . '.'
+							. $field['alignment'])
 					) + 1;
-				while (isset($this->layoutBuilder[$nameSingleCode][$tabName][(int) $field['alignment']][$size]))
+				while (CFactory::_('Registry')->exists('builder.layout.' . $nameSingleCode . '.' . $tabName . '.'
+					. $field['alignment'] . '.' . $size))
 				{
 					$size++;
 				}
-				$this->layoutBuilder[$nameSingleCode][$tabName][(int) $field['alignment']][$size]
-					= $name;
+				CFactory::_('Registry')->set('builder.layout.'
+					. $nameSingleCode . '.'
+					. $tabName . '.'
+					. $field['alignment'] . '.'
+					. $size, $name);
 			}
 			else
 			{
-				$this->layoutBuilder[$nameSingleCode][$tabName][(int) $field['alignment']][(int) $field['order_edit']]
-					= $name;
+				CFactory::_('Registry')->set('builder.layout.'
+					. $nameSingleCode . '.'
+					. $tabName . '.'
+					. $field['alignment'] . '.'
+					. $field['order_edit'], $name);
 			}
 			// check if default fields were over written
 			if (in_array($name, $default_fields))
 			{
 				// just to eliminate
-				$this->movedPublishingFields[$nameSingleCode][$name] = $name;
+				CFactory::_('Registry')->set('builder.moved_publishing_fields.' . $nameSingleCode . '.' . $name, true);
 			}
 		}
 		elseif ($tabName === 'publishing' || $tabName === 'Publishing')
 		{
 			if (!in_array($name, $default_fields))
 			{
-				if (isset($this->newPublishingFields[$nameSingleCode][(int) $field['alignment']][(int) $field['order_edit']]))
+				if (CFactory::_('Registry')->exists('builder.new_publishing_fields.' . $nameSingleCode . '.' .
+					$field['alignment'] . '.' . $field['order_edit']))
 				{
 					$size = (int) count(
-							(array) $this->newPublishingFields[$nameSingleCode][(int) $field['alignment']]
+							(array) CFactory::_('Registry')->get('builder.new_publishing_fields.' . $nameSingleCode . '.' .
+								$field['alignment'])
 						) + 1;
-					while (isset($this->newPublishingFields[$nameSingleCode][(int) $field['alignment']][$size]))
+					while (CFactory::_('Registry')->exists('builder.new_publishing_fields.' . $nameSingleCode . '.' .
+						$field['alignment'] . '.' . $size))
 					{
 						$size++;
 					}
-					$this->newPublishingFields[$nameSingleCode][(int) $field['alignment']][$size]
-						= $name;
+					CFactory::_('Registry')->set('builder.new_publishing_fields.' . $nameSingleCode . '.' .
+						$field['alignment'] . '.' . $size, $name);
 				}
 				else
 				{
-					$this->newPublishingFields[$nameSingleCode][(int) $field['alignment']][(int) $field['order_edit']]
-						= $name;
+					CFactory::_('Registry')->set('builder.new_publishing_fields.' . $nameSingleCode . '.' .
+						$field['alignment'] . '.' . $field['order_edit'], $name);
 				}
 			}
 		}
 		else
 		{
-			$this->tabCounter[$nameSingleCode][1] = 'Details';
-			if (isset($this->layoutBuilder[$nameSingleCode]['Details'][(int) $field['alignment']][(int) $field['order_edit']]))
+			CFactory::_('Registry')->set('builder.tab_counter.' . $nameSingleCode . '.1', 'Details');
+			if (CFactory::_('Registry')->exists('builder.layout.' . $nameSingleCode . '.Details.'
+				. $field['alignment'] . '.' . $field['order_edit']))
 			{
 				$size = (int) count(
-						(array) $this->layoutBuilder[$nameSingleCode]['Details'][(int) $field['alignment']]
-					) + 1;
-				while (isset($this->layoutBuilder[$nameSingleCode]['Details'][(int) $field['alignment']][$size]))
+					(array) CFactory::_('Registry')->get('builder.layout.' . $nameSingleCode . '.Details.'
+						. $field['alignment'])
+				) + 1;
+				while (CFactory::_('Registry')->exists('builder.layout.' . $nameSingleCode . '.Details.'
+					. $field['alignment'] . '.' . $size))
 				{
 					$size++;
 				}
-				$this->layoutBuilder[$nameSingleCode]['Details'][(int) $field['alignment']][$size]
-					= $name;
+				CFactory::_('Registry')->set('builder.layout.'
+					. $nameSingleCode . '.Details.'
+					. $field['alignment'] . '.'
+					. $size, $name);
 			}
 			else
 			{
-				$this->layoutBuilder[$nameSingleCode]['Details'][(int) $field['alignment']][(int) $field['order_edit']]
-					= $name;
+				CFactory::_('Registry')->set('builder.layout.'
+					. $nameSingleCode . '.Details.'
+					. $field['alignment'] . '.'
+					. $field['order_edit'], $name);
 			}
-			// check if default fields were over written
+			// check if default fields were overwritten
 			if (in_array($name, $default_fields))
 			{
 				// just to eliminate
-				$this->movedPublishingFields[$nameSingleCode][$name] = $name;
+				CFactory::_('Registry')->set('builder.moved_publishing_fields.' . $nameSingleCode . '.' . $name, true);
 			}
 		}
 	}
@@ -4048,7 +4065,7 @@ class Fields extends Structure
 	public function buildSiteFieldData($view, $field, $set, $type)
 	{
 		$decode    = array('json', 'base64', 'basic_encryption',
-		                   'whmcs_encryption', 'medium_encryption', 'expert_mode');
+			'whmcs_encryption', 'medium_encryption', 'expert_mode');
 		$textareas = array('textarea', 'editor');
 		if (($site_fields = CFactory::_('Registry')->
 			extract('builder.site_fields.' . $view . '.' . $field)) !== null)
@@ -4078,8 +4095,8 @@ class Fields extends Structure
 					{
 						$this->siteFieldData['decode'][$site_field->site][$code][$site_field->as][$site_field->key]
 							= array('decode'     => [$set],
-							        'type'       => $type,
-							        'admin_view' => $view);
+							'type'       => $type,
+							'admin_view' => $view);
 					}
 				}
 				// set the uikit checker
@@ -4120,8 +4137,8 @@ class Fields extends Structure
 	 *
 	 */
 	private function setFieldAttributes(&$field, &$viewType, &$name, &$typeName,
-		&$multiple, &$langLabel, $langView, $nameListCode, $nameSingleCode,
-		$placeholders, $repeatable = false
+	                                    &$multiple, &$langLabel, $langView, $nameListCode, $nameSingleCode,
+	                                    $placeholders, $repeatable = false
 	) {
 		// reset array
 		$fieldAttributes = array();
@@ -4518,8 +4535,7 @@ class Fields extends Structure
 				);
 				if (StringHelper::check($listclass))
 				{
-					$this->listFieldClass[$nameListCode][$fieldAttributes['name']]
-						= $listclass;
+					CFactory::_('Registry')->set('builder.list_field_class.' . $nameListCode . '.' . $fieldAttributes['name'], $listclass);
 				}
 				// check if we find reason to remove this field from being escaped
 				$escaped = GetHelper::between(
@@ -4527,8 +4543,8 @@ class Fields extends Structure
 				);
 				if (StringHelper::check($escaped))
 				{
-					$this->doNotEscape[$nameListCode][]
-						= $fieldAttributes['name'];
+					CFactory::_('Registry')->set('builder.do_not_escape.' .
+						$nameListCode . '.' . $fieldAttributes['name'], true);
 				}
 				// check if we have display switch for dynamic placement
 				$display = GetHelper::between(
@@ -4583,14 +4599,14 @@ class Fields extends Structure
 	 *
 	 */
 	public function setBuilders($langLabel, $langView, $nameSingleCode,
-		$nameListCode, $name, $view, $field, $typeName, $multiple,
-		$custom = false, $options = false
+	                            $nameListCode, $name, $view, $field, $typeName, $multiple,
+	                            $custom = false, $options = false
 	) {
 		// check if this is a tag field
 		if ($typeName === 'tag')
 		{
 			// set tags for this view but don't load to DB
-			$this->tagsBuilder[$nameSingleCode] = $nameSingleCode;
+			CFactory::_('Registry')->set('builder.tags.' . $nameSingleCode, true);
 		}
 		// dbSwitch
 		$dbSwitch = true;
@@ -4603,13 +4619,13 @@ class Fields extends Structure
 		{
 			// insure default not none if number type
 			$numberKeys = array('INT', 'TINYINT', 'BIGINT', 'FLOAT', 'DECIMAL',
-			                    'DOUBLE');
+				'DOUBLE');
 			// don't use these as index or uniqe keys
 			$textKeys = array('TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT',
-			                  'BLOB', 'TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB');
+				'BLOB', 'TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB');
 			// build the query values
-			$this->queryBuilder[$nameSingleCode][$name]['type']
-				= $field['settings']->datatype;
+			CFactory::_('Registry')->set('builder.database_tables.' . $nameSingleCode . '.' . $name . '.type',
+				$field['settings']->datatype);
 			// check if this is a number
 			if (in_array($field['settings']->datatype, $numberKeys))
 			{
@@ -4639,26 +4655,26 @@ class Fields extends Structure
 			// check if this is not text
 			if (!in_array($field['settings']->datatype, $textKeys))
 			{
-				$this->queryBuilder[$nameSingleCode][$name]['lenght']
-					= $field['settings']->datalenght;
-				$this->queryBuilder[$nameSingleCode][$name]['lenght_other']
-					= $field['settings']->datalenght_other;
-				$this->queryBuilder[$nameSingleCode][$name]['default']
-					= $field['settings']->datadefault;
-				$this->queryBuilder[$nameSingleCode][$name]['other']
-					= $field['settings']->datadefault_other;
+				CFactory::_('Registry')->set('builder.database_tables.' . $nameSingleCode . '.' . $name . '.lenght',
+					$field['settings']->datalenght);
+				CFactory::_('Registry')->set('builder.database_tables.' . $nameSingleCode . '.' . $name . '.lenght_other',
+					$field['settings']->datalenght_other);
+				CFactory::_('Registry')->set('builder.database_tables.' . $nameSingleCode . '.' . $name . '.default',
+					$field['settings']->datadefault);
+				CFactory::_('Registry')->set('builder.database_tables.' . $nameSingleCode . '.' . $name . '.other',
+					$field['settings']->datadefault_other);
 			}
 			// fall back unto EMPTY for text
 			else
 			{
-				$this->queryBuilder[$nameSingleCode][$name]['default']
-					= 'EMPTY';
+				CFactory::_('Registry')->set('builder.database_tables.' . $nameSingleCode . '.' . $name . '.default',
+					'EMPTY');
 			}
 			// to identify the field
-			$this->queryBuilder[$nameSingleCode][$name]['ID']
-				= $field['settings']->id;
-			$this->queryBuilder[$nameSingleCode][$name]['null_switch']
-				= $field['settings']->null_switch;
+			CFactory::_('Registry')->set('builder.database_tables.' . $nameSingleCode . '.' . $name . '.ID',
+				$field['settings']->id);
+			CFactory::_('Registry')->set('builder.database_tables.' . $nameSingleCode . '.' . $name . '.null_switch',
+				$field['settings']->null_switch);
 			// set index types
 			$_guid = true;
 			if ($field['settings']->indexes == 1
@@ -4667,7 +4683,7 @@ class Fields extends Structure
 				))
 			{
 				// build unique keys of this view for db
-				$this->dbUniqueKeys[$nameSingleCode][] = $name;
+				CFactory::_('Registry')->appendArray('builder.database_unique_keys.' . $nameSingleCode, $name);
 				// prevent guid from being added twice
 				if ('guid' === $name)
 				{
@@ -4682,12 +4698,12 @@ class Fields extends Structure
 				&& !in_array($field['settings']->datatype, $textKeys))
 			{
 				// build keys of this view for db
-				$this->dbKeys[$nameSingleCode][] = $name;
+				CFactory::_('Registry')->appendArray('builder.database_keys.' . $nameSingleCode, $name);
 			}
 			// special treatment for GUID
 			if ('guid' === $name && $_guid)
 			{
-				$this->dbUniqueGuid[$nameSingleCode] = true;
+				CFactory::_('Registry')->set('builder.database_unique_guid.' . $nameSingleCode, true);
 			}
 		}
 		// set list switch
@@ -4701,19 +4717,19 @@ class Fields extends Structure
 		// add history to this view
 		if (isset($view['history']) && $view['history'])
 		{
-			$this->historyBuilder[$nameSingleCode] = $nameSingleCode;
+			CFactory::_('Registry')->set('builder.history.' . $nameSingleCode, true);
 		}
 		// set Alias (only one title per view)
 		if ($dbSwitch && isset($field['alias']) && $field['alias']
-			&& !isset($this->aliasBuilder[$nameSingleCode]))
+			&& !CFactory::_('Registry')->get('builder.alias.' . $nameSingleCode))
 		{
-			$this->aliasBuilder[$nameSingleCode] = $name;
+			CFactory::_('Registry')->set('builder.alias.' . $nameSingleCode, $name);
 		}
 		// set Titles (only one title per view)
 		if ($dbSwitch && isset($field['title']) && $field['title']
-			&& !isset($this->titleBuilder[$nameSingleCode]))
+			&& !CFactory::_('Registry')->get('builder.title.' . $nameSingleCode))
 		{
-			$this->titleBuilder[$nameSingleCode] = $name;
+			CFactory::_('Registry')->set('builder.title.' . $nameSingleCode, $name);
 		}
 		// category name fix
 		if ($typeName === 'category')
@@ -4804,7 +4820,7 @@ class Fields extends Structure
 			// build custom builder list
 			if ($listSwitch || $listJoin)
 			{
-				$this->customBuilderList[$nameListCode][] = $name;
+				CFactory::_('Registry')->set('builder.custom_list.' . $nameSingleCode . '.' . $name, true);
 			}
 		}
 		// load the list join builder
@@ -4829,7 +4845,7 @@ class Fields extends Structure
 		}
 		// update the field relations
 		if (($field_relations =
-			CFactory::_('Registry')->get('builder.field_relations.' . $nameListCode . '.' . (int) $field['field'])) !== null)
+				CFactory::_('Registry')->get('builder.field_relations.' . $nameListCode . '.' . (int) $field['field'])) !== null)
 		{
 			$field_relations = (array) $field_relations;
 			foreach ($field_relations as $area => &$field_values)
@@ -4843,11 +4859,7 @@ class Fields extends Structure
 		// set the hidden field of this view
 		if ($dbSwitch && $typeName === 'hidden')
 		{
-			if (!isset($this->hiddenFieldsBuilder[$nameSingleCode]))
-			{
-				$this->hiddenFieldsBuilder[$nameSingleCode] = '';
-			}
-			$this->hiddenFieldsBuilder[$nameSingleCode] .= ',"' . $name . '"';
+			CFactory::_('Registry')->appendArray('builder.hidden_fields.' . $nameSingleCode, ',"' . $name . '"');
 		}
 		// set all int fields of this view
 		if ($dbSwitch && isset($field['settings']->datatype)
@@ -4855,47 +4867,23 @@ class Fields extends Structure
 				|| $field['settings']->datatype === 'TINYINT'
 				|| $field['settings']->datatype === 'BIGINT'))
 		{
-			if (!isset($this->intFieldsBuilder[$nameSingleCode]))
-			{
-				$this->intFieldsBuilder[$nameSingleCode] = '';
-			}
-			$this->intFieldsBuilder[$nameSingleCode] .= ',"' . $name . '"';
+			CFactory::_('Registry')->appendArray('builder.integer_fields.' . $nameSingleCode, ',"' . $name . '"');
 		}
 		// Get the default fields
 		$default_fields = CFactory::_('Config')->default_fields;
 		// set all dynamic field of this view
 		if ($dbSwitch && $typeName != 'category' && $typeName != 'repeatable'
-			&& $typeName != 'subform'
-			&& !in_array($name, $default_fields))
+			&& $typeName != 'subform' && !in_array($name, $default_fields))
 		{
-			if (!isset($this->dynamicfieldsBuilder[$nameSingleCode]))
-			{
-				$this->dynamicfieldsBuilder[$nameSingleCode] = '';
-			}
-			if (isset($this->dynamicfieldsBuilder[$nameSingleCode])
-				&& StringHelper::check(
-					$this->dynamicfieldsBuilder[$nameSingleCode]
-				))
-			{
-				$this->dynamicfieldsBuilder[$nameSingleCode] .= ',"' . $name
-					. '":"' . $name . '"';
-			}
-			else
-			{
-				$this->dynamicfieldsBuilder[$nameSingleCode] .= '"' . $name
-					. '":"' . $name . '"';
-			}
+			CFactory::_('Registry')->appendArray('builder.dynamic_fields.' . $nameSingleCode, '"' . $name . '":"' . $name . '"');
 		}
 		// TODO we may need to add a switch instead (since now it uses the first editor field)
 		// set the main(biggest) text field of this view
 		if ($dbSwitch && $typeName === 'editor')
 		{
-			if (!isset($this->maintextBuilder[$nameSingleCode])
-				|| !StringHelper::check(
-					$this->maintextBuilder[$nameSingleCode]
-				))
+			if (!CFactory::_('Registry')->exists('builder.main_text_field.' . $nameSingleCode))
 			{
-				$this->maintextBuilder[$nameSingleCode] = $name;
+				CFactory::_('Registry')->set('builder.main_text_field.' . $nameSingleCode, $name);
 			}
 		}
 		// set the custom builder
@@ -4905,25 +4893,21 @@ class Fields extends Structure
 			&& $typeName != 'subform')
 		{
 			$this->customBuilder[$nameListCode][] = array('type'   => $typeName,
-			                                              'code'   => $name,
-			                                              'lang'   => $listLangName,
-			                                              'custom' => $custom,
-			                                              'method' => $field['settings']->store);
-			// set the custom fields needed in content type data
-			if (!isset($this->customFieldLinksBuilder[$nameSingleCode]))
-			{
-				$this->customFieldLinksBuilder[$nameSingleCode] = '';
-			}
+				'code'   => $name,
+				'lang'   => $listLangName,
+				'custom' => $custom,
+				'method' => $field['settings']->store);
+
 			// only load this if table is set
 			if (isset($custom['table'])
 				&& StringHelper::check(
 					$custom['table']
 				))
 			{
-				$this->customFieldLinksBuilder[$nameSingleCode] .= ',{"sourceColumn": "'
-					. $name . '","targetTable": "' . $custom['table']
-					. '","targetColumn": "' . $custom['id']
-					. '","displayColumn": "' . $custom['text'] . '"}';
+				// set the custom fields needed in content type data
+				CFactory::_('Registry')->appendArray('builder.custom_field_links.' . $nameSingleCode, ',{"sourceColumn": "'
+					. $name . '","targetTable": "' . $custom['table'] . '","targetColumn": "' . $custom['id']
+					. '","displayColumn": "' . $custom['text'] . '"}');
 			}
 			// build script switch for user
 			if ($custom['extends'] === 'user')
@@ -4991,13 +4975,13 @@ class Fields extends Structure
 			}
 			// load the category builder - TODO must move all to single view
 			$this->categoryBuilder[$nameListCode] = array('code'      => $name,
-			                                              'name'      => $listLangName,
-			                                              'extension' => $_extension,
-			                                              'filter'    => $field['filter']);
+				'name'      => $listLangName,
+				'extension' => $_extension,
+				'filter'    => $field['filter']);
 			// also set code name for title alias fix
 			$this->catCodeBuilder[$nameSingleCode] = array('code'  => $name,
-			                                               'views' => $otherViews,
-			                                               'view'  => $otherView);
+				'views' => $otherViews,
+				'view'  => $otherView);
 		}
 		// setup checkbox for this view
 		if ($dbSwitch
@@ -5123,15 +5107,15 @@ class Fields extends Structure
 				{
 					$this->getItemsMethodListStringFixBuilder[$nameSingleCode][]
 						= array('name'        => $name, 'type' => $typeName,
-						        'translation' => true, 'custom' => $custom,
-						        'method'      => $field['settings']->store);
+						'translation' => true, 'custom' => $custom,
+						'method'      => $field['settings']->store);
 				}
 				else
 				{
 					$this->getItemsMethodListStringFixBuilder[$nameSingleCode][]
 						= array('name'        => $name, 'type' => $typeName,
-						        'translation' => false, 'custom' => $custom,
-						        'method'      => $field['settings']->store);
+						'translation' => false, 'custom' => $custom,
+						'method'      => $field['settings']->store);
 				}
 			}
 
@@ -5160,8 +5144,8 @@ class Fields extends Structure
 		{
 			$this->getItemsMethodEximportStringFixBuilder[$nameSingleCode][]
 				= array('name'        => $name, 'type' => $typeName,
-				        'translation' => false, 'custom' => $custom,
-				        'method'      => $field['settings']->store);
+				'translation' => false, 'custom' => $custom,
+				'method'      => $field['settings']->store);
 		}
 		// check if field should be added to uikit
 		$this->buildSiteFieldData($nameSingleCode, $name, 'uikit', $typeName);
@@ -5213,12 +5197,12 @@ class Fields extends Structure
 				);
 			}
 			$this->sortBuilder[$nameListCode][] = array('type'      => $typeName,
-			                                            'code'      => $name,
-			                                            'lang'      => $listLangName,
-			                                            'lang_asc'  => $filter_name_asc_lang,
-			                                            'lang_desc' => $filter_name_desc_lang,
-			                                            'custom'    => $custom,
-			                                            'options'   => $options);
+				'code'      => $name,
+				'lang'      => $listLangName,
+				'lang_asc'  => $filter_name_asc_lang,
+				'lang_desc' => $filter_name_desc_lang,
+				'custom'    => $custom,
+				'options'   => $options);
 		}
 		// build the search values
 		if ($dbSwitch && isset($field['search']) && $field['search'] == 1)
@@ -5226,9 +5210,9 @@ class Fields extends Structure
 			$_list                                = (isset($field['list']))
 				? $field['list'] : 0;
 			$this->searchBuilder[$nameListCode][] = array('type'   => $typeName,
-			                                              'code'   => $name,
-			                                              'custom' => $custom,
-			                                              'list'   => $_list);
+				'code'   => $name,
+				'custom' => $custom,
+				'list'   => $_list);
 		}
 		// build the filter values
 		if ($dbSwitch && (isset($field['filter']) && $field['filter'] >= 1)
@@ -5298,12 +5282,13 @@ class Fields extends Structure
 		if ($dbSwitch)
 		{
 			// load array of view, field, and [encryption, type, tab]
+			$title_ = CFactory::_('Registry')->get('builder.title.' . $nameSingleCode);
 			CFactory::_('Registry')->set('all_component_fields.' . $nameSingleCode . '.' . $name,
 				[
 					'name' => $name,
 					'label' => $langLabel,
 					'type' => $typeName,
-					'title' => (isset($this->titleBuilder[$nameSingleCode]) && $name === $this->titleBuilder[$nameSingleCode]) ? true : false,
+					'title' => (is_string($title_) && $name === $title_) ? true : false,
 					'list' => $nameListCode,
 					'store' => (isset($field['store'])) ? $field['store'] : null,
 					'tab_name' => $tabName
@@ -5323,7 +5308,7 @@ class Fields extends Structure
 	 *
 	 */
 	public function setCustomFieldTypeFile($data, $nameListCode,
-		$nameSingleCode
+	                                       $nameSingleCode
 	) {
 		// make sure it is not already been build or if it is prime
 		if (isset($data['custom']) && isset($data['custom']['extends'])
@@ -5773,7 +5758,7 @@ class Fields extends Structure
 			$field_filter_sets[] = Indent::_(3) . 'hint="JSEARCH_FILTER"';
 			$field_filter_sets[] = Indent::_(2) . '/>';
 			// add the published filter if published is not set
-			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
 			{
 				// the published language string
 				$lang_published = CFactory::_('Config')->lang_prefix . '_FILTER_PUBLISHED';
@@ -5833,11 +5818,8 @@ class Fields extends Structure
 			}
 			// add the access filter if this view has access
 			// and if access manually is not set
-			if (isset($this->accessBuilder[$nameSingleCode])
-				&& StringHelper::check(
-					$this->accessBuilder[$nameSingleCode]
-				)
-				&& !isset($this->fieldsNames[$nameSingleCode]['access']))
+			if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode)
+				&& !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
 			{
 				$field_filter_sets[] = Indent::_(2) . '<field';
 				$field_filter_sets[] = Indent::_(3) . 'type="accesslevel"';
@@ -5963,7 +5945,7 @@ class Fields extends Structure
 			$list_sets[] = Indent::_(3)
 				. '<option value="a.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>';
 			// add the published filter if published is not set
-			if (!isset($this->fieldsNames[$nameSingleCode]['published']))
+			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
 			{
 				// add to done list
 				$donelist['published'] = true;
@@ -6428,10 +6410,10 @@ class Fields extends Structure
 			$tidy = new Tidy();
 			$tidy->parseString(
 				$xmlString, array('indent'            => true,
-				                  'indent-spaces'     => 8, 'input-xml' => true,
-				                  'output-xml'        => true,
-				                  'indent-attributes' => true,
-				                  'wrap-attributes'   => true, 'wrap' => false)
+					'indent-spaces'     => 8, 'input-xml' => true,
+					'output-xml'        => true,
+					'indent-attributes' => true,
+					'wrap-attributes'   => true, 'wrap' => false)
 			);
 			$tidy->cleanRepair();
 
@@ -6469,7 +6451,7 @@ class Fields extends Structure
 	 *
 	 */
 	public function xmlIndent($string, $char = ' ', $depth = 0,
-		$skipfirst = false, $skiplast = false
+	                          $skipfirst = false, $skiplast = false
 	) {
 		$output = array();
 		$lines  = explode("\n", $string);

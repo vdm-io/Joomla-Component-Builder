@@ -42,6 +42,94 @@ class ComponentbuilderControllerPower extends FormController
 		parent::__construct($config);
 	}
 
+	public function syncPowers()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+
+		// get IDS of the selected powers
+		$item = $this->input->post->get('jform', array(), 'array');
+
+		// check if there is any selections
+		if (empty($item['id']))
+		{
+			// set error message
+			$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_NOT_SAVED').'</h1>';
+			$message .= '<p>'.JText::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE').'</p>';
+			// set redirect
+			$redirect_url = \JRoute::_(
+				'index.php?option=com_componentbuilder&view=power'
+				. $this->getRedirectToItemAppend(), false
+			);
+			$this->setRedirect($redirect_url, $message, 'error');
+			return false;
+		}
+
+		// check if user has the right
+		$user = JFactory::getUser();
+		if($user->authorise('power.sync', 'com_componentbuilder'))
+		{
+			// set success message
+			$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_THIS_SYNC_FEATURE_IS_STILL_UNDER_DEVELOPMENT').'</h1>';
+			$message .= '<p>'.JText::sprintf('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_SOON_ANDOR_FOLLOW_THE_PROGRESS_ON_SGITVDMDEVA', '<a href="https://git.vdm.dev/joomla/Component-Builder/issues/984" target="_blank">').'</p>';
+			// set redirect
+			$redirect_url = \JRoute::_(
+				'index.php?option=com_componentbuilder&view=power'
+				. $this->getRedirectToItemAppend($item['id']), false
+			);
+			$this->setRedirect($redirect_url, $message);
+			return true;
+		}
+		// set redirect
+		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=powers', false);
+		$this->setRedirect($redirect_url);
+		return false;
+	}
+
+	public function resetPowers()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+
+		// get IDS of the selected powers
+		$item = $this->input->post->get('jform', array(), 'array');
+
+		// check if there is any selections
+		if (empty($item['id']))
+		{
+			// set error message
+			$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_NOT_SAVED').'</h1>';
+			$message .= '<p>'.JText::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE').'</p>';
+			// set redirect
+			$redirect_url = \JRoute::_(
+				'index.php?option=com_componentbuilder&view=power'
+				. $this->getRedirectToItemAppend(), false
+			);
+			$this->setRedirect($redirect_url, $message, 'error');
+			return false;
+		}
+
+		// check if user has the right
+		$user = JFactory::getUser();
+		if($user->authorise('power.reset', 'com_componentbuilder'))
+		{
+			// set success message
+			$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_THIS_RESET_FEATURE_IS_STILL_UNDER_DEVELOPMENT').'</h1>';
+			$message .= '<p>'.JText::sprintf('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_SOON_ANDOR_FOLLOW_THE_PROGRESS_ON_SGITVDMDEVA', '<a href="https://git.vdm.dev/joomla/Component-Builder/issues/984" target="_blank">').'</p>';
+			// set redirect
+			$redirect_url = \JRoute::_(
+				'index.php?option=com_componentbuilder&view=power'
+				. $this->getRedirectToItemAppend($item['id']), false
+			);
+			$this->setRedirect($redirect_url, $message);
+			return true;
+		}
+		// set redirect
+		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=powers', false);
+		$this->setRedirect($redirect_url);
+		return false;
+	}
+
         /**
 	 * Method override to check if you can add a new record.
 	 *

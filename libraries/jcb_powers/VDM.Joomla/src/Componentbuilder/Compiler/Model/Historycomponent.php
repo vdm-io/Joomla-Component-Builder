@@ -79,53 +79,71 @@ class Historycomponent
 	 */
 	public function set(object &$item)
 	{
+		// update SQL for admin views
+		$this->setAdminView($item);
+
+		// update SQL for component
+		$this->setComponent($item);
+	}
+
+	/**
+	 * check if an update SQL is needed
+	 *
+	 * @param   object     $item  The item data
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	private function setAdminView(object $item)
+	{
 		$old_admin_views = $this->history->get(
 			'component_admin_views', $item->addadmin_views_id
 		);
+
+		// add new views if found
+		if ($old_admin_views && ObjectHelper::check($old_admin_views))
+		{
+			if (isset($old_admin_views->addadmin_views)
+				&& JsonHelper::check(
+					$old_admin_views->addadmin_views
+				))
+			{
+				$this->updatesql->set(
+					json_decode((string) $old_admin_views->addadmin_views, true),
+					$item->addadmin_views, 'adminview'
+				);
+			}
+		}
+	}
+
+	/**
+	 * Set the component history
+	 *
+	 * @param   object    $item  The item data
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	private function setComponent(object &$item)
+	{
 		$old_component = $this->history->get(
 			'joomla_component', $this->config->component_id
 		);
 
-		if ($old_component || $old_admin_views)
+		// check if a new version was manually set
+		if ($old_component && ObjectHelper::check($old_component))
 		{
-			if (ObjectHelper::check($old_admin_views))
+			$old_component_version = preg_replace(
+				'/[^0-9.]+/', '', (string) $old_component->component_version
+			);
+			if ($old_component_version != $this->config->component_version)
 			{
-				// add new views if found
-				if (isset($old_admin_views->addadmin_views)
-					&& JsonHelper::check(
-						$old_admin_views->addadmin_views
-					))
-				{
-					$this->updatesql->set(
-						json_decode((string) $old_admin_views->addadmin_views, true),
-						$item->addadmin_views, 'adminview'
-					);
-				}
-
-				// check if a new version was manually set
-				if (ObjectHelper::check($old_component))
-				{
-					$old_component_version = preg_replace(
-						'/[^0-9.]+/', '', (string) $old_component->component_version
-					);
-					if ($old_component_version != $this->config->component_version)
-					{
-						// yes, this is a new version, this mean there may
-						// be manual sql and must be checked and updated
-						$item->old_component_version
-							= $old_component_version;
-					}
-					// clear this data
-					unset($old_component);
-				}
-
-				// clear this data
-				unset($old_admin_views);
+				// yes, this is a new version, this mean there may
+				// be manual sql and must be checked and updated
+				$item->old_component_version
+					= $old_component_version;
 			}
 		}
-
-		// unset original value
-		unset($item->addadmin_views);
 	}
 
 }

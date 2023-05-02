@@ -20,6 +20,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Language\Extractor;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor as Power;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\External;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\CustomcodeInterface;
@@ -103,6 +104,14 @@ class Customcode implements CustomcodeInterface
 	protected Extractor $extractor;
 
 	/**
+	 * Super Power Extractor
+	 *
+	 * @var    Power
+	 * @since 3.2.0
+	 **/
+	protected Power $power;
+
+	/**
 	 * Compiler Custom Code External
 	 *
 	 * @var    External
@@ -124,17 +133,19 @@ class Customcode implements CustomcodeInterface
 	 * @param Config|null          $config          The compiler config object.
 	 * @param Placeholder|null     $placeholder     The compiler placeholder object.
 	 * @param Extractor|null       $extractor       The compiler language extractor object.
-	 * @param External|null        $external       The compiler external custom code object.
+	 * @param Power|null           $power           The compiler power extractor object.
+	 * @param External|null        $external        The compiler external custom code object.
 	 * @param \JDatabaseDriver     $db              The Database Driver object.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Placeholder $placeholder = null,
-		?Extractor $extractor = null, ?External $external = null, ?\JDatabaseDriver $db = null)
+		?Extractor $extractor = null, ?Power $power = null, ?External $external = null, ?\JDatabaseDriver $db = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
 		$this->extractor = $extractor ?: Compiler::_('Language.Extractor');
+		$this->power = $power ?: Compiler::_('Power.Extractor');
 		$this->external = $external ?: Compiler::_('Customcode.External');
 		$this->db = $db ?: Factory::getDbo();
 	}
@@ -159,6 +170,9 @@ class Customcode implements CustomcodeInterface
 					$this->external->set($string, $debug), $debug
 				)
 			);
+
+			// extract any found super powers
+			$this->power->search($string);
 		}
 		// if debug
 		if ($debug)
@@ -276,8 +290,7 @@ class Customcode implements CustomcodeInterface
 								if (strpos($array[1], ',') !== false)
 								{
 									// update the function values with the custom code key placeholders (this allow the use of [] + and , in the values)
-									$this->data[$id]['args'][$key]
-										= array_map(
+									$this->data[$id]['args'][$key] = array_map(
 											fn($_key) => $this->placeholder->update(
 												$_key,
 												$this->keys
@@ -288,8 +301,7 @@ class Customcode implements CustomcodeInterface
 									$array[1]
 								))
 								{
-									$this->data[$id]['args'][$key]
-										= [];
+									$this->data[$id]['args'][$key] = [];
 									// update the function values with the custom code key placeholders (this allow the use of [] + and , in the values)
 									$this->data[$id]['args'][$key][]
 										= $this->placeholder->update(

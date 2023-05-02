@@ -181,6 +181,9 @@ class Structure
 			// for plugin event TODO change event api signatures
 			$this->power->active = $powers;
 
+			// set super power details
+			$this->setSuperPowerDetails();
+
 			foreach ($this->power->active as $power)
 			{
 				if (ObjectHelper::check($power)
@@ -209,11 +212,6 @@ class Structure
 					$this->folder->create($power->full_path_parent);
 					$this->folder->create($power->full_path);
 
-					// set power file
-					$fileDetails = array('path' => $power->full_path . '/'
-						. $power->file_name . '.php',
-					                     'name' => $power->file_name . '.php',
-					                     'zip' => $power->file_name . '.php');
 					$bom = '<?php' . PHP_EOL . '// A POWER FILE' .
 						PHP_EOL . Placefix::_h('BOM') . PHP_EOL;
 
@@ -222,21 +220,48 @@ class Structure
 					{
 						$bom = '<?php' . PHP_EOL . $power->licensing_template;
 					}
-					$this->file->write(
-						$fileDetails['path'],
-						$bom . PHP_EOL . Placefix::_h('POWERCODE')
-						. PHP_EOL . Placefix::_h('POWERLINKER')
-					);
-					$this->files->appendArray($power->key, $fileDetails);
 
-					// count the file created
-					$this->counter->file++;
+					// set the main power php file
+					$this->createFile($bom . PHP_EOL . Placefix::_h('POWERCODE') . PHP_EOL,
+						$power->full_path, $power->file_name . '.php', $power->key);
+
+					// set super power files
+					$this->setSuperPowerFiles($power, $bom);
 
 					// set htaccess once per path
 					$this->setHtaccess($power);
 				}
 			}
 		}
+	}
+
+	/**
+	 * Create a file with optional custom content and save it to the given path.
+	 *
+	 * @param string $content      The content.
+	 * @param string $fullPath     The full path to the destination folder.
+	 * @param string $fileName     The file name without the extension.
+	 * @param string $key          The key to append the file details.
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	private function createFile(string $content, string $fullPath, string $fileName, string $key)
+	{
+		$file_details = [
+			'path' => $fullPath . '/' . $fileName,
+			'name' => $fileName,
+			'zip' => $fileName
+		];
+
+		// Write the content to the file
+		$this->file->write($file_details['path'], $content);
+
+		// Append the file details to the files array
+		$this->files->appendArray($key, $file_details);
+
+		// Increment the file counter
+		$this->counter->file++;
 	}
 
 	/**
@@ -247,7 +272,7 @@ class Structure
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	protected function setHtaccess(object &$power)
+	private function setHtaccess(object &$power)
 	{
 		if (!isset($this->htaccess[$power->path_jcb]))
 		{
@@ -320,7 +345,7 @@ class Structure
 		// check if we should add the dynamic folder moving script to the installer script
 		if (!$this->registry->get('set_move_folders_install_script'))
 		{
-			// add the setDynamicF0ld3rs() method to the install scipt.php file
+			// add the setDynamicF0ld3rs() method to the install script.php file
 			$this->registry->set('set_move_folders_install_script', true);
 
 			// set message that this was done (will still add a tutorial link later)
@@ -332,6 +357,71 @@ class Structure
 				Text::sprintf('COM_COMPONENTBUILDER_A_METHOD_SETDYNAMICFZEROLDTHREERS_WAS_ADDED_TO_THE_INSTALL_BSCRIPTPHPB_OF_THIS_PACKAGE_TO_INSURE_THAT_THE_FOLDERS_ARE_COPIED_INTO_THE_CORRECT_PLACE_WHEN_THIS_COMPONENT_IS_INSTALLED'),
 				'Notice'
 			);
+		}
+	}
+
+	/**
+	 * Set the super powers details structure
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	private function setSuperPowerDetails()
+	{
+		if ($this->config->add_super_powers && ArrayHelper::check($this->power->superpowers))
+		{
+			foreach ($this->power->superpowers as $path => $powers)
+			{
+				// create the path if it does not exist
+				$this->folder->create($path, false);
+
+				$key = StringHelper::safe($path);
+
+				// set the super powers readme file
+				$this->createFile(Placefix::_h('POWERREADME'),
+					$path, 'README.md', $key);
+
+				// set the super power index file
+				$this->createFile(Placefix::_h('POWERINDEX'), $path,
+					'super-powers.json', $key);
+			}
+		}
+	}
+
+	/**
+	 * Set the super power file paths
+	 *
+	 * @param object   $power     The power object
+	 * @param string   $bom       The bom for the top of the PHP files
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	private function setSuperPowerFiles(object &$power, string $bom)
+	{
+		if ($this->config->add_super_powers && is_array($power->super_power_paths) && $power->super_power_paths !== [])
+		{
+			foreach ($power->super_power_paths as $path)
+			{
+				// create the path if it does not exist
+				$this->folder->create($path, false);
+
+				// set the super power php file
+				$this->createFile($bom . PHP_EOL . Placefix::_h('POWERCODE') . PHP_EOL,
+					$path, 'code.php', $power->key);
+
+				// set the super power php RAW file
+				$this->createFile(Placefix::_h('CODEPOWER'),
+					$path, 'code.power', $power->key);
+
+				// set the super power json file
+				$this->createFile(Placefix::_h('POWERLINKER'), $path,
+					'settings.json', $power->key);
+
+				// set the super power readme file
+				$this->createFile(Placefix::_h('POWERREADME'), $path,
+					'README.md', $power->key);
+			}
 		}
 	}
 

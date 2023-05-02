@@ -26,6 +26,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
+use VDM\Joomla\Componentbuilder\Power\Super as Superpower;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PowerInterface;
 
 
@@ -61,6 +62,14 @@ class Power implements PowerInterface
 	public array $composer = [];
 
 	/**
+	 * All super powers of this build
+	 *
+	 * @var    array
+	 * @since 3.2.0
+	 **/
+	public array $superpowers = [];
+
+	/**
 	 * The url to the power, if there is an error.
 	 *
 	 * @var   string
@@ -75,6 +84,14 @@ class Power implements PowerInterface
 	 * @since 3.2.0
 	 **/
 	protected array $state = [];
+
+	/**
+	 * The state of retry to loaded powers
+	 *
+	 * @var    array
+	 * @since 3.2.0
+	 **/
+	protected array $retry = [];
 
 	/**
 	 * Compiler Config
@@ -109,6 +126,14 @@ class Power implements PowerInterface
 	protected Gui $gui;
 
 	/**
+	 * The JCB Superpower class
+	 *
+	 * @var    Superpower
+	 * @since 3.2.0
+	 **/
+	protected Superpower $superpower;
+
+	/**
 	 * Database object to query local DB
 	 *
 	 * @var    \JDatabaseDriver
@@ -131,6 +156,7 @@ class Power implements PowerInterface
 	 * @param Placeholder|null        $placeholder  The compiler placeholder object.
 	 * @param Customcode|null         $customcode   The compiler customcode object.
 	 * @param Gui|null                $gui          The compiler customcode gui object.
+	 * @param Superpower|null         $superpower   The JCB superpower object.
 	 * @param \JDatabaseDriver|null   $db           The Database Driver object.
 	 * @param CMSApplication|null     $app          The CMS Application object.
 	 *
@@ -138,13 +164,14 @@ class Power implements PowerInterface
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Placeholder $placeholder = null,
-		?Customcode $customcode = null, ?Gui $gui = null,
+		?Customcode $customcode = null, ?Gui $gui = null, ?Superpower $superpower = null,
 		?\JDatabaseDriver $db = null, ?CMSApplication $app = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
 		$this->customcode = $customcode ?: Compiler::_('Customcode');
 		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
+		$this->superpower = $superpower ?: Compiler::_('Superpower');
 		$this->db = $db ?: Factory::getDbo();
 		$this->app = $app ?: Factory::getApplication();
 	}
@@ -229,6 +256,10 @@ class Power implements PowerInterface
 				$this->active[$guid]->target_type = 'P0m3R!';
 				$this->active[$guid]->key         = $this->active[$guid]->id . '_' . $this->active[$guid]->target_type;
 
+				// reserve some values for the linker
+				$this->active[$guid]->unchanged_namespace = $this->active[$guid]->namespace;
+				$this->active[$guid]->unchanged_description = $this->active[$guid]->description;
+
 				// now set the name
 				$this->active[$guid]->name = $this->placeholder->update_(
 					$this->customcode->update($this->active[$guid]->name)
@@ -301,6 +332,9 @@ class Power implements PowerInterface
 				// reset back to starting value
 				$this->config->lang_target = $tmp_lang_target;
 
+				// set the approved super power values
+				$this->setSuperPowers($guid);
+
 				return true;
 			}
 		}
@@ -310,6 +344,20 @@ class Power implements PowerInterface
 		// only if guid is valid
 		if ($this->isGuidValid($guid))
 		{
+			// now we search for it via the super power paths
+			if (empty($this->retry[$guid]) && $this->superpower->load($guid, ['remote', 'local']))
+			{
+				// we found it and it was loaded into the database
+				unset($this->state[$guid]);
+				unset($this->active[$guid]);
+
+				// we make sure that this retry only happen once! (just in-case...)
+				$this->retry[$guid] = true;
+
+				// so we try to load it again
+				return $this->set($guid);
+			}
+
 			$this->app->enqueueMessage(
 				Text::sprintf('COM_COMPONENTBUILDER_PPOWER_BGUIDSB_NOT_FOUNDP', $guid),
 				'Error'
@@ -513,7 +561,7 @@ class Power implements PowerInterface
 	}
 
 	/**
-	 * Set Use Classess
+	 * Set Use Classes
 	 *
 	 * @param string  $guid  The global unique id of the power
 	 * @param array   $use   The use array
@@ -596,6 +644,9 @@ class Power implements PowerInterface
 
 		if (ArrayHelper::check($_composer))
 		{
+			// reserve composer values for the linker
+			$this->active[$guid]->unchanged_composer = $_composer;
+
 			foreach ($_composer as $composer)
 			{
 				if (isset($composer['access_point']) && StringHelper::check($composer['access_point']) &&
@@ -641,6 +692,11 @@ class Power implements PowerInterface
 				}
 			}
 		}
+		else
+		{
+			// reserve composer values for the linker
+			$this->active[$guid]->unchanged_composer = '';
+		}
 	}
 
 	/**
@@ -670,9 +726,13 @@ class Power implements PowerInterface
 				if ($implement == -1
 					&& StringHelper::check($this->active[$guid]->implements_custom))
 				{
+					// reserve implements custom for the linker
+					$this->active[$guid]->unchanged_implements_custom = $this->active[$guid]->implements_custom;
+
 					$this->active[$guid]->implement_names[] = $this->placeholder->update_(
 						$this->customcode->update($this->active[$guid]->implements_custom)
 					);
+
 					// just add this once
 					unset($this->active[$guid]->implements_custom);
 				}
@@ -710,9 +770,13 @@ class Power implements PowerInterface
 		if ($this->active[$guid]->extends == -1
 			&& StringHelper::check($this->active[$guid]->extends_custom))
 		{
+			// reserve extends custom for the linker
+			$this->active[$guid]->unchanged_extends_custom = $this->active[$guid]->extends_custom;
+
 			$this->active[$guid]->extends_name = $this->placeholder->update_(
 				$this->customcode->update($this->active[$guid]->extends_custom)
 			);
+
 			// just add once
 			unset($this->active[$guid]->extends_custom);
 		}
@@ -838,13 +902,16 @@ class Power implements PowerInterface
 			// set GUI mapper field
 			$guiMapper['field'] = 'licensing_template';
 
+			// reserve licensing template for the linker
+			$this->active[$guid]->unchanged_licensing_template = base64_decode(
+				(string) $this->active[$guid]->licensing_template
+			);
+
 			// base64 Decode code
 			$this->active[$guid]->licensing_template = $this->gui->set(
 				$this->placeholder->update_(
 					$this->customcode->update(
-						base64_decode(
-							(string) $this->active[$guid]->licensing_template
-						)
+						$this->active[$guid]->unchanged_licensing_template
 					)
 				),
 				$guiMapper
@@ -854,6 +921,7 @@ class Power implements PowerInterface
 		{
 			$this->active[$guid]->add_licensing_template = 1;
 			$this->active[$guid]->licensing_template = '';
+			$this->active[$guid]->unchanged_licensing_template = '';
 		}
 	}
 
@@ -873,13 +941,16 @@ class Power implements PowerInterface
 			// set GUI mapper field
 			$guiMapper['field'] = 'head';
 
+			// reserve header for the linker
+			$this->active[$guid]->unchanged_head = base64_decode(
+				(string) $this->active[$guid]->head
+			);
+
 			// base64 Decode code
 			$this->active[$guid]->head = $this->gui->set(
 				$this->placeholder->update_(
 					$this->customcode->update(
-						base64_decode(
-							(string) $this->active[$guid]->head
-						)
+						$this->active[$guid]->unchanged_head
 					)
 				),
 				$guiMapper
@@ -888,6 +959,7 @@ class Power implements PowerInterface
 		else
 		{
 			$this->active[$guid]->head = '';
+			$this->active[$guid]->unchanged_head = '';
 		}
 	}
 
@@ -904,6 +976,11 @@ class Power implements PowerInterface
 	{
 		if (StringHelper::check($this->active[$guid]->main_class_code))
 		{
+			// reserve main class code for the linker
+			$this->active[$guid]->unchanged_main_class_code = base64_decode(
+				(string) $this->active[$guid]->main_class_code
+			);
+
 			// set GUI mapper field
 			$guiMapper['field'] = 'main_class_code';
 
@@ -911,9 +988,7 @@ class Power implements PowerInterface
 			$this->active[$guid]->main_class_code = $this->gui->set(
 				$this->placeholder->update_(
 					$this->customcode->update(
-						base64_decode(
-							(string) $this->active[$guid]->main_class_code
-						)
+						$this->active[$guid]->unchanged_main_class_code
 					)
 				),
 				$guiMapper
@@ -921,5 +996,67 @@ class Power implements PowerInterface
 		}
 	}
 
+	/**
+	 * Set the super powers of this power
+	 *
+	 * @param string  $guid   The global unique id of the power
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	private function setSuperPowers(string $guid): void
+	{
+		// set the approved super power values
+		if ($this->config->add_super_powers && $this->active[$guid]->approved == 1)
+		{
+			$this->active[$guid]->approved_paths = (isset($this->active[$guid]->approved_paths)
+				&& JsonHelper::check(
+					$this->active[$guid]->approved_paths
+				)) ? json_decode((string) $this->active[$guid]->approved_paths, true) : null;
+
+			if (ArrayHelper::check($this->active[$guid]->approved_paths))
+			{
+				$global_path = $this->config->local_powers_repository_path;
+
+				// update all paths
+				$this->active[$guid]->super_power_paths = array_map(function($path) use($global_path, $guid) {
+
+					// remove branch
+					if (($pos = strpos($path, ':')) !== false)
+					{
+						$path = substr($path, 0, $pos);
+					}
+
+					// set the repo path
+					$repo = $global_path . '/' . $path;
+
+					// set SuperPowerKey (spk)
+					$spk = 'Super_'.'_' . str_replace('-', '_', $guid) . '_'.'_Power';
+
+					// set the global super power
+					$this->superpowers[$repo][$guid] = [
+						'name' => $this->active[$guid]->code_name,
+						'type' => $this->active[$guid]->type,
+						'namespace' => $this->active[$guid]->_namespace,
+						'code' => 'src/' . $guid . '/code.php',
+						'power' => 'src/' . $guid . '/code.power',
+						'settings' => 'src/' . $guid . '/settings.json',
+						'path' => 'src/' . $guid,
+						'spk' => $spk,
+						'guid' => $guid
+					];
+
+					return  $repo . '/src/' . $guid;
+				}, array_values($this->active[$guid]->approved_paths));
+
+				return;
+			}
+		}
+
+		// reset all to avoid any misunderstanding down steam
+		$this->active[$guid]->super_power_paths = null;
+		$this->active[$guid]->approved_paths = null;
+		$this->active[$guid]->approved = null;
+	}
 }
 
