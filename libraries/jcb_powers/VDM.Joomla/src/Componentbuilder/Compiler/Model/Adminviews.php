@@ -92,7 +92,7 @@ class Adminviews
 				$item->addadmin_views, function ($a, $b) {
 					if ($a['order'] != 0 && $b['order'] != 0)
 					{
-						return $a['order'] - $b['order'];
+						return $a['order'] <=> $b['order'];
 					}
 					elseif ($b['order'] != 0 && $a['order'] == 0)
 					{

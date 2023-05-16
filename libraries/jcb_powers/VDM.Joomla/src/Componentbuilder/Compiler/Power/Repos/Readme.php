@@ -301,7 +301,7 @@ class Readme
 	 */
 	private function compareType(array $a, array $b, array $typeOrder): int
 	{
-		return $typeOrder[$a['type']] - $typeOrder[$b['type']];
+		return $typeOrder[$a['type']] <=> $typeOrder[$b['type']];
 	}
 
 	/**

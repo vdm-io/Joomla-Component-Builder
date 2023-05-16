@@ -204,7 +204,7 @@ class Fields
 					{
 						if ($a['order_list'] != 0 && $b['order_list'] != 0)
 						{
-							return $a['order_list'] - $b['order_list'];
+							return $a['order_list'] <=> $b['order_list'];
 						}
 						elseif ($b['order_list'] != 0 && $a['order_list'] == 0)
 						{
@@ -212,7 +212,7 @@ class Fields
 						}
 						elseif ($a['order_list'] != 0 && $b['order_list'] == 0)
 						{
-							return 0;
+							return -1;
 						}
 
 						return 1;

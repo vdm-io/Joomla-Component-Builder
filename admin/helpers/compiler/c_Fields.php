@@ -1325,7 +1325,7 @@ class Fields extends Structure
 			}
 		}
 		// fix the permissions field "title" issue gh-629
-		// check if the the title is not already set
+		// check if the title is not already set
 		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.title')
 			&& $this->hasPermissionsSet($view, $nameSingleCode))
 		{
@@ -3982,7 +3982,7 @@ class Fields extends Structure
 					. $field['alignment'] . '.'
 					. $field['order_edit'], $name);
 			}
-			// check if default fields were over written
+			// check if default fields were overwritten
 			if (in_array($name, $default_fields))
 			{
 				// just to eliminate

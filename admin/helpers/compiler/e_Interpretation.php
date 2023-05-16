@@ -4972,7 +4972,7 @@ class Interpretation extends Fields
 	public function setAdminViewDisplayMethod($nameListCode)
 	{
 		$script = '';
-		// add the the new filter methods for the search toolbar above the list view (2 = topbar)
+		// add the new filter methods for the search toolbar above the list view (2 = topbar)
 		if (CFactory::_('Registry')->
 			get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
 		{
@@ -11129,7 +11129,7 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . Indent::_(1) . "?>";
 			$body .= PHP_EOL . Indent::_(1)
 				. '<tr class="row<?php echo $i % 2; ?>">';
-			// only load if not over written
+			// only load if not overwritten
 			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.ordering'))
 			{
 				$body .= PHP_EOL . Indent::_(2)
@@ -11236,7 +11236,7 @@ class Interpretation extends Fields
 						$item, $nameSingleCode, $nameListCode, $itemClass,
 						$doNotEscape, $coreLoad, $core
 					);
-					// check if buttons was aready added
+					// check if buttons was already added
 					if ($firstTimeBeingAdded) // TODO we must improve this to allow more items to be targeted instead of just the first item :)
 					{
 						// get custom admin view buttons
