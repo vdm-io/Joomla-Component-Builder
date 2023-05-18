@@ -10052,6 +10052,7 @@ class Interpretation extends Fields
 					{
 						$default = $data['other'];
 					}
+					// to get just null value add EMPTY to other value.
 					if ($default === 'EMPTY')
 					{
 						$default = $data['null_switch'];
@@ -10062,42 +10063,32 @@ class Interpretation extends Fields
 						$default = $data['null_switch'] . ' DEFAULT '
 							. $default;
 					}
-					elseif ($default == 0 || $default)
+					elseif (is_numeric($default))
 					{
-						if (is_numeric($default))
-						{
-							$default = $data['null_switch'] . " DEFAULT "
-								. $default;
-						}
-						else
-						{
-							$default = $data['null_switch'] . " DEFAULT '"
-								. $default . "'";
-						}
-					}
-					elseif ($data['null_switch'] === 'NULL')
-					{
-						$default = "DEFAULT NULL";
+						$default = $data['null_switch'] . " DEFAULT "
+							. $default;
 					}
 					else
 					{
-						$default = $data['null_switch'];
+						$default = $data['null_switch'] . " DEFAULT '"
+							. $default . "'";
 					}
-					// set the lenght
-					$lenght = '';
+
+					// set the length (lenght) <-- TYPO :: LVDM :: DON'T TOUCH
+					$length = '';
 					if (isset($data['lenght']) && $data['lenght'] === 'Other'
 						&& isset($data['lenght_other'])
 						&& $data['lenght_other'] > 0)
 					{
-						$lenght = '(' . $data['lenght_other'] . ')';
+						$length = '(' . $data['lenght_other'] . ')';
 					}
 					elseif (isset($data['lenght']) && $data['lenght'] > 0)
 					{
-						$lenght = '(' . $data['lenght'] . ')';
+						$length = '(' . $data['lenght'] . ')';
 					}
 					// set the field to db
 					$db_ .= PHP_EOL . Indent::_(1) . "`" . $field . "` "
-						. $data['type'] . $lenght . " " . $default . ",";
+						. $data['type'] . $length . " " . $default . ",";
 					// check if this a new field that should be added via SQL update
 					if (CFactory::_('Registry')->
 						get('builder.add_sql.field.' . $view . '.' . $data['ID'], null))
@@ -10105,10 +10096,10 @@ class Interpretation extends Fields
 						// to soon....
 						// $key_ = "ALTERTABLE`#__" . $component . "_" . $view . "`ADDCOLUMNIFNOTEXISTS`" . $field . "`";
 						// $value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` ADD COLUMN IF NOT EXISTS `" . $field . "` " . $data['type']
-						//	. $lenght . " " . $default . " AFTER `" . $last_name . "`;";
+						//	. length . " " . $default . " AFTER `" . $last_name . "`;";
 						$key_ = "ALTERTABLE`#__" . $component . "_" . $view . "`ADD`" . $field . "`";
 						$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` ADD `" . $field . "` " . $data['type']
-							. $lenght . " " . $default . " AFTER `" . $last_name . "`;";
+							. $length . " " . $default . " AFTER `" . $last_name . "`;";
 
 						CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
 					}
@@ -10131,7 +10122,7 @@ class Interpretation extends Fields
 						$key_ = "ALTERTABLE`#__" . $component . "_" . $view . "`CHANGE`" . $oldName . "``"
 							. $field . "`";
 						$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` CHANGE `" . $oldName . "` `"
-							. $field . "` " . $data['type'] . $lenght . " " . $default . ";";
+							. $field . "` " . $data['type'] . $length . " " . $default . ";";
 
 						CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
 					}
