@@ -70,6 +70,14 @@ class Power implements PowerInterface
 	public array $superpowers = [];
 
 	/**
+	 * Old super powers found in the local repos
+	 *
+	 * @var    array
+	 * @since 3.2.0
+	 **/
+	public array $old_superpowers = [];
+
+	/**
 	 * The url to the power, if there is an error.
 	 *
 	 * @var   string

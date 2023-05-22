@@ -123,18 +123,13 @@ class Readme
 		$classes = [];
 		foreach ($powers as $guid => $power)
 		{
-			$power_object = $this->power->get($guid);
-			if (isset($power_object->parsed_class_code) && is_array($power_object->parsed_class_code))
-			{
-				// add to the sort bucket
-				$classes[] = [
-					'namespace' => $power['namespace'],
-					'type' => $power['type'],
-					'name' => $power['name'],
-					'link' => $this->indexLinkPower($power),
-					'diagram' => $this->plantuml->classBasicDiagram($power, $power_object->parsed_class_code)
-				];
-			}
+			// add to the sort bucket
+			$classes[] = [
+				'namespace' => $power['namespace'],
+				'type' => $power['type'],
+				'name' => $power['name'],
+				'link' => $this->indexLinkPower($power)
+			];
 		}
 
 		return $this->readmeModel($classes);
@@ -152,11 +147,7 @@ class Readme
 	{
 		$this->sortClasses($classes, $this->defineTypeOrder());
 
-		$result = $this->generateIndex($classes);
-
-		$diagram_bucket = $this->generateDiagramBucket($classes);
-
-		return $result . $diagram_bucket;
+		return $this->generateIndex($classes);
 	}
 
 	/**
@@ -185,40 +176,6 @@ class Readme
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Generate the diagram bucket string for classes
-	 *
-	 * @param array $classes The sorted classes
-	 *
-	 * @return string The diagram bucket string
-	 */
-	private function generateDiagramBucket(array &$classes): string
-	{
-		$diagram_bucket = "\n\n# Class Diagrams\n";
-		$current_namespace = null;
-		$diagrams = '';
-
-		foreach ($classes as $class)
-		{
-			if ($class['namespace'] !== $current_namespace)
-			{
-				if ($current_namespace !== null)
-				{
-					$diagram_bucket .= $this->generateNamespaceDiagram($current_namespace, $diagrams);
-				}
-				$current_namespace = $class['namespace'];
-				$diagrams = '';
-			}
-
-			$diagrams .= $class['diagram'];
-		}
-
-		// Add the last namespace diagram
-		$diagram_bucket .= $this->generateNamespaceDiagram($current_namespace, $diagrams);
-
-		return $diagram_bucket;
 	}
 
 	/**
@@ -319,24 +276,6 @@ class Readme
 	}
 
 	/**
-	 * Generate a namespace diagram string
-	 *
-	 * @param string $current_namespace The current namespace
-	 * @param string $diagrams The diagrams for the namespace
-	 *
-	 * @return string The namespace diagram string
-	 */
-	private function generateNamespaceDiagram(string $current_namespace, string $diagrams): string
-	{
-		$namespace_title = str_replace('\\', ' ', $current_namespace);
-		$diagram_code = "\n## {$namespace_title}\n> namespace {$current_namespace}\n";
-		$diagram_code .= "```uml\n@startuml\n\n" .
-			$this->plantuml->namespaceDiagram($current_namespace, $diagrams) . "\n\n@enduml\n```\n";
-
-		return $diagram_code;
-	}
-
-	/**
 	 * Build the Link to the power in this repository
 	 *
 	 * @param string    $power  The power details.
@@ -404,6 +343,5 @@ class Readme
 	{
 		return $power['spk'];
 	}
-
 }
 

@@ -28,6 +28,8 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Files;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 
 
@@ -372,6 +374,9 @@ class Structure
 		{
 			foreach ($this->power->superpowers as $path => $powers)
 			{
+				// get existing files
+				$this->loadExistingSuperPower($path);
+
 				// create the path if it does not exist
 				$this->folder->create($path, false);
 
@@ -425,5 +430,21 @@ class Structure
 		}
 	}
 
+	/**
+	 * Set the super power file paths
+	 *
+	 * @param string   $repository    The super power repository
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	private function loadExistingSuperPower(string $repository)
+	{
+		if (($content = FileHelper::getContent($repository . '/super-powers.json', null)) !== null &&
+			JsonHelper::check($content))
+		{
+			$this->power->old_superpowers[$repository] = json_decode($content, true);
+		}
+	}
 }
 
