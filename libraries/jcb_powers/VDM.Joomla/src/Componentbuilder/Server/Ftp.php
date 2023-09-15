@@ -114,12 +114,13 @@ class Ftp implements Serverinterface
 		// make sure we have a string and it is not default or empty
 		if (StringHelper::check($this->details->signature))
 		{
-			// turn into variables
-			parse_str((string) $this->details->signature);
+			// turn into array of variables
+			$signature = [];
+			parse_str((string) $this->details->signature, $signature);
 			// set options
-			if (isset($options) && ArrayHelper::check($options))
+			if (isset($signature['options']) && ArrayHelper::check($signature['options']))
 			{
-				foreach ($options as $o__p0t1on => $vAln3)
+				foreach ($signature['options'] as $o__p0t1on => $vAln3)
 				{
 					if ('timeout' === $o__p0t1on)
 					{
@@ -136,10 +137,10 @@ class Ftp implements Serverinterface
 				$options = [];
 			}
 			// get ftp object
-			if (isset($host) && $host != 'HOSTNAME' &&
-				isset($port) && $port != 'PORT_INT' &&
-				isset($username) && $username != 'user@name.com' &&
-				isset($password) && $password != 'password')
+			if (isset($signature['host']) && $signature['host'] != 'HOSTNAME' &&
+				isset($signature['port']) && $signature['port'] != 'PORT_INT' &&
+				isset($signature['username']) && $signature['username'] != 'user@name.com' &&
+				isset($signature['password']) && $signature['password'] != 'password')
 			{
 				// this is a singleton
 				return FtpClient::getInstance($host, $port, $options, $username, $password);
