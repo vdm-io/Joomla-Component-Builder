@@ -62,7 +62,7 @@ class ComponentbuilderControllerCustom_admin_view extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return parent::allowAdd($data);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerCustom_admin_view extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('custom_admin_view.access', 'com_componentbuilder.custom_admin_view.' . (int) $recordId) &&  $user->authorise('custom_admin_view.access', 'com_componentbuilder'));
+		$access = ($user->authorise('custom_admin_view.access', 'com_componentbuilder.custom_admin_view.' . (int) $recordId) && $user->authorise('custom_admin_view.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

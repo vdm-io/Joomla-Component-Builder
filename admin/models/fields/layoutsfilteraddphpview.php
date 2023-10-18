@@ -49,21 +49,21 @@ class JFormFieldLayoutsfilteraddphpview extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_PHP_CUSTOM_VIEW_SCRIPT') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get layoutsmodel
-			$model = ComponentbuilderHelper::getModel('layouts');
-			$results = array_unique($results);
-			foreach ($results as $add_php_view)
+			$_model = ComponentbuilderHelper::getModel('layouts');
+			$_results = array_unique($_results);
+			foreach ($_results as $add_php_view)
 			{
 				// Translate the add_php_view selection
-				$text = $model->selectionTranslation($add_php_view,'add_php_view');
+				$_text = $_model->selectionTranslation($add_php_view,'add_php_view');
 				// Now add the add_php_view and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_php_view, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $add_php_view, JText::_($_text));
 			}
 		}
 		return $_filter;

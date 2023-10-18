@@ -14,8 +14,9 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Componentbuilder\Utilities\FormHelper as JCBFormHelper;
+use VDM\Joomla\Utilities\FormHelper as JCBFormHelper;
 use VDM\Joomla\Componentbuilder\Utilities\FilterHelper as JCBFilterHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 /**
  * Fields List Model
@@ -411,7 +412,7 @@ class ComponentbuilderModelFields extends ListModel
 				}
 			}
 			// now check if we have IDs
-			if ($get_ids && ComponentbuilderHelper::checkArray($field_ids))
+			if ($get_ids && UtilitiesArrayHelper::check($field_ids))
 			{
 				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $field_ids) . ')');
 			}
@@ -676,7 +677,7 @@ class ComponentbuilderModelFields extends ListModel
 				}
 			}
 			// now check if we have IDs
-			if ($get_ids && ComponentbuilderHelper::checkArray($field_ids))
+			if ($get_ids && UtilitiesArrayHelper::check($field_ids))
 			{
 				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $field_ids) . ')');
 			}
@@ -711,22 +712,22 @@ class ComponentbuilderModelFields extends ListModel
 							continue;
 						}
 
-						// decode on_get_model_field
-						$item->on_get_model_field = base64_decode($item->on_get_model_field);
 						// decode on_save_model_field
 						$item->on_save_model_field = base64_decode($item->on_save_model_field);
 						// decode initiator_on_get_model
 						$item->initiator_on_get_model = base64_decode($item->initiator_on_get_model);
-						// decode css_view
-						$item->css_view = base64_decode($item->css_view);
-						// decode javascript_view_footer
-						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
-						// decode css_views
-						$item->css_views = base64_decode($item->css_views);
-						// decode javascript_views_footer
-						$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
 						// decode initiator_on_save_model
 						$item->initiator_on_save_model = base64_decode($item->initiator_on_save_model);
+						// decode css_views
+						$item->css_views = base64_decode($item->css_views);
+						// decode css_view
+						$item->css_view = base64_decode($item->css_view);
+						// decode on_get_model_field
+						$item->on_get_model_field = base64_decode($item->on_get_model_field);
+						// decode javascript_view_footer
+						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
+						// decode javascript_views_footer
+						$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

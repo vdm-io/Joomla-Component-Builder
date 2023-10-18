@@ -62,7 +62,7 @@ class ComponentbuilderControllerTemplate extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return parent::allowAdd($data);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerTemplate extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('template.access', 'com_componentbuilder.template.' . (int) $recordId) &&  $user->authorise('template.access', 'com_componentbuilder'));
+		$access = ($user->authorise('template.access', 'com_componentbuilder.template.' . (int) $recordId) && $user->authorise('template.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

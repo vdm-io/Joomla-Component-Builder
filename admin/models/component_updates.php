@@ -321,7 +321,7 @@ class ComponentbuilderModelComponent_updates extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('component_updates.edit.state', 'com_componentbuilder');
 	}
     

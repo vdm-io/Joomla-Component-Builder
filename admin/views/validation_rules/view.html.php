@@ -52,7 +52,7 @@ class ComponentbuilderViewValidation_rules extends HtmlView
 		$this->canState = $this->canDo->get('validation_rule.edit.state');
 		$this->canCreate = $this->canDo->get('validation_rule.create');
 		$this->canDelete = $this->canDo->get('validation_rule.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('validation_rule.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

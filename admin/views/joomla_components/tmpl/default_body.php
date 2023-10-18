@@ -11,6 +11,8 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=joomla_component.edit";
 
@@ -76,7 +78,7 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 					$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
 				}
 				// setup the buttons
-				if (!isset($_buttons) || !ComponentbuilderHelper::checkArray($_buttons))
+				if (!isset($_buttons) || !ArrayHelper::check($_buttons))
 				{
 					$_buttons = array();
 					$_buttons[0] = array(
@@ -187,16 +189,16 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 		</td>
 		<td class="hidden-phone">
 			<div><b><?php echo $this->escape($item->companyname); ?></b><br />
-			<?php if (ComponentbuilderHelper::checkString($item->author)) : ?>
+			<?php if (StringHelper::check($item->author)) : ?>
 				<em><?php echo $this->escape($item->author); ?><em><br />
 			<?php endif; ?>
-			<?php if (ComponentbuilderHelper::checkString($item->email) && ComponentbuilderHelper::checkString($item->author)) : ?>
+			<?php if (StringHelper::check($item->email) && StringHelper::check($item->author)) : ?>
 				<a href="mailto:<?php echo $this->escape($item->email); ?>" title="<?php echo JText::sprintf('COM_COMPONENTBUILDER_EMAIL_S', $item->author); ?>" target="_blank">
 					<?php echo $this->escape($item->email); ?>
 				</a>
 				<br />
 			<?php endif; ?>
-			<?php if (ComponentbuilderHelper::checkString($item->website) && ComponentbuilderHelper::checkString($item->author)) : ?>
+			<?php if (StringHelper::check($item->website) && StringHelper::check($item->author)) : ?>
 				<a href="<?php echo $this->escape($item->website); ?>" title="<?php echo JText::sprintf('COM_COMPONENTBUILDER_WEBSITE_OF_S', $item->companyname); ?>" target="_blank">
 					<?php echo $this->escape($item->website); ?>
 				</a>

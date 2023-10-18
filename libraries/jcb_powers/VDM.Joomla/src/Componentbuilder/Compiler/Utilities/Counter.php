@@ -12,8 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Content;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne as Content;
 
 
 /**
@@ -62,6 +61,14 @@ class Counter
 	 * @since 3.2.0
 	 */
 	public int $field = 0;
+
+	/**
+	 * The access size
+	 *
+	 * @var     int
+	 * @since 3.2.0
+	 */
+	public int $accessSize = 0;
 
 	/**
 	 * The seconds counter
@@ -256,23 +263,23 @@ class Counter
 	protected float $timer = 0;
 
 	/**
-	 * Compiler Content
+	 * The ContentOne Class.
 	 *
-	 * @var    Content
+	 * @var   Content
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Content $content;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Content|null     $content    The compiler content object.
+	 * @param Content   $content   The ContentOne Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Content $content = null)
+	public function __construct(Content $content)
 	{
-		$this->content = $content ?: Compiler::_('Content');
+		$this->content = $content;
 	}
 
 	/**
@@ -398,6 +405,5 @@ class Counter
 		$this->projectWeekTime  = round($this->actualTotalDays / 5, 1);
 		$this->projectMonthTime = round($this->actualTotalDays / 24, 1);
 	}
-
 }
 

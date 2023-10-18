@@ -16,7 +16,7 @@ use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\Component\Helper as JCBHelper;
 use VDM\Joomla\Componentbuilder\Utilities\FilterHelper as JCBFilterHelper;
-use VDM\Joomla\Componentbuilder\Utilities\FormHelper as JCBFormHelper;
+use VDM\Joomla\Utilities\FormHelper as JCBFormHelper;
 
 /**
  * Powers List Model

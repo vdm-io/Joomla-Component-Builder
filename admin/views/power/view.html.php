@@ -146,11 +146,6 @@ class ComponentbuilderViewPower extends HtmlView
 				{
 					JToolBarHelper::custom('power.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 				}
-				if ($this->canDo->get('power.sync'))
-				{
-					// add Sync button.
-					JToolBarHelper::custom('power.syncPowers', 'loop custom-button-syncpowers', '', 'COM_COMPONENTBUILDER_SYNC', false);
-				}
 				if ($this->canDo->get('power.reset'))
 				{
 					// add Reset button.

@@ -305,7 +305,7 @@ class ComponentbuilderModelAdmin_fields_conditions extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('admin_fields_conditions.edit.state', 'com_componentbuilder');
 	}
     

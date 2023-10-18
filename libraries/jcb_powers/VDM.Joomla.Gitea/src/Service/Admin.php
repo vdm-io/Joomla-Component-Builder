@@ -180,6 +180,5 @@ class Admin implements ServiceProviderInterface
 			$container->get('Gitea.Utilities.Response')
 		);
 	}
-
 }
 

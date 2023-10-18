@@ -22,7 +22,7 @@ use VDM\Joomla\Componentbuilder\Abstraction\BaseRegistry;
  * 
  * @since 3.2.0
  */
-class Component extends BaseRegistry
+final class Component extends BaseRegistry
 {
 	/**
 	 * Constructor

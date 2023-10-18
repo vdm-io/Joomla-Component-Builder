@@ -52,7 +52,7 @@ class ComponentbuilderViewCustom_codes extends HtmlView
 		$this->canState = $this->canDo->get('custom_code.edit.state');
 		$this->canCreate = $this->canDo->get('custom_code.create');
 		$this->canDelete = $this->canDo->get('custom_code.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('custom_code.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

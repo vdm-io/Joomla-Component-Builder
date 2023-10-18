@@ -43,7 +43,7 @@ class Joomlamodule implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Joomla Module Data
+	 * Get The Data Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -62,12 +62,13 @@ class Joomlamodule implements ServiceProviderInterface
 			$container->get('Field.Name'),
 			$container->get('Model.Filesfolders'),
 			$container->get('Model.Libraries'),
-			$container->get('Dynamicget.Data')
+			$container->get('Dynamicget.Data'),
+			$container->get('Templatelayout.Data')
 		);
 	}
 
 	/**
-	 * Get the Joomla Module Structure Builder
+	 * Get The Structure Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -86,9 +87,9 @@ class Joomlamodule implements ServiceProviderInterface
 			$container->get('Utilities.Counter'),
 			$container->get('Utilities.Folder'),
 			$container->get('Utilities.File'),
-			$container->get('Utilities.Files')
+			$container->get('Utilities.Files'),
+			$container->get('Compiler.Builder.Template.Data')
 		);
 	}
-
 }
 

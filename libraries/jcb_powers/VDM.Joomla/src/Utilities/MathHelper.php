@@ -27,48 +27,47 @@ abstract class MathHelper
 	 * @param   int      $val2    The second value
 	 * @param   int      $scale   The scale value
 	 *
-	 * @return int
+	 * @return string|int|null|bool
 	 * 
 	 * @since  3.0.9
 	 */
 	public static function bc($type, $val1, $val2, $scale = 0)
 	{
-		// build function name
+		// Validate input
+		if (!is_numeric($val1) || !is_numeric($val2))
+		{
+			return null;
+		}
+
+		// Build function name
 		$function = 'bc' . $type;
-		// use the bcmath function if available
-		if (function_exists($function))
+
+		// Use the bcmath function if available
+		if (is_callable($function))
 		{
 			return $function($val1, $val2, $scale);
 		}
+
 		// if function does not exist we use +-*/ operators (fallback - not ideal)
 		switch ($type)
 		{
-			// Multiply two numbers
 			case 'mul':
 				return (string) round($val1 * $val2, $scale);
-				break;
-			// Divide of two numbers
 			case 'div':
+				if ($val2 == 0) return null; // Avoid division by zero
 				return (string) round($val1 / $val2, $scale);
-				break;
-			// Adding two numbers
 			case 'add':
 				return (string) round($val1 + $val2, $scale);
-				break;
-			// Subtract one number from the other
 			case 'sub':
 				return (string) round($val1 - $val2, $scale);
-				break;
-			// Raise an arbitrary precision number to another
 			case 'pow':
 				return (string) round(pow($val1, $val2), $scale);
-				break;
-			// Compare two arbitrary precision numbers
 			case 'comp':
-				return (round($val1,2) == round($val2,2));
-				break;
+				$diff = round($val1 - $val2, $scale);
+				return ($diff > 0) ? 1 : (($diff < 0) ? -1 : 0);
 		}
-		return false;
+
+		return null;
 	}
 
 	/**

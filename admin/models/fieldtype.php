@@ -16,6 +16,11 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Fieldtype Admin Model
@@ -58,6 +63,8 @@ class ComponentbuilderModelFieldtype extends AdminModel
 				'indexes',
 				'null_switch',
 				'store',
+				'basic_encryption_note',
+				'medium_encryption_note',
 				'note_whmcs_encryption'
 			)
 		)
@@ -125,7 +132,7 @@ class ComponentbuilderModelFieldtype extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'fieldtype__'.$id);
 				ComponentbuilderHelper::set('fieldtype__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -133,7 +140,7 @@ class ComponentbuilderModelFieldtype extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -199,7 +206,7 @@ class ComponentbuilderModelFieldtype extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'fieldtype__'.$id);
 				ComponentbuilderHelper::set('fieldtype__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -207,7 +214,7 @@ class ComponentbuilderModelFieldtype extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -300,7 +307,7 @@ class ComponentbuilderModelFieldtype extends AdminModel
 				}
 			}
 			// now check if we have IDs
-			if ($get_ids && ComponentbuilderHelper::checkArray($field_ids))
+			if ($get_ids && UtilitiesArrayHelper::check($field_ids))
 			{
 				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $field_ids) . ')');
 			}
@@ -599,7 +606,7 @@ class ComponentbuilderModelFieldtype extends AdminModel
 		// Only load the GUID if new item (or empty)
 		if (0 == $id || !($val = $form->getValue('guid')))
 		{
-			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
+			$form->setValue('guid', null, GuidHelper::get());
 		}
 
 		return $form;
@@ -663,7 +670,7 @@ class ComponentbuilderModelFieldtype extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('fieldtype.edit.state', 'com_componentbuilder');
 	}
     
@@ -1252,15 +1259,15 @@ class ComponentbuilderModelFieldtype extends AdminModel
 		if (empty($data['guid']) && $data['id'] > 0)
 		{
 			// get the existing one
-			$data['guid'] = (string) ComponentbuilderHelper::getVar('fieldtype', $data['id'], 'id', 'guid');
-		}
-		// Set the GUID if empty or not valid
-		while (!ComponentbuilderHelper::validGUID($data['guid'], "fieldtype", $data['id']))
-		{
-			// must always be set
-			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+			$data['guid'] = (string) GetHelper::var('fieldtype', $data['id'], 'id', 'guid');
 		}
 
+		// Set the GUID if empty or not valid
+		while (!GuidHelper::valid($data['guid'], "fieldtype", $data['id']))
+		{
+			// must always be set
+			$data['guid'] = (string) GuidHelper::get();
+		}
 
 		// Set the properties items to data.
 		if (isset($data['properties']) && is_array($data['properties']))

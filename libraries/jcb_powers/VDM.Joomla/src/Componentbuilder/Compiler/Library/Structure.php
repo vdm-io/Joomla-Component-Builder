@@ -13,12 +13,11 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Library;
 
 
 use Joomla\CMS\Filesystem\Folder as JoomlaFolder;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Component;
-use VDM\Joomla\Componentbuilder\Compiler\Content;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne as Content;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Paths;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Folder;
@@ -38,107 +37,105 @@ use VDM\Joomla\Utilities\FileHelper;
 class Structure
 {
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * The compiler registry
+	 * The Registry Class.
 	 *
-	 * @var    Registry
+	 * @var   Registry
 	 * @since 3.2.0
 	 */
 	protected Registry $registry;
 
 	/**
-	 * Compiler Event
+	 * The EventInterface Class.
 	 *
-	 * @var    EventInterface
+	 * @var   Event
 	 * @since 3.2.0
 	 */
-	protected EventInterface $event;
+	protected Event $event;
 
 	/**
-	 * Compiler Component
+	 * The Component Class.
 	 *
-	 * @var    Component
+	 * @var   Component
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Component $component;
 
 	/**
-	 * Compiler Content
+	 * The ContentOne Class.
 	 *
-	 * @var    Content
+	 * @var   Content
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Content $content;
 
 	/**
-	 * Compiler Counter
+	 * The Counter Class.
 	 *
-	 * @var    Counter
+	 * @var   Counter
 	 * @since 3.2.0
 	 */
 	protected Counter $counter;
 
 	/**
-	 * Compiler Utilities Paths
+	 * The Paths Class.
 	 *
-	 * @var    Paths
+	 * @var   Paths
 	 * @since 3.2.0
 	 */
 	protected Paths $paths;
 
 	/**
-	 * Compiler Utilities Folder
+	 * The Folder Class.
 	 *
-	 * @var    Folder
+	 * @var   Folder
 	 * @since 3.2.0
 	 */
 	protected Folder $folder;
 
 	/**
-	 * Compiler Utilities File
+	 * The File Class.
 	 *
-	 * @var    File
+	 * @var   File
 	 * @since 3.2.0
 	 */
 	protected File $file;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null            $config       The compiler config object.
-	 * @param Registry|null          $registry     The compiler registry object.
-	 * @param EventInterface|null    $event        The compiler event api object.
-	 * @param Component|null         $component    The component class.
-	 * @param Content|null           $content      The compiler content object.
-	 * @param Counter|null           $counter      The compiler counter object.
-	 * @param Paths|null             $paths        The compiler paths object.
-	 * @param Folder|null            $folder       The compiler folder object.
-	 * @param File|null              $file         The compiler file object.
+	 * @param Config      $config      The Config Class.
+	 * @param Registry    $registry    The Registry Class.
+	 * @param Event       $event       The EventInterface Class.
+	 * @param Component   $component   The Component Class.
+	 * @param Content     $content     The ContentOne Class.
+	 * @param Counter     $counter     The Counter Class.
+	 * @param Paths       $paths       The Paths Class.
+	 * @param Folder      $folder      The Folder Class.
+	 * @param File        $file        The File Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null,
-		?EventInterface $event = null, ?Component $component = null,
-		?Content $content = null,?Counter $counter = null,
-		?Paths $paths = null, ?Folder $folder = null,
-		?File $file = null)
+	public function __construct(Config $config, Registry $registry, Event $event,
+		Component $component, Content $content, Counter $counter,
+		Paths $paths, Folder $folder, File $file)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->event = $event ?: Compiler::_('Event');
-		$this->component = $component ?: Compiler::_('Component');
-		$this->content = $content ?: Compiler::_('Content');
-		$this->counter = $counter ?: Compiler::_('Utilities.Counter');
-		$this->paths = $paths ?: Compiler::_('Utilities.Paths');
-		$this->folder = $folder ?: Compiler::_('Utilities.Folder');
-		$this->file = $file ?: Compiler::_('Utilities.File');
+		$this->config = $config;
+		$this->registry = $registry;
+		$this->event = $event;
+		$this->component = $component;
+		$this->content = $content;
+		$this->counter = $counter;
+		$this->paths = $paths;
+		$this->folder = $folder;
+		$this->file = $file;
 	}
 
 	/**
@@ -313,6 +310,5 @@ class Structure
 			}
 		}
 	}
-
 }
 

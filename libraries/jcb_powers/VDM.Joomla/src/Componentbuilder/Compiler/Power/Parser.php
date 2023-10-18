@@ -285,6 +285,10 @@ final class Parser
 					$full_declaration = trim(preg_replace('/\s{2,}/', ' ',
 						preg_replace('/[\r\n]+/', ' ', $full_declaration)));
 
+					// extract method's body
+					$start_pos = strpos($code, $full_declaration) + strlen($full_declaration);
+					$method_body = $this->extractMethodBody($code, $start_pos);
+
 					// now load what we found
 					$methods[] = [
 						'name' => $match['name'] ?? 'error',
@@ -297,7 +301,8 @@ final class Parser
 						'deprecated' => $this->extractDeprecatedVersion($comment),
 						'arguments' => $this->extractFunctionArgumentDetails($comment, $match['arguments'] ?? null),
 						'comment' => $comment,
-						'declaration' => str_replace(["\r\n", "\r", "\n"], '', $full_declaration)
+						'declaration' => str_replace(["\r\n", "\r", "\n"], '', $full_declaration),
+						'body' => $method_body
 					];
 				}
 			}
@@ -348,6 +353,53 @@ final class Parser
 		}
 
 		return null;
+	}
+
+	/**
+	 * Extracts method body based on starting position of method declaration.
+	 *
+	 * @param string $code      The class code
+	 * @param string $startPos  The starting position of method declaration
+	 *
+	 * @return string|null Method body or null if not found
+	 * @since 3.2.0
+	 */
+	private function extractMethodBody(string $code, int $startPos): ?string
+	{
+		$braces_count = 0;
+		$in_method = false;
+		$method_body = "";
+
+		for ($i = $startPos; $i < strlen($code); $i++) {
+			if ($code[$i] === '{')
+			{
+				$braces_count++;
+				if (!$in_method)
+				{
+					$in_method = true;
+					continue;
+				}
+			}
+
+			if ($code[$i] === '}')
+			{
+				$braces_count--;
+			}
+
+			if ($in_method)
+			{
+				$method_body .= $code[$i];
+			}
+
+			if ($braces_count <= 0 && $in_method)
+			{
+				// remove the closing brace
+				$method_body = substr($method_body, 0, -1);
+				break;
+			}
+		}
+
+		return $in_method ? $method_body : null;
 	}
 
 	/**

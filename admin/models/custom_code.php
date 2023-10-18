@@ -16,6 +16,10 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Custom_code Admin Model
@@ -119,7 +123,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'custom_code__'.$id);
 				ComponentbuilderHelper::set('custom_code__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -127,7 +131,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -191,7 +195,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'custom_code__'.$id);
 				ComponentbuilderHelper::set('custom_code__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -199,7 +203,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -325,7 +329,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
-		if (ComponentbuilderHelper::checkArray($editors))
+		if (UtilitiesArrayHelper::check($editors))
 		{
 			foreach ($editors as $editor)
 			{
@@ -397,7 +401,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('custom_code.edit.state', 'com_componentbuilder');
 	}
     
@@ -957,8 +961,8 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		}
 
 		// few checks with the new option of using custom code in custom code
-		if (isset($data['code']) && ($placeholders = ComponentbuilderHelper::getAllBetween($data['code'], '[CUSTOM' . 'CODE=', ']'))
-			&& ComponentbuilderHelper::checkArray($placeholders))
+		if (isset($data['code']) && ($placeholders = GetHelper::allBetween($data['code'], '[CUSTOM' . 'CODE=', ']'))
+			&& UtilitiesArrayHelper::check($placeholders))
 		{
 			// make sure custom code as Hash (automation)  target does not have other custom code placeholders
 			if (isset($data['target']) && 1 == $data['target'])

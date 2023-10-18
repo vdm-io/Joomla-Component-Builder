@@ -13,9 +13,9 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Dynamicget;
 
 
 use Joomla\CMS\Factory;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\GetAsLookup;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteFields;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
@@ -39,20 +39,28 @@ class Selection
 	protected array $name;
 
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * The compiler registry
+	 * The GetAsLookup Class.
 	 *
-	 * @var    Registry
+	 * @var   GetAsLookup
 	 * @since 3.2.0
 	 */
-	protected Registry $registry;
+	protected GetAsLookup $getaslookup;
+
+	/**
+	 * The SiteFields Class.
+	 *
+	 * @var   SiteFields
+	 * @since 3.2.0
+	 */
+	protected SiteFields $sitefields;
 
 	/**
 	 * Database object to query local DB
@@ -63,19 +71,21 @@ class Selection
 	protected \JDatabaseDriver $db;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null               $config           The compiler config object.
-	 * @param Registry|null             $registry         The compiler registry object.
-	 * @param \JDatabaseDriver|null     $db               The database object.
+	 * @param Config                 $config        The Config Class.
+	 * @param GetAsLookup            $getaslookup   The GetAsLookup Class.
+	 * @param SiteFields             $sitefields    The SiteFields Class.
+	 * @param \JDatabaseDriver|null  $db            The database object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null,
+	public function __construct(Config $config, GetAsLookup $getaslookup, SiteFields $sitefields,
 		?\JDatabaseDriver $db = null)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
+		$this->config = $config;
+		$this->getaslookup = $getaslookup;
+		$this->sitefields = $sitefields;
 		$this->db = $db ?: Factory::getDbo();
 	}
 
@@ -172,7 +182,7 @@ class Selection
 					$key = trim($lineArray[1]);
 
 					// only add the view (we must adapt this)
-					if ($this->registry->exists('builder.get_as_lookup.' . $methodKey . '.' . $get)
+					if ($this->getaslookup->exists($methodKey . '.' . $get)
 						&& 'a' != $as
 						&& is_numeric($rowType) && 1 == $rowType
 						&& 'view' === $type
@@ -188,8 +198,7 @@ class Selection
 						$gets[] = $this->db->quote($get);
 						if (StringHelper::check($key))
 						{
-							$this->registry->
-								set('builder.get_as_lookup.' . $methodKey . '.' . $get, $key);
+							$this->getaslookup->set($methodKey . '.' . $get, $key);
 						}
 						else
 						{
@@ -197,8 +206,7 @@ class Selection
 								$as . '.', '', $get
 							);
 
-							$this->registry->
-								set('builder.get_as_lookup.' . $methodKey . '.' . $get, $key);
+							$this->getaslookup->set($methodKey . '.' . $get, $key);
 						}
 
 						// set the keys
@@ -212,9 +220,9 @@ class Selection
 							// prep the field name
 							$field = str_replace($as . '.', '', $get);
 							// load to the site fields memory bucket
-							$this->registry->
-								set('builder.site_fields.' . $view . '.' . $field . '.' . $methodKey . '___' . $as,
-									['site' => $viewCode, 'get' => $get, 'as'   => $as, 'key' => $key]);
+							$this->sitefields->set($view . '.' . $field . '.' . $methodKey . '___' . $as,
+								['site' => $viewCode, 'get' => $get, 'as'   => $as, 'key' => $key]
+							);
 						}
 					}
 				}
@@ -276,6 +284,5 @@ class Selection
 
 		return $this->name[$id] ?? 'error';
 	}
-
 }
 

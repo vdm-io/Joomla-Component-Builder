@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Utilities\FilterHelper as JCBFilterHelper;
-use VDM\Joomla\Componentbuilder\Utilities\FormHelper as JCBFormHelper;
+use VDM\Joomla\Utilities\FormHelper as JCBFormHelper;
 
 /**
  * Admin_views List Model

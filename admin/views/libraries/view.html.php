@@ -52,7 +52,7 @@ class ComponentbuilderViewLibraries extends HtmlView
 		$this->canState = $this->canDo->get('library.edit.state');
 		$this->canCreate = $this->canDo->get('library.create');
 		$this->canDelete = $this->canDo->get('library.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('library.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

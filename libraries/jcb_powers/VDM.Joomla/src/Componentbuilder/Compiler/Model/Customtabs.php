@@ -12,9 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomTabs as BuilderCustomTabs;
 use VDM\Joomla\Componentbuilder\Compiler\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
@@ -32,64 +31,63 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 class Customtabs
 {
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * The compiler registry
+	 * The CustomTabs Class.
 	 *
-	 * @var    Registry
+	 * @var   BuilderCustomTabs
 	 * @since 3.2.0
 	 */
-	protected Registry $registry;
+	protected BuilderCustomTabs $buildercustomtabs;
 
 	/**
-	 * Compiler Language
+	 * The Language Class.
 	 *
-	 * @var    Language
+	 * @var   Language
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Language $language;
 
 	/**
-	 * Compiler Placeholder
+	 * The Placeholder Class.
 	 *
-	 * @var    Placeholder
+	 * @var   Placeholder
 	 * @since 3.2.0
 	 */
 	protected Placeholder $placeholder;
 
 	/**
-	 * Compiler Customcode
+	 * The Customcode Class.
 	 *
-	 * @var    Customcode
+	 * @var   Customcode
 	 * @since 3.2.0
 	 */
 	protected Customcode $customcode;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null               $config           The compiler config object.
-	 * @param Registry|null             $registry         The compiler registry object.
-	 * @param Language|null             $language         The compiler Language object.
-	 * @param Placeholder|null          $placeholder      The compiler placeholder object.
-	 * @param Customcode|null           $customcode       The compiler customcode object.
+	 * @param Config              $config              The Config Class.
+	 * @param BuilderCustomTabs   $buildercustomtabs   The CustomTabs Class.
+	 * @param Language            $language            The Language Class.
+	 * @param Placeholder         $placeholder         The Placeholder Class.
+	 * @param Customcode          $customcode          The Customcode Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null,
-		?Language $language = null, ?Placeholder $placeholder = null, ?Customcode $customcode = null)
+	public function __construct(Config $config, BuilderCustomTabs $buildercustomtabs, Language $language, Placeholder $placeholder, Customcode $customcode)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->language = $language ?: Compiler::_('Language');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
+		$this->config = $config;
+		$this->buildercustomtabs = $buildercustomtabs;
+		$this->language = $language;
+		$this->placeholder = $placeholder;
+		$this->customcode = $customcode;
 	}
 
 	/**
@@ -112,7 +110,7 @@ class Customtabs
 			$name = $item->name_single_code;
 
 			// setup custom tabs to global data sets
-			$this->registry->set('builder.custom_tabs.' . $name,
+			$this->buildercustomtabs->set($name,
 				array_map(
 					function ($tab) use (&$name) {
 
@@ -208,7 +206,7 @@ class Customtabs
 							$tab['lang_permission_desc'] = $tab['lang']
 								. '_TAB_PERMISSION_DESC';
 							$tab['lang_permission_title']
-							                             = $this->placeholder->get('Views') . ' View '
+								= $this->placeholder->get('Views') . ' View '
 								. $tab['name'] . ' Tab';
 							$this->language->set(
 								'both', $tab['lang_permission'],
@@ -237,6 +235,5 @@ class Customtabs
 
 		unset($item->customtabs);
 	}
-
 }
 

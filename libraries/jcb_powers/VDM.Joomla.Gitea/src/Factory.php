@@ -24,7 +24,7 @@ use VDM\Joomla\Gitea\Service\Issue;
 use VDM\Joomla\Gitea\Service\Notifications;
 use VDM\Joomla\Gitea\Service\Miscellaneous;
 use VDM\Joomla\Gitea\Service\Admin;
-use VDM\Joomla\Componentbuilder\Interfaces\FactoryInterface;
+use VDM\Joomla\Interfaces\FactoryInterface;
 
 
 /**

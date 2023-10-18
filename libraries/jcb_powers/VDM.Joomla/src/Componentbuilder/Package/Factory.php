@@ -17,7 +17,7 @@ use VDM\Joomla\Componentbuilder\Service\Crypt;
 use VDM\Joomla\Componentbuilder\Package\Service\Database;
 use VDM\Joomla\Componentbuilder\Service\Server;
 use VDM\Joomla\Componentbuilder\Package\Service\Display;
-use VDM\Joomla\Componentbuilder\Interfaces\FactoryInterface;
+use VDM\Joomla\Interfaces\FactoryInterface;
 
 
 /**

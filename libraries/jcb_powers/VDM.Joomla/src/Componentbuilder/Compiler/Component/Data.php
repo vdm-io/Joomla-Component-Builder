@@ -45,7 +45,7 @@ use VDM\Joomla\Utilities\GetHelper;
  * 
  * @since 3.2.0
  */
-class Data
+final class Data
 {
 	/**
 	 * Compiler Config

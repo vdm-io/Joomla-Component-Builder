@@ -52,7 +52,7 @@ class ComponentbuilderViewSnippet_types extends HtmlView
 		$this->canState = $this->canDo->get('snippet_type.edit.state');
 		$this->canCreate = $this->canDo->get('snippet_type.create');
 		$this->canDelete = $this->canDo->get('snippet_type.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('snippet_type.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

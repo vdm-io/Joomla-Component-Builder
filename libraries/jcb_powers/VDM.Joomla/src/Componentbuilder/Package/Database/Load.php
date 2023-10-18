@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Package\Database;
 
 use VDM\Joomla\Componentbuilder\Package\Factory;
 use VDM\Joomla\Componentbuilder\Table;
-use VDM\Joomla\Componentbuilder\Database\Load as Database;
+use VDM\Joomla\Database\Load as Database;
 
 
 /**
@@ -123,6 +123,5 @@ class Load
 
 		return null;
 	}
-
 }
 

@@ -29,7 +29,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
  * 
  * @since 3.2.0
  */
-class Structuremultiple
+final class Structuremultiple
 {
 	/**
 	 * Compiler Config
@@ -350,6 +350,5 @@ class Structuremultiple
 
 		$this->structure->build($target, $view_type, false, $config);
 	}
-
 }
 

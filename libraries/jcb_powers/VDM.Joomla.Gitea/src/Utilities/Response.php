@@ -44,7 +44,7 @@ final class Response
 			// Decode the error response and throw an exception.
 			$message =  $this->error($response);
 
-			throw new \DomainException("Invalid response received from API.$message", $response->code);
+			throw new \DomainException("Invalid response received from API. $message", $response->code);
 
 		}
 
@@ -70,7 +70,7 @@ final class Response
 			// Decode the error response and throw an exception.
 			$message =  $this->error($response);
 
-			throw new \DomainException("Invalid response received from API.$message", $response->code);
+			throw new \DomainException("Invalid response received from API. $message", $response->code);
 
 		}
 
@@ -133,6 +133,10 @@ final class Response
 		if (isset($error->error))
 		{
 			return $error->error;
+		}
+		elseif (isset($error->message))
+		{
+			return $error->message;
 		}
 
 		return '';

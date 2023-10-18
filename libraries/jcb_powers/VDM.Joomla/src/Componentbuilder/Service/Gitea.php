@@ -79,6 +79,5 @@ class Gitea implements ServiceProviderInterface
 			$container->get('Config')->get('gitea_token')
 		);
 	}
-
 }
 

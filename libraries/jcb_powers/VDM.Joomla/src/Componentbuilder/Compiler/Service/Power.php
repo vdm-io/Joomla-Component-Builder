@@ -26,7 +26,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Power\Repo\Readme as RepoReadme;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Repos\Readme as ReposReadme;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Injector;
-use VDM\Joomla\Componentbuilder\Power\Model;
+use VDM\Joomla\Componentbuilder\Power\Model\Upsert;
 use VDM\Joomla\Componentbuilder\Power\Database\Insert;
 use VDM\Joomla\Componentbuilder\Power\Database\Update;
 
@@ -84,8 +84,8 @@ class Power implements ServiceProviderInterface
 		$container->alias(Injector::class, 'Power.Injector')
 			->share('Power.Injector', [$this, 'getInjector'], true);
 
-		$container->alias(Model::class, 'Power.Model')
-			->share('Power.Model', [$this, 'getModel'], true);
+		$container->alias(Upsert::class, 'Power.Model.Upsert')
+			->share('Power.Model.Upsert', [$this, 'getModelUpsert'], true);
 
 		$container->alias(Insert::class, 'Power.Insert')
 			->share('Power.Insert', [$this, 'getInsert'], true);
@@ -159,7 +159,7 @@ class Power implements ServiceProviderInterface
 		return new Autoloader(
 			$container->get('Power'),
 			$container->get('Config'),
-			$container->get('Content')
+			$container->get('Compiler.Builder.Content.One')
 		);
 	}
 
@@ -176,7 +176,8 @@ class Power implements ServiceProviderInterface
 		return new Infusion(
 			$container->get('Config'),
 			$container->get('Power'),
-			$container->get('Content'),
+			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Compiler.Builder.Content.Multi'),
 			$container->get('Power.Autoloader'),
 			$container->get('Power.Parser'),
 			$container->get('Power.Repo.Readme'),
@@ -299,16 +300,16 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Power Model
+	 * Get the Power Model Upsert
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Model
+	 * @return  Upsert
 	 * @since 3.2.0
 	 */
-	public function getModel(Container $container): Model
+	public function getModelUpsert(Container $container): Upsert
 	{
-		return new Model(
+		return new Upsert(
 			$container->get('Table')
 		);
 	}
@@ -324,7 +325,7 @@ class Power implements ServiceProviderInterface
 	public function getInsert(Container $container): Insert
 	{
 		return new Insert(
-			$container->get('Power.Model'),
+			$container->get('Power.Model.Upsert'),
 			$container->get('Insert')
 		);
 	}
@@ -340,7 +341,7 @@ class Power implements ServiceProviderInterface
 	public function getUpdate(Container $container): Update
 	{
 		return new Update(
-			$container->get('Power.Model'),
+			$container->get('Power.Model.Upsert'),
 			$container->get('Update')
 		);
 	}

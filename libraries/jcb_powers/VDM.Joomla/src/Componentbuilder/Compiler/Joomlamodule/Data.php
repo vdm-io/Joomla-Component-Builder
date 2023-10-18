@@ -14,17 +14,17 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Joomlamodule;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Field;
-use VDM\Joomla\Componentbuilder\Compiler\Field\Name as FieldName;
+use VDM\Joomla\Componentbuilder\Compiler\Field\Name as Fieldname;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Filesfolders;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Libraries;
 use VDM\Joomla\Componentbuilder\Compiler\Dynamicget\Data as Dynamicget;
+use VDM\Joomla\Componentbuilder\Compiler\Templatelayout\Data as Templatelayout;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\JsonHelper;
@@ -48,126 +48,129 @@ class Data
 	protected array $data = [];
 
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * Compiler Customcode
+	 * The Customcode Class.
 	 *
-	 * @var    Customcode
+	 * @var   Customcode
 	 * @since 3.2.0
 	 */
 	protected Customcode $customcode;
 
 	/**
-	 * Compiler Customcode in Gui
+	 * The Gui Class.
 	 *
-	 * @var    Gui
+	 * @var   Gui
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Gui $gui;
 
 	/**
-	 * Compiler Placeholder
+	 * The Placeholder Class.
 	 *
-	 * @var    Placeholder
+	 * @var   Placeholder
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Placeholder $placeholder;
 
 	/**
-	 * Compiler Language
+	 * The Language Class.
 	 *
-	 * @var    Language
+	 * @var   Language
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Language $language;
 
 	/**
-	 * Compiler Field
+	 * The Field Class.
 	 *
-	 * @var    Field
+	 * @var   Field
 	 * @since 3.2.0
 	 */
 	protected Field $field;
 
 	/**
-	 * Compiler field name
+	 * The Name Class.
 	 *
-	 * @var    FieldName
+	 * @var   Fieldname
 	 * @since 3.2.0
 	 */
-	protected FieldName $fieldName;
+	protected Fieldname $fieldname;
 
 	/**
-	 * Compiler Files Folders
+	 * The Filesfolders Class.
 	 *
-	 * @var    Filesfolders
+	 * @var   Filesfolders
 	 * @since 3.2.0
 	 */
-	protected Filesfolders $filesFolders;
+	protected Filesfolders $filesfolders;
 
 	/**
-	 * Compiler Libraries Model
+	 * The Libraries Class.
 	 *
-	 * @var    Libraries
+	 * @var   Libraries
 	 * @since 3.2.0
 	 */
 	protected Libraries $libraries;
 
 	/**
-	 * Compiler Dynamic Get Data
+	 * The Data Class.
 	 *
-	 * @var    Dynamicget
+	 * @var   Dynamicget
 	 * @since 3.2.0
 	 */
-	protected Dynamicget $dynamic;
+	protected Dynamicget $dynamicget;
 
 	/**
-	 * Database object to query local DB
+	 * The Data Class.
 	 *
-	 * @var    \JDatabaseDriver
+	 * @var   Templatelayout
 	 * @since 3.2.0
-	 **/
-	protected \JDatabaseDriver $db;
+	 */
+	protected Templatelayout $templatelayout;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null               $config           The compiler config object.
-	 * @param Customcode|null           $customcode       The compiler customcode object.
-	 * @param Gui|null                  $gui              The compiler customcode gui.
-	 * @param Placeholder|null          $placeholder      The compiler placeholder object.
-	 * @param Language|null             $language         The compiler Language object.
-	 * @param Field|null                $field            The compiler field data object.
-	 * @param FieldName|null            $fieldName        The compiler  field name object.
-	 * @param Filesfolders|null         $filesFolders     The compiler files folders object.
-	 * @param Libraries|null            $libraries        The compiler libraries model object.
-	 * @param Dynamicget|null           $dynamic          The compiler dynamic get data object.
+	 * @param Config           $config           The Config Class.
+	 * @param Customcode       $customcode       The Customcode Class.
+	 * @param Gui              $gui              The Gui Class.
+	 * @param Placeholder      $placeholder      The Placeholder Class.
+	 * @param Language         $language         The Language Class.
+	 * @param Field            $field            The Field Class.
+	 * @param Fieldname        $fieldname        The Name Class.
+	 * @param Filesfolders     $filesfolders     The Filesfolders Class.
+	 * @param Libraries        $libraries        The Libraries Class.
+	 * @param Dynamicget       $dynamicget       The Data Class.
+	 * @param Templatelayout   $templatelayout   The Data Class.
 	 * @param \JDatabaseDriver|null     $db               The database object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Customcode $customcode = null,
-		?Gui $gui = null, ?Placeholder $placeholder = null,
-		?Language $language = null, ?Field $field = null, ?FieldName $fieldName = null,
-		?Filesfolders $filesFolders = null, ?Libraries $libraries = null,
-		?Dynamicget $dynamic = null, ?\JDatabaseDriver $db = null)
+	public function __construct(Config $config, Customcode $customcode, Gui $gui,
+		Placeholder $placeholder, Language $language,
+		Field $field, Fieldname $fieldname,
+		Filesfolders $filesfolders, Libraries $libraries,
+		Dynamicget $dynamicget, Templatelayout $templatelayout,
+		?\JDatabaseDriver $db = null)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
-		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->language = $language ?: Compiler::_('Language');
-		$this->field = $field ?: Compiler::_('Field');
-		$this->fieldName = $fieldName ?: Compiler::_('Field.Name');
-		$this->filesFolders = $filesFolders ?: Compiler::_('Model.Filesfolders');
-		$this->libraries = $libraries ?: Compiler::_('Model.Libraries');
-		$this->dynamic = $dynamic ?: Compiler::_('Dynamicget.Data');
+		$this->config = $config;
+		$this->customcode = $customcode;
+		$this->gui = $gui;
+		$this->placeholder = $placeholder;
+		$this->language = $language;
+		$this->field = $field;
+		$this->fieldname = $fieldname;
+		$this->filesfolders = $filesfolders;
+		$this->libraries = $libraries;
+		$this->dynamicget = $dynamicget;
+		$this->templatelayout = $templatelayout;
 		$this->db = $db ?: Factory::getDbo();
 	}
 
@@ -285,7 +288,7 @@ class Data
 				$_backup_langPrefix = $this->config->lang_prefix;
 
 				// set some keys
-				$module->target_type = 'M0dU|3';
+				$module->target_type = 'M0dUl3';
 				$module->key         = $module->id . '_' . $module->target_type;
 
 				// update to point to module
@@ -520,6 +523,11 @@ class Data
 						),
 						$guiMapper
 					);
+
+					// check if we have template or layouts to load
+					$this->templatelayout->set(
+						$module->mod_code , $module->code_name
+					);
 				}
 				else
 				{
@@ -569,6 +577,11 @@ class Data
 							)
 						),
 						$guiMapper
+					);
+
+					// check if we have template or layouts to load
+					$this->templatelayout->set(
+						$module->default , $module->code_name
 					);
 				}
 				else
@@ -760,7 +773,7 @@ class Data
 								foreach ($form['fields'] as $field)
 								{
 									// so first we lock the field name in
-									$this->fieldName->get(
+									$this->fieldname->get(
 										$field, $module->key, $unique
 									);
 									// add the fields to the global form file builder
@@ -787,7 +800,7 @@ class Data
 								foreach ($form['fields'] as $field)
 								{
 									// so first we lock the field name in
-									$this->fieldName->get(
+									$this->fieldname->get(
 										$field, $module->key, $unique
 									);
 									// add the fields to the config builder
@@ -807,7 +820,7 @@ class Data
 				unset($module->fields);
 
 				// set files and folders
-				$this->filesFolders->set($module);
+				$this->filesfolders->set($module);
 
 				// set libraries
 				$this->libraries->set($module->code_name, $module);
@@ -920,7 +933,7 @@ class Data
 					else
 					{
 						$module->{$server} = 0;
-						// only change this for sales server (update server can be added loacaly to the zip file)
+						// only change this for sales server (update server can be added locally to the zip file)
 						if ('sales_server' === $server)
 						{
 							$module->{'add_' . $server} = 0;
@@ -952,6 +965,5 @@ class Data
 
 		return false;
 	}
-
 }
 

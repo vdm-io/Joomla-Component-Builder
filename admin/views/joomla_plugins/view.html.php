@@ -52,7 +52,7 @@ class ComponentbuilderViewJoomla_plugins extends HtmlView
 		$this->canState = $this->canDo->get('joomla_plugin.edit.state');
 		$this->canCreate = $this->canDo->get('joomla_plugin.create');
 		$this->canDelete = $this->canDo->get('joomla_plugin.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('joomla_plugin.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

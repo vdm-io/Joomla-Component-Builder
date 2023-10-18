@@ -52,7 +52,7 @@ class ComponentbuilderViewClass_properties extends HtmlView
 		$this->canState = $this->canDo->get('class_property.edit.state');
 		$this->canCreate = $this->canDo->get('class_property.create');
 		$this->canDelete = $this->canDo->get('class_property.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('class_property.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

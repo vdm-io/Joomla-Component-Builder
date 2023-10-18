@@ -12,9 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Power;
 
 
+use VDM\Joomla\Componentbuilder\Power\Grep;
 use VDM\Joomla\Componentbuilder\Power\Database\Insert;
 use VDM\Joomla\Componentbuilder\Power\Database\Update;
-use VDM\Joomla\Componentbuilder\Power\Grep;
 use VDM\Joomla\Utilities\GuidHelper;
 
 
@@ -63,6 +63,58 @@ final class Super
 		$this->grep = $grep;
 		$this->insert = $insert;
 		$this->update = $update;
+	}
+
+	/**
+	 * Init all power not found in database
+	 *
+	 * @return bool
+	 * @since 3.2.0
+	 */
+	public function init(): bool
+	{
+		if (($powers = $this->grep->getRemotePowersGuid()) !== null)
+		{
+			foreach($powers as $guid)
+			{
+				if ($this->action($guid) === 'insert' && ($power = $this->grep->get($guid, ['remote'])) !== null)
+				{
+					$this->insert($power);
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Reset the powers
+	 *
+	 * @param array   $powers    The global unique ids of the powers
+	 *
+	 * @return bool
+	 * @since 3.2.0
+	 */
+	public function reset(array $powers): bool
+	{
+		if ($powers === [])
+		{
+			return false;
+		}
+
+		$success = true;
+
+		foreach($powers as $guid)
+		{
+			if (!$this->load($guid, ['remote']))
+			{
+				$success = false;
+			}
+		}
+
+		return $success;
 	}
 
 	/**

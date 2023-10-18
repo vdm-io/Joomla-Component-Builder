@@ -52,7 +52,7 @@ class ComponentbuilderViewJoomla_modules_files_folders_urls extends HtmlView
 		$this->canState = $this->canDo->get('joomla_module_files_folders_urls.edit.state');
 		$this->canCreate = $this->canDo->get('joomla_module_files_folders_urls.create');
 		$this->canDelete = $this->canDo->get('joomla_module_files_folders_urls.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('joomla_module_files_folders_urls.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

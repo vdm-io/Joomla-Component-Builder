@@ -16,6 +16,12 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\String\ClassfunctionHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Class_method Admin Model
@@ -107,7 +113,7 @@ class ComponentbuilderModelClass_method extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'class_method__'.$id);
 				ComponentbuilderHelper::set('class_method__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -115,7 +121,7 @@ class ComponentbuilderModelClass_method extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -191,7 +197,7 @@ class ComponentbuilderModelClass_method extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'class_method__'.$id);
 				ComponentbuilderHelper::set('class_method__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -199,7 +205,7 @@ class ComponentbuilderModelClass_method extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -325,7 +331,7 @@ class ComponentbuilderModelClass_method extends AdminModel
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
-		if (ComponentbuilderHelper::checkArray($editors))
+		if (UtilitiesArrayHelper::check($editors))
 		{
 			foreach ($editors as $editor)
 			{
@@ -340,9 +346,9 @@ class ComponentbuilderModelClass_method extends AdminModel
 		// Only load the GUID if new item (or empty)
 		if (0 == $id || !($val = $form->getValue('guid')))
 		{
-			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
+			$form->setValue('guid', null, GuidHelper::get());
 		}
-
+ 
 		return $form;
 	}
 
@@ -404,7 +410,7 @@ class ComponentbuilderModelClass_method extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('class_method.edit.state', 'com_componentbuilder');
 	}
     
@@ -964,21 +970,21 @@ class ComponentbuilderModelClass_method extends AdminModel
 		}
 
 		// make sure the name is safe to be used as a function name
-		$data['name'] = ComponentbuilderHelper::safeClassFunctionName($data['name']);
+		$data['name'] = ClassfunctionHelper::safe($data['name']);
 
 		// Set the GUID if empty or not valid
 		if (empty($data['guid']) && $data['id'] > 0)
 		{
 			// get the existing one
-			$data['guid'] = (string) ComponentbuilderHelper::getVar('class_method', $data['id'], 'id', 'guid');
-		}
-		// Set the GUID if empty or not valid
-		while (!ComponentbuilderHelper::validGUID($data['guid'], "class_method", $data['id']))
-		{
-			// must always be set
-			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+			$data['guid'] = (string) GetHelper::var('class_method', $data['id'], 'id', 'guid');
 		}
 
+		// Set the GUID if empty or not valid
+		while (!GuidHelper::valid($data['guid'], "class_method", $data['id']))
+		{
+			// must always be set
+			$data['guid'] = (string) GuidHelper::get();
+		}
 
 		// Set the code string to base64 string.
 		if (isset($data['code']))

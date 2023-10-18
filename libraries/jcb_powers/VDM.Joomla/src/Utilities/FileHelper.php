@@ -132,7 +132,7 @@ abstract class FileHelper
 			elseif (!self::$curlError)
 			{
 				// set the notice
-				Factory::getApplication()->enqueueMessage(Text::_('COM_COMPONENTBUILDER_HTWOCURL_NOT_FOUNDHTWOPPLEASE_SETUP_CURL_ON_YOUR_SYSTEM_OR_BCOMPONENTBUILDERB_WILL_NOT_FUNCTION_CORRECTLYP'), 'Error');
+				Factory::getApplication()->enqueueMessage('<h2>Curl Not Found!</h2><p>Please setup curl on your system, or the <b>Joomla Component</b> will not function correctly!</p>', 'Error');
 				// load this notice only once
 				self::$curlError = true;
 			}

@@ -16,6 +16,12 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\FOF\Encrypt\AES;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Joomla_component Admin Model
@@ -273,7 +279,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_component__'.$id);
 				ComponentbuilderHelper::set('joomla_component__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -281,7 +287,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -447,7 +453,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			// Get the basic encryption.
 			$basickey = ComponentbuilderHelper::getCryptKey('basic');
 			// Get the encryption object.
-			$basic = new FOFEncryptAes($basickey);
+			$basic = new AES($basickey);
 
 			if (!empty($item->whmcs_key) && $basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 			{
@@ -504,7 +510,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_component__'.$id);
 				ComponentbuilderHelper::set('joomla_component__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -512,7 +518,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -680,7 +686,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
-		if (ComponentbuilderHelper::checkArray($editors))
+		if (UtilitiesArrayHelper::check($editors))
 		{
 			foreach ($editors as $editor)
 			{
@@ -695,7 +701,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		// Only load the GUID if new item (or empty)
 		if (0 == $id || !($val = $form->getValue('guid')))
 		{
-			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
+			$form->setValue('guid', null, GuidHelper::get());
 		}
 
 		return $form;
@@ -759,7 +765,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('joomla_component.edit.state', 'com_componentbuilder');
 	}
     
@@ -925,7 +931,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		}
 
 		// we must also delete the linked tables found
-		if (ComponentbuilderHelper::checkArray($pks))
+		if (UtilitiesArrayHelper::check($pks))
 		{
 			$_tablesArray = array(
 				'component_admin_views' => 'joomla_component',
@@ -974,7 +980,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		}
 
 		// we must also update all linked tables
-		if (ComponentbuilderHelper::checkArray($pks))
+		if (UtilitiesArrayHelper::check($pks))
 		{
 			$_tablesArray = array(
 				'component_admin_views' => 'joomla_component',
@@ -1377,7 +1383,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		}
 
 		// if system name is empty create from name
-		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
+		if (empty($data['system_name']) || !UtilitiesStringHelper::check($data['system_name']))
 		{
 			$data['system_name'] = $data['name'];
 		}
@@ -1386,15 +1392,15 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		if (empty($data['guid']) && $data['id'] > 0)
 		{
 			// get the existing one
-			$data['guid'] = (string) ComponentbuilderHelper::getVar('joomla_component', $data['id'], 'id', 'guid');
-		}
-		// Set the GUID if empty or not valid
-		while (!ComponentbuilderHelper::validGUID($data['guid'], "joomla_component", $data['id']))
-		{
-			// must always be set
-			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+			$data['guid'] = (string) GetHelper::var('joomla_component', $data['id'], 'id', 'guid');
 		}
 
+		// Set the GUID if empty or not valid
+		while (!GuidHelper::valid($data['guid'], "joomla_component", $data['id']))
+		{
+			// must always be set
+			$data['guid'] = (string) GuidHelper::get();
+		}
 
 		// Set the addcontributors items to data.
 		if (isset($data['addcontributors']) && is_array($data['addcontributors']))
@@ -1514,7 +1520,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		// Get the basic encryption key.
 		$basickey = ComponentbuilderHelper::getCryptKey('basic');
 		// Get the encryption object
-		$basic = new FOFEncryptAes($basickey);
+		$basic = new AES($basickey);
 
 		// Encrypt data whmcs_key.
 		if (isset($data['whmcs_key']) && $basickey)

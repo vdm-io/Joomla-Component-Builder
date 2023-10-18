@@ -16,6 +16,7 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\FOF\Encrypt\AES;
 
 /**
  * Componentbuilder Server Admin Model
@@ -120,7 +121,7 @@ class ComponentbuilderModelServer extends AdminModel
 			// Get the basic encryption.
 			$basickey = ComponentbuilderHelper::getCryptKey('basic');
 			// Get the encryption object.
-			$basic = new FOFEncryptAes($basickey);
+			$basic = new AES($basickey);
 
 			if (!empty($item->signature) && $basickey && !is_numeric($item->signature) && $item->signature === base64_encode(base64_decode($item->signature, true)))
 			{
@@ -443,7 +444,7 @@ class ComponentbuilderModelServer extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('server.edit.state', 'com_componentbuilder');
 	}
     
@@ -1005,7 +1006,7 @@ class ComponentbuilderModelServer extends AdminModel
 		// Get the basic encryption key.
 		$basickey = ComponentbuilderHelper::getCryptKey('basic');
 		// Get the encryption object
-		$basic = new FOFEncryptAes($basickey);
+		$basic = new AES($basickey);
 
 		// Encrypt data signature.
 		if (isset($data['signature']) && $basickey)

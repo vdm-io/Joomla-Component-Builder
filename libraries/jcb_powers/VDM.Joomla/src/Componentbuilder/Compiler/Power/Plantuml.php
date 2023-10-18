@@ -74,13 +74,13 @@ class Plantuml
 		$plant_uml = "\n  $type_label $class_name $type_tag #$class_color {\n";
 
 		// Add properties
-		if ($code['properties'])
+		if (isset($code['properties']) && is_array($code['properties']))
 		{
 			$plant_uml .= $this->generatePropertiesPlantUML($code['properties'], '    ');
 		}
 
 		// Add methods
-		if ($code['methods'])
+		if (isset($code['methods']) && is_array($code['methods']))
 		{
 			$plant_uml .= $this->generateBasicMethodsPlantUML($code['methods']);
 		}
@@ -118,13 +118,13 @@ class Plantuml
 		$plant_uml = "\n$type_label $class_name $type_tag #$class_color {\n";
 
 		// Add properties
-		if ($code['properties'])
+		if (isset($code['properties']) && is_array($code['properties']))
 		{
 			$plant_uml .= $this->generatePropertiesPlantUML($code['properties'], '  ');
 		}
 
 		// Add methods
-		if ($code['methods'])
+		if (isset($code['methods']) && is_array($code['methods']))
 		{
 			list($methods_plant_uml, $notes) = $this->generateDetailedMethodsPlantUML($code['methods'], $class_name);
 			$plant_uml .= $methods_plant_uml;
@@ -419,7 +419,7 @@ class Plantuml
 	{
 		$class_colors = [
 			'class' => 'Gold',
-			'final' => 'RoyalBlue',
+			'final class' => 'RoyalBlue',
 			'abstract class' => 'Orange',
 			'interface' => 'Lavender',
 			'trait' => 'Turquoise'

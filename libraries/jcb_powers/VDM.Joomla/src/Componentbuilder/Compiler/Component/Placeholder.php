@@ -28,7 +28,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component\PlaceholderInterfa
  * 
  * @since 3.2.0
  */
-class Placeholder implements PlaceholderInterface
+final class Placeholder implements PlaceholderInterface
 {
 	/**
 	 * Placeholders
@@ -140,6 +140,5 @@ class Placeholder implements PlaceholderInterface
 
 		return $bucket;
 	}
-
 }
 

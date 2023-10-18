@@ -52,7 +52,7 @@ class ComponentbuilderViewPowers extends HtmlView
 		$this->canState = $this->canDo->get('power.edit.state');
 		$this->canCreate = $this->canDo->get('power.create');
 		$this->canDelete = $this->canDo->get('power.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('power.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -145,11 +145,6 @@ class ComponentbuilderViewPowers extends HtmlView
 		{
 			// add Init button.
 			JToolBarHelper::custom('powers.initPowers', 'health custom-button-initpowers', '', 'COM_COMPONENTBUILDER_INIT', false);
-		}
-		if ($this->user->authorise('power.sync', 'com_componentbuilder'))
-		{
-			// add Sync button.
-			JToolBarHelper::custom('powers.syncPowers', 'loop custom-button-syncpowers', '', 'COM_COMPONENTBUILDER_SYNC', false);
 		}
 		if ($this->user->authorise('power.reset', 'com_componentbuilder'))
 		{

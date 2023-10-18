@@ -62,7 +62,7 @@ class ComponentbuilderControllerLanguage extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('language.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerLanguage extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('language.access', 'com_componentbuilder.language.' . (int) $recordId) &&  $user->authorise('language.access', 'com_componentbuilder'));
+		$access = ($user->authorise('language.access', 'com_componentbuilder.language.' . (int) $recordId) && $user->authorise('language.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

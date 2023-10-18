@@ -12,10 +12,10 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Power;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Power;
-use VDM\Joomla\Componentbuilder\Compiler\Content;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne as Content;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentMulti as Contents;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Autoloader;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Repo\Readme as RepoReadme;
@@ -34,75 +34,83 @@ use VDM\Joomla\Utilities\ObjectHelper;
 class Infusion
 {
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Config $config;
 
 	/**
-	 * Power Objects
+	 * The Power Class.
 	 *
-	 * @var    Power
+	 * @var   Power
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Power $power;
 
 	/**
-	 * Compiler Content
+	 * The ContentOne Class.
 	 *
-	 * @var    Content
+	 * @var   Content
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Content $content;
 
 	/**
-	 * Compiler Powers Autoloader
+	 * The ContentMulti Class.
 	 *
-	 * @var    Autoloader
+	 * @var   Contents
 	 * @since 3.2.0
-	 **/
+	 */
+	protected Contents $contents;
+
+	/**
+	 * The Autoloader Class.
+	 *
+	 * @var   Autoloader
+	 * @since 3.2.0
+	 */
 	protected Autoloader $autoloader;
 
 	/**
-	 * Compiler Powers Parser
+	 * The Parser Class.
 	 *
-	 * @var    Parser
+	 * @var   Parser
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Parser $parser;
 
 	/**
-	 * Compiler Powers Repo Readme Builder
+	 * The Readme Class.
 	 *
-	 * @var    RepoReadme
+	 * @var   RepoReadme
 	 * @since 3.2.0
-	 **/
+	 */
 	protected RepoReadme $reporeadme;
 
 	/**
-	 * Compiler Powers Repos Readme Builder
+	 * The Readme Class.
 	 *
-	 * @var    ReposReadme
+	 * @var   ReposReadme
 	 * @since 3.2.0
-	 **/
+	 */
 	protected ReposReadme $reposreadme;
 
 	/**
-	 * Compiler Placeholder
+	 * The Placeholder Class.
 	 *
-	 * @var    Placeholder
+	 * @var   Placeholder
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Placeholder $placeholder;
 
 	/**
-	 * Compiler Event
+	 * The EventInterface Class.
 	 *
-	 * @var    Event
+	 * @var   Event
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Event $event;
 
 	/**
@@ -113,7 +121,6 @@ class Infusion
 	 **/
 	protected array $linker = [
 		'add_head' => 'add_head',
-		'unchanged_composer' => 'composer',
 		'unchanged_description' => 'description',
 		'extends' => 'extends',
 		'unchanged_extends_custom' => 'extends_custom',
@@ -136,31 +143,35 @@ class Infusion
 	/**
 	 * Constructor.
 	 *
-	 * @param Config|null        $config       The Config object.
-	 * @param Power|null         $power        The power object.
-	 * @param Content|null       $content      The compiler content object.
-	 * @param Autoloader|null    $autoloader   The powers autoloader object.
-	 * @param Parser|null        $parser       The powers parser object.
-	 * @param RepoReadme|null    $reporeadme   The powers repo readme builder object.
-	 * @param ReposReadme|null   $reposreadme  The powers repos readme builder object.
-	 * @param Placeholder|null   $placeholder  The placeholder object.
-	 * @param Event|null         $event        The events object.
+	 * @param Config        $config        The Config Class.
+	 * @param Power         $power         The Power Class.
+	 * @param Content       $content       The ContentOne Class.
+	 * @param Contents      $contents      The ContentMulti Class.
+	 * @param Autoloader    $autoloader    The Autoloader Class.
+	 * @param Parser        $parser        The Parser Class.
+	 * @param RepoReadme    $reporeadme    The Readme Class.
+	 * @param ReposReadme   $reposreadme   The Readme Class.
+	 * @param Placeholder   $placeholder   The Placeholder Class.
+	 * @param Event         $event         The EventInterface Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Power $power = null, ?Content $content = null,
-		?Autoloader $autoloader = null, ?Parser $parser = null, ?RepoReadme $reporeadme = null,
-		?ReposReadme $reposreadme = null, ?Placeholder $placeholder = null, ?Event $event = null)
+	public function __construct(Config $config, Power $power, Content $content,
+		Contents $contents, Autoloader $autoloader,
+		Parser $parser, RepoReadme $reporeadme,
+		ReposReadme $reposreadme, Placeholder $placeholder,
+		Event $event)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->power = $power ?: Compiler::_('Power');
-		$this->content = $content ?: Compiler::_('Content');
-		$this->autoloader = $autoloader ?: Compiler::_('Power.Autoloader');
-		$this->parser = $parser ?: Compiler::_('Power.Parser');
-		$this->reporeadme = $reporeadme ?: Compiler::_('Power.Repo.Readme');
-		$this->reposreadme = $reposreadme ?: Compiler::_('Power.Repos.Readme');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->event = $event ?: Compiler::_('Event');
+		$this->config = $config;
+		$this->power = $power;
+		$this->content = $content;
+		$this->contents = $contents;
+		$this->autoloader = $autoloader;
+		$this->parser = $parser;
+		$this->reporeadme = $reporeadme;
+		$this->reposreadme = $reposreadme;
+		$this->placeholder = $placeholder;
+		$this->event = $event;
 	}
 
 	/**
@@ -200,7 +211,7 @@ class Infusion
 					// only parse those approved
 					if ($power->approved == 1)
 					{
-						$power->main_class_code = $this->placeholder->update($power->main_class_code, $this->content->active);
+						$power->main_class_code = $this->placeholder->update($power->main_class_code, $this->content->allActive());
 						$power->parsed_class_code = $this->parser->code($power->main_class_code);
 					}
 				}
@@ -239,13 +250,13 @@ class Infusion
 				}
 
 				// POWERREADME
-				$this->content->set_($key, 'POWERREADME', $this->reposreadme->get($powers));
+				$this->contents->set("{$key}|POWERREADME", $this->reposreadme->get($powers));
 
 				// sort all powers
 				$this->sortPowers($powers);
 
 				// POWERINDEX
-				$this->content->set_($key, 'POWERINDEX', $this->index($powers));
+				$this->contents->set("{$key}|POWERINDEX", $this->index($powers));
 
 				// Trigger Event: jcb_ce_onAfterInfuseSuperPowerDetails
 				$this->event->trigger(
@@ -309,16 +320,16 @@ class Infusion
 					);
 
 					// POWERCODE
-					$this->content->set_($power->key, 'POWERCODE', $this->code($power));
+					$this->contents->set("{$power->key}|POWERCODE", $this->code($power));
 
 					// CODEPOWER
-					$this->content->set_($power->key, 'CODEPOWER', $this->raw($power));
+					$this->contents->set("{$power->key}|CODEPOWER", $this->raw($power));
 
 					// POWERLINKER
-					$this->content->set_($power->key, 'POWERLINKER', $this->linker($power));
+					$this->contents->set("{$power->key}|POWERLINKER", $this->linker($power));
 
 					// POWERLINKER
-					$this->content->set_($power->key, 'POWERREADME', $this->reporeadme->get($power));
+					$this->contents->set("{$power->key}|POWERREADME", $this->reporeadme->get($power));
 
 					// Trigger Event: jcb_ce_onAfterInfusePowerData
 					$this->event->trigger(
@@ -405,7 +416,7 @@ class Infusion
 
 		$code[] = '}' . PHP_EOL;
 
-		return $this->placeholder->update(implode(PHP_EOL, $code), $this->content->active);
+		return $this->placeholder->update(implode(PHP_EOL, $code), $this->content->allActive());
 	}
 
 	/**
@@ -449,6 +460,5 @@ class Infusion
 
 		return json_encode($linker, JSON_PRETTY_PRINT);
 	}
-
 }
 

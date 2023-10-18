@@ -49,21 +49,21 @@ class JFormFieldServersfilterprotocol extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_PROTOCOL') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get serversmodel
-			$model = ComponentbuilderHelper::getModel('servers');
-			$results = array_unique($results);
-			foreach ($results as $protocol)
+			$_model = ComponentbuilderHelper::getModel('servers');
+			$_results = array_unique($_results);
+			foreach ($_results as $protocol)
 			{
 				// Translate the protocol selection
-				$text = $model->selectionTranslation($protocol,'protocol');
+				$_text = $_model->selectionTranslation($protocol,'protocol');
 				// Now add the protocol and its text to the options array
-				$_filter[] = JHtml::_('select.option', $protocol, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $protocol, JText::_($_text));
 			}
 		}
 		return $_filter;

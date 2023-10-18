@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\View\HtmlView;
+use VDM\Joomla\Utilities\ArrayHelper;
 
 /**
  * Joomla_plugin Html View class
@@ -255,7 +256,7 @@ class ComponentbuilderViewJoomla_plugin extends HtmlView
 		// add a few field options via PHP
 		JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 		$tmp_ = JFormHelper::loadFieldType('joomlaplugingroups')->options;
-		if (ComponentbuilderHelper::checkArray($tmp_))
+		if (ArrayHelper::check($tmp_))
 		{
 			$_tmp = array();
 			foreach ($tmp_ as $item)
@@ -266,7 +267,7 @@ class ComponentbuilderViewJoomla_plugin extends HtmlView
 			$this->document->addScriptDeclaration("selectionArray['joomla_plugin_group'] = ". json_encode($_tmp) . ";");
 		}
 		$tmp_ = JFormHelper::loadFieldType('pluginsclassproperties')->options;
-		if (ComponentbuilderHelper::checkArray($tmp_))
+		if (ArrayHelper::check($tmp_))
 		{
 			$_tmp = array();
 			foreach ($tmp_ as $item)
@@ -277,7 +278,7 @@ class ComponentbuilderViewJoomla_plugin extends HtmlView
 			$this->document->addScriptDeclaration("selectionArray['property'] = ". json_encode($_tmp) . ";");
 		}
 		$tmp_ = JFormHelper::loadFieldType('pluginsclassmethods')->options;
-		if (ComponentbuilderHelper::checkArray($tmp_))
+		if (ArrayHelper::check($tmp_))
 		{
 			$_tmp = array();
 			foreach ($tmp_ as $item)

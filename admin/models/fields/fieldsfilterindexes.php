@@ -49,21 +49,21 @@ class JFormFieldFieldsfilterindexes extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_INDEXES_TYPE') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get fieldsmodel
-			$model = ComponentbuilderHelper::getModel('fields');
-			$results = array_unique($results);
-			foreach ($results as $indexes)
+			$_model = ComponentbuilderHelper::getModel('fields');
+			$_results = array_unique($_results);
+			foreach ($_results as $indexes)
 			{
 				// Translate the indexes selection
-				$text = $model->selectionTranslation($indexes,'indexes');
+				$_text = $_model->selectionTranslation($indexes,'indexes');
 				// Now add the indexes and its text to the options array
-				$_filter[] = JHtml::_('select.option', $indexes, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $indexes, JText::_($_text));
 			}
 		}
 		return $_filter;

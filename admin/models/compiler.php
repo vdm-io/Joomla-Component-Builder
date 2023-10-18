@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 /**
  * Componentbuilder List Model for Compiler
@@ -373,7 +374,7 @@ class ComponentbuilderModelCompiler extends ListModel
 			}
 		}
 		// check if we had any errors
-		if (ComponentbuilderHelper::checkArray($errorMessage))
+		if (UtilitiesArrayHelper::check($errorMessage))
 		{
 			// flatten the error message array
 			$errorMessage = implode('<br />', $errorMessage);

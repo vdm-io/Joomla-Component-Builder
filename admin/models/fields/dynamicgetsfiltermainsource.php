@@ -49,21 +49,21 @@ class JFormFieldDynamicgetsfiltermainsource extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_MAIN_SOURCE') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get dynamic_getsmodel
-			$model = ComponentbuilderHelper::getModel('dynamic_gets');
-			$results = array_unique($results);
-			foreach ($results as $main_source)
+			$_model = ComponentbuilderHelper::getModel('dynamic_gets');
+			$_results = array_unique($_results);
+			foreach ($_results as $main_source)
 			{
 				// Translate the main_source selection
-				$text = $model->selectionTranslation($main_source,'main_source');
+				$_text = $_model->selectionTranslation($main_source,'main_source');
 				// Now add the main_source and its text to the options array
-				$_filter[] = JHtml::_('select.option', $main_source, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $main_source, JText::_($_text));
 			}
 		}
 		return $_filter;

@@ -32,7 +32,7 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 			'main' => array('png.compiler', 'png.joomla_components', 'png.joomla_modules', 'png.joomla_plugins', 'png.powers', 'png.search', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.admin_views', 'png.custom_admin_views', 'png.site_views', 'png.template.add', 'png.templates', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_field', 'png.fieldtypes', 'png.fieldtypes.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_fieldtype', 'png.language_translations', 'png.servers', 'png.help_documents')
 		);
 		// view access array
-		$viewAccess = array(
+		$viewAccess = [
 			'compiler.submenu' => 'compiler.submenu',
 			'compiler.dashboard_list' => 'compiler.dashboard_list',
 			'search.access' => 'search.access',
@@ -221,7 +221,8 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 			'joomla_plugin_updates.access' => 'joomla_plugin_updates.access',
 			'joomla_plugin_files_folders_urls.create' => 'joomla_plugin_files_folders_urls.create',
 			'joomla_plugins_files_folders_urls.access' => 'joomla_plugin_files_folders_urls.access',
-			'joomla_plugin_files_folders_urls.access' => 'joomla_plugin_files_folders_urls.access');
+			'joomla_plugin_files_folders_urls.access' => 'joomla_plugin_files_folders_urls.access',
+		];
 		// loop over the $views
 		foreach($viewGroups as $group => $views)
 		{
@@ -527,6 +528,12 @@ jQuery(document).ready( function($) {
 		return '<div id="readme-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
 
+	/**
+	 * get Current Version Bay adding JavaScript to the Page
+	 *
+	 * @return  void
+	 * @since   2.3.0
+	 */
 	public function getVersion()
 	{
 		// the call URL

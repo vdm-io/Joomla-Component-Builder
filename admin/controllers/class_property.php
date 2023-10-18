@@ -62,7 +62,7 @@ class ComponentbuilderControllerClass_property extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('class_property.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerClass_property extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('class_property.access', 'com_componentbuilder.class_property.' . (int) $recordId) &&  $user->authorise('class_property.access', 'com_componentbuilder'));
+		$access = ($user->authorise('class_property.access', 'com_componentbuilder.class_property.' . (int) $recordId) && $user->authorise('class_property.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

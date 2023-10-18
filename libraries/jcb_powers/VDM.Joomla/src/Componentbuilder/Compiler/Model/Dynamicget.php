@@ -12,9 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteDynamicGet;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteMainGet;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
@@ -79,74 +79,85 @@ class Dynamicget
 	];
 
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * The compiler registry
+	 * The SiteDynamicGet Class.
 	 *
-	 * @var    Registry
+	 * @var   SiteDynamicGet
 	 * @since 3.2.0
 	 */
-	protected Registry $registry;
+	protected SiteDynamicGet $sitedynamicget;
 
 	/**
-	 * Compiler Customcode
+	 * The SiteMainGet Class.
 	 *
-	 * @var    Customcode
+	 * @var   SiteMainGet
+	 * @since 3.2.0
+	 */
+	protected SiteMainGet $sitemainget;
+
+	/**
+	 * The Customcode Class.
+	 *
+	 * @var   Customcode
 	 * @since 3.2.0
 	 */
 	protected Customcode $customcode;
 
 	/**
-	 * Compiler Customcode in Gui
+	 * The Gui Class.
 	 *
-	 * @var    Gui
+	 * @var   Gui
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Gui $gui;
 
 	/**
-	 * Compiler Placeholder
+	 * The Placeholder Class.
 	 *
-	 * @var    Placeholder
+	 * @var   Placeholder
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Placeholder $placeholder;
 
 	/**
-	 * Compiler Dynamic Get Selection
+	 * The Selection Class.
 	 *
-	 * @var    Selection
+	 * @var   Selection
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Selection $selection;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null        $config       The compiler config.
-	 * @param Registry|null      $registry     The compiler registry.
-	 * @param Customcode|null    $customcode   The compiler customcode object.
-	 * @param Gui|null           $gui          The compiler customcode gui.
-	 * @param Placeholder|null   $placeholder  The compiler placeholder object.
-	 * @param Selection|null     $selection    The compiler dynamic get selection object.
+	 * @param Config           $config           The Config Class.
+	 * @param SiteDynamicGet   $sitedynamicget   The SiteDynamicGet Class.
+	 * @param SiteMainGet      $sitemainget      The SiteMainGet Class.
+	 * @param Customcode       $customcode       The Customcode Class.
+	 * @param Gui              $gui              The Gui Class.
+	 * @param Placeholder      $placeholder      The Placeholder Class.
+	 * @param Selection        $selection        The Selection Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null, ?Customcode $customcode = null,
-		?Gui $gui = null, ?Placeholder $placeholder = null, ?Selection $selection = null)
+	public function __construct(Config $config, SiteDynamicGet $sitedynamicget,
+		SiteMainGet $sitemainget, Customcode $customcode, Gui $gui,
+		Placeholder $placeholder, Selection $selection)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
-		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->selection = $selection ?: Compiler::_('Dynamicget.Selection');
+		$this->config = $config;
+		$this->sitedynamicget = $sitedynamicget;
+		$this->sitemainget = $sitemainget;
+		$this->customcode = $customcode;
+		$this->gui = $gui;
+		$this->placeholder = $placeholder;
+		$this->selection = $selection;
 	}
 
 	/**
@@ -308,9 +319,7 @@ class Dynamicget
 				);
 
 				// loop joints
-				foreach (
-					$item->join_view_table as $nr => &$option
-				)
+				foreach ($item->join_view_table as $nr => &$option)
 				{
 					if (StringHelper::check(
 						$option['selection']
@@ -349,15 +358,18 @@ class Dynamicget
 								|| isset($_part_of_a[$join_field[0]])
 								|| isset($_part_of_a[$on_field[0]]))
 							{
-								$this->registry->
-									set('builder.site_main_get.' . $this->config->build_target .
-										'.' . $view_code . '.' . $option['as'], $option['as']);
+								$this->sitemainget->set(
+									$this->config->build_target . '.' . $view_code . '.' .
+									$option['as'], $option['as']
+								);
 							}
 							else
 							{
-								$this->registry->
-									set('builder.site_dynamic_get.' . $this->config->build_target .
-										'.' . $view_code . '.' . $option['as'] . '.' . $join_field[1], $on_field[0]);
+								$this->sitedynamicget->set(
+									$this->config->build_target . '.' . $view_code . '.' .
+									$option['as'] . '.' . $join_field[1],
+									$on_field[0]
+								);
 							}
 						}
 						elseif ($option['row_type'] == 2)
@@ -365,9 +377,11 @@ class Dynamicget
 							$item->custom_get[] = $option;
 							if ($on_field[0] != 'a')
 							{
-								$this->registry->
-									set('builder.site_dynamic_get.' . $this->config->build_target .
-										'.' . $view_code . '.' . $option['as'] . '.' . $join_field[1], $on_field[0]);
+								$this->sitedynamicget->set(
+									$this->config->build_target . '.' . $view_code . '.' .
+									$option['as'] . '.' . $join_field[1],
+									$on_field[0]
+								);
 							}
 						}
 					}
@@ -381,9 +395,7 @@ class Dynamicget
 				(string) $item->join_db_table, true
 			);
 
-			if (ArrayHelper::check(
-				$item->join_db_table
-			))
+			if (ArrayHelper::check($item->join_db_table))
 			{
 				// start the part of a table bucket
 				$_part_of_a = [];
@@ -415,38 +427,29 @@ class Dynamicget
 				);
 
 				// loop joints
-				foreach (
-					$item->join_db_table as $nr => &$option1
-				)
+				foreach ($item->join_db_table as $nr => &$option1)
 				{
-					if (StringHelper::check(
-						$option1['selection']
-					))
+					if (StringHelper::check($option1['selection']))
 					{
 						// convert the type
-						$option1['type']
-							= $this->jointer[$option1['type']];
+						$option1['type'] = $this->jointer[$option1['type']];
 						// convert the operator
-						$option1['operator']
-							= $this->operator[$option1['operator']];
+						$option1['operator'] = $this->operator[$option1['operator']];
 						// get the on field values
-						$on_field
-							= $_relationship[$nr]['on_field'];
+						$on_field = $_relationship[$nr]['on_field'];
 						// get the join field values
-						$join_field
-							= $_relationship[$nr]['join_field'];
+						$join_field = $_relationship[$nr]['join_field'];
 						// set selection
-						$option1['selection']
-							= $this->selection->get(
-								$item->key,
-								$view_code,
-								$option1['selection'],
-								$option1['db_table'],
-								$option1['as'],
-								'db',
-								$option1['row_type']
-							);
-						$option1['key']     = $item->key;
+						$option1['selection'] = $this->selection->get(
+							$item->key,
+							$view_code,
+							$option1['selection'],
+							$option1['db_table'],
+							$option1['as'],
+							'db',
+							$option1['row_type']
+						);
+						$option1['key'] = $item->key;
 						$option1['context'] = $context;
 						// load to the getters
 						if ($option1['row_type'] == 1)
@@ -456,15 +459,18 @@ class Dynamicget
 								|| isset($_part_of_a[$join_field[0]])
 								|| isset($_part_of_a[$on_field[0]]))
 							{
-								$this->registry->
-									set('builder.site_main_get.' . $this->config->build_target .
-										'.' . $view_code . '.' . $option1['as'], $option1['as']);
+								$this->sitemainget->set(
+									$this->config->build_target . '.' . $view_code . '.' .
+									$option1['as'], $option1['as']
+								);
 							}
 							else
 							{
-								$this->registry->
-									set('builder.site_dynamic_get.' . $this->config->build_target .
-										'.' . $view_code . '.' . $option1['as'] . '.' . $join_field[1], $on_field[0]);
+								$this->sitedynamicget->set(
+									$this->config->build_target . '.' . $view_code . '.' .
+									$option1['as'] . '.' . $join_field[1],
+									$on_field[0]
+								);
 							}
 						}
 						elseif ($option1['row_type'] == 2)
@@ -472,9 +478,11 @@ class Dynamicget
 							$item->custom_get[] = $option1;
 							if ($on_field[0] != 'a')
 							{
-								$this->registry->
-									set('builder.site_dynamic_get.' . $this->config->build_target .
-										'.' . $view_code . '.' . $option1['as'] . '.' . $join_field[1], $on_field[0]);
+								$this->sitedynamicget->set(
+									$this->config->build_target . '.' . $view_code . '.' .
+									$option1['as'] . '.' . $join_field[1],
+									$on_field[0]
+								);
 							}
 						}
 					}
@@ -488,9 +496,7 @@ class Dynamicget
 				(string) $item->filter, true
 			);
 
-			if (ArrayHelper::check(
-				$item->filter
-			))
+			if (ArrayHelper::check($item->filter))
 			{
 				foreach ($item->filter as $nr => &$option2)
 				{
@@ -513,16 +519,13 @@ class Dynamicget
 
 			// set where details
 			$item->where = json_decode((string) $item->where, true);
-			if (ArrayHelper::check(
-				$item->where
-			))
+			if (ArrayHelper::check($item->where))
 			{
 				foreach ($item->where as $nr => &$option3)
 				{
 					if (isset($option3['operator']))
 					{
-						$option3['operator']
-							= $this->operator[$option3['operator']];
+						$option3['operator'] = $this->operator[$option3['operator']];
 					}
 					else
 					{
@@ -537,18 +540,14 @@ class Dynamicget
 
 			// set order details
 			$item->order = json_decode((string) $item->order, true);
-			if (!ArrayHelper::check(
-				$item->order
-			))
+			if (!ArrayHelper::check($item->order))
 			{
 				unset($item->order);
 			}
 
 			// set grouping
 			$item->group = json_decode((string) $item->group, true);
-			if (!ArrayHelper::check(
-				$item->group
-			))
+			if (!ArrayHelper::check($item->group))
 			{
 				unset($item->group);
 			}
@@ -558,9 +557,7 @@ class Dynamicget
 				(string) $item->global, true
 			);
 
-			if (!ArrayHelper::check(
-				$item->global
-			))
+			if (!ArrayHelper::check($item->global))
 			{
 				unset($item->global);
 			}
@@ -577,6 +574,5 @@ class Dynamicget
 			unset($item->global);
 		}
 	}
-
 }
 

@@ -16,6 +16,9 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Snippet Admin Model
@@ -241,9 +244,9 @@ class ComponentbuilderModelSnippet extends AdminModel
 		// Only load the GUID if new item (or empty)
 		if (0 == $id || !($val = $form->getValue('guid')))
 		{
-			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
+			$form->setValue('guid', null, GuidHelper::get());
 		}
-
+ 
 		return $form;
 	}
 
@@ -305,7 +308,7 @@ class ComponentbuilderModelSnippet extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return parent::canEditState($record);
 	}
     
@@ -575,7 +578,7 @@ class ComponentbuilderModelSnippet extends AdminModel
 			$this->canDo		= ComponentbuilderHelper::getActions('snippet');
 		}
 
-		if (!$this->canDo->get('core.create') || !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('core.create') && !$this->canDo->get('snippet.batch'))
 		{
 			return false;
 		}
@@ -718,7 +721,7 @@ class ComponentbuilderModelSnippet extends AdminModel
 			$this->canDo		= ComponentbuilderHelper::getActions('snippet');
 		}
 
-		if (!$this->canDo->get('core.edit') && !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('core.edit') && !$this->canDo->get('snippet.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
@@ -836,7 +839,7 @@ class ComponentbuilderModelSnippet extends AdminModel
 			// get the library name
 			$type = ($name = ComponentbuilderHelper::getVar('snippet_type', $item['type'], 'id', 'name')) ? $name:'No Library';
 			// build the filename
-			$filename = ComponentbuilderHelper::safeString($library . ' - (' . $type . ') ' . $item['name'], 'filename', '', false). '.json';
+			$filename = UtilitiesStringHelper::safe($library . ' - (' . $type . ') ' . $item['name'], 'filename', '', false). '.json';
 			// now get the contributor details (slow)
 			$contributor = ComponentbuilderHelper::getContributorDetails($filename);
 			// now update the local snippet contributor details
@@ -850,15 +853,15 @@ class ComponentbuilderModelSnippet extends AdminModel
 		if (empty($data['guid']) && $data['id'] > 0)
 		{
 			// get the existing one
-			$data['guid'] = (string) ComponentbuilderHelper::getVar('snippet', $data['id'], 'id', 'guid');
-		}
-		// Set the GUID if empty or not valid
-		while (!ComponentbuilderHelper::validGUID($data['guid'], "snippet", $data['id']))
-		{
-			// must always be set
-			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+			$data['guid'] = (string) GetHelper::var('snippet', $data['id'], 'id', 'guid');
 		}
 
+		// Set the GUID if empty or not valid
+		while (!GuidHelper::valid($data['guid'], "snippet", $data['id']))
+		{
+			// must always be set
+			$data['guid'] = (string) GuidHelper::get();
+		}
 
 		// Set the snippet string to base64 string.
 		if (isset($data['snippet']))

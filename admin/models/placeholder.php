@@ -16,6 +16,8 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
 
 /**
  * Componentbuilder Placeholder Admin Model
@@ -103,7 +105,7 @@ class ComponentbuilderModelPlaceholder extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'placeholder__'.$id);
 				ComponentbuilderHelper::set('placeholder__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -111,7 +113,7 @@ class ComponentbuilderModelPlaceholder extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -175,7 +177,7 @@ class ComponentbuilderModelPlaceholder extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'placeholder__'.$id);
 				ComponentbuilderHelper::set('placeholder__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -183,7 +185,7 @@ class ComponentbuilderModelPlaceholder extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -362,7 +364,7 @@ class ComponentbuilderModelPlaceholder extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('placeholder.edit.state', 'com_componentbuilder');
 	}
     

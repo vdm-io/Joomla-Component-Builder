@@ -15,6 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Form\Form;
+use VDM\Joomla\Utilities\ArrayHelper;
 
 /**
  * Componentbuilder Html View class for the Compiler
@@ -64,10 +65,17 @@ class ComponentbuilderViewCompiler extends HtmlView
 			// we count of all the files are already there
 			else
 			{
+				$directory_path = JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/builder-gif";
 				// get all the gif files in the gif folder
-				$all_gifs = scandir(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/builder-gif");
+				$all_gifs = null;
+				if (is_dir($directory_path) && is_readable($directory_path))
+				{
+					$all_gifs = scandir($directory_path);
+				
+				}
+		
 				// check if we have any values
-				if (ComponentbuilderHelper::checkArray($all_gifs))
+				if ($all_gifs !== null && ArrayHelper::check($all_gifs))
 				{
 					// count number of files but remove the 2 dot values
 					$num_gifs = count($all_gifs) - 2;
@@ -113,7 +121,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 	 */
 	public function getDynamicForm(): ?Form
 	{		
-		if(ComponentbuilderHelper::checkArray($this->Components))
+		if(ArrayHelper::check($this->Components))
 		{
 			// start the form
 			$form = new Form('Builder');
@@ -545,8 +553,11 @@ class ComponentbuilderViewCompiler extends HtmlView
 	protected function setDocument()
 	{
 
-		// always make sure jquery is loaded.
-		JHtml::_('jquery.framework');
+		// Only load jQuery if needed. (default is true)
+		if ($this->params->get('add_jquery_framework', 1) == 1)
+		{
+			JHtml::_('jquery.framework');
+		}
 		// Load the header checker class.
 		require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );
 		// Initialize the header checker.
@@ -621,7 +632,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 		// add marked library
 		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
 		// add the document default css file
-		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/compiler.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		JHtml::_('stylesheet', 'administrator/components/com_componentbuilder/assets/css/compiler.css', ['version' => 'auto']);
 		// Set the Custom JS script to view
 		$this->document->addScriptDeclaration("
 			function getComponentDetails_server(id){

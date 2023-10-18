@@ -100,77 +100,71 @@ class Folder
 	 */
 	public function remove(string $path, ?array $ignore = null): bool
 	{
-		if (JoomlaFolder::exists($path))
+		if (!JoomlaFolder::exists($path))
 		{
-			$it = new \RecursiveDirectoryIterator($path);
-			$it = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
-
-			// remove ending /
-			$path = rtrim($path, '/');
-
-			// now loop the files & folders
-			foreach ($it as $file)
-			{
-				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
-
-				// set file dir
-				$file_dir = $file->getPathname();
-
-				// check if this is a dir or a file
-				if ($file->isDir())
-				{
-					$keeper = false;
-					if (ArrayHelper::check($ignore))
-					{
-						foreach ($ignore as $keep)
-						{
-							if (strpos((string) $file_dir, $path . '/' . $keep) !== false)
-							{
-								$keeper = true;
-							}
-						}
-					}
-
-					if ($keeper)
-					{
-						continue;
-					}
-
-					JoomlaFolder::delete($file_dir);
-				}
-				else
-				{
-					$keeper = false;
-					if (ArrayHelper::check($ignore))
-					{
-						foreach ($ignore as $keep)
-						{
-							if (strpos((string) $file_dir, $path . '/'. $keep) !== false)
-							{
-								$keeper = true;
-							}
-						}
-					}
-
-					if ($keeper)
-					{
-						continue;
-					}
-
-					JoomlaFile::delete($file_dir);
-				}
-			}
-
-			// delete the root folder if ignore not set
-			if (!ArrayHelper::check($ignore))
-			{
-				return JoomlaFolder::delete($path);
-			}
-
-			return true;
+			return false;
 		}
-		return false;
+
+		$it = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+		$files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+
+		// Prepare a base path without trailing slash for comparison
+		$basePath = rtrim($path, '/');
+
+		foreach ($files as $fileinfo)
+		{
+			$filePath = $fileinfo->getRealPath();
+
+			if ($this->shouldIgnore($basePath, $filePath, $ignore))
+			{
+				continue;
+			}
+
+			if ($fileinfo->isDir())
+			{
+				JoomlaFolder::delete($filePath);
+			}
+			else
+			{
+				JoomlaFile::delete($filePath);
+			}
+		}
+
+		// Delete the root folder if ignore not set
+		if (!ArrayHelper::check($ignore))
+		{
+			return JoomlaFolder::delete($path);
+		}
+
+		return true;
 	}
 
+	/**
+	 * Check if the current path should be ignored.
+	 * 
+	 * @param   string      $basePath  The base directory path
+	 * @param   string      $filePath  The current file or directory path
+	 * @param   array|null  $ignore    List of items to ignore
+	 *
+	 * @return  boolean   True if the path should be ignored
+	 * @since 3.2.0
+	 */
+	protected function shouldIgnore(string $basePath, string $filePath, ?array $ignore = null): bool
+	{
+		if (!$ignore || !ArrayHelper::check($ignore))
+		{
+			return false;
+		}
+
+		foreach ($ignore as $item)
+		{
+			if (strpos($filePath, $basePath . '/' . $item) !== false)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
 

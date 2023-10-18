@@ -207,20 +207,6 @@
 			<option value="Other">
 				COM_COMPONENTBUILDER_FIELDTYPE_OTHER</option>
 		</field>
-		<!-- Datalenght_other Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="datalenght_other"
-			label="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_LABEL"
-			size="10"
-			maxlength="50"
-			description="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_DESCRIPTION"
-			class="text_area"
-			required="true"
-			filter="STRING"
-			message="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_MESSAGE"
-			hint="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_HINT"
-		/>
 		<!-- Short_description Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -235,6 +221,8 @@
 			message="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_HINT"
 		/>
+		<!-- Note_whmcs_encryption Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_whmcs_encryption" label="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_WHMCS_ENCRYPTION_LABEL" description="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_WHMCS_ENCRYPTION_DESCRIPTION" heading="h4" class="alert alert-success note_whmcs_encryption" />
 		<!-- Datatype Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -400,8 +388,8 @@
 			filter="HTML"
 			hint="COM_COMPONENTBUILDER_FIELDTYPE_DESCRIPTION_HINT"
 		/>
-		<!-- Note_whmcs_encryption Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_whmcs_encryption" label="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_WHMCS_ENCRYPTION_LABEL" description="COM_COMPONENTBUILDER_FIELDTYPE_NOTE_WHMCS_ENCRYPTION_DESCRIPTION" heading="h4" class="alert alert-success note_whmcs_encryption" />
+		<!-- Basic_encryption_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="basic_encryption_note" label="COM_COMPONENTBUILDER_FIELDTYPE_BASIC_ENCRYPTION_NOTE_LABEL" description="COM_COMPONENTBUILDER_FIELDTYPE_BASIC_ENCRYPTION_NOTE_DESCRIPTION" heading="h4" class="alert alert-error basic_encryption_note" showon="store:3" />
 		<!-- Datalenght Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -438,6 +426,22 @@
 			<option value="Other">
 				COM_COMPONENTBUILDER_FIELDTYPE_OTHER</option>
 		</field>
+		<!-- Medium_encryption_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="medium_encryption_note" label="COM_COMPONENTBUILDER_FIELDTYPE_MEDIUM_ENCRYPTION_NOTE_LABEL" description="COM_COMPONENTBUILDER_FIELDTYPE_MEDIUM_ENCRYPTION_NOTE_DESCRIPTION" heading="h4" class="alert alert-error medium_encryption_note" showon="store:5" />
+		<!-- Datalenght_other Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="datalenght_other"
+			label="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_MESSAGE"
+			hint="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_HINT"
+		/>
 		<!-- Guid Field. Type: Text. (joomla) -->
 		<field
 			type="text"

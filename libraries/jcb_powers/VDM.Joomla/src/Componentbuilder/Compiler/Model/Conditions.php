@@ -15,7 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Field\TypeName;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Name as FieldName;
-use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Field\Groups as FieldGroups;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -46,17 +46,27 @@ class Conditions
 	protected FieldName $fieldName;
 
 	/**
+	 * Compiler Field Groups
+	 *
+	 * @var    FieldGroups
+	 * @since 3.2.0
+	 */
+	protected FieldGroups $fieldGroups;
+
+	/**
 	 * Constructor
 	 *
-	 * @param TypeName|null     $typeName     The compiler type name object.
-	 * @param FieldName|null    $fieldName    The compiler field name object.
+	 * @param TypeName|null     $typeName      The compiler type name object.
+	 * @param FieldName|null    $fieldName     The compiler field name object.
+	 * @param FieldGroups|null  $fieldGroups   The compiler field groups object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?TypeName $typeName = null, ?FieldName $fieldName = null)
+	public function __construct(?TypeName $typeName = null, ?FieldName $fieldName = null, ?FieldGroups $fieldGroups = null)
 	{
 		$this->typeName = $typeName ?: Compiler::_('Field.Type.Name');
 		$this->fieldName = $fieldName ?: Compiler::_('Field.Name');
+		$this->fieldGroups = $fieldGroups ?: Compiler::_('Field.Groups');
 	}
 
 	/**
@@ -143,7 +153,7 @@ class Conditions
 							$conditionValue['match_xml'] = $fieldValue['settings']->xml;
 
 							// if custom field load field being extended
-							if (!FieldHelper::check($type))
+							if (!$this->fieldGroups->check($type))
 							{
 								$conditionValue['match_extends'] = GetHelper::between(
 									$fieldValue['settings']->xml,
@@ -168,6 +178,5 @@ class Conditions
 
 		unset($item->addconditions);
 	}
-
 }
 

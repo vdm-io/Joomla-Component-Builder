@@ -49,21 +49,21 @@ class JFormFieldAdminviewsfilteraddfadein extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_FADE_IN_AFFECT') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get admin_viewsmodel
-			$model = ComponentbuilderHelper::getModel('admin_views');
-			$results = array_unique($results);
-			foreach ($results as $add_fadein)
+			$_model = ComponentbuilderHelper::getModel('admin_views');
+			$_results = array_unique($_results);
+			foreach ($_results as $add_fadein)
 			{
 				// Translate the add_fadein selection
-				$text = $model->selectionTranslation($add_fadein,'add_fadein');
+				$_text = $_model->selectionTranslation($add_fadein,'add_fadein');
 				// Now add the add_fadein and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_fadein, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $add_fadein, JText::_($_text));
 			}
 		}
 		return $_filter;

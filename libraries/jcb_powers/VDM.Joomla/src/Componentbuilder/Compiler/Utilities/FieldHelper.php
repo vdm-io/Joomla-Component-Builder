@@ -12,6 +12,11 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
 
 
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\Base64Helper;
+
+
 /**
  * The Field Helper
  * 
@@ -20,64 +25,29 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
 abstract class FieldHelper
 {
 	/**
-	 * Field Grouping https://docs.joomla.org/Form_field
-	 **/
-	protected static $fields = [
-		'default' => [
-			'accesslevel', 'cachehandler', 'calendar', 'captcha', 'category', 'checkbox', 'checkboxes', 'chromestyle',
-			'color', 'combo', 'componentlayout', 'contentlanguage', 'contenttype', 'databaseconnection', 'components',
-			'editor', 'editors', 'email', 'file', 'file', 'filelist', 'folderlist', 'groupedlist', 'headertag', 'helpsite', 'hidden', 'imagelist',
-			'integer', 'language', 'list', 'media', 'menu', 'modal_menu', 'menuitem', 'meter', 'modulelayout', 'moduleorder', 'moduleposition',
-			'moduletag', 'note', 'number', 'password', 'plugins', 'predefinedlist', 'radio', 'range', 'repeatable', 'rules',
-			'sessionhandler', 'spacer', 'sql', 'subform', 'tag', 'tel', 'templatestyle', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
-		],
-		'plain' => [
-			'cachehandler', 'calendar', 'checkbox', 'chromestyle', 'color', 'componentlayout', 'contenttype', 'editor', 'editors', 'captcha',
-			'email', 'file', 'headertag', 'helpsite', 'hidden', 'integer', 'language', 'media', 'menu', 'modal_menu', 'menuitem', 'meter', 'modulelayout', 'templatestyle',
-			'moduleorder', 'moduletag', 'number', 'password', 'range', 'rules', 'tag', 'tel', 'text', 'textarea', 'timezone', 'url', 'user', 'usergroup'
-		],
-		'option' => [
-			'accesslevel', 'category', 'checkboxes', 'combo', 'contentlanguage', 'databaseconnection', 'components',
-			'filelist', 'folderlist', 'imagelist', 'list', 'plugins', 'predefinedlist', 'radio', 'sessionhandler', 'sql', 'groupedlist'
-		],
-		'text' => [
-			'calendar', 'color', 'editor', 'email', 'number', 'password', 'range', 'tel', 'text', 'textarea', 'url'
-		],
-		'list' => [
-			'checkbox', 'checkboxes', 'list', 'radio', 'groupedlist', 'combo'
-		],
-		'dynamic' => [
-			'category', 'file', 'filelist', 'folderlist', 'headertag', 'imagelist', 'integer', 'media', 'meter', 'rules', 'tag', 'timezone', 'user'
-		],
-		'spacer' => [
-			'note', 'spacer'
-		],
-		'special' => [
-			'contentlanguage', 'moduleposition', 'plugin', 'repeatable', 'subform'
-		],
-		'search' => [
-			'editor', 'email', 'tel', 'text', 'textarea', 'url', 'subform'
-		]
-	];
-
-	/**
-	 * Field Checker
+	 * Get a field value from the XML stored string
 	 *
-	 * @param   string   $type The field type
-	 * @param   string  $option The field grouping
+	 * @param   string     $xml           The xml string of the field
+	 * @param   string     $get           The value key to get from the string
+	 * @param   string     $confirmation  The value to confirm found value
 	 *
-	 * @return  bool if the field was found
+	 * @return  string     The field value from xml
+	 * @since 3.2.0
 	 */
-	public static function check(string $type, string $option = 'default'): bool
+	public static function getValue(&$xml, string &$get, string $confirmation = ''): string
 	{
-		// now check
-		if (isset(self::$fields[$option]) &&
-			in_array($type, self::$fields[$option]))
+		if (StringHelper::check($xml))
 		{
-			return true;
-		}
-		return false;
-	}
+			// if we have a PHP value, we must base64 decode it
+			if (strpos($get, 'type_php') !== false)
+			{
+				return Base64Helper::open(GetHelper::between($xml, $get . '="', '"', $confirmation));
+			}
 
+			return GetHelper::between($xml, $get . '="', '"', $confirmation);
+		}
+
+		return $confirmation;
+	}
 }
 

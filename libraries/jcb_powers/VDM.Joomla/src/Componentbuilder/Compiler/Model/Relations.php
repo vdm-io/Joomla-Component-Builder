@@ -12,11 +12,12 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ListJoin;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ListHeadOverride;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\FieldRelations;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -30,54 +31,74 @@ use VDM\Joomla\Utilities\StringHelper;
 class Relations
 {
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * The compiler registry
+	 * The Language Class.
 	 *
-	 * @var    Registry
+	 * @var   Language
 	 * @since 3.2.0
 	 */
-	protected Registry $registry;
-
-	/**
-	 * Compiler Language
-	 *
-	 * @var    Language
-	 * @since 3.2.0
-	 **/
 	protected Language $language;
 
 	/**
-	 * Compiler Customcode
+	 * The Customcode Class.
 	 *
-	 * @var    Customcode
+	 * @var   Customcode
 	 * @since 3.2.0
 	 */
 	protected Customcode $customcode;
 
 	/**
-	 * Constructor
+	 * The ListJoin Class.
 	 *
-	 * @param Config|null               $config           The compiler config object.
-	 * @param Registry|null              $registry        The compiler registry object.
-	 * @param Language|null             $language         The compiler Language object.
-	 * @param Customcode|null           $customcode       The compiler customcode object.
+	 * @var   ListJoin
+	 * @since 3.2.0
+	 */
+	protected ListJoin $listjoin;
+
+	/**
+	 * The ListHeadOverride Class.
+	 *
+	 * @var   ListHeadOverride
+	 * @since 3.2.0
+	 */
+	protected ListHeadOverride $listheadoverride;
+
+	/**
+	 * The FieldRelations Class.
+	 *
+	 * @var   FieldRelations
+	 * @since 3.2.0
+	 */
+	protected FieldRelations $fieldrelations;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Config             $config             The Config Class.
+	 * @param Language           $language           The Language Class.
+	 * @param Customcode         $customcode         The Customcode Class.
+	 * @param ListJoin           $listjoin           The ListJoin Class.
+	 * @param ListHeadOverride   $listheadoverride   The ListHeadOverride Class.
+	 * @param FieldRelations     $fieldrelations     The FieldRelations Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null,
-		?Language $language = null, ?Customcode $customcode = null)
+	public function __construct(Config $config, Language $language, Customcode $customcode, ListJoin $listjoin,
+		ListHeadOverride $listheadoverride, FieldRelations $fieldrelations)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->language = $language ?: Compiler::_('Language');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
+		$this->config = $config;
+		$this->language = $language;
+		$this->customcode = $customcode;
+		$this->listjoin = $listjoin;
+		$this->listheadoverride = $listheadoverride;
+		$this->fieldrelations = $fieldrelations;
 	}
 
 	/**
@@ -120,8 +141,7 @@ class Relations
 					}
 
 					// load the field relations
-					$this->registry->set('builder.field_relations.'
-						. $item->name_list_code . '.' . (int) $relationsValue['listfield']
+					$this->fieldrelations->set($item->name_list_code . '.' . (int) $relationsValue['listfield']
 						. '.' . (int) $relationsValue['area'], $relationsValue);
 
 					// load the list joints
@@ -132,7 +152,7 @@ class Relations
 					{
 						foreach ($relationsValue['joinfields'] as $join)
 						{
-							$this->registry->set('builder.list_join.' . $item->name_list_code . '.' . (int) $join, (int) $join);
+							$this->listjoin->set($item->name_list_code . '.' . (int) $join, (int) $join);
 						}
 					}
 
@@ -159,9 +179,9 @@ class Relations
 								'admin', $column_name_lang,
 								$relationsValue['column_name']
 							);
-							$this->registry->set('builder.list_head_override.' .
-								$item->name_list_code . '.' . (int) $relationsValue['listfield'],
-								$column_name_lang
+							$this->listheadoverride->
+								set($item->name_list_code . '.' . (int) $relationsValue['listfield'],
+									$column_name_lang
 							);
 
 						}
@@ -172,6 +192,5 @@ class Relations
 
 		unset($item->addrelations);
 	}
-
 }
 

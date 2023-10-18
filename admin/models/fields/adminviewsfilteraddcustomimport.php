@@ -49,21 +49,21 @@ class JFormFieldAdminviewsfilteraddcustomimport extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_CUSTOM_IMPORT') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get admin_viewsmodel
-			$model = ComponentbuilderHelper::getModel('admin_views');
-			$results = array_unique($results);
-			foreach ($results as $add_custom_import)
+			$_model = ComponentbuilderHelper::getModel('admin_views');
+			$_results = array_unique($_results);
+			foreach ($_results as $add_custom_import)
 			{
 				// Translate the add_custom_import selection
-				$text = $model->selectionTranslation($add_custom_import,'add_custom_import');
+				$_text = $_model->selectionTranslation($add_custom_import,'add_custom_import');
 				// Now add the add_custom_import and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_custom_import, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $add_custom_import, JText::_($_text));
 			}
 		}
 		return $_filter;

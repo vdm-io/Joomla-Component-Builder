@@ -676,12 +676,12 @@ class Power implements PowerInterface
 								{
 									$as = trim(trim($namespace_as[1], ';'));
 								}
-								$namespace = $this->getCleanNamespace($namespace_as[0], false);
+								$namespace = $this->getCleanNamespace($namespace_as[0]);
 							}
 							else
 							{
 								// trim possible use or ; added to the namespace
-								$namespace = $this->getCleanNamespace($_namespace['use'], false);
+								$namespace = $this->getCleanNamespace($_namespace['use']);
 							}
 
 							// check if still valid
@@ -849,10 +849,10 @@ class Power implements PowerInterface
 	 * @return string
 	 * @since 3.2.0
 	 */
-	private function getCleanNamespace(string $namespace, bool $removeNumbers = true): string
+	private function getCleanNamespace(string $namespace): string
 	{
 		// trim possible (use) or (;) or (starting or ending \) added to the namespace
-		return NamespaceHelper::safe(str_replace(['use ', ';'], '', $namespace), $removeNumbers);
+		return NamespaceHelper::safe(str_replace(['use ', ';'], '', $namespace));
 	}
 
 	/**
@@ -1001,6 +1001,11 @@ class Power implements PowerInterface
 				),
 				$guiMapper
 			);
+		}
+		else
+		{
+			$this->active[$guid]->unchanged_main_class_code = '';
+			$this->active[$guid]->main_class_code = '';
 		}
 	}
 

@@ -22,8 +22,8 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\HistoryInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Field;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Name as FieldName;
+use VDM\Joomla\Componentbuilder\Compiler\Field\Groups as FieldGroups;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Updatesql;
-use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
@@ -85,6 +85,14 @@ class Fields
 	protected FieldName $fieldName;
 
 	/**
+	 * Compiler Field Groups
+	 *
+	 * @var    FieldGroups
+	 * @since 3.2.0
+	 */
+	protected FieldGroups $fieldGroups;
+
+	/**
 	 * Compiler Update Sql
 	 *
 	 * @var    UpdateSql
@@ -109,6 +117,7 @@ class Fields
 	 * @param Customcode|null           $customcode       The compiler customcode object.
 	 * @param Field|null                $field            The compiler field object.
 	 * @param FieldName|null            $fieldName        The compiler field name object.
+	 * @param FieldGroups|null          $fieldGroups      The compiler field groups object.
 	 * @param UpdateSql|null            $updateSql        The compiler field name object.
 	 * @param CMSApplication|null       $app              The app object.
 	 *
@@ -116,7 +125,7 @@ class Fields
 	 */
 	public function __construct(?Config $config = null, ?Registry $registry = null,
 		?HistoryInterface $history = null, ?Customcode $customcode = null,
-		?Field $field = null, ?FieldName $fieldName = null,
+		?Field $field = null, ?FieldName $fieldName = null, ?FieldGroups $fieldGroups = null,
 		?UpdateSql $updateSql = null, ?CMSApplication $app = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
@@ -125,6 +134,7 @@ class Fields
 		$this->customcode = $customcode ?: Compiler::_('Customcode');
 		$this->field = $field ?: Compiler::_('Field');
 		$this->fieldName = $fieldName ?: Compiler::_('Field.Name');
+		$this->fieldGroups = $fieldGroups ?: Compiler::_('Field.Groups');
 		$this->updateSql = $updateSql ?: Compiler::_('Model.Updatesql');
 		$this->app = $app ?: Factory::getApplication();
 	}
@@ -164,7 +174,7 @@ class Fields
 					// check if this field is a default field OR
 					// check if this is none database related field
 					if (in_array($field['base_name'], $default_fields)
-						|| FieldHelper::check($field['type_name'], 'spacer')
+						|| $this->fieldGroups->check($field['type_name'], 'spacer')
 						|| (isset($field['list']) && $field['list'] == 2)) // 2 = none database
 					{
 						$ignore_fields[$field['field']] = $field['field'];

@@ -49,21 +49,21 @@ class JFormFieldCustomadminviewsfilteraddcustombutton extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_CUSTOM_BUTTONS') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get custom_admin_viewsmodel
-			$model = ComponentbuilderHelper::getModel('custom_admin_views');
-			$results = array_unique($results);
-			foreach ($results as $add_custom_button)
+			$_model = ComponentbuilderHelper::getModel('custom_admin_views');
+			$_results = array_unique($_results);
+			foreach ($_results as $add_custom_button)
 			{
 				// Translate the add_custom_button selection
-				$text = $model->selectionTranslation($add_custom_button,'add_custom_button');
+				$_text = $_model->selectionTranslation($add_custom_button,'add_custom_button');
 				// Now add the add_custom_button and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_custom_button, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $add_custom_button, JText::_($_text));
 			}
 		}
 		return $_filter;

@@ -62,7 +62,7 @@ class ComponentbuilderControllerComponent_modules extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('component_modules.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerComponent_modules extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('component_modules.access', 'com_componentbuilder.component_modules.' . (int) $recordId) &&  $user->authorise('component_modules.access', 'com_componentbuilder'));
+		$access = ($user->authorise('component_modules.access', 'com_componentbuilder.component_modules.' . (int) $recordId) && $user->authorise('component_modules.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

@@ -16,12 +16,15 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Field as CompilerField;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Data;
+use VDM\Joomla\Componentbuilder\Compiler\Field\Groups;
+use VDM\Joomla\Componentbuilder\Compiler\Field\Attributes;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Name;
 use VDM\Joomla\Componentbuilder\Compiler\Field\TypeName;
 use VDM\Joomla\Componentbuilder\Compiler\Field\UniqueName;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Validation;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Field\DatabaseName;
+use VDM\Joomla\Componentbuilder\Compiler\Field\InputButton;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaThree\CoreValidation as J3CoreValidation;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\CoreValidationInterface;
 
@@ -57,6 +60,12 @@ class Field implements ServiceProviderInterface
 		$container->alias(Data::class, 'Field.Data')
 			->share('Field.Data', [$this, 'getData'], true);
 
+		$container->alias(Groups::class, 'Field.Groups')
+			->share('Field.Groups', [$this, 'getGroups'], true);
+
+		$container->alias(Attributes::class, 'Field.Attributes')
+			->share('Field.Attributes', [$this, 'getAttributes'], true);
+
 		$container->alias(Validation::class, 'Field.Validation')
 			->share('Field.Validation', [$this, 'getValidation'], true);
 
@@ -80,6 +89,9 @@ class Field implements ServiceProviderInterface
 
 		$container->alias(DatabaseName::class, 'Field.Database.Name')
 			->share('Field.Database.Name', [$this, 'getFieldDatabaseName'], true);
+
+		$container->alias(InputButton::class, 'Field.Input.Button')
+			->share('Field.Input.Button', [$this, 'getInputButton'], true);
 	}
 
 	/**
@@ -118,6 +130,41 @@ class Field implements ServiceProviderInterface
 			$container->get('Customcode'),
 			$container->get('Field.Customcode'),
 			$container->get('Field.Validation')
+		);
+	}
+
+	/**
+	 * Get the Compiler Field Groups
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Groups
+	 * @since 3.2.0
+	 */
+	public function getGroups(Container $container): Groups
+	{
+		return new Groups();
+	}
+
+	/**
+	 * Get the Compiler Field Attributes
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Attributes
+	 * @since 3.2.0
+	 */
+	public function getAttributes(Container $container): Attributes
+	{
+		return new Attributes(
+			$container->get('Config'),
+			$container->get('Registry'),
+			$container->get('Compiler.Builder.List.Field.Class'),
+			$container->get('Compiler.Builder.Do.Not.Escape'),
+			$container->get('Placeholder'),
+			$container->get('Customcode'),
+			$container->get('Language'),
+			$container->get('Field.Groups')
 		);
 	}
 
@@ -199,7 +246,7 @@ class Field implements ServiceProviderInterface
 		return new Name(
 			$container->get('Placeholder'),
 			$container->get('Field.Unique.Name'),
-			$container->get('Registry')
+			$container->get('Compiler.Builder.Category.Other.Name')
 		);
 	}
 
@@ -242,9 +289,26 @@ class Field implements ServiceProviderInterface
 	public function getFieldDatabaseName(Container $container): DatabaseName
 	{
 		return new DatabaseName(
+			$container->get('Compiler.Builder.Lists'),
 			$container->get('Registry')
 		);
 	}
 
+	/**
+	 * Get The InputButton Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  InputButton
+	 * @since 3.2.0
+	 */
+	public function getInputButton(Container $container): InputButton
+	{
+		return new InputButton(
+			$container->get('Config'),
+			$container->get('Placeholder'),
+			$container->get('Compiler.Creator.Permission')
+		);
+	}
 }
 

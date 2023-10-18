@@ -16,6 +16,11 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Library Admin Model
@@ -138,7 +143,7 @@ class ComponentbuilderModelLibrary extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'library__'.$id);
 				ComponentbuilderHelper::set('library__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -146,7 +151,7 @@ class ComponentbuilderModelLibrary extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -226,7 +231,7 @@ class ComponentbuilderModelLibrary extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'library__'.$id);
 				ComponentbuilderHelper::set('library__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -234,7 +239,7 @@ class ComponentbuilderModelLibrary extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -356,9 +361,9 @@ class ComponentbuilderModelLibrary extends AdminModel
 		// Only load the GUID if new item (or empty)
 		if (0 == $id || !($val = $form->getValue('guid')))
 		{
-			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
+			$form->setValue('guid', null, GuidHelper::get());
 		}
-
+ 
 		return $form;
 	}
 
@@ -420,7 +425,7 @@ class ComponentbuilderModelLibrary extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('library.edit.state', 'com_componentbuilder');
 	}
     
@@ -596,7 +601,7 @@ class ComponentbuilderModelLibrary extends AdminModel
 			}
 		}
 		// check if we can still continue
-		if (!ComponentbuilderHelper::checkArray($pks))
+		if (!UtilitiesArrayHelper::check($pks))
 		{
 			return false;
 		}
@@ -606,7 +611,7 @@ class ComponentbuilderModelLibrary extends AdminModel
 		}
 
 		// we must also delete the linked tables found
-		if (ComponentbuilderHelper::checkArray($pks))
+		if (UtilitiesArrayHelper::check($pks))
 		{
 			$_tablesArray = array(
 				'snippet',
@@ -647,7 +652,7 @@ class ComponentbuilderModelLibrary extends AdminModel
 		}
 
 		// we must also update all linked tables
-		if (ComponentbuilderHelper::checkArray($pks))
+		if (UtilitiesArrayHelper::check($pks))
 		{
 			$_tablesArray = array(
 				'snippet',
@@ -1046,15 +1051,15 @@ class ComponentbuilderModelLibrary extends AdminModel
 		if (empty($data['guid']) && $data['id'] > 0)
 		{
 			// get the existing one
-			$data['guid'] = (string) ComponentbuilderHelper::getVar('library', $data['id'], 'id', 'guid');
-		}
-		// Set the GUID if empty or not valid
-		while (!ComponentbuilderHelper::validGUID($data['guid'], "library", $data['id']))
-		{
-			// must always be set
-			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+			$data['guid'] = (string) GetHelper::var('library', $data['id'], 'id', 'guid');
 		}
 
+		// Set the GUID if empty or not valid
+		while (!GuidHelper::valid($data['guid'], "library", $data['id']))
+		{
+			// must always be set
+			$data['guid'] = (string) GuidHelper::get();
+		}
 
 		// Set the libraries items to data.
 		if (isset($data['libraries']) && is_array($data['libraries']))

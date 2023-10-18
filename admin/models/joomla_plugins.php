@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Joomla_plugins List Model
@@ -62,7 +64,7 @@ class ComponentbuilderModelJoomla_plugins extends ListModel
 				}
 			));
 			// make sure we have the correct boilerplate
-			if (ComponentbuilderHelper::checkArray($found) && count($found) == 1 && method_exists(__CLASS__, 'getPluginsBoilerplate'))
+			if (UtilitiesArrayHelper::check($found) && count($found) == 1 && method_exists(__CLASS__, 'getPluginsBoilerplate'))
 			{
 				// get the plugins boilerplate
 				return $this->getPluginsBoilerplate($found[0]->url);
@@ -99,7 +101,7 @@ class ComponentbuilderModelJoomla_plugins extends ListModel
 			// get the needed data of each plugin group
 			$groups = array_map(
 				function($tree) use(&$app, &$models, &$tables){
-					if (($fooClass = ComponentbuilderHelper::getFileContents(ComponentbuilderHelper::$bolerplatePath . '/plugins/' . $tree->path . '/foo.php')) !== false && ComponentbuilderHelper::checkString($fooClass))
+					if (($fooClass = ComponentbuilderHelper::getFileContents(ComponentbuilderHelper::$bolerplatePath . '/plugins/' . $tree->path . '/foo.php')) !== false && StringHelper::check($fooClass))
 					{
 						// extract the boilerplate class extends and check if already set
 						if (($classExtends = ComponentbuilderHelper::extractBoilerplateClassExtends($fooClass, 'plugins')) !== false &&
@@ -132,7 +134,7 @@ class ComponentbuilderModelJoomla_plugins extends ListModel
 						if (($classProperiesMethods = ComponentbuilderHelper::extractBoilerplateClassPropertiesMethods($fooClass, $classExtends, 'plugins', $pluginGroupID)) !== false)
 						{
 							// create the properties found
-							if (isset($classProperiesMethods['property']) && ComponentbuilderHelper::checkArray($classProperiesMethods['property']))
+							if (isset($classProperiesMethods['property']) && UtilitiesArrayHelper::check($classProperiesMethods['property']))
 							{
 								foreach ($classProperiesMethods['property'] as $_property)
 								{
@@ -141,7 +143,7 @@ class ComponentbuilderModelJoomla_plugins extends ListModel
 								}
 							}
 							// create the method found (TODO just create for now but we could later add a force update)
-							if (isset($classProperiesMethods['method']) && ComponentbuilderHelper::checkArray($classProperiesMethods['method']))
+							if (isset($classProperiesMethods['method']) && UtilitiesArrayHelper::check($classProperiesMethods['method']))
 							{
 								foreach ($classProperiesMethods['method'] as $_method)
 								{

@@ -55,20 +55,29 @@ jQuery(document).ready(function()
 	rowWatcher();
 });
 
-function getCodeFrom_server(id, type, type_name, callingName){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && id > 0 && type.length > 0) {
-		var request = token + '=1&' + type_name + '=' + type + '&id=' + id;
+function getCodeFrom_server(id, type, type_name, callingName) {
+	var url = "index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod;
+	if (token.length > 0 && id > 0 && type.length > 0) {
+		url += '&' + token + '=1&' + type_name + '=' + type + '&id=' + id;
 	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
+	var getUrl = JRouter(url);
+	return fetch(getUrl, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	}).then(function(response) {
+		if (response.ok) {
+			return response.json();
+		} else {
+			throw new Error('Network response was not ok');
+		}
+	}).then(function(data) {
+		return data;
+	}).catch(function(error) {
+		console.error('There was a problem with the fetch operation:', error);
 	});
 }
-
 
 // set selection the options
 selectionMemory = {'property':{},'method':{}};
@@ -99,7 +108,7 @@ function getClassHeaderCode(){
 				addCodeToEditor(_result, "jform_head", false, null);
 		} else {
 			// now get the code
-			getCodeFrom_server(value, 'extends', 'type', 'getClassHeaderCode').done(function(result) {
+			getCodeFrom_server(value, 'extends', 'type', 'getClassHeaderCode').then(function(result) {
 				if(result){
 					// now set the code
 					addCodeToEditor(result, "jform_head", false, null);
@@ -115,7 +124,7 @@ function getClassCodeIds(type, target_field, reset_all){
 	// now get the value
 	var value = jQuery('#'+target_field).val();
 	// now get the code
-	getCodeFrom_server(value, type, 'type', 'getClassCodeIds').done(function(result) {
+	getCodeFrom_server(value, type, 'type', 'getClassCodeIds').then(function(result) {
 		if(result){
 			// reset the selection
 			selectionActiveArray[type] = {};
@@ -210,7 +219,7 @@ function getClassCode(field, type){
 			}
 		} else {
 			// now get the code
-			getCodeFrom_server(old_value, type, 'type', 'getClassCode').done(function(result) {
+			getCodeFrom_server(old_value, type, 'type', 'getClassCode').then(function(result) {
 				if(result){
 					// now remove the code
 					if (removeCodeFromEditor(result, 'jform_main_class_code')) {
@@ -248,7 +257,7 @@ function getClassCode(field, type){
 			}
 		} else {
 			// now get the code
-			getCodeFrom_server(value, type, 'type', 'getClassCode').done(function(result) {
+			getCodeFrom_server(value, type, 'type', 'getClassCode').then(function(result) {
 				if(result){
 					// now set the code
 					if (addCodeToEditor(result, "jform_main_class_code", true, _action_add)) {
@@ -329,7 +338,7 @@ function rowWatcher() {
 				}
 			} else {
 				// now get the code
-				getCodeFrom_server(valid_value, type_call, 'type', 'getClassCode').done(function(result) {
+				getCodeFrom_server(valid_value, type_call, 'type', 'getClassCode').then(function(result) {
 					if(result){
 						if (removeCodeFromEditor(result, 'jform_main_class_code')) {
 							selectionMemory[type_call][valid_call] = 0;;
@@ -375,7 +384,6 @@ function propertyIsSet(prop, id, type) {
 	}
 	return false;
 }
-
 
 function addCodeToEditor(code_string, editor_id, merge, merge_target){
 	if (Joomla.editors.instances.hasOwnProperty(editor_id)) {
@@ -458,7 +466,7 @@ function removeCodeFromEditor(code_string, editor_id){
 
 
 function getLinked(){
-	getCodeFrom_server(1, 'type', 'type', 'getLinked').done(function(result) {
+	getCodeFrom_server(1, 'type', 'type', 'getLinked').then(function(result) {
 		if(result){
 			jQuery('#display_linked_to').html(result);
 		}

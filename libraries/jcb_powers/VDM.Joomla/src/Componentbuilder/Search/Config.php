@@ -12,7 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Search;
 
 
-use VDM\Joomla\Componentbuilder\Abstraction\BaseConfig;
+use Joomla\CMS\Factory;
+use Joomla\Input\Input;
+use VDM\Joomla\Abstraction\BaseConfig;
 
 
 /**
@@ -22,6 +24,30 @@ use VDM\Joomla\Componentbuilder\Abstraction\BaseConfig;
  */
 class Config extends BaseConfig
 {
+	/**
+	 * Hold a JInput object for easier access to the input variables.
+	 *
+	 * @var    Input
+	 * @since 3.2.0
+	 */
+	protected Input $input;
+
+	/**
+	 * Constructor
+	 *
+	 * @param Input|null    $input  Input
+	 *
+	 * @throws \Exception
+	 * @since 3.2.0
+	 */
+	public function __construct(?Input $input = null)
+	{
+		$this->input = $input ?: Factory::getApplication()->input;
+
+		// run parent constructor
+		parent::__construct();
+	}
+
 	/**
 	 * get type search being preformed
 	 *

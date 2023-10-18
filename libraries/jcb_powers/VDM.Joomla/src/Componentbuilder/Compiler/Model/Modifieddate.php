@@ -60,18 +60,24 @@ class Modifieddate
 	/**
 	 * Get the last modified date of an item
 	 *
-	 * @param   array  $item  The item data
+	 * @param   array|object  $item  The item data
 	 *
 	 * @return  int The modified date as int
 	 * @since 3.2.0
 	 */
-	protected function getDate(array $item): int
+	protected function getDate($item): int
 	{
-		if (isset($item['settings']) && isset($item['settings']->modified)
+		if (is_array($item) && isset($item['settings']) && isset($item['settings']->modified)
 			&& StringHelper::check($item['settings']->modified)
 			&& '0000-00-00 00:00:00' !== $item['settings']->modified)
 		{
 			return strtotime((string) $item['settings']->modified);
+		}
+		elseif (is_object($item) && isset($item->modified)
+			&& StringHelper::check($item->modified)
+			&& '0000-00-00 00:00:00' !== $item->modified)
+		{
+			return strtotime((string) $item->modified);
 		}
 
 		return strtotime("now");
@@ -80,17 +86,17 @@ class Modifieddate
 	/**
 	 * Get the last modified date of an item's sub items
 	 *
-	 * @param   array  $item  The item data
+	 * @param   array|object  $item  The item data
 	 *
 	 * @return  int The modified date as int
 	 * @since 3.2.0
 	 */
-	protected function getModified(array $item): int
+	protected function getModified($item): int
 	{
 		$date = 0;
 
 		// if not settings is found
-		if (!isset($item['settings']) || !ObjectHelper::check($item['settings']))
+		if (!is_array($item) || !isset($item['settings']) || !ObjectHelper::check($item['settings']))
 		{
 			return $date;
 		}
@@ -128,12 +134,34 @@ class Modifieddate
 	/**
 	 * Get the key for an item
 	 *
+	 * @param   array|object  $item  The item data
+	 *
+	 * @return  string  The key
+	 * @since 3.2.0
+	 */
+	protected function getKey($item): string
+	{
+		if (is_array($item))
+		{
+			return $this->getKeyFromArray($item);
+		}
+		elseif (is_object($item))
+		{
+			return $this->getKeyFromObject($item);
+		}
+
+		return 'error';
+	}
+
+	/**
+	 * Get the key for an item (array)
+	 *
 	 * @param   array  $item  The item data
 	 *
 	 * @return  string  The key
 	 * @since 3.2.0
 	 */
-	protected function getKey(array $item): string
+	protected function getKeyFromArray(array $item): string
 	{
 		if (isset($item['adminview']))
 		{
@@ -151,5 +179,22 @@ class Modifieddate
 		return 'error';
 	}
 
+	/**
+	 * Get the key for an item (object)
+	 *
+	 * @param   object  $item  The item data
+	 *
+	 * @return  string  The key
+	 * @since 3.2.0
+	 */
+	protected function getKeyFromObject(object $item): string
+	{
+		if (isset($item->key))
+		{
+			return $item->key;
+		}
+
+		return 'error';
+	}
 }
 

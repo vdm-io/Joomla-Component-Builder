@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Power\Factory;
 
 /**
  * Power Form Controller
@@ -42,92 +43,60 @@ class ComponentbuilderControllerPower extends FormController
 		parent::__construct($config);
 	}
 
-	public function syncPowers()
-	{
-		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
-
-		// get IDS of the selected powers
-		$item = $this->input->post->get('jform', array(), 'array');
-
-		// check if there is any selections
-		if (empty($item['id']))
-		{
-			// set error message
-			$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_NOT_SAVED').'</h1>';
-			$message .= '<p>'.JText::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE').'</p>';
-			// set redirect
-			$redirect_url = \JRoute::_(
-				'index.php?option=com_componentbuilder&view=power'
-				. $this->getRedirectToItemAppend(), false
-			);
-			$this->setRedirect($redirect_url, $message, 'error');
-			return false;
-		}
-
-		// check if user has the right
-		$user = JFactory::getUser();
-		if($user->authorise('power.sync', 'com_componentbuilder'))
-		{
-			// set success message
-			$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_THIS_SYNC_FEATURE_IS_STILL_UNDER_DEVELOPMENT').'</h1>';
-			$message .= '<p>'.JText::sprintf('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_SOON_ANDOR_FOLLOW_THE_PROGRESS_ON_SGITVDMDEVA', '<a href="https://git.vdm.dev/joomla/Component-Builder/issues/984" target="_blank">').'</p>';
-			// set redirect
-			$redirect_url = \JRoute::_(
-				'index.php?option=com_componentbuilder&view=power'
-				. $this->getRedirectToItemAppend($item['id']), false
-			);
-			$this->setRedirect($redirect_url, $message);
-			return true;
-		}
-		// set redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=powers', false);
-		$this->setRedirect($redirect_url);
-		return false;
-	}
-
 	public function resetPowers()
 	{
 		// Check for request forgeries
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
-		// get IDS of the selected powers
+		// get Item posted
 		$item = $this->input->post->get('jform', array(), 'array');
-
-		// check if there is any selections
-		if (empty($item['id']))
-		{
-			// set error message
-			$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_NOT_SAVED').'</h1>';
-			$message .= '<p>'.JText::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE').'</p>';
-			// set redirect
-			$redirect_url = \JRoute::_(
-				'index.php?option=com_componentbuilder&view=power'
-				. $this->getRedirectToItemAppend(), false
-			);
-			$this->setRedirect($redirect_url, $message, 'error');
-			return false;
-		}
 
 		// check if user has the right
 		$user = JFactory::getUser();
-		if($user->authorise('power.reset', 'com_componentbuilder'))
+
+		// set default error message
+		$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
+		$message .= '<p>' . JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RESET_THIS_POWER') . '</p>';
+		$status = 'error';
+		$success = false;
+
+		// load the ID
+		$id = $item['id'] ?? null;
+		$guid = $item['guid'] ?? null;
+
+		// check if there is any selections
+		if ($id === null || $guid === null)
 		{
-			// set success message
-			$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_THIS_RESET_FEATURE_IS_STILL_UNDER_DEVELOPMENT').'</h1>';
-			$message .= '<p>'.JText::sprintf('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_SOON_ANDOR_FOLLOW_THE_PROGRESS_ON_SGITVDMDEVA', '<a href="https://git.vdm.dev/joomla/Component-Builder/issues/984" target="_blank">').'</p>';
-			// set redirect
-			$redirect_url = \JRoute::_(
-				'index.php?option=com_componentbuilder&view=power'
-				. $this->getRedirectToItemAppend($item['id']), false
-			);
-			$this->setRedirect($redirect_url, $message);
-			return true;
+			// set error message
+			$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_NOT_SAVED') . '</h1>';
+			$message .= '<p>' . JText::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE') . '</p>';
 		}
+		elseif($user->authorise('power.reset', 'com_componentbuilder'))
+		{
+			if (Factory::_('Superpower')->reset([$guid]))
+			{
+				// set success message
+				$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
+				$message .= '<p>'.JText::_('COM_COMPONENTBUILDER_THE_POWER_HAS_SUCCESSFULLY_BEEN_RESET').'</p>';
+				$status = 'success';
+				$success = true;
+			}
+			else
+			{
+				$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
+				$message .= '<p>' . JText::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_POWER_HAS_FAILED') . '</p>';
+			}
+		}
+
 		// set redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=powers', false);
-		$this->setRedirect($redirect_url);
-		return false;
+		$redirect_url = \JRoute::_(
+			'index.php?option=com_componentbuilder&view=power'
+			. $this->getRedirectToItemAppend($id), $success
+		);
+
+		$this->setRedirect($redirect_url, $message, $status);
+
+		return $success;
 	}
 
         /**
@@ -150,7 +119,7 @@ class ComponentbuilderControllerPower extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('power.create', $this->option);
 	}
 
@@ -173,7 +142,7 @@ class ComponentbuilderControllerPower extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('power.access', 'com_componentbuilder.power.' . (int) $recordId) &&  $user->authorise('power.access', 'com_componentbuilder'));
+		$access = ($user->authorise('power.access', 'com_componentbuilder.power.' . (int) $recordId) && $user->authorise('power.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

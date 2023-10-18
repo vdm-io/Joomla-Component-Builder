@@ -16,6 +16,9 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 /**
  * Componentbuilder Template Admin Model
@@ -123,7 +126,7 @@ class ComponentbuilderModelTemplate extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'template__'.$id);
 				ComponentbuilderHelper::set('template__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -131,7 +134,7 @@ class ComponentbuilderModelTemplate extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -209,7 +212,7 @@ class ComponentbuilderModelTemplate extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'template__'.$id);
 				ComponentbuilderHelper::set('template__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -217,7 +220,7 @@ class ComponentbuilderModelTemplate extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -341,7 +344,7 @@ class ComponentbuilderModelTemplate extends AdminModel
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
-		if (ComponentbuilderHelper::checkArray($editors))
+		if (UtilitiesArrayHelper::check($editors))
 		{
 			foreach ($editors as $editor)
 			{
@@ -413,7 +416,7 @@ class ComponentbuilderModelTemplate extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return parent::canEditState($record);
 	}
     
@@ -683,7 +686,7 @@ class ComponentbuilderModelTemplate extends AdminModel
 			$this->canDo		= ComponentbuilderHelper::getActions('template');
 		}
 
-		if (!$this->canDo->get('core.create') || !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('core.create') && !$this->canDo->get('template.batch'))
 		{
 			return false;
 		}
@@ -821,7 +824,7 @@ class ComponentbuilderModelTemplate extends AdminModel
 			$this->canDo		= ComponentbuilderHelper::getActions('template');
 		}
 
-		if (!$this->canDo->get('core.edit') && !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('core.edit') && !$this->canDo->get('template.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;

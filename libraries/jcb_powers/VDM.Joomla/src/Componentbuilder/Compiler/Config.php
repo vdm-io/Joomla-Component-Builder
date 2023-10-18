@@ -65,7 +65,50 @@ class Config extends BaseConfig
 	 */
 	protected function getGiteatoken(): ?string
 	{
-		return $this->params->get('access.token');
+		return $this->custom_gitea_token ?? $this->params->get('gitea_token');
+	}
+
+	/**
+	 * get Add Custom Gitea URL
+	 *
+	 * @return  int  the add switch
+	 * @since 3.2.0
+	 */
+	protected function getAddcustomgiteaurl(): int
+	{
+		return $this->params->get('add_custom_gitea_url', 1);
+	}
+
+	/**
+	 * get Custom Gitea URL
+	 *
+	 * @return  string  the custom gitea url
+	 * @since 3.2.0
+	 */
+	protected function getCustomgiteaurl(): ?string
+	{
+		if ($this->add_custom_gitea_url == 2)
+		{
+			return $this->params->get('custom_gitea_url');
+		}
+
+		return null;
+	}
+
+	/**
+	 * get Custom Gitea Access Token
+	 *
+	 * @return  string  the custom access token
+	 * @since 3.2.0
+	 */
+	protected function getCustomgiteatoken(): ?string
+	{
+		if ($this->add_custom_gitea_url == 2)
+		{
+			return $this->params->get('custom_gitea_token');
+		}
+
+		return null;
 	}
 
 	/**
@@ -586,29 +629,40 @@ class Config extends BaseConfig
 	 */
 	protected function getApprovedpaths(): array
 	{
-		$default = (object) ['owner' => 'joomla', 'repo' => 'super-powers', 'branch' => 'master'];
+		// some defaults repos we need by JCB
+		$approved = [];
+		$approved['joomla.super-powers'] = (object) ['owner' => 'joomla', 'repo' => 'super-powers', 'branch' => 'master'];
+		$approved['joomla.jcb-compiler'] = (object) ['owner' => 'joomla', 'repo' => 'jcb-compiler', 'branch' => 'master'];
+		$approved['joomla.phpseclib'] = (object) ['owner' => 'joomla', 'repo' => 'phpseclib', 'branch' => 'master'];
+		$approved['joomla.search'] = (object) ['owner' => 'joomla', 'repo' => 'search', 'branch' => 'master'];
+		$approved['joomla.gitea'] = (object) ['owner' => 'joomla', 'repo' => 'gitea', 'branch' => 'master'];
+		$approved['joomla.openai'] = (object) ['owner' => 'joomla', 'repo' => 'openai', 'branch' => 'master'];
+		$approved['joomla.minify'] = (object) ['owner' => 'joomla', 'repo' => 'minify', 'branch' => 'master'];
+		$approved['joomla.psr'] = (object) ['owner' => 'joomla', 'repo' => 'psr', 'branch' => 'master'];
+		$approved['joomla.fof'] = (object) ['owner' => 'joomla', 'repo' => 'fof', 'branch' => 'master'];
 
 		if (!$this->add_own_powers)
 		{
-			return [$default];
+			return $approved;
 		}
 
 		$paths = $this->params->get('approved_paths');
 
-		$approved = [];
 		if (!empty($paths))
 		{
 			foreach ($paths as $path)
 			{
-				// we make sure to get only the objects
-				$approved[] = $path;
+				$owner = $path->owner ?? null;
+				$repo = $path->repo ?? null;
+				if ($owner !== null && $repo !== null)
+				{
+					// we make sure to get only the objects
+					$approved = ["{$owner}.{$repo}" => $path] + $approved;
+				}
 			}
 		}
 
-		// finally we add the default
-		$approved[] = $default;
-
-		return $approved;
+		return array_values($approved);
 	}
 
 	/**

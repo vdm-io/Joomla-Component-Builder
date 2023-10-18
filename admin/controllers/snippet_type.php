@@ -62,7 +62,7 @@ class ComponentbuilderControllerSnippet_type extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('snippet_type.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerSnippet_type extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('snippet_type.access', 'com_componentbuilder.snippet_type.' . (int) $recordId) &&  $user->authorise('snippet_type.access', 'com_componentbuilder'));
+		$access = ($user->authorise('snippet_type.access', 'com_componentbuilder.snippet_type.' . (int) $recordId) && $user->authorise('snippet_type.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

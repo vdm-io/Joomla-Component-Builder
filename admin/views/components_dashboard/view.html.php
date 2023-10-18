@@ -52,7 +52,7 @@ class ComponentbuilderViewComponents_dashboard extends HtmlView
 		$this->canState = $this->canDo->get('component_dashboard.edit.state');
 		$this->canCreate = $this->canDo->get('component_dashboard.create');
 		$this->canDelete = $this->canDo->get('component_dashboard.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('component_dashboard.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

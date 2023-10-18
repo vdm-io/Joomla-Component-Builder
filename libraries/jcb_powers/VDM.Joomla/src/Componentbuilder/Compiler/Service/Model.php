@@ -330,7 +330,8 @@ class Model implements ServiceProviderInterface
 	{
 		return new Dynamicget(
 			$container->get('Config'),
-			$container->get('Registry'),
+			$container->get('Compiler.Builder.Site.Dynamic.Get'),
+			$container->get('Compiler.Builder.Site.Main.Get'),
 			$container->get('Customcode'),
 			$container->get('Customcode.Gui'),
 			$container->get('Placeholder'),
@@ -350,7 +351,7 @@ class Model implements ServiceProviderInterface
 	{
 		return new Libraries(
 			$container->get('Config'),
-			$container->get('Registry'),
+			$container->get('Compiler.Builder.Library.Manager'),
 			$container->get('Library.Data')
 		);
 	}
@@ -413,9 +414,10 @@ class Model implements ServiceProviderInterface
 	{
 		return new Mysqlsettings(
 			$container->get('Config'),
-			$container->get('Registry')
+			$container->get('Compiler.Builder.Mysql.Table.Setting')
 		);
 	}
+
 	/**
 	 * Get the Sql Model
 	 *
@@ -443,7 +445,7 @@ class Model implements ServiceProviderInterface
 	public function getModelCustomalias(Container $container): Customalias
 	{
 		return new Customalias(
-			$container->get('Registry'),
+			$container->get('Compiler.Builder.Custom.Alias'),
 			$container->get('Field.Name')
 		);
 	}
@@ -460,7 +462,7 @@ class Model implements ServiceProviderInterface
 	{
 		return new Ajaxadmin(
 			$container->get('Config'),
-			$container->get('Registry'),
+			$container->get('Compiler.Builder.Site.Edit.View'),
 			$container->get('Customcode.Dispenser')
 		);
 	}
@@ -498,7 +500,7 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Model Auto Loader
+	 * Get The Model Loader Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -509,7 +511,10 @@ class Model implements ServiceProviderInterface
 	{
 		return new Loader(
 			$container->get('Config'),
-			$container->get('Registry')
+			$container->get('Compiler.Builder.Footable.Scripts'),
+			$container->get('Compiler.Builder.Google.Chart'),
+			$container->get('Compiler.Builder.Get.Module'),
+			$container->get('Compiler.Builder.Uikit.Comp')
 		);
 	}
 
@@ -586,9 +591,11 @@ class Model implements ServiceProviderInterface
 	{
 		return new Relations(
 			$container->get('Config'),
-			$container->get('Registry'),
 			$container->get('Language'),
-			$container->get('Customcode')
+			$container->get('Customcode'),
+			$container->get('Compiler.Builder.List.Join'),
+			$container->get('Compiler.Builder.List.Head.Override'),
+			$container->get('Compiler.Builder.Field.Relations')
 		);
 	}
 
@@ -604,7 +611,8 @@ class Model implements ServiceProviderInterface
 	{
 		return new Conditions(
 			$container->get('Field.Type.Name'),
-			$container->get('Field.Name')
+			$container->get('Field.Name'),
+			$container->get('Field.Groups')
 		);
 	}
 
@@ -625,6 +633,7 @@ class Model implements ServiceProviderInterface
 			$container->get('Customcode'),
 			$container->get('Field'),
 			$container->get('Field.Name'),
+			$container->get('Field.Groups'),
 			$container->get('Model.Updatesql')
 		);
 	}
@@ -669,7 +678,7 @@ class Model implements ServiceProviderInterface
 	{
 		return new Customtabs(
 			$container->get('Config'),
-			$container->get('Registry'),
+			$container->get('Compiler.Builder.Custom.Tabs'),
 			$container->get('Language'),
 			$container->get('Placeholder'),
 			$container->get('Customcode')
@@ -687,9 +696,10 @@ class Model implements ServiceProviderInterface
 	public function getModelAdminviews(Container $container): Adminviews
 	{
 		return new Adminviews(
+			$container->get('Config'),
 			$container->get('Adminview.Data'),
-			$container->get('Registry'),
-			$container->get('Config')
+			$container->get('Compiler.Builder.Site.Edit.View'),
+			$container->get('Compiler.Builder.Admin.Filter.Type')
 		);
 	}
 
@@ -803,6 +813,5 @@ class Model implements ServiceProviderInterface
 			$container->get('Table')
 		);
 	}
-
 }
 

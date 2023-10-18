@@ -11,6 +11,7 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+use VDM\Joomla\Utilities\StringHelper;
 
 $edit = "index.php?option=com_componentbuilder&view=site_views&task=site_view.edit";
 
@@ -74,7 +75,7 @@ $edit = "index.php?option=com_componentbuilder&view=site_views&task=site_view.ed
 			<?php echo $this->escape($item->name); ?></b><br />
 	<?php echo JText::_('COM_COMPONENTBUILDER_CODE'); ?>: <b>
 			<?php echo $this->escape($item->codename); ?></b><br />
-	<?php if (ComponentbuilderHelper::checkString($item->context)): ?>
+	<?php if (StringHelper::check($item->context)): ?>
 	<?php echo JText::_('COM_COMPONENTBUILDER_CONTEXT'); ?>: <b>
 			<?php echo $this->escape($item->context); ?></b>
 	<?php endif; ?>

@@ -357,7 +357,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				if (JFile::exists($infoFile))
 				{
 					// load the data
-					if ($info = @file_get_contents($infoFile))
+					if ($info = FileHelper::getContent($infoFile))
 					{
 						// unlock the info data
 						if ((($info_ = PackageFactory::_('Crypt')->decrypt($info, 'local')) !== null && JsonHelper::check($info_)) ||
@@ -644,7 +644,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 					if (JFile::exists($dbFile))
 					{
 						// load the data
-						if ($data = @file_get_contents($dbFile))
+						if ($data = FileHelper::getContent($dbFile))
 						{
 							// prep the data
 							if ($this->extractData($data))
@@ -679,7 +679,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	protected function extractData($data)
 	{
 		// remove all line breaks
-		if (($data = $this->decrypt($data, $this->sleutle)) !== false)
+		if (($data = $this->decrypt($data, $this->sleutle)) !== null)
 		{
 			// final check if we have success
 			$data = @unserialize($data);
@@ -1058,7 +1058,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		foreach ($files as $file)
 		{
 			// open the file content
-			if (($data = $this->decrypt(file_get_contents($file), $this->sleutle)) !== false)
+			if (($data = $this->decrypt(file_get_contents($file), $this->sleutle)) !== null)
 			{
 				// write the decrypted data back to file
 				if (!FileHelper::write($file, $data))
@@ -1104,20 +1104,20 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			{
 				// try phpseclib version 3
 				if(($this->isPhpseclib3Enabled() || $force) &&
-					($data_ = $this->decryptWithPhpseclib3($data, $password)) !== false)
+					($data_ = $this->decryptWithPhpseclib3($data, $password)) !== null)
 				{
 					return $data_;
 				}
 
 				// try phpseclib version 2
 				if(($this->isPhpseclib2Enabled() || $force) &&
-					($data_ = $this->decryptWithPhpseclib2($data, $password)) !== false)
+					($data_ = $this->decryptWithPhpseclib2($data, $password)) !== null)
 				{
 					return $data_;
 				}
 
 				// try FOF the outdated method
-				if (($data_ = $this->decryptWithFof($data, $password)) !== false)
+				if (($data_ = $this->decryptWithFof($data, $password)) !== null)
 				{
 					return $data_;
 				}
@@ -1185,12 +1185,16 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 * @param string $data
 	 * @param string $password
 	 *
-	 * @return string|bool
+	 * @return string|null
 	 */
-	private function decryptWithPhpseclib2(string $data, string $password)
+	private function decryptWithPhpseclib2(string $data, string $password): ?string
 	{
 		$data_ = PackageFactory::_('Crypt')->decrypt($data, 'legacy', $password);
-		return strcmp($data, $data_) !== 0 ? $data_ : false;
+		if ($data_ !== null)
+		{
+			return strcmp($data, $data_) !== 0 ? $data_ : null;
+		}
+		return null;
 	}
 
 	/**
@@ -1209,12 +1213,16 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 * @param string $data
 	 * @param string $password
 	 *
-	 * @return string|bool
+	 * @return string|null
 	 */
-	private function decryptWithPhpseclib3(string $data, string $password)
+	private function decryptWithPhpseclib3(string $data, string $password): ?string
 	{
 		$data_ = PackageFactory::_('Crypt')->decrypt($data, 'aes', $password);
-		return strcmp($data, $data_) !== 0 ? $data_ : false;
+		if ($data_ !== null)
+		{
+			return strcmp($data, $data_) !== 0 ? $data_ : null;
+		}
+		return null;
 	}
 
 	/**
@@ -1223,12 +1231,16 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 * @param string $data
 	 * @param string $password
 	 *
-	 * @return string|bool
+	 * @return string|null
 	 */
-	private function decryptWithFof(string $data, string $password)
+	private function decryptWithFof(string $data, string $password): ?string
 	{
 		$data_ = PackageFactory::_('Crypt')->decrypt($data, 'fof', $password);
-		return strcmp($data, $data_) !== 0 ? $data_ : false;
+		if ($data_ !== null)
+		{
+			return strcmp($data, $data_) !== 0 ? $data_ : null;
+		}
+		return null;
 	}
 
 	/**

@@ -279,7 +279,7 @@ class Paths
 
 				// set the lang key
 				$this->extractor->langKeys[strtoupper($module->folder_name)] = 
-					$module->id . '_M0dU|3';
+					$module->id . '_M0dUl3';
 
 				// return the path
 				if ($module->target == 2)
@@ -406,7 +406,7 @@ class Paths
 				// set the lang key
 				$this->extractor->langKeys['PLG_' . strtoupper(
 					$plugin->group . '_' . $plugin->file_name
-				)] = $plugin->id . '_P|uG!n';
+				)] = $plugin->id . '_pLuG!n';
 
 				// return the path
 				return $plugin->group . '/' . $plugin->file_name;

@@ -322,7 +322,7 @@ class ComponentbuilderModelComponent_site_views extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('component_site_views.edit.state', 'com_componentbuilder');
 	}
     

@@ -49,21 +49,21 @@ class JFormFieldClassmethodsfiltervisibility extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_VISIBILITY') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get class_methodsmodel
-			$model = ComponentbuilderHelper::getModel('class_methods');
-			$results = array_unique($results);
-			foreach ($results as $visibility)
+			$_model = ComponentbuilderHelper::getModel('class_methods');
+			$_results = array_unique($_results);
+			foreach ($_results as $visibility)
 			{
 				// Translate the visibility selection
-				$text = $model->selectionTranslation($visibility,'visibility');
+				$_text = $_model->selectionTranslation($visibility,'visibility');
 				// Now add the visibility and its text to the options array
-				$_filter[] = JHtml::_('select.option', $visibility, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $visibility, JText::_($_text));
 			}
 		}
 		return $_filter;

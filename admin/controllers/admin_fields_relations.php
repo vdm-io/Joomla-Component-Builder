@@ -62,7 +62,7 @@ class ComponentbuilderControllerAdmin_fields_relations extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('admin_fields_relations.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerAdmin_fields_relations extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('admin_fields_relations.access', 'com_componentbuilder.admin_fields_relations.' . (int) $recordId) &&  $user->authorise('admin_fields_relations.access', 'com_componentbuilder'));
+		$access = ($user->authorise('admin_fields_relations.access', 'com_componentbuilder.admin_fields_relations.' . (int) $recordId) && $user->authorise('admin_fields_relations.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

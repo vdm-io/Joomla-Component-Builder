@@ -23,7 +23,9 @@ if (file_exists($composer_autoloader))
 spl_autoload_register(function ($class) {
 	// project-specific base directories and namespace prefix
 	$search = [
+		'libraries/jcb_powers/VDM.Joomla.Openai' => 'VDM\\Joomla\\Openai',
 		'libraries/jcb_powers/VDM.Joomla.Gitea' => 'VDM\\Joomla\\Gitea',
+		'libraries/jcb_powers/VDM.Joomla.FOF' => 'VDM\\Joomla\\FOF',
 		'libraries/jcb_powers/VDM.Joomla' => 'VDM\\Joomla',
 		'libraries/jcb_powers/VDM.Minify' => 'VDM\\Minify',
 		'libraries/jcb_powers/VDM.Psr' => 'VDM\\Psr'
@@ -77,6 +79,17 @@ use VDM\Joomla\Utilities;
 use Joomla\Archive\Archive;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\Path;
+use VDM\Joomla\Componentbuilder\Compiler\Factory;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\FileHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
+use VDM\Joomla\Utilities\Base64Helper;
+use VDM\Joomla\FOF\Encrypt\AES;
+use VDM\Joomla\Utilities\FormHelper;
 
 /**
  * Componentbuilder component helper.
@@ -111,6 +124,11 @@ abstract class ComponentbuilderHelper
 		self::loadSession();
 	}
 
+
+	/**
+	* Just to Add the OPEN AI api to JCB (soon)
+	* Factory
+	**/
 
 	/**
 	* Locked Libraries (we can not have these change)
@@ -266,7 +284,7 @@ abstract class ComponentbuilderHelper
 				// combine method values
 				$combinded = array();
 				// add comment if set
-				if (self::checkString($code->comment))
+				if (UtilitiesStringHelper::check($code->comment))
 				{
 					$comment = array_map('trim', (array) explode(PHP_EOL, base64_decode($code->comment)));
 					$combinded[] = "\t" . implode(PHP_EOL . "\t ", $comment);
@@ -275,7 +293,7 @@ abstract class ComponentbuilderHelper
 				if ('method' === $type)
 				{
 					// set the method signature
-					if (self::checkString($code->arguments))
+					if (UtilitiesStringHelper::check($code->arguments))
 					{
 						$combinded[] = "\t" . $code->visibility . ' function ' . $code->name . '(' . base64_decode($code->arguments) . ')';
 					}
@@ -286,7 +304,7 @@ abstract class ComponentbuilderHelper
 					// set the method code
 					$combinded[] = "\t" . "{";
 					// add code if set
-					if (self::checkString(trim($code->code)))
+					if (UtilitiesStringHelper::check(trim($code->code)))
 					{
 						$combinded[] = base64_decode($code->code);
 					}
@@ -298,7 +316,7 @@ abstract class ComponentbuilderHelper
 				}
 				else
 				{
-					if (self::checkString($code->default))
+					if (UtilitiesStringHelper::check($code->default))
 					{
 						$code->default = base64_decode($code->default);
 						if (is_int($code->default))
@@ -312,12 +330,12 @@ abstract class ComponentbuilderHelper
 							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = ' . (float) $code->default . ';';
 						}
 						elseif (('false' === $code->default || 'true' === $code->default)
-							|| (self::checkString($code->default) && (strpos($code->default, 'array(') !== false || strpos($code->default, '"') !== false)))
+							|| (UtilitiesStringHelper::check($code->default) && (strpos($code->default, 'array(') !== false || strpos($code->default, '"') !== false)))
 						{
 							// set the class property
 							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = ' . $code->default . ';';
 						}
-						elseif (self::checkString($code->default) && strpos($code->default, '"') === false)
+						elseif (UtilitiesStringHelper::check($code->default) && strpos($code->default, '"') === false)
 						{
 							// set the class property
 							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = "' . $code->default . '";';
@@ -351,11 +369,11 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function extractBoilerplateClassExtends(&$class, $type)
 	{
-		if (($strings = self::getAllBetween($class, 'class ', '}')) !== false && self::checkArray($strings))
+		if (($strings = GetHelper::allBetween($class, 'class ', '}')) !== false && UtilitiesArrayHelper::check($strings))
 		{
 			foreach ($strings as $string)
 			{
-				if (($extends = self::getBetween($string, 'extends ', '{')) !== false && self::checkString($extends))
+				if (($extends = GetHelper::between($string, 'extends ', '{')) !== false && UtilitiesStringHelper::check($extends))
 				{
 					return trim($extends);
 				}
@@ -375,10 +393,10 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function extractBoilerplateClassHeader(&$class, $extends, $type)
 	{
-		if (($string = self::getBetween($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && self::checkString($string))
+		if (($string = GetHelper::between($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && UtilitiesStringHelper::check($string))
 		{
 			$headArray = explode(PHP_EOL, $string);
-			if (self::checkArray($headArray) && count($headArray) > 3)
+			if (UtilitiesArrayHelper::check($headArray) && count($headArray) > 3)
 			{
 				// remove first since it still has the [or die;] string in it
 				array_shift($headArray);
@@ -400,7 +418,7 @@ abstract class ComponentbuilderHelper
 					}
 				}
 				// make sure we only return if we have values
-				if (self::checkArray($headArray))
+				if (UtilitiesArrayHelper::check($headArray))
 				{
 					return implode(PHP_EOL, $headArray);
 				}
@@ -420,10 +438,10 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function extractBoilerplateClassComment(&$class, $extends, $type)
 	{
-		if (($string = self::getBetween($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && self::checkString($string))
+		if (($string = GetHelper::between($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && UtilitiesStringHelper::check($string))
 		{
 			$headArray = explode(PHP_EOL, $string);
-			if (self::checkArray($headArray) && count($headArray) > 3)
+			if (UtilitiesArrayHelper::check($headArray) && count($headArray) > 3)
 			{
 				$comment = array();
 				// remove the last since it has the class declaration
@@ -444,7 +462,7 @@ abstract class ComponentbuilderHelper
 					}
 				}
 				// make sure we only return if we have values
-				if (self::checkArray($comment))
+				if (UtilitiesArrayHelper::check($comment))
 				{
 					// set the correct order
 					ksort($comment);
@@ -473,7 +491,7 @@ abstract class ComponentbuilderHelper
 		// get the class code, and remove the head
 		$codeArrayTmp = explode('extends ' . $extends, $class);
 		// make sure we have the correct result
-		if (self::checkArray($codeArrayTmp) && count($codeArrayTmp) == 2)
+		if (UtilitiesArrayHelper::check($codeArrayTmp) && count($codeArrayTmp) == 2)
 		{
 			// the triggers
 			$triggers = array('public' => 1, 'protected' => 2, 'private' => 3);
@@ -498,12 +516,12 @@ abstract class ComponentbuilderHelper
 				// build filter
 				$filters = array('extension_type' => $type);
 				// add more data based on target
-				if ('method' === $target && self::checkArray($tmp))
+				if ('method' === $target && UtilitiesArrayHelper::check($tmp))
 				{
 					// clean the code
 					self::cleanBoilerplateCode($tmp);
 					// only load if there are values
-					if (self::checkArray($tmp, true))
+					if (UtilitiesArrayHelper::check($tmp, true))
 					{
 						$_tmp['code'] = implode(PHP_EOL, $tmp);
 					}
@@ -512,7 +530,7 @@ abstract class ComponentbuilderHelper
 						$_tmp['code'] = '';
 					}
 					// load arguments only if set
-					if (self::checkString($arg))
+					if (UtilitiesStringHelper::check($arg))
 					{
 						$_tmp['arguments'] = $arg;
 					}
@@ -520,13 +538,13 @@ abstract class ComponentbuilderHelper
 				elseif ('property' === $target)
 				{
 					// load default only if set
-					if (self::checkString($arg))
+					if (UtilitiesStringHelper::check($arg))
 					{
 						$_tmp['default'] = $arg;
 					}
 				}
 				// load comment only if set
-				if (self::checkArray($comment, true))
+				if (UtilitiesArrayHelper::check($comment, true))
 				{
 					$_tmp['comment'] = implode(PHP_EOL, $comment);
 				}
@@ -586,9 +604,9 @@ abstract class ComponentbuilderHelper
 							{
 								$target = 'method';
 								// get the name
-								$name = trim(self::getBetween($line, 'function ', '('));
+								$name = trim(GetHelper::between($line, 'function ', '('));
 								// get the arguments
-								$arg = trim(self::getBetween($line, ' ' . $name . '(', ')'));
+								$arg = trim(GetHelper::between($line, ' ' . $name . '(', ')'));
 							}
 							else
 							{
@@ -596,14 +614,14 @@ abstract class ComponentbuilderHelper
 								if (strpos($line, '=') !== false)
 								{
 									// get the name
-									$name = trim(self::getBetween($line, '$', '='));
+									$name = trim(GetHelper::between($line, '$', '='));
 									// get the default
-									$arg = trim(self::getBetween($line, '=', ';'));
+									$arg = trim(GetHelper::between($line, '=', ';'));
 								}
 								else
 								{
 									// get the name
-									$name = trim(self::getBetween($line, '$', ';'));
+									$name = trim(GetHelper::between($line, '$', ';'));
 								}
 							}
 						}
@@ -645,7 +663,7 @@ abstract class ComponentbuilderHelper
 			$query->where($db->quoteName('a.name') . ' = ' . $db->quote($name));
 			$query->where($db->quoteName('a.extension_type') . ' = ' . $db->quote($extension_type));
 			// add more filters
-			if (self::checkArray($filters))
+			if (UtilitiesArrayHelper::check($filters))
 			{
 				foreach($filters as $where => $value)
 				{
@@ -686,7 +704,7 @@ abstract class ComponentbuilderHelper
 					$found = true;
 				}
 				// remove empty lines
-				elseif (!self::checkString(trim($code[$key])))
+				elseif (!UtilitiesStringHelper::check(trim($code[$key])))
 				{
 					unset($code[$key]);
 				}
@@ -715,7 +733,7 @@ abstract class ComponentbuilderHelper
 					$last = 0;
 				}
 				// remove empty lines
-				elseif (!self::checkString(trim($code[$last])))
+				elseif (!UtilitiesStringHelper::check(trim($code[$last])))
 				{
 					unset($code[$last]);
 				}
@@ -753,7 +771,7 @@ abstract class ComponentbuilderHelper
 			// change back to Joomla working directory
 			chdir($joomla);
 			// make sure we have an array
-			if (!self::checkArray($items))
+			if (!UtilitiesArrayHelper::check($items))
 			{
 				return false;
 			}
@@ -765,7 +783,7 @@ abstract class ComponentbuilderHelper
 			self::set('_existing_validation_rules_VDM', json_encode($items));
 		}
 		// make sure it is no longer json
-		if (self::checkJson($items))
+		if (JsonHelper::check($items))
 		{
 			$items = json_decode($items, true);
 		}
@@ -798,8 +816,8 @@ abstract class ComponentbuilderHelper
 			case 'snippet':
 				$path = self::$snippetPath.$filename;
 				// get the file if available
-				$content = self::getFileContents($path);
-				if (self::checkJson($content))
+				$content = FileHelper::getContent($path);
+				if (JsonHelper::check($content))
 				{
 					$content = json_decode($content, true);
 				}
@@ -810,7 +828,7 @@ abstract class ComponentbuilderHelper
 			break;
 		}
 		// see if we have content and all needed details
-		if (isset($content) && self::checkArray($content)
+		if (isset($content) && UtilitiesArrayHelper::check($content)
 				&& isset($content['contributor_company'])
 				&& isset($content['contributor_name'])
 				&& isset($content['contributor_email'])
@@ -820,12 +838,12 @@ abstract class ComponentbuilderHelper
 			return array('contributor_company' => $content['contributor_company'] ,'contributor_name' => $content['contributor_name'], 'contributor_email' => $content['contributor_email'], 'contributor_website' => $content['contributor_website'], 'origin' => 'file');
 		}
 		// get the global settings
-		if (!self::checkObject(self::$params))
+		if (!ObjectHelper::check(self::$params))
 		{
 			self::$params = JComponentHelper::getParams('com_componentbuilder');
 		}
 		// get the global company details
-		if (!self::checkArray(self::$localCompany))
+		if (!UtilitiesArrayHelper::check(self::$localCompany))
 		{
 			// Set the person sharing information (default VDM ;)
 			self::$localCompany['company']		= self::$params->get('export_company', 'Vast Development Method');
@@ -864,19 +882,19 @@ abstract class ComponentbuilderHelper
 			// prepare the files
  			$result = $db->loadObject();
  			// first we load the URLs
-			if (self::checkJson($result->addurls))
+			if (JsonHelper::check($result->addurls))
 			{
 				// convert to array
 				$result->addurls = json_decode($result->addurls, true);
 				// set urls
-				if (self::checkArray($result->addurls))
+				if (UtilitiesArrayHelper::check($result->addurls))
 				{
 					// build media folder path
-					$mediaPath = '/media/' . strtolower( preg_replace('/\s+/', '-', self::safeString($result->name, 'filename', ' ', false)));
+					$mediaPath = '/media/' . strtolower( preg_replace('/\s+/', '-', UtilitiesStringHelper::safe($result->name, 'filename', ' ', false)));
 					// load the urls
 					foreach($result->addurls as $url)
 					{
-						if (isset($url['url']) && self::checkString($url['url']))
+						if (isset($url['url']) && UtilitiesStringHelper::check($url['url']))
 						{
 							// set the path if needed
 							if (isset($url['type']) && $url['type'] > 1)
@@ -915,12 +933,12 @@ abstract class ComponentbuilderHelper
 				}
 			}
 			// load the local files
-			if (self::checkJson($result->addfiles))
+			if (JsonHelper::check($result->addfiles))
 			{
 				// convert to array
 				$result->addfiles = json_decode($result->addfiles, true);
 				// set files
-				if (self::checkArray($result->addfiles))
+				if (UtilitiesArrayHelper::check($result->addfiles))
 				{
 					foreach($result->addfiles as $file)
 					{
@@ -944,15 +962,15 @@ abstract class ComponentbuilderHelper
 				}
 			}
  			// load the files in the folder	
-			if (self::checkJson($result->addfolders))
+			if (JsonHelper::check($result->addfolders))
 			{
 				// convert to array
 				$result->addfolders = json_decode($result->addfolders, true);
 				// set folder
-				if (self::checkArray($result->addfolders))
+				if (UtilitiesArrayHelper::check($result->addfolders))
 				{
 					// get the global settings
-					if (!self::checkObject(self::$params))
+					if (!ObjectHelper::check(self::$params))
 					{
 						self::$params = JComponentHelper::getParams('com_componentbuilder');
 					}
@@ -969,7 +987,7 @@ abstract class ComponentbuilderHelper
 							$customFolder = '/'.trim($folder['folder'], '/');
 							if (isset($folder['rename']) && 1 == $folder['rename'])
 							{
-								if ($_paths = self::getAllFilePaths($customPath.$customFolder))
+								if ($_paths = FileHelper::getPaths($customPath.$customFolder))
 								{
 									$bucket[$_path] = $_paths;
 								}
@@ -977,7 +995,7 @@ abstract class ComponentbuilderHelper
 							else
 							{
 								$path = $_path.$customFolder;
-								if ($_paths = self::getAllFilePaths($customPath.$customFolder))
+								if ($_paths = FileHelper::getPaths($customPath.$customFolder))
 								{
 									$bucket[$path] = $_paths;
 								}
@@ -985,7 +1003,7 @@ abstract class ComponentbuilderHelper
 						}
 					}
 					// now load the script
-					if (self::checkArray($bucket))
+					if (UtilitiesArrayHelper::check($bucket))
 					{
 						foreach ($bucket as $root => $paths)
 						{
@@ -999,7 +1017,7 @@ abstract class ComponentbuilderHelper
 				}
 			}
 			// return files if found
-			if (self::checkArray($files))
+			if (UtilitiesArrayHelper::check($files))
 			{
 				return $files;
 			}
@@ -1024,7 +1042,7 @@ abstract class ComponentbuilderHelper
 	public static function fixPath(&$values, $targets = array())
 	{
 		// if multiple to gets searched and fixed
-		if (self::checkArray($values) && self::checkArray($targets))
+		if (UtilitiesArrayHelper::check($values) && UtilitiesArrayHelper::check($targets))
 		{
 			foreach ($targets as $target)
 			{
@@ -1035,7 +1053,7 @@ abstract class ComponentbuilderHelper
 			}
 		}
 		// if just a string
-		elseif (self::checkString($values) && strpos($values, '\\') !== false)
+		elseif (UtilitiesStringHelper::check($values) && strpos($values, '\\') !== false)
 		{
 			$values = str_replace('\\', '/', $values);
 		}
@@ -1111,14 +1129,14 @@ abstract class ComponentbuilderHelper
 	public static function convertRepeatable($item, $name)
 	{
 		// continue only if we have an array
-		if (self::checkArray($item))
+		if (UtilitiesArrayHelper::check($item))
 		{
 			$bucket = array();
 			foreach ($item as $key => $values)
 			{
 				foreach ($values as $nr => $value)
 				{
-					if (!isset($bucket[$name . $nr]) || !self::checkArray($bucket[$name . $nr]))
+					if (!isset($bucket[$name . $nr]) || !UtilitiesArrayHelper::check($bucket[$name . $nr]))
 					{
 						$bucket[$name . $nr] = array();
 					}
@@ -1147,19 +1165,19 @@ abstract class ComponentbuilderHelper
 			if (isset($object->{$key}))
 			{
 				$isJson = false;
-				if (self::checkJson($object->{$key}))
+				if (JsonHelper::check($object->{$key}))
 				{
 					$object->{$key} = json_decode($object->{$key}, true);
 					$isJson = true;
 				}
 				// check if this is old values for repeatable fields
-				if (self::checkArray($object->{$key}) && isset($object->{$key}[$sleutel]))
+				if (UtilitiesArrayHelper::check($object->{$key}) && isset($object->{$key}[$sleutel]))
 				{
 					// load it back
 					$object->{$key} = self::convertRepeatable($object->{$key}, $key);
 					// add to global updater
 					if (
-						self::checkArray($object->{$key}) && self::checkArray($updater) && 
+						UtilitiesArrayHelper::check($object->{$key}) && UtilitiesArrayHelper::check($updater) && 
 						(
 							( isset($updater['table']) && isset($updater['val']) && isset($updater['key']) ) || 
 							( isset($updater['unique']) && isset($updater['unique'][$key]) && isset($updater['unique'][$key]['table']) && isset($updater['unique'][$key]['val']) && isset($updater['unique'][$key]['key']) )
@@ -1183,7 +1201,7 @@ abstract class ComponentbuilderHelper
 							$_table = $updater['table'];
 						}
 						// continue only if values are valid
-						if (self::checkString($_table) && self::checkString($_key) && $_value > 0)
+						if (UtilitiesStringHelper::check($_table) && UtilitiesStringHelper::check($_key) && $_value > 0)
 						{
 							// set target table & item
 							$target = trim($_table) . '.' . trim($_key) . '.' . trim($_value);
@@ -1198,12 +1216,12 @@ abstract class ComponentbuilderHelper
 					}
 				}
 				// no set back to json if came in as json
-				if ($isJson && self::checkArray($object->{$key}))
+				if ($isJson && UtilitiesArrayHelper::check($object->{$key}))
 				{
 					$object->{$key} = json_encode($object->{$key}); 
 				}
 				// remove if not json or array
-				elseif (!self::checkArray($object->{$key}) && !self::checkJson($object->{$key}))
+				elseif (!UtilitiesArrayHelper::check($object->{$key}) && !JsonHelper::check($object->{$key}))
 				{
 					unset($object->{$key});
 				}
@@ -1221,7 +1239,7 @@ abstract class ComponentbuilderHelper
 	public static function runGlobalUpdater()
 	{
 		// check if any updates are set to run
-		if (self::checkArray(self::$globalUpdater))
+		if (UtilitiesArrayHelper::check(self::$globalUpdater))
 		{
 			// get the database object
 			$db = JFactory::getDbo();
@@ -1259,7 +1277,7 @@ abstract class ComponentbuilderHelper
 			if ($item = $model->getItem($id))
 			{
 				// update values that should change
-				if (self::checkArray($config))
+				if (UtilitiesArrayHelper::check($config))
 				{
 					foreach($config as $key => $value)
 					{
@@ -1403,12 +1421,12 @@ abstract class ComponentbuilderHelper
 	public static function newHash($hash, $name = 'backup', $type = 'hash', $key = '',  $fileType = 'txt')
 	{
 		// make sure we have a hash
-		if (self::checkString($hash))
+		if (UtilitiesStringHelper::check($hash))
 		{
 			// first get the file path
-			$path_filename = self::getFilePath('path', $name.$type, $fileType, $key, JPATH_COMPONENT_ADMINISTRATOR);
+			$path_filename = FileHelper::getPath('path', $name.$type, $fileType, $key, JPATH_COMPONENT_ADMINISTRATOR);
 			// set as read if not already set
-			if ($content = self::getFileContents($path_filename, false))
+			if ($content = FileHelper::getContent($path_filename, false))
 			{
 				if ($hash == $content)
 				{
@@ -1416,7 +1434,7 @@ abstract class ComponentbuilderHelper
 				}
 			}
 			// set the hash
-			return self::writeFile($path_filename, $hash);
+			return FileHelper::write($path_filename, $hash);
 		}
 		return false;
 	}
@@ -1455,13 +1473,13 @@ abstract class ComponentbuilderHelper
 		$ownerDetails .= '</dl>';
 
 		// provide some details to how the user can get a key
-		if ($hasOwner && isset($info['getKeyFrom']['buy_link']) && self::checkString($info['getKeyFrom']['buy_link']))
+		if ($hasOwner && isset($info['getKeyFrom']['buy_link']) && UtilitiesStringHelper::check($info['getKeyFrom']['buy_link']))
 		{
 			$ownerDetails .= '<hr />';
 			$ownerDetails .= JText::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROMB_A_SSA', 'class="btn btn-primary" href="'.$info['getKeyFrom']['buy_link'].'" target="_blank" title="get a key from '.$owner.'"', $owner);
 		}
 		// add more custom links
-		elseif ($hasOwner && isset($info['getKeyFrom']['buy_links']) && self::checkArray($info['getKeyFrom']['buy_links']))
+		elseif ($hasOwner && isset($info['getKeyFrom']['buy_links']) && UtilitiesArrayHelper::check($info['getKeyFrom']['buy_links']))
 		{
 			$buttons = array();
 			foreach ($info['getKeyFrom']['buy_links'] as $keyName => $link)
@@ -1486,7 +1504,7 @@ abstract class ComponentbuilderHelper
 	public static function getPackageOwnerValue($key, &$info)
 	{
 		$source = (isset($info['source']) && isset($info['source'][$key])) ? 'source' : ((isset($info['getKeyFrom']) && isset($info['getKeyFrom'][$key])) ? 'getKeyFrom' : false);
-		if ($source && self::checkString($info[$source][$key]))
+		if ($source && UtilitiesStringHelper::check($info[$source][$key]))
 		{
 			return $info[$source][$key];
 		}
@@ -1535,7 +1553,7 @@ abstract class ComponentbuilderHelper
 	{
 		// check if these components need a key
 		$needKey = self::getPackageComponentsKeyStatus($info);
-		if (isset($info['name']) && self::checkArray($info['name'])) 
+		if (isset($info['name']) && UtilitiesArrayHelper::check($info['name'])) 
 		{
 			$cAmount = count((array) $info['name']);
 			$class2 = ($cAmount == 1) ? 'span12' : 'span6';
@@ -1579,7 +1597,7 @@ abstract class ComponentbuilderHelper
 				}
 				$display[] = '</ul>';
 				// if we have a source link we add it
-				if (isset($info['joomla_source_link']) && self::checkArray($info['joomla_source_link']) && isset($info['joomla_source_link'][$key]) && self::checkString($info['joomla_source_link'][$key]))
+				if (isset($info['joomla_source_link']) && UtilitiesArrayHelper::check($info['joomla_source_link']) && isset($info['joomla_source_link'][$key]) && UtilitiesStringHelper::check($info['joomla_source_link'][$key]))
 				{
 					$display[] = '<a class="uk-button uk-button-mini uk-width-1-1 uk-margin-small-bottom " href="'.$info['joomla_source_link'][$key].'" target="_blank" title="Source Code for Joomla Component ('.$name.')">source code</a>';
 				}
@@ -1618,9 +1636,9 @@ abstract class ComponentbuilderHelper
 		$unique = '';
 		if (1 == $type)
 		{
-			$unique = self::safeString($tableName) . '_';
+			$unique = UtilitiesStringHelper::safe($tableName) . '_';
 		}
-		if (self::checkArray($columns))
+		if (UtilitiesArrayHelper::check($columns))
 		{
         		// build the return string
 			$tableColumns = array();
@@ -1658,10 +1676,10 @@ abstract class ComponentbuilderHelper
 			$tableName = '';
 			if (1 == $type)
 			{
-				$tableName = self::safeString($result->name_single) . '_';
+				$tableName = UtilitiesStringHelper::safe($result->name_single) . '_';
 			}
 			$addfields = json_decode($result->addfields, true);
-			if (self::checkArray($addfields))
+			if (UtilitiesArrayHelper::check($addfields))
 			{
 				// reset all buckets
 				$field = array();
@@ -1670,7 +1688,7 @@ abstract class ComponentbuilderHelper
 				foreach ($addfields as $nr => $value)
 				{
 					$tmp = self::getFieldNameAndType((int) $value['field']);
-					if (self::checkArray($tmp))
+					if (UtilitiesArrayHelper::check($tmp))
 					{
 						$field[$nr] = $tmp;
 					}
@@ -1691,7 +1709,7 @@ abstract class ComponentbuilderHelper
 				// load data
 				foreach ($field as $n => $f)
 				{
-					if (self::checkArray($f))
+					if (UtilitiesArrayHelper::check($f))
 					{
 						$fields[] = $as . "." . $f['name'] . " AS " . $tableName . $f['name'];
 					}
@@ -1760,11 +1778,11 @@ abstract class ComponentbuilderHelper
 			}
 			else
 			{
-				$name = self::safeFieldName(self::getBetween($field->xml,'name="','"'));
+				$name = self::safeFieldName(GetHelper::between($field->xml,'name="','"'));
 			}
 
 			// use field core name only if not found in xml
-			if (!self::checkString($name))
+			if (!UtilitiesStringHelper::check($name))
 			{
 				$name = self::safeFieldName($field->name);
 			}
@@ -1894,159 +1912,158 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
-
 	/**
 	 * The array of dynamic content
-	 * 
-	 * @var     array
+	 *
+	 * @var  array
 	 */
-	protected static $dynamicContent = array(
+	protected static array $dynamicContent = [
 		// The banners by size (width - height)
-		'banner' => array(
-			'728-90' => array(
-				array(
-					'url' => 'https://cdn.joomla.org/volunteers/joomla-heart-wide.gif',
+		'banner' => [
+			'728-90' => [
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/banner/joomla-heart-wide.gif',
 					'hash' => 'f857e3a38facaeac9eba3cffa912b620',
-					'html' => '<a href="https://vdm.bz/joomla-volunteers" target="_blank" title="Joomla! Volunteers Portal"><img class="jcb-sponsor-banner" src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/joomla-heart-wide.gif" alt="Joomla! Volunteers Portal" width="728" height="90" border="0"></a>'),
-				array(
-					'url' => 'https://magazine.joomla.org/images/banners/JCM_2010_728x90.png',
-					'hash' => '4083c66f996279fd5a76adffc3a7d194',
-					'html' => '<a href="https://vdm.bz/joomla-magazine" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img class="jcb-sponsor-banner" alt="Joomla! Community Magazine | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/JCM_2010_728x90.png" width="728" height="90" border="0" /></a>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/banners/tlwebdesign_jcb_sponsor_728_90.png',
+					'html' => '<a href="https://vdm.bz/joomla-volunteers" target="_blank" title="Joomla! Volunteers Portal"><img class="jcb-sponsor-banner" src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/joomla-heart-wide.gif" alt="Joomla! Volunteers Portal" width="728" height="90" border="0"></a>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/banner/JCM_2010_120x600.png',
+					'hash' => '5389cf3be8569cb3f6793e8bd4013d19',
+					'html' => '<a href="https://vdm.bz/joomla-magazine" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img class="jcb-sponsor-banner" alt="Joomla! Community Magazine | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/JCM_2010_728x90.png" width="728" height="90" border="0" /></a>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/banner/tlwebdesign_jcb_sponsor_728_90.png',
 					'hash' => 'd19be1f9f5b2049ff901096aafc246be',
-					'html' => '<a href="https://vdm.bz/jcb-sponsor-tlwebdesign" target="_blank" title="tlwebdesign a JCB sponsor | Because community matters..."><img class="jcb-sponsor-banner" alt="tlwebdesign a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/tlwebdesign_jcb_sponsor_728_90.png" width="728" height="90" border="0" /></a>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/banners/vdm_jcb_sponsor_728_90.gif',
+					'html' => '<a href="https://vdm.bz/jcb-sponsor-tlwebdesign" target="_blank" title="tlwebdesign a JCB sponsor | Because community matters..."><img class="jcb-sponsor-banner" alt="tlwebdesign a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/tlwebdesign_jcb_sponsor_728_90.png" width="728" height="90" border="0" /></a>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/banner/vdm_jcb_sponsor_728_90.gif',
 					'hash' => '84478dfa0cd880395815e0ee026812a4',
-					'html' => '<a href="https://vdm.bz/jcb-sponsor-vdm" target="_blank" title="VDM a JCB sponsor | Because community matters..."><img class="jcb-sponsor-banner" alt="VDM a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/vdm_jcb_sponsor_728_90.gif" width="728" height="90" border="0" /></a>'),
-				array(
+					'html' => '<a href="https://vdm.bz/jcb-sponsor-vdm" target="_blank" title="VDM a JCB sponsor | Because community matters..."><img class="jcb-sponsor-banner" alt="VDM a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/vdm_jcb_sponsor_728_90.gif" width="728" height="90" border="0" /></a>'],
+				[
 					'url' => 'https://cms-experts.org/images/banners/agerix/agerix-loves-jcb-728-90.gif',
 					'hash' => 'b24c0726aa809cdcc04bcffe7e1e1529',
-					'html' => '<a href="https://vdm.bz/jcb-sponsor-agerix" target="_blank" title="Agerix a JCB sponsor | Because community matters..."><img class="jcb-sponsor-banner" alt="Agerix a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/agerix-loves-jcb-728-90.gif" width="728" height="90" border="0" /></a>')
-			),
-			'160-600' => array(
-				array(
-					'url' => 'https://cdn.joomla.org/volunteers/joomla-heart-tall.gif',
+					'html' => '<a href="https://vdm.bz/jcb-sponsor-agerix" target="_blank" title="Agerix a JCB sponsor | Because community matters..."><img class="jcb-sponsor-banner" alt="Agerix a JCB sponsor | Because community matters..." src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/agerix-loves-jcb-728-90.gif" width="728" height="90" border="0" /></a>']
+			],
+			'160-600' => [
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/banner/joomla-heart-tall.gif',
 					'hash' => '9a75e4929b86c318128b53cf78251678',
-					'html' => '<a href="https://vdm.bz/joomla-volunteers" target="_blank" title="Joomla! Volunteers Portal"><img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/joomla-heart-tall.gif" alt="Joomla! Volunteers Portal" width="160" height="600" border="0"></a>'),
-				array(
-					'url' => 'https://magazine.joomla.org/images/banners/JCM_2010_120x600.png',
+					'html' => '<a href="https://vdm.bz/joomla-volunteers" target="_blank" title="Joomla! Volunteers Portal"><img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/joomla-heart-tall.gif" alt="Joomla! Volunteers Portal" width="160" height="600" border="0"></a>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/banner/JCM_2010_120x600.png',
 					'hash' => '5389cf3be8569cb3f6793e8bd4013d19',
-					'html' => '<a href="https://vdm.bz/joomla-magazine" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/JCM_2010_120x600.png" alt="Joomla! Community Magazine | Because community matters..." width="120" height="600" border="0"/></a>')
-			)
-		),
+					'html' => '<a href="https://vdm.bz/joomla-magazine" target="_blank" title="Joomla! Community Magazine | Because community matters..."><img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/banner/JCM_2010_120x600.png" alt="Joomla! Community Magazine | Because community matters..." width="120" height="600" border="0"/></a>']
+			]
+		],
 		// The build-gif by size (width - height)
-		'builder-gif' => array(
+		'builder-gif' => [
 			// original gif ;)
-			'480-272' => array(
-				array(
+			'480-272' => [
+				[
 					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/original.gif',
 					'hash' => '676e37a949add8f4573381195cd1061c',
 					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/original.gif" />'
-				)
-			),
+				]
+			],
 			// new gif artwork since 2021
-			'480-540' => array(
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/1.gif',
+			'480-540' => [
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/1.gif',
 					'hash' => 'ce6e36456fa794ba95d981547b2f54f8',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/1.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/2.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/1.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/2.gif',
 					'hash' => '0a54dbc393359747e33db90cabb1e2d7',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/2.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/3.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/2.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/3.gif',
 					'hash' => '4e5498713ff69a64a0a79dbf620372a3',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/3.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/4.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/3.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/4.gif',
 					'hash' => '3554ffab2a6df95a116fd9f0db63925c',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/4.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/5.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/4.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/5.gif',
 					'hash' => '08f0cdf188593eca65c6dafd7af27ef9',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/5.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/6.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/5.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/6.gif',
 					'hash' => '103b46a7ac3fcb974e25d06f417a4e87',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/6.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/7.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/6.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/7.gif',
 					'hash' => 'ffa8547099b7286f89ab7ff5a140dd90',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/7.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/8.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/7.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/8.gif',
 					'hash' => '316df780f9e4ce81200a65d3c4303c41',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/8.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/9.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/8.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/9.gif',
 					'hash' => '9ab6ba78b6e63a285fdef2ff5e447c93',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/9.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/10.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/9.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/10.gif',
 					'hash' => 'cd9abaa1cb95f51a70916da6b70614f2',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/10.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/11.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/10.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/11.gif',
 					'hash' => 'cfe53095b5249618e2348223b89262b9',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/11.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/12.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/11.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/12.gif',
 					'hash' => '15a6690647d5160d67c80ce4dd1f5602',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/12.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/13.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/12.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/13.gif',
 					'hash' => '2f77562e92c8a3b7c47664c98f551fe8',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/13.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/14.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/13.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/14.gif',
 					'hash' => '46db15517ef5bd063be85134e1cc575d',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/14.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/15.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/14.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/15.gif',
 					'hash' => 'e6c96eff157ea648ceb1583f2cc22544',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/15.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/16.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/15.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/16.gif',
 					'hash' => '76010b7d1f99952eb9645df660467ae8',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/16.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/17.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/16.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/17.gif',
 					'hash' => '021219ddd72d8fcfc7f80bd4a874d651',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/17.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/18.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/17.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/18.gif',
 					'hash' => '383af3179d4ae27301c1292e630d7155',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/18.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/19.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/18.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/19.gif',
 					'hash' => '8537e6d7be93447241b521f851e8a61d',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/19.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/20.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/19.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/20.gif',
 					'hash' => '10d96f70e3d43086a925b00a7dc0022e',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/20.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/21.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/20.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/21.gif',
 					'hash' => '161de9865b171b44039353b8d50491d3',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/21.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/22.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/21.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/22.gif',
 					'hash' => '6a2354e43eb97d278d74bb2c12890988',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/22.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/23.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/22.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/23.gif',
 					'hash' => '2cb6e2f9562a8dc8eef6d5d8d1a84f5e',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/23.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'),
-				array(
-					'url' => 'https://www.joomlacomponentbuilder.com/images/builder/24.gif',
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/23.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>'],
+				[
+					'url' => 'https://git.vdm.dev/joomla/jcb-external/raw/branch/master/src/images/builder/24.gif',
 					'hash' => '745b3fb5e16515689132432bf02ab1b4',
-					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/24.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>')
-			)
-		)
-	);
+					'html' => '<img src="[[[ROOT-URL]]]administrator/components/com_componentbuilder/assets/images/builder-gif/24.gif" /><br /><div style="text-align: right; font-size: smaller;">Animation produced with 3D Particle Explorations by Jack Rugile.</div>']
+			]
+		]
+	];
 
 	/**
 	 * get the dynamic content array size
@@ -2057,10 +2074,10 @@ abstract class ComponentbuilderHelper
 	 * @return  int   on success number of items in array type,size
 	 * 
 	 */
-	public static function getDynamicContentSize($type, $size)
+	public static function getDynamicContentSize(string $type, string $size): int
 	{
 		if (isset(self::$dynamicContent[$type]) && isset(self::$dynamicContent[$type][$size])
-			&& ($nr = self::checkArray(self::$dynamicContent[$type][$size])))
+			&& ($nr = UtilitiesArrayHelper::check(self::$dynamicContent[$type][$size])))
 		{
 			return $nr;
 		}
@@ -2070,16 +2087,16 @@ abstract class ComponentbuilderHelper
 	/**
 	 * get the dynamic content
 	 * 
-	 * @param   string   $type      The type of content
-	 * @param   string   $size      The size of the content
-	 * @param   mix      $default   The default to return
-	 * @param   int      $try       Retry tracker (when bigger then array size it stops)
-	 * @param   mix      $getter    The specific getter number (not zero based)
+	 * @param   string    $type      The type of content
+	 * @param   string    $size      The size of the content
+	 * @param   mixed     $default   The default to return
+	 * @param   int       $try       Retry tracker (when bigger then array size it stops)
+	 * @param   mixed     $getter    The specific getter number (not zero based)
 	 *
 	 * @return  string   on success html string
 	 * 
 	 */
-	public static function getDynamicContent($type, $size, $default = '', $try = 1, $getter = null)
+	public static function getDynamicContent(string $type, string $size, $default = '', int $try = 1, $getter = null)
 	{
 		if (($nr = self::getDynamicContentSize($type, $size)) !== 0)
 		{
@@ -2106,12 +2123,12 @@ abstract class ComponentbuilderHelper
 				// set the local path (in admin area so when the component uninstall these images get removed as well)
 				$path = JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type/$file_name";
 				// check if file exist or if it changed
-				if (($image_data = self::getFileContents($path, false)) === false ||
+				if (($image_data = FileHelper::getContent($path, false)) === false ||
 					md5($image_data) !== $target['hash'])
 				{
 					// since the file does not exist or has changed (so we have a new hash)
 					// therefore we download it to validate
-					if (($image_data = self::getFileContents($target['url'], false)) !== false &&
+					if (($image_data = FileHelper::getContent($target['url'], false)) !== false &&
 						md5($image_data) === $target['hash'])
 					{
 						// create the JCB type path if it does not exist
@@ -2120,7 +2137,7 @@ abstract class ComponentbuilderHelper
 							Folder::create(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type");
 						}
 						// only set the image if the data match the hash
-						self::writeFile($path, $image_data);
+						FileHelper::write($path, $image_data);
 					}
 					// we retry array size times (unless specific getter is used)
 					elseif ($try <= $nr && !$getter)
@@ -2135,6 +2152,7 @@ abstract class ComponentbuilderHelper
 		}
 		return $default;
 	}
+
 
 	/**
 	 * Tab/spacer bucket (to speed-up the build)
@@ -2186,7 +2204,7 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function loadSession()
 	{
-		if (!isset(self::$session) || !self::checkObject(self::$session))
+		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
 		{
 			self::$session = JFactory::getSession();
 		}
@@ -2199,7 +2217,7 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function set($key, $value)
 	{
-		if (!isset(self::$session) || !self::checkObject(self::$session))
+		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
 		{
 			self::$session = JFactory::getSession();
 		}
@@ -2214,7 +2232,7 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function get($key, $default = null)
 	{
-		if (!isset(self::$session) || !self::checkObject(self::$session))
+		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
 		{
 			self::$session = JFactory::getSession();
 		}
@@ -2282,10 +2300,10 @@ abstract class ComponentbuilderHelper
 			$field['values_description'] .= '<thead><tr><th class="uk-text-right">' . JText::_('COM_COMPONENTBUILDER_PROPERTY') . '</th><th>' . JText::_('COM_COMPONENTBUILDER_EXAMPLE') . '</th><th>' . JText::_('COM_COMPONENTBUILDER_DESCRIPTION') . '</th></thead><tbody>';
 			foreach ($properties as $property)
 			{
-				$example = (isset($property['example']) && self::checkString($property['example'])) ? $property['example'] : '';
+				$example = (isset($property['example']) && UtilitiesStringHelper::check($property['example'])) ? $property['example'] : '';
 				$field['values_description'] .= '<tr><td class="uk-text-right"><code>' . $property['name'] . '</code></td><td>' . $example . '</td><td>' . $property['description'] . '</td></tr>';
 				// check if we should load the value
-				$value = self::getValueFromXMLstring($xml, $property['name'], $confirmation);
+				$value = FieldHelper::getValue($xml, $property['name'], $confirmation);
 				// check if this is a php field
 				$addPHP = false;
 				if (strpos($property['name'], 'type_php') !== false)
@@ -2306,7 +2324,7 @@ abstract class ComponentbuilderHelper
 					}
 				}
 				// was the settings for the property passed
-				if(self::checkArray($settings) && isset($settings[$property['name']]))
+				if(UtilitiesArrayHelper::check($settings) && isset($settings[$property['name']]))
 				{
 					// add the xml values
 					$field['values'] .= PHP_EOL . "\t" . $property['name'] . '="'. $settings[$property['name']] . '" ';
@@ -2345,7 +2363,7 @@ abstract class ComponentbuilderHelper
 				$nr++;
 			}
 			// check if all php is loaded using the tracker
-			if (self::checkString($xml) && isset($phpTracker) && self::checkArray($phpTracker))
+			if (UtilitiesStringHelper::check($xml) && isset($phpTracker) && UtilitiesArrayHelper::check($phpTracker))
 			{
 				foreach ($phpTracker as $phpKey => $start)
 				{
@@ -2355,7 +2373,7 @@ abstract class ComponentbuilderHelper
 						foreach(range(2, 30) as $t_nr)
 						{
 							$get_ = $phpKey . '_' . $t_nr;
-							if (!isset($field['php'][$phpKey]['value'][$t_nr]) && ($value = self::getValueFromXMLstring($xml, $get_, $confirmation)) !== $confirmation)
+							if (!isset($field['php'][$phpKey]['value'][$t_nr]) && ($value = FieldHelper::getValue($xml, $get_, $confirmation)) !== $confirmation)
 							{
 								$field['php'][$phpKey]['value'][$t_nr] = $value;
 							}
@@ -2385,18 +2403,19 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
+	/**
+	 * Get a field value from the XML stored string
+	 *
+	 * @param   string     $xml           The xml string of the field
+	 * @param   string     $get           The value key to get from the string
+	 * @param   string     $confirmation  The value to confirm found value
+	 *
+	 * @return  string     The field value from xml
+	 * @deprecated 3.3 Use FieldHelper::getValue($xml, $get, $confirmation);
+	 */
 	public static function getValueFromXMLstring(&$xml, &$get, $confirmation = '')
 	{
-		if (self::checkString($xml))
-		{
-			// if we have a PHP value, we must base64 decode it
-			if (strpos($get, 'type_php') !== false)
-			{
-				return self::openValidBase64(self::getBetween($xml, $get.'="', '"', $confirmation));
-			}
-			return self::getBetween($xml, $get . '="', '"', $confirmation);
-		}
-		return $confirmation;
+		return FieldHelper::getValue($xml, $get, $confirmation);
 	}
 
 
@@ -2445,12 +2464,12 @@ abstract class ComponentbuilderHelper
 					// add if no objection is found
 					$add = true;
 					// check if we have exclude
-					if (self::checkArray($exclude) && in_array($property->name, $exclude))
+					if (UtilitiesArrayHelper::check($exclude) && in_array($property->name, $exclude))
 					{
 						continue;
 					}
 					// check if we have filter
-					if (self::checkArray($filter))
+					if (UtilitiesArrayHelper::check($filter))
 					{
 						foreach($filter as $key => $val)
 						{
@@ -2497,76 +2516,79 @@ abstract class ComponentbuilderHelper
 	/**
 	 * Remove folders with files
 	 * 
-	 * @param   string   $dir     The path to folder to remove
-	 * @param   boolean  $ignore  The folders and files to ignore and not remove
+	 * @param   string      $path    The path to folder to remove
+	 * @param   array|null  $ignore  The folders and files to ignore and not remove
 	 *
-	 * @return  boolean   True in all is removed
-	 * 
+	 * @return  bool   True if all are removed
 	 */
-	public static function removeFolder($dir, $ignore = false)
+	public static function removeFolder(string $path, ?array $ignore = null): bool
 	{
-		if (Folder::exists($dir))
+		if (!Folder::exists($path))
 		{
-			$it = new RecursiveDirectoryIterator($dir);
-			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-			// remove ending /
-			$dir = rtrim($dir, '/');
-			// now loop the files & folders
-			foreach ($it as $file)
-			{
-				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
-				// set file dir
-				$file_dir = $file->getPathname();
-				// check if this is a dir or a file
-				if ($file->isDir())
-				{
-					$keeper = false;
-					if (self::checkArray($ignore))
-					{
-						foreach ($ignore as $keep)
-						{
-							if (strpos($file_dir, $dir.'/'.$keep) !== false)
-							{
-								$keeper = true;
-							}
-						}
-					}
-					if ($keeper)
-					{
-						continue;
-					}
-					Folder::delete($file_dir);
-				}
-				else
-				{
-					$keeper = false;
-					if (self::checkArray($ignore))
-					{
-						foreach ($ignore as $keep)
-						{
-							if (strpos($file_dir, $dir.'/'.$keep) !== false)
-							{
-								$keeper = true;
-							}
-						}
-					}
-					if ($keeper)
-					{
-						continue;
-					}
-					File::delete($file_dir);
-				}
-			}
-			// delete the root folder if not ignore found
-			if (!self::checkArray($ignore))
-			{
-				return Folder::delete($dir);
-			}
-			return true;
+			return false;
 		}
-		return false;
+
+		$it = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+		$files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+
+		// Prepare a base path without trailing slash for comparison
+		$basePath = rtrim($path, '/');
+
+		foreach ($files as $fileinfo)
+		{
+			$filePath = $fileinfo->getRealPath();
+
+			if (self::removeFolderShouldIgnore($basePath, $filePath, $ignore))
+			{
+				continue;
+			}
+
+			if ($fileinfo->isDir())
+			{
+				Folder::delete($filePath);
+			}
+			else
+			{
+				File::delete($filePath);
+			}
+		}
+
+		// Delete the root folder if ignore not set
+		if (!UtilitiesArrayHelper::check($ignore))
+		{
+			return Folder::delete($path);
+		}
+
+		return true;
 	}
 
+	/**
+	 * Check if the current path should be ignored.
+	 * 
+	 * @param   string      $basePath  The base directory path
+	 * @param   string      $filePath  The current file or directory path
+	 * @param   array|null  $ignore    List of items to ignore
+	 *
+	 * @return  boolean   True if the path should be ignored
+	 * @since 3.2.0
+	 */
+	protected static function removeFolderShouldIgnore(string $basePath, string $filePath, ?array $ignore = null): bool
+	{
+		if (!$ignore || !UtilitiesArrayHelper::check($ignore))
+		{
+			return false;
+		}
+
+		foreach ($ignore as $item)
+		{
+			if (strpos($filePath, $basePath . '/' . $item) !== false)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	/**
 	* The github access token
@@ -2613,12 +2635,12 @@ abstract class ComponentbuilderHelper
 			if (self::urlExists($_url))
 			{
 				// get the data from github
-				if (($repoData = self::getFileContents($_url)) !== false && self::checkJson($repoData))
+				if (($repoData = FileHelper::getContent($_url)) !== false && JsonHelper::check($repoData))
 				{
 					$github_returned = json_decode($repoData);
-					if (self::checkString($target) &&
-						( (self::checkObject($github_returned) && isset($github_returned->{$target}) && self::checkArray($github_returned->{$target})) ||
-						(self::checkArray($github_returned) && isset($github_returned[$target]) && self::checkArray($github_returned[$target])) ))
+					if (UtilitiesStringHelper::check($target) &&
+						( (ObjectHelper::check($github_returned) && isset($github_returned->{$target}) && UtilitiesArrayHelper::check($github_returned->{$target})) ||
+						(UtilitiesArrayHelper::check($github_returned) && isset($github_returned[$target]) && UtilitiesArrayHelper::check($github_returned[$target])) ))
 					{
 						if ('nomemory' !== $type)
 						{
@@ -2626,7 +2648,7 @@ abstract class ComponentbuilderHelper
 							self::set($type, $repoData);
 						}
 					}
-					elseif (!self::checkString($target) && (self::checkArray($github_returned) || (self::checkObject($github_returned) && !isset($github_returned->message))))
+					elseif (!UtilitiesStringHelper::check($target) && (UtilitiesArrayHelper::check($github_returned) || (ObjectHelper::check($github_returned) && !isset($github_returned->message))))
 					{
 						if ('nomemory' !== $type)
 						{
@@ -2637,7 +2659,7 @@ abstract class ComponentbuilderHelper
 					// check if we have error message from github
 					elseif (($errorMessage = self::githubErrorHandeler(array('error' => null), $github_returned, $type)) !== false)
 					{
-						if (isset($errorMessage['error']) && self::checkString($errorMessage['error']))
+						if (isset($errorMessage['error']) && UtilitiesStringHelper::check($errorMessage['error']))
 						{
 							// set the error in the application
 							JFactory::getApplication()->enqueueMessage($errorMessage['error'], 'Error');
@@ -2646,7 +2668,7 @@ abstract class ComponentbuilderHelper
 						}
 						return false;
 					}
-					elseif (self::checkString($target))
+					elseif (UtilitiesStringHelper::check($target))
 					{
 						// setup error string
 						$error = JText::sprintf('COM_COMPONENTBUILDER_THE_URL_S_SET_TO_RETRIEVE_THE_PACKAGES_DID_NOT_RETURN_S_DATA', $url, $target);
@@ -2705,7 +2727,7 @@ abstract class ComponentbuilderHelper
 			}
 		}
 		// check if we could find packages
-		if (isset($repoData) && self::checkJson($repoData))
+		if (isset($repoData) && JsonHelper::check($repoData))
 		{
 			if ('object' === $return_type)
 			{
@@ -2728,12 +2750,12 @@ abstract class ComponentbuilderHelper
 	 */
 	protected static function githubErrorHandeler($message, &$github, $type)
 	{
-		if (self::checkObject($github) && isset($github->message) && self::checkString($github->message))
+		if (ObjectHelper::check($github) && isset($github->message) && UtilitiesStringHelper::check($github->message))
 		{
 			// set the message
 			$errorMessage = $github->message;
 			// add the documentation URL
-			if (isset($github->documentation_url) && self::checkString($github->documentation_url))
+			if (isset($github->documentation_url) && UtilitiesStringHelper::check($github->documentation_url))
 			{
 				$errorMessage = $errorMessage . '<br />' . $github->documentation_url;
 			}
@@ -2767,17 +2789,17 @@ abstract class ComponentbuilderHelper
 		if (strpos($url, 'access_token=') !== false)
 		{
 			// make sure the token is loaded
-			if (!self::checkString(self::$gitHubAccessToken))
+			if (!UtilitiesStringHelper::check(self::$gitHubAccessToken))
 			{
 				// get the global settings
-				if (!self::checkObject(self::$params))
+				if (!ObjectHelper::check(self::$params))
 				{
 					self::$params = JComponentHelper::getParams('com_componentbuilder');
 				}
 				self::$gitHubAccessToken = self::$params->get('github_access_token', null);
 			}
 			// make sure the token is loaded at this point
-			if (self::checkString(self::$gitHubAccessToken))
+			if (UtilitiesStringHelper::check(self::$gitHubAccessToken))
 			{
 				$url .= '&access_token=' . self::$gitHubAccessToken;
 			}
@@ -3524,6 +3546,7 @@ abstract class ComponentbuilderHelper
 
 	/**
 	 * Field Grouping https://docs.joomla.org/Form_field
+	 * @deprecated 3.3 
 	 **/
 	protected static $fieldGroups = array(
 		'default' => array(
@@ -3570,83 +3593,44 @@ abstract class ComponentbuilderHelper
 	 * @param   boolean  $option The field grouping
 	 *
 	 * @return  boolean if the field was found
+	 * @deprecated 3.3 Use Factory::_('Field.Groups')->check($type, $option);
 	 */
 	public static function fieldCheck($type, $option = 'default')
 	{
-		// now check
-		if (isset(self::$fieldGroups[$option]) && in_array($type, self::$fieldGroups[$option]))
-		{
-			return true;
-		}
-		return false;
+		return Factory::_('Field.Groups')->check($type, $option);
 	}
 
 	/**
 	 * get the field types id -> name of a group or groups
 	 *
 	 * @return  array  ids of the spacer field types
+	 * @deprecated 3.3 Use Factory::_('Field.Groups')->types($groups);
 	 */
 	public static function getFieldTypesByGroup($groups = array())
 	{
-		// make sure we have a group
-		if (($ids = self::getFieldTypesIdsByGroup($groups)) !== false)
-		{
-			// get the database object to use quote
-			$db = JFactory::getDbo();
-			// Create a new query object.
-			$query = $db->getQuery(true);
-			$query->select($db->quoteName(array('id', 'name')));
-			$query->from($db->quoteName('#__componentbuilder_fieldtype'));
-			$query->where($db->quoteName('published') . ' = 1');
-			$query->where($db->quoteName('id') . ' IN (' . implode(',',$ids) . ')');
-			// Reset the query using our newly populated query object.
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getNumRows())
-			{
-				return $db->loadAssocList('id', 'name');
-			}
-		}
-		return false;
+		return Factory::_('Field.Groups')->types($groups);
 	}
 
 	/**
 	 * get the field types IDs of a group or groups
 	 *
 	 * @return  array  ids of the spacer field types
+	 * @deprecated 3.3 Use Factory::_('Field.Groups')->typesIds($groups);
 	 */
 	public static function getFieldTypesIdsByGroup($groups = array())
 	{
-		// make sure we have a group
-		if (self::checkArray($groups))
-		{
-			$merge_groups = array();
-			foreach ($groups as $group)
-			{
-				if (isset(self::$fieldGroups[$group]))
-				{
-					$merge_groups[] = self::$fieldGroups[$group];
-				}
-			}
-			// make sure we have these types of groups
-			if (self::checkArray($merge_groups))
-			{
-				// get the database object to use quote
-				$db = JFactory::getDbo();
-				return self::getVars('fieldtype', (array) array_map(function($name) use($db) { return $db->quote(ucfirst($name)); }, self::mergeArrays($merge_groups)), 'name', 'id');
-			}
-		}
-		return false;
+		return Factory::_('Field.Groups')->typesIds($groups);
 	}
 
 	/**
 	 * get the spacer IDs
 	 *
 	 * @return  array  ids of the spacer field types
+	 * @deprecated 3.3 Use Factory::_('Field.Groups')->spacerIds();
 	 */
 	public static function getSpacerIds()
 	{
-		return self::getFieldTypesIdsByGroup($groups = array('spacer'));
+		return Factory::_('Field.Groups')->spacerIds();
 	}
 
 
@@ -3658,35 +3642,12 @@ abstract class ComponentbuilderHelper
 	 * @param   string   $default    The default switch
 	 *
 	 * @return  string   The opened string
-	 *
+	 * @deprecated 3.3 Use Base64Helper::open($data, $key, $default);
 	 */
 	public static function openValidBase64($data, $key = '__.o0=base64=Oo.__', $default = 'string')
 	{
-		// check that we have a string
-		if (self::checkString($data))
-		{
-			// check if we have a key
-			if (self::checkString($key))
-			{
-				if (strpos($data, $key) !== false)
-				{
-					return base64_decode(str_replace($key, '', $data));
-				}
-			}
-			// fallback to this, not perfect method
-			if (base64_encode(base64_decode($data, true)) === $data)
-			{
-				return base64_decode($data);
-			}
-		}
-		// check if we should just return the string
-		if ('string' === $default)
-		{
-			return $data;
-		}
-		return $default;
+		return Base64Helper::open($data, $key, $default);
 	}
-
 
 	/**
 	 * prepare base64 string for url
@@ -3732,12 +3693,12 @@ abstract class ComponentbuilderHelper
 	public static function getFolderPath($type = 'path', $target = 'folderpath', $default = '', $createIfNotSet = true)
 	{
 		// make sure to always have a string/path
-		if(!self::checkString($default))
+		if(!UtilitiesStringHelper::check($default))
 		{
 			$default = JPATH_SITE . '/images/';
 		}
 		// get the global settings
-		if (!self::checkObject(self::$params))
+		if (!ObjectHelper::check(self::$params))
 		{
 			self::$params = JComponentHelper::getParams('com_componentbuilder');
 		}
@@ -3799,7 +3760,7 @@ abstract class ComponentbuilderHelper
 			$key = $type;
 		}
 		// check if it was already set
-		if (isset(self::$CRYPT[$key]) && self::checkObject(self::$CRYPT[$key]))
+		if (isset(self::$CRYPT[$key]) && ObjectHelper::check(self::$CRYPT[$key]))
 		{
 			return self::$CRYPT[$key];
 		}
@@ -3896,7 +3857,7 @@ abstract class ComponentbuilderHelper
 				// get the remote path
 				$remote_path = '/' . trim($server->jcb_remote_server_path[(int) $serverID], '/') . '/' . $fileName;
 				// now move the file
-				if (!$server->put($remote_path, self::getFileContents($localPath, null)))
+				if (!$server->put($remote_path, FileHelper::getContent($localPath, null)))
 				{
 					JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_BSB_FILE_COULD_NOT_BE_MOVED_TO_BSB_PATH_ON_BSB_SERVER', $fileName, $server->jcb_remote_server_path[(int) $serverID], $server->jcb_remote_server_name[(int) $serverID]), 'Error');
 					return false;
@@ -3960,7 +3921,7 @@ abstract class ComponentbuilderHelper
 		if ($server = self::getServerDetails($serverID, 2, $permission))
 		{
 			// check if it was already set
-			if (!isset(self::$sftp[$server->cache]) || !self::checkObject(self::$sftp[$server->cache]))
+			if (!isset(self::$sftp[$server->cache]) || !ObjectHelper::check(self::$sftp[$server->cache]))
 			{
 				// make sure we have the composer classes loaded
 				self::composerAutoload('phpseclib');
@@ -3989,15 +3950,15 @@ abstract class ComponentbuilderHelper
 						}
 					break;
 					case 2: // private key file
-						if (self::checkObject(self::crypt('RSA')))
+						if (ObjectHelper::check(self::crypt('RSA')))
 						{
 							// check if we have a passprase
-							if (self::checkString($server->secret))
+							if (UtilitiesStringHelper::check($server->secret))
 							{
 								self::crypt('RSA')->setPassword($server->secret);
 							}
 							// now load the key file
-							if (!self::crypt('RSA')->loadKey(self::getFileContents($server->private, null)))
+							if (!self::crypt('RSA')->loadKey(FileHelper::getContent($server->private, null)))
 							{
 								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
 								unset(self::$sftp[$server->cache]);
@@ -4013,15 +3974,15 @@ abstract class ComponentbuilderHelper
 						}
 					break;
 					case 3: // both password and private key file
-						if (self::checkObject(self::crypt('RSA')))
+						if (ObjectHelper::check(self::crypt('RSA')))
 						{
 							// check if we have a passphrase
-							if (self::checkString($server->secret))
+							if (UtilitiesStringHelper::check($server->secret))
 							{
 								self::crypt('RSA')->setPassword($server->secret);
 							}
 							// now load the key file
-							if (!self::crypt('RSA')->loadKey(self::getFileContents($server->private, null)))
+							if (!self::crypt('RSA')->loadKey(FileHelper::getContent($server->private, null)))
 							{
 								JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_THE_PRIVATE_KEY_FILE_COULD_NOT_BE_LOADEDFOUND_FOR_BSB_SERVER', $server->name), 'Error');
 								unset(self::$sftp[$server->cache]);
@@ -4037,10 +3998,10 @@ abstract class ComponentbuilderHelper
 						}
 					break;
 					case 4: // private key field
-						if (self::checkObject(self::crypt('RSA')))
+						if (ObjectHelper::check(self::crypt('RSA')))
 						{
 							// check if we have a passprase
-							if (self::checkString($server->secret))
+							if (UtilitiesStringHelper::check($server->secret))
 							{
 								self::crypt('RSA')->setPassword($server->secret);
 							}
@@ -4061,10 +4022,10 @@ abstract class ComponentbuilderHelper
 						}
 					break;
 					case 5: // both password and private key field
-						if (self::checkObject(self::crypt('RSA')))
+						if (ObjectHelper::check(self::crypt('RSA')))
 						{
 							// check if we have a passphrase
-							if (self::checkString($server->secret))
+							if (UtilitiesStringHelper::check($server->secret))
 							{
 								self::crypt('RSA')->setPassword($server->secret);
 							}
@@ -4087,7 +4048,7 @@ abstract class ComponentbuilderHelper
 				}
 			}
 			// only continue if object is set
-			if (isset(self::$sftp[$server->cache]) && self::checkObject(self::$sftp[$server->cache]))
+			if (isset(self::$sftp[$server->cache]) && ObjectHelper::check(self::$sftp[$server->cache]))
 			{
 				// set the unique buckets
 				if (!isset(self::$sftp[$server->cache]->jcb_remote_server_name))
@@ -4097,7 +4058,7 @@ abstract class ComponentbuilderHelper
 				}
 				// always set the name and remote server path
 				self::$sftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
-				self::$sftp[$server->cache]->jcb_remote_server_path[$serverID] = (self::checkString($server->path) && $server->path !== '/') ? $server->path : '';
+				self::$sftp[$server->cache]->jcb_remote_server_path[$serverID] = (UtilitiesStringHelper::check($server->path) && $server->path !== '/') ? $server->path : '';
 				// return the sftp object
 				return self::$sftp[$server->cache];
 			}
@@ -4137,12 +4098,12 @@ abstract class ComponentbuilderHelper
 				}
 			}
 			// make sure we have a string and it is not default or empty
-			if (self::checkString($server->signature))
+			if (UtilitiesStringHelper::check($server->signature))
 			{
 				// turn into variables
 				parse_str($server->signature); // because of this I am using strange variable naming to avoid any collisions.
 				// set options
-				if (isset($options) && self::checkArray($options))
+				if (isset($options) && UtilitiesArrayHelper::check($options))
 				{
 					foreach ($options as $o__p0t1on => $vAln3)
 					{
@@ -4211,7 +4172,7 @@ abstract class ComponentbuilderHelper
 		if (!JFactory::getUser()->authorise($permission, 'com_componentbuilder'))
 		{
 			// set message to inform the user that permission was denied
-			JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_ACCESS_THE_SERVER_DETAILS_BS_DENIEDB_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO', self::safeString($permission, 'w')), 'Error');
+			JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_ACCESS_THE_SERVER_DETAILS_BS_DENIEDB_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO', UtilitiesStringHelper::safe($permission, 'w')), 'Error');
 			return false;
 		}
 		// now insure we have correct values 
@@ -4247,7 +4208,7 @@ abstract class ComponentbuilderHelper
 				// Get the basic encryption.
 				$basickey = self::getCryptKey('basic', 'Th1sMnsTbL0ck@d');
 				// Get the encryption object.
-				$basic = new FOFEncryptAes($basickey, 128);
+				$basic = new AES($basickey, 128);
 				// start cache keys
 				$keys = array();
 				// unlock the needed fields
@@ -4266,7 +4227,7 @@ abstract class ComponentbuilderHelper
 					}
 				}
 				// check if cache keys were found
-				if (self::checkArray($keys))
+				if (UtilitiesArrayHelper::check($keys))
 				{
 					// now set cache
 					$server->cache = md5(implode('', $keys));
@@ -4334,7 +4295,7 @@ abstract class ComponentbuilderHelper
 	public static function lock($string, $key = null, $salt = 2, $dynamic = null, $urlencode = true)
 	{
 		// get the global settings
-		if (!$key || !self::checkString($key))
+		if (!$key || !UtilitiesStringHelper::check($key))
 		{
 			// set temp timer
 			$timer = 2;
@@ -4358,12 +4319,12 @@ abstract class ComponentbuilderHelper
 			$key .= self::salt($salt, $dynamic);
 		}
 		// get the locker settings
-		if (!isset(self::$locker[$key]) || !self::checkObject(self::$locker[$key]))
+		if (!isset(self::$locker[$key]) || !ObjectHelper::check(self::$locker[$key]))
 		{
-			self::$locker[$key] = new FOFEncryptAes($key, 128);
+			self::$locker[$key] = new AES($key, 128);
 		}
 		// convert array or object to string
-		if (self::checkArray($string) || self::checkObject($string))
+		if (UtilitiesArrayHelper::check($string) || ObjectHelper::check($string))
 		{
 			$string = serialize($string);
 		}
@@ -4390,7 +4351,7 @@ abstract class ComponentbuilderHelper
 	public static function unlock($string, $key = null, $salt = 2, $dynamic = null, $urlencode = true)
 	{
 		// get the global settings
-		if (!$key || !self::checkString($key))
+		if (!$key || !UtilitiesStringHelper::check($key))
 		{
 			// set temp timer
 			$timer = 2;
@@ -4414,9 +4375,9 @@ abstract class ComponentbuilderHelper
 			$key .= self::salt($salt, $dynamic);
 		}
 		// get the locker settings
-		if (!isset(self::$locker[$key]) || !self::checkObject(self::$locker[$key]))
+		if (!isset(self::$locker[$key]) || !ObjectHelper::check(self::$locker[$key]))
 		{
-			self::$locker[$key] = new FOFEncryptAes($key, 128);
+			self::$locker[$key] = new AES($key, 128);
 		}
 		// make sure we have real base64
 		if ($urlencode && method_exists(get_called_class(), "base64_urldecode"))
@@ -4450,7 +4411,7 @@ abstract class ComponentbuilderHelper
 		// get dynamic replacement salt
 		$dynamic = self::getDynamicSalt($dynamic);
 		// get the key timer
-		if (!self::checkObject(self::$keytimer))
+		if (!ObjectHelper::check(self::$keytimer))
 		{
 			// load the date time object
 			self::$keytimer = new DateTime;
@@ -4480,7 +4441,7 @@ abstract class ComponentbuilderHelper
 			$format = 'Y-m-d \o\n H:' . self::periodFix(self::$keytimer->format('i'));
 		}
 		// get key
-		if (self::checkArray($dynamic))
+		if (UtilitiesArrayHelper::check($dynamic))
 		{
 			return md5(str_replace(array_keys($dynamic), array_values($dynamic), self::$keytimer->format($format) . ' @ VDM.I0'));
 		}
@@ -4516,7 +4477,7 @@ abstract class ComponentbuilderHelper
 	public static function getDynamicSalt($dynamic = null)
 	{
 		// load global if not manually set
-		if (!self::checkArray($dynamic))
+		if (!UtilitiesArrayHelper::check($dynamic))
 		{
 			return self::getGlobalSalt();
 		}
@@ -4539,7 +4500,7 @@ abstract class ComponentbuilderHelper
 			$string = self::randomkey($size);
 		}
 		// convert string to array
-		$string = self::safeString($string);
+		$string = UtilitiesStringHelper::safe($string);
 		// convert string to array
 		$array = str_split($string);
 		// insure only unique values are used
@@ -4556,19 +4517,19 @@ abstract class ComponentbuilderHelper
 	public static function getGlobalSalt()
 	{
 		// load from memory if found
-		if (!self::checkArray(self::$globalSalt))
+		if (!UtilitiesArrayHelper::check(self::$globalSalt))
 		{
 			// get the global settings
-			if (!self::checkObject(self::$params))
+			if (!ObjectHelper::check(self::$params))
 			{
 				self::$params = JComponentHelper::getParams('com_componentbuilder');
 			}
 			// check if we have a global dynamic replacement array available (format -->  ' 1->!,3->E,4->A')
 			$tmp = self::$params->get('dynamic_salt', null);
-			if (self::checkString($tmp) && strpos($tmp, ',') !== false && strpos($tmp, '->') !== false)
+			if (UtilitiesStringHelper::check($tmp) && strpos($tmp, ',') !== false && strpos($tmp, '->') !== false)
 			{
 				$salt = array_map('trim', (array) explode(',', $tmp));
-				if (self::checkArray($salt ))
+				if (UtilitiesArrayHelper::check($salt ))
 				{
 					foreach($salt as $replace)
 					{
@@ -4582,7 +4543,7 @@ abstract class ComponentbuilderHelper
 			}
 		}
 		// return global if found
-		if (self::checkArray(self::$globalSalt))
+		if (UtilitiesArrayHelper::check(self::$globalSalt))
 		{
 			return self::$globalSalt;
 		}
@@ -4680,7 +4641,7 @@ abstract class ComponentbuilderHelper
 	*/
 	public static function hasWork(&$function)
 	{
-		if (isset(self::$worker[$function]) && self::checkArray(self::$worker[$function]))
+		if (isset(self::$worker[$function]) && UtilitiesArrayHelper::check(self::$worker[$function]))
 		{
 			return count( (array) self::$worker[$function]);
 		}
@@ -4699,7 +4660,7 @@ abstract class ComponentbuilderHelper
 	public static function setWorkerUrl(&$function, &$url)
 	{
 		// set the URL if found
-		if (self::checkString($url))
+		if (UtilitiesStringHelper::check($url))
 		{
 			// make sure task function url is up
 			self::$workerURL[$function] = $url;
@@ -4718,7 +4679,7 @@ abstract class ComponentbuilderHelper
 	public static function setWorkerHeaders(&$function, &$headers)
 	{
 		// set the Headers if found
-		if (self::checkArray($headers))
+		if (UtilitiesArrayHelper::check($headers))
 		{
 			// make sure task function headers are set
 			self::$workerHEADER[$function] = $headers;
@@ -4775,7 +4736,7 @@ abstract class ComponentbuilderHelper
 		// build headers
 		$headers = array('VDM-TASK: ' .$task);
 		// build dynamic headers
-		if (isset(self::$workerHEADER[$function]) && self::checkArray(self::$workerHEADER[$function]))
+		if (isset(self::$workerHEADER[$function]) && UtilitiesArrayHelper::check(self::$workerHEADER[$function]))
 		{
 			foreach (self::$workerHEADER[$function] as $header)
 			{
@@ -4785,7 +4746,7 @@ abstract class ComponentbuilderHelper
 		// build worker options
 		$options = array();
 		// make sure worker is up
-		if (isset(self::$worker[$function]) && self::checkArray(self::$worker[$function]))
+		if (isset(self::$worker[$function]) && UtilitiesArrayHelper::check(self::$worker[$function]))
 		{
 			// this load method is for each
 			if (1 == $perTask)
@@ -4814,7 +4775,7 @@ abstract class ComponentbuilderHelper
 			self::$worker[$function] = array();
 		}
 		// do the execution
-		if (self::checkArray($options))
+		if (UtilitiesArrayHelper::check($options))
 		{
 			if (isset(self::$workerURL[$function]))
 			{
@@ -4855,7 +4816,7 @@ abstract class ComponentbuilderHelper
 			return false;
 		}
 		// make sure we have an url
-		if (self::checkString($url))
+		if (UtilitiesStringHelper::check($url))
 		{
 			// make sure the thread size isn't greater than the # of _options
 			$threadSize = (count($_options) < $threadSize) ? count($_options) : $threadSize;
@@ -4946,17 +4907,17 @@ abstract class ComponentbuilderHelper
 		// get URL
 		$url = self::getEditURL($item, $view, $views, $ref, $component);
 		// check if we found any
-		if (self::checkString($url))
+		if (UtilitiesStringHelper::check($url))
 		{
 			// get the global settings
-			if (!self::checkObject(self::$params))
+			if (!ObjectHelper::check(self::$params))
 			{
 				self::$params = JComponentHelper::getParams('com_componentbuilder');
 			}
 			// get UIKIT version
 			$uikit = self::$params->get('uikit_version', 2);
 			// check that we have the ID
-			if (self::checkObject($item) && isset($item->id))
+			if (ObjectHelper::check($item) && isset($item->id))
 			{
 				// check if the checked_out is available
 				if (isset($item->checked_out))
@@ -4968,7 +4929,7 @@ abstract class ComponentbuilderHelper
 					$checked_out = self::getVar($view, $item->id, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 				}
 			}
-			elseif (self::checkArray($item) && isset($item['id']))
+			elseif (UtilitiesArrayHelper::check($item) && isset($item['id']))
 			{
 				// check if the checked_out is available
 				if (isset($item['checked_out']))
@@ -4985,9 +4946,9 @@ abstract class ComponentbuilderHelper
 				$checked_out = self::getVar($view, $item, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 			}
 			// set the link title
-			$title = self::safeString(JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');
+			$title = UtilitiesStringHelper::safe(JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');
 			// check that there is a check message
-			if (self::checkString($headsup))
+			if (UtilitiesStringHelper::check($headsup))
 			{
 				if (3 == $uikit)
 				{
@@ -5013,7 +4974,7 @@ abstract class ComponentbuilderHelper
 					{
 						return ' <a ' . $href . ' uk-icon="icon: lock" title="' . $title . '"></a>';
 					}
-					return ' <a href="#" disabled uk-icon="icon: lock" title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', self::safeString($view, 'W'), JFactory::getUser($checked_out)->name) . '"></a>'; 
+					return ' <a href="#" disabled uk-icon="icon: lock" title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), JFactory::getUser($checked_out)->name) . '"></a>'; 
 				}
 				// return normal edit link
 				return ' <a ' . $href . ' uk-icon="icon: pencil" title="' . $title . '"></a>';
@@ -5026,7 +4987,7 @@ abstract class ComponentbuilderHelper
 				{
 					return ' <a ' . $href . ' class="uk-icon-lock" title="' . $title . '"></a>';
 				}
-				return ' <a href="#" disabled class="uk-icon-lock" title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', self::safeString($view, 'W'), JFactory::getUser($checked_out)->name) . '"></a>'; 
+				return ' <a href="#" disabled class="uk-icon-lock" title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), JFactory::getUser($checked_out)->name) . '"></a>'; 
 			}
 			// return normal edit link
 			return ' <a ' . $href . ' class="uk-icon-pencil" title="' . $title . '"></a>';
@@ -5051,24 +5012,24 @@ abstract class ComponentbuilderHelper
 	public static function getEditTextButton($text, &$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $jRoute = true, $class = 'uk-button', $headsup = 'COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE')
 	{
 		// make sure we have text
-		if (!self::checkString($text))
+		if (!UtilitiesStringHelper::check($text))
 		{
 			return self::getEditButton($item, $view, $views, $ref, $component, $headsup);
 		}
 		// get URL
 		$url = self::getEditURL($item, $view, $views, $ref, $component, $jRoute);
 		// check if we found any
-		if (self::checkString($url))
+		if (UtilitiesStringHelper::check($url))
 		{
 			// get the global settings
-			if (!self::checkObject(self::$params))
+			if (!ObjectHelper::check(self::$params))
 			{
 				self::$params = JComponentHelper::getParams('com_componentbuilder');
 			}
 			// get UIKIT version
 			$uikit = self::$params->get('uikit_version', 2);
 			// check that we have the ID
-			if (self::checkObject($item) && isset($item->id))
+			if (ObjectHelper::check($item) && isset($item->id))
 			{
 				// check if the checked_out is available
 				if (isset($item->checked_out))
@@ -5080,7 +5041,7 @@ abstract class ComponentbuilderHelper
 					$checked_out = self::getVar($view, $item->id, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 				}
 			}
-			elseif (self::checkArray($item) && isset($item['id']))
+			elseif (UtilitiesArrayHelper::check($item) && isset($item['id']))
 			{
 				// check if the checked_out is available
 				if (isset($item['checked_out']))
@@ -5097,9 +5058,9 @@ abstract class ComponentbuilderHelper
 				$checked_out = self::getVar($view, $item, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 			}
 			// set the link title
-			$title = self::safeString(JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');
+			$title = UtilitiesStringHelper::safe(JText::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');
 			// check that there is a check message
-			if (self::checkString($headsup))
+			if (UtilitiesStringHelper::check($headsup))
 			{
 				if (3 == $uikit)
 				{
@@ -5125,7 +5086,7 @@ abstract class ComponentbuilderHelper
 					{
 						return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
 					}
-					return ' <a class="' . $class . '" href="#" disabled title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', self::safeString($view, 'W'), JFactory::getUser($checked_out)->name) . '">' . $text . '</a>'; 
+					return ' <a class="' . $class . '" href="#" disabled title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), JFactory::getUser($checked_out)->name) . '">' . $text . '</a>'; 
 				}
 				// return normal edit link
 				return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
@@ -5138,7 +5099,7 @@ abstract class ComponentbuilderHelper
 				{
 					return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
 				}
-				return ' <a class="' . $class . '" href="#" disabled title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', self::safeString($view, 'W'), JFactory::getUser($checked_out)->name) . '">' . $text . '</a>'; 
+				return ' <a class="' . $class . '" href="#" disabled title="' . JText::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), JFactory::getUser($checked_out)->name) . '">' . $text . '</a>'; 
 			}
 			// return normal edit link
 			return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
@@ -5216,7 +5177,7 @@ abstract class ComponentbuilderHelper
 		// we start with false.
 		$can_edit = false;
 		// check that we have the ID
-		if (self::checkObject($item) && isset($item->id))
+		if (ObjectHelper::check($item) && isset($item->id))
 		{
 			$record->id = (int) $item->id;
 			// check if created_by is available
@@ -5225,7 +5186,7 @@ abstract class ComponentbuilderHelper
 				$record->created_by = (int) $item->created_by;
 			}
 		}
-		elseif (self::checkArray($item) && isset($item['id']))
+		elseif (UtilitiesArrayHelper::check($item) && isset($item['id']))
 		{
 			$record->id = (int) $item['id'];
 			// check if created_by is available
@@ -5503,7 +5464,7 @@ abstract class ComponentbuilderHelper
 			self::$subformLayouts = JComponentHelper::getParams('com_componentbuilder')->get('subform_layouts', false);
 		}
 		// check what we found (else) return default
-		if (self::checkObject(self::$subformLayouts))
+		if (ObjectHelper::check(self::$subformLayouts))
 		{
 			// looking for
 			$target = $view . '.' . $field;
@@ -5548,7 +5509,7 @@ abstract class ComponentbuilderHelper
 		{
 			$query->from($db->quoteName('#__'.$main.'_'.$table));
 		}
-		if (self::checkArray($where))
+		if (UtilitiesArrayHelper::check($where))
 		{
 			foreach ($where as $key => $value)
 			{
@@ -5568,7 +5529,7 @@ abstract class ComponentbuilderHelper
 					$query->where($db->quoteName($key) . ' ' . $operator . ' ' . (bool) $value);
 				}
 				// we do not allow arrays at this point
-				elseif (!self::checkArray($value))
+				elseif (!UtilitiesArrayHelper::check($value))
 				{
 					$query->where($db->quoteName($key) . ' ' . $operator . ' ' . $db->quote( (string) $value));
 				}
@@ -6594,35 +6555,12 @@ abstract class ComponentbuilderHelper
 	 * @param   SimpleXMLElement   $xml      The XML element reference in which to inject a comment
 	 * @param   mixed              $node     A SimpleXMLElement node to append to the XML element reference, or a stdClass object containing a comment attribute to be injected before the XML node and a fieldXML attribute containing a SimpleXMLElement
 	 *
-	 * @return  null
-	 *
+	 * @return  void
+	 * @deprecated 3.3 Use FormHelper::append($xml, $node);
 	 */
 	public static function xmlAppend(&$xml, $node)
 	{
-		if (!$node)
-		{
-			// element was not returned
-			return;
-		}
-		switch (get_class($node))
-		{
-			case 'stdClass':
-				if (property_exists($node, 'comment'))
-				{
-					self::xmlComment($xml, $node->comment);
-				}
-				if (property_exists($node, 'fieldXML'))
-				{
-					self::xmlAppend($xml, $node->fieldXML);
-				}
-				break;
-			case 'SimpleXMLElement':
-				$domXML = dom_import_simplexml($xml);
-				$domNode = dom_import_simplexml($node);
-				$domXML->appendChild($domXML->ownerDocument->importNode($domNode, true));
-				$xml = simplexml_import_dom($domXML);
-				break;
-		}
+		FormHelper::append($xml, $node);
 	}
 
 	/**
@@ -6631,16 +6569,12 @@ abstract class ComponentbuilderHelper
 	 * @param   SimpleXMLElement   $xml        The XML element reference in which to inject a comment
 	 * @param   string             $comment    The comment to inject
 	 *
-	 * @return  null
-	 *
+	 * @return  void
+	 * @deprecated 3.3 Use FormHelper::comment($xml, $comment);
 	 */
 	public static function xmlComment(&$xml, $comment)
 	{
-		$domXML = dom_import_simplexml($xml);
-		$domComment = new DOMComment($comment);
-		$nodeTarget = $domXML->ownerDocument->importNode($domComment, true);
-		$domXML->appendChild($nodeTarget);
-		$xml = simplexml_import_dom($domXML);
+		FormHelper::comment($xml, $comment);
 	}
 
 	/**
@@ -6650,14 +6584,11 @@ abstract class ComponentbuilderHelper
 	 * @param   array              $attributes   The attributes to apply to the XML element
 	 *
 	 * @return  null
-	 *
+	 * @deprecated 3.3 Use FormHelper::attributes($xml, $attributes);
 	 */
 	public static function xmlAddAttributes(&$xml, $attributes = array())
 	{
-		foreach ($attributes as $key => $value)
-		{
-			$xml->addAttribute($key, $value);
-		}
+		FormHelper::attributes($xml, $attributes);
 	}
 
 	/**
@@ -6667,16 +6598,11 @@ abstract class ComponentbuilderHelper
 	 * @param   array              $options      The options to apply to the XML element
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3 Use FormHelper::options($xml, $options);
 	 */
 	public static function xmlAddOptions(&$xml, $options = array())
 	{
-		foreach ($options as $key => $value)
-		{
-			$addOption = $xml->addChild('option');
-			$addOption->addAttribute('value', $key);
-			$addOption[] = $value;
-		}
+		FormHelper::options($xml, $options);
 	}
 
 	/**
@@ -6687,28 +6613,11 @@ abstract class ComponentbuilderHelper
 	 * @param   array      $options      The options to apply to the XML element
 	 *
 	 * @return  object
-	 *
+	 * @deprecated 3.3 Use FormHelper::field($attributes, $default, $options);
 	 */
 	public static function getFieldObject(&$attributes, $default = '', $options = null)
 	{
-		// make sure we have attributes and a type value
-		if (self::checkArray($attributes) && isset($attributes['type']))
-		{
-			// make sure the form helper class is loaded
-			if (!method_exists('JFormHelper', 'loadFieldType'))
-			{
-				jimport('joomla.form.form');
-			}
-			// get field type
-			$field = JFormHelper::loadFieldType($attributes['type'], true);
-			// get field xml
-			$XML = self::getFieldXML($attributes, $options);
-			// setup the field
-			$field->setup($XML, $default);
-			// return the field object
-			return $field;
-		}
-		return false;
+		return FormHelper::field($attributes, $default, $options);
 	}
 
 	/**
@@ -6718,27 +6627,11 @@ abstract class ComponentbuilderHelper
 	 * @param   array      $options      The options to apply to the XML element
 	 *
 	 * @return  object
-	 *
+	 * @deprecated 3.3 Use FormHelper::xml($attributes, $options);
 	 */
 	public static function getFieldXML(&$attributes, $options = null)
 	{
-		// make sure we have attributes and a type value
-		if (self::checkArray($attributes))
-		{
-			// start field xml
-			$XML = new SimpleXMLElement('<field/>');
-			// load the attributes
-			self::xmlAddAttributes($XML, $attributes);
-			// check if we have options
-			if (self::checkArray($options))
-			{
-				// load the options
-				self::xmlAddOptions($XML, $options);
-			}
-			// return the field xml
-			return $XML;
-		}
-		return false;
+		return FormHelper::xml($attributes, $options);
 	}
 
 	/**

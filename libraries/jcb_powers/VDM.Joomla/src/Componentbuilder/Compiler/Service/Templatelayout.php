@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Compiler\Templatelayout\Data as TemplatelayoutData ;
+use VDM\Joomla\Componentbuilder\Compiler\Templatelayout\Data as TemplatelayoutData;
 use VDM\Joomla\Componentbuilder\Compiler\Alias\Data as AliasData;
 
 
@@ -43,7 +43,7 @@ class Templatelayout implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Templatelayout Data
+	 * Get The Data Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -54,13 +54,14 @@ class Templatelayout implements ServiceProviderInterface
 	{
 		return new TemplatelayoutData(
 			$container->get('Config'),
-			$container->get('Registry'),
+			$container->get('Compiler.Builder.Layout.Data'),
+			$container->get('Compiler.Builder.Template.Data'),
 			$container->get('Alias.Data')
 		);
 	}
 
 	/**
-	 * Get the Compiler Alias Data
+	 * Get The Data Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -78,6 +79,5 @@ class Templatelayout implements ServiceProviderInterface
 			$container->get('Model.Libraries')
 		);
 	}
-
 }
 

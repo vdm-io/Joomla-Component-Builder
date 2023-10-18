@@ -49,21 +49,21 @@ class JFormFieldFieldsfilterstore extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
-		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_MODELING_METHOD') . ' -');
+		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_MODELLING_METHOD') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get fieldsmodel
-			$model = ComponentbuilderHelper::getModel('fields');
-			$results = array_unique($results);
-			foreach ($results as $store)
+			$_model = ComponentbuilderHelper::getModel('fields');
+			$_results = array_unique($_results);
+			foreach ($_results as $store)
 			{
 				// Translate the store selection
-				$text = $model->selectionTranslation($store,'store');
+				$_text = $_model->selectionTranslation($store,'store');
 				// Now add the store and its text to the options array
-				$_filter[] = JHtml::_('select.option', $store, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $store, JText::_($_text));
 			}
 		}
 		return $_filter;

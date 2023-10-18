@@ -11,6 +11,7 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+use VDM\Joomla\Utilities\ArrayHelper;
 
 JHtml::_('jquery.framework');
 JHtml::_('bootstrap.tooltip');
@@ -171,7 +172,7 @@ jQuery('<div id="loading"></div>')
 	<div id="installer-import">
 	<?php if (isset($this->hasPackage) && $this->hasPackage && $this->dataType === 'smart_package') : ?>
 		<?php
-			if (isset($this->packageInfo['name']) && ComponentbuilderHelper::checkArray($this->packageInfo['name'])) 
+			if (isset($this->packageInfo['name']) && ArrayHelper::check($this->packageInfo['name'])) 
 			{
 				$cAmount = count($this->packageInfo['name']);
 				$comP = ($cAmount == 1) ? 'Component' : 'Components';
@@ -181,7 +182,7 @@ jQuery('<div id="loading"></div>')
 				$cAmount = 1;
 				$comP = 'Component';
 			}
-			$hasOwner = (isset($this->packageInfo['getKeyFrom']) && ComponentbuilderHelper::checkArray($this->packageInfo['getKeyFrom'])) ? true:false;
+			$hasOwner = (isset($this->packageInfo['getKeyFrom']) && ArrayHelper::check($this->packageInfo['getKeyFrom'])) ? true:false;
 			$class1 = ($hasOwner) ? 'span6' : 'span12';
 		?>
 		<h3 style="color: #1F73BA;"><?php echo JText::_('COM_COMPONENTBUILDER_CONFIRMATION_STEP_BEFORE_IMPORTING'); ?></h3>
@@ -218,7 +219,7 @@ jQuery('<div id="loading"></div>')
 		<?php endif; ?>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php if (isset($this->packageInfo['name']) && ComponentbuilderHelper::checkArray($this->packageInfo['name'])) : ?>
+		<?php if (isset($this->packageInfo['name']) && ArrayHelper::check($this->packageInfo['name'])) : ?>
 		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'info', JText::sprintf('COM_COMPONENTBUILDER_S_BEING_IMPORTED', $comP)); ?>
 			<?php echo \VDM\Joomla\Componentbuilder\Package\Factory::_('Display.Details')->components($this->packageInfo); ?>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -278,7 +279,7 @@ jQuery('<div id="loading"></div>')
 			</fieldset>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php if (isset($this->vdmPackages) && ComponentbuilderHelper::checkArray($this->vdmPackages)): ?>
+		<?php if (isset($this->vdmPackages) && ArrayHelper::check($this->vdmPackages)): ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_vdm', JText::_('COM_COMPONENTBUILDER_VDM_PACKAGES', true)); ?>
 				<div class="span12" id="vdm_packages_installer">
 					<div class="alert alert-success">
@@ -309,7 +310,7 @@ jQuery('<div id="loading"></div>')
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php endif; ?>
 
-		<?php if (isset($this->jcbPackages) && ComponentbuilderHelper::checkArray($this->jcbPackages)) : ?>
+		<?php if (isset($this->jcbPackages) && ArrayHelper::check($this->jcbPackages)) : ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_jcb', JText::_('COM_COMPONENTBUILDER_JCB_COMMUNITY_PACKAGES', true)); ?>
 				<div class="span12" id="jcb_packages_installer">
 					<div class="alert alert-success">
@@ -350,12 +351,12 @@ jQuery('<div id="loading"></div>')
 </form>
 </div>
 <script type="text/javascript">
-<?php if ((isset($this->vdmPackages) && $this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)) || (isset($this->jcbPackages) && $this->jcbPackages && ComponentbuilderHelper::checkArray($this->jcbPackages))): ?>
+<?php if ((isset($this->vdmPackages) && $this->vdmPackages && ArrayHelper::check($this->vdmPackages)) || (isset($this->jcbPackages) && $this->jcbPackages && ArrayHelper::check($this->jcbPackages))): ?>
 // set packages that are on the page
 var packages = {};
 jQuery(document).ready(function($)
 {
-<?php if (isset($this->jcbPackages) && $this->jcbPackages && ComponentbuilderHelper::checkArray($this->jcbPackages)): ?>
+<?php if (isset($this->jcbPackages) && $this->jcbPackages && ArrayHelper::check($this->jcbPackages)): ?>
 	// get all jcb packages
 	jQuery("#jcb_package option").each(function()
 	{
@@ -363,7 +364,7 @@ jQuery(document).ready(function($)
 		packages[package] = 'jcb';
 	});
 <?php endif; ?>
-<?php if (isset($this->vdmPackages) && $this->vdmPackages && ComponentbuilderHelper::checkArray($this->vdmPackages)): ?>
+<?php if (isset($this->vdmPackages) && $this->vdmPackages && ArrayHelper::check($this->vdmPackages)): ?>
 	// get all vdm packages
 	jQuery("#vdm_package option").each(function()
 	{

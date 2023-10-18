@@ -17,6 +17,8 @@ use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\Utilities\ArrayHelper;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Componentbuilder Import_language_translations Base Database Model
@@ -419,7 +421,7 @@ class ComponentbuilderModelImport_language_translations extends BaseDatabaseMode
 	**/
 	protected function setData($package,$table,$target_headers)
 	{
-		if (ComponentbuilderHelper::checkArray($target_headers))
+		if (UtilitiesArrayHelper::check($target_headers))
 		{
 			// make sure the file is loaded
 			ComponentbuilderHelper::composerAutoload('phpspreadsheet');
@@ -510,7 +512,7 @@ class ComponentbuilderModelImport_language_translations extends BaseDatabaseMode
 					$found = false;
 					$has_id = false;
 					// check that we have a string or a number<-(which is weird... but happens at times)
-					if ($canEdit && isset($row[$source_key]) && (ComponentbuilderHelper::checkString($row[$source_key]) || is_numeric($row[$source_key])))
+					if ($canEdit && isset($row[$source_key]) && (StringHelper::check($row[$source_key]) || is_numeric($row[$source_key])))
 					{
 						// raw items import & update!
 						$query = $db->getQuery(true);

@@ -52,7 +52,7 @@ class ComponentbuilderViewServers extends HtmlView
 		$this->canState = $this->canDo->get('server.edit.state');
 		$this->canCreate = $this->canDo->get('server.create');
 		$this->canDelete = $this->canDo->get('server.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('server.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

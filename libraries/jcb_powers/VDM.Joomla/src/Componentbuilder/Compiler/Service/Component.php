@@ -200,7 +200,7 @@ class Component implements ServiceProviderInterface
 			$container->get('Registry'),
 			$container->get('Component.Settings'),
 			$container->get('Component'),
-			$container->get('Content'),
+			$container->get('Compiler.Builder.Content.One'),
 			$container->get('Utilities.Counter'),
 			$container->get('Utilities.Paths'),
 			$container->get('Utilities.Files')

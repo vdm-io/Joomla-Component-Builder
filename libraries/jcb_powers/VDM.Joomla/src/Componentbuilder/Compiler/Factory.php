@@ -15,9 +15,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 use Joomla\DI\Container;
 use VDM\Joomla\Componentbuilder\Service\Crypt;
 use VDM\Joomla\Componentbuilder\Service\Server;
-use VDM\Joomla\Componentbuilder\Compiler\Service\Database;
+use VDM\Joomla\Componentbuilder\Service\Database;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Model;
-use VDM\Joomla\Componentbuilder\Compiler\Service\Mapper;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Event;
 use VDM\Joomla\Componentbuilder\Compiler\Service\History;
@@ -36,6 +35,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Joomlamodule;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Joomlaplugin;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Utilities;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Builder;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Creator;
 use VDM\Joomla\Componentbuilder\Service\Gitea;
 use VDM\Joomla\Gitea\Service\Utilities as GiteaUtilities;
 use VDM\Joomla\Gitea\Service\Settings as GiteaSettings;
@@ -47,7 +47,7 @@ use VDM\Joomla\Gitea\Service\Issue as GiteaIssue;
 use VDM\Joomla\Gitea\Service\Notifications as GiteNotifi;
 use VDM\Joomla\Gitea\Service\Miscellaneous as GiteaMisc;
 use VDM\Joomla\Gitea\Service\Admin as GiteaAdmin;
-use VDM\Joomla\Componentbuilder\Interfaces\FactoryInterface;
+use VDM\Joomla\Interfaces\FactoryInterface;
 
 
 /**
@@ -63,7 +63,7 @@ abstract class Factory implements FactoryInterface
 	 * @var     Container
 	 * @since 3.2.0
 	 **/
-	protected static $container = null;
+	protected static ?Container $container = null;
 
 	/**
 	 * Current Joomla Version Being Build
@@ -71,7 +71,7 @@ abstract class Factory implements FactoryInterface
 	 * @var     int
 	 * @since 3.2.0
 	 **/
-	protected static $JoomlaVersion;
+	protected static int $JoomlaVersion;
 
 	/**
 	 * Get any class from the compiler container
@@ -84,6 +84,17 @@ abstract class Factory implements FactoryInterface
 	public static function _($key)
 	{
 		return self::getContainer()->get($key);
+	}
+
+	/**
+	 * Get array of all keys in container
+	 *
+	 * @return  array
+	 * @since 3.2.0
+	 */
+	public static function getKeys(): array
+	{
+		return self::getContainer()->getKeys();
 	}
 
 	/**
@@ -133,7 +144,6 @@ abstract class Factory implements FactoryInterface
 			->registerServiceProvider(new Server())
 			->registerServiceProvider(new Database())
 			->registerServiceProvider(new Model())
-			->registerServiceProvider(new Mapper())
 			->registerServiceProvider(new Compiler())
 			->registerServiceProvider(new Event())
 			->registerServiceProvider(new History())
@@ -152,6 +162,7 @@ abstract class Factory implements FactoryInterface
 			->registerServiceProvider(new Joomlaplugin())
 			->registerServiceProvider(new Utilities())
 			->registerServiceProvider(new Builder())
+			->registerServiceProvider(new Creator())
 			->registerServiceProvider(new Gitea())
 			->registerServiceProvider(new GiteaUtilities())
 			->registerServiceProvider(new GiteaSettings())
@@ -164,6 +175,5 @@ abstract class Factory implements FactoryInterface
 			->registerServiceProvider(new GiteaMisc())
 			->registerServiceProvider(new GiteaAdmin());
 	}
-
 }
 

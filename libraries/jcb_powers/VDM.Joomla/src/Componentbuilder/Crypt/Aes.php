@@ -12,7 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Crypt;
 
 
+
 use phpseclib3\Crypt\AES as BASEAES;
+use phpseclib3\Exception\BadDecryptionException;
 use VDM\Joomla\Componentbuilder\Crypt\Random;
 use VDM\Joomla\Componentbuilder\Interfaces\Cryptinterface;
 
@@ -101,10 +103,10 @@ class Aes implements Cryptinterface
 	 * @param   string     $string      The string to decrypt
 	 * @param   string     $key         The decryption key
 	 *
-	 * @return  string
+	 * @return  string|null
 	 * @since 3.2.0
 	 **/
-	public function decrypt(string $string, string $key): string
+	public function decrypt(string $string, string $key): ?string
 	{
 		// we get the IV length
 		$iv_length = (int) $this->aes->getBlockLength() >> 3;
@@ -124,8 +126,11 @@ class Aes implements Cryptinterface
 		// set the password
 		$this->aes->setPassword($key, 'pbkdf2', 'sha256', 'VastDevelopmentMethod/salt');
 
-		return $this->aes->decrypt($string);
+		try {
+			return $this->aes->decrypt($string);
+		} catch (\Exception $ex) {
+			return null;
+		}
 	}
-
 }
 

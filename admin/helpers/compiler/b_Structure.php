@@ -54,7 +54,6 @@ class Structure extends Get
 	 * The line counter
 	 *
 	 * @var     int
-	 * @deprecated 3.3
 	 * @deprecated 3.3 Use CFactory::_('Utilities.Counter')->line;
 	 */
 	public $lineCount = 0;
@@ -263,7 +262,7 @@ class Structure extends Get
 	 * Static File Content
 	 *
 	 * @var      array
-	 * @deprecated 3.3 Use CFactory::_('Content')->active
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Content.One')->allActive()
 	 */
 	public $fileContentStatic = array();
 
@@ -271,6 +270,7 @@ class Structure extends Get
 	 * Extention Custom Fields
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Extension.Custom.Fields')->get($key)
 	 */
 	public $extentionCustomfields = array();
 
@@ -296,14 +296,13 @@ class Structure extends Get
 	 * @deprecated 3.3
 	 */
 	public $stdRootFiles
-		= array('access.xml', 'config.xml', 'controller.php', 'index.html',
-			'README.txt');
+		= array('access.xml', 'config.xml', 'controller.php', 'index.html', 'README.txt');
 
 	/**
 	 * Dynamic File Content
 	 *
 	 * @var      array
-	 * @deprecated 3.3 Use CFactory::_('Content')->_active
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Content.Multi')->allActive()
 	 */
 	public $fileContentDynamic = array();
 
@@ -418,17 +417,17 @@ class Structure extends Get
 		if (parent::__construct())
 		{
 			// set incase no extra admin folder are loaded
-			CFactory::_('Content')->set('EXSTRA_ADMIN_FOLDERS', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('EXSTRA_ADMIN_FOLDERS', '');
 			// set incase no extra site folder are loaded
-			CFactory::_('Content')->set('EXSTRA_SITE_FOLDERS', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('EXSTRA_SITE_FOLDERS', '');
 			// set incase no extra media folder are loaded
-			CFactory::_('Content')->set('EXSTRA_MEDIA_FOLDERS', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('EXSTRA_MEDIA_FOLDERS', '');
 			// set incase no extra admin files are loaded
-			CFactory::_('Content')->set('EXSTRA_ADMIN_FILES', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('EXSTRA_ADMIN_FILES', '');
 			// set incase no extra site files are loaded
-			CFactory::_('Content')->set('EXSTRA_SITE_FILES', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('EXSTRA_SITE_FILES', '');
 			// set incase no extra media files are loaded
-			CFactory::_('Content')->set('EXSTRA_MEDIA_FILES', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('EXSTRA_MEDIA_FILES', '');
 			// make sure there is no old build
 			CFactory::_('Utilities.Folder')->remove(CFactory::_('Utilities.Paths')->component_path);
 			// load the libraries files/folders and url's
@@ -633,7 +632,6 @@ class Structure extends Get
 	 *
 	 * @return  boolean
 	 * @deprecated 3.3 Use CFactory::_('Component.Structure.Multiple')->build();
-	 *
 	 */
 	private function setDynamique()
 	{
@@ -671,7 +669,7 @@ class Structure extends Get
 		else
 		{
 			// check if this is a custom field that should be moved
-			if (isset($this->extentionCustomfields[$field['type_name']]))
+			if (CFactory::_('Compiler.Builder.Extension.Custom.Fields')->exists($field['type_name']))
 			{
 				$check = md5($path . 'type' . $field['type_name']);
 				// lets check if we already moved this

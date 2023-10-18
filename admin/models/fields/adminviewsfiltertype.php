@@ -49,20 +49,20 @@ class JFormFieldAdminviewsfiltertype extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 
-		if ($results)
+		if ($_results)
 		{
 			// get admin_viewsmodel
-			$model = ComponentbuilderHelper::getModel('admin_views');
-			$results = array_unique($results);
-			foreach ($results as $type)
+			$_model = ComponentbuilderHelper::getModel('admin_views');
+			$_results = array_unique($_results);
+			foreach ($_results as $type)
 			{
 				// Translate the type selection
-				$text = $model->selectionTranslation($type,'type');
+				$_text = $_model->selectionTranslation($type,'type');
 				// Now add the type and its text to the options array
-				$_filter[] = JHtml::_('select.option', $type, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $type, JText::_($_text));
 			}
 		}
 		return $_filter;

@@ -24,6 +24,7 @@ use VDM\Joomla\Componentbuilder\Utilities\Constantpaths;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Dynamicpath;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Pathfix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Structure;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Xml;
 
 
 /**
@@ -69,6 +70,9 @@ class Utilities implements ServiceProviderInterface
 
 		$container->alias(Structure::class, 'Utilities.Structure')
 			->share('Utilities.Structure', [$this, 'getStructure'], true);
+
+		$container->alias(Xml::class, 'Utilities.Xml')
+			->share('Utilities.Xml', [$this, 'getXml'], true);
 	}
 
 	/**
@@ -113,7 +117,7 @@ class Utilities implements ServiceProviderInterface
 	public function getCounter(Container $container): Counter
 	{
 		return new Counter(
-			$container->get('Content')
+			$container->get('Compiler.Builder.Content.One')
 		);
 	}
 
@@ -207,5 +211,19 @@ class Utilities implements ServiceProviderInterface
 		);
 	}
 
+	/**
+	 * Get the Compiler Xml Helper
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Xml
+	 * @since 3.2.0
+	 */
+	public function getXml(Container $container): Xml
+	{
+		return new Xml(
+			$container->get('Config')
+		);
+	}
 }
 

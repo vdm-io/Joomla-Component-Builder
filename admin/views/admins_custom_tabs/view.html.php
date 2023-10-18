@@ -52,7 +52,7 @@ class ComponentbuilderViewAdmins_custom_tabs extends HtmlView
 		$this->canState = $this->canDo->get('admin_custom_tabs.edit.state');
 		$this->canCreate = $this->canDo->get('admin_custom_tabs.create');
 		$this->canDelete = $this->canDo->get('admin_custom_tabs.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('admin_custom_tabs.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

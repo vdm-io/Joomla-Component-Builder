@@ -1,0 +1,10 @@
+/**
+ * @package    getBible.net
+ *
+ * @created    ###CREATIONDATE###
+ * @author     ###AUTHOR### <###AUTHORWEBSITE###>
+ * @git        Get Bible <https://git.vdm.dev/getBible>
+ * @github     Get Bible <https://github.com/getBible>
+ * @copyright  ###COPYRIGHT###
+ * @license    ###LICENSE###
+ */

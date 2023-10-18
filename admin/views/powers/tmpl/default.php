@@ -84,8 +84,10 @@ jQuery('<div id="loading"></div>')
 	.css("display", "none")
 	.appendTo(outerDiv);
 // when the build button is clicked
-jQuery('#toolbar').on('click',"button.button-joomla", function(e){
+jQuery('#toolbar').on('click',"button.custom-button-initpowers", function(e){
 	jQuery('#loading').show();
 });
-
+jQuery('#toolbar').on('click',"button.custom-button-resetpowers", function(e){
+	jQuery('#loading').show();
+});
 </script>

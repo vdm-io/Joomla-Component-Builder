@@ -87,6 +87,34 @@ final class Grep
 	}
 
 	/**
+	 * Get all remote powers GUID's
+	 *
+	 * @return array|null
+	 * @since 3.2.0
+	 */
+	public function getRemotePowersGuid(): ?array
+	{
+		if (!is_array($this->paths) || $this->paths === [])
+		{
+			return null;
+		}
+
+		$powers = [];
+		foreach ($this->paths as $path)
+		{
+			// Get local index
+			$this->remoteIndex($path);
+
+			if (isset($path->index) && is_object($path->index))
+			{
+				$powers = array_merge($powers, array_keys((array) $path->index));
+			}
+		}
+
+		return empty($powers) ? null : array_unique($powers);
+	}
+
+	/**
 	 * Get a power
 	 *
 	 * @param string   $guid    The global unique id of the power
@@ -316,7 +344,7 @@ final class Grep
 		{
 			$path->index = $this->contents->get($path->owner, $path->repo, 'super-powers.json', $path->branch);
 		}
-		catch (\DomainException $e)
+		catch (\Exception $e)
 		{
 			$this->app->enqueueMessage(
 				Text::sprintf('COM_COMPONENTBUILDER_PSUPER_POWERB_REPOSITORY_AT_BGITVDMDEVSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $path->path, $e->getMessage()),
@@ -344,7 +372,7 @@ final class Grep
 		{
 			$data = $this->contents->get($owner, $repo, $path, $branch);
 		}
-		catch (\DomainException $e)
+		catch (\Exception $e)
 		{
 			$this->app->enqueueMessage(
 				Text::sprintf('COM_COMPONENTBUILDER_PFILE_AT_BGITEAREMOTESB_GAVE_THE_FOLLOWING_ERRORBR_SP', $path, $e->getMessage()),

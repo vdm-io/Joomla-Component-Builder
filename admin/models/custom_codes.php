@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Custom_codes List Model
@@ -161,7 +163,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 			}
 		}
 
-		if (ComponentbuilderHelper::checkArray($items) && !isset($_export))
+		if (UtilitiesArrayHelper::check($items) && !isset($_export))
 		{
 			foreach ($items as $nr => &$item) 
 			{
@@ -169,7 +171,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				{
 					$item->component_system_name = $item->system_name;
 					$item->path = '[CUSTO'.'MCODE='.$item->id.']'; // so it is not detected
-					if (ComponentbuilderHelper::checkString($item->function_name))
+					if (StringHelper::check($item->function_name))
 					{
 						$item->path =  '[CUSTO'.'MCODE='.$item->function_name.']'; // so it is not detected
 					}
@@ -489,7 +491,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 					array_unshift($items,$headers);
 				}
 
-				if (ComponentbuilderHelper::checkArray($items) && !isset($_export))
+				if (UtilitiesArrayHelper::check($items) && !isset($_export))
 		{
 			foreach ($items as $nr => &$item) 
 			{
@@ -497,7 +499,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				{
 					$item->component_system_name = $item->system_name;
 					$item->path = '[CUSTO'.'MCODE='.$item->id.']'; // so it is not detected
-					if (ComponentbuilderHelper::checkString($item->function_name))
+					if (StringHelper::check($item->function_name))
 					{
 						$item->path =  '[CUSTO'.'MCODE='.$item->function_name.']'; // so it is not detected
 					}

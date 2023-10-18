@@ -278,14 +278,16 @@ class Readme
 	/**
 	 * Build the Link to the power in this repository
 	 *
-	 * @param string    $power  The power details.
+	 * @param array  $power  The power details.
 	 *
 	 * @return string
 	 * @since 3.2.0
 	 */
 	private function indexLinkPower(array &$power): string
 	{
-		return '**' . $power['type'] . ' ' . $power['name'] . "** | "
+		$type = $power['type'] ?? 'error';
+		$name = $power['name'] ?? 'error';
+		return '**' . $type . ' ' . $name . "** | "
 			. $this->linkPowerRepo($power) . ' | '
 			. $this->linkPowerCode($power) . ' | '
 			. $this->linkPowerSettings($power) . ' | '
@@ -295,53 +297,57 @@ class Readme
 	/**
 	 * Build the Link to the power in this repository
 	 *
-	 * @param string    $power  The power details.
+	 * @param array  $power  The power details.
 	 *
 	 * @return string
 	 * @since 3.2.0
 	 */
 	private function linkPowerRepo(array &$power): string
 	{
-		return '[Details](' . $power['path'] . ')';
+		$path = $power['path'] ?? 'error';
+		return '[Details](' . $path . ')';
 	}
 
 	/**
 	 * Build the Link to the power settings in this repository
 	 *
-	 * @param string    $power  The power details.
+	 * @param array  $power  The power details.
 	 *
 	 * @return string
 	 * @since 3.2.0
 	 */
 	private function linkPowerCode(array &$power): string
 	{
-		return '[Code](' . $power['code'] . ')';
+		$code = $power['code'] ?? 'error';
+		return '[Code](' . $code . ')';
 	}
 
 	/**
 	 * Build the Link to the power settings in this repository
 	 *
-	 * @param string    $power  The power details.
+	 * @param array  $power  The power details.
 	 *
 	 * @return string
 	 * @since 3.2.0
 	 */
 	private function linkPowerSettings(array &$power): string
 	{
-		return '[Settings](' . $power['settings'] . ')';
+		$settings = $power['settings'] ?? 'error';
+		return '[Settings](' . $settings . ')';
 	}
 
 	/**
 	 * Get the SuperPowerKey (SPK)
 	 *
-	 * @param string    $power  The power details.
+	 * @param array  $power  The power details.
 	 *
 	 * @return string
 	 * @since 3.2.0
 	 */
 	private function linkPowerSPK(array &$power): string
 	{
-		return $power['spk'];
+		$spk = $power['spk'] ?? 'error';
+		return $spk;
 	}
 }
 

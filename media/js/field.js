@@ -551,7 +551,7 @@ jQuery(document).ready(function()
 var rowIdKey = 'properties';
 
 function getFieldTypeProperties(fieldtype, db){
-	getCodeFrom_server(fieldtype, 'type', 'type', 'fieldTypeProperties').done(function(result) {
+	getCodeFrom_server(fieldtype, 'type', 'type', 'fieldTypeProperties').then(function(result) {
 		if(result.subform){
 			// load the list of properties
 			propertiesArray = result.nameListOptions;
@@ -754,7 +754,7 @@ function getFieldPropertyDesc_server(fieldtype, property){
 }
 
 function getValidationRulesTable(){
-	getCodeFrom_server(1,'type','type', 'getValidationRulesTable').done(function(result) {
+	getCodeFrom_server(1,'type','type', 'getValidationRulesTable').then(function(result) {
 		if(result){
 			jQuery('#display_validation_rules').html(result);
 		}
@@ -822,23 +822,32 @@ function dbChecker(type){
 	}
 }
 
-function getCodeFrom_server(id, type, type_name, callingName){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && id > 0 && type.length > 0) {
-		var request = token + '=1&' + type_name + '=' + type + '&id=' + id;
+function getCodeFrom_server(id, type, type_name, callingName) {
+	var url = "index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod;
+	if (token.length > 0 && id > 0 && type.length > 0) {
+		url += '&' + token + '=1&' + type_name + '=' + type + '&id=' + id;
 	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
+	var getUrl = JRouter(url);
+	return fetch(getUrl, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	}).then(function(response) {
+		if (response.ok) {
+			return response.json();
+		} else {
+			throw new Error('Network response was not ok');
+		}
+	}).then(function(data) {
+		return data;
+	}).catch(function(error) {
+		console.error('There was a problem with the fetch operation:', error);
 	});
 }
 
-
 function getLinked(){
-	getCodeFrom_server(1, 'type', 'type', 'getLinked').done(function(result) {
+	getCodeFrom_server(1, 'type', 'type', 'getLinked').then(function(result) {
 		if(result){
 			jQuery('#display_linked_to').html(result);
 		}

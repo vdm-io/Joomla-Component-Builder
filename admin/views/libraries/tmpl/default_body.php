@@ -11,6 +11,7 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+use VDM\Joomla\Utilities\ArrayHelper;
 
 $edit = "index.php?option=com_componentbuilder&view=libraries&task=library.edit";
 
@@ -74,7 +75,7 @@ $edit = "index.php?option=com_componentbuilder&view=libraries&task=library.edit"
 					$returnpath = urlencode(base64_encode((string) JUri::getInstance()));
 				}
 				// setup the buttons
-				if (!isset($_buttons) || !ComponentbuilderHelper::checkArray($_buttons))
+				if (!isset($_buttons) || !ArrayHelper::check($_buttons))
 				{
 					$_buttons = array(
 						array(

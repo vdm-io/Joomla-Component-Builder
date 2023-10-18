@@ -16,6 +16,10 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 
 /**
  * Componentbuilder Class_extends Admin Model
@@ -104,7 +108,7 @@ class ComponentbuilderModelClass_extends extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'class_extends__'.$id);
 				ComponentbuilderHelper::set('class_extends__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -112,7 +116,7 @@ class ComponentbuilderModelClass_extends extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -182,7 +186,7 @@ class ComponentbuilderModelClass_extends extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'class_extends__'.$id);
 				ComponentbuilderHelper::set('class_extends__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -190,7 +194,7 @@ class ComponentbuilderModelClass_extends extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -316,7 +320,7 @@ class ComponentbuilderModelClass_extends extends AdminModel
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
-		if (ComponentbuilderHelper::checkArray($editors))
+		if (UtilitiesArrayHelper::check($editors))
 		{
 			foreach ($editors as $editor)
 			{
@@ -388,7 +392,7 @@ class ComponentbuilderModelClass_extends extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('class_extends.edit.state', 'com_componentbuilder');
 	}
     
@@ -912,7 +916,7 @@ class ComponentbuilderModelClass_extends extends AdminModel
 		}
 
 		// make sure the name is safe to be used as a class name
-		$data['name'] = ComponentbuilderHelper::safeClassFunctionName($data['name']);
+		$data['name'] = ClassfunctionHelper::safe($data['name']);
 
 		// Set the head string to base64 string.
 		if (isset($data['head']))

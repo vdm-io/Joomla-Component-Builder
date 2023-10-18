@@ -21,6 +21,8 @@ use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\Base64Helper;
+use VDM\Joomla\FOF\Encrypt\AES;
 
 /**
  * Joomla_components List Model
@@ -998,7 +1000,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						// check if this field has multiple fields
 						if ($this->checkMultiFields($item->fieldtype))
 						{
-							$fields = ComponentbuilderHelper::getBetween(json_decode($item->xml), 'fields="', '"');
+							$fields = GetHelper::between(json_decode($item->xml), 'fields="', '"');
 							$fieldsSets = array();
 							if (strpos($fields, ',') !== false)
 							{
@@ -1017,7 +1019,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 							}
 						}
 						// check if validation rule is found
-						$validationRule = ComponentbuilderHelper::getBetween(json_decode($item->xml), 'validate="', '"');
+						$validationRule = GetHelper::between(json_decode($item->xml), 'validate="', '"');
 						if (StringHelper::check($validationRule))
 						{
 							// make sure it is lowercase
@@ -1799,7 +1801,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				}
 				elseif (!isset($keys['not_base64'][$key]))
 				{
-					$value = ComponentbuilderHelper::openValidBase64($item->{$key}, null);
+					$value = Base64Helper::open($item->{$key}, null);
 				}
 				elseif (isset($keys['not_base64'][$key]) && 'json' === $keys['not_base64'][$key] && 'xml' === $key) // just for field search
 				{
@@ -2033,9 +2035,9 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		if (isset($target['_start']))
 		{
 			// get all values
-			$allBetween = ComponentbuilderHelper::getAllBetween($value, $target['start'], $target['_start']);
+			$allBetween = GetHelper::allBetween($value, $target['start'], $target['_start']);
 			// just again make sure we found some
-			if (ComponentbuilderHelper::checkArray($allBetween))
+			if (JCBArrayHelper::check($allBetween))
 			{
 				if (count((array) $allBetween) > 1)
 				{
@@ -2066,14 +2068,14 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$starts[] = $target['start'];
 		}
 		// has any been found
-		if (ComponentbuilderHelper::checkArray($starts))
+		if (JCBArrayHelper::check($starts))
 		{
 			foreach ($starts as $_start)
 			{
 				// get the base64 string
-				$base64 = ComponentbuilderHelper::getBetween($value, $_start, $target['end']);
+				$base64 = GetHelper::between($value, $_start, $target['end']);
 				// now open the base64 text
-				$tmp = ComponentbuilderHelper::openValidBase64($base64);
+				$tmp = Base64Helper::open($base64);
 				// insert it back into the value (so we still search the whole string)
 				$value = str_replace($base64, $tmp, $value);
 			}
@@ -2670,7 +2672,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				// Get the basic encryption key.
 				$basickey = ComponentbuilderHelper::getCryptKey('basic');
 				// Get the encryption object.
-				$basic = new FOFEncryptAes($basickey);
+				$basic = new AES($basickey);
 
 				// Set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))

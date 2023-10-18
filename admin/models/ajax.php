@@ -22,6 +22,10 @@ use VDM\Joomla\Utilities\StringHelper;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Language\Text;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\Base64Helper;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 
 /**
  * Componentbuilder Ajax List Model
@@ -39,54 +43,6 @@ class ComponentbuilderModelAjax extends ListModel
 	}
 
 	// Used in joomla_component
-
-	/**
-	* 	Check and if a vdm notice is new (per/user)
-	**/
-	public function isNew($notice)
-	{
-		// first get the file path
-		$path_filename = ComponentbuilderHelper::getFilePath('path', 'usernotice', 'md', JFactory::getUser()->username, JPATH_COMPONENT_ADMINISTRATOR);
-		// check if the file is set
-		if (($content = @file_get_contents($path_filename)) !== FALSE)
-		{
-			if ($notice == $content)
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	* 	set That a notice has been read (per/user)
-	**/
-	public function isRead($notice)
-	{
-		// first get the file path
-		$path_filename = ComponentbuilderHelper::getFilePath('path', 'usernotice', 'md', JFactory::getUser()->username, JPATH_COMPONENT_ADMINISTRATOR);
-		// set as read if not already set
-		if (($content = @file_get_contents($path_filename)) !== FALSE)
-		{
-			if ($notice == $content)
-			{
-				return true;
-			}
-		}
-		return $this->saveFile($notice,$path_filename);
-	}
-
-	protected function saveFile($data,$path_filename)
-	{
-		if (ComponentbuilderHelper::checkString($data))
-		{
-			$fp = fopen($path_filename, 'w');
-			fwrite($fp, $data);
-			fclose($fp);
-			return true;
-		}
-		return false;
-	}
 	/**
 	* 	get the crowdin project details (html)
 	**/
@@ -273,55 +229,67 @@ class ComponentbuilderModelAjax extends ListModel
 		return function_exists('curl_version');
 	}
 
-	public function getWiki($name = 'Home')
+	/**
+	 * Check and if a notice is new (per/user)
+	 *
+	 * @param string|null    $notice   The current notice
+	 *
+	 * @return  bool  true if is new
+	 * @since   2.0.0
+	 */
+	public function isNew(?string $notice): bool
 	{
-		try
-		{
-			// load the API details
-			GiteaFactory::_('Gitea.Repository.Wiki')->load_('https://git.vdm.dev', '');
+		// first get the file path
+		$path_filename = FileHelper::getPath('path', 'usernotice', 'md', JFactory::getUser()->username, JPATH_COMPONENT_ADMINISTRATOR);
 
-			// get the gitea wiki page im markdown
-			$wiki = GiteaFactory::_('Gitea.Repository.Wiki')->get('joomla', 'Component-Builder', 'Home');
-
-			// now render the page in HTML
-			$page = GiteaFactory::_('Gitea.Miscellaneous.Markdown')->render($wiki->content, true);
-		}
-		catch (DomainException $e)
+		// check if the file is set
+		if (($content = FileHelper::getContent($path_filename, FALSE)) !== FALSE)
 		{
-			return $this->getTokenForWiki($e->getMessage());
+			if ($notice == $content)
+			{
+				return false;
+			}
 		}
-		catch (InvalidArgumentException $e)
-		{
-			return $this->getTokenForWiki($e->getMessage());
-		}
-		catch (Exception $e)
-		{
-			return $this->getTokenForWiki($e->getMessage());
-		}
-
-		// get the html
-		if (isset($page))
-		{
-			return ['page' => $page];
-		}
-
-		return $this->getTokenForWiki();
+		return true;
 	}
 
-	protected function getTokenForWiki($message = null)
+	/**
+	 * Check if a notice has been read (per/user)
+	 *
+	 * @param string|null    $notice   The current notice
+	 *
+	 * @return  bool  true if is read
+	 * @since   2.0.0
+	 */
+	public function isRead(?string $notice): bool
 	{
-		if ($message)
+		// first get the file path
+		$path_filename = FileHelper::getPath('path', 'usernotice', 'md', JFactory::getUser()->username, JPATH_COMPONENT_ADMINISTRATOR);
+
+		// set as read if not already set
+		if (($content = FileHelper::getContent($path_filename, FALSE)) !== FALSE)
 		{
-			return ['error' => $message];
+			if ($notice == $content)
+			{
+				return true;
+			}
 		}
 
-		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_WIKI_CAN_ONLY_BE_LOADED_WHEN_YOUR_JCB_SYSTEM_HAS_INTERNET_CONNECTION')];
+		return FileHelper::write($path_filename, $notice);
 	}
 
+	/**
+	 * get Current Version
+	 *
+	 * @param   string|null  $message  The error messages if any.
+	 *
+	 * @return  array  The array of the notice or error message
+	 * @since   2.3.0
+	 */
 	public function getVersion($version = null)
 	{
 		// get the token if set
-		$token = $this->app_params->get('gitea_token', false);
+		$token = $this->app_params->get('gitea_token');
 
 		// only add if token is set
 		if ($token)
@@ -373,7 +341,7 @@ class ComponentbuilderModelAjax extends ListModel
 					else
 					{
 						// download link of the latest version
-						$download = "https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/" . $tags[0]->name . ".zip?access_token=" . $token;
+						$download = "https://git.vdm.dev/api/v1/repos/joomla/Component-Builder/archive/" . $tags[0]->name . ".zip?access_token=" . $token;
 
 						return ['notice' => '<small><span style="color:red;"><span class="icon-warning-circle"></span>' . Text::_('COM_COMPONENTBUILDER_OUT_OF_DATE') . '!</span> <a style="color:green;"  href="' .
 							$download . '" title="' . Text::_('COM_COMPONENTBUILDER_YOU_CAN_DIRECTLY_DOWNLOAD_THE_LATEST_UPDATE_OR_USE_THE_JOOMLA_UPDATE_AREA') . '">' . Text::_('COM_COMPONENTBUILDER_DOWNLOAD_UPDATE') . '!</a></small>'];
@@ -385,10 +353,19 @@ class ComponentbuilderModelAjax extends ListModel
 		return $this->getTokenForVersion();
 	}
 
-	protected function getTokenForVersion($message = null)
+	/**
+	 * Instructions to get Token for version
+	 *
+	 * @param   string|null  $message  The error messages if any.
+	 *
+	 * @return  array  The array of the error message
+	 * @since   2.3.0
+	 */
+	protected function getTokenForVersion(?string $message = null): array
 	{
 		// the URL
 		$url = 'https://git.vdm.dev/user/settings/applications';
+
 		// create link
 		$a = '<small><a style="color:#F7B033;" href="' . $url . '" title="';
 		$a_ = '">';
@@ -402,14 +379,76 @@ class ComponentbuilderModelAjax extends ListModel
 		return ['error' =>  $a . Text::_('COM_COMPONENTBUILDER_GET_TOKEN_FROM_VDM_TO_GET_UPDATE_NOTICE_AND_ADD_IT_TO_YOUR_GLOBAL_OPTIONS') . $a_ . Text::_('COM_COMPONENTBUILDER_GET_TOKEN') . $_a];
 	}
 
+	/**
+	 * get Wiki Page
+	 *
+	 * @param   string|null  $message  The error messages if any.
+	 *
+	 * @return  array  The array of the page or error message
+	 * @since   2.3.0
+	 */
+	public function getWiki(string $name = 'Home'): array
+	{
+		try
+		{
+			// get the token if set
+			$token = $this->app_params->get('gitea_token');
 
+			// load the API details
+			GiteaFactory::_('Gitea.Repository.Wiki')->load_('https://git.vdm.dev', $token);
+
+			// get the gitea wiki page im markdown
+			$wiki = GiteaFactory::_('Gitea.Repository.Wiki')->get('joomla', 'Component-Builder', $name);
+
+			// now render the page in HTML
+			$page = GiteaFactory::_('Gitea.Miscellaneous.Markdown')->render($wiki->content, true);
+		}
+		catch (DomainException $e)
+		{
+			return $this->getTokenForWiki($e->getMessage());
+		}
+		catch (InvalidArgumentException $e)
+		{
+			return $this->getTokenForWiki($e->getMessage());
+		}
+		catch (Exception $e)
+		{
+			return $this->getTokenForWiki($e->getMessage());
+		}
+
+		// get the html
+		if (isset($page))
+		{
+			return ['page' => $page];
+		}
+
+		return $this->getTokenForWiki();
+	}
+
+	/**
+	 * Instructions to get Token for wiki
+	 *
+	 * @param   string|null  $message  The error messages if any.
+	 *
+	 * @return  array  The array of the error message
+	 * @since   2.3.0
+	 */
+	protected function getTokenForWiki(?string $message = null): array
+	{
+		if ($message)
+		{
+			return ['error' => $message];
+		}
+
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_WIKI_CAN_ONLY_BE_LOADED_WHEN_YOUR_JOOMLA_COMPONENT_BUILDER_SYSTEM_HAS_INTERNET_CONNECTION')];
+	}
 
 	// Used in joomla_module
 	public function getModuleCode($data)
 	{
 		// reset the return array
 		$code = array();
-		if (ComponentbuilderHelper::checkJson($data))
+		if (JsonHelper::check($data))
 		{
 			// convert the data to object
 			$data = json_decode($data);
@@ -425,7 +464,7 @@ class ComponentbuilderModelAjax extends ListModel
 				$code['class']['merge_target'] = 'prepend';
 			}
 			// get data
-			if (isset($data->get) && ComponentbuilderHelper::checkArray($data->get))
+			if (isset($data->get) && UtilitiesArrayHelper::check($data->get))
 			{
 				$code['get'] = array();
 				// add the code
@@ -436,7 +475,7 @@ class ComponentbuilderModelAjax extends ListModel
 				$code['get']['merge_target'] = 'prepend';
 			}
 			// get libraries
-			if (isset($data->lib) && ComponentbuilderHelper::checkArray($data->lib))
+			if (isset($data->lib) && UtilitiesArrayHelper::check($data->lib))
 			{
 				$code['lib'] = array();
 				// add the code
@@ -493,7 +532,7 @@ class ComponentbuilderModelAjax extends ListModel
 
 	public function getClassHeaderCode($id, $type)
 	{
-		if ('extends' === $type && ($head = ComponentbuilderHelper::getVar('class_' . $type, $id, 'id', 'head')) !== false && ComponentbuilderHelper::checkString($head))
+		if ('extends' === $type && ($head = ComponentbuilderHelper::getVar('class_' . $type, $id, 'id', 'head')) !== false && StringHelper::check($head))
 		{
 			return base64_decode($head);
 		}
@@ -538,10 +577,10 @@ class ComponentbuilderModelAjax extends ListModel
 			if ($fields = ComponentbuilderHelper::getVar('admin_fields', $values['a_id'], 'admin_view', 'addfields'))
 			{
 				// open the fields
-				if (ComponentbuilderHelper::checkJson($fields))
+				if (JsonHelper::check($fields))
 				{
 					$fields = json_decode($fields, true);
-					if (ComponentbuilderHelper::checkArray($fields))
+					if (UtilitiesArrayHelper::check($fields))
 					{
 						foreach($fields as $field)
 						{
@@ -567,10 +606,10 @@ class ComponentbuilderModelAjax extends ListModel
 			if ($fields = ComponentbuilderHelper::getVar('admin_fields', $values['a_id'], 'admin_view', 'addfields'))
 			{
 				// open the fields
-				if (ComponentbuilderHelper::checkJson($fields))
+				if (JsonHelper::check($fields))
 				{
 					$fields = json_decode($fields, true);
-					if (ComponentbuilderHelper::checkArray($fields))
+					if (UtilitiesArrayHelper::check($fields))
 					{
 						foreach($fields as $field)
 						{
@@ -712,7 +751,7 @@ class ComponentbuilderModelAjax extends ListModel
 				return $language[$keys[1]];
 			}
 		}
-		return ComponentbuilderHelper::safeString($keys[1], 'Ww');
+		return StringHelper::safe($keys[1], 'Ww');
 	}
 
 	protected $ref;
@@ -767,7 +806,7 @@ class ComponentbuilderModelAjax extends ListModel
 
 	protected function checkRepeatableConversion($type, &$fieldsData, $fieldsArrayType, $id, $linked_id_name)
 	{
-		if (ComponentbuilderHelper::checkJson($fieldsData) && isset($this->conversionCheck[$fieldsArrayType]))
+		if (JsonHelper::check($fieldsData) && isset($this->conversionCheck[$fieldsArrayType]))
 		{
 			$fieldsData = json_decode($fieldsData, true);
 			if (isset($fieldsData[$this->conversionCheck[$fieldsArrayType]]))
@@ -803,12 +842,12 @@ class ComponentbuilderModelAjax extends ListModel
 	protected function setPermissions($header, $values)
 	{
 		// check if value is array
-		if (!ComponentbuilderHelper::checkArray($values))
+		if (!UtilitiesArrayHelper::check($values))
 		{
 			$values = array($values);
 		}
 		// check if value is array
-		if (ComponentbuilderHelper::checkArray($values))
+		if (UtilitiesArrayHelper::check($values))
 		{
 			// Editing, Access, View
 			$bucket = array();
@@ -828,7 +867,7 @@ class ComponentbuilderModelAjax extends ListModel
 				}
 			}
 			// check if value is array
-			if (ComponentbuilderHelper::checkArray($bucket))
+			if (UtilitiesArrayHelper::check($bucket))
 			{
 				return implode(', ', $bucket);
 			}
@@ -869,7 +908,7 @@ class ComponentbuilderModelAjax extends ListModel
 
 	protected function setIcoMoon($header, $value)
 	{
-		if (ComponentbuilderHelper::checkString($value))
+		if (StringHelper::check($value))
 		{
 			return '<span class="icon-' . $value . '"></span>';
 		}
@@ -936,7 +975,7 @@ class ComponentbuilderModelAjax extends ListModel
 		{
 			return JText::_('COM_COMPONENTBUILDER_PUBLISHING');
 		}
-		if (!ComponentbuilderHelper::checkArray($this->tabNames))
+		if (!UtilitiesArrayHelper::check($this->tabNames))
 		{
 			// get the view name & id
 			$values = $this->getViewID();
@@ -945,12 +984,12 @@ class ComponentbuilderModelAjax extends ListModel
 				if ($tabs = ComponentbuilderHelper::getVar('admin_view', $values['a_id'], 'id', 'addtabs'))
 				{
 					$tabs = json_decode($tabs, true);
-					if (ComponentbuilderHelper::checkArray($tabs))
+					if (UtilitiesArrayHelper::check($tabs))
 					{
 						$nr = 1;
 						foreach ($tabs as $tab)
 						{
-							if (ComponentbuilderHelper::checkArray($tab) && isset($tab['name']))
+							if (UtilitiesArrayHelper::check($tab) && isset($tab['name']))
 							{
 								$this->tabNames[$nr] = $tab['name'];
 								$nr++;
@@ -961,7 +1000,7 @@ class ComponentbuilderModelAjax extends ListModel
 			}
 		}
 		// has it been set
-		if (ComponentbuilderHelper::checkArray($this->tabNames) && isset($this->tabNames[$value]))
+		if (UtilitiesArrayHelper::check($this->tabNames) && isset($this->tabNames[$value]))
 		{
 			return $this->tabNames[$value];
 		}
@@ -1101,7 +1140,7 @@ class ComponentbuilderModelAjax extends ListModel
 				// load the values form params
 				$xml = json_decode($result->xml);
 
-				$xmlOptions = ComponentbuilderHelper::getBetween($xml,'option="','"');
+				$xmlOptions = GetHelper::between($xml,'option="','"');
 
 				$optionSet = '';
 				if (strpos($xmlOptions,',') !== false)
@@ -1111,7 +1150,7 @@ class ComponentbuilderModelAjax extends ListModel
 					foreach ($options as $option)
 					{
 						// return both value and text
-						if (ComponentbuilderHelper::checkString($optionSet))
+						if (StringHelper::check($optionSet))
 						{
 							// no add to option set
 							$optionSet .= "\n".$option;
@@ -1126,7 +1165,7 @@ class ComponentbuilderModelAjax extends ListModel
 				else
 				{
 					// return both value and text
-					if (ComponentbuilderHelper::checkString($optionSet))
+					if (StringHelper::check($optionSet))
 					{
 						// no add to option set
 						$optionSet .= "\n".$xmlOptions;
@@ -1164,7 +1203,7 @@ class ComponentbuilderModelAjax extends ListModel
 	{
         	// get the columns
 		$columns = $this->_db->getTableColumns("#__".$tableName);
-		if (ComponentbuilderHelper::checkArray($columns))
+		if (UtilitiesArrayHelper::check($columns))
 		{
         	   	// build the return string
 			$tableColumns = array();
@@ -1258,7 +1297,7 @@ class ComponentbuilderModelAjax extends ListModel
 				{
 					// just return it for now a table
 					$table =  '<div class="control-group"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
-					$table .=  '<caption>'.JText::sprintf('COM_COMPONENTBUILDER_PLACES_ACROSS_JCB_WHERE_THIS_S_IS_LINKED', ComponentbuilderHelper::safeString($values['a_view'], 'w')).'</caption>';
+					$table .=  '<caption>'.JText::sprintf('COM_COMPONENTBUILDER_PLACES_ACROSS_JCB_WHERE_THIS_S_IS_LINKED', StringHelper::safe($values['a_view'], 'w')).'</caption>';
 					$table .=  '<thead><tr><th>'.JText::_('COM_COMPONENTBUILDER_TYPE_NAME').'</th></tr></thead>';
 					$table .=  '<tbody><tr><td>' .implode('</td></tr><tr><td>', $linked) . '</td></tr></tbody></table></div>';
 					return $table;
@@ -1268,7 +1307,7 @@ class ComponentbuilderModelAjax extends ListModel
 		// if not found but has session view name
 		if (strlen($values['a_view']))
 		{
-			return '<div class="control-group"><div class="alert alert-info"><h4>' . JText::sprintf('COM_COMPONENTBUILDER_S_NOT_LINKED', ComponentbuilderHelper::safeString($values['a_view'], 'Ww')) . '</h4><p>' . JText::sprintf('COM_COMPONENTBUILDER_THIS_BSB_IS_NOT_LINKED_TO_ANY_OTHER_AREAS_OF_JCB_AT_THIS_TIME', $values['a_view']) . '</p></div></div>';
+			return '<div class="control-group"><div class="alert alert-info"><h4>' . JText::sprintf('COM_COMPONENTBUILDER_S_NOT_LINKED', StringHelper::safe($values['a_view'], 'Ww')) . '</h4><p>' . JText::sprintf('COM_COMPONENTBUILDER_THIS_BSB_IS_NOT_LINKED_TO_ANY_OTHER_AREAS_OF_JCB_AT_THIS_TIME', $values['a_view']) . '</p></div></div>';
 		}
 		// no view or id found in session, or view not allowed to access area
 		return '<div class="control-group"><div class="alert alert-error"><h4>' . JText::_('COM_COMPONENTBUILDER_ERROR') . '</h4><p>' . JText::_('COM_COMPONENTBUILDER_THERE_WAS_A_PROBLEM_BNO_VIEW_OR_ID_FOUND_IN_SESSION_OR_VIEW_NOT_ALLOWED_TO_ACCESS_AREAB_WE_COULD_NOT_LOAD_ANY_LINKED_TO_VALUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR') . '</p></div></div>';
@@ -1344,12 +1383,12 @@ class ComponentbuilderModelAjax extends ListModel
 							else
 							{
 								// check if we have a json
-								if (ComponentbuilderHelper::checkJson($item->{$key}))
+								if (JsonHelper::check($item->{$key}))
 								{
 									$item->{$key} = json_decode($item->{$key}, true);
 								}
 								// if array
-								if (ComponentbuilderHelper::checkArray($item->{$key}))
+								if (UtilitiesArrayHelper::check($item->{$key}))
 								{
 									if ('ARRAY' === $target)
 									{
@@ -1369,7 +1408,7 @@ class ComponentbuilderModelAjax extends ListModel
 										{
 											$_target = (array) explode('.', $target);
 											// check that we have an array and get the size
-											if (($_size = ComponentbuilderHelper::checkArray($_target)) !== false)
+											if (($_size = UtilitiesArrayHelper::check($_target)) !== false)
 											{
 												foreach ($item->{$key} as $row)
 												{
@@ -1380,7 +1419,7 @@ class ComponentbuilderModelAjax extends ListModel
 															$found = true;
 														}
 													}
-													elseif ($_size == 3 && isset($row[$_target[0]]) && ComponentbuilderHelper::checkArray($row[$_target[0]]))
+													elseif ($_size == 3 && isset($row[$_target[0]]) && UtilitiesArrayHelper::check($row[$_target[0]]))
 													{
 														foreach ($row[$_target[0]] as $_row)
 														{
@@ -1450,18 +1489,18 @@ class ComponentbuilderModelAjax extends ListModel
 									}
 								}
 								// if string (fields)
-								if (!$found &&  'xml' === $key && ComponentbuilderHelper::checkString($item->{$key})
+								if (!$found &&  'xml' === $key && StringHelper::check($item->{$key})
 									&& strpos($item->{$key}, $target.'="') !== false)
 								{
 									// now get the fields between
-									$_fields = ComponentbuilderHelper::getBetween($item->{$key},  $target.'="', '"');
+									$_fields = GetHelper::between($item->{$key},  $target.'="', '"');
 									// check the result
-									if (ComponentbuilderHelper::checkString($_fields))
+									if (StringHelper::check($_fields))
 									{
 										// get the ids of all the fields linked here
 										$_fields = array_map('trim', (array) explode(',', $_fields));
 										// check the result
-										if (ComponentbuilderHelper::checkArray($_fields))
+										if (UtilitiesArrayHelper::check($_fields))
 										{
 											foreach ($_fields as $_field)
 											{
@@ -1501,7 +1540,7 @@ class ComponentbuilderModelAjax extends ListModel
 								$type_name = ' (' . $type_name . ') ';
 							}
 						}
-						elseif (ComponentbuilderHelper::checkString($type_name) || is_numeric($type_name))
+						elseif (StringHelper::check($type_name) || is_numeric($type_name))
 						{
 							$type_name = ' (' . $type_name . ') ';
 						}
@@ -1514,7 +1553,7 @@ class ComponentbuilderModelAjax extends ListModel
 			}
 		}
 		// check if we found any
-		if (ComponentbuilderHelper::checkArray($linked))
+		if (UtilitiesArrayHelper::check($linked))
 		{
 			return $linked;
 		}
@@ -1576,7 +1615,7 @@ class ComponentbuilderModelAjax extends ListModel
 				if ($view = ComponentbuilderHelper::get($vdm))
 				{
 					$current = (array) explode('__', $view);
-					if (ComponentbuilderHelper::checkString($current[0]) && isset($current[1]) && is_numeric($current[1]))
+					if (StringHelper::check($current[0]) && isset($current[1]) && is_numeric($current[1]))
 					{
 						// get the view name & id
 						$this->viewid[$call] = array(
@@ -1596,7 +1635,7 @@ class ComponentbuilderModelAjax extends ListModel
 				// set return if found
 				if (($return = ComponentbuilderHelper::get($vdm . '__return')) !== false)
 				{
-					if (ComponentbuilderHelper::checkString($return))
+					if (StringHelper::check($return))
 					{
 						$this->viewid[$call]['a_return'] = $return;
 					}
@@ -1635,7 +1674,7 @@ class ComponentbuilderModelAjax extends ListModel
 					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'] . '&amp;return=' . urlencode(base64_encode($return_url));
 				}
 				// build url (A tag)
-				$startAtag = 'onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view=' . $type . '&amp;layout=edit' . $ref . '\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', ComponentbuilderHelper::safeString($type, 'W')).'">';
+				$startAtag = 'onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view=' . $type . '&amp;layout=edit' . $ref . '\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', StringHelper::safe($type, 'W')).'">';
 				// build the smallest button
 				if (3 == $size)
 				{
@@ -1679,7 +1718,7 @@ class ComponentbuilderModelAjax extends ListModel
 				// get the view name & id
 				$values = $this->getViewID();
 				// set the button ID
-				$css_class = 'control-group-'.ComponentbuilderHelper::safeString($type. '-' . $size, 'L', '-');
+				$css_class = 'control-group-'.StringHelper::safe($type. '-' . $size, 'L', '-');
 				// check if new item
 				$ref = '';
 				if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']))
@@ -1703,14 +1742,14 @@ class ComponentbuilderModelAjax extends ListModel
 					// get item id
 					if (($id = ComponentbuilderHelper::getVar($type, $key_get_value, $values['a_view'], 'id')) !== false && $id > 0)
 					{
-						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_EDIT_S_FOR_THIS_S', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w'));
+						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_EDIT_S_FOR_THIS_S', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w'));
 						$buttonTextSmall = JText::_('COM_COMPONENTBUILDER_EDIT');
 						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$this->buttonArray[$type].'&amp;task='.$type.'.edit&amp;id='.$id;
 						$icon = 'icon-apply';
 					}
 					else
 					{
-						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_CREATE_S_FOR_THIS_S', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w'));
+						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_CREATE_S_FOR_THIS_S', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w'));
 						$buttonTextSmall = JText::_('COM_COMPONENTBUILDER_CREATE');
 						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit';
 						$icon = 'icon-new';
@@ -1721,7 +1760,7 @@ class ComponentbuilderModelAjax extends ListModel
 					{
 						$button[] = '<div class="control-group '.$css_class.'">';
 						$button[] = '<div class="control-label">';
-						$button[] = '<label>' . ComponentbuilderHelper::safeString($type, 'Ww') . '</label>';
+						$button[] = '<label>' . StringHelper::safe($type, 'Ww') . '</label>';
 						$button[] = '</div>';
 						$button[] = '<div class="controls">';
 					}
@@ -1746,7 +1785,7 @@ class ComponentbuilderModelAjax extends ListModel
 				// only return notice if big button
 				if (1 == $size)
 				{
-					return '<div class="control-group '.$css_class.'"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED_FOR_THE_FIRST_TIME', ComponentbuilderHelper::safeString($type, 'w'), ComponentbuilderHelper::safeString($values['a_view'], 'w')) . '</div></div>';
+					return '<div class="control-group '.$css_class.'"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED_FOR_THE_FIRST_TIME', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w')) . '</div></div>';
 				}
 			}
 		}
@@ -1756,12 +1795,12 @@ class ComponentbuilderModelAjax extends ListModel
 	protected function getSubformTable($idName, $data)
 	{
 		// make sure we convert the json to array
-		if (ComponentbuilderHelper::checkJson($data))
+		if (JsonHelper::check($data))
 		{
 			$data = json_decode($data, true);
 		}
 		// make sure we have an array
-		if (ComponentbuilderHelper::checkArray($data) && ComponentbuilderHelper::checkString($idName))
+		if (UtilitiesArrayHelper::check($data) && StringHelper::check($idName))
 		{ 
 			// Build heading
 			$head = array();
@@ -1777,7 +1816,7 @@ class ComponentbuilderModelAjax extends ListModel
 			}
 			// build the rows
 			$rows = array();
-			if (ComponentbuilderHelper::checkArray($data) && ComponentbuilderHelper::checkArray($head))
+			if (UtilitiesArrayHelper::check($data) && UtilitiesArrayHelper::check($head))
 			{
 				foreach ($data as $nr => $values)
 				{
@@ -1796,7 +1835,7 @@ class ComponentbuilderModelAjax extends ListModel
 				}
 			}
 			// build table
-			if (ComponentbuilderHelper::checkArray($rows) && ComponentbuilderHelper::checkArray($head))
+			if (UtilitiesArrayHelper::check($rows) && UtilitiesArrayHelper::check($head))
 			{
 				// set the number of rows
 				$this->rowNumber = count($rows);
@@ -1814,7 +1853,7 @@ class ComponentbuilderModelAjax extends ListModel
 			$value = $this->{$this->functionArray[$header]}($header, $value);
 		}
 		// if no value are set
-		if (!ComponentbuilderHelper::checkString($value))
+		if (!StringHelper::check($value))
 		{
 			$value = '-';
 		}
@@ -1839,7 +1878,7 @@ class ComponentbuilderModelAjax extends ListModel
 		if (isset($this->fieldsArray[$type]))
 		{
 			// set type name
-			$typeName = ComponentbuilderHelper::safeString($type, 'w');
+			$typeName = StringHelper::safe($type, 'w');
 			// get the view name & id
 			$values = $this->getViewID();
 			// check if we are in the correct view.
@@ -1865,7 +1904,7 @@ class ComponentbuilderModelAjax extends ListModel
 				// load the results
 				$result = array();
 				// return field table
-				if (ComponentbuilderHelper::checkArray($this->fieldsArray[$type]))
+				if (UtilitiesArrayHelper::check($this->fieldsArray[$type]))
 				{
 					foreach ($this->fieldsArray[$type] as $fieldName)
 					{
@@ -1875,7 +1914,7 @@ class ComponentbuilderModelAjax extends ListModel
 						}
 					}
 				}
-				elseif (ComponentbuilderHelper::checkString($this->fieldsArray[$type]))
+				elseif (StringHelper::check($this->fieldsArray[$type]))
 				{
 					if ($table = $this->getFieldTable($type, $key_get_value, $values['a_view'], $this->fieldsArray[$type], $typeName))
 					{
@@ -1883,12 +1922,12 @@ class ComponentbuilderModelAjax extends ListModel
 					}
 				}
 				// check if we have results
-				if (ComponentbuilderHelper::checkArray($result) && count($result) == 1)
+				if (UtilitiesArrayHelper::check($result) && count($result) == 1)
 				{
 					// return the display
 					return implode('', $result);
 				}
-				elseif (ComponentbuilderHelper::checkArray($result))
+				elseif (UtilitiesArrayHelper::check($result))
 				{
 					// return the display
 					return '<div>' . implode('</div><div>', $result) . '</div>';
@@ -1917,7 +1956,7 @@ class ComponentbuilderModelAjax extends ListModel
 			$getEdit =  method_exists('ComponentbuilderHelper', 'getEditButton');
 			// reset bucket
 			$bucket = array();
-			if (ComponentbuilderHelper::checkArray($value))
+			if (UtilitiesArrayHelper::check($value))
 			{
 				foreach ($value as $item)
 				{
@@ -1930,7 +1969,7 @@ class ComponentbuilderModelAjax extends ListModel
 							$edit = false;
 						}
 						// check if we should load some get
-						if ($edit && isset($this->itemKeys[$header]['get']) && ComponentbuilderHelper::checkString($this->itemKeys[$header]['get']) && method_exists(__CLASS__, $this->itemKeys[$header]['get']))
+						if ($edit && isset($this->itemKeys[$header]['get']) && StringHelper::check($this->itemKeys[$header]['get']) && method_exists(__CLASS__, $this->itemKeys[$header]['get']))
 						{
 							// gets
 							$this->itemNames[$this->itemKeys[$header]['table']][$item] .=  $this->{$this->itemKeys[$header]['get']}($item);
@@ -1962,7 +2001,7 @@ class ComponentbuilderModelAjax extends ListModel
 						$edit = false;
 					}
 					// check if we should load some get
-					if ($edit && isset($this->itemKeys[$header]['get']) && ComponentbuilderHelper::checkString($this->itemKeys[$header]['get']) && method_exists(__CLASS__, $this->itemKeys[$header]['get']))
+					if ($edit && isset($this->itemKeys[$header]['get']) && StringHelper::check($this->itemKeys[$header]['get']) && method_exists(__CLASS__, $this->itemKeys[$header]['get']))
 					{
 						// gets
 						$this->itemNames[$this->itemKeys[$header]['table']][$value] .=  $this->{$this->itemKeys[$header]['get']}($value);
@@ -1983,7 +2022,7 @@ class ComponentbuilderModelAjax extends ListModel
 				$bucket[] = $this->itemNames[$this->itemKeys[$header]['table']][$value] . $link;
 			}
 			// return found items
-			if (ComponentbuilderHelper::checkArray($bucket))
+			if (UtilitiesArrayHelper::check($bucket))
 			{
 				return implode('<br />', $bucket);
 			}
@@ -2065,8 +2104,8 @@ class ComponentbuilderModelAjax extends ListModel
 			{
 				$edit = (($button = ComponentbuilderHelper::getEditButton($result->id, 'template', 'templates', $ref)) !== false) ? $button : '';
 				$editget = (isset($result->dynamic_get) && $result->dynamic_get > 0 && ($button = ComponentbuilderHelper::getEditButton($result->dynamic_get, 'dynamic_get', 'dynamic_gets', $ref)) !== false) ? $button : '';
-				$result->name = (ComponentbuilderHelper::checkString($result->name)) ? $result->name : JText::_('COM_COMPONENTBUILDER_NONE_SELECTED');
-				$templateString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo \$this->loadTemplate('".ComponentbuilderHelper::safeString($result->alias)."'); ?&gt;</code> ".$edit."</td>";
+				$result->name = (StringHelper::check($result->name)) ? $result->name : JText::_('COM_COMPONENTBUILDER_NONE_SELECTED');
+				$templateString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo \$this->loadTemplate('".StringHelper::safe($result->alias)."'); ?&gt;</code> ".$edit."</td>";
 			}
 			// build the table
 			$table = '<h2>' . JText::_('COM_COMPONENTBUILDER_TEMPLATE_CODE_SNIPPETS') . '</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
@@ -2117,22 +2156,22 @@ class ComponentbuilderModelAjax extends ListModel
 			{
 				$edit = (($button = ComponentbuilderHelper::getEditButton($result->id, 'layout', 'layouts', $ref)) !== false) ? $button : '';
 				$editget = (isset($result->dynamic_get) && $result->dynamic_get > 0 && ($button = ComponentbuilderHelper::getEditButton($result->dynamic_get, 'dynamic_get', 'dynamic_gets', $ref)) !== false) ? $button : '';
-				$result->name = (ComponentbuilderHelper::checkString($result->name)) ? $result->name : JText::_('COM_COMPONENTBUILDER_NONE_SELECTED');
+				$result->name = (StringHelper::check($result->name)) ? $result->name : JText::_('COM_COMPONENTBUILDER_NONE_SELECTED');
 
 				switch ($result->gettype)
 				{
 					case 1:
 						// single
-						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . ComponentbuilderHelper::safeString($result->alias) . "', \$this->item); ?&gt;</code> " . $edit . "</td>";
+						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . StringHelper::safe($result->alias) . "', \$this->item); ?&gt;</code> " . $edit . "</td>";
 					break;
 					case 2:
 						// list
-						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . ComponentbuilderHelper::safeString($result->alias) . "', \$this->items); ?&gt;</code> " . $edit . "</td>";
+						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . StringHelper::safe($result->alias) . "', \$this->items); ?&gt;</code> " . $edit . "</td>";
 					break;
 					case 3:
 					case 4:
 						// custom
-						$result->getcustom = ComponentbuilderHelper::safeString($result->getcustom);
+						$result->getcustom = StringHelper::safe($result->getcustom);
 						if (substr($result->getcustom, 0, strlen('get')) == 'get')
 						{
 							$varName = substr($result->getcustom, strlen('get'));
@@ -2141,11 +2180,11 @@ class ComponentbuilderModelAjax extends ListModel
 						{
 							$varName = $result->getcustom;
 						}
-						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . ComponentbuilderHelper::safeString($result->alias) . "', \$this->" . $varName . "); ?&gt;</code> " . $edit . "</td>";
+						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . StringHelper::safe($result->alias) . "', \$this->" . $varName . "); ?&gt;</code> " . $edit . "</td>";
 					break;
 					default:
 						// no get
-						$layoutString[] = "<td>" . JText::_('COM_COMPONENTBUILDER_NONE_SELECTED') . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . ComponentbuilderHelper::safeString($result->alias) . "', [?]); ?&gt;</code> " . $edit . "</td>";
+						$layoutString[] = "<td>" . JText::_('COM_COMPONENTBUILDER_NONE_SELECTED') . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . StringHelper::safe($result->alias) . "', [?]); ?&gt;</code> " . $edit . "</td>";
 					break;
 				}
 			}
@@ -2213,17 +2252,17 @@ class ComponentbuilderModelAjax extends ListModel
 			}
 			// get the joined values (name)
 			$result->join_view_table = json_decode($result->join_view_table, true);
-			if (!ComponentbuilderHelper::checkArray($result->join_view_table))
+			if (!UtilitiesArrayHelper::check($result->join_view_table))
 			{
 				unset($result->join_view_table);
 			}
 			$result->join_db_table = json_decode($result->join_db_table, true);
-			if (!ComponentbuilderHelper::checkArray($result->join_db_table))
+			if (!UtilitiesArrayHelper::check($result->join_db_table))
 			{
 				unset($result->join_db_table);
 			}
 			// now load the joined values to the selection set
-			if (isset($result->join_view_table) && ComponentbuilderHelper::checkArray($result->join_view_table))
+			if (isset($result->join_view_table) && UtilitiesArrayHelper::check($result->join_view_table))
 			{
 				foreach ($result->join_view_table as $join_view_table)
 				{
@@ -2245,7 +2284,7 @@ class ComponentbuilderModelAjax extends ListModel
 				}
 				unset($result->join_view_table);
 			}
-			if (isset($result->join_db_table) && ComponentbuilderHelper::checkArray($result->join_db_table))
+			if (isset($result->join_db_table) && UtilitiesArrayHelper::check($result->join_db_table))
 			{
 				foreach ($result->join_db_table as $join_db_table)
 				{
@@ -2271,7 +2310,7 @@ class ComponentbuilderModelAjax extends ListModel
 			if ($result->addcalculation == 1)
 			{
 				$php_calculation = base64_decode($result->php_calculation);
-				$phpSelections = ComponentbuilderHelper::getAllBetween($php_calculation,'cal__',' ');
+				$phpSelections = GetHelper::allBetween($php_calculation,'cal__',' ');
 				$selections[] = array_unique($phpSelections);
 				unset($php_calculation);
 				unset($phpSelections);
@@ -2293,7 +2332,7 @@ class ComponentbuilderModelAjax extends ListModel
 					case 3:
 					case 4:
 					// custom
-					$result->getcustom = ComponentbuilderHelper::safeString($result->getcustom);
+					$result->getcustom = StringHelper::safe($result->getcustom);
 					if (substr($result->getcustom, 0, strlen('get')) == 'get')
 					{
 						$varName = substr($result->getcustom, strlen('get'));
@@ -2311,7 +2350,7 @@ class ComponentbuilderModelAjax extends ListModel
 				$buketName = 'displayData';
 			}
 			// now build the return values
-			if (ComponentbuilderHelper::checkArray($selections))
+			if (UtilitiesArrayHelper::check($selections))
 			{
 				$buket = array();
 				switch ($result->gettype)
@@ -2332,7 +2371,7 @@ class ComponentbuilderModelAjax extends ListModel
 				}
 				foreach ($selections as $selection)
 				{
-					if (ComponentbuilderHelper::checkArray($selection))
+					if (UtilitiesArrayHelper::check($selection))
 					{
 						foreach ($selection as $value)
 						{
@@ -2348,12 +2387,12 @@ class ComponentbuilderModelAjax extends ListModel
 						}
 					}
 				}
-				if (ComponentbuilderHelper::checkArray($selectionsList))
+				if (UtilitiesArrayHelper::check($selectionsList))
 				{
 					$buket[] = '<hr />';
 					foreach ($selectionsList as $name => $selectionList)
 					{
-						if (ComponentbuilderHelper::checkArray($selectionList))
+						if (UtilitiesArrayHelper::check($selectionList))
 						{
 							$ur = '&lt;?php echo $'.$name;
 							$cf = '; ?&gt;';
@@ -2391,11 +2430,11 @@ class ComponentbuilderModelAjax extends ListModel
 	protected function setListMethodName($names, $table, $as, $type)
 	{
 		$methodNames = array();
-		if (ComponentbuilderHelper::checkArray($names))
+		if (UtilitiesArrayHelper::check($names))
 		{
 			foreach ($names as $nr => $name)
 			{
-				if (ComponentbuilderHelper::checkString($name))
+				if (StringHelper::check($name))
 				{
 					if (strpos($name,'.') !== false)
 					{
@@ -2407,11 +2446,11 @@ class ComponentbuilderModelAjax extends ListModel
 					}
 					if ($nr > 0)
 					{
-						$methodNames[] = ComponentbuilderHelper::safeString($var,'F');
+						$methodNames[] = StringHelper::safe($var,'F');
 					}
 					else
 					{
-						$methodNames[] = ComponentbuilderHelper::safeString($var);
+						$methodNames[] = StringHelper::safe($var);
 					}
 				}
 			}
@@ -2420,16 +2459,16 @@ class ComponentbuilderModelAjax extends ListModel
 		{
 			// set view name
 			case 1:
-			$methodNames[] = ComponentbuilderHelper::safeString($this->getViewName($table),'F');
+			$methodNames[] = StringHelper::safe($this->getViewName($table),'F');
 			break;
 			// set db name
 			case 2:
-			$methodNames[] = ComponentbuilderHelper::safeString($table,'F');
+			$methodNames[] = StringHelper::safe($table,'F');
 			break;
 			
 		}
 		// make sure there is uniqe method names
-		$methodNames[] = ComponentbuilderHelper::safeString($as,'U');
+		$methodNames[] = StringHelper::safe($as,'U');
 		return $methodNames;
 	}
 
@@ -2458,7 +2497,7 @@ class ComponentbuilderModelAjax extends ListModel
 			$jinput = JFactory::getApplication()->input;
 			$return_here = $jinput->get('return_here', null, 'base64');
 			// set the return here value if not found
-			if (ComponentbuilderHelper::checkString($return_here))
+			if (StringHelper::check($return_here))
 			{
 				$return_here =  '&return=' . $return_here;
 			}
@@ -2485,7 +2524,7 @@ class ComponentbuilderModelAjax extends ListModel
 					{
 						if (!isset($target['not_base64'][$key]))
 						{
-							$value = ComponentbuilderHelper::openValidBase64($value, null);
+							$value = Base64Helper::open($value, null);
 						}
 						elseif ('json' === $target['not_base64'][$key] && 'xml' === $key) // just for field search
 						{
@@ -2502,17 +2541,17 @@ class ComponentbuilderModelAjax extends ListModel
 						if (strpos($value, '[CUSTOMC' . 'ODE=') !== false)
 						{
 							// get all custom codes in value
-							$bucket[$key] = ComponentbuilderHelper::getAllBetween($value, '[CUSTOMC' . 'ODE=', ']');
+							$bucket[$key] = GetHelper::allBetween($value, '[CUSTOMC' . 'ODE=', ']');
 						}
 						// check if field has string length
-						if (ComponentbuilderHelper::checkString($value))
+						if (StringHelper::check($value))
 						{
 							// see if the field needs some help :)
 							$_key = (isset($helper[$key])) ? $helper[$key] : $key;
 
 							// build the buttons
 							$buttons[$_key] = array();
-							if (($button = $this->getButton('custom_code', 3)) && ComponentbuilderHelper::checkString($button))
+							if (($button = $this->getButton('custom_code', 3)) && StringHelper::check($button))
 							{
 								$buttons[$_key]['_create'] = $button;
 							}
@@ -2520,7 +2559,7 @@ class ComponentbuilderModelAjax extends ListModel
 					}
 				}
 				// check if any values found
-				if (ComponentbuilderHelper::checkArray($bucket))
+				if (UtilitiesArrayHelper::check($bucket))
 				{
 					foreach ($bucket as $field => $customcodes)
 					{
@@ -2536,7 +2575,7 @@ class ComponentbuilderModelAjax extends ListModel
 							// see if we can get the button
 							if (!isset($buttons[$field][$key[0]]) && ($_id = ComponentbuilderHelper::getVar('custom_code', $key[0], 'function_name')) !== false
 								&& ($button = ComponentbuilderHelper::getEditTextButton($edit_icon . $key[0], $_id, 'custom_code', 'custom_codes', $return_here, 'com_componentbuilder', false, 'btn btn-small button-edit" style="margin: 0 0 5px 0;')) 
-								&& ComponentbuilderHelper::checkString($button))
+								&& StringHelper::check($button))
 							{
 								$buttons[$field][$key[0]] = $button;
 							}
@@ -2545,7 +2584,7 @@ class ComponentbuilderModelAjax extends ListModel
 				}
 			}
 			// only continue if we have buttons in array
-			if (ComponentbuilderHelper::checkArray($buttons, true))
+			if (UtilitiesArrayHelper::check($buttons, true))
 			{
 				return $buttons;
 			}
@@ -2556,7 +2595,7 @@ class ComponentbuilderModelAjax extends ListModel
 	public function checkFunctionName($name, $id)
 	{
 		$nameArray = (array) $this->splitAtUpperCase($name);
-		$name = ComponentbuilderHelper::safeString(implode(' ', $nameArray), 'cA');
+		$name = StringHelper::safe(implode(' ', $nameArray), 'cA');
 		if ($found = ComponentbuilderHelper::getVar('custom_code', $name, 'function_name', 'id'))
 		{
 			if ((int) $id !== (int) $found)
@@ -2615,7 +2654,7 @@ class ComponentbuilderModelAjax extends ListModel
 						{
 							if (!isset($target['not_base64'][$key]))
 							{
-								$value = ComponentbuilderHelper::openValidBase64($value, null);
+								$value = Base64Helper::open($value, null);
 							}
 							elseif ('json' === $target['not_base64'][$key] && 'xml' === $key) // just for field search
 							{
@@ -2668,13 +2707,13 @@ class ComponentbuilderModelAjax extends ListModel
 					}
 				}
 				// check if any values found
-				if (ComponentbuilderHelper::checkArray($bucket))
+				if (UtilitiesArrayHelper::check($bucket))
 				{
 					// get input
 					$jinput = JFactory::getApplication()->input;
 					$return_here = $jinput->get('return_here', null, 'base64');
 					// set the return here value if not found
-					if (ComponentbuilderHelper::checkString($return_here))
+					if (StringHelper::check($return_here))
 					{
 						$return_here =  '&return=' . $return_here;
 					}
@@ -2686,7 +2725,7 @@ class ComponentbuilderModelAjax extends ListModel
 					foreach ($bucket as $editId => $values)
 					{
 						if (($button = ComponentbuilderHelper::getEditTextButton($values['name'], $editId, $target['table'], $target['views'], $return_here, 'com_componentbuilder', false, ''))
-							&& ComponentbuilderHelper::checkString($button))
+							&& StringHelper::check($button))
 						{
 							$usedin[] = $button. ' (' . implode(', ', $values['fields']) . ')';
 						}
@@ -2716,9 +2755,9 @@ class ComponentbuilderModelAjax extends ListModel
 		if (isset($target['_start']))
 		{
 			// get all values
-			$allBetween = ComponentbuilderHelper::getAllBetween($value, $target['start'], $target['_start']);
+			$allBetween = GetHelper::allBetween($value, $target['start'], $target['_start']);
 			// just again make sure we found some
-			if (ComponentbuilderHelper::checkArray($allBetween))
+			if (UtilitiesArrayHelper::check($allBetween))
 			{
 				if (count((array) $allBetween) > 1)
 				{
@@ -2749,14 +2788,14 @@ class ComponentbuilderModelAjax extends ListModel
 			$starts[] = $target['start'];
 		}
 		// has any been found
-		if (ComponentbuilderHelper::checkArray($starts))
+		if (UtilitiesArrayHelper::check($starts))
 		{
 			foreach ($starts as $_start)
 			{
 				// get the base64 string
-				$base64 = ComponentbuilderHelper::getBetween($value, $_start, $target['end']);
+				$base64 = GetHelper::between($value, $_start, $target['end']);
 				// now open the base64 text
-				$tmp = ComponentbuilderHelper::openValidBase64($base64);
+				$tmp = Base64Helper::open($base64);
 				// insert it back into the value (so we still search the whole string)
 				$value = str_replace($base64, $tmp, $value);
 			}
@@ -3037,7 +3076,7 @@ class ComponentbuilderModelAjax extends ListModel
 						{
 							if (!isset($target['not_base64'][$key]))
 							{
-								$value = ComponentbuilderHelper::openValidBase64($value, null);
+								$value = Base64Helper::open($value, null);
 							}
 							elseif ('json' === $target['not_base64'][$key] && 'xml' === $key) // just for field search
 							{
@@ -3090,13 +3129,13 @@ class ComponentbuilderModelAjax extends ListModel
 					}
 				}
 				// check if any values found
-				if (ComponentbuilderHelper::checkArray($bucket))
+				if (UtilitiesArrayHelper::check($bucket))
 				{
 					// get input
 					$jinput = JFactory::getApplication()->input;
 					$return_here = $jinput->get('return_here', null, 'base64');
 					// set the return here value if not found
-					if (ComponentbuilderHelper::checkString($return_here))
+					if (StringHelper::check($return_here))
 					{
 						$return_here =  '&return=' . $return_here;
 					}
@@ -3108,7 +3147,7 @@ class ComponentbuilderModelAjax extends ListModel
 					foreach ($bucket as $editId => $values)
 					{
 						if (($button = ComponentbuilderHelper::getEditTextButton($values['name'], $editId, $target['table'], $target['views'], $return_here, 'com_componentbuilder', false, ''))
-							&& ComponentbuilderHelper::checkString($button))
+							&& StringHelper::check($button))
 						{
 							$placedin[] = $button. ' (' . implode(', ', $values['fields']) . ')';
 						}
@@ -3150,7 +3189,7 @@ class ComponentbuilderModelAjax extends ListModel
 
 	public function checkRuleName($name, $id)
 	{
-		$name = ComponentbuilderHelper::safeString($name);
+		$name = StringHelper::safe($name);
 		if ($found = ComponentbuilderHelper::getVar('validation_rule', $name, 'name', 'id'))
 		{
 			if ((int) $id !== (int) $found)
@@ -3235,7 +3274,7 @@ class ComponentbuilderModelAjax extends ListModel
 			$names = $db->loadAssocList('name', 'short_description');
 		}
 		// merge the arrays
-		$rules = ComponentbuilderHelper::mergeArrays(array($exitingNames, $names));
+		$rules = UtilitiesArrayHelper::merge(array($exitingNames, $names));
 		// sort the array
 		 ksort($rules);
 		// return the validation rules
@@ -3272,7 +3311,7 @@ class ComponentbuilderModelAjax extends ListModel
 			$field['subform'] = '<div class="control-label prop_removal">'. $properties->label . '</div><div class="controls prop_removal">' . $properties->input . '</div>';
 			$field['extra'] = '<div class="control-label prop_removal">'. $extras->label . '</div><div class="controls prop_removal">' . $extras->input . '</div>';
 			// check if we have PHP values
-			if (ComponentbuilderHelper::checkArray($field['php']))
+			if (UtilitiesArrayHelper::check($field['php']))
 			{
 				$field['textarea'] = array();
 				foreach($field['php'] as $name => $values)
@@ -3302,7 +3341,7 @@ class ComponentbuilderModelAjax extends ListModel
 		{
 			if (!in_array($extra, $options))
 			{
-				$value =  ComponentbuilderHelper::getValueFromXMLstring($xml, $extra, $confirmation);
+				$value =  FieldHelper::getValue($xml, $extra, $confirmation);
 				if ($confirmation !== $value)
 				{
 					$values['extraproperties' . $nr] = array('name' => $extra, 'value' => $value, 'desc' => JText::_($desc));
@@ -3311,7 +3350,7 @@ class ComponentbuilderModelAjax extends ListModel
 			}
 		}
 		// return only if extras founb
-		if (ComponentbuilderHelper::checkArray($values))
+		if (UtilitiesArrayHelper::check($values))
 		{
 			return $values;
 		}
@@ -3358,7 +3397,7 @@ class ComponentbuilderModelAjax extends ListModel
 			'layout' => 'joomla.form.field.subform.repeatable-table',
 			'multiple' => 'true',
 			'icon' => 'list',
-			'max' =>  (ComponentbuilderHelper::checkArray($nameListOptions)) ? (int) count($nameListOptions) : 4);
+			'max' =>  (UtilitiesArrayHelper::check($nameListOptions)) ? (int) count($nameListOptions) : 4);
 		// load the subform attributes
 		ComponentbuilderHelper::xmlAddAttributes($subformXML, $subformAttribute);
 		// now add the subform child form
@@ -3375,15 +3414,15 @@ class ComponentbuilderModelAjax extends ListModel
 		$nameXML = new SimpleXMLElement('<field/>');
 		// subform attributes
 		$nameAttribute = array(
-			'type' => (ComponentbuilderHelper::checkArray($nameListOptions)) ? 'list' : 'text',
+			'type' => (UtilitiesArrayHelper::check($nameListOptions)) ? 'list' : 'text',
 			'name' => 'name',
 			'label' => 'COM_COMPONENTBUILDER_PROPERTY',
 			'size' => '40',
 			'maxlength' => '150',
-			'class' => (ComponentbuilderHelper::checkArray($nameListOptions)) ? 'list_class field_list_name_options' : 'text_area',
+			'class' => (UtilitiesArrayHelper::check($nameListOptions)) ? 'list_class field_list_name_options' : 'text_area',
 			'filter' => 'STRING');
 		// add the hint only if not name list and description if name list is an array
-		if (ComponentbuilderHelper::checkArray($nameListOptions))
+		if (UtilitiesArrayHelper::check($nameListOptions))
 		{
 			$nameAttribute['description'] = 'COM_COMPONENTBUILDER_SELECTION';
 			$nameAttribute['multiple'] = 'false';
@@ -3396,7 +3435,7 @@ class ComponentbuilderModelAjax extends ListModel
 		// load the subform attributes
 		ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
 		// add name list if found
-		if (ComponentbuilderHelper::checkArray($nameListOptions))
+		if (UtilitiesArrayHelper::check($nameListOptions))
 		{
 			ComponentbuilderHelper::xmlAddOptions($nameXML, $nameListOptions);
 		}
@@ -3472,17 +3511,17 @@ class ComponentbuilderModelAjax extends ListModel
 				// value to check since there are false and null values even 0 in the values returned
 				$confirmation = '8qvZHoyuFYQqpj0YQbc6F3o5DhBlmS-_-a8pmCZfOVSfANjkmV5LG8pCdAY2JNYu6cB';
 				// make sure we have an array
-				if (ComponentbuilderHelper::checkArray($properties))
+				if (UtilitiesArrayHelper::check($properties))
 				{
 					foreach ($properties as $property)
 					{
 						if(isset($property['name']) && $_property === $property['name'])
 						{
 							// check if we should load the value
-							$value = ComponentbuilderHelper::getValueFromXMLstring($xml, $property['name'], $confirmation);
+							$value = FieldHelper::getValue($xml, $property['name'], $confirmation);
 							if ($confirmation === $value)
 							{
-								$value = (isset($property['example']) && ComponentbuilderHelper::checkString($property['example'])) ? $property['example'] : '';
+								$value = (isset($property['example']) && StringHelper::check($property['example'])) ? $property['example'] : '';
 							}
 							// return the found values
 							return array('value' => $value, 'desc' => $property['description']);
@@ -3511,7 +3550,7 @@ class ComponentbuilderModelAjax extends ListModel
 			$_fieldType = ComponentbuilderHelper::getVar('field', $global['a_id'], 'id', 'fieldtype');
 			$xmlDB = ComponentbuilderHelper::getVar('field', $global['a_id'], 'id', 'xml');
 			// check if it is a string
-			if (ComponentbuilderHelper::checkString($xmlDB))
+			if (StringHelper::check($xmlDB))
 			{
 				$xml = json_decode($xmlDB);
 			}
@@ -3810,12 +3849,12 @@ class ComponentbuilderModelAjax extends ListModel
 
 	public function getSnippets($libraries)
 	{
-		if (ComponentbuilderHelper::checkJson($libraries))
+		if (JsonHelper::check($libraries))
 		{
 			$libraries = json_decode($libraries, true);
 		}
 		// check if we have an array
-		if (ComponentbuilderHelper::checkArray($libraries))
+		if (UtilitiesArrayHelper::check($libraries))
 		{
 			// insure we only have int values
 			if ($libraries = $this->checkLibraries($libraries))
@@ -3849,12 +3888,12 @@ class ComponentbuilderModelAjax extends ListModel
 			if (2 == $type && $bundled = ComponentbuilderHelper::getVar('library', (int) $id, 'id', 'libraries'))
 			{
 				// make sure we have an array if it was json
-				if (ComponentbuilderHelper::checkJson($bundled))
+				if (JsonHelper::check($bundled))
 				{
 					$bundled = json_decode($bundled, true);
 				}
 				// load in the values if we have an array
-				if (ComponentbuilderHelper::checkArray($bundled))
+				if (UtilitiesArrayHelper::check($bundled))
 				{
 					foreach ($bundled as $lib)
 					{
@@ -3872,7 +3911,7 @@ class ComponentbuilderModelAjax extends ListModel
 			}
 		}, $libraries);
 		// check if we have any bundled libraries
-		if (ComponentbuilderHelper::checkArray($bucket))
+		if (UtilitiesArrayHelper::check($bucket))
 		{
 			foreach ($bucket as $lib)
 			{
@@ -3880,11 +3919,11 @@ class ComponentbuilderModelAjax extends ListModel
 			}
 		}
 		// check that we have libraries
-		if (ComponentbuilderHelper::checkArray($libraries))
+		if (UtilitiesArrayHelper::check($libraries))
 		{
 			$libraries = array_values(array_unique(array_filter($libraries, function($id){return is_int($id);})));
 			// check if we have any libraries remaining
-			if (ComponentbuilderHelper::checkArray($libraries))
+			if (UtilitiesArrayHelper::check($libraries))
 			{
 				return $libraries;
 			}
@@ -3928,7 +3967,7 @@ class ComponentbuilderModelAjax extends ListModel
 		if ($access)
 		{
 			// secure path
-			$path = ComponentbuilderHelper::safeString(str_replace('.json','',$path), 'filename', '', false).'.json';
+			$path = StringHelper::safe(str_replace('.json','',$path), 'filename', '', false).'.json';
 			// base path
 			$base_path = basename($path);
 			// set url
@@ -3939,7 +3978,7 @@ class ComponentbuilderModelAjax extends ListModel
 				return $this->saveSnippet($snippet, $status, $user);
 			}
 			// see if we have any errors from github
-			if (ComponentbuilderHelper::checkArray(ComponentbuilderHelper::$githubRepoDataErrors))
+			if (UtilitiesArrayHelper::check(ComponentbuilderHelper::$githubRepoDataErrors))
 			{
 				return array('message' => JText::sprintf('COM_COMPONENTBUILDER_ERROR_BR_S', implode('<br />', ComponentbuilderHelper::$githubRepoDataErrors)), 'status' => 'danger');
 			}

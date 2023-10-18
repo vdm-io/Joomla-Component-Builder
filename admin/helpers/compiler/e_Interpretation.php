@@ -15,6 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use VDM\Joomla\FOF\Encrypt\AES;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
@@ -80,6 +81,8 @@ class Interpretation extends Fields
 	 * The permissions Builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Permission.Action')->set($action, $nameView, $nameView);
+	 * @deprecated 3.3 or Use CFactory::_('Compiler.Builder.Permission.Global')->set($action, $nameView, $nameView);
 	 */
 	public $permissionBuilder = array();
 
@@ -87,6 +90,7 @@ class Interpretation extends Fields
 	 * The dashboard permissions builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Permission.Dashboard')->add('icon', $key, $value)
 	 */
 	public $permissionDashboard = array();
 
@@ -94,6 +98,7 @@ class Interpretation extends Fields
 	 * The permissions core
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Permission.Core')->set($nameView, $coreTarget, $action);
 	 */
 	public $permissionCore = array();
 
@@ -271,13 +276,13 @@ class Interpretation extends Fields
 		{
 			// set email helper in place with component name
 			$component = CFactory::_('Config')->component_code_name;
-			$Component = CFactory::_('Content')->get('Component');
+			$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
 			$target    = array('admin' => 'emailer');
 			$done      = CFactory::_('Utilities.Structure')->build($target, 'emailer', $component);
 			if ($done)
 			{
 				// the text for the file BAKING
-				CFactory::_('Content')->set_('emailer_' . $component, 'BAKING', ''); // <<-- to insure it gets updated
+				CFactory::_('Compiler.Builder.Content.Multi')->set('emailer_' . $component . '|BAKING', ''); // <<-- to insure it gets updated
 				// return the code need to load the abstract class
 				return PHP_EOL . "JLoader::register('" . $Component
 					. "Email', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/"
@@ -295,16 +300,16 @@ class Interpretation extends Fields
 	{
 		if (CFactory::_('Component')->get('add_license', 0) == 3)
 		{
-			if (!CFactory::_('Content')->exist('HELPER_SITE_LICENSE_LOCK'))
+			if (!CFactory::_('Compiler.Builder.Content.One')->exists('HELPER_SITE_LICENSE_LOCK'))
 			{
 				$_WHMCS = '_' . StringHelper::safe(
 						$this->uniquekey(10), 'U'
 					);
 				// add it to the system
-				CFactory::_('Content')->set('HELPER_SITE_LICENSE_LOCK', $this->setHelperLicenseLock($_WHMCS, 'site'));
-				CFactory::_('Content')->set('HELPER_LICENSE_LOCK', $this->setHelperLicenseLock($_WHMCS, 'admin'));
-				CFactory::_('Content')->set('LICENSE_LOCKED_INT', $this->setInitLicenseLock($_WHMCS));
-				CFactory::_('Content')->set('LICENSE_LOCKED_DEFINED',
+				CFactory::_('Compiler.Builder.Content.One')->set('HELPER_SITE_LICENSE_LOCK', $this->setHelperLicenseLock($_WHMCS, 'site'));
+				CFactory::_('Compiler.Builder.Content.One')->set('HELPER_LICENSE_LOCK', $this->setHelperLicenseLock($_WHMCS, 'admin'));
+				CFactory::_('Compiler.Builder.Content.One')->set('LICENSE_LOCKED_INT', $this->setInitLicenseLock($_WHMCS));
+				CFactory::_('Compiler.Builder.Content.One')->set('LICENSE_LOCKED_DEFINED',
 					PHP_EOL . PHP_EOL . 'defined(\'' . $_WHMCS
 					. '\') or die(JText:' . ':_(\'NIE_REG_NIE\'));');
 			}
@@ -312,10 +317,10 @@ class Interpretation extends Fields
 		else
 		{
 			// don't add it to the system
-			CFactory::_('Content')->set('HELPER_SITE_LICENSE_LOCK', '');
-			CFactory::_('Content')->set('HELPER_LICENSE_LOCK', '');
-			CFactory::_('Content')->set('LICENSE_LOCKED_INT', '');
-			CFactory::_('Content')->set('LICENSE_LOCKED_DEFINED', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('HELPER_SITE_LICENSE_LOCK', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('HELPER_LICENSE_LOCK', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('LICENSE_LOCKED_INT', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('LICENSE_LOCKED_DEFINED', '');
 		}
 	}
 
@@ -329,7 +334,7 @@ class Interpretation extends Fields
 	{
 		if (CFactory::_('Component')->get('add_license', 0) == 3)
 		{
-			if (!CFactory::_('Content')->exist_($view, 'BOOLMETHOD'))
+			if (!CFactory::_('Compiler.Builder.Content.Multi')->exists($view . '|BOOLMETHOD'))
 			{
 				$boolMethod = 'get' . StringHelper::safe(
 						$this->uniquekey(3, false, 'ddd'), 'W'
@@ -338,21 +343,21 @@ class Interpretation extends Fields
 						$this->uniquekey(3), 'W'
 					);
 				// add it to the system
-				CFactory::_('Content')->set_($view, 'LICENSE_LOCKED_SET_BOOL',
+				CFactory::_('Compiler.Builder.Content.Multi')->set($view . '|LICENSE_LOCKED_SET_BOOL',
 					$this->setBoolLicenseLock($boolMethod, $globalbool));
-				CFactory::_('Content')->set_($view, 'LICENSE_LOCKED_CHECK',
+				CFactory::_('Compiler.Builder.Content.Multi')->set($view . '|LICENSE_LOCKED_CHECK',
 					$this->checkStatmentLicenseLocked($boolMethod));
-				CFactory::_('Content')->set_($view, 'LICENSE_TABLE_LOCKED_CHECK',
+				CFactory::_('Compiler.Builder.Content.Multi')->set($view . '|LICENSE_TABLE_LOCKED_CHECK',
 					$this->checkStatmentLicenseLocked($boolMethod, '$table'));
-				CFactory::_('Content')->set_($view, 'BOOLMETHOD', $boolMethod);
+				CFactory::_('Compiler.Builder.Content.Multi')->set($view . '|BOOLMETHOD', $boolMethod);
 			}
 		}
 		else
 		{
 			// don't add it to the system
-			CFactory::_('Content')->set_($view, 'LICENSE_LOCKED_SET_BOOL', '');
-			CFactory::_('Content')->set_($view, 'LICENSE_LOCKED_CHECK', '');
-			CFactory::_('Content')->set_($view, 'LICENSE_TABLE_LOCKED_CHECK', '');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($view . '|LICENSE_LOCKED_SET_BOOL', '');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($view . '|LICENSE_LOCKED_CHECK', '');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($view . '|LICENSE_TABLE_LOCKED_CHECK', '');
 		}
 	}
 
@@ -478,7 +483,7 @@ class Interpretation extends Fields
 		$init[] = PHP_EOL . "if (!defined('" . $_WHMCS . "'))";
 		$init[] = "{";
 		$init[] = Indent::_(1) . "\$allow = "
-			. CFactory::_('Content')->get('Component')
+			. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 			. "Helper::isGenuine();";
 		$init[] = Indent::_(1) . "if (\$allow)";
 		$init[] = Indent::_(1) . "{";
@@ -505,7 +510,7 @@ class Interpretation extends Fields
 			$key = CFactory::_('Component')->get('whmcs_key');
 
 			// Get the encryption object.
-			$basic = new FOFEncryptAes($basickey);
+			$basic = new AES($basickey);
 			if ($basickey && $key === base64_encode(
 					base64_decode((string) $key, true)
 				))
@@ -798,33 +803,23 @@ class Interpretation extends Fields
 	public function setGetCryptKey()
 	{
 		// WHMCS_ENCRYPT_FILE
-		CFactory::_('Content')->set('WHMCS_ENCRYPT_FILE', '');
+		CFactory::_('Compiler.Builder.Content.One')->set('WHMCS_ENCRYPT_FILE', '');
 		// check if encryption is ative
-		if ((isset($this->basicFieldModeling)
-				&& ArrayHelper::check(
-					$this->basicFieldModeling
-				))
-			|| (isset($this->mediumFieldModeling)
-				&& ArrayHelper::check(
-					$this->mediumFieldModeling
-				))
-			|| (isset($this->whmcsFieldModeling)
-				&& ArrayHelper::check(
-					$this->whmcsFieldModeling
-				))
+		if (CFactory::_('Compiler.Builder.Model.Basic.Field')->isActive()
+			|| CFactory::_('Compiler.Builder.Model.Medium.Field')->isActive()
+			|| CFactory::_('Compiler.Builder.Model.Whmcs.Field')->isActive()
 			|| CFactory::_('Component')->get('add_license'))
 		{
-			if (isset($this->whmcsFieldModeling)
-				&& ArrayHelper::check($this->whmcsFieldModeling)
+			if (CFactory::_('Compiler.Builder.Model.Whmcs.Field')->isActive()
 				|| CFactory::_('Component')->get('add_license'))
 			{
 				// set whmcs encrypt file into place
 				$target = array('admin' => 'whmcs');
 				$done   = CFactory::_('Utilities.Structure')->build($target, 'whmcs');
 				// the text for the file WHMCS_ENCRYPTION_BODY
-				CFactory::_('Content')->set_('whmcs', 'WHMCS_ENCRYPTION_BODY', $this->setWHMCSCryption());
+				CFactory::_('Compiler.Builder.Content.Multi')->set('whmcs' . '|WHMCS_ENCRYPTION_BODY', $this->setWHMCSCryption());
 				// ENCRYPT_FILE
-				CFactory::_('Content')->set('WHMCS_ENCRYPT_FILE', PHP_EOL . Indent::_(3) . "<filename>whmcs.php</filename>");
+				CFactory::_('Compiler.Builder.Content.One')->set('WHMCS_ENCRYPT_FILE', PHP_EOL . Indent::_(3) . "<filename>whmcs.php</filename>");
 			}
 			// get component name
 			$component = CFactory::_('Config')->component_code_name;
@@ -851,10 +846,7 @@ class Interpretation extends Fields
 				. "\$params = JComponentHelper::getParams('com_" . $component
 				. "', true);";
 			// add the basic option
-			if (isset($this->basicFieldModeling)
-				&& ArrayHelper::check(
-					$this->basicFieldModeling
-				))
+			if (CFactory::_('Compiler.Builder.Model.Basic.Field')->isActive())
 			{
 				$function[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " Basic Encryption Type";
@@ -870,10 +862,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(2) . "}";
 			}
 			// add the medium option
-			if (isset($this->mediumFieldModeling)
-				&& ArrayHelper::check(
-					$this->mediumFieldModeling
-				))
+			if (CFactory::_('Compiler.Builder.Model.Medium.Field')->isActive())
 			{
 				$function[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " Medium Encryption Type";
@@ -906,8 +895,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(2) . "}";
 			}
 			// add the whmcs option
-			if (isset($this->whmcsFieldModeling)
-				&& ArrayHelper::check($this->whmcsFieldModeling)
+			if (CFactory::_('Compiler.Builder.Model.Whmcs.Field')->isActive()
 				|| CFactory::_('Component')->get('add_license'))
 			{
 				$function[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
@@ -933,10 +921,7 @@ class Interpretation extends Fields
 			$function[] = PHP_EOL . Indent::_(2) . "return \$default;";
 			$function[] = Indent::_(1) . "}";
 			// set the getMediumCryptKey class/method
-			if (isset($this->mediumFieldModeling)
-				&& ArrayHelper::check(
-					$this->mediumFieldModeling
-				))
+			if (CFactory::_('Compiler.Builder.Model.Medium.Field')->isActive())
 			{
 				$function[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 				$function[] = Indent::_(1) . " *	The Medium Encryption Key";
@@ -1050,7 +1035,7 @@ class Interpretation extends Fields
 	public function setVersionController()
 	{
 		if (CFactory::_('Component')->isArray('version_update')
-			|| CFactory::_('Builder.Update.Mysql')->isActive())
+			|| CFactory::_('Compiler.Builder.Update.Mysql')->isActive())
 		{
 			$updateXML = array();
 			// add the update server
@@ -1079,13 +1064,13 @@ class Interpretation extends Fields
 			}
 			// add the dynamic sql if not already added
 			if ($addDynamicSQL
-				&& CFactory::_('Builder.Update.Mysql')->isActive())
+				&& CFactory::_('Compiler.Builder.Update.Mysql')->isActive())
 			{
 				// add the dynamic sql
 				$this->setDynamicUpdateXMLSQL($updateXML);
 			}
 			// add the new active version if needed
-			if ($addActive && CFactory::_('Builder.Update.Mysql')->isActive())
+			if ($addActive && CFactory::_('Compiler.Builder.Update.Mysql')->isActive())
 			{
 				// add the dynamic sql
 				$this->setDynamicUpdateXMLSQL($updateXML, $addActive);
@@ -1103,7 +1088,7 @@ class Interpretation extends Fields
 				$name   = explode('.xml', $name)[0];
 				$target = array('admin' => $name);
 				CFactory::_('Utilities.Structure')->build($target, 'update_server');
-				CFactory::_('Content')->set_($name, 'UPDATE_SERVER_XML', implode(PHP_EOL, $updateXML));
+				CFactory::_('Compiler.Builder.Content.Multi')->set($name . '|UPDATE_SERVER_XML', implode(PHP_EOL, $updateXML));
 
 				// set the Update server file name
 				$this->updateServerFileName = $name;
@@ -1119,21 +1104,21 @@ class Interpretation extends Fields
 			$updateServer[] = Indent::_(2)
 				. '<server type="extension" enabled="1" element="com_'
 				. CFactory::_('Config')->component_code_name . '" name="'
-				. CFactory::_('Content')->get('Component_name') . '">' . CFactory::_('Component')->get('update_server_url')
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component_name') . '">' . CFactory::_('Component')->get('update_server_url')
 				. '</server>';
 			$updateServer[] = Indent::_(1) . '</updateservers>';
 			// return the array to string
 			$updateServer = implode(PHP_EOL, $updateServer);
 			// add update server details to component XML file
-			CFactory::_('Content')->set('UPDATESERVER', $updateServer);
+			CFactory::_('Compiler.Builder.Content.One')->set('UPDATESERVER', $updateServer);
 		}
 		else
 		{
 			// add update server details to component XML file
-			CFactory::_('Content')->set('UPDATESERVER', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('UPDATESERVER', '');
 		}
 		// ensure to update Component version data
-		if (CFactory::_('Builder.Update.Mysql')->isActive())
+		if (CFactory::_('Compiler.Builder.Update.Mysql')->isActive())
 		{
 			$buket = array();
 			$nr    = 0;
@@ -1196,7 +1181,7 @@ class Interpretation extends Fields
 			$update_['version'] = CFactory::_('Component')->get('old_component_version');
 			// setup SQL
 			$update_['mysql'] = trim(
-				implode(PHP_EOL . PHP_EOL, CFactory::_('Builder.Update.Mysql')->active)
+				implode(PHP_EOL . PHP_EOL, CFactory::_('Compiler.Builder.Update.Mysql')->active)
 			);
 			// setup URL
 			if (isset($this->lastupdateURL))
@@ -1258,12 +1243,12 @@ class Interpretation extends Fields
 		// add dynamic SQL
 		$force = false;
 		if ($addDynamicSQL
-			&& CFactory::_('Builder.Update.Mysql')->isActive()
+			&& CFactory::_('Compiler.Builder.Update.Mysql')->isActive()
 			&& CFactory::_('Component')->get('old_component_version') == $update['version'])
 		{
 			$searchMySQL = preg_replace('/\s+/', '', (string) $update['mysql']);
 			// add the updates to the SQL only if not found
-			foreach (CFactory::_('Builder.Update.Mysql')->active as $search => $query)
+			foreach (CFactory::_('Compiler.Builder.Update.Mysql')->active as $search => $query)
 			{
 				if (strpos($searchMySQL, $search) === false)
 				{
@@ -1282,7 +1267,7 @@ class Interpretation extends Fields
 			$target = array('admin' => $name);
 			CFactory::_('Utilities.Structure')->build($target, 'sql_update', $update['version']);
 			$_name = preg_replace('/[\.]+/', '_', (string) $update['version']);
-			CFactory::_('Content')->set_($name . '_' . $_name, 'UPDATE_VERSION_MYSQL',
+			CFactory::_('Compiler.Builder.Content.Multi')->set($name . '_' . $_name . '|UPDATE_VERSION_MYSQL',
 				$update['mysql']
 			);
 		}
@@ -1319,9 +1304,9 @@ class Interpretation extends Fields
 			// build update xml
 			$updateXML[] = Indent::_(1) . "<update>";
 			$updateXML[] = Indent::_(2) . "<name>"
-				. CFactory::_('Content')->get('Component_name') . "</name>";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component_name') . "</name>";
 			$updateXML[] = Indent::_(2) . "<description>"
-				. CFactory::_('Content')->get('SHORT_DESCRIPTION') . "</description>";
+				. CFactory::_('Compiler.Builder.Content.One')->get('SHORT_DESCRIPTION') . "</description>";
 			$updateXML[] = Indent::_(2) . "<element>$u_element</element>";
 			$updateXML[] = Indent::_(2) . "<type>$u_server_type</type>";
 			// check if we should add the target client value
@@ -1332,7 +1317,7 @@ class Interpretation extends Fields
 			$updateXML[] = Indent::_(2) . "<version>" . $update['version']
 				. "</version>";
 			$updateXML[] = Indent::_(2) . '<infourl title="'
-				. CFactory::_('Content')->get('Component_name') . '!">' . CFactory::_('Content')->get('AUTHORWEBSITE') . '</infourl>';
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component_name') . '!">' . CFactory::_('Compiler.Builder.Content.One')->get('AUTHORWEBSITE') . '</infourl>';
 			$updateXML[] = Indent::_(2) . "<downloads>";
 			if (!isset($update['url'])
 				|| !StringHelper::check(
@@ -1349,10 +1334,10 @@ class Interpretation extends Fields
 			$updateXML[] = Indent::_(3) . "<tag>$u_state</tag>";
 			$updateXML[] = Indent::_(2) . "</tags>";
 			$updateXML[] = Indent::_(2) . "<maintainer>"
-				. CFactory::_('Content')->get('AUTHOR')
+				. CFactory::_('Compiler.Builder.Content.One')->get('AUTHOR')
 				. "</maintainer>";
 			$updateXML[] = Indent::_(2) . "<maintainerurl>"
-				. CFactory::_('Content')->get('AUTHORWEBSITE') . "</maintainerurl>";
+				. CFactory::_('Compiler.Builder.Content.One')->get('AUTHORWEBSITE') . "</maintainerurl>";
 			$updateXML[] = Indent::_(2)
 				. '<targetplatform name="joomla" version="' . $u_target_version . '"/>';
 			$updateXML[] = Indent::_(1) . "</update>";
@@ -1392,11 +1377,11 @@ class Interpretation extends Fields
 			if ($admindone && $sitedone)
 			{
 				// HELP
-				CFactory::_('Content')->set('HELP', $this->setHelp(1));
+				CFactory::_('Compiler.Builder.Content.One')->set('HELP', $this->setHelp(1));
 				// HELP_SITE
-				CFactory::_('Content')->set('HELP_SITE', $this->setHelp(2));
+				CFactory::_('Compiler.Builder.Content.One')->set('HELP_SITE', $this->setHelp(2));
 				// to make sure the file is updated TODO
-				CFactory::_('Content')->set_('help', 'BLABLA', 'blabla');
+				CFactory::_('Compiler.Builder.Content.Multi')->set('help' . '|BLABLA', 'blabla');
 
 				return true;
 			}
@@ -1509,7 +1494,7 @@ class Interpretation extends Fields
 		if (CFactory::_('Config')->get('add_eximport', false))
 		{
 			// we use the company name set in the GUI
-			$company_name = CFactory::_('Content')->get('COMPANYNAME');
+			$company_name = CFactory::_('Compiler.Builder.Content.One')->get('COMPANYNAME');
 			// start building the xml function
 			$exel   = array();
 			$exel[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
@@ -2265,7 +2250,7 @@ class Interpretation extends Fields
 					$xml .= PHP_EOL . Indent::_(1) . '<fields name="params">';
 					$xml .= PHP_EOL . Indent::_(2)
 						. '<fieldset name="basic" label="COM_'
-						. CFactory::_('Content')->get('COMPONENT') . '"';
+						. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . '"';
 					$xml .= PHP_EOL . Indent::_(3)
 						. 'addrulepath="/administrator/components/com_'
 						. CFactory::_('Config')->component_code_name . '/models/rules"';
@@ -2427,22 +2412,18 @@ class Interpretation extends Fields
 					}
 
 					// set the method defaults
-					if (($default = $this->setCustomViewMethodDefaults(
-							$the_get, $code
-						)) !== false)
+					if (($default = $this->setCustomViewMethodDefaults($the_get, $code)) !== false)
 					{
-						if (($join_field_ = CFactory::_('Registry')->get('builder.site_dynamic_get.' . CFactory::_('Config')->build_target .
-								'.' . $default['code'] . '.' . $default['as'] . '.' . $default['join_field'], null)) !== null
+						if (($join_field_ = CFactory::_('Compiler.Builder.Site.Dynamic.Get')->get(CFactory::_('Config')->build_target .
+								'.' . $default['code'] . '.' . $default['as'] . '.' . $default['join_field'])) !== null
 							&& !in_array($check, $mainAsArray))
 						{
 							// load to other query
-							if (!isset($this->otherQuery[CFactory::_('Config')->build_target][$default['code']][$join_field_][$default['valueName']]))
-							{
-								$this->otherQuery[CFactory::_('Config')->build_target][$default['code']][$join_field_][$default['valueName']]
-									= '';
-							}
-							$this->otherQuery[CFactory::_('Config')->build_target][$default['code']][$join_field_][$default['valueName']]
-								.= $getItem;
+							CFactory::_('Compiler.Builder.Other.Query')->add(
+								CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $join_field_ . '.' . $default['valueName'],
+								$getItem,
+								false
+							);
 						}
 						else
 						{
@@ -2536,7 +2517,7 @@ class Interpretation extends Fields
 
 								$filter .= PHP_EOL . PHP_EOL . Indent::_(1)
 									. $tab . Indent::_(1) . "if ("
-									. CFactory::_('Content')->get('Component')
+									. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 									. "Helper::checkArray(" . $string . "->"
 									. $field . "))";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
@@ -2589,7 +2570,7 @@ class Interpretation extends Fields
 									. $as . " based on repeatable value";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(1) . "if ("
-									. CFactory::_('Content')->get('Component')
+									. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 									. "Helper::checkString(" . $string . "->"
 									. $field . "))";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
@@ -2600,7 +2581,7 @@ class Interpretation extends Fields
 									. $string . "->" . $field . ",true);";
 								$filter .= PHP_EOL . Indent::_(2) . $tab
 									. Indent::_(1) . "if ("
-									. CFactory::_('Content')->get('Component')
+									. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 									. "Helper::checkArray(\$array))";
 								$filter .= PHP_EOL . Indent::_(2) . $tab
 									. Indent::_(1) . "{";
@@ -2718,7 +2699,8 @@ class Interpretation extends Fields
 					if ('json' === $decode)
 					{
 						$if = PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "if (" . CFactory::_('Content')->get('Component') . "Helper::checkJson("
+							. "if (isset(" . $string . "->" . $field . ") && "
+							. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkJson("
 							. $string . "->" . $field . "))" . PHP_EOL
 							. Indent::_(1) . $tab . Indent::_(1) . "{";
 						// json_decode
@@ -2740,7 +2722,7 @@ class Interpretation extends Fields
 					elseif (strpos((string) $decode, '_encryption') !== false
 						|| 'expert_mode' === $decode)
 					{
-						foreach ($this->cryptionTypes as $cryptionType)
+						foreach (CFactory::_('Config')->cryption_types as $cryptionType)
 						{
 							if ($cryptionType . '_encryption' === $decode
 								|| $cryptionType . '_mode' === $decode)
@@ -2763,10 +2745,8 @@ class Interpretation extends Fields
 										. "->decryptString(" . $string . "->"
 										. $field . "), " . '"\0"' . ");";
 								}
-								elseif (isset(
-									$this->{$cryptionType
-									. 'FieldModeling'}[$array['admin_view']][$field]
-								))
+								elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->
+									exists($array['admin_view'] . '.' . $field))
 								{
 									$_placeholder_for_field
 										= array('[[[field]]]' => $string
@@ -2776,13 +2756,13 @@ class Interpretation extends Fields
 										. Indent::_(1) . implode(
 											PHP_EOL . Indent::_(1) . $tab
 											. Indent::_(1),
-											$this->{$cryptionType
-											. 'FieldModeling'}[$array['admin_view']][$field]['get']
+											CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->get(
+												$array['admin_view'] . '.' . $field . '.get', ['error'])
 										), $_placeholder_for_field
 									);
 								}
 								// activate site decryption
-								$this->siteDecrypt[$cryptionType][$code] = true;
+								CFactory::_('Compiler.Builder.Site.Decrypt')->set("{$cryptionType}.{$code}", true);
 							}
 						}
 					}
@@ -2818,7 +2798,7 @@ class Interpretation extends Fields
 		$fieldPrepare = '';
 		$runplugins   = false;
 		// set component
-		$Component = CFactory::_('Content')->get('Component');
+		$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
 		// set context
 		$context = (isset($get['context'])) ? $get['context'] : $code;
 		$context = 'com_' . CFactory::_('Config')->component_code_name . '.' . $context;
@@ -2918,7 +2898,7 @@ class Interpretation extends Fields
 						. $field . " has uikit components that must be loaded.";
 					$fieldUikit .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
 						. "\$this->uikitComp = "
-						. CFactory::_('Content')->get('Component') . "Helper::getUikitComp(" . $string . "->"
+						. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::getUikitComp(" . $string . "->"
 						. $field . ",\$this->uikitComp);";
 				}
 			}
@@ -2952,19 +2932,17 @@ class Interpretation extends Fields
 							. Indent::_(1) . Placefix::_h("STRING") . "->"
 							. $default['valueName'] . " = \$this->get"
 							. $default['methodName'] . "(" . Placefix::_h("STRING")  . "->"
-							. CFactory::_('Registry')->
-								get('builder.get_as_lookup.' . $get['key'] . '.' . $get['on_field'], 'Error')
+							. CFactory::_('Compiler.Builder.Get.As.Lookup')->
+								get($get['key'] . '.' . $get['on_field'], 'Error')
 							. ");";
-						$join_field_ = CFactory::_('Registry')->get('builder.site_dynamic_get.' . CFactory::_('Config')->build_target .
+						$join_field_ = CFactory::_('Compiler.Builder.Site.Dynamic.Get')->get(CFactory::_('Config')->build_target .
 							'.' . $default['code'] . '.' . $default['as'] . '.' . $default['join_field'], 'ZZZ');
 						// load to other join
-						if (!isset($this->otherJoin[CFactory::_('Config')->build_target][$default['code']][$join_field_][$default['valueName']]))
-						{
-							$this->otherJoin[CFactory::_('Config')->build_target][$default['code']][$join_field_][$default['valueName']]
-								= '';
-						}
-						$this->otherJoin[CFactory::_('Config')->build_target][$default['code']][$join_field_][$default['valueName']]
-							.= $otherJoin;
+						CFactory::_('Compiler.Builder.Other.Join')->add(
+							CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $join_field_ . '.' . $default['valueName'],
+							$otherJoin,
+							false
+						);
 					}
 					else
 					{
@@ -2977,8 +2955,8 @@ class Interpretation extends Fields
 							. Indent::_(1) . $string . "->"
 							. $default['valueName'] . " = \$this->get"
 							. $default['methodName'] . "(" . $string . "->"
-							. CFactory::_('Registry')->
-								get('builder.get_as_lookup.' . $get['key'] . '.' . $get['on_field'], 'Error')
+							. CFactory::_('Compiler.Builder.Get.As.Lookup')->
+								get($get['key'] . '.' . $get['on_field'], 'Error')
 							. ");";
 					}
 				}
@@ -2994,17 +2972,15 @@ class Interpretation extends Fields
 	{
 		// check if this function is not linked to the main call
 		list($aJoin) = explode('.', (string) $get['on_field']);
-		if (ArrayHelper::check($asBucket)
-			&& in_array(
-				$aJoin, $asBucket
-			))
+		if (ArrayHelper::check($asBucket) && in_array($aJoin, $asBucket))
 		{
 			return false;
 		}
 		// default fallback
-		elseif (CFactory::_('Registry')->
-			exists('builder.site_dynamic_get.' . CFactory::_('Config')->build_target .
-				'.' . $default['code'] . '.' . $default['as'] . '.' . $default['join_field']))
+		elseif (CFactory::_('Compiler.Builder.Site.Dynamic.Get')->exists(
+			CFactory::_('Config')->build_target . '.' . $default['code'] . '.' .
+			$default['as'] . '.' . $default['join_field']
+		))
 		{
 			return true;
 		}
@@ -3028,6 +3004,7 @@ class Interpretation extends Fields
 						'trim', explode('.', (string) $ter['table_key'])
 					);
 				}
+				$path = $code . '.' . $ter['key'] . '.' . $as . '.' . $field;
 				switch ($ter['filter_type'])
 				{
 					case 1:
@@ -3051,14 +3028,14 @@ class Interpretation extends Fields
 						break;
 					case 4:
 						// COM_COMPONENTBUILDER_DYNAMIC_GET_USER_GROUPS
-						$decodeChecker
-							= $this->siteFieldData['decode'][$code][$ter['key']][$as][$field];
+						$decodeChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->
+							get('decode.' . $path);
 						if (ArrayHelper::check($decodeChecker)
 							|| $ter['state_key'] === 'array')
 						{
 							// set needed fields to filter after query
-							$this->siteFieldDecodeFilter[CFactory::_('Config')->build_target][$code][$ter['key']][$as][$field]
-								= $ter;
+							CFactory::_('Compiler.Builder.Site.Field.Decode.Filter')->
+								set(CFactory::_('Config')->build_target . '.' . $path, $ter);
 						}
 						else
 						{
@@ -3100,7 +3077,7 @@ class Interpretation extends Fields
 								. "\$array = " . $ter['state_key'] . ";";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. "if (isset(\$array) && "
-								. CFactory::_('Content')->get('Component')
+								. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 								. "Helper::checkArray(\$array))";
 							$string .= PHP_EOL . Indent::_(2) . $tab . "{";
 							$string .= PHP_EOL . Indent::_(2) . $tab
@@ -3129,7 +3106,7 @@ class Interpretation extends Fields
 								. "\$checkValue = " . $ter['state_key'] . ";";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. "if (isset(\$checkValue) && "
-								. CFactory::_('Content')->get('Component')
+								. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 								. "Helper::checkString(\$checkValue))";
 							$string .= PHP_EOL . Indent::_(2) . $tab . "{";
 							$string .= PHP_EOL . Indent::_(2) . $tab
@@ -3158,18 +3135,13 @@ class Interpretation extends Fields
 						}
 						break;
 					case 9:
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_ARRAY_VALUE
-						$string = "";
-						// set needed fields to filter after query
-						$this->siteFieldDecodeFilter[CFactory::_('Config')->build_target][$code][$ter['key']][$as][$field]
-							= $ter;
-						break;
 					case 10:
+						// COM_COMPONENTBUILDER_DYNAMIC_GET_ARRAY_VALUE
 						// COM_COMPONENTBUILDER_DYNAMIC_GET_REPEATABLE_VALUE
 						$string = "";
 						// set needed fields to filter after query
-						$this->siteFieldDecodeFilter[CFactory::_('Config')->build_target][$code][$ter['key']][$as][$field]
-							= $ter;
+						CFactory::_('Compiler.Builder.Site.Field.Decode.Filter')->
+							set(CFactory::_('Config')->build_target . '.' . $path, $ter);
 						break;
 					case 11:
 						// COM_COMPONENTBUILDER_DYNAMIC_GET_OTHER
@@ -3191,17 +3163,15 @@ class Interpretation extends Fields
 				if (StringHelper::check($string))
 				{
 					// sort where
-					if ($as === 'a'
-						|| CFactory::_('Registry')->
-							exists('builder.site_main_get.' . CFactory::_('Config')->build_target .
-								'.' . $code . '.' . $as))
+					if ($as === 'a' || CFactory::_('Compiler.Builder.Site.Main.Get')->
+						exists(CFactory::_('Config')->build_target . '.' . $code . '.' . $as))
 					{
 						$filters .= $string;
 					}
 					elseif ($as !== 'a')
 					{
-						$this->otherFilter[CFactory::_('Config')->build_target][$code][$as][$field]
-							= $string;
+						CFactory::_('Compiler.Builder.Other.Filter')->
+							set(CFactory::_('Config')->build_target . '.' . $code . '.' . $as . '.' . $field, $string);;
 					}
 				}
 			}
@@ -3223,18 +3193,18 @@ class Interpretation extends Fields
 				// set the string
 				$string = "\$query->group('" . $gr['table_key'] . "');";
 				// sort where
-				if ($as === 'a'
-					|| CFactory::_('Registry')->
-						exists('builder.site_main_get.' . CFactory::_('Config')->build_target .
-							'.' . $code . '.' . $as))
+				if ($as === 'a' || CFactory::_('Compiler.Builder.Site.Main.Get')->
+					exists(CFactory::_('Config')->build_target . '.' . $code . '.' . $as))
 				{
 					$grouping .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
 						. $string;
 				}
 				else
 				{
-					$this->otherGroup[CFactory::_('Config')->build_target][$code][$as][$field]
-						= PHP_EOL . Indent::_(2) . $string;
+					CFactory::_('Compiler.Builder.Other.Group')->set(
+						CFactory::_('Config')->build_target . '.' . $code . '.' . $as . '.' . $field,
+						PHP_EOL . Indent::_(2) . $string
+					);
 				}
 			}
 		}
@@ -3265,18 +3235,17 @@ class Interpretation extends Fields
 						. $or['direction'] . "');";
 				}
 				// sort where
-				if ($as === 'a'
-					|| CFactory::_('Registry')->
-						exists('builder.site_main_get.' . CFactory::_('Config')->build_target .
-							'.' . $code . '.' . $as))
+				if ($as === 'a' || CFactory::_('Compiler.Builder.Site.Main.Get')->
+					exists(CFactory::_('Config')->build_target . '.' . $code . '.' . $as))
 				{
-					$ordering .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-						. $string;
+					$ordering .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . $string;
 				}
 				else
 				{
-					$this->otherOrder[CFactory::_('Config')->build_target][$code][$as][$field]
-						= PHP_EOL . Indent::_(2) . $string;
+					CFactory::_('Compiler.Builder.Other.Order')->set(
+						CFactory::_('Config')->build_target . '.' . $code . '.' . $as . '.' . $field,
+						PHP_EOL . Indent::_(2) . $string
+					);
 				}
 			}
 		}
@@ -3344,7 +3313,7 @@ class Interpretation extends Fields
 						|| $whe['operator'] === 'NOT IN')
 					{
 						$string = "if (isset(" . $whe['value_key'] . ") && "
-							. CFactory::_('Content')->get('Component') . "Helper::checkArray("
+							. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray("
 							. $whe['value_key'] . "))";
 						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(1)
 							. "{";
@@ -3375,18 +3344,17 @@ class Interpretation extends Fields
 							. $whe['operator'] . $value;
 					}
 					// sort where
-					if ($as === 'a'
-						|| CFactory::_('Registry')->
-							exists('builder.site_main_get.' . CFactory::_('Config')->build_target .
-								'.' . $code . '.' . $as))
+					if ($as === 'a' || CFactory::_('Compiler.Builder.Site.Main.Get')->
+						exists(CFactory::_('Config')->build_target . '.' . $code . '.' . $as))
 					{
-						$wheres .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. $string;
+						$wheres .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . $string;
 					}
 					elseif ($as !== 'a')
 					{
-						$this->otherWhere[CFactory::_('Config')->build_target][$code][$as][$field]
-							= PHP_EOL . Indent::_(2) . $string;
+						CFactory::_('Compiler.Builder.Other.Where')->set(
+							CFactory::_('Config')->build_target . '.' . $code . '.' . $as . '.' . $field,
+							PHP_EOL . Indent::_(2) . $string
+						);
 					}
 				}
 			}
@@ -3474,8 +3442,8 @@ class Interpretation extends Fields
 					break;
 			}
 			// check that the default and the redirect page is not the same
-			if (CFactory::_('Content')->exist('SITE_DEFAULT_VIEW')
-				&& CFactory::_('Content')->get('SITE_DEFAULT_VIEW') != $view['settings']->code)
+			if (CFactory::_('Compiler.Builder.Content.One')->exists('SITE_DEFAULT_VIEW')
+				&& CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') != $view['settings']->code)
 			{
 				$redirectMessage = Indent::_(3) . "//" . Line::_(
 						__LINE__,__CLASS__
@@ -3483,7 +3451,7 @@ class Interpretation extends Fields
 					. " redirect away to the default view if no access allowed.";
 				$redirectString  = "JRoute::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name . "&view="
-					. CFactory::_('Content')->get('SITE_DEFAULT_VIEW') . "')";
+					. CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') . "')";
 			}
 			else
 			{
@@ -3534,16 +3502,14 @@ class Interpretation extends Fields
 	 *
 	 * @return string
 	 */
-	public function setCustomViewGetItem(&$get, &$code, $tab = '',
-	                                     $type = 'main'
-	)
+	public function setCustomViewGetItem(&$get, &$code, $tab = '', $type = 'main')
 	{
 		if (ObjectHelper::check($get))
 		{
 			// set the site decription switches
-			foreach ($this->cryptionTypes as $cryptionType)
+			foreach (CFactory::_('Config')->cryption_types as $cryptionType)
 			{
-				$this->siteDecrypt[$cryptionType][$code] = false;
+				CFactory::_('Compiler.Builder.Site.Decrypt')->set("{$cryptionType}.{$code}", false);
 			}
 			// start the get Item
 			$getItem = '';
@@ -3657,12 +3623,12 @@ class Interpretation extends Fields
 				if ('site' === CFactory::_('Config')->build_target)
 				{
 					// check that the default and the redirect page is not the same
-					if (CFactory::_('Content')->exist('SITE_DEFAULT_VIEW')
-						&& CFactory::_('Content')->get('SITE_DEFAULT_VIEW') != $code)
+					if (CFactory::_('Compiler.Builder.Content.One')->exists('SITE_DEFAULT_VIEW')
+						&& CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') != $code)
 					{
 						$redirectString = "JRoute::_('index.php?option=com_"
 							. CFactory::_('Config')->component_code_name . "&view="
-							. CFactory::_('Content')->get('SITE_DEFAULT_VIEW') . "')";
+							. CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') . "')";
 					}
 					else
 					{
@@ -3695,80 +3661,61 @@ class Interpretation extends Fields
 				{
 					if (isset($main_get['key']) && isset($main_get['as']))
 					{
-						if (isset($this->siteFieldData['decode'][$code][$main_get['key']][$main_get['as']]))
+						// build path
+						$path = $code . '.' . $main_get['key'] . '.' . $main_get['as'];
+
+						$decodeChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('decode.' . $path);
+						if (ArrayHelper::check($decodeChecker))
 						{
-							$decodeChecker
-								= $this->siteFieldData['decode'][$code][$main_get['key']][$main_get['as']];
-							if (ArrayHelper::check(
-								$decodeChecker
-							))
-							{
-								// set decoding of needed fields
-								$getItem .= $this->setCustomViewFieldDecode(
-									$main_get, $decodeChecker, '$data', $code,
-									$tab
-								);
-							}
+							// set decoding of needed fields
+							$getItem .= $this->setCustomViewFieldDecode(
+								$main_get, $decodeChecker, '$data', $code,
+								$tab
+							);
 						}
 
-						if (isset($this->siteFieldDecodeFilter[CFactory::_('Config')->build_target][$code][$main_get['key']][$main_get['as']]))
+						$decodeFilter = CFactory::_('Compiler.Builder.Site.Field.Decode.Filter')->
+							get(CFactory::_('Config')->build_target . '.' . $path);
+						if (ArrayHelper::check($decodeFilter))
 						{
-							$decodeFilter
-								= $this->siteFieldDecodeFilter[CFactory::_('Config')->build_target][$code][$main_get['key']][$main_get['as']];
-							if (ArrayHelper::check(
-								$decodeFilter
-							))
-							{
-								// also filter fields if needed
-								$getItem .= $this->setCustomViewFieldDecodeFilter(
-									$main_get, $decodeFilter, '$data', '$data',
-									$code, $tab
-								);
-							}
+							// also filter fields if needed
+							$getItem .= $this->setCustomViewFieldDecodeFilter(
+								$main_get, $decodeFilter, '$data', '$data',
+								$code, $tab
+							);
 						}
 
-						if (isset($this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']]))
+						$contentprepareChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->
+							get('textareas.' . $path);
+						if (ArrayHelper::check($contentprepareChecker))
 						{
-							$contentprepareChecker
-								= $this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']];
-							if (ArrayHelper::check(
-								$contentprepareChecker
-							))
-							{
-								// set contentprepare checkers on needed fields
-								$getItem .= $this->setCustomViewFieldonContentPrepareChecker(
-									$main_get, $contentprepareChecker, '$data',
-									$code, $tab
-								);
-							}
+							// set contentprepare checkers on needed fields
+							$getItem .= $this->setCustomViewFieldonContentPrepareChecker(
+								$main_get, $contentprepareChecker, '$data',
+								$code, $tab
+							);
 						}
 
-						if (isset($this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']]))
+						$uikitChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('uikit.' . $path);
+						if (ArrayHelper::check($uikitChecker))
 						{
-							$uikitChecker
-								= $this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']];
-							if (ArrayHelper::check(
-								$uikitChecker
-							))
-							{
-								// set uikit checkers on needed fields
-								$getItem .= $this->setCustomViewFieldUikitChecker(
-									$main_get, $uikitChecker, '$data', $code,
-									$tab
-								);
-							}
+							// set uikit checkers on needed fields
+							$getItem .= $this->setCustomViewFieldUikitChecker(
+								$main_get, $uikitChecker, '$data', $code,
+								$tab
+							);
 						}
+
 						$asBucket[] = $main_get['as'];
 					}
 				}
 			}
 			// set the scripts
-			$Component = CFactory::_('Content')->get('Component');
+			$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
 			$script    = '';
-			foreach ($this->cryptionTypes as $cryptionType)
+			foreach (CFactory::_('Config')->cryption_types as $cryptionType)
 			{
-				if (isset($this->siteDecrypt[$cryptionType][$code])
-					&& $this->siteDecrypt[$cryptionType][$code])
+				if (CFactory::_('Compiler.Builder.Site.Decrypt')->get("{$cryptionType}.{$code}", false))
 				{
 					if ('expert' !== $cryptionType)
 					{
@@ -3782,26 +3729,18 @@ class Interpretation extends Fields
 							. "//" . Line::_(__Line__, __Class__)
 							. " Get the encryption object.";
 						$script .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "\$" . $cryptionType . " = new FOFEncryptAes(\$"
+							. "\$" . $cryptionType . " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$"
 							. $cryptionType . "key);";
 					}
-					elseif (isset(
-							$this->{$cryptionType
-							. 'FieldModelInitiator'}[$code]
-						)
-						&& isset(
-							$this->{$cryptionType
-							. 'FieldModelInitiator'}[$code]['get']
-						))
+					elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+						exists("{$code}.get"))
 					{
-						foreach (
-							$this->{$cryptionType
-							. 'FieldModelInitiator'}[$code]['get'] as $block
-						)
+						foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+							get("{$code}.get") as $block)
 						{
 							$script .= PHP_EOL . Indent::_(1) . implode(
-									PHP_EOL . Indent::_(1), $block
-								);
+								PHP_EOL . Indent::_(1), $block
+							);
 						}
 					}
 				}
@@ -4184,7 +4123,7 @@ class Interpretation extends Fields
 			$method .= PHP_EOL . Indent::_(1) . "{";
 			$method .= PHP_EOL . Indent::_(2)
 				. "if (isset(\$this->uikitComp) && "
-				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$this->uikitComp))";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$this->uikitComp))";
 			$method .= PHP_EOL . Indent::_(2) . "{";
 			$method .= PHP_EOL . Indent::_(3) . "return \$this->uikitComp;";
 			$method .= PHP_EOL . Indent::_(2) . "}";
@@ -4229,14 +4168,12 @@ class Interpretation extends Fields
 				foreach ($main_get->custom_get as $get)
 				{
 					// set the site decription switch
-					foreach ($this->cryptionTypes as $cryptionType)
+					foreach (CFactory::_('Config')->cryption_types as $cryptionType)
 					{
-						$this->siteDecrypt[$cryptionType][$code] = false;
+						CFactory::_('Compiler.Builder.Site.Decrypt')->set("{$cryptionType}.{$code}", false);
 					}
 					// set the method defaults
-					if (($default = $this->setCustomViewMethodDefaults(
-							$get, $code
-						)) !== false)
+					if (($default = $this->setCustomViewMethodDefaults($get, $code)) !== false)
 					{
 						// build custom method
 						$methods .= PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
@@ -4281,7 +4218,7 @@ class Interpretation extends Fields
 								. $default['on_field']
 								. " is an array with values.";
 							$methods .= PHP_EOL . Indent::_(2) . "\$array = ("
-								. CFactory::_('Content')->get('Component')
+								. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 								. "Helper::checkJson(\$"
 								. $default['on_field']
 								. ", true)) ? json_decode(\$"
@@ -4289,7 +4226,7 @@ class Interpretation extends Fields
 								. $default['on_field'] . ";";
 							$methods .= PHP_EOL . Indent::_(2)
 								. "if (isset(\$array) && "
-								. CFactory::_('Content')->get('Component')
+								. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 								. "Helper::checkArray(\$array, true))";
 							$methods .= PHP_EOL . Indent::_(2) . "{";
 							$methods .= PHP_EOL . Indent::_(3)
@@ -4311,75 +4248,39 @@ class Interpretation extends Fields
 								. $default['on_field'] . "));";
 						}
 						// check if other queries should be loaded
-						$queryChecker
-							= (isset($this->otherQuery[CFactory::_('Config')->build_target][$default['code']][$default['as']])
-							&& ArrayHelper::check(
-								$this->otherQuery[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-							))
-							? $this->otherQuery[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-							: '';
-						if (ArrayHelper::check($queryChecker))
+						foreach (CFactory::_('Compiler.Builder.Other.Query')->
+							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as'], [])
+								as $query)
 						{
-							foreach ($queryChecker as $query)
-							{
-								$methods .= $query;
-							}
+							$methods .= $query;
 						}
 						// add any other filter that was set
-						if (isset($this->otherFilter[CFactory::_('Config')->build_target][$default['code']][$default['as']])
-							&& ArrayHelper::check(
-								$this->otherFilter[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-							))
+						foreach (CFactory::_('Compiler.Builder.Other.Filter')->
+							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as'], [])
+								as $field => $string)
 						{
-							foreach (
-								$this->otherFilter[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-								as $field => $string
-							)
-							{
-								$methods .= $string;
-							}
+							$methods .= $string;
 						}
 						// add any other where that was set
-						if (isset($this->otherWhere[CFactory::_('Config')->build_target][$default['code']][$default['as']])
-							&& ArrayHelper::check(
-								$this->otherWhere[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-							))
+						foreach (CFactory::_('Compiler.Builder.Other.Where')->
+							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as'], [])
+								as $field => $string)
 						{
-							foreach (
-								$this->otherWhere[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-								as $field => $string
-							)
-							{
-								$methods .= $string;
-							}
+							$methods .= $string;
 						}
 						// add any other order that was set
-						if (isset($this->otherOrder[CFactory::_('Config')->build_target][$default['code']][$default['as']])
-							&& ArrayHelper::check(
-								$this->otherOrder[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-							))
+						foreach (CFactory::_('Compiler.Builder.Other.Order')->
+							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as'], [])
+								 as $field => $string)
 						{
-							foreach (
-								$this->otherOrder[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-								as $field => $string
-							)
-							{
-								$methods .= $string;
-							}
+							$methods .= $string;
 						}
 						// add any other grouping that was set
-						if (isset($this->otherGroup[CFactory::_('Config')->build_target][$default['code']][$default['as']])
-							&& ArrayHelper::check(
-								$this->otherGroup[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-							))
+						foreach (CFactory::_('Compiler.Builder.Other.Group')->
+							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as'], [])
+								as $field => $string)
 						{
-							foreach (
-								$this->otherGroup[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-								as $field => $string
-							)
-							{
-								$methods .= $string;
-							}
+							$methods .= $string;
 						}
 						$methods .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 							. Line::_(__Line__, __Class__)
@@ -4394,66 +4295,33 @@ class Interpretation extends Fields
 							. "if (\$db->getNumRows())";
 						$methods .= PHP_EOL . Indent::_(2) . "{";
 						// set dispatcher placeholder
-						$methods .= Placefix::_h("DISPATCHER") ;
+						$methods .= Placefix::_h("DISPATCHER");
+						// build path
+						$path = $default['code'] . '.' . $get['key'] . '.' . $default['as'];
 						// set decoding of needed fields
-						if (isset($this->siteFieldData['decode'][$default['code']][$get['key']][$default['as']]))
-						{
-							$decodeChecker
-								= $this->siteFieldData['decode'][$default['code']][$get['key']][$default['as']];
-						}
+						$decodeChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('decode.' . $path);
 						// also filter fields if needed
-						if (isset($this->siteFieldDecodeFilter[CFactory::_('Config')->build_target][$default['code']][$get['key']][$default['as']]))
-						{
-							$decodeFilter
-								= $this->siteFieldDecodeFilter[CFactory::_('Config')->build_target][$default['code']][$get['key']][$default['as']];
-						}
+						$decodeFilter = CFactory::_('Compiler.Builder.Site.Field.Decode.Filter')->
+							get(CFactory::_('Config')->build_target . '.' . $path);
 						// set uikit checkers on needed fields
-						if (isset($this->siteFieldData['uikit'][$default['code']][$get['key']][$default['as']]))
-						{
-							$uikitChecker
-								= $this->siteFieldData['uikit'][$default['code']][$get['key']][$default['as']];
-						}
-						// set contnetprepare on needed fields
-						if (isset($this->siteFieldData['textareas'][$default['code']][$get['key']][$default['as']]))
-						{
-							$contentprepareChecker
-								= $this->siteFieldData['textareas'][$default['code']][$get['key']][$default['as']];
-						}
+						$uikitChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('uikit.' . $path);
+						// set content prepare on needed fields
+						$contentprepareChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->
+							get('textareas.' . $path);
+						// set placeholder values
+						$placeholders = [
+							Placefix::_h('TAB') => Indent::_(2),
+							Placefix::_h('STRING') => '$item'
+						];
 						// set joined values
-						$placeholders = array(Placefix::_h('TAB') => Indent::_(2),
-							Placefix::_h('STRING') => '$item');
-						$joinedChecker
-							= (isset($this->otherJoin[CFactory::_('Config')->build_target][$default['code']][$default['as']])
-							&& ArrayHelper::check(
-								$this->otherJoin[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-							))
-							? $this->otherJoin[CFactory::_('Config')->build_target][$default['code']][$default['as']]
-							: '';
-						if ((isset($decodeChecker)
-								&& ArrayHelper::check(
-									$decodeChecker
-								))
-							|| (isset($uikitChecker)
-								&& ArrayHelper::check(
-									$uikitChecker
-								))
-							|| (isset($decodeFilter)
-								&& ArrayHelper::check(
-									$decodeFilter
-								))
-							|| (isset($contentprepareChecker)
-								&& ArrayHelper::check(
-									$contentprepareChecker
-								))
-							|| ArrayHelper::check(
-								$joinedChecker
-							))
+						$joinedChecker = CFactory::_('Compiler.Builder.Other.Join')->
+							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as']);
+						if ($decodeChecker !== null || $uikitChecker !== null
+							|| $decodeFilter !== null || $contentprepareChecker !== null
+							|| $joinedChecker !== null)
 						{
 							$decoder = '';
-							if (isset($decodeChecker)
-								&& ArrayHelper::check(
-									$decodeChecker
-								))
+							if ($decodeChecker !== null && ArrayHelper::check($decodeChecker))
 							{
 								// also filter fields if needed
 								$decoder = $this->setCustomViewFieldDecode(
@@ -4462,10 +4330,7 @@ class Interpretation extends Fields
 								);
 							}
 							$decoder_filter = '';
-							if (isset($decodeFilter)
-								&& ArrayHelper::check(
-									$decodeFilter
-								))
+							if ($decodeFilter !== null && ArrayHelper::check($decodeFilter))
 							{
 								$decoder_filter
 									= $this->setCustomViewFieldDecodeFilter(
@@ -4474,10 +4339,7 @@ class Interpretation extends Fields
 								);
 							}
 							$contentprepare = '';
-							if (isset($contentprepareChecker)
-								&& ArrayHelper::check(
-									$contentprepareChecker
-								))
+							if ($contentprepareChecker !== null && ArrayHelper::check($contentprepareChecker))
 							{
 								$contentprepare
 									= $this->setCustomViewFieldonContentPrepareChecker(
@@ -4486,10 +4348,7 @@ class Interpretation extends Fields
 								);
 							}
 							$uikit = '';
-							if (isset($uikitChecker)
-								&& ArrayHelper::check(
-									$uikitChecker
-								))
+							if ($uikitChecker !== null && ArrayHelper::check($uikitChecker))
 							{
 								$uikit = $this->setCustomViewFieldUikitChecker(
 									$get, $uikitChecker, '$item',
@@ -4497,9 +4356,7 @@ class Interpretation extends Fields
 								);
 							}
 							$joine = '';
-							if (ArrayHelper::check(
-								$joinedChecker
-							))
+							if ($joinedChecker !== null && ArrayHelper::check($joinedChecker))
 							{
 								foreach ($joinedChecker as $joinedString)
 								{
@@ -4508,14 +4365,8 @@ class Interpretation extends Fields
 									);
 								}
 							}
-							if (StringHelper::check($decoder)
-								|| StringHelper::check(
-									$contentprepare
-								)
-								|| StringHelper::check($uikit)
-								|| StringHelper::check(
-									$decoder_filter
-								)
+							if (StringHelper::check($decoder) || StringHelper::check($contentprepare)
+								|| StringHelper::check($uikit) || StringHelper::check($decoder_filter)
 								|| StringHelper::check($joine))
 							{
 								$methods .= PHP_EOL . Indent::_(3)
@@ -4526,21 +4377,15 @@ class Interpretation extends Fields
 								$methods .= PHP_EOL . Indent::_(3)
 									. "foreach (\$items as \$nr => &\$item)";
 								$methods .= PHP_EOL . Indent::_(3) . "{";
-								if (StringHelper::check(
-									$decoder
-								))
+								if (StringHelper::check($decoder))
 								{
 									$methods .= $decoder;
 								}
-								if (StringHelper::check(
-									$decoder_filter
-								))
+								if (StringHelper::check($decoder_filter))
 								{
 									$methods .= $decoder_filter;
 								}
-								if (StringHelper::check(
-									$contentprepare
-								))
+								if (StringHelper::check($contentprepare))
 								{
 									$methods .= $contentprepare;
 								}
@@ -4572,12 +4417,11 @@ class Interpretation extends Fields
 						$methods .= PHP_EOL . Indent::_(1) . "}";
 
 						// set the script if it was found
-						$Component = CFactory::_('Content')->get('Component');
+						$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
 						$script    = '';
-						foreach ($this->cryptionTypes as $cryptionType)
+						foreach (CFactory::_('Config')->cryption_types as $cryptionType)
 						{
-							if (isset($this->siteDecrypt[$cryptionType][$code])
-								&& $this->siteDecrypt[$cryptionType][$code])
+							if (CFactory::_('Compiler.Builder.Site.Decrypt')->get("{$cryptionType}.{$code}", false))
 							{
 								if ('expert' !== $cryptionType)
 								{
@@ -4593,28 +4437,18 @@ class Interpretation extends Fields
 										. " Get the encryption object.";
 									$script .= PHP_EOL . Indent::_(2) . "\$"
 										. $cryptionType
-										. " = new FOFEncryptAes(\$"
+										. " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$"
 										. $cryptionType . "key);" . PHP_EOL;
 								}
-								elseif (isset(
-										$this->{$cryptionType
-										. 'FieldModelInitiator'}[$code]
-									)
-									&& isset(
-										$this->{$cryptionType
-										. 'FieldModelInitiator'}[$code]['get']
-									))
+								elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+									exists("{$code}.get"))
 								{
-									foreach (
-										$this->{$cryptionType
-										. 'FieldModelInitiator'}[$code]['get']
-										as $block
-									)
+									foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+										exists("{$code}.get") as $block)
 									{
-										$script .= PHP_EOL . Indent::_(2)
-											. implode(
-												PHP_EOL . Indent::_(2), $block
-											);
+										$script .= PHP_EOL . Indent::_(2) . implode(
+											PHP_EOL . Indent::_(2), $block
+										);
 									}
 								}
 							}
@@ -4779,12 +4613,12 @@ class Interpretation extends Fields
 	{
 		$getItem = '';
 		// set the site decrypt switch
-		foreach ($this->cryptionTypes as $cryptionType)
+		foreach (CFactory::_('Config')->cryption_types as $cryptionType)
 		{
-			$this->siteDecrypt[$cryptionType][$code] = false;
+			CFactory::_('Compiler.Builder.Site.Decrypt')->set("{$cryptionType}.{$code}", false);
 		}
 		// set the component name
-		$Component = CFactory::_('Content')->get('Component');
+		$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
 		// start load the get item
 		if (ObjectHelper::check($get))
 		{
@@ -4810,60 +4644,50 @@ class Interpretation extends Fields
 				$asBucket = array();
 				foreach ($get->main_get as $main_get)
 				{
-					if (isset($this->siteFieldData['decode'][$code][$main_get['key']][$main_get['as']]))
+					// build path
+					$path = $code . '.' . $main_get['key'] . '.' . $main_get['as'];
+
+					$decodeChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('decode.' . $path);
+					if (ArrayHelper::check($decodeChecker))
 					{
-						$decodeChecker
-							= $this->siteFieldData['decode'][$code][$main_get['key']][$main_get['as']];
-						if (ArrayHelper::check($decodeChecker))
-						{
-							// set decoding of needed fields
-							$getItem .= $this->setCustomViewFieldDecode(
-								$main_get, $decodeChecker, "\$item", $code,
-								Indent::_(2)
-							);
-						}
+						// set decoding of needed fields
+						$getItem .= $this->setCustomViewFieldDecode(
+							$main_get, $decodeChecker, "\$item", $code,
+							Indent::_(2)
+						);
 					}
+
 					// also filter fields if needed
-					if (isset($this->siteFieldDecodeFilter[CFactory::_('Config')->build_target][$code][$main_get['key']][$main_get['as']]))
+					$decodeFilter = CFactory::_('Compiler.Builder.Site.Field.Decode.Filter')->
+						get(CFactory::_('Config')->build_target . '.' . $path);
+					if (ArrayHelper::check($decodeFilter))
 					{
-						$decodeFilter
-							= $this->siteFieldDecodeFilter[CFactory::_('Config')->build_target][$code][$main_get['key']][$main_get['as']];
-						if (ArrayHelper::check($decodeFilter))
-						{
-							$getItem .= $this->setCustomViewFieldDecodeFilter(
-								$main_get, $decodeFilter, "\$item",
-								'$items[$nr]', $code, Indent::_(2)
-							);
-						}
+						$getItem .= $this->setCustomViewFieldDecodeFilter(
+							$main_get, $decodeFilter, "\$item",
+							'$items[$nr]', $code, Indent::_(2)
+						);
 					}
-					if (isset($this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']]))
+
+					$contentprepareChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('textareas.' . $path);
+					if (ArrayHelper::check($contentprepareChecker))
 					{
-						$contentprepareChecker
-							= $this->siteFieldData['textareas'][$code][$main_get['key']][$main_get['as']];
-						if (ArrayHelper::check(
-							$contentprepareChecker
-						))
-						{
-							// set contentprepare checkers on needed fields
-							$getItem .= $this->setCustomViewFieldonContentPrepareChecker(
-								$main_get, $contentprepareChecker, "\$item",
-								$code, Indent::_(2)
-							);
-						}
+						// set contentprepare checkers on needed fields
+						$getItem .= $this->setCustomViewFieldonContentPrepareChecker(
+							$main_get, $contentprepareChecker, "\$item",
+							$code, Indent::_(2)
+						);
 					}
-					if (isset($this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']]))
+
+					$uikitChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('uikit.' . $path);
+					if (ArrayHelper::check($uikitChecker))
 					{
-						$uikitChecker
-							= $this->siteFieldData['uikit'][$code][$main_get['key']][$main_get['as']];
-						if (ArrayHelper::check($uikitChecker))
-						{
-							// set uikit checkers on needed fields
-							$getItem .= $this->setCustomViewFieldUikitChecker(
-								$main_get, $uikitChecker, "\$item", $code,
-								Indent::_(2)
-							);
-						}
+						// set uikit checkers on needed fields
+						$getItem .= $this->setCustomViewFieldUikitChecker(
+							$main_get, $uikitChecker, "\$item", $code,
+							Indent::_(2)
+						);
 					}
+
 					$asBucket[] = $main_get['as'];
 				}
 			}
@@ -4919,9 +4743,9 @@ class Interpretation extends Fields
 
 		// set the script if found
 		$script = '';
-		foreach ($this->cryptionTypes as $cryptionType)
+		foreach (CFactory::_('Config')->cryption_types as $cryptionType)
 		{
-			if ($this->siteDecrypt[$cryptionType][$code])
+			if (CFactory::_('Compiler.Builder.Site.Decrypt')->get("{$cryptionType}.{$code}", false))
 			{
 				if ('expert' !== $cryptionType)
 				{
@@ -4935,24 +4759,17 @@ class Interpretation extends Fields
 							__LINE__,__CLASS__
 						) . " Get the encryption object.";
 					$script .= PHP_EOL . Indent::_(2) . "\$" . $cryptionType
-						. " = new FOFEncryptAes(\$" . $cryptionType . "key);";
+						. " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$" . $cryptionType . "key);";
 				}
-				elseif (isset(
-						$this->{$cryptionType . 'FieldModelInitiator'}[$code]
-					)
-					&& isset(
-						$this->{$cryptionType
-						. 'FieldModelInitiator'}[$code]['get']
-					))
+				elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+					exists("{$code}.get"))
 				{
-					foreach (
-						$this->{$cryptionType
-						. 'FieldModelInitiator'}[$code]['get'] as $block
-					)
+					foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+						get("{$code}.get") as $block)
 					{
 						$script .= PHP_EOL . Indent::_(2) . implode(
-								PHP_EOL . Indent::_(2), $block
-							);
+							PHP_EOL . Indent::_(2), $block
+						);
 					}
 				}
 			}
@@ -4973,8 +4790,7 @@ class Interpretation extends Fields
 	{
 		$script = '';
 		// add the new filter methods for the search toolbar above the list view (2 = topbar)
-		if (CFactory::_('Registry')->
-			get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
 		{
 			$script .= PHP_EOL . Indent::_(2) . "//"
 				. Line::_(
@@ -5132,7 +4948,7 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					) . " Process the content plugins.";
 				$method .= PHP_EOL . Indent::_(2) . "if ("
-					. CFactory::_('Content')->get('Component') . "Helper::checkObject(\$this->item))";
+					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkObject(\$this->item))";
 				$method .= PHP_EOL . Indent::_(2) . "{";
 				$method .= PHP_EOL . Indent::_(3)
 					. "JPluginHelper::importPlugin('content');";
@@ -5146,7 +4962,7 @@ class Interpretation extends Fields
 					) . " Check if item has params, or pass global params";
 				$method .= PHP_EOL . Indent::_(3)
 					. "\$params = (isset(\$this->item->params) && "
-					. CFactory::_('Content')->get('Component')
+					. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 					. "Helper::checkJson(\$this->item->params)) ? json_decode(\$this->item->params) : \$this->params;";
 				// load the defaults
 				foreach (
@@ -5202,66 +5018,66 @@ class Interpretation extends Fields
 		$TARGET = StringHelper::safe(CFactory::_('Config')->build_target, 'U');
 
 		// set libraries $TARGET.'_LIBRARIES_LOADER
-		CFactory::_('Content')->set_($view['settings']->code,$TARGET . '_LIBRARIES_LOADER',
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_LIBRARIES_LOADER',
 			$this->setLibrariesLoader($view)
 		);
 
 		// set uikit $TARGET.'_UIKIT_LOADER
-		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_UIKIT_LOADER',
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_UIKIT_LOADER',
 			$this->setUikitLoader($view)
 		);
 
 		// set Google Charts $TARGET.'_GOOGLECHART_LOADER
-		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_GOOGLECHART_LOADER',
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' .$TARGET . '_GOOGLECHART_LOADER',
 			$this->setGoogleChartLoader($view)
 		);
 
 		// set Footable FOOTABLE_LOADER
-		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_FOOTABLE_LOADER',
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_FOOTABLE_LOADER',
 			$this->setFootableScriptsLoader($view)
 		);
 
 		// set metadata DOCUMENT_METADATA
-		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_DOCUMENT_METADATA',
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_DOCUMENT_METADATA',
 			$this->setDocumentMetadata($view)
 		);
 
 		// set custom php scripting DOCUMENT_CUSTOM_PHP
-		CFactory::_('Content')->set_($view['settings']->code,$TARGET . '_DOCUMENT_CUSTOM_PHP',
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_DOCUMENT_CUSTOM_PHP',
 			$this->setDocumentCustomPHP($view)
 		);
 
 		// set custom css DOCUMENT_CUSTOM_CSS
-		CFactory::_('Content')->set_($view['settings']->code,$TARGET . '_DOCUMENT_CUSTOM_CSS',
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' .$TARGET . '_DOCUMENT_CUSTOM_CSS',
 			$this->setDocumentCustomCSS($view)
 		);
 
 		// set custom javascript DOCUMENT_CUSTOM_JS
-		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_DOCUMENT_CUSTOM_JS',
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_DOCUMENT_CUSTOM_JS',
 			$this->setDocumentCustomJS($view)
 		);
 
 		// set custom css file VIEWCSS
-		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_VIEWCSS',
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_VIEWCSS',
 			$this->setCustomCSS($view)
 		);
 
 		// incase no buttons are found
-		CFactory::_('Content')->set_($view['settings']->code, 'SITE_JAVASCRIPT_FOR_BUTTONS', '');
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_JAVASCRIPT_FOR_BUTTONS', '');
 
 		// set the custom buttons CUSTOM_BUTTONS
-		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_CUSTOM_BUTTONS',
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_CUSTOM_BUTTONS',
 			$this->setCustomButtons($view)
 		);
 
 		// see if we should add get modules to the view.html
-		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_GET_MODULE',
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_GET_MODULE',
 			$this->setGetModules($view, $TARGET)
 		);
 
 		// set a JavaScript file if needed
-		CFactory::_('Content')->add_($view['settings']->code, $TARGET . '_LIBRARIES_LOADER',
-			$this->setJavaScriptFile($view, $TARGET)
+		CFactory::_('Compiler.Builder.Content.Multi')->add($view['settings']->code . '|' . $TARGET . '_LIBRARIES_LOADER',
+			$this->setJavaScriptFile($view, $TARGET), false
 		);
 		// fix just incase we missed it somewhere
 		CFactory::_('Config')->lang_target = $tmp;
@@ -5269,8 +5085,8 @@ class Interpretation extends Fields
 
 	public function setGetModules($view, $TARGET)
 	{
-		if (CFactory::_('Registry')->
-			exists('builder.get_module.' . CFactory::_('Config')->build_target . '.' . $view['settings']->code))
+		if (CFactory::_('Compiler.Builder.Get.Module')->
+			exists(CFactory::_('Config')->build_target . '.' . $view['settings']->code))
 		{
 			$addModule   = array();
 			$addModule[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
@@ -5297,7 +5113,7 @@ class Interpretation extends Fields
 			$addModule[] = Indent::_(3)
 				. "\$modules = JModuleHelper::getModules(\$position);";
 			$addModule[] = Indent::_(3) . "if ("
-				. CFactory::_('Content')->get('Component')
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 				. "Helper::checkArray(\$modules, true))";
 			$addModule[] = Indent::_(3) . "{";
 			$addModule[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
@@ -5316,13 +5132,13 @@ class Interpretation extends Fields
 				. " check if modules were found";
 			$addModule[] = Indent::_(2)
 				. "if (\$found && isset(\$this->setModules[\$position]) && "
-				. CFactory::_('Content')->get('Component')
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 				. "Helper::checkArray(\$this->setModules[\$position]))";
 			$addModule[] = Indent::_(2) . "{";
 			$addModule[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " set class";
 			$addModule[] = Indent::_(3) . "if ("
-				. CFactory::_('Content')->get('Component') . "Helper::checkString(\$class))";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkString(\$class))";
 			$addModule[] = Indent::_(3) . "{";
 			$addModule[] = Indent::_(4)
 				. "\$class = ' class=\"'.\$class.'\" ';";
@@ -5352,19 +5168,18 @@ class Interpretation extends Fields
 			$addModule[] = Indent::_(5)
 				. "return implode('<br />', \$this->setModules[\$position]);";
 			$addModule[] = Indent::_(5) . "break;";
-			$addModule[] = Indent::_(4);
 			$addModule[] = Indent::_(3) . "}";
 			$addModule[] = Indent::_(2) . "}";
 			$addModule[] = Indent::_(2) . "return false;";
 			$addModule[] = Indent::_(1) . "}";
 
-			CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_GET_MODULE_JIMPORT',
-				PHP_EOL . "jimport('joomla.application.module.helper');"
+			CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_GET_MODULE_JIMPORT',
+				PHP_EOL . "use Joomla\CMS\Helper\ModuleHelper as JModuleHelper;"
 			);
 
 			return implode(PHP_EOL, $addModule);
 		}
-		CFactory::_('Content')->set_($view['settings']->code, $TARGET . '_GET_MODULE_JIMPORT', '');
+		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_GET_MODULE_JIMPORT', '');
 
 		return '';
 	}
@@ -5408,9 +5223,9 @@ class Interpretation extends Fields
 				$viewCodeName = $view['settings']->name_single_code;
 			}
 			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-			CFactory::_('Content')->set_($viewCodeName, $TARGET . '_CUSTOM_BUTTONS_CONTROLLER', '');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER', '');
 			// set the custom buttons CUSTOM_BUTTONS_METHOD
-			CFactory::_('Content')->set_($viewCodeName, $TARGET . '_CUSTOM_BUTTONS_METHOD', '');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD', '');
 		}
 		elseif (3 == $type)
 		{
@@ -5418,9 +5233,9 @@ class Interpretation extends Fields
 			$viewCodeName  = $view['settings']->name_single_code;
 			$viewsCodeName = $view['settings']->name_list_code;
 			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER_LIST
-			CFactory::_('Content')->set_($viewsCodeName, $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST', '');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST', '');
 			// set the custom buttons CUSTOM_BUTTONS_METHOD_LIST
-			CFactory::_('Content')->set_($viewsCodeName, $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST', '');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST', '');
 			// validate selection
 			$validateSelection = 'true';
 		}
@@ -5430,31 +5245,31 @@ class Interpretation extends Fields
 		if (CFactory::_('Config')->build_target === 'site')
 		{
 			// set the custom buttons SITE_TOP_BUTTON
-			CFactory::_('Content')->set_($viewCodeName, 'SITE_TOP_BUTTON', '');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_TOP_BUTTON', '');
 			// set the custom buttons SITE_BOTTOM_BUTTON
-			CFactory::_('Content')->set_($viewCodeName, 'SITE_BOTTOM_BUTTON', '');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_BOTTOM_BUTTON', '');
 			// load into place
 			switch ($view['settings']->button_position)
 			{
 				case 1:
 					// set buttons to top right of the view
-					CFactory::_('Content')->set_($viewCodeName, 'SITE_TOP_BUTTON',
+					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_TOP_BUTTON',
 						'<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>'
 					);
 					break;
 				case 2:
 					// set buttons to top left of the view
-					CFactory::_('Content')->set_($viewCodeName, 'SITE_TOP_BUTTON', '<?php echo $this->toolbar->render(); ?>');
+					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_TOP_BUTTON', '<?php echo $this->toolbar->render(); ?>');
 					break;
 				case 3:
 					// set buttons to buttom right of the view
-					CFactory::_('Content')->set_($viewCodeName, 'SITE_BOTTOM_BUTTON',
+					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_BOTTOM_BUTTON',
 						'<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>'
 					);
 					break;
 				case 4:
 					// set buttons to buttom left of the view
-					CFactory::_('Content')->set_($viewCodeName, 'SITE_BOTTOM_BUTTON', '<?php echo $this->toolbar->render(); ?>');
+					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_BOTTOM_BUTTON', '<?php echo $this->toolbar->render(); ?>');
 					break;
 				case 5:
 					// set buttons to custom placement of the view
@@ -5478,7 +5293,7 @@ class Interpretation extends Fields
 				$buttons[] = $tab . Indent::_(2)
 					. "JToolBarHelper::custom('" . $viewCodeName . "."
 					. "dashboard', 'grid-2', '', 'COM_"
-					. CFactory::_('Content')->get('COMPONENT')
+					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT')
 					. "_DASH', false);";
 			}
 		}
@@ -5624,7 +5439,7 @@ class Interpretation extends Fields
 					&& $view['settings']->php_controller_list != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-					CFactory::_('Content')->set_($viewsCodeName, $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST',
+					CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST',
 						PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 							$view['settings']->php_controller_list
 						));
@@ -5637,7 +5452,7 @@ class Interpretation extends Fields
 					&& $view['settings']->php_model_list != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_METHOD
-					CFactory::_('Content')->set_($viewsCodeName,$TARGET
+					CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET
 						. '_CUSTOM_BUTTONS_METHOD_LIST', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 							$view['settings']->php_model_list
 						));
@@ -5652,7 +5467,7 @@ class Interpretation extends Fields
 					&& $view['settings']->php_controller != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-					CFactory::_('Content')->set_($viewCodeName,$TARGET
+					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET
 						. '_CUSTOM_BUTTONS_CONTROLLER', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 							$view['settings']->php_controller
 						));
@@ -5672,7 +5487,7 @@ class Interpretation extends Fields
 					&& $view['settings']->php_model != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_METHOD
-					CFactory::_('Content')->set_($viewCodeName,$TARGET
+					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET
 						. '_CUSTOM_BUTTONS_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 							$view['settings']->php_model
 						)
@@ -5701,7 +5516,7 @@ class Interpretation extends Fields
 					) === false))
 			{
 				// set the custom get form method  JAVASCRIPT_FOR_BUTTONS
-				CFactory::_('Content')->set_($viewCodeName,$TARGET
+				CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET
 					. '_JAVASCRIPT_FOR_BUTTONS', $this->setJavaScriptForButtons()
 				);
 			}
@@ -5826,7 +5641,7 @@ class Interpretation extends Fields
 					. $view['settings']->code . '.js';
 			}
 			// add script to file
-			CFactory::_('Content')->set_($view['settings']->code,$TARGET
+			CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET
 				. '_JAVASCRIPT_FILE', CFactory::_('Placeholder')->update_(
 				$view['settings']->javascript_file
 			));
@@ -5874,8 +5689,8 @@ class Interpretation extends Fields
 
 	public function setFootableScriptsLoader(&$view)
 	{
-		if (CFactory::_('Registry')->
-			exists('builder.footable_scripts.' . CFactory::_('Config')->build_target . '.' . $view['settings']->code))
+		if (CFactory::_('Compiler.Builder.Footable.Scripts')->
+			exists(CFactory::_('Config')->build_target . '.' . $view['settings']->code))
 		{
 			return $this->setFootableScripts(false);
 		}
@@ -6036,8 +5851,8 @@ class Interpretation extends Fields
 
 	public function setGoogleChartLoader(&$view)
 	{
-		if (CFactory::_('Registry')->
-			exists('builder.google_chart.' . CFactory::_('Config')->build_target . '.' . $view['settings']->code))
+		if (CFactory::_('Compiler.Builder.Google.Chart')->
+			exists(CFactory::_('Config')->build_target . '.' . $view['settings']->code))
 		{
 			$chart   = array();
 			$chart[] = PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
@@ -6081,8 +5896,11 @@ class Interpretation extends Fields
 		{
 			$setter .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
-				) . " always make sure jquery is loaded.";
-			$setter .= PHP_EOL . Indent::_(2) . "JHtml::_('jquery.framework');";
+				) . " Only load jQuery if needed. (default is true)";
+			$setter .= PHP_EOL . Indent::_(2) . "if (\$this->params->get('add_jquery_framework', 1) == 1)";
+			$setter .= PHP_EOL . Indent::_(2) . "{";
+			$setter .= PHP_EOL . Indent::_(3) . "JHtml::_('jquery.framework');";
+			$setter .= PHP_EOL . Indent::_(2) . "}";
 			$setter .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Load the header checker class.";
 			if (CFactory::_('Config')->build_target === 'site')
@@ -6101,8 +5919,8 @@ class Interpretation extends Fields
 				. CFactory::_('Config')->component_code_name . "HeaderCheck;";
 		}
 		// check if this view should get libraries
-		if (($data = CFactory::_('Registry')->extract('builder.library_manager.' .
-			CFactory::_('Config')->build_target . '.' . $code)) !== null)
+		if (($data = CFactory::_('Compiler.Builder.Library.Manager')->
+			get(CFactory::_('Config')->build_target . '.' . $code)) !== null)
 		{
 			foreach ($data as $id => $true)
 			{
@@ -6362,27 +6180,19 @@ class Interpretation extends Fields
 		{
 			$pathInfo = pathinfo((string) $path);
 		}
-		// set the local string
-		$JURI = '';
-		if ($local)
-		{
-			$JURI = 'JURI::root(true) . ';
-		}
 		// use the path info to build the script
 		if (isset($pathInfo['extension']) && $pathInfo['extension'])
 		{
 			switch ($pathInfo['extension'])
 			{
 				case 'js':
-					return '$this->document->addScript(' . $JURI . '"' . $path
-						. '", (' . CFactory::_('Content')->get('Component')
-						. 'Helper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");';
+					return 'JHtml::_(\'script\', "' . ltrim($path, '/')
+						. '", [\'version\' => \'auto\']);';
 					break;
 				case 'css':
 				case 'less':
-					return '$this->document->addStyleSheet(' . $JURI . '"'
-						. $path . '", (' . CFactory::_('Content')->get('Component')
-						. 'Helper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/css");';
+					return 'JHtml::_(\'stylesheet\', "'
+						. ltrim($path, '/') . '", [\'version\' => \'auto\']);';
 					break;
 				case 'php':
 					if (strpos((string) $path, 'http') === false)
@@ -6494,8 +6304,7 @@ class Interpretation extends Fields
 		}
 		// load the components need
 		if ((2 == CFactory::_('Config')->uikit || 1 == CFactory::_('Config')->uikit)
-			&& ($data_ = CFactory::_('Registry')->get('builder.uikit_comp.' .
-				$view['settings']->code)) !== null)
+			&& ($data_ = CFactory::_('Compiler.Builder.Uikit.Comp')->get($view['settings']->code)) !== null)
 		{
 			$setter .= PHP_EOL . PHP_EOL . $tabV . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__)
@@ -6513,10 +6322,7 @@ class Interpretation extends Fields
 					. $class . "';";
 			}
 			// check content for more needed components
-			if (isset($this->siteFieldData['uikit'][$view['settings']->code])
-				&& ArrayHelper::check(
-					$this->siteFieldData['uikit'][$view['settings']->code]
-				))
+			if (CFactory::_('Compiler.Builder.Site.Field.Data')->exists('uikit.' . $view['settings']->code))
 			{
 				$setter .= PHP_EOL . PHP_EOL . $tabV . Indent::_(3) . "//"
 					. Line::_(__Line__, __Class__)
@@ -6525,11 +6331,11 @@ class Interpretation extends Fields
 					. "\$uikitFieldComp = \$this->get('UikitComp');";
 				$setter .= PHP_EOL . $tabV . Indent::_(3)
 					. "if (isset(\$uikitFieldComp) && "
-					. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$uikitFieldComp))";
+					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$uikitFieldComp))";
 				$setter .= PHP_EOL . $tabV . Indent::_(3) . "{";
 				$setter .= PHP_EOL . $tabV . Indent::_(4)
 					. "if (isset(\$uikitComp) && "
-					. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$uikitComp))";
+					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$uikitComp))";
 				$setter .= PHP_EOL . $tabV . Indent::_(4) . "{";
 				$setter .= PHP_EOL . $tabV . Indent::_(5)
 					. "\$uikitComp = array_merge(\$uikitComp, \$uikitFieldComp);";
@@ -6549,7 +6355,7 @@ class Interpretation extends Fields
 				. " Load the needed uikit components in this view.";
 			$setter .= PHP_EOL . $tabV . Indent::_(2)
 				. "if (\$uikit != 2 && isset(\$uikitComp) && "
-				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$uikitComp))";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$uikitComp))";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -6563,7 +6369,7 @@ class Interpretation extends Fields
 				. "foreach (\$uikitComp as \$class)";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(4) . "foreach ("
-				. CFactory::_('Content')->get('Component') . "Helper::\$uk_components[\$class] as \$name)";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::\$uk_components[\$class] as \$name)";
 			$setter .= PHP_EOL . $tabV . Indent::_(4) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -6602,10 +6408,7 @@ class Interpretation extends Fields
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "}";
 		}
 		elseif ((2 == CFactory::_('Config')->uikit || 1 == CFactory::_('Config')->uikit)
-			&& isset($this->siteFieldData['uikit'][$view['settings']->code])
-			&& ArrayHelper::check(
-				$this->siteFieldData['uikit'][$view['settings']->code]
-			))
+			&& CFactory::_('Compiler.Builder.Site.Field.Data')->exists('uikit.' . $view['settings']->code))
 		{
 			$setter .= PHP_EOL . PHP_EOL . $tabV . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__)
@@ -6614,7 +6417,7 @@ class Interpretation extends Fields
 				. "\$uikitComp = \$this->get('UikitComp');";
 			$setter .= PHP_EOL . $tabV . Indent::_(2)
 				. "if (\$uikit != 2 && isset(\$uikitComp) && "
-				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$uikitComp))";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$uikitComp))";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -6623,7 +6426,7 @@ class Interpretation extends Fields
 				. "foreach (\$uikitComp as \$class)";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(4) . "foreach ("
-				. CFactory::_('Content')->get('Component') . "Helper::\$uk_components[\$class] as \$name)";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::\$uk_components[\$class] as \$name)";
 			$setter .= PHP_EOL . $tabV . Indent::_(4) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -6992,38 +6795,54 @@ class Interpretation extends Fields
 
 	public function setCustomViewTemplateBody(&$view)
 	{
-		if (($data_ = CFactory::_('Registry')->
-			extract('builder.template_data.' . CFactory::_('Config')->build_target . '.' . $view['settings']->code)) !== null)
+		if (($data_ = CFactory::_('Compiler.Builder.Template.Data')->
+			get(CFactory::_('Config')->build_target . '.' . $view['settings']->code)) !== null)
 		{
 			$created  = CFactory::_('Model.Createdate')->get($view);
 			$modified = CFactory::_('Model.Modifieddate')->get($view);
 			foreach ($data_ as $template => $data)
 			{
 				// build the file
-				$target = array(CFactory::_('Config')->build_target => $view['settings']->code);
-				$config = array(Placefix::_h('CREATIONDATE') => $created,
+				$target = [
+					CFactory::_('Config')->build_target => $view['settings']->code
+				];
+				$config = [
+					Placefix::_h('CREATIONDATE') => $created,
 					Placefix::_h('BUILDDATE') => $modified,
-					Placefix::_h('VERSION') => $view['settings']->version);
+					Placefix::_h('VERSION') => $view['settings']->version
+				];
 				CFactory::_('Utilities.Structure')->build($target, 'template', $template, $config);
 				// set the file data
 				$TARGET = StringHelper::safe(
 					CFactory::_('Config')->build_target, 'U'
 				);
+				if (!isset($data['html']) || $data['html'] === null)
+				{
+					echo '<pre>';
+					var_dump($data);
+					exit;
+				}
 				// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($view['settings']->code . '_'
-					. $template, $TARGET . '_TEMPLATE_BODY', PHP_EOL . CFactory::_('Placeholder')->update_(
-						$data->html
+				CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '_'
+					. $template . '|' . $TARGET . '_TEMPLATE_BODY', PHP_EOL . CFactory::_('Placeholder')->update_(
+						$data['html']
 					));
+				if (!isset($data['php_view']) || $data['php_view'] === null)
+				{
+					echo '<pre>';
+					var_dump($data);
+					exit;
+				}
 				// SITE_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($view['settings']->code . '_'
-					. $template,$TARGET . '_TEMPLATE_CODE_BODY',
-					$this->setCustomViewTemplateCode($data->php_view)
+				CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '_'
+					. $template . '|' . $TARGET . '_TEMPLATE_CODE_BODY',
+					$this->setTemplateCode($data['php_view'])
 				);
 			}
 		}
 	}
 
-	public function setCustomViewTemplateCode(&$php)
+	public function setTemplateCode(&$php)
 	{
 		if (StringHelper::check($php))
 		{
@@ -7041,8 +6860,8 @@ class Interpretation extends Fields
 
 	public function setCustomViewLayouts()
 	{
-		if (($data_ = CFactory::_('Registry')->
-			extract('builder.layout_data.' . CFactory::_('Config')->build_target)) !== null)
+		if (($data_ = CFactory::_('Compiler.Builder.Layout.Data')->
+			get(CFactory::_('Config')->build_target)) !== null)
 		{
 			foreach ($data_ as $layout => $data)
 			{
@@ -7054,11 +6873,11 @@ class Interpretation extends Fields
 					CFactory::_('Config')->build_target, 'U'
 				);
 				// SITE_LAYOUT_CODE <<<DYNAMIC>>>
-				$php_view = (array) explode(PHP_EOL, (string) $data->php_view);
+				$php_view = (array) explode(PHP_EOL, (string) $data['php_view']);
 				if (ArrayHelper::check($php_view))
 				{
 					$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
-					CFactory::_('Content')->set_($layout, $TARGET . '_LAYOUT_CODE',
+					CFactory::_('Compiler.Builder.Content.Multi')->set($layout . '|' . $TARGET . '_LAYOUT_CODE',
 						CFactory::_('Placeholder')->update_(
 							$php_view
 						)
@@ -7066,17 +6885,17 @@ class Interpretation extends Fields
 				}
 				else
 				{
-					CFactory::_('Content')->set_($layout, $TARGET
+					CFactory::_('Compiler.Builder.Content.Multi')->set($layout . '|' . $TARGET
 						. '_LAYOUT_CODE',  '');
 				}
 				// SITE_LAYOUT_BODY <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($layout, $TARGET . '_LAYOUT_BODY',
+				CFactory::_('Compiler.Builder.Content.Multi')->set($layout . '|' . $TARGET . '_LAYOUT_BODY',
 					PHP_EOL . CFactory::_('Placeholder')->update_(
-						$data->html
+						$data['html']
 					)
 				);
 				// SITE_LAYOUT_HEADER <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($layout, $TARGET . '_LAYOUT_HEADER',
+				CFactory::_('Compiler.Builder.Content.Multi')->set($layout . '|' . $TARGET . '_LAYOUT_HEADER',
 					(($header = $this->setFileHeader(
 							str_replace('_', '.', (string) CFactory::_('Config')->build_target) . '.layout',
 							$layout, false)) !== false) ? PHP_EOL . PHP_EOL . $header : ''
@@ -7158,13 +6977,12 @@ class Interpretation extends Fields
 	{
 		$script = '';
 		// get the component name
-		$Component = CFactory::_('Content')->get('Component');
-		$component = CFactory::_('Content')->get('component');
+		$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
+		$component = CFactory::_('Compiler.Builder.Content.One')->get('component');
 		// go from base64 to string
-		if (isset($this->base64Builder[$view])
-			&& ArrayHelper::check($this->base64Builder[$view]))
+		if (CFactory::_('Compiler.Builder.Base.Six.Four')->exists($view))
 		{
-			foreach ($this->base64Builder[$view] as $baseString)
+			foreach (CFactory::_('Compiler.Builder.Base.Six.Four')->get($view) as $baseString)
 			{
 				$script .= PHP_EOL . PHP_EOL . Indent::_(3)
 					. "if (!empty(\$item->" . $baseString
@@ -7179,12 +6997,9 @@ class Interpretation extends Fields
 			}
 		}
 		// decryption
-		foreach ($this->cryptionTypes as $cryptionType)
+		foreach (CFactory::_('Config')->cryption_types as $cryptionType)
 		{
-			if (isset($this->{$cryptionType . 'FieldModeling'}[$view])
-				&& ArrayHelper::check(
-					$this->{$cryptionType . 'FieldModeling'}[$view]
-				))
+			if (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->exists($view))
 			{
 				if ('expert' !== $cryptionType)
 				{
@@ -7198,11 +7013,8 @@ class Interpretation extends Fields
 							__LINE__,__CLASS__
 						) . " Get the encryption object.";
 					$script .= PHP_EOL . Indent::_(3) . "\$" . $cryptionType
-						. " = new FOFEncryptAes(\$" . $cryptionType . "key);";
-					foreach (
-						$this->{$cryptionType . 'FieldModeling'}[$view] as
-						$baseString
-					)
+						. " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$" . $cryptionType . "key);";
+					foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->get($view) as $baseString)
 					{
 						$script .= PHP_EOL . PHP_EOL . Indent::_(3)
 							. "if (!empty(\$item->" . $baseString . ") && \$"
@@ -7223,30 +7035,23 @@ class Interpretation extends Fields
 				}
 				else
 				{
-					if (isset(
-						$this->{$cryptionType
-						. 'FieldModelInitiator'}[$view]['get']
-					))
+					if (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+						exists("{$view}.get"))
 					{
-						foreach (
-							$this->{$cryptionType
-							. 'FieldModelInitiator'}[$view]['get'] as $block
+						foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+							get("{$view}.get") as $block
 						)
 						{
 							$script .= PHP_EOL . Indent::_(3) . implode(
-									PHP_EOL . Indent::_(3), $block
-								);
+								PHP_EOL . Indent::_(3), $block
+							);
 						}
 					}
 					// set the expert script
-					foreach (
-						$this->{$cryptionType . 'FieldModeling'}[$view] as
-						$baseString => $opener_
-					)
+					foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->
+						get($view) as $baseString => $opener_)
 					{
-						$_placeholder_for_field
-							= array('[[[field]]]' => '$item->'
-							. $baseString);
+						$_placeholder_for_field = array('[[[field]]]' => '$item->' . $baseString);
 						$script .= CFactory::_('Placeholder')->update(
 							PHP_EOL . Indent::_(3) . implode(
 								PHP_EOL . Indent::_(3), $opener_['get']
@@ -7257,12 +7062,9 @@ class Interpretation extends Fields
 			}
 		}
 		// go from json to array
-		if (isset($this->jsonItemBuilder[$view])
-			&& ArrayHelper::check(
-				$this->jsonItemBuilder[$view]
-			))
+		if (CFactory::_('Compiler.Builder.Json.Item')->exists($view))
 		{
-			foreach ($this->jsonItemBuilder[$view] as $jsonItem)
+			foreach (CFactory::_('Compiler.Builder.Json.Item')->get($view) as $jsonItem)
 			{
 				$script .= PHP_EOL . PHP_EOL . Indent::_(3)
 					. "if (!empty(\$item->" . $jsonItem . "))";
@@ -7280,13 +7082,10 @@ class Interpretation extends Fields
 			}
 		}
 		// go from json to string
-		if (isset($this->jsonStringBuilder[$view])
-			&& ArrayHelper::check(
-				$this->jsonStringBuilder[$view]
-			))
+		if (CFactory::_('Compiler.Builder.Json.String')->exists($view))
 		{
 			$makeArray = '';
-			foreach ($this->jsonStringBuilder[$view] as $jsonString)
+			foreach (CFactory::_('Compiler.Builder.Json.String')->get($view) as $jsonString)
 			{
 				$script .= PHP_EOL . PHP_EOL . Indent::_(3)
 					. "if (!empty(\$item->" . $jsonString . "))";
@@ -7294,17 +7093,8 @@ class Interpretation extends Fields
 				$script .= PHP_EOL . Indent::_(4) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " JSON Decode " . $jsonString . ".";
-				if (isset($this->jsonItemBuilderArray[$view])
-					&& ArrayHelper::check(
-						$this->jsonItemBuilderArray[$view]
-					)
-					&& in_array(
-						$jsonString, $this->jsonItemBuilderArray[$view]
-					))
-				{
-					$makeArray = ',true';
-				}
-				elseif (strpos((string) $jsonString, 'group') !== false)
+				if (CFactory::_('Compiler.Builder.Json.Item.Array')->inArray($jsonString, $view) ||
+					strpos((string) $jsonString, 'group') !== false)
 				{
 					$makeArray = ',true';
 				}
@@ -7315,7 +7105,7 @@ class Interpretation extends Fields
 			}
 		}
 		// add the tag get options
-		if (CFactory::_('Registry')->get('builder.tags.' . $view))
+		if (CFactory::_('Compiler.Builder.Tags')->exists($view))
 		{
 			$script .= PHP_EOL . PHP_EOL . Indent::_(3)
 				. "if (!empty(\$item->id))";
@@ -7340,12 +7130,9 @@ class Interpretation extends Fields
 	public function setCheckboxSave(&$view)
 	{
 		$script = '';
-		if (isset($this->checkboxBuilder[$view])
-			&& ArrayHelper::check(
-				$this->checkboxBuilder[$view]
-			))
+		if (CFactory::_('Compiler.Builder.Check.Box')->exists($view))
 		{
-			foreach ($this->checkboxBuilder[$view] as $checkbox)
+			foreach (CFactory::_('Compiler.Builder.Check.Box')->get($view) as $checkbox)
 			{
 				$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 					. Line::_(__Line__, __Class__) . " Set the empty " . $checkbox
@@ -7366,19 +7153,16 @@ class Interpretation extends Fields
 	{
 		$script = '';
 		// get component name
-		$Component = CFactory::_('Content')->get('Component');
+		$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
 		$component = CFactory::_('Config')->component_code_name;
 		// check if there was script added before modeling of data
 		$script .= CFactory::_('Customcode.Dispenser')->get(
 			'php_before_save', $view, PHP_EOL . PHP_EOL
 		);
 		// turn array into JSON string
-		if (isset($this->jsonItemBuilder[$view])
-			&& ArrayHelper::check(
-				$this->jsonItemBuilder[$view]
-			))
+		if (CFactory::_('Compiler.Builder.Json.Item')->exists($view))
 		{
-			foreach ($this->jsonItemBuilder[$view] as $jsonItem)
+			foreach (CFactory::_('Compiler.Builder.Json.Item')->get($view) as $jsonItem)
 			{
 				$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 					. Line::_(__Line__, __Class__) . " Set the " . $jsonItem
@@ -7439,12 +7223,9 @@ class Interpretation extends Fields
 			}
 		}
 		// turn string into json string
-		if (isset($this->jsonStringBuilder[$view])
-			&& ArrayHelper::check(
-				$this->jsonStringBuilder[$view]
-			))
+		if (CFactory::_('Compiler.Builder.Json.String')->exists($view))
 		{
-			foreach ($this->jsonStringBuilder[$view] as $jsonString)
+			foreach (CFactory::_('Compiler.Builder.Json.String')->get($view) as $jsonString)
 			{
 				$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 					. Line::_(__Line__, __Class__) . " Set the " . $jsonString
@@ -7459,10 +7240,9 @@ class Interpretation extends Fields
 			}
 		}
 		// turn string into base 64 string
-		if (isset($this->base64Builder[$view])
-			&& ArrayHelper::check($this->base64Builder[$view]))
+		if (CFactory::_('Compiler.Builder.Base.Six.Four')->exists($view))
 		{
-			foreach ($this->base64Builder[$view] as $baseString)
+			foreach (CFactory::_('Compiler.Builder.Base.Six.Four')->get($view) as $baseString)
 			{
 				$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 					. Line::_(__Line__, __Class__) . " Set the " . $baseString
@@ -7476,12 +7256,10 @@ class Interpretation extends Fields
 			}
 		}
 		// turn string into encrypted string
-		foreach ($this->cryptionTypes as $cryptionType)
+		foreach (CFactory::_('Config')->cryption_types as $cryptionType)
 		{
-			if (isset($this->{$cryptionType . 'FieldModeling'}[$view])
-				&& ArrayHelper::check(
-					$this->{$cryptionType . 'FieldModeling'}[$view]
-				))
+			if (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->
+				exists($view))
 			{
 				if ('expert' !== $cryptionType)
 				{
@@ -7495,11 +7273,9 @@ class Interpretation extends Fields
 							__LINE__,__CLASS__
 						) . " Get the encryption object";
 					$script .= PHP_EOL . Indent::_(2) . "\$" . $cryptionType
-						. " = new FOFEncryptAes(\$" . $cryptionType . "key);";
-					foreach (
-						$this->{$cryptionType . 'FieldModeling'}[$view] as
-						$baseString
-					)
+						. " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$" . $cryptionType . "key);";
+					foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->
+						get($view) as $baseString)
 					{
 						$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 							. Line::_(__Line__, __Class__) . " Encrypt data "
@@ -7516,30 +7292,20 @@ class Interpretation extends Fields
 				}
 				else
 				{
-					if (isset(
-							$this->{$cryptionType
-							. 'FieldModelInitiator'}[$view]
-						)
-						&& isset(
-							$this->{$cryptionType
-							. 'FieldModelInitiator'}[$view]['save']
-						))
+					if (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+						exists("{$view}.save"))
 					{
-						foreach (
-							$this->{$cryptionType
-							. 'FieldModelInitiator'}[$view]['save'] as $block
-						)
+						foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+							get("{$view}.save") as $block)
 						{
 							$script .= PHP_EOL . Indent::_(2) . implode(
-									PHP_EOL . Indent::_(2), $block
-								);
+								PHP_EOL . Indent::_(2), $block
+							);
 						}
 					}
 					// set the expert script
-					foreach (
-						$this->{$cryptionType . 'FieldModeling'}[$view] as
-						$baseString => $locker_
-					)
+					foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->
+						get($view) as $baseString => $locker_)
 					{
 						$_placeholder_for_field
 							= array('[[[field]]]' => "\$data['"
@@ -7568,7 +7334,7 @@ class Interpretation extends Fields
 		// set component name
 		$component = CFactory::_('Config')->component_code_name;
 		// add the tags observer
-		if (CFactory::_('Registry')->get('builder.tags.' . $view))
+		if (CFactory::_('Compiler.Builder.Tags')->exists($view))
 		{
 			$oserver .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Adding Tag Options";
@@ -7577,7 +7343,7 @@ class Interpretation extends Fields
 				. $component . "." . $view . "'));";
 		}
 		// add the history/version observer
-		if (CFactory::_('Registry')->exists('builder.history.' . $view))
+		if (CFactory::_('Compiler.Builder.History')->exists($view))
 		{
 			$oserver .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Adding History Options";
@@ -7591,11 +7357,10 @@ class Interpretation extends Fields
 
 	public function setJtableAliasCategory(&$view)
 	{
-		// only add Observers if both title, alias and category is availabe in view
-		if (array_key_exists($view, $this->catCodeBuilder))
+		// only add Observers if both title, alias and category is available in view
+		$code = CFactory::_('Compiler.Builder.Category.Code')->get("{$view}.code");
+		if ($code !== null)
 		{
-			$code = $this->catCodeBuilder[$view]['code'];
-
 			return ", '" . $code . "' => \$this->" . $code;
 		}
 
@@ -7625,12 +7390,9 @@ class Interpretation extends Fields
 				// get this views content type data
 				$dbStuff[$view] = $this->getContentType($view, $component);
 				// get the correct views name
-				$checkViews = (isset($this->catCodeBuilder[$view]['views'])
-					&& StringHelper::check(
-						$this->catCodeBuilder[$view]['views']
-					)) ? $this->catCodeBuilder[$view]['views'] : $views;
+				$checkViews = CFactory::_('Compiler.Builder.Category.Code')->getString("{$view}.views", $views);
 				if (ArrayHelper::check($dbStuff[$view])
-					&& array_key_exists($view, $this->catCodeBuilder)
+					&& CFactory::_('Compiler.Builder.Category.Code')->exists($view)
 					&& ($checkViews == $views))
 				{
 					$dbStuff[$view . ' category']
@@ -7831,8 +7593,8 @@ class Interpretation extends Fields
 		{
 			$script .= PHP_EOL . Indent::_(3)
 				. 'echo \'<a target="_blank" href="'
-				. CFactory::_('Content')->get('AUTHORWEBSITE') . '" title="'
-				. CFactory::_('Content')->get('Component_name') . '">';
+				. CFactory::_('Compiler.Builder.Content.One')->get('AUTHORWEBSITE') . '" title="'
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component_name') . '">';
 			$script .= PHP_EOL . Indent::_(4) . '<img src="components/com_'
 				. $component . '/assets/images/vdm-component.'
 				. $this->componentImageType . '"/>';
@@ -7857,14 +7619,14 @@ class Interpretation extends Fields
 		{
 			$script .= PHP_EOL . Indent::_(3)
 				. 'echo \'<a target="_blank" href="'
-				. CFactory::_('Content')->get('AUTHORWEBSITE') . '" title="'
-				. CFactory::_('Content')->get('Component_name') . '">';
+				. CFactory::_('Compiler.Builder.Content.One')->get('AUTHORWEBSITE') . '" title="'
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component_name') . '">';
 			$script .= PHP_EOL . Indent::_(4) . '<img src="components/com_'
 				. CFactory::_('Config')->component_code_name . '/assets/images/vdm-component.'
 				. $this->componentImageType . '"/>';
 			$script .= PHP_EOL . Indent::_(4) . '</a>';
 			$script .= PHP_EOL . Indent::_(4) . "<h3>Upgrade to Version "
-				. CFactory::_('Content')->get('ACTUALVERSION')
+				. CFactory::_('Compiler.Builder.Content.One')->get('ACTUALVERSION')
 				. " Was Successful! Let us know if anything is not working as expected.</h3>';";
 		}
 
@@ -7887,7 +7649,7 @@ class Interpretation extends Fields
 			))
 		{
 			$component = CFactory::_('Config')->component_code_name;
-			// start loading the data to delet
+			// start loading the data to delete
 			$script .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Get Application object";
 			$script .= PHP_EOL . Indent::_(2)
@@ -8341,6 +8103,18 @@ class Interpretation extends Fields
 			// done
 			$script .= PHP_EOL;
 		}
+		elseif (CFactory::_('Config')->add_assets_table_fix == 2)
+		{
+			// start loading the data to delete (WE NEED THIS)
+			$script .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+				. " Get Application object";
+			$script .= PHP_EOL . Indent::_(2)
+				. "\$app = JFactory::getApplication();";
+			$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
+					__LINE__,__CLASS__
+				) . " Get The Database object";
+			$script .= PHP_EOL . Indent::_(2) . "\$db = JFactory::getDbo();";
+		}
 		// add the Intelligent Reversal script if needed
 		$script .= $this->getAssetsTableIntelligentUninstall();
 		// add the custom uninstall script
@@ -8589,17 +8363,16 @@ class Interpretation extends Fields
 	public function getContentType($view, $component)
 	{
 		// add if history is to be kept or if tags is added
-		if (CFactory::_('Registry')->exists('builder.history.' . $view)
-			|| CFactory::_('Registry')->get('builder.tags.' . $view))
+		if (CFactory::_('Compiler.Builder.History')->exists($view)
+			|| CFactory::_('Compiler.Builder.Tags')->exists($view))
 		{
 			// reset array
 			$array = array();
 			// set needed defaults
-			$alias            = CFactory::_('Registry')->get('builder.alias.' . $view, 'null');
-			$title            = CFactory::_('Registry')->get('builder.title.' . $view, 'null');
-			$category         = (array_key_exists($view, $this->catCodeBuilder))
-				? $this->catCodeBuilder[$view]['code'] : 'null';
-			$categoryHistory  = (array_key_exists($view, $this->catCodeBuilder))
+			$alias            = CFactory::_('Compiler.Builder.Alias')->get($view, 'null');
+			$title            = CFactory::_('Compiler.Builder.Title')->get($view, 'null');
+			$category         = CFactory::_('Compiler.Builder.Category.Code')->getString("{$view}.code", 'null');
+			$categoryHistory  = (CFactory::_('Compiler.Builder.Category.Code')->exists($view))
 				?
 				'{"sourceColumn": "' . $category
 				. '","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},'
@@ -8608,21 +8381,17 @@ class Interpretation extends Fields
 				$component, 'F'
 			);
 			$View             = StringHelper::safe($view, 'F');
-			$maintext         = CFactory::_('Registry')->get('builder.main_text_field.' . $view, 'null');
-			$hiddenFields     = (CFactory::_('Registry')->isArray('builder.hidden_fields.' . $view))
-				? implode('', CFactory::_('Registry')->get('builder.hidden_fields.' . $view)) : '';
-			$dynamicfields    = (CFactory::_('Registry')->isArray('builder.dynamic_fields.' . $view))
-				? implode(',', CFactory::_('Registry')->get('builder.dynamic_fields.' . $view)) : '';
-			$intFields        = (CFactory::_('Registry')->isArray('builder.integer_fields.' . $view))
-				? implode('', CFactory::_('Registry')->get('builder.integer_fields.' . $view)) : '';
-			$customfieldlinks = (CFactory::_('Registry')->isArray('builder.custom_field_links.' . $view))
-				? implode('', CFactory::_('Registry')->get('builder.custom_field_links.' . $view)) : '';
+			$maintext         = CFactory::_('Compiler.Builder.Main.Text.Field')->get($view, 'null');
+			$hiddenFields     = CFactory::_('Compiler.Builder.Hidden.Fields')->toString($view, '');
+			$dynamicfields    = CFactory::_('Compiler.Builder.Dynamic.Fields')->toString($view, ',');
+			$intFields        = CFactory::_('Compiler.Builder.Integer.Fields')->toString($view, '');
+			$customfieldlinks = CFactory::_('Compiler.Builder.Custom.Field.Links')->toString($view, '');
 			// build uninstall script for content types
 			$this->uninstallScriptBuilder[$View] = 'com_' . $component . '.'
 				. $view;
 			$this->uninstallScriptContent[$view] = $view;
 			// check if this view has metadata
-			if (CFactory::_('Registry')->isString('builder.meta_data.' . $view))
+			if (CFactory::_('Compiler.Builder.Meta.Data')->isString($view))
 			{
 				$core_metadata = 'metadata';
 				$core_metakey  = 'metakey';
@@ -8635,7 +8404,7 @@ class Interpretation extends Fields
 				$core_metadesc = 'null';
 			}
 			// check if view has access
-			if (CFactory::_('Registry')->exists('builder.access_switch.' . $view))
+			if (CFactory::_('Compiler.Builder.Access.Switch')->exists($view))
 			{
 				$core_access = 'access';
 				$accessHistory
@@ -8696,8 +8465,8 @@ class Interpretation extends Fields
 	public function getCategoryContentType($view, $views, $component)
 	{
 		// get the other view
-		$otherView = $this->catCodeBuilder[$view]['view'];
-		$category  = $this->catCodeBuilder[$view]['code'];
+		$otherView = CFactory::_('Compiler.Builder.Category.Code')->getString("{$view}.view", 'error');
+		$category  = CFactory::_('Compiler.Builder.Category.Code')->getString("{$view}.code", 'error');
 		$Component = StringHelper::safe($component, 'F');
 		$View      = StringHelper::safe($view, 'F');
 		// build uninstall script for content types
@@ -8731,7 +8500,7 @@ class Interpretation extends Fields
 	)
 	{
 		// add if tags is added, also for all front item views
-		if ((CFactory::_('Registry')->get('builder.tags.' . $nameSingleCode)
+		if ((CFactory::_('Compiler.Builder.Tags')->exists($nameSingleCode)
 				|| $front)
 			&& (!in_array($nameSingleCode, $this->setRouterHelpDone)))
 		{
@@ -8958,9 +8727,9 @@ class Interpretation extends Fields
 
 	public function routerBuildViews(&$view)
 	{
-		if (CFactory::_('Content')->exist('ROUTER_BUILD_VIEWS')
+		if (CFactory::_('Compiler.Builder.Content.One')->exists('ROUTER_BUILD_VIEWS')
 			&& StringHelper::check(
-				CFactory::_('Content')->get('ROUTER_BUILD_VIEWS')
+				CFactory::_('Compiler.Builder.Content.One')->get('ROUTER_BUILD_VIEWS')
 			))
 		{
 			return " || \$view === '" . $view . "'";
@@ -8974,23 +8743,11 @@ class Interpretation extends Fields
 	public function setBatchMove($nameSingleCode)
 	{
 		// set needed defaults
-		$category  = false;
+		$category  = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.code");
 		$batchmove = array();
 		$VIEW      = StringHelper::safe($nameSingleCode, 'U');
 		// component helper name
-		$Helper = CFactory::_('Content')->get('Component') . 'Helper';
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
-		// only load category if set in this view
-		if (array_key_exists($nameSingleCode, $this->catCodeBuilder))
-		{
-			$category = $this->catCodeBuilder[$nameSingleCode]['code'];
-		}
+		$Helper = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
 		// prepare custom script
 		$customScript = CFactory::_('Customcode.Dispenser')->get(
 			'php_batchmove', $nameSingleCode, PHP_EOL . PHP_EOL, null, true
@@ -9028,25 +8785,10 @@ class Interpretation extends Fields
 			. "::getActions('" . $nameSingleCode . "');";
 		$batchmove[] = Indent::_(2) . "}";
 
-		if ($coreLoad && isset($core['core.edit'])
-			&& isset($this->permissionBuilder['global'][$core['core.edit']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder['global'][$core['core.edit']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder['global'][$core['core.edit']]
-			))
-		{
-			$batchmove[] = PHP_EOL . Indent::_(2) . "if (!\$this->canDo->get('"
-				. $core['core.edit'] . "') && !\$this->canDo->get('"
-				. $core['core.batch'] . "'))";
-		}
-		else
-		{
-			$batchmove[] = PHP_EOL . Indent::_(2)
-				. "if (!\$this->canDo->get('core.edit') && !\$this->canDo->get('core.batch'))";
-		}
+		$batchmove[] = PHP_EOL . Indent::_(2) . "if (!\$this->canDo->get('"
+			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "') && !\$this->canDo->get('"
+			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.batch') . "'))";
+
 		$batchmove[] = Indent::_(2) . "{";
 		$batchmove[] = Indent::_(3) . "\$this->setError(JText:"
 			. ":_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));";
@@ -9055,25 +8797,10 @@ class Interpretation extends Fields
 
 		$batchmove[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " make sure published only updates if user has the permission.";
-		if ($coreLoad && isset($core['core.edit.state'])
-			&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder['global'][$core['core.edit.state']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder['global'][$core['core.edit.state']]
-			))
-		{
-			$batchmove[] = Indent::_(2)
-				. "if (isset(\$values['published']) && !\$this->canDo->get('"
-				. $core['core.edit.state'] . "'))";
-		}
-		else
-		{
-			$batchmove[] = Indent::_(2)
-				. "if (isset(\$values['published']) && !\$this->canDo->get('core.edit.state'))";
-		}
+		$batchmove[] = Indent::_(2)
+			. "if (isset(\$values['published']) && !\$this->canDo->get('"
+			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "'))";
+
 		$batchmove[] = Indent::_(2) . "{";
 		$batchmove[] = Indent::_(3) . "unset(\$values['published']);";
 		$batchmove[] = Indent::_(2) . "}";
@@ -9082,7 +8809,7 @@ class Interpretation extends Fields
 			. " remove move_copy from array";
 		$batchmove[] = Indent::_(2) . "unset(\$values['move_copy']);";
 
-		if ($category)
+		if ($category !== null)
 		{
 			$batchmove[] = PHP_EOL . Indent::_(2)
 				. "if (isset(\$values['category']) && (int) \$values['category'] > 0 && !static::checkCategoryId(\$values['category']))";
@@ -9109,23 +8836,8 @@ class Interpretation extends Fields
 			. " Parent exists so we proceed";
 		$batchmove[] = Indent::_(2) . "foreach (\$pks as \$pk)";
 		$batchmove[] = Indent::_(2) . "{";
-		if ($coreLoad && isset($core['core.edit'])
-			&& isset($this->permissionBuilder[$core['core.edit']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder[$core['core.edit']]
-			)
-			&& in_array(
-				$nameSingleCode, $this->permissionBuilder[$core['core.edit']]
-			))
-		{
-			$batchmove[] = Indent::_(3) . "if (!\$this->user->authorise('"
-				. $core['core.edit'] . "', \$contexts[\$pk]))";
-		}
-		else
-		{
-			$batchmove[] = Indent::_(3)
-				. "if (!\$this->user->authorise('core.edit', \$contexts[\$pk]))";
-		}
+		$batchmove[] = Indent::_(3) . "if (!\$this->user->authorise('"
+			. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit') . "', \$contexts[\$pk]))";
 		$batchmove[] = Indent::_(3) . "{";
 		$batchmove[] = Indent::_(4) . "\$this->setError(JText:"
 			. ":_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));";
@@ -9221,36 +8933,24 @@ class Interpretation extends Fields
 		$title     = false;
 		$titles    = array();
 		// only load alias if set in this view
-		$alias     = CFactory::_('Registry')->get('builder.alias.' . $nameSingleCode);
-		$category  = false;
+		$alias     = CFactory::_('Compiler.Builder.Alias')->get($nameSingleCode);
+		$category  = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.code");
 		$batchcopy = array();
 		$VIEW      = StringHelper::safe($nameSingleCode, 'U');
 		// component helper name
-		$Helper = CFactory::_('Content')->get('Component') . 'Helper';
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
-		// only load category if set in this view
-		if (array_key_exists($nameSingleCode, $this->catCodeBuilder))
-		{
-			$category = $this->catCodeBuilder[$nameSingleCode]['code'];
-		}
+		$Helper = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
 
 		// only load title if set in this view
-		if (($customAliasBuilder = CFactory::_('Registry')->get('builder.custom_alias.' . $nameSingleCode)) !== null)
+		if (($customAliasBuilder = CFactory::_('Compiler.Builder.Custom.Alias')->get($nameSingleCode)) !== null)
 		{
 			$titles = array_values(
 				$customAliasBuilder
 			);
 			$title  = true;
 		}
-		elseif (CFactory::_('Registry')->exists('builder.title.' . $nameSingleCode))
+		elseif (CFactory::_('Compiler.Builder.Title')->exists($nameSingleCode))
 		{
-			$titles = [CFactory::_('Registry')->get('builder.title.' . $nameSingleCode)];
+			$titles = [CFactory::_('Compiler.Builder.Title')->get($nameSingleCode)];
 			$title  = true;
 		}
 		// se the dynamic title
@@ -9302,25 +9002,9 @@ class Interpretation extends Fields
 		$batchcopy[] = Indent::_(3) . "\$this->canDo		= " . $Helper
 			. "::getActions('" . $nameSingleCode . "');";
 		$batchcopy[] = Indent::_(2) . "}";
-		if ($coreLoad && isset($core['core.create'])
-			&& isset($this->permissionBuilder['global'][$core['core.create']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder['global'][$core['core.create']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder['global'][$core['core.create']]
-			))
-		{
-			$batchcopy[] = PHP_EOL . Indent::_(2) . "if (!\$this->canDo->get('"
-				. $core['core.create'] . "') && !\$this->canDo->get('"
-				. $core['core.batch'] . "'))";
-		}
-		else
-		{
-			$batchcopy[] = PHP_EOL . Indent::_(2)
-				. "if (!\$this->canDo->get('core.create') || !\$this->canDo->get('core.batch'))";
-		}
+		$batchcopy[] = PHP_EOL . Indent::_(2) . "if (!\$this->canDo->get('"
+			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "') && !\$this->canDo->get('"
+			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.batch') . "'))";
 		$batchcopy[] = Indent::_(2) . "{";
 		$batchcopy[] = Indent::_(3) . "return false;";
 		$batchcopy[] = Indent::_(2) . "}" . $customScript;
@@ -9339,25 +9023,9 @@ class Interpretation extends Fields
 		$batchcopy[] = Indent::_(2) . "{";
 		$batchcopy[] = Indent::_(3) . "\$values['published'] = 0;";
 		$batchcopy[] = Indent::_(2) . "}";
-		if ($coreLoad && isset($core['core.edit.state'])
-			&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder['global'][$core['core.edit.state']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder['global'][$core['core.edit.state']]
-			))
-		{
-			$batchcopy[] = Indent::_(2)
-				. "elseif (isset(\$values['published']) && !\$this->canDo->get('"
-				. $core['core.edit.state'] . "'))";
-		}
-		else
-		{
-			$batchcopy[] = Indent::_(2)
-				. "elseif (isset(\$values['published']) && !\$this->canDo->get('core.edit.state'))";
-		}
+		$batchcopy[] = Indent::_(2)
+			. "elseif (isset(\$values['published']) && !\$this->canDo->get('"
+			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "'))";
 		$batchcopy[] = Indent::_(2) . "{";
 		$batchcopy[] = Indent::_(4) . "\$values['published'] = 0;";
 		$batchcopy[] = Indent::_(2) . "}";
@@ -9399,23 +9067,8 @@ class Interpretation extends Fields
 
 		$batchcopy[] = PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 			. " only allow copy if user may edit this item.";
-		if ($coreLoad && isset($core['core.edit'])
-			&& isset($this->permissionBuilder[$core['core.edit']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder[$core['core.edit']]
-			)
-			&& in_array(
-				$nameSingleCode, $this->permissionBuilder[$core['core.edit']]
-			))
-		{
-			$batchcopy[] = Indent::_(3) . "if (!\$this->user->authorise('"
-				. $core['core.edit'] . "', \$contexts[\$pk]))";
-		}
-		else
-		{
-			$batchcopy[] = Indent::_(3)
-				. "if (!\$this->user->authorise('core.edit', \$contexts[\$pk]))";
-		}
+		$batchcopy[] = Indent::_(3) . "if (!\$this->user->authorise('"
+			. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit') . "', \$contexts[\$pk]))";
 		$batchcopy[] = Indent::_(3) . "{";
 		$batchcopy[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 			. " Not fatal error";
@@ -9610,23 +9263,18 @@ class Interpretation extends Fields
 	{
 		$fixUnique = array();
 		// only load this if these two items are set
-		if (CFactory::_('Registry')->exists('builder.alias.' . $nameSingleCode)
-			&& (CFactory::_('Registry')->exists('builder.title.' . $nameSingleCode)
-				|| CFactory::_('Registry')->exists('builder.custom_alias.' . $nameSingleCode)))
+		if (CFactory::_('Compiler.Builder.Alias')->exists($nameSingleCode)
+			&& (CFactory::_('Compiler.Builder.Title')->exists($nameSingleCode)
+				|| CFactory::_('Compiler.Builder.Custom.Alias')->exists($nameSingleCode)))
 		{
 			// set needed defaults
-			$setCategory = false;
-			$alias       = CFactory::_('Registry')->get('builder.alias.' . $nameSingleCode);
+			$category = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.code");
+			$alias       = CFactory::_('Compiler.Builder.Alias')->get($nameSingleCode);
 			$VIEW        = StringHelper::safe(
 				$nameSingleCode, 'U'
 			);
-			if (array_key_exists($nameSingleCode, $this->catCodeBuilder))
-			{
-				$category    = $this->catCodeBuilder[$nameSingleCode]['code'];
-				$setCategory = true;
-			}
 			// set the title stuff
-			if (($customAliasBuilder = CFactory::_('Registry')->get('builder.custom_alias.' . $nameSingleCode)) !== null)
+			if (($customAliasBuilder = CFactory::_('Compiler.Builder.Custom.Alias')->get($nameSingleCode)) !== null)
 			{
 				$titles = array_values(
 					$customAliasBuilder
@@ -9634,7 +9282,7 @@ class Interpretation extends Fields
 			}
 			else
 			{
-				$titles = [CFactory::_('Registry')->get('builder.title.' . $nameSingleCode)];
+				$titles = [CFactory::_('Compiler.Builder.Title')->get($nameSingleCode)];
 			}
 			// start building the fix
 			$fixUnique[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
@@ -9667,7 +9315,7 @@ class Interpretation extends Fields
 					' || ', $ifStatment
 				) . ")";
 			$fixUnique[] = Indent::_(3) . "{";
-			if ($setCategory && count((array) $titles) == 1)
+			if ($category !== null && count((array) $titles) == 1)
 			{
 				$fixUnique[] = Indent::_(4) . "list(" . implode('', $titleVars)
 					. ", \$" . $alias . ") = \$this->generateNewTitle(\$data['"
@@ -9732,7 +9380,7 @@ class Interpretation extends Fields
 			$fixUnique[] = PHP_EOL . Indent::_(4)
 				. "\$table = JTable::getInstance('" . $nameSingleCode . "', '"
 				. CFactory::_('Config')->component_code_name . "Table');";
-			if ($setCategory && count($titles) == 1)
+			if ($category !== null && count($titles) == 1)
 			{
 				$fixUnique[] = PHP_EOL . Indent::_(4)
 					. "if (\$table->load(array('" . $alias . "' => \$data['"
@@ -9740,7 +9388,7 @@ class Interpretation extends Fields
 					. "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUnique[] = Indent::_(4) . "{";
 				$fixUnique[] = Indent::_(5) . "\$msg = JText:" . ":_('COM_"
-					. CFactory::_('Content')->get('COMPONENT') . "_" . $VIEW . "_SAVE_WARNING');";
+					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUnique[] = Indent::_(4) . "}";
 				$fixUnique[] = PHP_EOL . Indent::_(4) . "list(" . implode(
 						'', $titleVars
@@ -9759,7 +9407,7 @@ class Interpretation extends Fields
 					. "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUnique[] = Indent::_(4) . "{";
 				$fixUnique[] = Indent::_(5) . "\$msg = JText:" . ":_('COM_"
-					. CFactory::_('Content')->get('COMPONENT') . "_" . $VIEW . "_SAVE_WARNING');";
+					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUnique[] = Indent::_(4) . "}";
 				$fixUnique[] = PHP_EOL . Indent::_(4) . "\$data['" . $alias
 					. "'] = \$this->_generateNewTitle(\$data['" . $alias
@@ -9797,7 +9445,7 @@ class Interpretation extends Fields
 		$fixUnique[] = Indent::_(3)
 			. "\$uniqueFields = \$this->getUniqueFields();";
 		$fixUnique[] = Indent::_(3) . "if ("
-			. CFactory::_('Content')->get('Component')
+			. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 			. "Helper::checkArray(\$uniqueFields))";
 		$fixUnique[] = Indent::_(3) . "{";
 		$fixUnique[] = Indent::_(4)
@@ -9815,12 +9463,12 @@ class Interpretation extends Fields
 	public function setGenerateNewTitle($nameSingleCode)
 	{
 		// if category is added to this view then do nothing
-		if (CFactory::_('Registry')->exists('builder.alias.' . $nameSingleCode)
-			&& (CFactory::_('Registry')->exists('builder.title.' . $nameSingleCode)
-				|| CFactory::_('Registry')->exists('builder.custom_alias.' . $nameSingleCode)))
+		if (CFactory::_('Compiler.Builder.Alias')->exists($nameSingleCode)
+			&& (CFactory::_('Compiler.Builder.Title')->exists($nameSingleCode)
+				|| CFactory::_('Compiler.Builder.Custom.Alias')->exists($nameSingleCode)))
 		{
 			// get component name
-			$Component = CFactory::_('Content')->get('Component');
+			$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
 			// rest the new function
 			$newFunction   = array();
 			$newFunction[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
@@ -9889,7 +9537,7 @@ class Interpretation extends Fields
 
 			return implode(PHP_EOL, $newFunction);
 		}
-		elseif (CFactory::_('Registry')->exists('builder.title.' . $nameSingleCode))
+		elseif (CFactory::_('Compiler.Builder.Title')->exists($nameSingleCode))
 		{
 			$newFunction   = array();
 			$newFunction[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
@@ -9927,18 +9575,18 @@ class Interpretation extends Fields
 	public function setGenerateNewAlias($nameSingleCode)
 	{
 		// make sure this view has an alias
-		if (CFactory::_('Registry')->exists('builder.alias.' . $nameSingleCode))
+		if (CFactory::_('Compiler.Builder.Alias')->exists($nameSingleCode))
 		{
 			// set the title stuff
-			if (($customAliasBuilder = CFactory::_('Registry')->get('builder.custom_alias.' . $nameSingleCode)) !== null)
+			if (($customAliasBuilder = CFactory::_('Compiler.Builder.Custom.Alias')->get($nameSingleCode)) !== null)
 			{
 				$titles = array_values(
 					$customAliasBuilder
 				);
 			}
-			elseif (CFactory::_('Registry')->exists('builder.title.' . $nameSingleCode))
+			elseif (CFactory::_('Compiler.Builder.Title')->exists($nameSingleCode))
 			{
-				$titles = [CFactory::_('Registry')->get('builder.title.' . $nameSingleCode)];
+				$titles = [CFactory::_('Compiler.Builder.Title')->get($nameSingleCode)];
 			}
 			// reset the bucket
 			$titleData = array();
@@ -10004,7 +9652,7 @@ class Interpretation extends Fields
 
 	public function setInstall()
 	{
-		if (($database_tables = CFactory::_('Registry')->get('builder.database_tables')) !== null)
+		if (($database_tables = CFactory::_('Compiler.Builder.Database.Tables')->allActive()) !== [])
 		{
 			// set the main db prefix
 			$component = CFactory::_('Config')->component_code_name;
@@ -10030,10 +9678,10 @@ class Interpretation extends Fields
 					$value_ = "RENAME TABLE `#__" . $component . "_" . $old_table_name . "` to `#__"
 						. $component . "_" . $view . "`;";
 
-					CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
+					CFactory::_('Compiler.Builder.Update.Mysql')->set($key_, $value_);
 				}
 				// check if default field was over written
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.id'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.id'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`id` INT(11) NOT NULL AUTO_INCREMENT,";
@@ -10101,7 +9749,7 @@ class Interpretation extends Fields
 						$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` ADD `" . $field . "` " . $data['type']
 							. $length . " " . $default . " AFTER `" . $last_name . "`;";
 
-						CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
+						CFactory::_('Compiler.Builder.Update.Mysql')->set($key_, $value_);
 					}
 					// check if the field has changed name and/or data type and lenght
 					elseif (CFactory::_('Registry')->
@@ -10124,100 +9772,100 @@ class Interpretation extends Fields
 						$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` CHANGE `" . $oldName . "` `"
 							. $field . "` " . $data['type'] . $length . " " . $default . ";";
 
-						CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
+						CFactory::_('Compiler.Builder.Update.Mysql')->set($key_, $value_);
 					}
 					// be sure to track the last name used :)
 					$last_name = $field;
 				}
 				// check if default field was overwritten
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.params'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.params'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1) . "`params` text NULL,";
 				}
 				// check if default field was overwritten
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.published'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.published'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`published` TINYINT(3) NOT NULL DEFAULT 1,";
 				}
 				// check if default field was overwritten
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.created_by'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.created_by'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`created_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was overwritten
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.modified_by'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.modified_by'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was overwritten
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.created'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.created'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was overwritten
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.modified'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.modified'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was overwritten
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.checked_out'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.checked_out'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`checked_out` int(11) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was overwritten
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.checked_out_time'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.checked_out_time'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 				}
 				// check if default field was overwritten
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.version'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.version'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`version` INT(10) unsigned NOT NULL DEFAULT 1,";
 				}
 				// check if default field was overwritten
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.hits'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.hits'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`hits` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if view has access
-				if (CFactory::_('Registry')->exists('builder.access_switch.' . $view)
-					&& !CFactory::_('Registry')->isString('builder.field_names.' . $view . '.access'))
+				if (CFactory::_('Compiler.Builder.Access.Switch')->exists($view)
+					&& !CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.access'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`access` INT(10) unsigned NOT NULL DEFAULT 0,";
 				}
 				// check if default field was overwritten
-				if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.ordering'))
+				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.ordering'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`ordering` INT(11) NOT NULL DEFAULT 0,";
 				}
 				// check if metadata is added to this view
-				if (CFactory::_('Registry')->isString('builder.meta_data.' . $view))
+				if (CFactory::_('Compiler.Builder.Meta.Data')->isString($view))
 				{
 					// check if default field was overwritten
-					if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.metakey'))
+					if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.metakey'))
 					{
 						$db_ .= PHP_EOL . Indent::_(1)
 							. "`metakey` TEXT NOT NULL,";
 					}
 					// check if default field was overwritten
-					if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.metadesc'))
+					if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.metadesc'))
 					{
 						$db_ .= PHP_EOL . Indent::_(1)
 							. "`metadesc` TEXT NOT NULL,";
 					}
 					// check if default field was overwritten
-					if (!CFactory::_('Registry')->isString('builder.field_names.' . $view . '.metadata'))
+					if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.metadata'))
 					{
 						$db_ .= PHP_EOL . Indent::_(1)
 							. "`metadata` TEXT NOT NULL,";
@@ -10227,18 +9875,18 @@ class Interpretation extends Fields
 				$db_ .= PHP_EOL . Indent::_(1) . "PRIMARY KEY  (`id`)";
 				// check if a key was set for any of the default fields then we should not set it again
 				$check_keys_set = array();
-				if (CFactory::_('Registry')->isArray('builder.database_unique_keys.' . $view))
+				if (CFactory::_('Compiler.Builder.Database.Unique.Keys')->exists($view))
 				{
-					foreach (CFactory::_('Registry')->get('builder.database_unique_keys.' . $view) as $nr => $key)
+					foreach (CFactory::_('Compiler.Builder.Database.Unique.Keys')->get($view) as $nr => $key)
 					{
 						$db_ .= "," . PHP_EOL . Indent::_(1)
 							. "UNIQUE KEY `idx_" . $key . "` (`" . $key . "`)";
 						$check_keys_set[$key] = $key;
 					}
 				}
-				if (CFactory::_('Registry')->isArray('builder.database_keys.' . $view))
+				if (CFactory::_('Compiler.Builder.Database.Keys')->exists($view))
 				{
-					foreach (CFactory::_('Registry')->get('builder.database_keys.' . $view) as $nr => $key)
+					foreach (CFactory::_('Compiler.Builder.Database.Keys')->get($view) as $nr => $key)
 					{
 						$db_ .= "," . PHP_EOL . Indent::_(1)
 							. "KEY `idx_" . $key . "` (`" . $key . "`)";
@@ -10247,7 +9895,7 @@ class Interpretation extends Fields
 				}
 				// check if view has access
 				if (!isset($check_keys_set['access'])
-					&& CFactory::_('Registry')->exists('builder.access_switch.' . $view))
+					&& CFactory::_('Compiler.Builder.Access.Switch')->exists($view))
 				{
 					$db_ .= "," . PHP_EOL . Indent::_(1)
 						. "KEY `idx_access` (`access`)";
@@ -10283,8 +9931,8 @@ class Interpretation extends Fields
 					CFactory::_('Config')->mysql_table_keys as $_mysqlTableKey => $_mysqlTableVal
 				)
 				{
-					if (($easy[$_mysqlTableKey] = CFactory::_('Registry')->
-						get('builder.mysql_table_setting.' . $view . '.' . $_mysqlTableKey, null)) === null)
+					if (($easy[$_mysqlTableKey] = CFactory::_('Compiler.Builder.Mysql.Table.Setting')->
+						get($view . '.' . $_mysqlTableKey)) === null)
 					{
 						$easy[$_mysqlTableKey]
 							= CFactory::_('Config')->mysql_table_keys[$_mysqlTableKey]['default'];
@@ -10307,7 +9955,7 @@ class Interpretation extends Fields
 				{
 					// build the update array
 					$key_ = "CREATETABLEIFNOTEXISTS`#__" . $component . "_" . $view . "`";
-					CFactory::_('Builder.Update.Mysql')->set($key_, $db_);
+					CFactory::_('Compiler.Builder.Update.Mysql')->set($key_, $db_);
 				}
 				// check if the table row_format has changed
 				if (StringHelper::check($easy['row_format'])
@@ -10317,7 +9965,7 @@ class Interpretation extends Fields
 					// build the update array
 					$key_ = "ALTERTABLE`#__" . $component . "_" . $view . "`" . trim((string) $easy['row_format']);
 					$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "`" . $easy['row_format'] . ";";
-					CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
+					CFactory::_('Compiler.Builder.Update.Mysql')->set($key_, $value_);
 				}
 				// check if the table engine has changed
 				if (CFactory::_('Registry')->
@@ -10326,7 +9974,7 @@ class Interpretation extends Fields
 					// build the update array
 					$key_ = "ALTERTABLE`#__" . $component . "_" . $view . "`ENGINE=" . $easy['engine'];
 					$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` ENGINE = " . $easy['engine'] . ";";
-					CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
+					CFactory::_('Compiler.Builder.Update.Mysql')->set($key_, $value_);
 				}
 				// check if the table charset OR collation has changed (must be updated together)
 				if (CFactory::_('Registry')->
@@ -10340,7 +9988,7 @@ class Interpretation extends Fields
 					$value_ = "ALTER TABLE `#__" . $component . "_" . $view . "` CONVERT TO CHARACTER SET "
 						. $easy['charset'] . " COLLATE " . $easy['collate'] . ";";
 
-					CFactory::_('Builder.Update.Mysql')->set($key_, $value_);
+					CFactory::_('Compiler.Builder.Update.Mysql')->set($key_, $value_);
 				}
 
 				// add to main DB string
@@ -10392,7 +10040,7 @@ class Interpretation extends Fields
 			if (CFactory::_('Config')->add_assets_table_fix == 1)
 			{
 				// 400 actions worse case is larger the 65535 characters
-				if ($this->accessSize > 400)
+				if (CFactory::_('Utilities.Counter')->accessSize > 400)
 				{
 					$db .= PHP_EOL;
 					$db .= PHP_EOL . '--';
@@ -10448,7 +10096,7 @@ class Interpretation extends Fields
 	public function setUninstall()
 	{
 		$db = '';
-		if (CFactory::_('Registry')->exists('builder.database_tables'))
+		if (CFactory::_('Compiler.Builder.Database.Tables')->isActive())
 		{
 			foreach ($this->uninstallBuilder as $line)
 			{
@@ -11093,18 +10741,10 @@ class Interpretation extends Fields
 	 */
 	public function setListBody($nameSingleCode, $nameListCode)
 	{
-		if (($items = CFactory::_('Registry')->get('builder.list.' . $nameListCode)) !== null)
+		if (($items = CFactory::_('Compiler.Builder.Lists')->get($nameListCode)) !== null)
 		{
 			// component helper name
-			$Helper = CFactory::_('Content')->get('Component') . 'Helper';
-			// setup correct core target
-			$coreLoad = false;
-			$core     = null;
-			if (isset($this->permissionCore[$nameSingleCode]))
-			{
-				$core     = $this->permissionCore[$nameSingleCode];
-				$coreLoad = true;
-			}
+			$Helper = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
 			// make sure the custom links are only added once
 			$firstTimeBeingAdded = true;
 			// add the default
@@ -11121,29 +10761,13 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . Indent::_(1)
 				. '<tr class="row<?php echo $i % 2; ?>">';
 			// only load if not overwritten
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.ordering'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.ordering'))
 			{
 				$body .= PHP_EOL . Indent::_(2)
 					. '<td class="order nowrap center hidden-phone">';
 				// check if the item has permissions.
-				if ($coreLoad && isset($core['core.edit.state'])
-					&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-					&& ArrayHelper::check(
-						$this->permissionBuilder['global'][$core['core.edit.state']]
-					)
-					&& in_array(
-						$nameSingleCode,
-						$this->permissionBuilder['global'][$core['core.edit.state']]
-					))
-				{
-					$body .= PHP_EOL . Indent::_(2) . "<?php if (\$canDo->get('"
-						. $core['core.edit.state'] . "')): ?>";
-				}
-				else
-				{
-					$body .= PHP_EOL . Indent::_(2)
-						. "<?php if (\$canDo->get('core.edit.state')): ?>";
-				}
+				$body .= PHP_EOL . Indent::_(2) . "<?php if (\$canDo->get('"
+						. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')): ?>";
 				$body .= PHP_EOL . Indent::_(3) . "<?php";
 				$body .= PHP_EOL . Indent::_(4) . "\$iconClass = '';";
 				$body .= PHP_EOL . Indent::_(4) . "if (!\$this->saveOrder)";
@@ -11172,24 +10796,8 @@ class Interpretation extends Fields
 			}
 			$body .= PHP_EOL . Indent::_(2) . '<td class="nowrap center">';
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit'])
-				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.edit']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.edit']]
-				))
-			{
-				$body .= PHP_EOL . Indent::_(2) . "<?php if (\$canDo->get('"
-					. $core['core.edit'] . "')): ?>";
-			}
-			else
-			{
-				$body .= PHP_EOL . Indent::_(2)
-					. "<?php if (\$canDo->get('core.edit')): ?>";
-			}
+			$body .= PHP_EOL . Indent::_(2) . "<?php if (\$canDo->get('"
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "')): ?>";
 			$body .= PHP_EOL . Indent::_(4)
 				. "<?php if (\$item->checked_out) : ?>";
 			$body .= PHP_EOL . Indent::_(5) . "<?php if (\$canCheckin) : ?>";
@@ -11208,7 +10816,7 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . Indent::_(2) . "</td>";
 			// check if this view has fields that should not be escaped
 			$doNotEscape = false;
-			if (CFactory::_('Registry')->exists('builder.do_not_escape.' . $nameListCode))
+			if (CFactory::_('Compiler.Builder.Do.Not.Escape')->exists($nameListCode))
 			{
 				$doNotEscape = true;
 			}
@@ -11224,8 +10832,7 @@ class Interpretation extends Fields
 					$itemClass = 'hidden-phone';
 					// set the item row
 					$itemRow = $this->getListItemBuilder(
-						$item, $nameSingleCode, $nameListCode, $itemClass,
-						$doNotEscape, $coreLoad, $core
+						$item, $nameSingleCode, $nameListCode, $itemClass, $doNotEscape
 					);
 					// check if buttons was already added
 					if ($firstTimeBeingAdded) // TODO we must improve this to allow more items to be targeted instead of just the first item :)
@@ -11247,28 +10854,12 @@ class Interpretation extends Fields
 				}
 			}
 			// add the defaults
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.published'))
 			{
 				$body .= PHP_EOL . Indent::_(2) . '<td class="center">';
 				// check if the item has permissions.
-				if ($coreLoad && isset($core['core.edit.state'])
-					&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-					&& ArrayHelper::check(
-						$this->permissionBuilder['global'][$core['core.edit.state']]
-					)
-					&& in_array(
-						$nameSingleCode,
-						$this->permissionBuilder['global'][$core['core.edit.state']]
-					))
-				{
-					$body .= PHP_EOL . Indent::_(2) . "<?php if (\$canDo->get('"
-						. $core['core.edit.state'] . "')) : ?>";
-				}
-				else
-				{
-					$body .= PHP_EOL . Indent::_(2)
-						. "<?php if (\$canDo->get('core.edit.state')) : ?>";
-				}
+				$body .= PHP_EOL . Indent::_(2) . "<?php if (\$canDo->get('"
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')) : ?>";
 				$body .= PHP_EOL . Indent::_(4)
 					. "<?php if (\$item->checked_out) : ?>";
 				$body .= PHP_EOL . Indent::_(5)
@@ -11293,7 +10884,7 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(2) . "<?php endif; ?>";
 				$body .= PHP_EOL . Indent::_(2) . "</td>";
 			}
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.id'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.id'))
 			{
 				$body .= PHP_EOL . Indent::_(2) . '<td class="'
 					. $this->getListFieldClass(
@@ -11321,8 +10912,6 @@ class Interpretation extends Fields
 	 * @param   string  $nameListCode    The list view code name
 	 * @param   string  $itemClass       The table row default class
 	 * @param   bool    $doNotEscape     The do not escape global switch
-	 * @param   bool    $coreLoad        The core permission loader switch
-	 * @param   array   $core            The core permission values
 	 * @param   bool    $class           The dive class adding switch
 	 * @param   string  $ref             The link referral string
 	 * @param   string  $escape          The escape code name
@@ -11333,14 +10922,14 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getListItemBuilder($item, $nameSingleCode,
-	                                      $nameListCode, &$itemClass, $doNotEscape, $coreLoad, $core,
+	                                      $nameListCode, &$itemClass, $doNotEscape,
 	                                      $class = true, $ref = null, $escape = '$this->escape',
 	                                      $user = '$this->user', $refview = null
 	)
 	{
 		// check if we have relation fields
 		if (($field_relations =
-				CFactory::_('Registry')->get('builder.field_relations.' . $nameListCode . '.' . (int) $item['id'] . '.2')) !== null)
+			CFactory::_('Compiler.Builder.Field.Relations')->get($nameListCode . '.' . (int) $item['id'] . '.2')) !== null)
 		{
 			// set the fields array
 			$field = array();
@@ -11356,7 +10945,7 @@ class Interpretation extends Fields
 			// load the main list view field
 			$field['[field=' . (int) $item['id'] . ']'] = $this->getListItem(
 				$item, $nameSingleCode, $nameListCode, $itemClass,
-				$doNotEscape, $coreLoad, $core, false, $ref, $escape, $user,
+				$doNotEscape,false, $ref, $escape, $user,
 				$refview
 			);
 			// code name
@@ -11373,13 +10962,13 @@ class Interpretation extends Fields
 				{
 					$blankClass = '';
 					if (($join_item =
-							CFactory::_('Registry')->get('builder.list_join.' . $nameListCode . '.' . (int) $join)) !== null)
+						CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (int) $join)) !== null)
 					{
 						// code block
 						$field['[field=' . (int) $join . ']']
 							= $this->getListItem(
 							$join_item, $nameSingleCode, $nameListCode, $blankClass,
-							$doNotEscape, $coreLoad, $core, false, $ref,
+							$doNotEscape, false, $ref,
 							$escape, $user, $refview
 						);
 						// code name
@@ -11423,7 +11012,7 @@ class Interpretation extends Fields
 
 		return $this->getListItem(
 			$item, $nameSingleCode, $nameListCode, $itemClass, $doNotEscape,
-			$coreLoad, $core, $class, $ref, $escape, $user, $refview
+			$class, $ref, $escape, $user, $refview
 		);
 	}
 
@@ -11435,8 +11024,6 @@ class Interpretation extends Fields
 	 * @param   string  $nameListCode    The list view code name
 	 * @param   string  $itemClass       The table row default class
 	 * @param   bool    $doNotEscape     The do not escape global switch
-	 * @param   bool    $coreLoad        The core permission loader switch
-	 * @param   array   $core            The core permission values
 	 * @param   bool    $class           The dive class adding switch
 	 * @param   string  $ref             The link referral string
 	 * @param   string  $escape          The escape code name
@@ -11447,7 +11034,7 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getListItem($item, $nameSingleCode, $nameListCode,
-	                               &$itemClass, $doNotEscape, $coreLoad, $core, $class = true, $ref = null,
+	                               &$itemClass, $doNotEscape, $class = true, $ref = null,
 	                               $escape = '$this->escape', $user = '$this->user', $refview = null
 	)
 	{
@@ -11482,8 +11069,7 @@ class Interpretation extends Fields
 			);
 			// get list item link authority
 			$itemLinkAuthority = $this->getListItemLinkAuthority(
-				$item, $nameSingleCode, $nameListCode, $coreLoad, $core,
-				$user
+				$item, $nameSingleCode, $nameListCode, $user
 			);
 
 			// set item row
@@ -11585,14 +11171,14 @@ class Interpretation extends Fields
 					. CFactory::_('Config')->component_code_name . '&view='
 					. $customLinkView['link'] . '&id=<?php echo $item->id; ?>'
 					. $ref . '" title="<?php echo JText:' . ':_(' . "'COM_"
-					. CFactory::_('Content')->get('COMPONENT') . '_' . $customLinkView['NAME'] . "'"
+					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . '_' . $customLinkView['NAME'] . "'"
 					. '); ?>" ><span class="icon-' . $customLinkView['icon']
 					. '"></span></a>';
 				$customAdminViewButton .= PHP_EOL . Indent::_(3)
 					. "<?php else: ?>";
 				$customAdminViewButton .= PHP_EOL . Indent::_(4)
 					. '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:'
-					. ':_(' . "'COM_" . CFactory::_('Content')->get('COMPONENT') . '_' . $customLinkView['NAME']
+					. ':_(' . "'COM_" . CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . '_' . $customLinkView['NAME']
 					. "'" . '); ?>"><span class="icon-'
 					. $customLinkView['icon'] . '"></span></a>';
 				$customAdminViewButton .= PHP_EOL . Indent::_(3)
@@ -11655,14 +11241,8 @@ class Interpretation extends Fields
 				. ')->name';
 		}
 		// check if translated value is used
-		elseif (isset($this->selectionTranslationFixBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->selectionTranslationFixBuilder[$nameListCode]
-			)
-			&& array_key_exists(
-				$item['code'],
-				$this->selectionTranslationFixBuilder[$nameListCode]
-			))
+		elseif (CFactory::_('Compiler.Builder.Selection.Translation')->
+			exists($nameListCode . '.' . $item['code']))
 		{
 			return 'JText:' . ':_($item->' . $item['code'] . ')';
 		}
@@ -11676,7 +11256,7 @@ class Interpretation extends Fields
 		}
 		elseif ($doNotEscape)
 		{
-			if (CFactory::_('Registry')->exists('builder.do_not_escape.' . $nameListCode . '.' . $item['code']))
+			if (CFactory::_('Compiler.Builder.Do.Not.Escape')->exists($nameListCode . '.' . $item['code']))
 			{
 				return '$item->' . $item['code'];
 			}
@@ -11719,7 +11299,7 @@ class Interpretation extends Fields
 			// return the link to category
 			return 'index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->'
 				. $item['code'] . '; ?>&extension='
-				. $this->categoryBuilder[$nameListCode]['extension'];
+				. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension", 'error');
 		}
 		elseif ($item['type'] === 'user' && !$item['title'])
 		{
@@ -11775,22 +11355,19 @@ class Interpretation extends Fields
 	 * @param   array   $item            The item array
 	 * @param   string  $nameSingleCode  The single view code name
 	 * @param   string  $nameListCode    The list view code name
-	 * @param   bool    $coreLoad        The core permission loader switch
-	 * @param   array   $core            The core permission values
 	 * @param   string  $user            The user code name
 	 *
 	 * @return  string of the single item link authority
 	 *
 	 */
-	protected function getListItemLinkAuthority($item, $nameSingleCode,
-	                                            $nameListCode, $coreLoad, $core, $user = '$this->user'
+	protected function getListItemLinkAuthority($item, $nameSingleCode, $nameListCode, $user = '$this->user'
 	)
 	{
 		// if to be linked
 		if ($item['type'] === 'category' && !$item['title'])
 		{
 			// get the other view
-			$otherView = $this->catCodeBuilder[$nameSingleCode]['view'];
+			$otherView = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.view", 'error');
 
 			// return the authority to category
 			return $user . "->authorise('core.edit', 'com_"
@@ -11810,55 +11387,18 @@ class Interpretation extends Fields
 			&& !$item['title']
 			&& isset($item['id_code']))
 		{
-			// link to that linked item
-			$coreLoadLink = false;
-			if (isset($this->permissionCore[$item['custom']['view']]))
-			{
-				$coreLink     = $this->permissionCore[$item['custom']['view']];
-				$coreLoadLink = true;
-			}
-			// check if the item has permissions.
-			if ($coreLoadLink
-				&& (isset($coreLink['core.edit'])
-					&& isset($this->permissionBuilder[$coreLink['core.edit']]))
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$coreLink['core.edit']]
-				)
-				&& in_array(
-					$item['custom']['view'],
-					$this->permissionBuilder[$coreLink['core.edit']]
-				))
-			{
-				// do this with GUID
-				if (isset($item['custom']['id']) && $item['custom']['id'] !== 'id')
-				{
-					return $user . "->authorise('" . $coreLink['core.edit']
-						. "', 'com_" . CFactory::_('Config')->component_code_name . "."
-						. $item['custom']['view'] . ".' . (int) \$item->"
-						. $item['id_code'] . "_id)";
-				}
-				else
-				{
-					return $user . "->authorise('" . $coreLink['core.edit']
-						. "', 'com_" . CFactory::_('Config')->component_code_name . "."
-						. $item['custom']['view'] . ".' . (int) \$item->"
-						. $item['id_code'] . ")";
-				}
-			}
-			// do not do this with GUID
+			// do this with GUID
 			if (isset($item['custom']['id']) && $item['custom']['id'] !== 'id')
 			{
-				// return default for this external item
-				return $user . "->authorise('core.edit', 'com_"
-					. CFactory::_('Config')->component_code_name . "." . $item['custom']['view']
-					. ".' . (int) \$item->" . $item['id_code'] . "_id)";
+				return $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
+					. "', 'com_" . CFactory::_('Config')->component_code_name . "."
+					. $item['custom']['view'] . ".' . (int) \$item->" . $item['id_code'] . "_id)";
 			}
 			else
 			{
-				// return default for this external item
-				return $user . "->authorise('core.edit', 'com_"
-					. CFactory::_('Config')->component_code_name . "." . $item['custom']['view']
-					. ".' . (int) \$item->" . $item['id_code'] . ")";
+				return $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
+					. "', 'com_" . CFactory::_('Config')->component_code_name . "."
+					. $item['custom']['view'] . ".' . (int) \$item->" . $item['id_code'] . ")";
 			}
 		}
 		elseif (isset($item['custom'])
@@ -11872,23 +11412,9 @@ class Interpretation extends Fields
 			// return user link
 			return $user . "->authorise('core.edit', 'com_users')";
 		}
-		// check if the item has custom permissions.
-		elseif ($coreLoad && isset($core['core.edit'])
-			&& isset($this->permissionBuilder['global'][$core['core.edit']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder['global'][$core['core.edit']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder['global'][$core['core.edit']]
-			))
-		{
-			// set permissions.
-			return "\$canDo->get('" . $core['core.edit'] . "')";
-		}
 
 		// set core permissions.
-		return "\$canDo->get('core.edit')";
+		return "\$canDo->get('" . CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "')";
 	}
 
 	/**
@@ -11903,7 +11429,7 @@ class Interpretation extends Fields
 	 */
 	protected function getListFieldClass($name, $nameListCode, $default = '')
 	{
-		return CFactory::_('Registry')->get('builder.list_field_class.' . $nameListCode . '.' . $name, $default);
+		return CFactory::_('Compiler.Builder.List.Field.Class')->get($nameListCode . '.' . $name, $default);
 	}
 
 	/**
@@ -11925,8 +11451,7 @@ class Interpretation extends Fields
 		// build the body
 		$body = array();
 		// check if the filter type is sidebar (1 = sidebar)
-		if (CFactory::_('Registry')->
-			get('builder.admin_filter_type.' . $nameListCode, 1) == 1)
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 1)
 		{
 			$body[] = "<script type=\"text/javascript\">";
 			$body[] = Indent::_(1) . "Joomla.orderTable = function()";
@@ -11981,8 +11506,7 @@ class Interpretation extends Fields
 				&$nameListCode)
 		);
 		// check if the filter type is sidebar (2 = topbar)
-		if (CFactory::_('Registry')->
-			get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
 		{
 			$body[] = "<?php";
 			// build code to add the trash helper layout
@@ -12006,8 +11530,7 @@ class Interpretation extends Fields
 		}
 		$body[] = "<?php if (empty(\$this->items)): ?>";
 		// check if the filter type is sidebar (1 = sidebar)
-		if (CFactory::_('Registry')->
-			get('builder.admin_filter_type.' . $nameListCode, 1) == 1)
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 1)
 		{
 			$body[] = Indent::_(1)
 				. "<?php echo \$this->loadTemplate('toolbar');?>";
@@ -12019,8 +11542,7 @@ class Interpretation extends Fields
 		$body[] = Indent::_(1) . "</div>";
 		$body[] = "<?php else : ?>";
 		// check if the filter type is sidebar (1 = sidebar)
-		if (CFactory::_('Registry')->
-			get('builder.admin_filter_type.' . $nameListCode, 1) == 1)
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 1)
 		{
 			$body[] = Indent::_(1)
 				. "<?php echo \$this->loadTemplate('toolbar');?>";
@@ -12053,8 +11575,7 @@ class Interpretation extends Fields
 		$body[] = Indent::_(2) . "); ?>";
 		$body[] = Indent::_(1) . "<?php endif; ?>";
 		// check if the filter type is sidebar (1 = sidebar)
-		if (CFactory::_('Registry')->
-			get('builder.admin_filter_type.' . $nameListCode, 1) == 1)
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 1)
 		{
 			$body[] = Indent::_(1)
 				. "<input type=\"hidden\" name=\"filter_order\" value=\"<?php echo \$this->listOrder; ?>\" />";
@@ -12099,15 +11620,14 @@ class Interpretation extends Fields
 	 */
 	public function setListHead($nameSingleCode, $nameListCode)
 	{
-		if (($items = CFactory::_('Registry')->get('builder.list.' . $nameListCode)) !== null)
+		if (($items = CFactory::_('Compiler.Builder.Lists')->get($nameListCode)) !== null)
 		{
 			// set the JHtml values based on filter type
 			$jhtml_sort        = "grid.sort";
 			$jhtml_sort_icon   = "<i class=\"icon-menu-2\"></i>";
 			$jhtml_sort_icon_2 = "";
 			// for the new filter (2 = topbar)
-			if (CFactory::_('Registry')->
-				get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
+			if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
 			{
 				$jhtml_sort        = "searchtools.sort";
 				$jhtml_sort_icon   = "";
@@ -12128,7 +11648,7 @@ class Interpretation extends Fields
 			$head = '<tr>';
 			$head .= PHP_EOL . Indent::_(1)
 				. "<?php if (\$this->canEdit&& \$this->canState): ?>";
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.ordering'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.ordering'))
 			{
 				$head .= PHP_EOL . Indent::_(2)
 					. '<th width="1%" class="nowrap center hidden-phone">';
@@ -12163,9 +11683,8 @@ class Interpretation extends Fields
 				if (1 == $item['target'] || 3 == $item['target'])
 				{
 					// check if we have an over-ride
-					if (($list_head_override = CFactory::_('Registry')->get('builder.list_head_override.' .
-							$nameListCode . '.' . (int) $item['id']))
-						!== null)
+					if (($list_head_override = CFactory::_('Compiler.Builder.List.Head.Override')->
+						get($nameListCode . '.' . (int) $item['id'])) !== null)
 					{
 						$item['lang'] = $list_head_override;
 					}
@@ -12219,7 +11738,7 @@ class Interpretation extends Fields
 				}
 			}
 			// set default
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.published'))
 			{
 				$head .= PHP_EOL . Indent::_(1)
 					. "<?php if (\$this->canState): ?>";
@@ -12238,7 +11757,7 @@ class Interpretation extends Fields
 				$head .= PHP_EOL . Indent::_(2) . "</th>";
 				$head .= PHP_EOL . Indent::_(1) . "<?php endif; ?>";
 			}
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.id'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.id'))
 			{
 				$head .= PHP_EOL . Indent::_(1)
 					. '<th width="5" class="nowrap center hidden-phone" >';
@@ -12277,9 +11796,9 @@ class Interpretation extends Fields
 	public function getTabLayoutFieldsArray($nameSingleCode)
 	{
 		// check if the load build is set for this view
-		if (CFactory::_('Registry')->exists('builder.layout.' . $nameSingleCode))
+		if (CFactory::_('Compiler.Builder.Layout')->exists($nameSingleCode))
 		{
-			$layout_builder = (array) CFactory::_('Registry')->get('builder.layout.' . $nameSingleCode);
+			$layout_builder = CFactory::_('Compiler.Builder.Layout')->get($nameSingleCode);
 			$layoutArray = array();
 			foreach ($layout_builder as $layout => $alignments)
 			{
@@ -12336,7 +11855,7 @@ class Interpretation extends Fields
 		$langView = $this->langPrefix . '_'
 			. StringHelper::safe($nameSingleCode, 'U');
 		// check if the load build is set for this view
-		if (CFactory::_('Registry')->exists('builder.layout.' . $nameSingleCode))
+		if (CFactory::_('Compiler.Builder.Layout')->exists($nameSingleCode))
 		{
 			// reset the linked keys
 			$keys                 = array();
@@ -12409,39 +11928,22 @@ class Interpretation extends Fields
 					$linkedViewId   = array_search(
 						$tabCodeName, $linkedViewIdentifier
 					);
-					$linkedViewData = $this->getAdminViewData($linkedViewId);
+					$linkedViewData = CFactory::_('Adminview.Data')->get($linkedViewId);
 					$linkedCodeName = StringHelper::safe(
 						$linkedViewData->name_single
 					);
-					// setup correct core target
-					$coreLoadLinked = false;
-					if (isset($this->permissionCore[$linkedCodeName]))
-					{
-						$coreLinked     = $this->permissionCore[$linkedCodeName];
-						$coreLoadLinked = true;
-					}
 					// check if the item has permissions.
-					if ($coreLoadLinked && isset($coreLinked['core.access'])
-						&& isset($this->permissionBuilder['global'][$coreLinked['core.access']])
-						&& ArrayHelper::check(
-							$this->permissionBuilder['global'][$coreLinked['core.access']]
-						)
-						&& in_array(
-							$linkedCodeName,
-							$this->permissionBuilder['global'][$coreLinked['core.access']]
-						))
+					if (CFactory::_('Compiler.Creator.Permission')->globalExist($linkedCodeName, 'core.access'))
 					{
-						$body    .= PHP_EOL . PHP_EOL . Indent::_(1)
+						$body .= PHP_EOL . PHP_EOL . Indent::_(1)
 							. "<?php if (\$this->canDo->get('"
-							. $coreLinked['core.access'] . "')) : ?>";
+							. CFactory::_('Compiler.Creator.Permission')->getGlobal($linkedCodeName, 'core.access') . "')) : ?>";
 						$closeIT = true;
 					}
 					else
 					{
 						$body .= PHP_EOL;
 					}
-					// insure clear
-					unset($coreLoadLinked, $coreLinked, $linkedViewData);
 				}
 				else
 				{
@@ -12562,10 +12064,18 @@ class Interpretation extends Fields
 		{
 			foreach ($linkedAdminViews as $linkedView)
 			{
+				// when this happens tell me.
+				if (!isset($view['settings']->tabs[(int) $linkedView['tab']]))
+				{
+					echo "Tab Mismatch Oops! Check your linked views in admin view ($nameSingleCode) that they line-up.";
+					echo '<pre>';
+					var_dump($view['settings']->tabs, $linkedView);
+					exit;
+				}
 				// get the tab name
 				$tabName = $view['settings']->tabs[(int) $linkedView['tab']];
 				// update the tab counter
-				CFactory::_('Registry')->set('builder.tab_counter.' . $nameSingleCode . '.' . $linkedView['tab'], $tabName);
+				CFactory::_('Compiler.Builder.Tab.Counter')->set($nameSingleCode . '.' . $linkedView['tab'], $tabName);
 				// add the linked view
 				$linkedTab[$linkedView['adminview']] = $linkedView['tab'];
 				// set the keys if values are set
@@ -12626,7 +12136,7 @@ class Interpretation extends Fields
 		// start tabs
 		$tabs = array();
 		// sort the tabs based on key order
-		$tab_counter = (array) CFactory::_('Registry')->get('builder.tab_counter.' . $nameSingleCode);
+		$tab_counter = (array) CFactory::_('Compiler.Builder.Tab.Counter')->get($nameSingleCode, []);
 		ksort($tab_counter);
 		// start tab building loop
 		foreach ($tab_counter as $tabNr => $tabName)
@@ -12656,10 +12166,10 @@ class Interpretation extends Fields
 				}
 			}
 			// build layout these are actual fields
-			if ($buildLayout && CFactory::_('Registry')->exists('builder.layout.' . $nameSingleCode . '.' . $tabName))
+			if ($buildLayout && CFactory::_('Compiler.Builder.Layout')->exists($nameSingleCode . '.' . $tabName))
 			{
 				// sort to make sure it loads left first
-				$alignments = (array) CFactory::_('Registry')->get('builder.layout.' . $nameSingleCode . '.' . $tabName);
+				$alignments = CFactory::_('Compiler.Builder.Layout')->get($nameSingleCode . '.' . $tabName);
 				ksort($alignments);
 				foreach ($alignments as $alignment => $names)
 				{
@@ -12908,9 +12418,9 @@ class Interpretation extends Fields
 		// Setup the default (custom) fields
 		// only load (1 => 'left', 2 => 'right')
 		$fieldsAddedRight = false;
-		if (CFactory::_('Registry')->exists('builder.new_publishing_fields.' . $nameSingleCode))
+		if (CFactory::_('Compiler.Builder.New.Publishing.Fields')->exists($nameSingleCode))
 		{
-			$new_published_fields = (array) CFactory::_('Registry')->get('builder.new_publishing_fields.' . $nameSingleCode);
+			$new_published_fields = CFactory::_('Compiler.Builder.New.Publishing.Fields')->get($nameSingleCode);
 			foreach ($new_published_fields as $df_alignment => $df_items)
 			{
 				foreach ($df_items as $df_order => $df_name)
@@ -12953,14 +12463,14 @@ class Interpretation extends Fields
 		{
 			foreach ($defaultFields as $defaultField)
 			{
-				if (!CFactory::_('Registry')->exists('builder.moved_publishing_fields.' . $nameSingleCode . '.' . $defaultField))
+				if (!CFactory::_('Compiler.Builder.Moved.Publishing.Fields')->exists($nameSingleCode . '.' . $defaultField))
 				{
 					if ($defaultField != 'access')
 					{
 						$items[$d_alignment][] = $defaultField;
 					}
 					elseif ($defaultField === 'access'
-						&& CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode))
+						&& CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode))
 					{
 						$items[$d_alignment][] = $defaultField;
 					}
@@ -12968,7 +12478,7 @@ class Interpretation extends Fields
 			}
 		}
 		// check if metadata is added to this view
-		if (CFactory::_('Registry')->exists('builder.meta_data.' . $nameSingleCode))
+		if (CFactory::_('Compiler.Builder.Meta.Data')->exists($nameSingleCode))
 		{
 			// set default publishing tab code name
 			$tabCodeNameLeft  = 'publishing';
@@ -13087,13 +12597,6 @@ class Interpretation extends Fields
 		{
 			$classs = "span12";
 		}
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
 		// only load this if needed
 		if ($items_one || $items_two)
 		{
@@ -13104,53 +12607,17 @@ class Interpretation extends Fields
 				'core.edit.state');
 			foreach ($allToBeChekcedOR as $core_permission)
 			{
-				if ($coreLoad && isset($core[$core_permission])
-					&& isset($this->permissionBuilder['global'][$core[$core_permission]])
-					&& ArrayHelper::check(
-						$this->permissionBuilder['global'][$core[$core_permission]]
-					)
-					&& in_array(
-						$nameSingleCode,
-						$this->permissionBuilder['global'][$core[$core_permission]]
-					))
-				{
-					// set permissions.
-					$publishingPerOR[] = "\$this->canDo->get('"
-						. $core[$core_permission] . "')";
-				}
-				else
-				{
-					// set permissions.
-					$publishingPerOR[] = "\$this->canDo->get('"
-						. $core_permission
-						. "')";
-				}
+				// set permissions.
+				$publishingPerOR[] = "\$this->canDo->get('"
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, $core_permission) . "')";
 			}
 			$publishingPerAND  = array();
 			$allToBeChekcedAND = array('core.delete', 'core.edit.state');
 			foreach ($allToBeChekcedAND as $core_permission)
 			{
-				if ($coreLoad && isset($core[$core_permission])
-					&& isset($this->permissionBuilder['global'][$core[$core_permission]])
-					&& ArrayHelper::check(
-						$this->permissionBuilder['global'][$core[$core_permission]]
-					)
-					&& in_array(
-						$nameSingleCode,
-						$this->permissionBuilder['global'][$core[$core_permission]]
-					))
-				{
-					// set permissions.
-					$publishingPerAND[] = "\$this->canDo->get('"
-						. $core[$core_permission] . "')";
-				}
-				else
-				{
-					// set permissions.
-					$publishingPerAND[] = "\$this->canDo->get('"
-						. $core_permission
-						. "')";
-				}
+				// set permissions.
+				$publishingPerAND[] = "\$this->canDo->get('"
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, $core_permission) . "')";
 			}
 			// check if custom tab must be added
 			if (($_customTabHTML = $this->addCustomTabs(
@@ -13203,9 +12670,9 @@ class Interpretation extends Fields
 			}
 		}
 
-		// make sure we dont load it to a view with the name component (as this will cause conflict with Joomla conventions)
+		// make sure we don't load it to a view with the name component (as this will cause conflict with Joomla conventions)
 		if ($nameSingleCode != 'component'
-			&& CFactory::_('Registry')->exists('builder.has_permissions.' . $nameSingleCode))
+			&& CFactory::_('Compiler.Builder.Has.Permissions')->exists($nameSingleCode))
 		{
 			// set permissions tab lang
 			$tabLangName = $langView . '_PERMISSION';
@@ -13248,10 +12715,10 @@ class Interpretation extends Fields
 	protected function addCustomTabs($nr, $name_single, $target)
 	{
 		// check if this view is having custom tabs
-		if (($tabs = CFactory::_('Registry')->get('builder.custom_tabs.' . $name_single, null)) !== null
+		if (($tabs = CFactory::_('Compiler.Builder.Custom.Tabs')->get($name_single)) !== null
 			&& ArrayHelper::check($tabs))
 		{
-			$html = array();
+			$html = [];
 			foreach ($tabs as $customTab)
 			{
 				if (ArrayHelper::check($customTab)
@@ -13346,12 +12813,12 @@ class Interpretation extends Fields
 			if (StringHelper::check($items))
 			{
 				// LAYOUTITEMS <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'LAYOUTITEMS', $items);
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutName . '|LAYOUTITEMS', $items);
 			}
 			else
 			{
 				// LAYOUTITEMS <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'bogus', 'boom');
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutName . '|bogus', 'boom');
 			}
 		}
 	}
@@ -13386,11 +12853,11 @@ class Interpretation extends Fields
 			$placeholder                                    = CFactory::_('Placeholder')->active;
 			$placeholder[Placefix::_h('LAYOUTITEMS')] = $items;
 			// OVERRIDE_LAYOUT_CODE <<<DYNAMIC>>>
-			$php_view = (array) explode(PHP_EOL, (string) $data->php_view);
+			$php_view = (array) explode(PHP_EOL, (string) $data['php_view'] ?? '');
 			if (ArrayHelper::check($php_view))
 			{
 				$php_view = PHP_EOL . PHP_EOL . implode(PHP_EOL, $php_view);
-				CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'OVERRIDE_LAYOUT_CODE',
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutName . '|OVERRIDE_LAYOUT_CODE',
 					CFactory::_('Placeholder')->update(
 						$php_view, $placeholder
 					)
@@ -13398,16 +12865,16 @@ class Interpretation extends Fields
 			}
 			else
 			{
-				CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'OVERRIDE_LAYOUT_CODE', '');
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutName . '|OVERRIDE_LAYOUT_CODE', '');
 			}
 			// OVERRIDE_LAYOUT_BODY <<<DYNAMIC>>>
-			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'OVERRIDE_LAYOUT_BODY',
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutName . '|OVERRIDE_LAYOUT_BODY',
 				PHP_EOL . CFactory::_('Placeholder')->update(
-					$data->html, $placeholder
+					$data['html'] ?? '', $placeholder
 				)
 			);
 			// OVERRIDE_LAYOUT_HEADER <<<DYNAMIC>>>
-			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutName, 'OVERRIDE_LAYOUT_HEADER',
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutName . '|OVERRIDE_LAYOUT_HEADER',
 				(($header = $this->setFileHeader(
 						'override.layout',
 						$layoutName, false)
@@ -13425,9 +12892,9 @@ class Interpretation extends Fields
 	 * @param   string  $nameSingleCode
 	 * @param   string  $layoutName
 	 *
-	 * @return  array  the layout data
+	 * @return  array|null  the layout data
 	 */
-	protected function getLayoutOverride($nameSingleCode, $layoutName)
+	protected function getLayoutOverride($nameSingleCode, $layoutName): ?array
 	{
 		$get_key = null;
 		// check if there is an override by component name, view name, & layout name
@@ -13466,22 +12933,34 @@ class Interpretation extends Fields
 		// check if we have a get key
 		if ($get_key)
 		{
-			$data = CFactory::_('Registry')->
-				extract('builder.layout_data.' . CFactory::_('Config')->build_target . '.' . $get_key);
+			$data = CFactory::_('Compiler.Builder.Layout.Data')->
+				get(CFactory::_('Config')->build_target . '.' . $get_key);
 
+			if ($data === null)
+			{
+				var_dump(CFactory::_('Config')->build_target . '.' . $get_key);
+				var_dump('admin.' .$get_key);
+				var_dump(CFactory::_('Compiler.Builder.Layout.Data')->get('admin.' .$get_key));
+				var_dump('site.' .$get_key);
+				var_dump(CFactory::_('Compiler.Builder.Layout.Data')->get('site.' . $get_key));
+				var_dump('both.' .$get_key);
+				var_dump(CFactory::_('Compiler.Builder.Layout.Data')->get('both.' . $get_key));
+				exit;
+			}
 			// remove since we will add the layout now
 			if (CFactory::_('Config')->lang_target === 'both')
 			{
-				CFactory::_('Registry')->
-					remove('builder.layout_data.admin.' . $get_key);
-				CFactory::_('Registry')->
-					remove('builder.layout_data.site.' . $get_key);
+				CFactory::_('Compiler.Builder.Layout.Data')->
+					remove('admin.' . $get_key);
+				CFactory::_('Compiler.Builder.Layout.Data')->
+					remove('site.' . $get_key);
+				CFactory::_('Compiler.Builder.Layout.Data')->
+					remove('both.' . $get_key);
 			}
 			else
 			{
-				CFactory::_('Registry')->
-					remove('builder.layout_data.' .
-					CFactory::_('Config')->build_target . '.' . $get_key);
+				CFactory::_('Compiler.Builder.Layout.Data')->
+					remove(CFactory::_('Config')->build_target . '.' . $get_key);
 			}
 
 			return $data;
@@ -13528,7 +13007,7 @@ class Interpretation extends Fields
 			);
 			$functionName = StringHelper::safe($codeName, 'F');
 			// LAYOUTITEMSTABLE <<<DYNAMIC>>>
-			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutCodeName, 'LAYOUTITEMSTABLE',
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutCodeName . '|LAYOUTITEMSTABLE',
 				$head . $body
 			);
 			// LAYOUTITEMSHEADER <<<DYNAMIC>>>
@@ -13557,7 +13036,7 @@ class Interpretation extends Fields
 			$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 				. ' check if return value was set';
 			$headerscript .= PHP_EOL . 'if ('
-				. CFactory::_('Content')->get('Component') . 'Helper::checkString($return))';
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper::checkString($return))';
 			$headerscript .= PHP_EOL . '{';
 			$headerscript .= PHP_EOL . Indent::_(1) . '//' . Line::_(
 					__LINE__,__CLASS__
@@ -13597,23 +13076,23 @@ class Interpretation extends Fields
 				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 					. ' load the action object';
 				$headerscript .= PHP_EOL . '$can = '
-					. CFactory::_('Content')->get('Component') . 'Helper::getActions(' . "'"
+					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper::getActions(' . "'"
 					. $name_single_code . "'"
 					. ');';
 			}
-			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutCodeName, 'LAYOUTITEMSHEADER',
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutCodeName . '|LAYOUTITEMSHEADER',
 				$headerscript
 			);
 			// LINKEDVIEWITEMS <<<DYNAMIC>>>
-			CFactory::_('Content')->add_($nameSingleCode, 'LINKEDVIEWITEMS',
+			CFactory::_('Compiler.Builder.Content.Multi')->add($nameSingleCode . '|LINKEDVIEWITEMS',
 				PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Get Linked view data" . PHP_EOL . Indent::_(2)
 				. "\$this->" . $codeName . " = \$this->get('" . $functionName
-				. "');"
+				. "');", false
 			);
 			// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
-			CFactory::_('Content')->set_($nameSingleCode, 'LINKEDVIEWTABLESCRIPTS', $this->setFootableScripts());
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|LINKEDVIEWTABLESCRIPTS', $this->setFootableScripts());
 			if (strpos((string) $parentKey, '-R>') !== false
 				|| strpos((string) $parentKey, '-A>') !== false)
 			{
@@ -13654,9 +13133,9 @@ class Interpretation extends Fields
 						= StringHelper::safe(
 						$_key . $this->uniquekey(4)
 					);
-					CFactory::_('Content')->add_($nameSingleCode, 'LINKEDVIEWGLOBAL',
+					CFactory::_('Compiler.Builder.Content.Multi')->add($nameSingleCode . '|LINKEDVIEWGLOBAL',
 						PHP_EOL . Indent::_(2) . "\$this->"
-						. $globalKey[$parent_key] . " = \$item->" . $parent_key . ";"
+						. $globalKey[$parent_key] . " = \$item->" . $parent_key . ";", false
 					);
 				}
 			}
@@ -13666,26 +13145,26 @@ class Interpretation extends Fields
 				$globalKey = StringHelper::safe(
 					$_key . $this->uniquekey(4)
 				);
-				CFactory::_('Content')->add_($nameSingleCode, 'LINKEDVIEWGLOBAL',
+				CFactory::_('Compiler.Builder.Content.Multi')->add($nameSingleCode . '|LINKEDVIEWGLOBAL',
 					PHP_EOL . Indent::_(2) . "\$this->" . $globalKey
-					. " = \$item->" . $parent_key . ";"
+					. " = \$item->" . $parent_key . ";", false
 				);
 			}
 			// LINKEDVIEWMETHODS <<<DYNAMIC>>>
-			CFactory::_('Content')->add_($nameSingleCode, 'LINKEDVIEWMETHODS',
+			CFactory::_('Compiler.Builder.Content.Multi')->add($nameSingleCode . '|LINKEDVIEWMETHODS',
 				$this->setListQueryLinked(
 					$name_single_code, $name_list_code, $functionName, $key, $_key,
 					$parentKey,
 					$parent_key, $globalKey
-				)
+				), false
 			);
 		}
 		else
 		{
-			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutCodeName, 'LAYOUTITEMSTABLE',
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutCodeName . '|LAYOUTITEMSTABLE',
 				'oops! error.....'
 			);
-			CFactory::_('Content')->set_($nameSingleCode . '_' . $layoutCodeName, 'LAYOUTITEMSHEADER', '');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutCodeName . '|LAYOUTITEMSHEADER', '');
 		}
 	}
 
@@ -13804,21 +13283,13 @@ class Interpretation extends Fields
 	                                  $refview
 	)
 	{
-		if (($items = CFactory::_('Registry')->get('builder.list.' . $nameListCode)) !== null)
+		if (($items = CFactory::_('Compiler.Builder.Lists')->get($nameListCode)) !== null)
 		{
 			// component helper name
-			$Helper = CFactory::_('Content')->get('Component') . 'Helper';
+			$Helper = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
 			$footable_version = CFactory::_('Config')->get('footable_version', 2);
 			// make sure the custom links are only added once
 			$firstTimeBeingAdded = true;
-			// setup correct core target
-			$coreLoad = false;
-			$core     = null;
-			if (isset($this->permissionCore[$nameSingleCode]))
-			{
-				$core     = $this->permissionCore[$nameSingleCode];
-				$coreLoad = true;
-			}
 			$counter = 0;
 			// add the default
 			$body = PHP_EOL . "<tbody>";
@@ -13835,7 +13306,7 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . Indent::_(1) . '<tr>';
 			// check if this view has fields that should not be escaped
 			$doNotEscape = false;
-			if (CFactory::_('Registry')->exists('builder.do_not_escape.' . $nameListCode))
+			if (CFactory::_('Compiler.Builder.Do.Not.Escape')->exists($nameListCode))
 			{
 				$doNotEscape = true;
 			}
@@ -13852,7 +13323,7 @@ class Interpretation extends Fields
 					// set the item row
 					$itemRow = $this->getListItemBuilder(
 						$item, $nameSingleCode, $nameListCode, $itemClass,
-						$doNotEscape, $coreLoad, $core, false, $ref,
+						$doNotEscape, false, $ref,
 						'$displayData->escape', '$user', $refview
 					);
 					// check if buttons was aready added
@@ -13879,7 +13350,7 @@ class Interpretation extends Fields
 				: 'data-value';
 
 			// add the defaults
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.published'))
 			{
 				$counter++;
 				// add the defaults
@@ -13942,7 +13413,7 @@ class Interpretation extends Fields
 			}
 
 			// add the defaults
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.id'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.id'))
 			{
 				$counter++;
 				$body .= PHP_EOL . Indent::_(2)
@@ -13995,41 +13466,17 @@ class Interpretation extends Fields
 	                                  $addNewButon, $refview
 	)
 	{
-		if (($items = CFactory::_('Registry')->get('builder.list.' . $nameListCode)) !== null)
+		if (($items = CFactory::_('Compiler.Builder.Lists')->get($nameListCode)) !== null)
 		{
 			// component helper name
-			$Helper = CFactory::_('Content')->get('Component') . 'Helper';
+			$Helper = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
 			$head   = '';
 			$footable_version = CFactory::_('Config')->get('footable_version', 2);
 			// only add new button if set
 			if ($addNewButon > 0)
 			{
-				// setup correct core target
-				$coreLoad = false;
-				if (isset($this->permissionCore[$nameSingleCode]))
-				{
-					$core     = $this->permissionCore[$nameSingleCode];
-					$coreLoad = true;
-				}
-				// check if the item has permissions.
-				if ($coreLoad && isset($core['core.create'])
-					&& isset($this->permissionBuilder['global'][$core['core.create']])
-					&& ArrayHelper::check(
-						$this->permissionBuilder['global'][$core['core.create']]
-					)
-					&& in_array(
-						$nameSingleCode,
-						$this->permissionBuilder['global'][$core['core.create']]
-					))
-				{
-					// set permissions.
-					$accessCheck = "\$can->get('" . $core['core.create'] . "')";
-				}
-				else
-				{
-					// set permissions.
-					$accessCheck = "\$can->get('core.create')";
-				}
+				// set permissions.
+				$accessCheck = "\$can->get('" . CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "')";
 				// add a button for new
 				$head = '<?php if (' . $accessCheck . '): ?>';
 				// make group button if needed
@@ -14108,9 +13555,8 @@ class Interpretation extends Fields
 				if (1 == $item['target'] || 4 == $item['target'])
 				{
 					// check if we have an over-ride
-					if (($list_head_override = CFactory::_('Registry')->get('builder.list_head_override.' .
-							$nameListCode . '.' . (int) $item['id']))
-						!== null)
+					if (($list_head_override = CFactory::_('Compiler.Builder.List.Head.Override')->
+						get($nameListCode . '.' . (int) $item['id'])) !== null)
 					{
 						$item['lang'] = $list_head_override;
 					}
@@ -14147,7 +13593,7 @@ class Interpretation extends Fields
 			$data_hide = (2 == $footable_version)
 				? 'data-hide="phone,tablet"' : 'data-breakpoints="xs sm md"';
 			// add the defaults
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.published'))
 			{
 				$head .= PHP_EOL . Indent::_(2) . '<th width="10" ' . $data_hide
 					. '>';
@@ -14157,7 +13603,7 @@ class Interpretation extends Fields
 			}
 
 			// add the defaults
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.id'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.id'))
 			{
 				$data_type = (2 == $footable_version)
 					? 'data-type="numeric"'
@@ -14192,16 +13638,12 @@ class Interpretation extends Fields
 	 * @return string
 	 */
 	public function setListQueryLinked($nameSingleCode, $nameListCode,
-	                                   $functionName, $key, $_key, $parentKey, $parent_key, $globalKey
-	)
+		$functionName, $key, $_key, $parentKey, $parent_key, $globalKey)
 	{
 		// check if this view has category added
-		if (isset($this->categoryBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->categoryBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}.code"))
 		{
-			$categoryCodeName = $this->categoryBuilder[$nameListCode]['code'];
+			$categoryCodeName = CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.code");
 			$addCategory      = true;
 		}
 		else
@@ -14345,7 +13787,7 @@ class Interpretation extends Fields
 				$query .= PHP_EOL . Indent::_(2) . "}";
 			}
 		}
-		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode))
+		if (CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode))
 		{
 			$query .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -14355,10 +13797,10 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(2)
 				. "\$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');";
 			// check if the access field was over ridden
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.access'))
 			{
 				// component helper name
-				$Helper = CFactory::_('Content')->get('Component') . 'Helper';
+				$Helper = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
 				// load the access filter query code
 				$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
@@ -14449,13 +13891,13 @@ class Interpretation extends Fields
 		// add the fixing strings method
 		$query .= $this->setGetItemsMethodStringFix(
 			$nameSingleCode, $nameListCode,
-			CFactory::_('Content')->get('Component'),
+			CFactory::_('Compiler.Builder.Content.One')->get('Component'),
 			Indent::_(1)
 		);
 		// add translations
 		$query .= $this->setSelectionTranslationFix(
 			$nameListCode,
-			CFactory::_('Content')->get('Component'),
+			CFactory::_('Compiler.Builder.Content.One')->get('Component'),
 			Indent::_(1)
 		);
 		// filter by child repetable field values
@@ -14470,19 +13912,19 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Filter by " . $globalKey . " in this Repetable Field";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$items) && isset(\$this->"
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$items) && isset(\$this->"
 				. $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
 				. "foreach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . Indent::_(4) . "{";
 			$query .= PHP_EOL . Indent::_(5) . "if (isset(\$item->" . $field
-				. ") && " . CFactory::_('Content')->get('Component') . "Helper::checkJson(\$item->" . $field . "))";
+				. ") && " . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkJson(\$item->" . $field . "))";
 			$query .= PHP_EOL . Indent::_(5) . "{";
 			$query .= PHP_EOL . Indent::_(6)
 				. "\$tmpArray = json_decode(\$item->" . $field . ",true);";
 			$query .= PHP_EOL . Indent::_(6) . "if (!isset(\$tmpArray['"
-				. $target . "']) || !" . CFactory::_('Content')->get('Component') . "Helper::checkArray(\$tmpArray['"
+				. $target . "']) || !" . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$tmpArray['"
 				. $target . "']) || !in_array(\$this->" . $globalKey
 				. ", \$tmpArray['" . $target . "']))";
 			$query .= PHP_EOL . Indent::_(6) . "{";
@@ -14515,7 +13957,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey . " = \$this->"
 				. $globalKey . ";";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$items) && \$" . $globalKey
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$items) && \$" . $globalKey
 				. ")";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
@@ -14524,15 +13966,15 @@ class Interpretation extends Fields
 			list($bin, $target) = explode('-A>', (string) $key);
 			if (StringHelper::check($target))
 			{
-				$query .= PHP_EOL . Indent::_(5) . "if ("
-					. CFactory::_('Content')->get('Component') . "Helper::checkJson(\$item->" . $target
-					. "))";
+				$query .= PHP_EOL . Indent::_(5) . "if (isset(\$item->" . $target
+					. ") && " . CFactory::_('Compiler.Builder.Content.One')->get('Component')
+					. "Helper::checkJson(\$item->" . $target . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "\$item->" . $target
 					. " = json_decode(\$item->" . $target . ", true);";
 				$query .= PHP_EOL . Indent::_(5) . "}";
 				$query .= PHP_EOL . Indent::_(5) . "elseif (!isset(\$item->"
-					. $target . ") || !" . CFactory::_('Content')->get('Component') . "Helper::checkArray(\$item->"
+					. $target . ") || !" . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$item->"
 					. $target . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "unset(\$items[\$nr]);";
@@ -14543,14 +13985,14 @@ class Interpretation extends Fields
 			}
 			else
 			{
-				$query .= PHP_EOL . Indent::_(5) . "if ("
-					. CFactory::_('Content')->get('Component') . "Helper::checkJson(\$item->" . $_key . "))";
+				$query .= PHP_EOL . Indent::_(5) . "if (isset(\$item->" . $_key . ") && "
+					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkJson(\$item->" . $_key . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "\$item->" . $_key
 					. " = json_decode(\$item->" . $_key . ", true);";
 				$query .= PHP_EOL . Indent::_(5) . "}";
 				$query .= PHP_EOL . Indent::_(5) . "elseif (!isset(\$item->"
-					. $_key . ") || !" . CFactory::_('Content')->get('Component') . "Helper::checkArray(\$item->"
+					. $_key . ") || !" . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$item->"
 					. $_key . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "unset(\$items[\$nr]);";
@@ -14584,8 +14026,8 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey
 				. " = json_decode(\$this->" . $globalKey . ",true);";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$items) && isset(\$"
-				. $globalKey . ") && " . CFactory::_('Content')->get('Component') . "Helper::checkArray(\$"
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$items) && isset(\$"
+				. $globalKey . ") && " . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$"
 				. $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
@@ -14593,7 +14035,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(4) . "{";
 			$query .= PHP_EOL . Indent::_(5) . "if (\$item->" . $_key
 				. " && isset(\$" . $globalKey . "['" . $target . "']) && "
-				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$" . $globalKey . "['"
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$" . $globalKey . "['"
 				. $target . "']))";
 			$query .= PHP_EOL . Indent::_(5) . "{";
 			$query .= PHP_EOL . Indent::_(6) . "if (!in_array(\$item->" . $_key
@@ -14628,8 +14070,8 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey . " = \$this->"
 				. $globalKey . ";";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$items) && "
-				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$" . $globalKey . "))";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$items) && "
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$" . $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
 				. "foreach (\$items as \$nr => &\$item)";
@@ -14638,7 +14080,7 @@ class Interpretation extends Fields
 			if (StringHelper::check($target))
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if (\$item->" . $_key
-					. " && " . CFactory::_('Content')->get('Component') . "Helper::checkArray(\$" . $globalKey . "['"
+					. " && " . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$" . $globalKey . "['"
 					. $target . "']))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "if (!in_array(\$item->"
@@ -14681,7 +14123,7 @@ class Interpretation extends Fields
 		// SELECTIONTRANSLATIONFIXFUNC<<<DYNAMIC>>>
 		$query .= $this->setSelectionTranslationFixFunc(
 			$nameListCode,
-			CFactory::_('Content')->get('Component')
+			CFactory::_('Compiler.Builder.Content.One')->get('Component')
 		);
 
 		// fixe mothod name clash
@@ -14867,7 +14309,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " setup the query";
 			$query .= PHP_EOL . Indent::_(2) . "if ((\$pks_size = "
-				. CFactory::_('Content')->get('Component')
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component')
 				. "Helper::checkArray(\$pks)) !== false || 'bulk' === \$pks)";
 			$query .= PHP_EOL . Indent::_(2) . "{";
 			$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
@@ -14878,7 +14320,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Get the user object if not set.";
 			$query .= PHP_EOL . Indent::_(3) . "if (!isset(\$user) || !"
-				. CFactory::_('Content')->get('Component') . "Helper::checkObject(\$user))";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkObject(\$user))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4) . "\$user = JFactory::getUser();";
 			$query .= PHP_EOL . Indent::_(3) . "}";
@@ -14969,7 +14411,7 @@ class Interpretation extends Fields
 				$query .= PHP_EOL . Indent::_(3) . "}";
 			}
 			// add access levels if the view has access set
-			if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode))
+			if (CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode))
 			{
 				$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(
 						__LINE__,__CLASS__
@@ -15030,7 +14472,7 @@ class Interpretation extends Fields
 			// set the string fixing code
 			$query .= $this->setGetItemsMethodStringFix(
 				$nameSingleCode, $nameListCode,
-				CFactory::_('Content')->get('Component'),
+				CFactory::_('Compiler.Builder.Content.One')->get('Component'),
 				Indent::_(2), $isExport, true
 			);
 			// first check if we export of text only is avalable
@@ -15038,7 +14480,7 @@ class Interpretation extends Fields
 			{
 				$query_translations = $this->setSelectionTranslationFix(
 					$nameListCode,
-					CFactory::_('Content')->get('Component'), Indent::_(3)
+					CFactory::_('Compiler.Builder.Content.One')->get('Component'), Indent::_(3)
 				);
 			}
 			// add translations
@@ -15138,12 +14580,12 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3)
 				. "\$data = \$model->getExportData(\$pks);";
 			$method[] = Indent::_(3) . "if ("
-				. CFactory::_('Content')->get('Component') . "Helper::checkArray(\$data))";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$data))";
 			$method[] = Indent::_(3) . "{";
 			$method[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " now set the data to the spreadsheet";
 			$method[] = Indent::_(4) . "\$date = JFactory::getDate();";
-			$method[] = Indent::_(4) . CFactory::_('Content')->get('Component') . "Helper::xls(\$data,'"
+			$method[] = Indent::_(4) . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::xls(\$data,'"
 				. StringHelper::safe($nameListCode, 'F')
 				. "_'.\$date->format('jS_F_Y'),'"
 				. StringHelper::safe($nameListCode, 'Ww')
@@ -15190,7 +14632,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3)
 				. "\$headers = \$model->getExImPortHeaders();";
 			$method[] = Indent::_(3) . "if ("
-				. CFactory::_('Content')->get('Component') . "Helper::checkObject(\$headers))";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkObject(\$headers))";
 			$method[] = Indent::_(3) . "{";
 			$method[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Load headers to session.";
@@ -15313,56 +14755,56 @@ class Interpretation extends Fields
 		CFactory::_('Utilities.Structure')->build($target, 'customimport');
 		// load the custom script to the files
 		// IMPORT_EXT_METHOD <<<DYNAMIC>>>
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_EXT_METHOD', CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_EXT_METHOD', CFactory::_('Customcode.Dispenser')->get(
 			'php_import_ext', 'import_' . $nameListCode, PHP_EOL, null,
 			true
 		));
 		// IMPORT_DISPLAY_METHOD_CUSTOM <<<DYNAMIC>>>
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_DISPLAY_METHOD_CUSTOM', CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_DISPLAY_METHOD_CUSTOM', CFactory::_('Customcode.Dispenser')->get(
 			'php_import_display', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
 		));
 		// IMPORT_SETDATA_METHOD <<<DYNAMIC>>>
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_SETDATA_METHOD', CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_SETDATA_METHOD', CFactory::_('Customcode.Dispenser')->get(
 			'php_import_setdata', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
 		));
 		// IMPORT_METHOD_CUSTOM <<<DYNAMIC>>>
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_METHOD_CUSTOM', CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_METHOD_CUSTOM', CFactory::_('Customcode.Dispenser')->get(
 			'php_import', 'import_' . $nameListCode, PHP_EOL, null,
 			true
 		));
 		// IMPORT_SAVE_METHOD <<<DYNAMIC>>>
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_SAVE_METHOD', CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_SAVE_METHOD', CFactory::_('Customcode.Dispenser')->get(
 			'php_import_save', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
 		));
 		// IMPORT_DEFAULT_VIEW_CUSTOM <<<DYNAMIC>>>
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_DEFAULT_VIEW_CUSTOM', CFactory::_('Customcode.Dispenser')->get(
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_DEFAULT_VIEW_CUSTOM', CFactory::_('Customcode.Dispenser')->get(
 			'html_import_view', 'import_' . $nameListCode, PHP_EOL,
 			null,
 			true
 		));
 
 		// insure we have the view placeholders setup
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'VIEW', 'IMPORT_' . CFactory::_('Placeholder')->get_h('VIEWS'));
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'View', 'Import_' . CFactory::_('Placeholder')->get_h('views'));
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'view', 'import_' . CFactory::_('Placeholder')->get_h('views'));
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'VIEWS', 'IMPORT_' . CFactory::_('Placeholder')->get_h('VIEWS'));
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'Views', 'Import_' . CFactory::_('Placeholder')->get_h('views'));
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'views', 'import_' . CFactory::_('Placeholder')->get_h('views'));
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|VIEW', 'IMPORT_' . CFactory::_('Placeholder')->get_h('VIEWS'));
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|View', 'Import_' . CFactory::_('Placeholder')->get_h('views'));
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|view', 'import_' . CFactory::_('Placeholder')->get_h('views'));
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|VIEWS', 'IMPORT_' . CFactory::_('Placeholder')->get_h('VIEWS'));
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|Views', 'Import_' . CFactory::_('Placeholder')->get_h('views'));
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|views', 'import_' . CFactory::_('Placeholder')->get_h('views'));
 
 		// IMPORT_CUSTOM_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_CUSTOM_CONTROLLER_HEADER', $this->setFileHeader(
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_CUSTOM_CONTROLLER_HEADER', $this->setFileHeader(
 			'import.custom.controller',
 			$nameListCode
 		));
 
 		// IMPORT_CUSTOM_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-		CFactory::_('Content')->set_('import_' . $nameListCode, 'IMPORT_CUSTOM_MODEL_HEADER', $this->setFileHeader(
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_CUSTOM_MODEL_HEADER', $this->setFileHeader(
 			'import.custom.model',
 			$nameListCode
 		));
@@ -15371,15 +14813,12 @@ class Interpretation extends Fields
 	public function setListQuery(&$nameSingleCode, &$nameListCode)
 	{
 		// check if this view has category added
-		if (isset($this->categoryBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->categoryBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}.code"))
 		{
-			$categoryCodeName = $this->categoryBuilder[$nameListCode]['code'];
+			$categoryCodeName = CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.code");
 			$addCategory      = true;
 			$addCategoryFilter
-				= $this->categoryBuilder[$nameListCode]['filter'];
+				= CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.filter", 'error');
 		}
 		else
 		{
@@ -15437,7 +14876,7 @@ class Interpretation extends Fields
 		$query .= PHP_EOL . Indent::_(3)
 			. "\$query->where('(a.published = 0 OR a.published = 1)');";
 		$query .= PHP_EOL . Indent::_(2) . "}";
-		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode))
+		if (CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode))
 		{
 			$query .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -15447,10 +14886,10 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(2)
 				. "\$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');";
 			// check if the access field was over ridden
-			if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.access'))
 			{
 				// component helper name
-				$Helper = CFactory::_('Content')->get('Component') . 'Helper';
+				$Helper = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
 				// load the access filter query code
 				$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
@@ -15607,14 +15046,11 @@ class Interpretation extends Fields
 
 	public function setSearchQuery($nameListCode)
 	{
-		if (isset($this->searchBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->searchBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Search')->exists($nameListCode))
 		{
 			// setup the searh options
 			$search = "'(";
-			foreach ($this->searchBuilder[$nameListCode] as $nr => $array)
+			foreach (CFactory::_('Compiler.Builder.Search')->get($nameListCode) as $nr => $array)
 			{
 				// array( 'type' => $typeName, 'code' => $name, 'custom' => $custom, 'list' => $field['list']);
 				if ($nr == 0)
@@ -15673,16 +15109,13 @@ class Interpretation extends Fields
 	                               $just_text = false
 	)
 	{
-		if (isset($this->customBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->customBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Custom.Field')->exists($nameListCode))
 		{
 			$query = "";
-			foreach ($this->customBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Custom.Field')->get($nameListCode) as $filter)
 			{
 				// only load this if table is set
-				if ((CFactory::_('Registry')->exists('builder.custom_list.' . $nameSingleCode . '.' . $filter['code'])
+				if ((CFactory::_('Compiler.Builder.Custom.List')->exists($nameSingleCode . '.' . $filter['code'])
 						&& isset($filter['custom']['table'])
 						&& StringHelper::check($filter['custom']['table'])
 						&& $filter['method'] == 0)
@@ -15754,7 +15187,7 @@ class Interpretation extends Fields
 						. $filter['custom']['id'] . "') . ')');";
 				}
 				// build the field type file
-				$this->setCustomFieldTypeFile(
+				CFactory::_('Compiler.Creator.Custom.Field.Type.File')->set(
 					$filter, $nameListCode, $nameSingleCode
 				);
 			}
@@ -15773,16 +15206,13 @@ class Interpretation extends Fields
 	 */
 	public function setFilterQuery($nameListCode)
 	{
-		if (isset($this->filterBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->filterBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Filter')->exists($nameListCode))
 		{
 			// component helper name
-			$Helper = CFactory::_('Content')->get('Component') . 'Helper';
+			$Helper = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
 			// start building the filter query
 			$filterQuery = "";
-			foreach ($this->filterBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Filter')->get($nameListCode) as $filter)
 			{
 				// only add for none category fields
 				if ($filter['type'] != 'category')
@@ -15792,8 +15222,7 @@ class Interpretation extends Fields
 						. ucwords((string) $filter['code']) . ".";
 					// we only add multi filter option if new filter type
 					// and we have multi filter set for this field (2 = topbar)
-					if (CFactory::_('Registry')->
-						get('builder.admin_filter_type.' . $nameListCode, 1) == 2
+					if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2
 						&& isset($filter['multi'])
 						&& $filter['multi'] == 2)
 					{
@@ -16133,25 +15562,13 @@ class Interpretation extends Fields
 							$l_function, $l_matchKeys, $getValue
 						);
 
-						if (isset($this->setScriptMediaSwitch)
-							&& ArrayHelper::check(
-								$this->setScriptMediaSwitch
-							)
-							&& in_array(
-								$matchTypeKey, $this->setScriptMediaSwitch
-							))
+						if (CFactory::_('Compiler.Builder.Script.Media.Switch')->inArray($matchTypeKey))
 						{
 							$modal .= $funcCall['code'];
 						}
 						else
 						{
-							if (isset($this->setScriptUserSwitch)
-								&& ArrayHelper::check(
-									$this->setScriptUserSwitch
-								)
-								&& in_array(
-									$matchTypeKey, $this->setScriptUserSwitch
-								))
+							if (CFactory::_('Compiler.Builder.Script.User.Switch')->inArray($matchTypeKey))
 							{
 								$name = $name . '_id';
 							}
@@ -16482,7 +15899,7 @@ class Interpretation extends Fields
 			$_path = '/administrator/components/com_' . CFactory::_('Config')->component_code_name
 				. '/assets/js/' . $nameListCode . '.js';
 			// load the file to the list view
-			CFactory::_('Content')->set_($nameListCode, 'ADMIN_ADD_JAVASCRIPT_FILE', PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_ADD_JAVASCRIPT_FILE', PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Add List View JavaScript File" . PHP_EOL . Indent::_(2)
 				. $this->setIncludeLibScript($_path)
@@ -16491,7 +15908,7 @@ class Interpretation extends Fields
 		else
 		{
 			$list_fileScript = '';
-			CFactory::_('Content')->set_($nameListCode, 'ADMIN_ADD_JAVASCRIPT_FILE', '');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_ADD_JAVASCRIPT_FILE', '');
 		}
 		// minify the script
 		if (CFactory::_('Config')->get('minify', 0) && isset($list_fileScript)
@@ -16724,7 +16141,7 @@ class Interpretation extends Fields
 					}
 					// set target type
 					$targetTypeSufix = "";
-					if (ComponentbuilderHelper::fieldCheck(
+					if (CFactory::_('Field.Groups')->check(
 						$target['type'], 'spacer'
 					))
 					{
@@ -16895,9 +16312,9 @@ class Interpretation extends Fields
 		{
 			case 1: // Is
 				// only 4 list/radio/checkboxes
-				if (ComponentbuilderHelper::fieldCheck($type, 'list')
-					|| ComponentbuilderHelper::fieldCheck($type, 'dynamic')
-					|| !ComponentbuilderHelper::fieldCheck($type))
+				if (CFactory::_('Field.Groups')->check($type, 'list')
+					|| CFactory::_('Field.Groups')->check($type, 'dynamic')
+					|| !CFactory::_('Field.Groups')->check($type))
 				{
 					if (ArrayHelper::check($options))
 					{
@@ -16928,9 +16345,9 @@ class Interpretation extends Fields
 				break;
 			case 2: // Is Not
 				// only 4 list/radio/checkboxes
-				if (ComponentbuilderHelper::fieldCheck($type, 'list')
-					|| ComponentbuilderHelper::fieldCheck($type, 'dynamic')
-					|| !ComponentbuilderHelper::fieldCheck($type))
+				if (CFactory::_('Field.Groups')->check($type, 'list')
+					|| CFactory::_('Field.Groups')->check($type, 'dynamic')
+					|| !CFactory::_('Field.Groups')->check($type))
 				{
 					if (ArrayHelper::check($options))
 					{
@@ -16961,9 +16378,9 @@ class Interpretation extends Fields
 				break;
 			case 3: // Any Selection
 				// only 4 list/radio/checkboxes/dynamic_list
-				if (ComponentbuilderHelper::fieldCheck($type, 'list')
-					|| ComponentbuilderHelper::fieldCheck($type, 'dynamic')
-					|| !ComponentbuilderHelper::fieldCheck($type))
+				if (CFactory::_('Field.Groups')->check($type, 'list')
+					|| CFactory::_('Field.Groups')->check($type, 'dynamic')
+					|| !CFactory::_('Field.Groups')->check($type))
 				{
 					if (ArrayHelper::check($options))
 					{
@@ -16989,11 +16406,7 @@ class Interpretation extends Fields
 					else
 					{
 						$userFix = '';
-						if (isset($this->setScriptUserSwitch)
-							&& ArrayHelper::check(
-								$this->setScriptUserSwitch
-							)
-							&& in_array($type, $this->setScriptUserSwitch))
+						if (CFactory::_('Compiler.Builder.Script.User.Switch')->inArray($type))
 						{
 							// TODO this needs a closer look, a bit buggy
 							$userFix = " && " . $value . " != 0";
@@ -17004,21 +16417,21 @@ class Interpretation extends Fields
 				break;
 			case 4: // Active (not empty)
 				// only 4 text_field
-				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
+				if (CFactory::_('Field.Groups')->check($type, 'text'))
 				{
 					$string .= 'isSet(' . $value . ')';
 				}
 				break;
 			case 5: // Unactive (empty)
 				// only 4 text_field
-				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
+				if (CFactory::_('Field.Groups')->check($type, 'text'))
 				{
 					$string .= '!isSet(' . $value . ')';
 				}
 				break;
 			case 6: // Key Word All (case-sensitive)
 				// only 4 text_field
-				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
+				if (CFactory::_('Field.Groups')->check($type, 'text'))
 				{
 					if (ArrayHelper::check(
 						$options['keywords']
@@ -17046,7 +16459,7 @@ class Interpretation extends Fields
 				break;
 			case 7: // Key Word Any (case-sensitive)
 				// only 4 text_field
-				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
+				if (CFactory::_('Field.Groups')->check($type, 'text'))
 				{
 					if (ArrayHelper::check(
 						$options['keywords']
@@ -17074,7 +16487,7 @@ class Interpretation extends Fields
 				break;
 			case 8: // Key Word All (case-insensitive)
 				// only 4 text_field
-				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
+				if (CFactory::_('Field.Groups')->check($type, 'text'))
 				{
 					if (ArrayHelper::check(
 						$options['keywords']
@@ -17106,7 +16519,7 @@ class Interpretation extends Fields
 				break;
 			case 9: // Key Word Any (case-insensitive)
 				// only 4 text_field
-				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
+				if (CFactory::_('Field.Groups')->check($type, 'text'))
 				{
 					if (ArrayHelper::check(
 						$options['keywords']
@@ -17138,7 +16551,7 @@ class Interpretation extends Fields
 				break;
 			case 10: // Min Length
 				// only 4 text_field
-				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
+				if (CFactory::_('Field.Groups')->check($type, 'text'))
 				{
 					if (ArrayHelper::check($options))
 					{
@@ -17156,7 +16569,7 @@ class Interpretation extends Fields
 				break;
 			case 11: // Max Length
 				// only 4 text_field
-				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
+				if (CFactory::_('Field.Groups')->check($type, 'text'))
 				{
 					if (ArrayHelper::check($options))
 					{
@@ -17174,7 +16587,7 @@ class Interpretation extends Fields
 				break;
 			case 12: // Exact Length
 				// only 4 text_field
-				if (ComponentbuilderHelper::fieldCheck($type, 'text'))
+				if (CFactory::_('Field.Groups')->check($type, 'text'))
 				{
 					if (ArrayHelper::check($options))
 					{
@@ -17204,9 +16617,9 @@ class Interpretation extends Fields
 		$buket = array();
 		if (StringHelper::check($options))
 		{
-			if (ComponentbuilderHelper::fieldCheck($type, 'list')
-				|| ComponentbuilderHelper::fieldCheck($type, 'dynamic')
-				|| !ComponentbuilderHelper::fieldCheck($type))
+			if (CFactory::_('Field.Groups')->check($type, 'list')
+				|| CFactory::_('Field.Groups')->check($type, 'dynamic')
+				|| !CFactory::_('Field.Groups')->check($type))
 			{
 				$optionsArray = array_map(
 					'trim', (array) explode(PHP_EOL, (string) $options)
@@ -17230,7 +16643,7 @@ class Interpretation extends Fields
 					}
 				}
 			}
-			elseif (ComponentbuilderHelper::fieldCheck($type, 'text'))
+			elseif (CFactory::_('Field.Groups')->check($type, 'text'))
 			{
 				// check to get the key words if set
 				$keywords = GetHelper::between(
@@ -17298,25 +16711,23 @@ class Interpretation extends Fields
 			$select = 'var ' . $keyName . ' = jQuery("#jform_' . $name
 				. ' input[type=\'radio\']:checked").val();';
 		}
-		elseif (isset($this->setScriptUserSwitch)
-			&& ArrayHelper::check($this->setScriptUserSwitch)
-			&& in_array($type, $this->setScriptUserSwitch))
+		elseif (CFactory::_('Compiler.Builder.Script.User.Switch')->inArray($type))
 		{
 			// this is only since 3.3.4
 			$select = 'var ' . $keyName . ' = jQuery("#jform_' . $name
 				. '_id").val();';
 		}
 		elseif ($type === 'list'
-			|| ComponentbuilderHelper::fieldCheck(
+			|| CFactory::_('Field.Groups')->check(
 				$type, 'dynamic'
 			)
-			|| !ComponentbuilderHelper::fieldCheck($type))
+			|| !CFactory::_('Field.Groups')->check($type))
 		{
 			$select  = 'var ' . $keyName . ' = jQuery("#jform_' . $name
 				. '").val();';
 			$isArray = true;
 		}
-		elseif (ComponentbuilderHelper::fieldCheck($type, 'text'))
+		elseif (CFactory::_('Field.Groups')->check($type, 'text'))
 		{
 			$select = 'var ' . $keyName . ' = jQuery("#jform_' . $name
 				. '").val();';
@@ -17639,15 +17050,11 @@ class Interpretation extends Fields
 	public function setFilterFieldHelper(&$nameSingleCode, &$nameListCode)
 	{
 		// the old filter type uses these functions
-		if (isset($this->filterBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->filterBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Filter')->exists($nameListCode))
 		{
 			// set the function or file path (2 = topbar)
 			$funtion_path = true;
-			if (CFactory::_('Registry')->
-				get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
+			if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
 			{
 				$funtion_path = false;
 			}
@@ -17655,7 +17062,7 @@ class Interpretation extends Fields
 			// set component name
 			$component = CFactory::_('Config')->component_code_name;
 			$Component = ucfirst((string) $component);
-			foreach ($this->filterBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Filter')->get($nameListCode) as $filter)
 			{
 				if ($filter['type'] != 'category'
 					&& ArrayHelper::check($filter['custom'])
@@ -17778,14 +17185,8 @@ class Interpretation extends Fields
 					&& !ArrayHelper::check($filter['custom']))
 				{
 					$translation = false;
-					if (isset($this->selectionTranslationFixBuilder[$nameListCode])
-						&& ArrayHelper::check(
-							$this->selectionTranslationFixBuilder[$nameListCode]
-						)
-						&& array_key_exists(
-							$filter['code'],
-							$this->selectionTranslationFixBuilder[$nameListCode]
-						))
+					if (CFactory::_('Compiler.Builder.Selection.Translation')->
+						exists($nameListCode . '.' . $filter['code']))
 					{
 						$translation = true;
 					}
@@ -17839,7 +17240,7 @@ class Interpretation extends Fields
 							. " Reset the query using our newly populated query object.";
 						$function[] = Indent::_(2) . "\$db->setQuery(\$query);";
 						$function[] = PHP_EOL . Indent::_(2)
-							. "\$results = \$db->loadObjectList();";
+							. "\$_results = \$db->loadObjectList();";
 					}
 					else
 					{
@@ -17859,7 +17260,7 @@ class Interpretation extends Fields
 							. " Reset the query using our newly populated query object.";
 						$function[] = Indent::_(2) . "\$db->setQuery(\$query);";
 						$function[] = PHP_EOL . Indent::_(2)
-							. "\$results = \$db->loadColumn();";
+							. "\$_results = \$db->loadColumn();";
 					}
 					$function[] = Indent::_(2) . "\$_filter = array();";
 					// if this is not a multi field
@@ -17869,7 +17270,7 @@ class Interpretation extends Fields
 							. "\$_filter[] = JHtml::_('select.option', '', '- ' . JText:"
 							. ":_('" . $filter['lang_select'] . "') . ' -');";
 					}
-					$function[] = PHP_EOL . Indent::_(2) . "if (\$results)";
+					$function[] = PHP_EOL . Indent::_(2) . "if (\$_results)";
 					$function[] = Indent::_(2) . "{";
 
 					// check if translated value is used
@@ -17879,7 +17280,7 @@ class Interpretation extends Fields
 								__LINE__,__CLASS__
 							) . " get model";
 						$function[] = Indent::_(3)
-							. "\$model = \$this->getModel();";
+							. "\$_model = \$this->getModel();";
 					}
 					elseif ($translation)
 					{
@@ -17887,16 +17288,16 @@ class Interpretation extends Fields
 								__LINE__,__CLASS__
 							) . " get " . $nameListCode . "model";
 						$function[] = Indent::_(3)
-							. "\$model = " . $Component . "Helper::getModel('"
+							. "\$_model = " . $Component . "Helper::getModel('"
 							. $nameListCode . "');";
 					}
 					// check if usergroup as we change to an object query
 					if ($filter['type'] !== 'usergroup')
 					{
 						$function[] = Indent::_(3)
-							. "\$results = array_unique(\$results);";
+							. "\$_results = array_unique(\$_results);";
 					}
-					$function[] = Indent::_(3) . "foreach (\$results as \$"
+					$function[] = Indent::_(3) . "foreach (\$_results as \$"
 						. $filter['code'] . ")";
 					$function[] = Indent::_(3) . "{";
 
@@ -17908,7 +17309,7 @@ class Interpretation extends Fields
 							) . " Translate the " . $filter['code']
 							. " selection";
 						$function[] = Indent::_(4)
-							. "\$text = \$model->selectionTranslation(\$"
+							. "\$_text = \$_model->selectionTranslation(\$"
 							. $filter['code'] . ",'" . $filter['code'] . "');";
 						$function[] = Indent::_(4) . "//" . Line::_(
 								__LINE__,__CLASS__
@@ -17916,7 +17317,7 @@ class Interpretation extends Fields
 							. " and its text to the options array";
 						$function[] = Indent::_(4)
 							. "\$_filter[] = JHtml::_('select.option', \$"
-							. $filter['code'] . ", JText:" . ":_(\$text));";
+							. $filter['code'] . ", JText:" . ":_(\$_text));";
 					}
 					elseif ($filter['type'] === 'user')
 					{
@@ -18042,24 +17443,24 @@ class Interpretation extends Fields
 		$fields[] = Indent::_(1) . " */";
 		$fields[] = Indent::_(1) . "protected function getUniqueFields()";
 		$fields[] = Indent::_(1) . "{";
-		if (CFactory::_('Registry')->isArray('builder.database_unique_keys.' . $view))
+		if (CFactory::_('Compiler.Builder.Database.Unique.Keys')->exists($view))
 		{
 			// if guid should also be added
-			if (CFactory::_('Registry')->get('builder.database_unique_guid.' . $view))
+			if (CFactory::_('Compiler.Builder.Database.Unique.Guid')->exists($view))
 			{
 				$fields[] = Indent::_(2) . "return array('" . implode(
-						"','", CFactory::_('Registry')->get('builder.database_unique_keys.' . $view)
+						"','", CFactory::_('Compiler.Builder.Database.Unique.Keys')->get($view)
 					) . "', 'guid');";
 			}
 			else
 			{
 				$fields[] = Indent::_(2) . "return array('" . implode(
-						"','", CFactory::_('Registry')->get('builder.database_unique_keys.' . $view)
+						"','", CFactory::_('Compiler.Builder.Database.Unique.Keys')->get($view)
 					) . "');";
 			}
 		}
 		// if only GUID is found
-		elseif (CFactory::_('Registry')->get('builder.database_unique_guid.' . $view))
+		elseif (CFactory::_('Compiler.Builder.Database.Unique.Guid')->exists($view))
 		{
 			$fields[] = Indent::_(2) . "return array('guid');";
 		}
@@ -18095,17 +17496,13 @@ class Interpretation extends Fields
 		// add the category filter stuff
 		$this->setCategorySidebarFilterHelper($fieldFilters, $nameListCode);
 		// check if filter fields are added (1 = sidebar)
-		if (CFactory::_('Registry')->
-			get('builder.admin_filter_type.' . $nameListCode, 1) == 1
-			&& isset($this->filterBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->filterBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 1
+			&& CFactory::_('Compiler.Builder.Filter')->exists($nameListCode))
 		{
 			// get component name
-			$Component = CFactory::_('Content')->get('Component');
+			$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
 			// load the rest of the filters
-			foreach ($this->filterBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Filter')->get($nameListCode) as $filter)
 			{
 				if ($filter['type'] != 'category'
 					&& ArrayHelper::check($filter['custom'])
@@ -18263,8 +17660,7 @@ class Interpretation extends Fields
 	)
 	{
 		// add the default filters if we are on the old filter paths (1 = sidebar)
-		if (CFactory::_('Registry')->
-			get('builder.admin_filter_type.' . $nameListCode, 1) == 1)
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 1)
 		{
 			// set batch
 			$filter[] = PHP_EOL . Indent::_(2)
@@ -18282,8 +17678,8 @@ class Interpretation extends Fields
 			$filter[] = Indent::_(3) . ");";
 			$filter[] = Indent::_(2) . "}";
 			// check if view has access
-			if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode)
-				&& !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
+			if (CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode)
+				&& !CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.access'))
 			{
 				$filter[] = PHP_EOL . Indent::_(2) . "JHtmlSidebar::addFilter(";
 				$filter[] = Indent::_(3) . "JText:"
@@ -18308,15 +17704,9 @@ class Interpretation extends Fields
 	protected function setCategorySidebarFilterHelper(&$filter, &$nameListCode)
 	{
 		// add the category filter if we are on the old filter paths (1 = sidebar)
-		if (CFactory::_('Registry')->
-			get('builder.admin_filter_type.' . $nameListCode, 1) == 1
-			&& isset($this->categoryBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->categoryBuilder[$nameListCode]
-			)
-			&& isset($this->categoryBuilder[$nameListCode]['extension'])
-			&& isset($this->categoryBuilder[$nameListCode]['filter'])
-			&& $this->categoryBuilder[$nameListCode]['filter'] >= 1)
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 1
+			&& CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}.extension")
+			&& CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.filter", 0) >= 1)
 		{
 			// set filter
 			$filter[] = PHP_EOL . Indent::_(2) . "//"
@@ -18327,7 +17717,7 @@ class Interpretation extends Fields
 			$filter[] = Indent::_(3) . "'filter_category_id',";
 			$filter[] = Indent::_(3)
 				. "JHtml::_('select.options', JHtml::_('category.options', '"
-				. $this->categoryBuilder[$nameListCode]['extension']
+				. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
 				. "'), 'value', 'text', \$this->state->get('filter.category_id'))";
 			$filter[] = Indent::_(2) . ");";
 		}
@@ -18351,23 +17741,19 @@ class Interpretation extends Fields
 		// add the category filter stuff
 		$this->setCategoryBatchHelper($fieldBatch, $nameListCode);
 		// check if we have other batch options to add
-		if (isset($this->filterBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->filterBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Filter')->exists($nameListCode))
 		{
 			// check if we should add some help to get the values (2 = topbar)
 			$get_values = false;
-			if (CFactory::_('Registry')->
-				get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
+			if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
 			{
 				// since the old path is not used, we need to add those values here
 				$get_values = true;
 			}
 			// get component name
-			$Component = CFactory::_('Content')->get('Component');
+			$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
 			// load the rest of the batch options
-			foreach ($this->filterBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Filter')->get($nameListCode) as $filter)
 			{
 				if ($filter['type'] != 'category'
 					&& ArrayHelper::check($filter['custom'])
@@ -18533,8 +17919,8 @@ class Interpretation extends Fields
 		$batch[] = Indent::_(3) . ");";
 		$batch[] = Indent::_(2) . "}";
 		// check if view has access
-		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode)
-			&& !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
+		if (CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode)
+			&& !CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.access'))
 		{
 			$batch[] = PHP_EOL . Indent::_(2)
 				. "//" . Line::_(__Line__, __Class__)
@@ -18564,11 +17950,7 @@ class Interpretation extends Fields
 	 */
 	protected function setCategoryBatchHelper(&$batch, &$nameListCode)
 	{
-		if (isset($this->categoryBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->categoryBuilder[$nameListCode]
-			)
-			&& isset($this->categoryBuilder[$nameListCode]['extension']))
+		if (CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}.extension"))
 		{
 			// set component name
 			$COPMONENT = CFactory::_('Component')->get('name_code');
@@ -18585,7 +17967,7 @@ class Interpretation extends Fields
 			$batch[] = Indent::_(4) . "'batch[category]',";
 			$batch[] = Indent::_(4)
 				. "JHtml::_('select.options', JHtml::_('category.options', '"
-				. $this->categoryBuilder[$nameListCode]['extension']
+				. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
 				. "'), 'value', 'text')";
 			$batch[] = Indent::_(3) . ");";
 			$batch[] = Indent::_(2) . "}";
@@ -18594,13 +17976,10 @@ class Interpretation extends Fields
 
 	public function setRouterCategoryViews($nameSingleCode, $nameListCode)
 	{
-		if (isset($this->categoryBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->categoryBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}.extension"))
 		{
-			// get the actual extention
-			$_extension = $this->categoryBuilder[$nameListCode]['extension'];
+			// get the actual extension
+			$_extension = CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension");
 			$_extension = explode('.', (string) $_extension);
 			// set component name
 			if (ArrayHelper::check($_extension))
@@ -18612,30 +17991,23 @@ class Interpretation extends Fields
 				$component = CFactory::_('Config')->component_code_name;
 			}
 			// check if category has another name
-			if (CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
-				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
-			{
-				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
-				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
-			}
-			else
-			{
-				$otherViews = $nameListCode;
-				$otherView  = $nameSingleCode;
-			}
+			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.views', $nameListCode);
+			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.view', $nameSingleCode);
 			// set the OtherView value
-			CFactory::_('Content')->set_('category' . $otherView, 'otherview', $otherView);
+			CFactory::_('Compiler.Builder.Content.Multi')->set('category' . $otherView . '|otherview', $otherView);
 			// load the category helper details in not already loaded
-			if (!CFactory::_('Content')->exist_('category' . $otherView, 'view'))
+			if (!CFactory::_('Compiler.Builder.Content.Multi')->exists('category' . $otherView . '|view'))
 			{
 				// lets also set the category helper for this view
 				$target = array('site' => 'category' . $otherView);
 				CFactory::_('Utilities.Structure')->build($target, 'category');
 				// insure the file gets updated
-				CFactory::_('Content')->set_('category' . $otherView, 'view', $otherView);
-				CFactory::_('Content')->set_('category' . $otherView, 'View', ucfirst((string) $otherView));
-				CFactory::_('Content')->set_('category' . $otherView, 'views', $otherViews);
-				CFactory::_('Content')->set_('category' . $otherView, 'Views', ucfirst((string) $otherViews));
+				CFactory::_('Compiler.Builder.Content.Multi')->set('category' . $otherView . '|view', $otherView);
+				CFactory::_('Compiler.Builder.Content.Multi')->set('category' . $otherView . '|View', ucfirst((string) $otherView));
+				CFactory::_('Compiler.Builder.Content.Multi')->set('category' . $otherView . '|views', $otherViews);
+				CFactory::_('Compiler.Builder.Content.Multi')->set('category' . $otherView . '|Views', ucfirst((string) $otherViews));
 				// set script to global helper file
 				$includeHelper   = array();
 				$includeHelper[] = "\n//" . Line::_(__Line__, __Class__)
@@ -18652,22 +18024,22 @@ class Interpretation extends Fields
 				$includeHelper[] = Indent::_(2) . "include_once \$path;";
 				$includeHelper[] = Indent::_(1) . "}";
 				$includeHelper[] = "}";
-				CFactory::_('Content')->add('CATEGORY_CLASS_TREES', implode("\n", $includeHelper));
+				CFactory::_('Compiler.Builder.Content.One')->add('CATEGORY_CLASS_TREES', implode("\n", $includeHelper));
 			}
 			// return category view string
-			if (CFactory::_('Content')->exist('ROUTER_CATEGORY_VIEWS')
+			if (CFactory::_('Compiler.Builder.Content.One')->exists('ROUTER_CATEGORY_VIEWS')
 				&& StringHelper::check(
-					CFactory::_('Content')->get('ROUTER_CATEGORY_VIEWS')
+					CFactory::_('Compiler.Builder.Content.One')->get('ROUTER_CATEGORY_VIEWS')
 				))
 			{
 				return "," . PHP_EOL . Indent::_(3) . '"'
-					. $this->categoryBuilder[$nameListCode]['extension']
+					. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
 					. '" => "' . $otherView . '"';
 			}
 			else
 			{
 				return PHP_EOL . Indent::_(3) . '"'
-					. $this->categoryBuilder[$nameListCode]['extension']
+					. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
 					. '" => "' . $otherView . '"';
 			}
 		}
@@ -18684,48 +18056,27 @@ class Interpretation extends Fields
 		$customAllow = CFactory::_('Customcode.Dispenser')->get(
 			'php_allowadd', $nameSingleCode, '', null, true
 		);
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
 		// check if item has category
-		if (0) //isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode])) <-- remove category from check
+		if (0) //CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}")) <-- remove category from check
 		{
 			// check if category has another name
-			if (CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
-				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
-			{
-				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
-				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
-			}
-			else
-			{
-				$otherViews = $nameListCode;
-				$otherView  = $nameSingleCode;
-			}
+			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.views', $nameListCode);
+			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.view', $nameSingleCode);
 			// setup the category script
 			$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " get the user object";
 			$allow[] = Indent::_(2) . "\$user = JFactory::getUser();";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.access'])
-				&& isset($this->permissionBuilder['global'][$core['core.access']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.access']]
-				)
-				&& in_array(
-					$otherView,
-					$this->permissionBuilder['global'][$core['core.access']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->globalExist($otherView, 'core.access'))
 			{
 				$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " Access check.";
 				$allow[] = Indent::_(2) . "\$access = \$user->authorise('"
-					. $core['core.access'] . "', 'com_" . $component . "');";
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($otherView, 'core.access')
+					. "', 'com_" . $component . "');";
 				$allow[] = Indent::_(2) . "if (!\$access)";
 				$allow[] = Indent::_(2) . "{";
 				$allow[] = Indent::_(3) . "return false;";
@@ -18745,27 +18096,20 @@ class Interpretation extends Fields
 			$allow[] = PHP_EOL . Indent::_(2) . "if (\$allow === null)";
 			$allow[] = Indent::_(2) . "{";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.create'])
-				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.create']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.create']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.access'))
 			{
 				// setup the default script
 				$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-					. " In the absense of better information, revert to the component permissions.";
+					. " In the absence of better information, revert to the component permissions.";
 				$allow[] = Indent::_(3) . "return \$user->authorise('"
-					. $core['core.create'] . "', \$this->option);";
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create')
+					. "', \$this->option);";
 			}
 			else
 			{
 				// setup the default script
 				$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-					. " In the absense of better information, revert to the component permissions.";
+					. " In the absence of better information, revert to the component permissions.";
 				$allow[] = Indent::_(3) . "return parent::allowAdd(\$data);";
 			}
 			$allow[] = Indent::_(2) . "}";
@@ -18780,20 +18124,13 @@ class Interpretation extends Fields
 				. " Get user object.";
 			$allow[] = Indent::_(2) . "\$user = JFactory::getUser();";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.access'])
-				&& isset($this->permissionBuilder['global'][$core['core.access']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.access']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.access']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.access'))
 			{
 				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " Access check.";
 				$allow[] = Indent::_(2) . "\$access = \$user->authorise('"
-					. $core['core.access'] . "', 'com_" . $component . "');";
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.access')
+					. "', 'com_" . $component . "');";
 				$allow[] = Indent::_(2) . "if (!\$access)";
 				$allow[] = Indent::_(2) . "{";
 				$allow[] = Indent::_(3) . "return false;";
@@ -18802,27 +18139,20 @@ class Interpretation extends Fields
 			// load custom permission script
 			$allow[] = $customAllow;
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.create'])
-				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.create']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.create']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.create'))
 			{
 				// setup the default script
 				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absense of better information, revert to the component permissions.";
+					. " In the absence of better information, revert to the component permissions.";
 				$allow[] = Indent::_(2) . "return \$user->authorise('"
-					. $core['core.create'] . "', \$this->option);";
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create')
+					. "', \$this->option);";
 			}
 			else
 			{
 				// setup the default script
 				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absense of better information, revert to the component permissions.";
+					. " In the absence of better information, revert to the component permissions.";
 				$allow[] = Indent::_(2) . "return parent::allowAdd(\$data);";
 			}
 		}
@@ -18839,30 +18169,13 @@ class Interpretation extends Fields
 		$customAllow = CFactory::_('Customcode.Dispenser')->get(
 			'php_allowedit', $nameSingleCode, '', null, true
 		);
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
-		if (isset($this->categoryBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->categoryBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}"))
 		{
 			// check if category has another name
-			if ($coreLoad && CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
-				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
-			{
-				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
-				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
-			}
-			else
-			{
-				$otherViews = $nameListCode;
-				$otherView  = $nameSingleCode;
-			}
+			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.views', $nameListCode);
+			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.view', $nameSingleCode);
 			// setup the category script
 			$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " get user object.";
@@ -18874,24 +18187,17 @@ class Interpretation extends Fields
 			// load custom permission script
 			$allow[] = $customAllow;
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.access'])
-				&& isset($this->permissionBuilder['global'][$core['core.access']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.access']]
-				)
-				&& in_array(
-					$otherView,
-					$this->permissionBuilder['global'][$core['core.access']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->globalExist($otherView, 'core.access'))
 			{
 				$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " Access check.";
 				$allow[] = Indent::_(2) . "\$access = (\$user->authorise('"
-					. $core['core.access'] . "', 'com_" . $component . "."
-					. $otherView
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($otherView, 'core.access')
+					. "', 'com_" . $component . "." . $otherView
 					. ".' . (int) \$recordId) && \$user->authorise('"
-					. $core['core.access'] . "', 'com_" . $component . "'));";
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($otherView, 'core.access')
+					. "', 'com_" . $component . "'));";
 				$allow[] = Indent::_(2) . "if (!\$access)";
 				$allow[] = Indent::_(2) . "{";
 				$allow[] = Indent::_(3) . "return false;";
@@ -18902,47 +18208,15 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " The record has been set. Check the record permissions.";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit'])
-				&& isset($this->permissionBuilder[$core['core.edit']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.edit']]
-				)
-				&& in_array(
-					$otherView, $this->permissionBuilder[$core['core.edit']]
-				))
-			{
-				$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
-					. $core['core.edit'] . "', 'com_" . $component . "."
-					. $otherView . ".' . (int) \$recordId);";
-			}
-			else
-			{
-				$allow[] = Indent::_(3)
-					. "\$permission = \$user->authorise('core.edit', 'com_"
-					. $component . "." . $otherView . ".' . (int) \$recordId);";
-			}
+			$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($otherView, 'core.edit') . "', 'com_" . $component . "."
+				. $otherView . ".' . (int) \$recordId);";
 			$allow[] = Indent::_(3) . "if (!\$permission)";
 			$allow[] = Indent::_(3) . "{";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit.own'])
-				&& isset($this->permissionBuilder[$core['core.edit.own']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.edit.own']]
-				)
-				&& in_array(
-					$otherView, $this->permissionBuilder[$core['core.edit.own']]
-				))
-			{
-				$allow[] = Indent::_(4) . "if (\$user->authorise('"
-					. $core['core.edit.own'] . "', 'com_" . $component . "."
-					. $otherView . ".' . \$recordId))";
-			}
-			else
-			{
-				$allow[] = Indent::_(4)
-					. "if (\$user->authorise('core.edit.own', 'com_"
-					. $component . "." . $otherView . ".' . \$recordId))";
-			}
+			$allow[] = Indent::_(4) . "if (\$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($otherView, 'core.edit.own') . "', 'com_" . $component . "."
+				. $otherView . ".' . \$recordId))";
 			$allow[] = Indent::_(4) . "{";
 			$allow[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " Fallback on edit.own. Now test the owner is the user.";
@@ -18965,25 +18239,8 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(5) . "if (\$ownerId == \$user->id)";
 			$allow[] = Indent::_(5) . "{";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit.own'])
-				&& isset($this->permissionBuilder['global'][$core['core.edit.own']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.edit.own']]
-				)
-				&& in_array(
-					$otherView,
-					$this->permissionBuilder['global'][$core['core.edit.own']]
-				))
-			{
-				$allow[] = Indent::_(6) . "if (\$user->authorise('"
-					. $core['core.edit.own'] . "', 'com_" . $component . "'))";
-			}
-			else
-			{
-				$allow[] = Indent::_(6)
-					. "if (\$user->authorise('core.edit.own', 'com_"
-					. $component . "'))";
-			}
+			$allow[] = Indent::_(6) . "if (\$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($otherView, 'core.edit.own') . "', 'com_" . $component . "'))";
 			$allow[] = Indent::_(6) . "{";
 			$allow[] = Indent::_(7) . "return true;";
 			$allow[] = Indent::_(6) . "}";
@@ -19002,20 +18259,12 @@ class Interpretation extends Fields
 //			$allow[] = Indent::_(4) . "}";
 //			$allow[] = Indent::_(3) . "}";
 			$allow[] = Indent::_(2) . "}";
-			if ($coreLoad && isset($core['core.edit'])
-				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.edit']]
-				)
-				&& in_array(
-					$otherView,
-					$this->permissionBuilder['global'][$core['core.edit']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->globalExist($otherView, 'core.edit'))
 			{
 				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " Since there is no permission, revert to the component permissions.";
 				$allow[] = Indent::_(2) . "return \$user->authorise('"
-					. $core['core.edit'] . "', \$this->option);";
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($otherView, 'core.edit') . "', \$this->option);";
 			}
 			else
 			{
@@ -19038,24 +18287,16 @@ class Interpretation extends Fields
 			// load custom permission script
 			$allow[] = $customAllow;
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.access'])
-				&& isset($this->permissionBuilder[$core['core.access']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.access']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder[$core['core.access']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->actionExist($nameSingleCode, 'core.access'))
 			{
 				$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " Access check.";
 				$allow[] = Indent::_(2) . "\$access = (\$user->authorise('"
-					. $core['core.access'] . "', 'com_" . $component . "."
+					. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.access') . "', 'com_" . $component . "."
 					. $nameSingleCode
-					. ".' . (int) \$recordId) &&  \$user->authorise('"
-					. $core['core.access'] . "', 'com_" . $component . "'));";
+					. ".' . (int) \$recordId) && \$user->authorise('"
+					. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.access') . "', 'com_" . $component . "'));";
 				$allow[] = Indent::_(2) . "if (!\$access)";
 				$allow[] = Indent::_(2) . "{";
 				$allow[] = Indent::_(3) . "return false;";
@@ -19066,51 +18307,15 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " The record has been set. Check the record permissions.";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit'])
-				&& isset($this->permissionBuilder[$core['core.edit']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.edit']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder[$core['core.edit']]
-				))
-			{
-				$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
-					. $core['core.edit'] . "', 'com_" . $component . "."
-					. $nameSingleCode . ".' . (int) \$recordId);";
-			}
-			else
-			{
-				$allow[] = Indent::_(3)
-					. "\$permission = \$user->authorise('core.edit', 'com_"
-					. $component . "." . $nameSingleCode
-					. ".' . (int) \$recordId);";
-			}
+			$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit') . "', 'com_" . $component . "."
+				. $nameSingleCode . ".' . (int) \$recordId);";
 			$allow[] = Indent::_(3) . "if (!\$permission)";
 			$allow[] = Indent::_(3) . "{";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit.own'])
-				&& isset($this->permissionBuilder[$core['core.edit.own']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.edit.own']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder[$core['core.edit.own']]
-				))
-			{
-				$allow[] = Indent::_(4) . "if (\$user->authorise('"
-					. $core['core.edit.own'] . "', 'com_" . $component . "."
-					. $nameSingleCode . ".' . \$recordId))";
-			}
-			else
-			{
-				$allow[] = Indent::_(4)
-					. "if (\$user->authorise('core.edit.own', 'com_"
-					. $component . "." . $nameSingleCode
-					. ".' . \$recordId))";
-			}
+			$allow[] = Indent::_(4) . "if (\$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.own') . "', 'com_" . $component . "."
+				. $nameSingleCode . ".' . \$recordId))";
 			$allow[] = Indent::_(4) . "{";
 			$allow[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " Now test the owner is the user.";
@@ -19133,25 +18338,8 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(5) . "if (\$ownerId == \$user->id)";
 			$allow[] = Indent::_(5) . "{";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit.own'])
-				&& isset($this->permissionBuilder['global'][$core['core.edit.own']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.edit.own']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.edit.own']]
-				))
-			{
-				$allow[] = Indent::_(6) . "if (\$user->authorise('"
-					. $core['core.edit.own'] . "', 'com_" . $component . "'))";
-			}
-			else
-			{
-				$allow[] = Indent::_(6)
-					. "if (\$user->authorise('core.edit.own', 'com_"
-					. $component . "'))";
-			}
+			$allow[] = Indent::_(6) . "if (\$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.own') . "', 'com_" . $component . "'))";
 			$allow[] = Indent::_(6) . "{";
 			$allow[] = Indent::_(7) . "return true;";
 			$allow[] = Indent::_(6) . "}";
@@ -19160,20 +18348,12 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(4) . "return false;";
 			$allow[] = Indent::_(3) . "}";
 			$allow[] = Indent::_(2) . "}";
-			if ($coreLoad && isset($core['core.edit'])
-				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.edit']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.edit']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.edit'))
 			{
 				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " Since there is no permission, revert to the component permissions.";
 				$allow[] = Indent::_(2) . "return \$user->authorise('"
-					. $core['core.edit'] . "', \$this->option);";
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "', \$this->option);";
 			}
 			else
 			{
@@ -19220,33 +18400,19 @@ class Interpretation extends Fields
 		$getForm[] = Indent::_(2) . "}";
 		// load license locker
 		if (CFactory::_('Component')->get('add_license') && CFactory::_('Component')->get('license_type') == 3
-			&& CFactory::_('Content')->exist_($nameSingleCode, 'BOOLMETHOD'))
+			&& CFactory::_('Compiler.Builder.Content.Multi')->exists($nameSingleCode . '|BOOLMETHOD'))
 		{
 			$getForm[] = $this->checkStatmentLicenseLocked(
-				CFactory::_('Content')->get_($nameSingleCode, 'BOOLMETHOD')
+				CFactory::_('Compiler.Builder.Content.Multi')->get($nameSingleCode . '|BOOLMETHOD', '')
 			);
 		}
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
-		if (0) //isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode]))  <-- remove category from check
+		if (0) //CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}"))  <-- remove category from check
 		{
 			// check if category has another name
-			if ($coreLoad && CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
-				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
-			{
-				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
-				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
-			}
-			else
-			{
-				$otherViews = $nameListCode;
-				$otherView  = $nameSingleCode;
-			}
+			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.views', $nameListCode);
+			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.view', $nameSingleCode);
 			// setup the category script
 			$getForm[] = PHP_EOL . Indent::_(2)
 				. "\$jinput = JFactory::getApplication()->input;";
@@ -19308,45 +18474,21 @@ class Interpretation extends Fields
 			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Modify the form based on Edit State access controls.";
 			// get the other view
-			$otherView = $this->catCodeBuilder[$nameSingleCode]['view'];
+			$otherView = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.view", 'error');
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit.state'])
-				&& isset($this->permissionBuilder[$core['core.edit.state']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.edit.state']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder[$core['core.edit.state']]
-				))
-			{
-				$getForm[] = Indent::_(2)
-					. "if (\$id != 0 && (!\$user->authorise('"
-					. $core['core.edit.state'] . "', 'com_" . $component . "."
-					. $nameSingleCode . ".' . (int) \$id))";
-				$getForm[] = Indent::_(3)
-					. "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $otherView
-					. ".category.' . (int) \$catid))";
-				$getForm[] = Indent::_(3)
-					. "|| (\$id == 0 && !\$user->authorise('"
-					. $core['core.edit.state'] . "', 'com_" . $component
-					. "')))";
-			}
-			else
-			{
-				$getForm[] = Indent::_(2)
-					. "if (\$id != 0 && (!\$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $nameSingleCode
-					. ".' . (int) \$id))";
-				$getForm[] = Indent::_(3)
-					. "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $otherView
-					. ".category.' . (int) \$catid))";
-				$getForm[] = Indent::_(3)
-					. "|| (\$id == 0 && !\$user->authorise('core.edit.state', 'com_"
-					. $component . "')))";
-			}
+			$getForm[] = Indent::_(2)
+				. "if (\$id != 0 && (!\$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state')
+				. "', 'com_" . $component . "."
+				. $nameSingleCode . ".' . (int) \$id))";
+			$getForm[] = Indent::_(3)
+				. "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_"
+				. $component . "." . $otherView
+				. ".category.' . (int) \$catid))";
+			$getForm[] = Indent::_(3)
+				. "|| (\$id == 0 && !\$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state')
+				. "', 'com_" . $component . "')))";
 			$getForm[] = Indent::_(2) . "{";
 			$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Disable fields for display.";
@@ -19390,35 +18532,14 @@ class Interpretation extends Fields
 			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Modify the form based on Edit State access controls.";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit.state'])
-				&& isset($this->permissionBuilder[$core['core.edit.state']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.edit.state']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder[$core['core.edit.state']]
-				))
-			{
-				$getForm[] = Indent::_(2)
-					. "if (\$id != 0 && (!\$user->authorise('"
-					. $core['core.edit.state'] . "', 'com_" . $component . "."
-					. $nameSingleCode . ".' . (int) \$id))";
-				$getForm[] = Indent::_(3)
-					. "|| (\$id == 0 && !\$user->authorise('"
-					. $core['core.edit.state'] . "', 'com_" . $component
-					. "')))";
-			}
-			else
-			{
-				$getForm[] = Indent::_(2)
-					. "if (\$id != 0 && (!\$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $nameSingleCode
-					. ".' . (int) \$id))";
-				$getForm[] = Indent::_(3)
-					. "|| (\$id == 0 && !\$user->authorise('core.edit.state', 'com_"
-					. $component . "')))";
-			}
+			$getForm[] = Indent::_(2)
+				. "if (\$id != 0 && (!\$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component . "."
+				. $nameSingleCode . ".' . (int) \$id))";
+			$getForm[] = Indent::_(3)
+				. "|| (\$id == 0 && !\$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component
+				. "')))";
 			$getForm[] = Indent::_(2) . "{";
 			$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Disable fields for display.";
@@ -19446,28 +18567,19 @@ class Interpretation extends Fields
 		$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Modify the form based on Edit Creaded By access controls.";
 		// check if the item has permissions.
-		if ($coreLoad && isset($core['core.edit.created_by'])
-			&& isset($this->permissionBuilder[$core['core.edit.created_by']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder[$core['core.edit.created_by']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder[$core['core.edit.created_by']]
-			))
+		if (CFactory::_('Compiler.Creator.Permission')->actionExist($nameSingleCode, 'core.edit.created_by'))
 		{
 			$getForm[] = Indent::_(2) . "if (\$id != 0 && (!\$user->authorise('"
-				. $core['core.edit.created_by'] . "', 'com_" . $component . "."
-				. $nameSingleCode . ".' . (int) \$id))";
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.created_by')
+				. "', 'com_" . $component . "." . $nameSingleCode . ".' . (int) \$id))";
 			$getForm[] = Indent::_(3) . "|| (\$id == 0 && !\$user->authorise('"
-				. $core['core.edit.created_by'] . "', 'com_" . $component
-				. "')))";
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.created_by')
+				. "', 'com_" . $component . "')))";
 		}
 		else
 		{
 			$getForm[] = Indent::_(2)
-				. "if (!\$user->authorise('core.edit.created_by', 'com_"
-				. $component . "'))";
+				. "if (!\$user->authorise('core.edit.created_by', 'com_" . $component . "'))";
 		}
 		$getForm[] = Indent::_(2) . "{";
 		$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
@@ -19486,21 +18598,14 @@ class Interpretation extends Fields
 		$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Modify the form based on Edit Creaded Date access controls.";
 		// check if the item has permissions.
-		if ($coreLoad && isset($core['core.edit.created'])
-			&& isset($this->permissionBuilder[$core['core.edit.created']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder[$core['core.edit.created']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder[$core['core.edit.created']]
-			))
+		if (CFactory::_('Compiler.Creator.Permission')->actionExist($nameSingleCode, 'core.edit.created'))
 		{
 			$getForm[] = Indent::_(2) . "if (\$id != 0 && (!\$user->authorise('"
-				. $core['core.edit.created'] . "', 'com_" . $component . "."
-				. $nameSingleCode . ".' . (int) \$id))";
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.created')
+				. "', 'com_" . $component . "." . $nameSingleCode . ".' . (int) \$id))";
 			$getForm[] = Indent::_(3) . "|| (\$id == 0 && !\$user->authorise('"
-				. $core['core.edit.created'] . "', 'com_" . $component . "')))";
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.created')
+				. "', 'com_" . $component . "')))";
 		}
 		else
 		{
@@ -19519,23 +18624,16 @@ class Interpretation extends Fields
 			. "\$form->setFieldAttribute('created', 'filter', 'unset');";
 		$getForm[] = Indent::_(2) . "}";
 		// check if the item has access permissions.
-		if ($coreLoad && isset($core['core.edit.access'])
-			&& isset($this->permissionBuilder[$core['core.edit.access']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder[$core['core.edit.access']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder[$core['core.edit.access']]
-			))
+		if (CFactory::_('Compiler.Creator.Permission')->actionExist($nameSingleCode, 'core.edit.access'))
 		{
 			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Modify the form based on Edit Access 'access' controls.";
 			$getForm[] = Indent::_(2) . "if (\$id != 0 && (!\$user->authorise('"
-				. $core['core.edit.access'] . "', 'com_" . $component . "."
-				. $nameSingleCode . ".' . (int) \$id))";
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.access')
+				. "', 'com_" . $component . "." . $nameSingleCode . ".' . (int) \$id))";
 			$getForm[] = Indent::_(3) . "|| (\$id == 0 && !\$user->authorise('"
-				. $core['core.edit.access'] . "', 'com_" . $component . "')))";
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.access')
+				. "', 'com_" . $component . "')))";
 			$getForm[] = Indent::_(2) . "{";
 			$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Disable fields for display.";
@@ -19634,7 +18732,7 @@ class Interpretation extends Fields
 	)
 	{
 		// only for fields that can be edited
-		if (!ComponentbuilderHelper::fieldCheck($fieldType, 'spacer'))
+		if (!CFactory::_('Field.Groups')->check($fieldType, 'spacer'))
 		{
 			$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Modify the form based on Edit "
@@ -19708,7 +18806,7 @@ class Interpretation extends Fields
 	                                           $fieldName, $fieldType, $component
 	)
 	{
-		if (ComponentbuilderHelper::fieldCheck($fieldType, 'spacer'))
+		if (CFactory::_('Field.Groups')->check($fieldType, 'spacer'))
 		{
 			$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Modify the form based on View "
@@ -19789,22 +18887,8 @@ class Interpretation extends Fields
 			. "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;"
 			. PHP_EOL
 		);
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
 		// check if the item has permissions.
-		if ($coreLoad && isset($core['core.edit'])
-			&& isset($this->permissionBuilder[$core['core.edit']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder[$core['core.edit']]
-			)
-			&& in_array(
-				$nameSingleCode, $this->permissionBuilder[$core['core.edit']]
-			))
+		if (CFactory::_('Compiler.Creator.Permission')->actionExist($nameSingleCode, 'core.edit'))
 		{
 			$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check specific edit permission then general edit permission.";
@@ -19812,10 +18896,11 @@ class Interpretation extends Fields
 			// load custom permission script
 			$allow[] = $customAllow;
 			$allow[] = Indent::_(2) . "return \$user->authorise('"
-				. $core['core.edit'] . "', 'com_" . $component . "."
-				. $nameSingleCode
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit')
+				. "', 'com_" . $component . "." . $nameSingleCode
 				. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or \$user->authorise('"
-				. $core['core.edit'] . "',  'com_" . $component . "');";
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit')
+				. "',  'com_" . $component . "');";
 		}
 		else
 		{
@@ -19841,27 +18926,13 @@ class Interpretation extends Fields
 		$allow = array();
 		// set component name
 		$component = CFactory::_('Config')->component_code_name;
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
-		if (0) //isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode]))  <-- remove category from check
+		if (0) //CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}"))  <-- remove category from check
 		{
 			// check if category has another name
-			if ($coreLoad && CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
-				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
-			{
-				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
-				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
-			}
-			else
-			{
-				$otherViews = $nameListCode;
-				$otherView  = $nameSingleCode;
-			}
+			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.views', $nameListCode);
+			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.view', $nameSingleCode);
 			// setup the category script
 			$allow[] = PHP_EOL . Indent::_(2) . "if (!empty(\$record->id))";
 			$allow[] = Indent::_(2) . "{";
@@ -19875,39 +18946,14 @@ class Interpretation extends Fields
 				. $component . "." . $otherView
 				. ".category.' . (int) \$record->catid);";
 			// check if the item has permissions.
-			if ($coreLoad
-				&& isset($this->permissionBuilder[$core['core.delete']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.delete']]
-				)
-				&& in_array(
-					$otherView, $this->permissionBuilder[$core['core.delete']]
-				))
-			{
-				$allow[] = PHP_EOL . Indent::_(3) . "if (\$allow)";
-				$allow[] = Indent::_(3) . "{";
-				$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-					. " The record has been set. Check the record permissions.";
-				$allow[] = Indent::_(4) . "return \$user->authorise('"
-					. $core['core.delete'] . "', 'com_" . $component . "."
-					. $otherView . ".' . (int) \$record->id);";
-				$allow[] = Indent::_(3) . "}";
-			}
-			else
-			{
-				$allow[] = PHP_EOL . Indent::_(3) . "if (\$allow)";
-				$allow[] = Indent::_(3) . "{";
-				$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-					. " The record has been set. Check the record permissions.";
-				$allow[] = Indent::_(4)
-					. "return \$user->authorise('core.delete', 'com_"
-					. $component . "." . $otherView
-					. ".' . (int) \$record->id);";
-				$allow[] = Indent::_(3) . "}";
-			}
-			$allow[] = Indent::_(3) . "return \$allow;";
-			$allow[] = Indent::_(2) . "}";
-			$allow[] = Indent::_(2) . "return false;";
+			$allow[] = PHP_EOL . Indent::_(3) . "if (\$allow)";
+			$allow[] = Indent::_(3) . "{";
+			$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+				. " The record has been set. Check the record permissions.";
+			$allow[] = Indent::_(4) . "return \$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($otherView, 'core.delete') . "', 'com_" . $component . "."
+				. $otherView . ".' . (int) \$record->id);";
+			$allow[] = Indent::_(3) . "}";
 		}
 		else
 		{
@@ -19919,36 +18965,13 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(4) . "return;";
 			$allow[] = Indent::_(3) . "}";
 			// check if the item has permissions.
-			if ($coreLoad
-				&& (isset($core['core.delete'])
-					&& isset($this->permissionBuilder[$core['core.delete']]))
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.delete']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder[$core['core.delete']]
-				))
-			{
-				$allow[] = PHP_EOL . Indent::_(3)
-					. "\$user = JFactory::getUser();";
-				$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-					. " The record has been set. Check the record permissions.";
-				$allow[] = Indent::_(3) . "return \$user->authorise('"
-					. $core['core.delete'] . "', 'com_" . $component . "."
-					. $nameSingleCode . ".' . (int) \$record->id);";
-			}
-			else
-			{
-				$allow[] = PHP_EOL . Indent::_(3)
-					. "\$user = JFactory::getUser();";
-				$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-					. " The record has been set. Check the record permissions.";
-				$allow[] = Indent::_(3)
-					. "return \$user->authorise('core.delete', 'com_"
-					. $component . "." . $nameSingleCode
-					. ".' . (int) \$record->id);";
-			}
+			$allow[] = PHP_EOL . Indent::_(3)
+				. "\$user = JFactory::getUser();";
+			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
+				. " The record has been set. Check the record permissions.";
+			$allow[] = Indent::_(3) . "return \$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.delete') . "', 'com_" . $component . "."
+				. $nameSingleCode . ".' . (int) \$record->id);";
 			$allow[] = Indent::_(2) . "}";
 			$allow[] = Indent::_(2) . "return false;";
 		}
@@ -19963,27 +18986,14 @@ class Interpretation extends Fields
 		$allow = array();
 		// set component name
 		$component = CFactory::_('Config')->component_code_name;
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
-		if (0) // isset($this->categoryBuilder[$nameListCode]) && ArrayHelper::check($this->categoryBuilder[$nameListCode]))  <-- remove category from check
+		if (0) //CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}"))  <-- remove category from check
 		{
 			// check if category has another name
-			if (CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view')
-				&& CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
-			{
-				$otherViews = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
-				$otherView  = CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.view');
-			}
-			else
-			{
-				$otherViews = $nameListCode;
-				$otherView  = $nameSingleCode;
-			}
+			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.views', $nameListCode);
+			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
+				get($nameListCode . '.view', $nameSingleCode);
+
 			$allow[] = PHP_EOL . Indent::_(2) . "\$user = JFactory::getUser();";
 			$allow[] = Indent::_(2)
 				. "\$recordId = (!empty(\$record->id)) ? \$record->id : 0;";
@@ -19992,27 +19002,9 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " The record has been set. Check the record permissions.";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit.state'])
-				&& isset($this->permissionBuilder[$core['core.edit.state']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.edit.state']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder[$core['core.edit.state']]
-				))
-			{
-				$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
-					. $core['core.edit.state'] . "', 'com_" . $component . "."
-					. $nameSingleCode . ".' . (int) \$recordId);";
-			}
-			else
-			{
-				$allow[] = Indent::_(3)
-					. "\$permission = \$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $nameSingleCode
-					. ".' . (int) \$recordId);";
-			}
+			$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component . "."
+				. $nameSingleCode . ".' . (int) \$recordId);";
 			$allow[] = Indent::_(3)
 				. "if (!\$permission && !is_null(\$permission))";
 			$allow[] = Indent::_(3) . "{";
@@ -20034,26 +19026,18 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(4) . "return false;";
 			$allow[] = Indent::_(3) . "}";
 			$allow[] = Indent::_(2) . "}";
-			if ($coreLoad && isset($core['core.edit.state'])
-				&& isset($this->permissionBuilder[$core['core.edit.state']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.edit.state']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder[$core['core.edit.state']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->actionExist($nameSingleCode, 'core.edit.state'))
 			{
 				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absense of better information, revert to the component permissions.";
+					. " In the absence of better information, revert to the component permissions.";
 				$allow[] = Indent::_(2) . "return \$user->authorise('"
-					. $core['core.edit.state'] . "', 'com_" . $component
-					. "');";
+					. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state')
+					. "', 'com_" . $component . "');";
 			}
 			else
 			{
 				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absense of better information, revert to the component permissions.";
+					. " In the absence of better information, revert to the component permissions.";
 				$allow[] = Indent::_(2)
 					. "return parent::canEditState(\$record);";
 			}
@@ -20069,53 +19053,27 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " The record has been set. Check the record permissions.";
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.edit.state'])
-				&& isset($this->permissionBuilder[$core['core.edit.state']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder[$core['core.edit.state']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder[$core['core.edit.state']]
-				))
-			{
-				$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
-					. $core['core.edit.state'] . "', 'com_" . $component . "."
-					. $nameSingleCode . ".' . (int) \$recordId);";
-			}
-			else
-			{
-				$allow[] = Indent::_(3)
-					. "\$permission = \$user->authorise('core.edit.state', 'com_"
-					. $component . "." . $nameSingleCode
-					. ".' . (int) \$recordId);";
-			}
+			$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state')
+				. "', 'com_" . $component . "." . $nameSingleCode . ".' . (int) \$recordId);";
 			$allow[] = Indent::_(3)
 				. "if (!\$permission && !is_null(\$permission))";
 			$allow[] = Indent::_(3) . "{";
 			$allow[] = Indent::_(4) . "return false;";
 			$allow[] = Indent::_(3) . "}";
 			$allow[] = Indent::_(2) . "}";
-			if ($coreLoad && isset($core['core.edit.state'])
-				&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.edit.state']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.edit.state']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.edit.state'))
 			{
 				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absense of better information, revert to the component permissions.";
+					. " In the absence of better information, revert to the component permissions.";
 				$allow[] = Indent::_(2) . "return \$user->authorise('"
-					. $core['core.edit.state'] . "', 'com_" . $component
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "', 'com_" . $component
 					. "');";
 			}
 			else
 			{
 				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absense of better information, revert to the component permissions.";
+					. " In the absence of better information, revert to the component permissions.";
 				$allow[] = Indent::_(2)
 					. "return parent::canEditState(\$record);";
 			}
@@ -20129,103 +19087,26 @@ class Interpretation extends Fields
 		$allow = array();
 		// set component name
 		$component = CFactory::_('Config')->component_code_name;
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
 		// check if the item has permissions for edit.
-		if ($coreLoad && isset($core['core.edit'])
-			&& isset($this->permissionBuilder['global'][$core['core.edit']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder['global'][$core['core.edit']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder['global'][$core['core.edit']]
-			))
-		{
-			$allow[] = PHP_EOL . Indent::_(2)
-				. "\$this->canEdit = \$this->canDo->get('" . $core['core.edit']
-				. "');";
-		}
-		else
-		{
-			$allow[] = PHP_EOL . Indent::_(2)
-				. "\$this->canEdit = \$this->canDo->get('core.edit');";
-		}
+		$allow[] = PHP_EOL . Indent::_(2)
+			. "\$this->canEdit = \$this->canDo->get('"
+			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit')
+			. "');";
 		// check if the item has permissions for edit state.
-		if ($coreLoad && isset($core['core.edit.state'])
-			&& isset($this->permissionBuilder['global'][$core['core.edit.state']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder['global'][$core['core.edit.state']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder['global'][$core['core.edit.state']]
-			))
-		{
-			$allow[] = Indent::_(2) . "\$this->canState = \$this->canDo->get('"
-				. $core['core.edit.state'] . "');";
-		}
-		else
-		{
-			$allow[] = Indent::_(2)
-				. "\$this->canState = \$this->canDo->get('core.edit.state');";
-		}
+		$allow[] = Indent::_(2) . "\$this->canState = \$this->canDo->get('"
+			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state')
+			. "');";
 		// check if the item has permissions for create.
-		if ($coreLoad && isset($core['core.create'])
-			&& isset($this->permissionBuilder['global'][$core['core.create']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder['global'][$core['core.create']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder['global'][$core['core.create']]
-			))
-		{
-			$allow[] = Indent::_(2) . "\$this->canCreate = \$this->canDo->get('"
-				. $core['core.create'] . "');";
-		}
-		else
-		{
-			$allow[] = Indent::_(2)
-				. "\$this->canCreate = \$this->canDo->get('core.create');";
-		}
+		$allow[] = Indent::_(2) . "\$this->canCreate = \$this->canDo->get('"
+			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "');";
 		// check if the item has permissions for delete.
-		if ($coreLoad && isset($core['core.delete'])
-			&& isset($this->permissionBuilder['global'][$core['core.delete']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder['global'][$core['core.delete']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder['global'][$core['core.delete']]
-			))
-		{
-			$allow[] = Indent::_(2) . "\$this->canDelete = \$this->canDo->get('"
-				. $core['core.delete'] . "');";
-		}
-		else
-		{
-			$allow[] = Indent::_(2)
-				. "\$this->canDelete = \$this->canDo->get('core.delete');";
-		}
+		$allow[] = Indent::_(2) . "\$this->canDelete = \$this->canDo->get('"
+			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.delete') . "');";
 		// check if the item has permissions for batch.
-		if ($coreLoad && isset($core['core.batch'])
-			&& isset($this->permissionBuilder['global']['global'][$core['core.batch']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder['global']['global'][$core['core.batch']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder['global']['global'][$core['core.delete']]
-			))
+		if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.batch'))
 		{
 			$allow[] = Indent::_(2) . "\$this->canBatch = (\$this->canDo->get('"
-				. $core['core.batch']
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.batch')
 				. "') && \$this->canDo->get('core.batch'));";
 		}
 		else
@@ -20299,7 +19180,7 @@ class Interpretation extends Fields
 		// default filter fields
 		$fields = "'a.id','id'";
 		$fields .= "," . PHP_EOL . Indent::_(4) . "'a.published','published'";
-		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode))
+		if (CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode))
 		{
 			$fields .= "," . PHP_EOL . Indent::_(4) . "'a.access','access'";
 		}
@@ -20309,12 +19190,9 @@ class Interpretation extends Fields
 			. "'a.modified_by','modified_by'";
 
 		// add the rest of the set filters
-		if (isset($this->filterBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->filterBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Filter')->exists($nameListCode))
 		{
-			foreach ($this->filterBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Filter')->get($nameListCode) as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
@@ -20326,16 +19204,13 @@ class Interpretation extends Fields
 			}
 		}
 		// add the rest of the set filters
-		if (isset($this->sortBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->sortBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Sort')->exists($nameListCode))
 		{
-			foreach ($this->sortBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Sort')->get($nameListCode) as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
-					$fields                    .= $this->getFilterFieldCode(
+					$fields .= $this->getFilterFieldCode(
 						$filter
 					);
 					$donelist[$filter['code']] = true;
@@ -20425,18 +19300,17 @@ class Interpretation extends Fields
 		$stored .= PHP_EOL . Indent::_(2)
 			. "\$id .= ':' . \$this->getState('filter.search');";
 		// add this if not already added
-		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
+		if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.published'))
 		{
 			$stored .= PHP_EOL . Indent::_(2)
 				. "\$id .= ':' . \$this->getState('filter.published');";
 		}
 		// add if view calls for it, and not already added
-		if (CFactory::_('Registry')->exists('builder.access_switch.' . $nameSingleCode)
-			&& !CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
+		if (CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode)
+			&& !CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.access'))
 		{
 			// the side bar option is single
-			if (CFactory::_('Registry')->
-				get('builder.admin_filter_type.' . $nameListCode, 1) == 1)
+			if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 1)
 			{
 				$stored .= PHP_EOL . Indent::_(2)
 					. "\$id .= ':' . \$this->getState('filter.access');";
@@ -20451,28 +19325,25 @@ class Interpretation extends Fields
 		$stored .= PHP_EOL . Indent::_(2)
 			. "\$id .= ':' . \$this->getState('filter.ordering');";
 		// add this if not already added
-		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.created_by'))
+		if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.created_by'))
 		{
 			$stored .= PHP_EOL . Indent::_(2)
 				. "\$id .= ':' . \$this->getState('filter.created_by');";
 		}
 		// add this if not already added
-		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.modified_by'))
+		if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.modified_by'))
 		{
 			$stored .= PHP_EOL . Indent::_(2)
 				. "\$id .= ':' . \$this->getState('filter.modified_by');";
 		}
 		// add the rest of the set filters
-		if (isset($this->filterBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->filterBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Filter')->exists($nameListCode))
 		{
-			foreach ($this->filterBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Filter')->get($nameListCode) as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
-					$stored                    .= $this->getStoredIdCode(
+					$stored .= $this->getStoredIdCode(
 						$filter, $nameListCode, $Component
 					);
 					$donelist[$filter['code']] = true;
@@ -20480,16 +19351,13 @@ class Interpretation extends Fields
 			}
 		}
 		// add the rest of the set filters
-		if (isset($this->sortBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->sortBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Sort')->exists($nameListCode))
 		{
-			foreach ($this->sortBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Sort')->get($nameListCode) as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
-					$stored                    .= $this->getStoredIdCode(
+					$stored .= $this->getStoredIdCode(
 						$filter, $nameListCode, $Component
 					);
 					$donelist[$filter['code']] = true;
@@ -20515,8 +19383,7 @@ class Interpretation extends Fields
 		if ($filter['type'] === 'category')
 		{
 			// the side bar option is single (1 = sidebar)
-			if (CFactory::_('Registry')->
-				get('builder.admin_filter_type.' . $nameListCode, 1) == 1)
+			if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 1)
 			{
 				$stored = PHP_EOL . Indent::_(2)
 					. "\$id .= ':' . \$this->getState('filter.category');";
@@ -20547,8 +19414,7 @@ class Interpretation extends Fields
 		{
 			// check if this is the topbar filter, and multi option (2 = topbar)
 			if (isset($filter['multi']) && $filter['multi'] == 2
-				&& CFactory::_('Registry')->
-				get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
+				&& CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
 			{
 				// top bar selection can result in
 				// an array due to multi selection
@@ -20616,13 +19482,6 @@ class Interpretation extends Fields
 	{
 		// set view name
 		$nameSingleCode = $view['settings']->name_single_code;
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
 		// check type
 		if ($view['settings']->type == 2)
 		{
@@ -20681,51 +19540,20 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Built the actions for new and existing records.";
 			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
-				. CFactory::_('Content')->get('Component') . "Helper::checkString(\$this->referral))";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkString(\$this->referral))";
 			$toolBar .= PHP_EOL . Indent::_(2) . "{";
-			if ($coreLoad && isset($core['core.create'])
-				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.create']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.create']]
-				))
-			{
-				$toolBar .= PHP_EOL . Indent::_(3) . "if (\$this->canDo->get('"
-					. $core['core.create'] . "') && \$isNew)";
-			}
-			else
-			{
-				$toolBar .= PHP_EOL . Indent::_(3)
-					. "if (\$this->canDo->get('core.create') && \$isNew)";
-			}
+			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$this->canDo->get('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "') && \$isNew)";
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
 			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " We can create the record.";
 			$toolBar .= PHP_EOL . Indent::_(4) . "JToolBarHelper::save('"
 				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			if ($coreLoad && isset($core['core.edit'])
-				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.edit']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.edit']]
-				))
-			{
-				$toolBar .= PHP_EOL . Indent::_(3)
-					. "elseif (\$this->canDo->get('" . $core['core.edit']
-					. "'))";
-			}
-			else
-			{
-				$toolBar .= PHP_EOL . Indent::_(3)
-					. "elseif (\$this->canDo->get('core.edit'))";
-			}
+			$toolBar .= PHP_EOL . Indent::_(3)
+				. "elseif (\$this->canDo->get('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit')
+				. "'))";
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
 			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " We can save the record.";
@@ -20753,24 +19581,8 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
 			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " For new records, check the create permission.";
-			if ($coreLoad && isset($core['core.create'])
-				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.create']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.create']]
-				))
-			{
-				$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
-					. $core['core.create'] . "'))";
-			}
-			else
-			{
-				$toolBar .= PHP_EOL . Indent::_(4)
-					. "if (\$this->canDo->get('core.create'))";
-			}
+			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
 			$toolBar .= PHP_EOL . Indent::_(4) . "{";
 			$toolBar .= PHP_EOL . Indent::_(5) . "JToolBarHelper::apply('"
 				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
@@ -20785,24 +19597,8 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(3) . "else";
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			if ($coreLoad && isset($core['core.edit'])
-				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.edit']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.edit']]
-				))
-			{
-				$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
-					. $core['core.edit'] . "'))";
-			}
-			else
-			{
-				$toolBar .= PHP_EOL . Indent::_(4)
-					. "if (\$this->canDo->get('core.edit'))";
-			}
+			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "'))";
 			$toolBar .= PHP_EOL . Indent::_(4) . "{";
 			$toolBar .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " We can save the new record";
@@ -20814,48 +19610,26 @@ class Interpretation extends Fields
 				. " We can save this record, but check the create permission to see";
 			$toolBar .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " if we can return to make a new one.";
-			if ($coreLoad && isset($core['core.create'])
-				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.create']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.create']]
-				))
-			{
-				$toolBar .= PHP_EOL . Indent::_(5) . "if (\$this->canDo->get('"
-					. $core['core.create'] . "'))";
-			}
-			else
-			{
-				$toolBar .= PHP_EOL . Indent::_(5)
-					. "if (\$this->canDo->get('core.create'))";
-			}
+			$toolBar .= PHP_EOL . Indent::_(5) . "if (\$this->canDo->get('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
 			$toolBar .= PHP_EOL . Indent::_(5) . "{";
 			$toolBar .= PHP_EOL . Indent::_(6) . "JToolBarHelper::custom('"
 				. $nameSingleCode
 				. ".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
 			$toolBar .= PHP_EOL . Indent::_(5) . "}";
 			$toolBar .= PHP_EOL . Indent::_(4) . "}";
-			if ($coreLoad && isset($core['core.edit'])
-				&& isset($this->permissionBuilder['global'][$core['core.edit']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.edit']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.edit']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.edit'))
 			{
-				if ($coreLoad && CFactory::_('Registry')->exists('builder.history.' . $nameSingleCode))
+				if (CFactory::_('Compiler.Builder.History')->exists($nameSingleCode))
 				{
 					$toolBar .= PHP_EOL . Indent::_(4)
 						. "\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('"
-						. $core['core.version'] . "'));";
+						. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.version')
+						. "'));";
 					$toolBar .= PHP_EOL . Indent::_(4)
 						. "if (\$this->state->params->get('save_history', 1) && \$this->canDo->get('"
-						. $core['core.edit'] . "') && \$canVersion)";
+						. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit')
+						. "') && \$canVersion)";
 					$toolBar .= PHP_EOL . Indent::_(4) . "{";
 					$toolBar .= PHP_EOL . Indent::_(5)
 						. "JToolbarHelper::versions('com_"
@@ -20866,11 +19640,11 @@ class Interpretation extends Fields
 			}
 			else
 			{
-				if ($coreLoad && CFactory::_('Registry')->exists('builder.history.' . $nameSingleCode))
+				if (CFactory::_('Compiler.Builder.History')->exists($nameSingleCode))
 				{
 					$toolBar .= PHP_EOL . Indent::_(4)
 						. "\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('"
-						. $core['core.version'] . "'));";
+						. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.version') . "'));";
 					$toolBar .= PHP_EOL . Indent::_(4)
 						. "if (\$this->state->params->get('save_history', 1) && \$this->canDo->get('core.edit') && \$canVersion)";
 					$toolBar .= PHP_EOL . Indent::_(4) . "{";
@@ -20881,24 +19655,8 @@ class Interpretation extends Fields
 					$toolBar .= PHP_EOL . Indent::_(4) . "}";
 				}
 			}
-			if ($coreLoad && isset($core['core.create'])
-				&& isset($this->permissionBuilder['global'][$core['core.create']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.create']]
-				)
-				&& in_array(
-					$nameSingleCode,
-					$this->permissionBuilder['global'][$core['core.create']]
-				))
-			{
-				$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
-					. $core['core.create'] . "'))";
-			}
-			else
-			{
-				$toolBar .= PHP_EOL . Indent::_(4)
-					. "if (\$this->canDo->get('core.create'))";
-			}
+			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
 			$toolBar .= PHP_EOL . Indent::_(4) . "{";
 			$toolBar .= PHP_EOL . Indent::_(5) . "JToolBarHelper::custom('"
 				. $nameSingleCode
@@ -20914,10 +19672,10 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " set help url for this view if found";
 			$toolBar .= PHP_EOL . Indent::_(2) . "\$this->help_url = "
-				. CFactory::_('Content')->get('Component') . "Helper::getHelpUrl('" . $nameSingleCode
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::getHelpUrl('" . $nameSingleCode
 				. "');";
 			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
-				. CFactory::_('Content')->get('Component') . "Helper::checkString(\$this->help_url))";
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkString(\$this->help_url))";
 			$toolBar .= PHP_EOL . Indent::_(2) . "{";
 			$toolBar .= PHP_EOL . Indent::_(3) . "JToolbarHelper::help('"
 				. $this->langPrefix . "_HELP_MANAGER', false, \$this->help_url);";
@@ -20944,8 +19702,7 @@ class Interpretation extends Fields
 		$donelist = array();
 		// we must add the formSubmited code if new above filters is used (2 = topbar)
 		$new_filter = false;
-		if (CFactory::_('Registry')->
-			get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
 		{
 			$state      .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Check if the form was submitted";
@@ -20956,12 +19713,9 @@ class Interpretation extends Fields
 		// add the default populate states (this must be added first)
 		$state .= $this->setDefaultPopulateState($nameSingleCode, $new_filter);
 		// add the filters
-		if (isset($this->filterBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->filterBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Filter')->exists($nameListCode))
 		{
-			foreach ($this->filterBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Filter')->get($nameListCode) as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
@@ -20973,16 +19727,13 @@ class Interpretation extends Fields
 			}
 		}
 		// add the rest of the set filters
-		if (isset($this->sortBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->sortBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Sort')->exists($nameListCode))
 		{
-			foreach ($this->sortBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Sort')->get($nameListCode) as $filter)
 			{
 				if (!isset($donelist[$filter['code']]))
 				{
-					$state                     .= $this->getPopulateStateFilterCode(
+					$state .= $this->getPopulateStateFilterCode(
 						$filter, $new_filter
 					);
 					$donelist[$filter['code']] = true;
@@ -21064,7 +19815,7 @@ class Interpretation extends Fields
 		// start filter
 		$filter = array('type' => 'text');
 		// if access is not set add its default filter here
-		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.access'))
+		if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.access'))
 		{
 			$filter['code'] = "access";
 			$state          .= $this->getPopulateStateFilterCode(
@@ -21072,7 +19823,7 @@ class Interpretation extends Fields
 			);
 		}
 		// if published is not set add its default filter here
-		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.published'))
+		if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.published'))
 		{
 			$filter['code'] = "published";
 			$state          .= $this->getPopulateStateFilterCode(
@@ -21080,7 +19831,7 @@ class Interpretation extends Fields
 			);
 		}
 		// if created_by is not set add its default filter here
-		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.created_by'))
+		if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.created_by'))
 		{
 			$filter['code'] = "created_by";
 			$state          .= $this->getPopulateStateFilterCode(
@@ -21088,7 +19839,7 @@ class Interpretation extends Fields
 			);
 		}
 		// if created is not set add its default filter here
-		if (!CFactory::_('Registry')->isString('builder.field_names.' . $nameSingleCode . '.created'))
+		if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.created'))
 		{
 			$filter['code'] = "created";
 			$state          .= $this->getPopulateStateFilterCode(
@@ -21128,12 +19879,9 @@ class Interpretation extends Fields
 			. ":_('JSTATUS')";
 
 		// add the rest of the set filters
-		if (isset($this->sortBuilder[$nameListCode])
-			&& ArrayHelper::check(
-				$this->sortBuilder[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Sort')->exists($nameListCode))
 		{
-			foreach ($this->sortBuilder[$nameListCode] as $filter)
+			foreach (CFactory::_('Compiler.Builder.Sort')->get($nameListCode) as $filter)
 			{
 				if (!in_array($filter['code'], $donelist))
 				{
@@ -21259,47 +20007,32 @@ class Interpretation extends Fields
 		return $checkin;
 	}
 
-	public function setGetItemsMethodStringFix($nameSingleCode,
-	                                           $nameListCode,
-	                                           $Component, $tab = '', $export = false, $all = false
-	)
+	public function setGetItemsMethodStringFix($nameSingleCode, $nameListCode,
+		$Component, $tab = '', $export = false, $all = false)
 	{
 		// add the fix if this view has the need for it
 		$fix          = '';
 		$forEachStart = '';
 		$fix_access   = '';
 		// encryption switches
-		foreach ($this->cryptionTypes as $cryptionType)
+		foreach (CFactory::_('Config')->cryption_types as $cryptionType)
 		{
 			${$cryptionType . 'Crypt'} = false;
 		}
-		// setup correct core target
-		$coreLoad = false;
-		if (isset($this->permissionCore[$nameSingleCode]))
-		{
-			$core     = $this->permissionCore[$nameSingleCode];
-			$coreLoad = true;
-		}
 		$component = StringHelper::safe($Component);
 		// check if the item has permissions.
-		if ($coreLoad && isset($core['core.access'])
-			&& isset($this->permissionBuilder[$core['core.access']])
-			&& ArrayHelper::check(
-				$this->permissionBuilder[$core['core.access']]
-			)
-			&& in_array(
-				$nameSingleCode,
-				$this->permissionBuilder[$core['core.access']]
-			))
+		if (CFactory::_('Compiler.Creator.Permission')->actionExist($nameSingleCode, 'core.access'))
 		{
 			$fix_access = PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "//"
 				. Line::_(__Line__, __Class__)
 				. " Remove items the user can't access.";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
-				. "\$access = (\$user->authorise('" . $core['core.access']
+				. "\$access = (\$user->authorise('"
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.access')
 				. "', 'com_" . $component . "." . $nameSingleCode
 				. ".' . (int) \$item->id) && \$user->authorise('"
-				. $core['core.access'] . "', 'com_" . $component . "'));";
+				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.access')
+				. "', 'com_" . $component . "'));";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
 				. "if (!\$access)";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "{";
@@ -21311,7 +20044,7 @@ class Interpretation extends Fields
 				. PHP_EOL;
 		}
 		// add the tags if needed
-		if (CFactory::_('Registry')->get('builder.tags.' . $nameSingleCode))
+		if (CFactory::_('Compiler.Builder.Tags')->exists($nameSingleCode))
 		{
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "//"
 				. Line::_(
@@ -21323,7 +20056,7 @@ class Interpretation extends Fields
 				. "\$item->tags->getTagIds(";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
 				. "\$item->id, 'com_"
-				. CFactory::_('Content')->get('component') . ".$nameSingleCode'";
+				. CFactory::_('Compiler.Builder.Content.One')->get('component') . ".$nameSingleCode'";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . ");";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
 				. "if (\$item->tags->tags)";
@@ -21347,15 +20080,15 @@ class Interpretation extends Fields
 		// get the correct array
 		if ($export || $all)
 		{
-			$methodName = 'getItemsMethodEximportStringFixBuilder';
+			$action_ = 'Eximport';
 		}
 		else
 		{
-			$methodName = 'getItemsMethodListStringFixBuilder';
+			$action_ = 'List';
 		}
 		// load the relations before modeling
 		if (($field_relations =
-				CFactory::_('Registry')->get('builder.field_relations.' . $nameListCode)) !== null)
+			CFactory::_('Compiler.Builder.Field.Relations')->get($nameListCode)) !== null)
 		{
 			foreach ($field_relations as $field_id => $fields)
 			{
@@ -21371,12 +20104,10 @@ class Interpretation extends Fields
 			}
 		}
 		// open the values
-		if (isset($this->{$methodName}[$nameSingleCode])
-			&& ArrayHelper::check(
-				$this->{$methodName}[$nameSingleCode]
-			))
+		if (CFactory::_("Compiler.Builder.Items.Method.{$action_}.String")->exists($nameSingleCode))
 		{
-			foreach ($this->{$methodName}[$nameSingleCode] as $item)
+			foreach (CFactory::_("Compiler.Builder.Items.Method.{$action_}.String")->
+				get($nameSingleCode) as $item)
 			{
 				switch ($item['method'])
 				{
@@ -21487,24 +20218,20 @@ class Interpretation extends Fields
 				}
 				else
 				{
-					if ($item['method'] == 2 || $item['method'] == 3
-						|| $item['method'] == 4
-						|| $item['method'] == 5
-						|| $item['method'] == 6)
+					if ($item['method'] == 2 || $item['method'] == 3 || $item['method'] == 4
+						|| $item['method'] == 5 || $item['method'] == 6)
 					{
 						// expert mode (dev must do it all)
 						if ($item['method'] == 6)
 						{
 							$_placeholder_for_field
-								= array('[[[field]]]' => "\$item->"
-								. $item['name']);
+								= array('[[[field]]]' => "\$item->" . $item['name']);
 							$fix .= CFactory::_('Placeholder')->update(
 								PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
-								. implode(
-									PHP_EOL . Indent::_(1) . $tab . Indent::_(
-										3
-									),
-									$this->expertFieldModeling[$nameSingleCode][$item['name']]['get']
+								. implode(PHP_EOL . Indent::_(1) . $tab . Indent::_(3),
+									CFactory::_('Compiler.Builder.Model.Expert.Field')->get(
+										$nameSingleCode . '.' . $item['name'] . '.get', []
+									)
 								), $_placeholder_for_field
 							);
 						}
@@ -21710,9 +20437,9 @@ class Interpretation extends Fields
 			}
 		}
 		/* // set translation (TODO) would be nice to cut down on double loops..
-		if (!$export && isset($this->selectionTranslationFixBuilder[$nameListCode]) && ArrayHelper::check($this->selectionTranslationFixBuilder[$nameListCode]))
+		if (!$export && CFactory::_('Compiler.Builder.Selection.Translation')->exists($nameListCode))
 		{
-			foreach ($this->selectionTranslationFixBuilder[$nameListCode] as $name => $values)
+			foreach (CFactory::_('Compiler.Builder.Selection.Translation')->get($nameListCode) as $name => $values)
 			{
 				$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "//" . Line::_(__Line__, __Class__) . " convert " . $name;
 				$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "\$item->" . $name . " = \$this->selectionTranslation(\$item->" . $name . ", '" . $name . "');";
@@ -21720,7 +20447,7 @@ class Interpretation extends Fields
 		} */
 		// load the relations after modeling
 		if (($field_relations =
-				CFactory::_('Registry')->get('builder.field_relations.' . $nameListCode)) !== null)
+			CFactory::_('Compiler.Builder.Field.Relations')->get($nameListCode)) !== null)
 		{
 			foreach ($field_relations as $fields)
 			{
@@ -21736,10 +20463,7 @@ class Interpretation extends Fields
 			}
 		}
 		// close the foreach if needed
-		if (StringHelper::check($fix)
-			|| StringHelper::check($fix_access)
-			|| $export
-			|| $all)
+		if (StringHelper::check($fix) || StringHelper::check($fix_access) || $export || $all)
 		{
 			// start the loop
 			$forEachStart = PHP_EOL . PHP_EOL . Indent::_(1) . $tab . Indent::_(
@@ -21757,7 +20481,7 @@ class Interpretation extends Fields
 					. " Get the user object if not set.";
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 					. "if (!isset(\$user) || !"
-					. CFactory::_('Content')->get('Component') . "Helper::checkObject(\$user))";
+					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkObject(\$user))";
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 					. "{";
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
@@ -21919,7 +20643,7 @@ class Interpretation extends Fields
 
 		// load the encryption object if needed
 		$script = '';
-		foreach ($this->cryptionTypes as $cryptionType)
+		foreach (CFactory::_('Config')->cryption_types as $cryptionType)
 		{
 			if (${$cryptionType . 'Crypt'})
 			{
@@ -21935,29 +20659,18 @@ class Interpretation extends Fields
 						. "//" . Line::_(__Line__, __Class__)
 						. " Get the encryption object.";
 					$script .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-						. "\$" . $cryptionType . " = new FOFEncryptAes(\$"
+						. "\$" . $cryptionType . " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$"
 						. $cryptionType . "key);";
 				}
-				elseif (isset(
-						$this->{$cryptionType
-						. 'FieldModelInitiator'}[$nameSingleCode]
-					)
-					&& isset(
-						$this->{$cryptionType
-						. 'FieldModelInitiator'}[$nameSingleCode]['get']
-					))
+				elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+					exists("{$nameSingleCode}.get"))
 				{
-					foreach (
-						$this->{$cryptionType
-						. 'FieldModelInitiator'}[$nameSingleCode]['get'] as
-						$block
-					)
+					foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
+						get("{$nameSingleCode}.get") as $block)
 					{
-						$script .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. implode(
-								PHP_EOL . Indent::_(1) . $tab . Indent::_(1),
-								$block
-							);
+						$script .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . implode(
+							PHP_EOL . Indent::_(1) . $tab . Indent::_(1), $block
+						);
 					}
 				}
 			}
@@ -22053,8 +20766,7 @@ class Interpretation extends Fields
 				$headers[] = 'use Joomla\CMS\MVC\View\HtmlView;';
 				// load the file class if uikit is being loaded
 				if ((2 == CFactory::_('Config')->uikit || 1 == CFactory::_('Config')->uikit)
-					&& CFactory::_('Registry')->
-						exists('builder.uikit_comp.' . $codeName))
+					&& CFactory::_('Compiler.Builder.Uikit.Comp')->exists($codeName))
 				{
 					$headers[] = 'use Joomla\CMS\Filesystem\File;';
 				}
@@ -22138,40 +20850,30 @@ class Interpretation extends Fields
 	protected function setChosenMultiSelectionHeaders(&$headers, $nameListCode)
 	{
 		// check that the filter type is the new filter option (2 = topbar)
-		if (CFactory::_('Registry')->
-			get('builder.admin_filter_type.' . $nameListCode, 1) == 2)
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
 		{
 			// add category switch
 			$add_category = false;
-			if (isset($this->categoryBuilder[$nameListCode])
-				&& ArrayHelper::check(
-					$this->categoryBuilder[$nameListCode]
-				)
-				&& isset($this->categoryBuilder[$nameListCode]['extension'])
-				&& isset($this->categoryBuilder[$nameListCode]['filter'])
-				&& $this->categoryBuilder[$nameListCode]['filter'] >= 1)
+			if (CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}.extension")
+				&& CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.filter", 0) >= 1)
 			{
 				// is found so add it
 				$add_category = true;
 			}
 			// add accessLevels switch
 			$add_access_levels = false;
-			if (CFactory::_('Registry')->exists('builder.access_switch_list.' . $nameListCode))
+			if (CFactory::_('Compiler.Builder.Access.Switch.List')->exists($nameListCode))
 			{
 				// is found so add it
 				$add_access_levels = true;
 			}
 			// check if this view have filters
-			if (isset($this->filterBuilder[$nameListCode])
-				&& ArrayHelper::check(
-					$this->filterBuilder[$nameListCode]
-				))
+			if (CFactory::_('Compiler.Builder.Filter')->exists($nameListCode))
 			{
-				foreach ($this->filterBuilder[$nameListCode] as $filter)
+				foreach (CFactory::_('Compiler.Builder.Filter')->get($nameListCode) as $filter)
 				{
 					// we need this only for filters that are multi
-					if (isset($filter['multi'])
-						&& $filter['multi'] == 2)
+					if (isset($filter['multi']) && $filter['multi'] == 2)
 					{
 						// if this is a category we should make sure it must be added
 						if (!$add_category && $filter['type'] === 'category')
@@ -22215,7 +20917,7 @@ class Interpretation extends Fields
 				$headers[]
 					= 'JHtml::_(\'formbehavior.chosen\', \'.multipleCategories'
 					. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
-					. $this->categoryBuilder[$nameListCode]['name']
+					. CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}.name", 'error')
 					. '\') . \' -\'));';
 			}
 			// add accessLevels if not already added
@@ -22257,7 +20959,7 @@ class Interpretation extends Fields
 			foreach ($item['joinfields'] as $join)
 			{
 				$field['$item->{' . (int) $join . '}'] = '$item->'
-					. CFactory::_('Registry')->get('builder.list_join.' . $nameListCode . '.' . (int) $join . '.code');
+					. CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (int) $join . '.code', 'error');
 			}
 		}
 		// set based on join_type
@@ -22292,10 +20994,7 @@ class Interpretation extends Fields
 	{
 		// add the fix if this view has the need for it
 		$fix = '';
-		if (isset($this->selectionTranslationFixBuilder[$views])
-			&& ArrayHelper::check(
-				$this->selectionTranslationFixBuilder[$views]
-			))
+		if (CFactory::_('Compiler.Builder.Selection.Translation')->exists($views))
 		{
 			$fix .= PHP_EOL . PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
 				. "//" . Line::_(__Line__, __Class__)
@@ -22306,10 +21005,8 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 				. "foreach (\$items as \$nr => &\$item)";
 			$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2) . "{";
-			foreach (
-				$this->selectionTranslationFixBuilder[$views] as $name =>
-				$values
-			)
+			foreach (CFactory::_('Compiler.Builder.Selection.Translation')->
+				get($views) as $name => $values)
 			{
 				$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "//"
 					. Line::_(__Line__, __Class__) . " convert " . $name;
@@ -22330,10 +21027,7 @@ class Interpretation extends Fields
 	{
 		// add the fix if this view has the need for it
 		$fix = '';
-		if (isset($this->selectionTranslationFixBuilder[$views])
-			&& ArrayHelper::check(
-				$this->selectionTranslationFixBuilder[$views]
-			))
+		if (CFactory::_('Compiler.Builder.Selection.Translation')->exists($views))
 		{
 			$fix .= PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 			$fix .= PHP_EOL . Indent::_(1)
@@ -22344,10 +21038,8 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . Indent::_(1)
 				. "public function selectionTranslation(\$value,\$name)";
 			$fix .= PHP_EOL . Indent::_(1) . "{";
-			foreach (
-				$this->selectionTranslationFixBuilder[$views] as $name =>
-				$values
-			)
+			foreach (CFactory::_('Compiler.Builder.Selection.Translation')->
+				get($views) as $name => $values)
 			{
 				if (ArrayHelper::check($values))
 				{
@@ -22451,21 +21143,7 @@ class Interpretation extends Fields
 
 	public function setDashboardIconAccess()
 	{
-		if (isset($this->permissionDashboard)
-			&& ArrayHelper::check($this->permissionDashboard))
-		{
-			$this->permissionDashboard = array_unique(
-				$this->permissionDashboard
-			);
-
-			return PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " view access array" . PHP_EOL . Indent::_(2)
-				. "\$viewAccess = array(" . PHP_EOL . Indent::_(3) . implode(
-					"," . PHP_EOL . Indent::_(3), $this->permissionDashboard
-				) . ");";
-		}
-
-		return '';
+		return CFactory::_('Compiler.Builder.Permission.Dashboard')->build();
 	}
 
 	public function setDashboardIcons()
@@ -22561,19 +21239,17 @@ class Interpretation extends Fields
 					$counter++;
 				}
 				// dashboard link to category on dashboard is build here
-				if (isset($this->categoryBuilder[$name_list])
-					&& ArrayHelper::check(
-						$this->categoryBuilder[$name_list]
-					))
+				if (CFactory::_('Compiler.Builder.Category')->exists("{$name_list}.code"))
 				{
-					$catCode = $this->categoryBuilder[$name_list]['code'];
+					$catCode = CFactory::_('Compiler.Builder.Category')->get("{$name_list}.code");
 
 					// check if category has another name
-					if (CFactory::_('Registry')->get('category.other.name.' . $name_list . '.views')
-						&& CFactory::_('Registry')->get('category.other.name.' . $name_list . '.name'))
+					$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
+						get($name_list . '.views', $name_list);
+					$otherNames  = CFactory::_('Compiler.Builder.Category.Other.Name')->
+						get($name_list . '.name');
+					if ($otherNames !== null)
 					{
-						$otherViews = CFactory::_('Registry')->get('category.other.name.' . $name_list . '.views');
-						$otherNames = CFactory::_('Registry')->get('category.other.name.' . $name_list . '.name');
 						// build lang
 						$langName = StringHelper::safe(
 							$otherNames, 'W'
@@ -22581,7 +21257,6 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$otherViews = $name_list;
 						// build lang
 						$langName = 'Categories&nbsp;For<br />'
 							. StringHelper::safe(
@@ -22594,7 +21269,7 @@ class Interpretation extends Fields
 						// set the extension key string, new convention (more stable)
 						$_key_extension = str_replace(
 							'.', '_po0O0oq_',
-							(string) $this->categoryBuilder[$name_list]['extension']
+							(string) CFactory::_('Compiler.Builder.Category')->get("{$name_list}.extension", 'error')
 						);
 
 						// add to lang
@@ -22795,7 +21470,7 @@ class Interpretation extends Fields
 			. "<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>";
 		$display[] = $tab . Indent::_(2)
 			. "<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_right', '"
-			. CFactory::_('Content')->get('COMPANYNAME')
+			. CFactory::_('Compiler.Builder.Content.One')->get('COMPANYNAME')
 			. "', 'vdm'); ?>";
 		$display[] = $tab . Indent::_(3)
 			. "<?php echo \$this->loadTemplate('vdm');?>";
@@ -22852,11 +21527,9 @@ class Interpretation extends Fields
 						CFactory::_('Config')->build_target, 'U'
 					);
 					// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
-					CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name . '_' . $tempName,
-						'CUSTOM_ADMIN_TEMPLATE_BODY', PHP_EOL . $html);
+					CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '_' . $tempName . '|CUSTOM_ADMIN_TEMPLATE_BODY', PHP_EOL . $html);
 					// SITE_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
-					CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name . '_' . $tempName,
-						'CUSTOM_ADMIN_TEMPLATE_CODE_BODY', '');
+					CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '_' . $tempName . '|CUSTOM_ADMIN_TEMPLATE_CODE_BODY', '');
 				}
 				$display[] = $tab . Indent::_(1)
 					. "<?php  echo JHtml::_('bootstrap.endAccordion'); ?>";
@@ -23101,25 +21774,12 @@ class Interpretation extends Fields
 				{
 					// setup access defaults
 					$tab      = "";
-					$coreLoad = false;
-					if (isset($this->permissionCore[$nameSingleCode]))
-					{
-						$core     = $this->permissionCore[$nameSingleCode];
-						$coreLoad = true;
-					}
 					// check if the item has permissions.
-					if ($coreLoad && isset($core['core.access'])
-						&& isset($this->permissionBuilder['global'][$core['core.access']])
-						&& ArrayHelper::check(
-							$this->permissionBuilder['global'][$core['core.access']]
-						)
-						&& in_array(
-							$nameSingleCode,
-							$this->permissionBuilder['global'][$core['core.access']]
-						))
+					if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.access'))
 					{
 						$menus .= PHP_EOL . Indent::_(2)
-							. "if (\$user->authorise('" . $core['core.access']
+							. "if (\$user->authorise('"
+							. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.access')
 							. "', 'com_" . $codeName
 							. "') && \$user->authorise('" . $nameSingleCode
 							. ".submenu', 'com_" . $codeName . "'))";
@@ -23137,28 +21797,18 @@ class Interpretation extends Fields
 						$view['settings']->name_list
 					);
 					// check if category has another name
-					if (CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views'))
-					{
-						$otherViews
-							= CFactory::_('Registry')->get('category.other.name.' . $nameListCode . '.views');
-					}
-					else
-					{
-						$otherViews = $nameListCode;
-					}
+					$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
+						get($nameListCode . '.views', $nameListCode);
 					// first check if category sub-menu should be added
 					// then check if view has category, if true add sub-menu for it
 					if ($view['settings']->add_category_submenu == 1
-						&& isset($this->categoryBuilder[$nameListCode])
-						&& ArrayHelper::check(
-							$this->categoryBuilder[$nameListCode]
-						)
+						&& CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}.extension")
 						&& !in_array($otherViews, $catArray))
 					{
 						// get the extension array
 						$_extension_array = (array) explode(
 							'.',
-							(string) $this->categoryBuilder[$nameListCode]['extension']
+							(string) CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
 						);
 						// set the menu selection
 						if (isset($_extension_array[1]))
@@ -23172,23 +21822,15 @@ class Interpretation extends Fields
 						// now load the menus
 						$menus .= PHP_EOL . Indent::_(2) . $tab
 							. "JHtmlSidebar::addEntry(JText:" . ":_('"
-							. $this->categoryBuilder[$nameListCode]['name']
+							. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.name", 'error')
 							. "'), 'index.php?option=com_categories&view=categories&extension="
-							. $this->categoryBuilder[$nameListCode]['extension']
+							. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
 							. "', \$submenu === '" . $_menu . "');";
 						// make sure we add a category only once
 						$catArray[] = $otherViews;
 					}
 					// check if the item has permissions.
-					if ($coreLoad && isset($core['core.access'])
-						&& isset($this->permissionBuilder['global'][$core['core.access']])
-						&& ArrayHelper::check(
-							$this->permissionBuilder['global'][$core['core.access']]
-						)
-						&& in_array(
-							$nameSingleCode,
-							$this->permissionBuilder['global'][$core['core.access']]
-						))
+					if (CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.access'))
 					{
 						$menus .= PHP_EOL . Indent::_(2) . "}";
 					}
@@ -23305,31 +21947,16 @@ class Interpretation extends Fields
 		{
 			// setup access defaults
 			$tab = "";
-
-			$coreLoad = false;
-			if (isset($this->permissionCore[$nameSingle]))
-			{
-				$core     = $this->permissionCore[$nameSingle];
-				$coreLoad = true;
-			}
 			$custom = '';
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.access'])
-				&& isset($this->permissionBuilder['global'][$core['core.access']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.access']]
-				)
-				&& in_array(
-					$nameSingle,
-					$this->permissionBuilder['global'][$core['core.access']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingle, 'core.access'))
 			{
 				$custom .= PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
-					) . " Access control (" . $core['core.access'] . " && "
+					) . " Access control (" . CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingle, 'core.access') . " && "
 					. $nameSingle . ".submenu).";
 				$custom .= PHP_EOL . Indent::_(2) . "if (\$user->authorise('"
-					. $core['core.access'] . "', 'com_" . $codeName
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingle, 'core.access') . "', 'com_" . $codeName
 					. "') && \$user->authorise('" . $nameSingle
 					. ".submenu', 'com_" . $codeName . "'))";
 				$custom .= PHP_EOL . Indent::_(2) . "{";
@@ -23385,26 +22012,12 @@ class Interpretation extends Fields
 			// setup access defaults
 			$tab        = "";
 			$nameSingle = StringHelper::safe($name);
-			$coreLoad   = false;
-			if (isset($this->permissionCore[$nameSingle]))
-			{
-				$core     = $this->permissionCore[$nameSingle];
-				$coreLoad = true;
-			}
 			$this->lastCustomSubMenu[$nr] = '';
 			// check if the item has permissions.
-			if ($coreLoad && isset($core['core.access'])
-				&& isset($this->permissionBuilder['global'][$core['core.access']])
-				&& ArrayHelper::check(
-					$this->permissionBuilder['global'][$core['core.access']]
-				)
-				&& in_array(
-					$nameSingle,
-					$this->permissionBuilder['global'][$core['core.access']]
-				))
+			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingle, 'core.access'))
 			{
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . Indent::_(2)
-					. "if (\$user->authorise('" . $core['core.access']
+					. "if (\$user->authorise('" . CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingle, 'core.access')
 					. "', 'com_" . $codeName . "') && \$user->authorise('"
 					. $nameSingle . ".submenu', 'com_" . $codeName . "'))";
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . Indent::_(2) . "{";
@@ -23767,7 +22380,7 @@ class Interpretation extends Fields
 				{
 					$placeholders[$globalPlaceholder] = $gloabalValue;
 				}
-				$view     = '';
+				$view     = [];
 				$viewType = 0;
 				// set the custom table key
 				$dbkey = 'g';
@@ -23788,7 +22401,7 @@ class Interpretation extends Fields
 				foreach ($config_ as $field)
 				{
 					// get the xml string
-					$xmlField = $this->getFieldXMLString(
+					$xmlField = CFactory::_('Compiler.Creator.Field.As.String')->get(
 						$field, $view, $viewType, $lang, $nameSingleCode,
 						$nameListCode, $placeholders, $dbkey, false
 					);
@@ -24083,10 +22696,7 @@ class Interpretation extends Fields
 	public function setGroupControlConfigFieldsets($lang)
 	{
 		// start loading Group control params if needed
-		if (isset($this->setGroupControl)
-			&& ArrayHelper::check(
-				$this->setGroupControl
-			))
+		if (CFactory::_('Compiler.Builder.Field.Group.Control')->isActive())
 		{
 			// start building field set for config
 			$this->configFieldSets[] = Indent::_(1) . "<fieldset";
@@ -24108,7 +22718,7 @@ class Interpretation extends Fields
 				"Set the group/s being targeted by this user type."
 			);
 
-			foreach ($this->setGroupControl as $selector => $label)
+			foreach (CFactory::_('Compiler.Builder.Field.Group.Control')->allActive() as $selector => $label)
 			{
 				$this->configFieldSets[] = Indent::_(2) . '<field name="'
 					. $selector . '"';
@@ -24660,7 +23270,7 @@ class Interpretation extends Fields
 				);
 				CFactory::_('Language')->set(
 					CFactory::_('Config')->lang_target, $lang . '_UIKIT_DESC', "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
-for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/v2/\" target=\"_blank\">https://getuikit.com/v2/</a>"
+for developing fast and powerful web interfaces. For more info visit <a href='https://getuikit.com/v2/' target='_blank'>https://getuikit.com/v2/</a>"
 				);
 			}
 			elseif (2 == CFactory::_('Config')->uikit)
@@ -24671,7 +23281,7 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 				);
 				CFactory::_('Language')->set(
 					CFactory::_('Config')->lang_target, $lang . '_UIKIT_DESC', "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
-for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/v2/\" target=\"_blank\">version 2</a> or <a href=\"https://getuikit.com/\" target=\"_blank\">version 3</a>"
+for developing fast and powerful web interfaces. For more info visit <a href='https://getuikit.com/v2/' target='_blank'>version 2</a> or <a href='https://getuikit.com/' target='_blank'>version 3</a>"
 				);
 			}
 			elseif (3 == CFactory::_('Config')->uikit)
@@ -24681,9 +23291,44 @@ for developing fast and powerful web interfaces. For more info visit <a href=\"h
 				);
 				CFactory::_('Language')->set(
 					CFactory::_('Config')->lang_target, $lang . '_UIKIT_DESC', "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
-for developing fast and powerful web interfaces. For more info visit <a href=\"https://getuikit.com/\" target=\"_blank\">https://getuikit.com/</a>"
+for developing fast and powerful web interfaces. For more info visit <a href='https://getuikit.com/' target='_blank'>https://getuikit.com/</a>"
 				);
 			}
+
+			// set field lang
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $lang . '_JQUERY_LOAD_LABEL', "Load Joomla jQuery"
+			);
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $lang . '_JQUERY_LOAD_DESC',
+				"Would you like to load the Joomla jQuery Framework?"
+			);
+			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_JQUERY_LOAD', "Load jQuery");
+			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_JQUERY_REMOVE', "Remove jQuery");
+
+			// set the field
+			$this->configFieldSets[] = Indent::_(2)
+				. '<field name="add_jquery_framework"';
+			$this->configFieldSets[] = Indent::_(3) . 'type="radio"';
+			$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
+				. '_JQUERY_LOAD_LABEL"';
+			$this->configFieldSets[] = Indent::_(3) . 'description="' . $lang
+				. '_JQUERY_LOAD_DESC"';
+			$this->configFieldSets[] = Indent::_(3)
+				. 'class="btn-group btn-group-yesno"';
+			$this->configFieldSets[] = Indent::_(3) . 'default="">';
+			$this->configFieldSets[] = Indent::_(3) . '<!--' . Line::_(
+					__LINE__,__CLASS__
+				) . ' Option Set. -->';
+			$this->configFieldSets[] = Indent::_(3) . '<option value="0">';
+			$this->configFieldSets[] = Indent::_(4) . $lang
+				. '_JQUERY_REMOVE</option>"';
+			$this->configFieldSets[] = Indent::_(3) . '<option value="1">';
+			$this->configFieldSets[] = Indent::_(4) . $lang
+				. '_JQUERY_LOAD</option>"';
+			$this->configFieldSets[] = Indent::_(2) . "</field>";
+			// set params defaults
+			$this->extensionsParams[] = '"add_jquery_framework":"1"';
 
 			// add version selection
 			if (2 == CFactory::_('Config')->uikit)
@@ -26540,30 +25185,26 @@ function vdm_dkim() {
 		}
 	}
 
-	public function setAccessSectionsCategory($nameSingleCode, $nameListCode
-	)
+	public function setAccessSectionsCategory($nameSingleCode, $nameListCode)
 	{
 		$component = '';
 		// check if view has category
-		if (array_key_exists($nameSingleCode, $this->catCodeBuilder))
+		$otherViews = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.views");
+		if ($otherViews !== null && $otherViews == $nameListCode)
 		{
-			$otherViews = $this->catCodeBuilder[$nameSingleCode]['views'];
-			if ($otherViews == $nameListCode)
-			{
-				$component .= PHP_EOL . Indent::_(1)
-					. '<section name="category.' . $otherViews . '">';
-				$component .= PHP_EOL . Indent::_(2)
-					. '<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />';
-				$component .= PHP_EOL . Indent::_(2)
-					. '<action name="core.delete" title="JACTION_DELETE" description="COM_CATEGORIES_ACCESS_DELETE_DESC" />';
-				$component .= PHP_EOL . Indent::_(2)
-					. '<action name="core.edit" title="JACTION_EDIT" description="COM_CATEGORIES_ACCESS_EDIT_DESC" />';
-				$component .= PHP_EOL . Indent::_(2)
-					. '<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_CATEGORIES_ACCESS_EDITSTATE_DESC" />';
-				$component .= PHP_EOL . Indent::_(2)
-					. '<action name="core.edit.own" title="JACTION_EDITOWN" description="COM_CATEGORIES_ACCESS_EDITOWN_DESC" />';
-				$component .= PHP_EOL . Indent::_(1) . "</section>";
-			}
+			$component .= PHP_EOL . Indent::_(1)
+				. '<section name="category.' . $otherViews . '">';
+			$component .= PHP_EOL . Indent::_(2)
+				. '<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />';
+			$component .= PHP_EOL . Indent::_(2)
+				. '<action name="core.delete" title="JACTION_DELETE" description="COM_CATEGORIES_ACCESS_DELETE_DESC" />';
+			$component .= PHP_EOL . Indent::_(2)
+				. '<action name="core.edit" title="JACTION_EDIT" description="COM_CATEGORIES_ACCESS_EDIT_DESC" />';
+			$component .= PHP_EOL . Indent::_(2)
+				. '<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_CATEGORIES_ACCESS_EDITSTATE_DESC" />';
+			$component .= PHP_EOL . Indent::_(2)
+				. '<action name="core.edit.own" title="JACTION_EDITOWN" description="COM_CATEGORIES_ACCESS_EDITOWN_DESC" />';
+			$component .= PHP_EOL . Indent::_(1) . "</section>";
 		}
 
 		return $component;
@@ -26604,11 +25245,7 @@ function vdm_dkim() {
 	public function setAccessSections()
 	{
 		// access size counter
-		$this->accessSize = 12; // ;)
-		// set the default component access values
-		$this->componentHead   = array();
-		$this->componentGlobal = array();
-		$this->permissionViews = array();
+		CFactory::_('Utilities.Counter')->accessSize = 12; // ;)
 
 		// Get the default fields
 		$default_fields = CFactory::_('Config')->default_fields;
@@ -26620,15 +25257,21 @@ function vdm_dkim() {
 			'jcb_ce_onBeforeBuildAccessSections',
 			array(&$component_context, &$this)
 		);
-
-		$this->componentHead[] = '<section name="component">';
-
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />';
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.options" title="JACTION_OPTIONS" description="JACTION_OPTIONS_COMPONENT_DESC" />';
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" />';
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.admin',
+			'title' => 'JACTION_ADMIN',
+			'description' => 'JACTION_ADMIN_COMPONENT_DESC'
+		], true);
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.options',
+			'title' => 'JACTION_OPTIONS',
+			'description' => 'JACTION_OPTIONS_COMPONENT_DESC'
+		], true);
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.manage',
+			'title' => 'JACTION_MANAGE',
+			'description' => 'JACTION_MANAGE_COMPONENT_DESC'
+		], true);
 		if (CFactory::_('Config')->get('add_eximport', false))
 		{
 			$exportTitle = $this->langPrefix . '_'
@@ -26641,11 +25284,13 @@ function vdm_dkim() {
 				'bothadmin', $exportDesc,
 				' Allows users in this group to export data.'
 			);
-			$this->componentHead[] = Indent::_(2)
-				. '<action name="core.export" title="' . $exportTitle
-				. '" description="' . $exportDesc . '" />';
+			CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+				'name' => 'core.export',
+				'title' => $exportTitle,
+				'description' => $exportDesc
+			], true);
 			// the size needs increase
-			$this->accessSize++;
+			CFactory::_('Utilities.Counter')->accessSize++;
 			$importTitle = $this->langPrefix . '_'
 				. StringHelper::safe('Import Data', 'U');
 			$importDesc  = $this->langPrefix . '_'
@@ -26656,11 +25301,13 @@ function vdm_dkim() {
 				'bothadmin', $importDesc,
 				' Allows users in this group to import data.'
 			);
-			$this->componentHead[] = Indent::_(2)
-				. '<action name="core.import" title="' . $importTitle
-				. '" description="' . $importDesc . '" />';
+			CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+				'name' => 'core.import',
+				'title' => $importTitle,
+				'description' => $importDesc
+			], true);
 			// the size needs increase
-			$this->accessSize++;
+			CFactory::_('Utilities.Counter')->accessSize++;
 		}
 		// version permission
 		$batchTitle = $this->langPrefix . '_'
@@ -26672,9 +25319,11 @@ function vdm_dkim() {
 			'bothadmin', $batchDesc,
 			' Allows users in this group to use batch copy/update method.'
 		);
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.batch" title="' . $batchTitle
-			. '" description="' . $batchDesc . '" />';
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.batch',
+			'title' => $batchTitle,
+			'description' => $batchDesc
+		], true);
 		// version permission
 		$importTitle = $this->langPrefix . '_'
 			. StringHelper::safe('Edit Versions', 'U');
@@ -26686,27 +25335,47 @@ function vdm_dkim() {
 			'bothadmin', $importDesc,
 			' Allows users in this group to edit versions.'
 		);
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.version" title="' . $importTitle
-			. '" description="' . $importDesc . '" />';
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.version',
+			'title' => $importTitle,
+			'description' => $importDesc
+		], true);
 		// set the defaults
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />';
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" />';
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />';
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_ACCESS_EDITSTATE_DESC" />';
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />';
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.create',
+			'title' => 'JACTION_CREATE',
+			'description' => 'JACTION_CREATE_COMPONENT_DESC'
+		], true);
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.delete',
+			'title' => 'JACTION_DELETE',
+			'description' => 'JACTION_DELETE_COMPONENT_DESC'
+		], true);
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.edit',
+			'title' => 'JACTION_EDIT',
+			'description' => 'JACTION_EDIT_COMPONENT_DESC'
+		], true);
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.edit.state',
+			'title' => 'JACTION_EDITSTATE',
+			'description' => 'JACTION_ACCESS_EDITSTATE_DESC'
+		], true);
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.edit.own',
+			'title' => 'JACTION_EDITOWN',
+			'description' => 'JACTION_EDITOWN_COMPONENT_DESC'
+		], true);
 		// set the Joomla fields
 		if (CFactory::_('Config')->get('set_joomla_fields', false))
 		{
-			$this->componentHead[] = Indent::_(2)
-				. '    <action name="core.edit.value" title="JACTION_EDITVALUE" description="JACTION_EDITVALUE_COMPONENT_DESC" />';
+			CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+				'name' => 'core.edit.value',
+				'title' => 'JACTION_EDITVALUE',
+				'description' => 'JACTION_EDITVALUE_COMPONENT_DESC'
+			], true);
 			// the size needs increase
-			$this->accessSize++;
+			CFactory::_('Utilities.Counter')->accessSize++;
 		}
 		// new custom created by permissions
 		$created_byTitle = $this->langPrefix . '_'
@@ -26719,9 +25388,11 @@ function vdm_dkim() {
 			'bothadmin', $created_byDesc,
 			' Allows users in this group to edit created by.'
 		);
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.edit.created_by" title="' . $created_byTitle
-			. '" description="' . $created_byDesc . '" />';
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.edit.created_by',
+			'title' => $created_byTitle,
+			'description' => $created_byDesc
+		], true);
 		// new custom created date permissions
 		$createdTitle = $this->langPrefix . '_'
 			. StringHelper::safe('Edit Created Date', 'U');
@@ -26733,13 +25404,14 @@ function vdm_dkim() {
 			'bothadmin', $createdDesc,
 			' Allows users in this group to edit created date.'
 		);
-		$this->componentHead[] = Indent::_(2)
-			. '<action name="core.edit.created" title="' . $createdTitle
-			. '" description="' . $createdDesc . '" />';
+		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
+			'name' => 'core.edit.created',
+			'title' => $createdTitle,
+			'description' => $createdDesc
+		], true);
 
 		// set the menu controller lookup
-		$menuControllers = array('access', 'submenu', 'dashboard_list',
-			'dashboard_add');
+		$menuControllers = ['access', 'submenu', 'dashboard_list', 'dashboard_add'];
 		// set the custom admin views permissions
 		if (CFactory::_('Component')->isArray('custom_admin_views'))
 		{
@@ -26770,12 +25442,13 @@ function vdm_dkim() {
 					. StringHelper::safe($customAdminName, 'w')
 					. '.'
 				);
-				$this->componentGlobal[$sortKey] = Indent::_(2)
-					. '<action name="' . $customAdminCode . '.access" title="'
-					. $customAdminTitle . '" description="' . $customAdminDesc
-					. '" />';
+				CFactory::_('Compiler.Builder.Permission.Component')->set($sortKey, [
+					'name' => "$customAdminCode.access",
+					'title' => $customAdminTitle,
+					'description' => $customAdminDesc
+				]);
 				// the size needs increase
-				$this->accessSize++;
+				CFactory::_('Utilities.Counter')->accessSize++;
 				// add the custom permissions to use the buttons of this view
 				$this->addCustomButtonPermissions(
 					$custom_admin_view['settings'], $customAdminName,
@@ -26817,7 +25490,7 @@ function vdm_dkim() {
 						unset($menucontrollerView);
 					}
 				}
-				$this->buildPermissions(
+				CFactory::_('Compiler.Creator.Permission')->set(
 					$custom_admin_view, $customAdminCode, $customAdminCode,
 					$menuControllers, 'customAdmin'
 				);
@@ -26853,11 +25526,13 @@ function vdm_dkim() {
 						. StringHelper::safe($siteName, 'w')
 						. '.'
 					);
-					$this->componentGlobal[$sortKey] = Indent::_(2)
-						. '<action name="site.' . $siteCode . '.access" title="'
-						. $siteTitle . '" description="' . $siteDesc . '" />';
+					CFactory::_('Compiler.Builder.Permission.Component')->set($sortKey, [
+						'name' => "site.$siteCode.access",
+						'title' => $siteTitle,
+						'description' => $siteDesc
+					]);
 					// the size needs increase
-					$this->accessSize++;
+					CFactory::_('Utilities.Counter')->accessSize++;
 					// check if this site view requires access rule to default to public
 					if (isset($site_view['public_access'])
 						&& $site_view['public_access'] == 1)
@@ -26885,7 +25560,7 @@ function vdm_dkim() {
 					$view['settings']->name_list
 				);
 				// add custom tab permissions if found
-				if (($tabs_ = CFactory::_('Registry')->get('builder.custom_tabs.' . $nameView, null)) !== null
+				if (($tabs_ = CFactory::_('Compiler.Builder.Custom.Tabs')->get($nameView)) !== null
 					&& ArrayHelper::check($tabs_))
 				{
 					foreach ($tabs_ as $_customTab)
@@ -26893,15 +25568,13 @@ function vdm_dkim() {
 						if (isset($_customTab['permission'])
 							&& $_customTab['permission'] == 1)
 						{
-							$this->componentGlobal[$_customTab['sortKey']]
-								= Indent::_(2) . '<action name="'
-								. $_customTab['view'] . '.'
-								. $_customTab['code'] . '.viewtab" title="'
-								. $_customTab['lang_permission']
-								. '" description="'
-								. $_customTab['lang_permission_desc'] . '" />';
+							CFactory::_('Compiler.Builder.Permission.Component')->set($_customTab['sortKey'], [
+								'name' => $_customTab['view'] . '.' . $_customTab['code'] . '.viewtab',
+								'title' => $_customTab['lang_permission'],
+								'description' => $_customTab['lang_permission_desc']
+							]);
 							// the size needs increase
-							$this->accessSize++;
+							CFactory::_('Utilities.Counter')->accessSize++;
 						}
 					}
 				}
@@ -26924,8 +25597,7 @@ function vdm_dkim() {
 								$targetView_ = 'view.';
 							}
 							// menucontroller
-							$menucontrollerView['action']         = $targetView_
-								. $menuController;
+							$menucontrollerView['action'] = $targetView_ . $menuController;
 							$menucontrollerView['implementation'] = '2';
 							if (isset($view['settings']->permissions)
 								&& ArrayHelper::check(
@@ -26940,8 +25612,7 @@ function vdm_dkim() {
 							else
 							{
 								$view['settings']->permissions = array();
-								$view['settings']->permissions[]
-									= $menucontrollerView;
+								$view['settings']->permissions[] = $menucontrollerView;
 							}
 							unset($menucontrollerView);
 						}
@@ -26952,8 +25623,7 @@ function vdm_dkim() {
 					))
 					{
 						// field permission options
-						$permission_options = array(1 => 'edit', 2 => 'access',
-							3 => 'view');
+						$permission_options = array(1 => 'edit', 2 => 'access', 3 => 'view');
 						// check the fields for their permission settings
 						foreach ($view['settings']->fields as $field)
 						{
@@ -26972,19 +25642,14 @@ function vdm_dkim() {
 										$field, $nameViews
 									);
 									// loop the permission options
-									foreach (
-										$field['permission'] as $permission_id
-									)
+									foreach ($field['permission'] as $permission_id)
 									{
 										// set the permission key word
-										$permission_option
-											= $permission_options[(int) $permission_id];
+										$permission_option = $permission_options[(int) $permission_id];
 										// reset the bucket
 										$fieldView = array();
 										// set the permission for this field
-										$fieldView['action']         = 'view.'
-											. $permission_option . '.'
-											. $fieldName;
+										$fieldView['action'] = 'view.' . $permission_option . '.' . $fieldName;
 										$fieldView['implementation'] = '3';
 										// check if persmissions was already set
 										if (isset($view['settings']->permissions)
@@ -26999,8 +25664,7 @@ function vdm_dkim() {
 										}
 										else
 										{
-											$view['settings']->permissions
-												= array();
+											$view['settings']->permissions = array();
 											$view['settings']->permissions[]
 												= $fieldView;
 										}
@@ -27035,7 +25699,7 @@ function vdm_dkim() {
 							}
 						}
 					}
-					$this->buildPermissions(
+					CFactory::_('Compiler.Creator.Permission')->set(
 						$view, $nameView, $nameViews, $menuControllers
 					);
 				}
@@ -27047,36 +25711,13 @@ function vdm_dkim() {
 				array(&$component_context, &$this)
 			);
 
-			// set the views permissions now
-			if (ArrayHelper::check($this->permissionViews))
-			{
-				foreach ($this->permissionViews as $viewsCodeName => $actions)
-				{
-					$componentViews[] = Indent::_(1) . '<section name="'
-						. $viewsCodeName . '">';
-					foreach ($actions as $action)
-					{
-						$componentViews[] = Indent::_(2) . $action;
-					}
-					$componentViews[] = Indent::_(1) . "</section>";
-				}
-			}
 			/// now build the section
-			$component = implode(PHP_EOL, $this->componentHead);
-			// sort the array to insure easy search
-			ksort($this->componentGlobal, SORT_STRING);
-			// add global to the compnent section
-			$component .= PHP_EOL . implode(PHP_EOL, $this->componentGlobal)
-				. PHP_EOL . Indent::_(1) . "</section>";
+			$component = CFactory::_('Compiler.Builder.Permission.Component')->build();
 			// add views to the component section
-			$component .= PHP_EOL . implode(PHP_EOL, $componentViews);
-			// be sure to reset again. (memory)
-			$this->componentHead   = null;
-			$this->componentGlobal = null;
-			$this->permissionViews = null;
+			$component .= CFactory::_('Compiler.Builder.Permission.Views')->build();
 
 			// remove the fix, is not needed
-			if ($this->accessSize < 30)
+			if (CFactory::_('Utilities.Counter')->accessSize < 30)
 			{
 				// since we have less than 30 actions
 				// we do not need the fix for this component
@@ -27085,10 +25726,10 @@ function vdm_dkim() {
 			}
 			else
 			{
-				// get the worse case column size required (can be worse I know)
+				// get the worst case column size required (can be worse I know)
 				// access/action size x 20 characters x 8 groups
-				$character_length      = (int) MathHelper::bc(
-					'mul', $this->accessSize, 20, 0
+				$character_length = (int) MathHelper::bc(
+					'mul', CFactory::_('Utilities.Counter')->accessSize, 20, 0
 				);
 				// set worse case
 				CFactory::_('Config')->set('access_worse_case', (int) MathHelper::bc(
@@ -27138,448 +25779,33 @@ function vdm_dkim() {
 					. StringHelper::safe($customButtonName, 'w')
 					. ' button.'
 				);
-				$this->componentGlobal[$sortButtonKey] = Indent::_(2)
-					. '<action name="' . $code . '.' . $customButtonCode
-					. '" title="' . $customButtonTitle . '" description="'
-					. $customButtonDesc . '" />';
+				CFactory::_('Compiler.Builder.Permission.Component')->set($sortButtonKey, [
+					'name' => "$code.$customButtonCode",
+					'title' => $customButtonTitle,
+					'description' => $customButtonDesc
+				]);
 				// the size needs increase
-				$this->accessSize++;
+				CFactory::_('Utilities.Counter')->accessSize++;
 			}
 		}
 	}
 
-	public function buildPermissions(&$view, $nameView, $nameViews,
-	                                 $menuControllers, $type = 'admin'
+	/**
+	 * Set the permissions
+	 *
+	 * @param   array   $view             View details
+	 * @param   string  $nameView         View Single Code Name
+	 * @param   string  $nameViews        View List Code Name
+	 * @param   array   $menuControllers  Menu Controllers
+	 * @param   string  $type             Type of permissions area
+	 *
+	 * @return  void
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Creator.Permission')->set($view, $nameView, $nameViews, $menuControllers, $type);
+	 */
+	public function buildPermissions(&$view, $nameView, $nameViews, $menuControllers, $type = 'admin'
 	)
 	{
-		if (isset($view['settings']->permissions)
-			&& ArrayHelper::check(
-				$view['settings']->permissions
-			)
-			|| (isset($view['port']) && $view['port'])
-			|| (isset($view['history']) && $view['history']))
-		{
-			// add export/import permissions to each view that has export/import options
-			if (isset($view['port']) && $view['port'])
-			{
-				// export
-				$exportView['action']         = 'view.export';
-				$exportView['implementation'] = '2';
-				if (ArrayHelper::check(
-					$view['settings']->permissions
-				))
-				{
-					array_push($view['settings']->permissions, $exportView);
-				}
-				else
-				{
-					$view['settings']->permissions   = array();
-					$view['settings']->permissions[] = $exportView;
-				}
-				// import
-				$importView['action']         = 'view.import';
-				$importView['implementation'] = '2';
-				if (ArrayHelper::check(
-					$view['settings']->permissions
-				))
-				{
-					array_push($view['settings']->permissions, $importView);
-				}
-				else
-				{
-					$view['settings']->permissions   = array();
-					$view['settings']->permissions[] = $importView;
-				}
-			}
-			// add version opstions to each view that has it added
-			if (isset($view['history']) && $view['history'])
-			{
-				// set version control
-				$versionView['action']         = 'view.version';
-				$versionView['implementation'] = '3';
-				if (ArrayHelper::check(
-					$view['settings']->permissions
-				))
-				{
-					array_push($view['settings']->permissions, $versionView);
-				}
-				else
-				{
-					$view['settings']->permissions   = array();
-					$view['settings']->permissions[] = $versionView;
-				}
-			}
-			// add batch permissions
-			if ($type === 'admin')
-			{
-				// set batch control
-				$batchView['action']         = 'view.batch';
-				$batchView['implementation'] = '2';
-				if (ArrayHelper::check(
-					$view['settings']->permissions
-				))
-				{
-					array_push($view['settings']->permissions, $batchView);
-				}
-				else
-				{
-					$view['settings']->permissions   = array();
-					$view['settings']->permissions[] = $batchView;
-				}
-			}
-			// load the permissions
-			foreach ($view['settings']->permissions as $permission)
-			{
-				// set acction name
-				$arr = explode('.', trim((string) $permission['action']));
-				if ($arr[0] != 'core' || $arr[0] === 'view')
-				{
-					array_shift($arr);
-					$actionMain = implode('.', $arr);
-					$action     = $nameView . '.' . $actionMain;
-				}
-				else
-				{
-					if ($arr[0] === 'core')
-					{
-						// core is already set in global access
-						$permission['implementation'] = 1;
-					}
-					$action = $permission['action'];
-				}
-				// build action name
-				$actionNameBuilder = explode('.', trim((string) $permission['action']));
-				array_shift($actionNameBuilder);
-				$nameBuilder = trim(implode('___', $actionNameBuilder));
-				$customName  = trim(implode(' ', $actionNameBuilder));
-				// check if we have access set for this view (if not skip)
-				if ($nameBuilder === 'edit___access' && $type === 'admin'
-					&& (!isset($view['access']) || $view['access'] != 1))
-				{
-					continue;
-				}
-				// build the names
-				if ($type === 'admin')
-				{
-					$W_NameList   = StringHelper::safe(
-						$view['settings']->name_list, 'W'
-					);
-					$w_NameList   = StringHelper::safe(
-						$customName . ' ' . $view['settings']->name_list, 'w'
-					);
-					$w_NameSingle = StringHelper::safe(
-						$view['settings']->name_single, 'w'
-					);
-				}
-				elseif ($type === 'customAdmin')
-				{
-					$W_NameList   = StringHelper::safe(
-						$view['settings']->name, 'W'
-					);
-					$w_NameList   = $view['settings']->name;
-					$w_NameSingle = $view['settings']->name;
-				}
-				// set title (only if not set already)
-				if (!isset($permission['title'])
-					|| !StringHelper::check(
-						$permission['title']
-					))
-				{
-					// set the title based on the name builder
-					switch ($nameBuilder)
-					{
-						case 'edit':
-							// set edit title
-							$permission['title'] = $W_NameList . ' Edit';
-							break;
-						case 'edit___own':
-							// set edit title
-							$permission['title'] = $W_NameList . ' Edit Own';
-							break;
-						case 'edit___access':
-							// set edit title
-							$permission['title'] = $W_NameList . ' Edit Access';
-							break;
-						case 'edit___state':
-							// set edit title
-							$permission['title'] = $W_NameList . ' Edit State';
-							break;
-						case 'edit___created_by':
-							// set edit title
-							$permission['title'] = $W_NameList
-								. ' Edit Created By';
-							break;
-						case 'edit___created':
-							// set edit title
-							$permission['title'] = $W_NameList
-								. ' Edit Created Date';
-							break;
-						case 'create':
-							// set edit title
-							$permission['title'] = $W_NameList . ' Create';
-							break;
-						case 'delete':
-							// set edit title
-							$permission['title'] = $W_NameList . ' Delete';
-							break;
-						case 'access':
-							// set edit title
-							$permission['title'] = $W_NameList . ' Access';
-							break;
-						case 'export':
-							// set edit title
-							$permission['title'] = $W_NameList . ' Export';
-							break;
-						case 'import':
-							// set edit title
-							$permission['title'] = $W_NameList . ' Import';
-							break;
-						case 'version':
-							// set edit title
-							$permission['title'] = $W_NameList
-								. ' Edit Version';
-							break;
-						case 'batch':
-							// set edit title
-							$permission['title'] = $W_NameList . ' Batch Use';
-							break;
-						default:
-							// set edit title
-							$permission['title'] = $W_NameList . ' '
-								. StringHelper::safe(
-									$customName, 'W'
-								);
-							break;
-					}
-				}
-				// set description (only if not set already)
-				if (!isset($permission['description'])
-					|| !StringHelper::check(
-						$permission['description']
-					))
-				{
-					// set the title based on the name builder
-					switch ($nameBuilder)
-					{
-						case 'edit':
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to edit the '
-								. $w_NameSingle;
-							break;
-						case 'edit___own':
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to edit '
-								. $w_NameList . ' created by them';
-							break;
-						case 'edit___access':
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to change the access of the '
-								. $w_NameList;
-							break;
-						case 'edit___state':
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to update the state of the '
-								. $w_NameSingle;
-							break;
-						case 'edit___created_by':
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to update the created by of the '
-								. $w_NameList;
-							break;
-						case 'edit___created':
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to update the created date of the '
-								. $w_NameList;
-							break;
-						case 'create':
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to create '
-								. $w_NameList;
-							break;
-						case 'delete':
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to delete '
-								. $w_NameList;
-							break;
-						case 'access':
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to access '
-								. $w_NameList;
-							break;
-						case 'export':
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to export '
-								. $w_NameList;
-							break;
-						case 'import':
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to import '
-								. $w_NameList;
-							break;
-						case 'version':
-							// set edit description
-							$permission['description']
-								= ' Allows users in this group to edit versions of '
-								. $w_NameList;
-							break;
-						case 'batch':
-							// set edit description
-							$permission['description']
-								= ' Allows users in this group to use batch copy/update method of '
-								. $w_NameList;
-							break;
-						default:
-							// set edit description
-							$permission['description']
-								= ' Allows the users in this group to '
-								. StringHelper::safe(
-									$customName, 'w'
-								) . ' of ' . $w_NameSingle;
-							break;
-					}
-				}
-				// if core is not used update all core strings
-				$coreCheck                                    = explode(
-					'.', (string) $action
-				);
-				$coreCheck[0]                                 = 'core';
-				$coreTarget                                   = implode(
-					'.', $coreCheck
-				);
-				$this->permissionCore[$nameView][$coreTarget] = $action;
-				// set array sort name
-				$sortKey = StringHelper::safe(
-					$permission['title']
-				);
-				// set title
-				$title = $this->langPrefix . '_'
-					. StringHelper::safe(
-						$permission['title'], 'U'
-					);
-				// load the actions
-				if ($permission['implementation'] == 1)
-				{
-					// only related to view
-					$this->permissionViews[$nameView][] = '<action name="'
-						. $action . '" title="' . $title . '" description="'
-						. $title . '_DESC" />';
-					// load permission to action
-					$this->permissionBuilder[$action][$nameView] = $nameView;
-				}
-				elseif ($permission['implementation'] == 2)
-				{
-					// relation to whole component
-					$this->componentGlobal[$sortKey] = Indent::_(2)
-						. '<action name="' . $action . '" title="' . $title
-						. '" description="' . $title . '_DESC" />';
-					// the size needs increase
-					$this->accessSize++;
-					// build permission switch
-					$this->permissionBuilder['global'][$action][$nameView]
-						= $nameView;
-					// dashboard icon checker
-					if ($coreTarget === 'core.access')
-					{
-						$this->permissionDashboard[] = "'" . $nameViews
-							. ".access' => '" . $action . "'";
-						$this->permissionDashboard[] = "'" . $nameView
-							. ".access' => '" . $action . "'";
-					}
-					if ($coreTarget === 'core.create')
-					{
-						$this->permissionDashboard[] = "'" . $nameView
-							. ".create' => '" . $action . "'";
-					}
-					// add menu controll view that has menus options
-					foreach ($menuControllers as $menuController)
-					{
-						if ($coreTarget === 'core.' . $menuController)
-						{
-							if ($menuController === 'dashboard_add')
-							{
-								$this->permissionDashboard[] = "'" . $nameView
-									. "." . $menuController . "' => '" . $action
-									. "'";
-							}
-							else
-							{
-								$this->permissionDashboard[] = "'" . $nameViews
-									. "." . $menuController . "' => '" . $action
-									. "'";
-							}
-						}
-					}
-				}
-				elseif ($permission['implementation'] == 3)
-				{
-					// only related to view
-					$this->permissionViews[$nameView][] = '<action name="'
-						. $action . '" title="' . $title . '" description="'
-						. $title . '_DESC" />';
-					// load permission to action
-					$this->permissionBuilder[$action][$nameView] = $nameView;
-					// relation to whole component
-					$this->componentGlobal[$sortKey] = Indent::_(2)
-						. '<action name="' . $action . '" title="' . $title
-						. '" description="' . $title . '_DESC" />';
-					// the size needs increase
-					$this->accessSize++;
-					// build permission switch
-					$this->permissionBuilder['global'][$action][$nameView]
-						= $nameView;
-					// dashboard icon checker
-					if ($coreTarget === 'core.access')
-					{
-						$this->permissionDashboard[] = "'" . $nameViews
-							. ".access' => '" . $action . "'";
-						$this->permissionDashboard[] = "'" . $nameView
-							. ".access' => '" . $action . "'";
-					}
-					if ($coreTarget === 'core.create')
-					{
-						$this->permissionDashboard[] = "'" . $nameView
-							. ".create' => '" . $action . "'";
-					}
-					// add menu controll view that has menus options
-					foreach ($menuControllers as $menuController)
-					{
-						if ($coreTarget === 'core.' . $menuController)
-						{
-							if ($menuController === 'dashboard_add')
-							{
-								$this->permissionDashboard[] = "'" . $nameView
-									. "." . $menuController . "' => '" . $action
-									. "'";
-							}
-							else
-							{
-								$this->permissionDashboard[] = "'" . $nameViews
-									. "." . $menuController . "' => '" . $action
-									. "'";
-							}
-						}
-					}
-				}
-				// set to language file
-				CFactory::_('Language')->set(
-					'bothadmin', $title, $permission['title']
-				);
-				CFactory::_('Language')->set(
-					'bothadmin', $title . '_DESC', $permission['description']
-				);
-			}
-		}
+		CFactory::_('Compiler.Creator.Permission')->set($view, $nameView, $nameViews, $menuControllers, $type);
 	}
 
 	public function getInbetweenStrings($str, $start = '#' . '#' . '#',
@@ -27596,8 +25822,8 @@ function vdm_dkim() {
 	public function getModCode(&$module)
 	{
 		// get component helper string
-		$Helper    = CFactory::_('Content')->get('Component') . 'Helper';
-		$component = CFactory::_('Content')->get('component');
+		$Helper    = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
+		$component = CFactory::_('Compiler.Builder.Content.One')->get('component');
 		$_helper   = '';
 		// get libraries code
 		$libraries = array(Placefix::_('MOD_LIBRARIES') => $this->getModLibCode($module));
@@ -27617,7 +25843,7 @@ function vdm_dkim() {
 				. "/helpers/" . $component . ".php');";
 		}
 
-		return CFactory::_('Placeholder')->update($_helper . PHP_EOL . $code . PHP_EOL, CFactory::_('Content')->active);
+		return CFactory::_('Placeholder')->update($_helper . PHP_EOL . $code . PHP_EOL, CFactory::_('Compiler.Builder.Content.One')->allActive());
 	}
 
 	public function getModDefault(&$module, &$key)
@@ -27639,7 +25865,28 @@ function vdm_dkim() {
 		);
 
 		// return the default content for the model default area
-		return CFactory::_('Placeholder')->update($default, CFactory::_('Content')->active);
+		return CFactory::_('Placeholder')->update($default, CFactory::_('Compiler.Builder.Content.One')->allActive());
+	}
+
+	public function setModTemplates(&$module)
+	{
+		if (($data_ = CFactory::_('Compiler.Builder.Template.Data')->
+			get(CFactory::_('Config')->build_target . '.' . $module->code_name)) !== null)
+		{
+			foreach ($data_ as $template => $data)
+			{
+				$header = $data['php_view'] ?? '';
+				$body = $data['html'] ?? '';
+				$default = PHP_EOL . $header . PHP_EOL . '?>';
+				$default .= PHP_EOL . $body;
+				$TARGET = StringHelper::safe("MODDEFAULT_{$template}", 'U');
+				CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|' . $TARGET,
+					CFactory::_('Placeholder')->update(
+						$default, CFactory::_('Compiler.Builder.Content.One')->allActive()
+					)
+				);
+			}
+		}
 	}
 
 	public function getModHelperCode(&$module)
@@ -27649,14 +25896,14 @@ function vdm_dkim() {
 				$module->class_helper_type . $module->class_helper_name . PHP_EOL
 				. '{' . PHP_EOL .
 				$module->class_helper_code . PHP_EOL .
-				"}" . PHP_EOL, CFactory::_('Content')->active);
+				"}" . PHP_EOL, CFactory::_('Compiler.Builder.Content.One')->allActive());
 	}
 
 	public function getModLibCode(&$module)
 	{
 		$setter = '';
-		if (($data_ = CFactory::_('Registry')->extract('builder.library_manager.' .
-				$module->key . '.' . $module->code_name)) !== null)
+		if (($data_ = CFactory::_('Compiler.Builder.Library.Manager')->
+			get($module->key . '.' . $module->code_name)) !== null)
 		{
 			$setter .= '//' . Line::_(__Line__, __Class__)
 				. 'get the document object';
@@ -27689,12 +25936,12 @@ function vdm_dkim() {
 					implode(
 						PHP_EOL,
 						array_map(
-							trim,
+							'trim',
 							(array) explode(PHP_EOL, $setter)
 						)
 					)
 				)
-			), CFactory::_('Content')->active);
+			), CFactory::_('Compiler.Builder.Content.One')->allActive());
 		}
 
 		return '';
@@ -28095,7 +26342,7 @@ function vdm_dkim() {
 			$plugin->extends . PHP_EOL . '{' . PHP_EOL .
 			$plugin->main_class_code . PHP_EOL .
 			"}" . PHP_EOL,
-			CFactory::_('Content')->active
+			CFactory::_('Compiler.Builder.Content.One')->allActive()
 		);
 	}
 
@@ -28508,7 +26755,7 @@ function vdm_dkim() {
 		}
 		$code[] = '}' . PHP_EOL . PHP_EOL;
 
-		return CFactory::_('Placeholder')->update(implode(PHP_EOL, $code), CFactory::_('Content')->active);
+		return CFactory::_('Placeholder')->update(implode(PHP_EOL, $code), CFactory::_('Compiler.Builder.Content.One')->allActive());
 	}
 
 	/**
@@ -28521,13 +26768,12 @@ function vdm_dkim() {
 	 * @return  string The fields set in xml
 	 *
 	 */
-	public function getExtensionFieldsetXML(&$extension, &$fields, $dbkey = 'zz'
-	)
+	public function getExtensionFieldsetXML(&$extension, &$fields, $dbkey = 'zz')
 	{
 		// get global placeholders
 		$placeholder = CFactory::_('Component.Placeholder')->get();
 		// build the fieldset
-		return $this->getFieldsetXML(
+		return CFactory::_('Compiler.Creator.Fieldset.Dynamic')->get(
 			$fields, $extension->lang_prefix, $extension->key, $extension->key,
 			$placeholder, $dbkey
 		);
@@ -28539,9 +26785,7 @@ function vdm_dkim() {
 	 * @return  bool
 	 *
 	 */
-	public function shouldLanguageBeAdded(&$tag, &$languageStrings, &$total,
-	                                      &$file_name
-	)
+	public function shouldLanguageBeAdded(&$tag, &$languageStrings, &$total, &$file_name)
 	{
 		// only log messages for none CFactory::_('Config')->get('lang_tag', 'en-GB') translations
 		if (CFactory::_('Config')->get('lang_tag', 'en-GB') !== $tag)

@@ -836,7 +836,7 @@ jQuery(document).ready(function()
 });
 
 function checkAliasField() {
-	getCodeFrom_server(1, 'type', 'type', 'checkAliasField').done(function(result) {
+	getCodeFrom_server(1, 'type', 'type', 'checkAliasField').then(function(result) {
 		if(result){
 			// remove the notice
 			jQuery('.note_create_edit_notice_p').remove();
@@ -851,7 +851,7 @@ function checkAliasField() {
 }
 
 function checkCategoryField() {
-	getCodeFrom_server(1, 'type', 'type', 'checkCategoryField').done(function(result) {
+	getCodeFrom_server(1, 'type', 'type', 'checkCategoryField').then(function(result) {
 		if(result){
 			// remove the notice
 			jQuery('.note_create_edit_notice_p').remove();
@@ -864,7 +864,7 @@ function checkCategoryField() {
 }
 
 function getAjaxDisplay(type){
-	getCodeFrom_server(1, type, 'type', 'getAjaxDisplay').done(function(result) {
+	getCodeFrom_server(1, type, 'type', 'getAjaxDisplay').then(function(result) {
 		if(result){
 			jQuery('#display_'+type).html(result);
 		}
@@ -882,7 +882,7 @@ function getTableColumns(fieldKey, table_, nr_){
 	if(jQuery("#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_table").length) {
 		// get options
 		var tableName = jQuery("#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_table option:selected").val();
-		getCodeFrom_server(1, tableName, 'table', 'tableColumns').done(function(result) {
+		getCodeFrom_server(1, tableName, 'table', 'tableColumns').then(function(result) {
 			if(result){
 				jQuery("textarea#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_sourcemap").val(result);
 			} else {
@@ -904,7 +904,7 @@ function getDynamicScripts(id){
 		var current_ext = jQuery('textarea#jform_php_import_ext').val();
 		// set the display method script
 		if(current_import_display.length == 0){
-			getCodeFrom_server(1, 'display', 'type', 'getDynamicScripts').done(function(result) {
+			getCodeFrom_server(1, 'display', 'type', 'getDynamicScripts').then(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_display').val(result);
 				}
@@ -912,7 +912,7 @@ function getDynamicScripts(id){
 		}
 		// set the import method script
 		if(current_import.length == 0){
-			getCodeFrom_server(1, 'import', 'type', 'getDynamicScripts').done(function(result) {
+			getCodeFrom_server(1, 'import', 'type', 'getDynamicScripts').then(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import').val(result);
 				}
@@ -920,7 +920,7 @@ function getDynamicScripts(id){
 		}
 		// set the headers method script
 		if(current_headers.length == 0){
-			getCodeFrom_server(1, 'headers', 'type', 'getDynamicScripts').done(function(result) {
+			getCodeFrom_server(1, 'headers', 'type', 'getDynamicScripts').then(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_headers').val(result);
 				}
@@ -928,7 +928,7 @@ function getDynamicScripts(id){
 		}
 		// set the setData method script
 		if(current_setdata.length == 0){
-			getCodeFrom_server(1, 'setdata', 'type', 'getDynamicScripts').done(function(result) {
+			getCodeFrom_server(1, 'setdata', 'type', 'getDynamicScripts').then(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_setdata').val(result);
 				}
@@ -936,7 +936,7 @@ function getDynamicScripts(id){
 		}
 		// set the save method script
 		if(current_save.length == 0){
-			getCodeFrom_server(1, 'save', 'type', 'getDynamicScripts').done(function(result) {
+			getCodeFrom_server(1, 'save', 'type', 'getDynamicScripts').then(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_save').val(result);
 				}
@@ -944,7 +944,7 @@ function getDynamicScripts(id){
 		}
 		// set the view script
 		if(current_view.length == 0){
-			getCodeFrom_server(1, 'view', 'type', 'getDynamicScripts').done(function(result) {
+			getCodeFrom_server(1, 'view', 'type', 'getDynamicScripts').then(function(result) {
 				if(result){
 					jQuery('textarea#jform_html_import_view').val(result);
 				}
@@ -952,7 +952,7 @@ function getDynamicScripts(id){
 		}
 		// set the import ext script
 		if(current_ext.length == 0){
-			getCodeFrom_server(1, 'ext', 'type', 'getDynamicScripts').done(function(result) {
+			getCodeFrom_server(1, 'ext', 'type', 'getDynamicScripts').then(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_import_ext').val(result);
 				}
@@ -961,20 +961,29 @@ function getDynamicScripts(id){
 	}
 }
 
-function getCodeFrom_server(id, type, type_name, callingName){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && id > 0 && type.length > 0) {
-		var request = token + '=1&' + type_name + '=' + type + '&id=' + id;
+function getCodeFrom_server(id, type, type_name, callingName) {
+	var url = "index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod;
+	if (token.length > 0 && id > 0 && type.length > 0) {
+		url += '&' + token + '=1&' + type_name + '=' + type + '&id=' + id;
 	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
+	var getUrl = JRouter(url);
+	return fetch(getUrl, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	}).then(function(response) {
+		if (response.ok) {
+			return response.json();
+		} else {
+			throw new Error('Network response was not ok');
+		}
+	}).then(function(data) {
+		return data;
+	}).catch(function(error) {
+		console.error('There was a problem with the fetch operation:', error);
 	});
 }
-
 
 function getEditCustomCodeButtons_server(id){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
@@ -1068,7 +1077,7 @@ function addButton(type, where, size){
 }
 
 function getLinked(){
-	getCodeFrom_server(1, 'type', 'type', 'getLinked').done(function(result) {
+	getCodeFrom_server(1, 'type', 'type', 'getLinked').then(function(result) {
 		if(result){
 			jQuery('#display_linked_to').html(result);
 		}

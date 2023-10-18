@@ -321,7 +321,7 @@ class ComponentbuilderModelComponent_custom_admin_menus extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('component_custom_admin_menus.edit.state', 'com_componentbuilder');
 	}
     

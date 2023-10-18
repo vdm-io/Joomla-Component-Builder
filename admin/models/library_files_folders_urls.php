@@ -327,7 +327,7 @@ class ComponentbuilderModelLibrary_files_folders_urls extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('library_files_folders_urls.edit.state', 'com_componentbuilder');
 	}
     

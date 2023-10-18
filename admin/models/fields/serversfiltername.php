@@ -49,14 +49,14 @@ class JFormFieldServersfiltername extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_NAME') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
-			$results = array_unique($results);
-			foreach ($results as $name)
+			$_results = array_unique($_results);
+			foreach ($_results as $name)
 			{
 				// Now add the name and its text to the options array
 				$_filter[] = JHtml::_('select.option', $name, $name);

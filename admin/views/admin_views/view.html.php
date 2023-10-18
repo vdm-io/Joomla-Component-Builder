@@ -52,7 +52,7 @@ class ComponentbuilderViewAdmin_views extends HtmlView
 		$this->canState = $this->canDo->get('admin_view.edit.state');
 		$this->canCreate = $this->canDo->get('admin_view.create');
 		$this->canDelete = $this->canDo->get('admin_view.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('admin_view.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

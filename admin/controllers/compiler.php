@@ -15,6 +15,8 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Compiler Admin Controller
@@ -125,9 +127,9 @@ class ComponentbuilderControllerCompiler extends AdminController
 				    $url = JURI::root() . substr($model->compiler->filepath['component'], $pos + 1);
 				}
 				// check if we have plugins
-				$add_plugin_install = ComponentbuilderHelper::checkArray($model->compiler->filepath['plugins'], true);
+				$add_plugin_install = UtilitiesArrayHelper::check($model->compiler->filepath['plugins'], true);
 				// check if we have modules
-				$add_module_install = ComponentbuilderHelper::checkArray($model->compiler->filepath['modules'], true);
+				$add_module_install = UtilitiesArrayHelper::check($model->compiler->filepath['modules'], true);
 				// if a multi install we set another kind of header
 				if ($add_plugin_install || $add_module_install)
 				{
@@ -225,7 +227,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 					$message[] = '<br /><small>Hey! you can also download these zip files right now!</small><br />';
 					$message[] = '<a class="btn btn-success" href="' . $url . '" ><span class="icon-download icon-white"></span>Download Component</a>&nbsp;&nbsp;';
 					// load the module download URL's
-					if (isset($module_urls) && ComponentbuilderHelper::checkArray($module_urls))
+					if (isset($module_urls) && UtilitiesArrayHelper::check($module_urls))
 					{
 						foreach ($module_urls as $module_id => $module_url)
 						{
@@ -234,7 +236,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 						}
 					}
 					// load the plugin download URL's
-					if (isset($plugin_urls) && ComponentbuilderHelper::checkArray($plugin_urls))
+					if (isset($plugin_urls) && UtilitiesArrayHelper::check($plugin_urls))
 					{
 						foreach ($plugin_urls as $plugin_id => $plugin_url)
 						{
@@ -259,7 +261,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 				$app->setUserState('com_componentbuilder.success_message',
 					CFactory::_('Placeholder')->update(
 						implode(PHP_EOL, $message),
-						CFactory::_('Content')->active
+						CFactory::_('Compiler.Builder.Content.One')->allActive()
 					)
 				);
 				// set redirect
@@ -318,9 +320,9 @@ class ComponentbuilderControllerCompiler extends AdminController
 			$fileNames = array();
 			$fileNames[] = $app->getUserState('com_componentbuilder.component_folder_name', null);
 			// check if we have modules
-			$fileNames = ComponentbuilderHelper::mergeArrays(array($fileNames, $app->getUserState('com_componentbuilder.modules_folder_name', array()) ));
+			$fileNames = UtilitiesArrayHelper::merge(array($fileNames, $app->getUserState('com_componentbuilder.modules_folder_name', array()) ));
 			// check if we have plugins
-			$fileNames = ComponentbuilderHelper::mergeArrays(array($fileNames, $app->getUserState('com_componentbuilder.plugins_folder_name', array()) ));
+			$fileNames = UtilitiesArrayHelper::merge(array($fileNames, $app->getUserState('com_componentbuilder.plugins_folder_name', array()) ));
 
 			// wipe out the user c-m-p since we are done with them all
 			$app->setUserState('com_componentbuilder.component_folder_name', '');
@@ -341,12 +343,12 @@ class ComponentbuilderControllerCompiler extends AdminController
 				}
 			}
 			// catch errors
-			if (ComponentbuilderHelper::checkArray($_message['error']))
+			if (UtilitiesArrayHelper::check($_message['error']))
 			{
 				$app->enqueueMessage(implode('<br />', $_message['error']), 'Error');
 			}
 			// build success message
-			if (ComponentbuilderHelper::checkArray($_message['success']))
+			if (UtilitiesArrayHelper::check($_message['success']))
 			{
 				$this->setRedirect($redirect_url, implode('<br />', $_message['success']), 'message');
 				return true;
@@ -534,7 +536,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 			// run expansion via API
 			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand');
 			// is there a message returned
-			if (!is_numeric($result) && ComponentbuilderHelper::checkString($result))
+			if (!is_numeric($result) && StringHelper::check($result))
 			{
 				$this->setRedirect($redirect_url, $result);
 				return true;
@@ -615,7 +617,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 			// run translator via API
 			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.translator');
 			// is there a message returned
-			if (!is_numeric($result) && ComponentbuilderHelper::checkString($result))
+			if (!is_numeric($result) && StringHelper::check($result))
 			{
 				$this->setRedirect($redirect_url, $result);
 				return true;

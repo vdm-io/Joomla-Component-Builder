@@ -62,7 +62,7 @@ class ComponentbuilderControllerComponent_custom_admin_menus extends FormControl
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('component_custom_admin_menus.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerComponent_custom_admin_menus extends FormControl
 
 
 		// Access check.
-		$access = ($user->authorise('component_custom_admin_menus.access', 'com_componentbuilder.component_custom_admin_menus.' . (int) $recordId) &&  $user->authorise('component_custom_admin_menus.access', 'com_componentbuilder'));
+		$access = ($user->authorise('component_custom_admin_menus.access', 'com_componentbuilder.component_custom_admin_menus.' . (int) $recordId) && $user->authorise('component_custom_admin_menus.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

@@ -16,6 +16,7 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 
 /**
  * Componentbuilder Joomla_plugin_group Admin Model
@@ -271,7 +272,7 @@ class ComponentbuilderModelJoomla_plugin_group extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return parent::canEditState($record);
 	}
     
@@ -540,7 +541,7 @@ class ComponentbuilderModelJoomla_plugin_group extends AdminModel
 			$this->canDo		= ComponentbuilderHelper::getActions('joomla_plugin_group');
 		}
 
-		if (!$this->canDo->get('core.create') || !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('core.create') && !$this->canDo->get('joomla_plugin_group.batch'))
 		{
 			return false;
 		}
@@ -683,7 +684,7 @@ class ComponentbuilderModelJoomla_plugin_group extends AdminModel
 			$this->canDo		= ComponentbuilderHelper::getActions('joomla_plugin_group');
 		}
 
-		if (!$this->canDo->get('core.edit') && !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('core.edit') && !$this->canDo->get('joomla_plugin_group.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
@@ -794,7 +795,7 @@ class ComponentbuilderModelJoomla_plugin_group extends AdminModel
 		}
 
 		// make sure the name is safe to be used as a function name
-		$data['name'] = ComponentbuilderHelper::safeClassFunctionName($data['name']);
+		$data['name'] = ClassfunctionHelper::safe($data['name']);
         
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))

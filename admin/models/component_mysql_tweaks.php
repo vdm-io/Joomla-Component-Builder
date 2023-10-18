@@ -318,7 +318,7 @@ class ComponentbuilderModelComponent_mysql_tweaks extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('component_mysql_tweaks.edit.state', 'com_componentbuilder');
 	}
     

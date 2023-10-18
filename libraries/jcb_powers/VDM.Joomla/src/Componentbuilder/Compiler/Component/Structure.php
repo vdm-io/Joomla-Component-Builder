@@ -24,7 +24,7 @@ use VDM\Joomla\Utilities\ObjectHelper;
  * 
  * @since  3.2.0
  */
-class Structure
+final class Structure
 {
 	/**
 	 * Compiler Component Joomla Version Settings
@@ -113,6 +113,5 @@ class Structure
 			}
 		}
 	}
-
 }
 

@@ -62,7 +62,7 @@ class ComponentbuilderControllerSite_view extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return parent::allowAdd($data);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerSite_view extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('site_view.access', 'com_componentbuilder.site_view.' . (int) $recordId) &&  $user->authorise('site_view.access', 'com_componentbuilder'));
+		$access = ($user->authorise('site_view.access', 'com_componentbuilder.site_view.' . (int) $recordId) && $user->authorise('site_view.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

@@ -52,7 +52,7 @@ class ComponentbuilderViewJoomla_modules_updates extends HtmlView
 		$this->canState = $this->canDo->get('joomla_module_updates.edit.state');
 		$this->canCreate = $this->canDo->get('joomla_module_updates.create');
 		$this->canDelete = $this->canDo->get('joomla_module_updates.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('joomla_module_updates.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

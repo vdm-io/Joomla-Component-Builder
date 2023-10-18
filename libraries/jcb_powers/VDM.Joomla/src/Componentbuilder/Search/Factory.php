@@ -17,7 +17,7 @@ use VDM\Joomla\Componentbuilder\Search\Service\Search;
 use VDM\Joomla\Componentbuilder\Search\Service\Model;
 use VDM\Joomla\Componentbuilder\Search\Service\Database;
 use VDM\Joomla\Componentbuilder\Search\Service\Agent;
-use VDM\Joomla\Componentbuilder\Interfaces\FactoryInterface;
+use VDM\Joomla\Interfaces\FactoryInterface;
 
 
 /**

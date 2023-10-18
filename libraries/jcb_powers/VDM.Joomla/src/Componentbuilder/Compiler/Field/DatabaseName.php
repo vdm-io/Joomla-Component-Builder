@@ -12,9 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Field;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\Lists;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Utilities\ArrayHelper;
 
 
 /**
@@ -25,23 +25,33 @@ use VDM\Joomla\Componentbuilder\Compiler\Registry;
 class DatabaseName
 {
 	/**
-	 * The compiler registry
+	 * The Lists Class.
 	 *
-	 * @var    Registry
+	 * @var   Lists
+	 * @since 3.2.0
+	 */
+	protected Lists $lists;
+
+	/**
+	 * The Registry Class.
+	 *
+	 * @var   Registry
 	 * @since 3.2.0
 	 */
 	protected Registry $registry;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Registry|null               $config           The compiler registry object.
+	 * @param Lists      $lists      The Lists Class.
+	 * @param Registry   $registry   The Registry Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Registry $registry = null)
+	public function __construct(Lists $lists, Registry $registry)
 	{
-		$this->registry = $registry ?: Compiler::_('Registry');
+		$this->lists = $lists;
+		$this->registry = $registry;
 	}
 
 	/**
@@ -56,47 +66,56 @@ class DatabaseName
 	 */
 	public function get(string $nameListCode, int $fieldId, string $targetArea = 'builder.list'): ?string
 	{
-		if (($fields = $this->registry->get("${targetArea}.${nameListCode}")) !== null)
+		if ($targetArea === 'builder.list')
 		{
-			if ($fieldId < 0)
+			if (($fields = $this->lists->get($nameListCode)) === null)
 			{
-				switch ($fieldId)
-				{
-					case -1:
-						return 'a.id';
-					case -2:
-						return 'a.ordering';
-					case -3:
-						return 'a.published';
-				}
+				return null;
 			}
-			foreach ($fields as $field)
+		}
+		elseif (($fields = $this->registry->get("${targetArea}.${nameListCode}")) === null)
+		{
+			return null;
+		}
+
+		if ($fieldId < 0)
+		{
+			switch ($fieldId)
 			{
-				if ($field['id'] == $fieldId)
+				case -1:
+					return 'a.id';
+				case -2:
+					return 'a.ordering';
+				case -3:
+					return 'a.published';
+			}
+		}
+
+		foreach ($fields as $field)
+		{
+			if ($field['id'] == $fieldId)
+			{
+				// now check if this is a category
+				if ($field['type'] === 'category')
 				{
-					// now check if this is a category
-					if ($field['type'] === 'category')
-					{
-						return 'c.title';
-					}
-					// set the custom code
-					elseif (ArrayHelper::check(
-						$field['custom']
-					))
-					{
-						return $field['custom']['db'] . "."
-							. $field['custom']['text'];
-					}
-					else
-					{
-						return 'a.' . $field['code'];
-					}
+					return 'c.title';
+				}
+				// set the custom code
+				elseif (ArrayHelper::check(
+					$field['custom']
+				))
+				{
+					return $field['custom']['db'] . "."
+						. $field['custom']['text'];
+				}
+				else
+				{
+					return 'a.' . $field['code'];
 				}
 			}
 		}
 
 		return null;
 	}
-
 }
 

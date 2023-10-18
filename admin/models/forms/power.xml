@@ -178,9 +178,9 @@
 			max="150"
 			min="0">
 			<form hidden="true" name="list_method_selection_modal" repeat="true">
-				<!-- Method Field. Type: Pluginsclassmethods. (custom) -->
+				<!-- Method Field. Type: Powersclassmethods. (custom) -->
 				<field
-					type="pluginsclassmethods"
+					type="powersclassmethods"
 					name="method"
 					label="COM_COMPONENTBUILDER_POWER_METHOD_LABEL"
 					class="list_class span12 method_selection_list"
@@ -342,9 +342,9 @@
 			max="150"
 			min="0">
 			<form hidden="true" name="list_property_selection_modal" repeat="true">
-				<!-- Property Field. Type: Pluginsclassproperties. (custom) -->
+				<!-- Property Field. Type: Powersclassproperties. (custom) -->
 				<field
-					type="pluginsclassproperties"
+					type="powersclassproperties"
 					name="property"
 					label="COM_COMPONENTBUILDER_POWER_PROPERTY_LABEL"
 					class="list_class span12 property_selection_list"

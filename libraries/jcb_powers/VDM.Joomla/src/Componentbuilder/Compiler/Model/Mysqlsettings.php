@@ -12,9 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\MysqlTableSetting;
 use VDM\Joomla\Utilities\StringHelper;
 
 
@@ -26,33 +25,33 @@ use VDM\Joomla\Utilities\StringHelper;
 class Mysqlsettings
 {
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * Compiler Registry
+	 * The MysqlTableSetting Class.
 	 *
-	 * @var    Registry
+	 * @var   MysqlTableSetting
 	 * @since 3.2.0
 	 */
-	protected Registry $registry;
+	protected MysqlTableSetting $mysqltablesetting;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null    $config     The compiler config.
-	 * @param Registry|null  $registry   The compiler registry.
+	 * @param Config              $config              The Config Class.
+	 * @param MysqlTableSetting   $mysqltablesetting   The MysqlTableSetting Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null)
+	public function __construct(Config $config, MysqlTableSetting $mysqltablesetting)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
+		$this->config = $config;
+		$this->mysqltablesetting = $mysqltablesetting;
 	}
 
 	/**
@@ -65,23 +64,19 @@ class Mysqlsettings
 	 */
 	public function set(object &$item)
 	{
-		foreach (
-			$this->config->mysql_table_keys as $mysql_table_key => $mysql_table_val
-		)
+		foreach ($this->config->mysql_table_keys as $mysql_table_key => $mysql_table_val)
 		{
 			if (isset($item->{'mysql_table_' . $mysql_table_key})
-				&& StringHelper::check(
-					$item->{'mysql_table_' . $mysql_table_key}
-				)
+				&& StringHelper::check($item->{'mysql_table_' . $mysql_table_key})
 				&& !is_numeric($item->{'mysql_table_' . $mysql_table_key}))
 			{
-				$this->registry->set('builder.mysql_table_setting.' . $item->name_single_code . '.' .
+				$this->mysqltablesetting->set($item->name_single_code . '.' .
 					$mysql_table_key, $item->{'mysql_table_' . $mysql_table_key}
 				);
 			}
 			else
 			{
-				$this->registry->set('builder.mysql_table_setting.' . $item->name_single_code . '.' .
+				$this->mysqltablesetting->set($item->name_single_code . '.' .
 					$mysql_table_key,  $mysql_table_val['default']
 				);
 			}
@@ -90,6 +85,5 @@ class Mysqlsettings
 			unset($item->{'mysql_table_' . $mysql_table_key});
 		}
 	}
-
 }
 

@@ -67,16 +67,23 @@ abstract class Api
 	/**
 	 * Load/Reload API.
 	 *
-	 * @param   string        $url          The url.
-	 * @param   token        $token      The token.
+	 * @param   string|null        $url          The url.
+	 * @param   token|null        $token      The token.
 	 *
 	 * @return  void
 	 * @since   3.2.0
 	 **/
-	public function load_(string $url, string $token)
+	public function load_(?string $url = null, ?string $token = null)
 	{
-		$this->uri->setUrl($url);
-		$this->http->setToken($token);
+		if ($url !== null)
+		{
+			$this->uri->setUrl($url);
+		}
+
+		if ($token !== null)
+		{
+			$this->http->setToken($token);
+		}
 	}
 
 }

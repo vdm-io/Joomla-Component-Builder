@@ -16,8 +16,12 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\String\ClassfunctionHelper;
+use VDM\Joomla\Componentbuilder\Power\Factory as PowerFactory;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
 /**
@@ -147,7 +151,7 @@ class ComponentbuilderModelPower extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'power__'.$id);
 				ComponentbuilderHelper::set('power__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -155,7 +159,7 @@ class ComponentbuilderModelPower extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -285,7 +289,7 @@ class ComponentbuilderModelPower extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'power__'.$id);
 				ComponentbuilderHelper::set('power__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -293,7 +297,7 @@ class ComponentbuilderModelPower extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -419,7 +423,7 @@ class ComponentbuilderModelPower extends AdminModel
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
-		if (ComponentbuilderHelper::checkArray($editors))
+		if (UtilitiesArrayHelper::check($editors))
 		{
 			foreach ($editors as $editor)
 			{
@@ -434,9 +438,9 @@ class ComponentbuilderModelPower extends AdminModel
 		// Only load the GUID if new item (or empty)
 		if (0 == $id || !($val = $form->getValue('guid')))
 		{
-			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
+			$form->setValue('guid', null, GuidHelper::get());
 		}
-
+ 
 		return $form;
 	}
 
@@ -498,7 +502,7 @@ class ComponentbuilderModelPower extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('power.edit.state', 'com_componentbuilder');
 	}
     
@@ -1033,11 +1037,13 @@ class ComponentbuilderModelPower extends AdminModel
 			// make sure the name is safe to be used as a function name
 			$data['name'] = ClassfunctionHelper::safe($data['name']);
 		}
+
 		// if system name is empty create from name
 		if (empty($data['system_name']) || !UtilitiesStringHelper::check($data['system_name']))
 		{
 			$data['system_name'] = $data['name'];
 		}
+
 		// must set the version if empty
 		if (empty($data['power_version']) && $data['id'] > 0 && ($power_version = GetHelper::var('power', $data['id'], 'id', 'power_version')) !== false)
 		{
@@ -1061,19 +1067,25 @@ class ComponentbuilderModelPower extends AdminModel
 			}
 		}
 
+		// load dynamic code if relevant
+		if (($main_class_code = PowerFactory::_('Power.Generator')->get($data)) !== null)
+		{
+			$data['main_class_code'] = $main_class_code;
+		}
+
 		// Set the GUID if empty or not valid
 		if (empty($data['guid']) && $data['id'] > 0)
 		{
 			// get the existing one
-			$data['guid'] = (string) ComponentbuilderHelper::getVar('power', $data['id'], 'id', 'guid');
-		}
-		// Set the GUID if empty or not valid
-		while (!ComponentbuilderHelper::validGUID($data['guid'], "power", $data['id']))
-		{
-			// must always be set
-			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+			$data['guid'] = (string) GetHelper::var('power', $data['id'], 'id', 'guid');
 		}
 
+		// Set the GUID if empty or not valid
+		while (!GuidHelper::valid($data['guid'], "power", $data['id']))
+		{
+			// must always be set
+			$data['guid'] = (string) GuidHelper::get();
+		}
 
 		// Set the method_selection items to data.
 		if (isset($data['method_selection']) && is_array($data['method_selection']))

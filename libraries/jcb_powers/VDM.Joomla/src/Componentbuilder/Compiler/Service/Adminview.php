@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Adminview\Data as AdminviewData;
+use VDM\Joomla\Componentbuilder\Compiler\Adminview\Permission;
 
 
 /**
@@ -36,6 +37,9 @@ class Adminview implements ServiceProviderInterface
 	{
 		$container->alias(AdminviewData::class, 'Adminview.Data')
 			->share('Adminview.Data', [$this, 'getAdminviewData'], true);
+
+		$container->alias(Permission::class, 'Adminview.Permission')
+			->share('Adminview.Permission', [$this, 'getAdminviewPermission'], true);
 	}
 
 	/**
@@ -50,7 +54,6 @@ class Adminview implements ServiceProviderInterface
 	{
 		return new AdminviewData(
 			$container->get('Config'),
-			$container->get('Registry'),
 			$container->get('Event'),
 			$container->get('Placeholder'),
 			$container->get('Customcode.Dispenser'),
@@ -70,9 +73,24 @@ class Adminview implements ServiceProviderInterface
 			$container->get('Model.Ajaxadmin'),
 			$container->get('Model.Customalias'),
 			$container->get('Model.Sql'),
-			$container->get('Model.Mysqlsettings')
+			$container->get('Model.Mysqlsettings'),
+			$container->get('Compiler.Builder.Site.Edit.View')
 		);
 	}
 
+	/**
+	 * Get the Compiler Adminview Permission
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Permission
+	 * @since 3.2.0
+	 */
+	public function getAdminviewPermission(Container $container): Permission
+	{
+		return new Permission(
+			$container->get('Compiler.Builder.Has.Permissions')
+		);
+	}
 }
 

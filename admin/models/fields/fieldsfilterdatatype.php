@@ -49,21 +49,21 @@ class JFormFieldFieldsfilterdatatype extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_DATA_TYPE') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get fieldsmodel
-			$model = ComponentbuilderHelper::getModel('fields');
-			$results = array_unique($results);
-			foreach ($results as $datatype)
+			$_model = ComponentbuilderHelper::getModel('fields');
+			$_results = array_unique($_results);
+			foreach ($_results as $datatype)
 			{
 				// Translate the datatype selection
-				$text = $model->selectionTranslation($datatype,'datatype');
+				$_text = $_model->selectionTranslation($datatype,'datatype');
 				// Now add the datatype and its text to the options array
-				$_filter[] = JHtml::_('select.option', $datatype, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $datatype, JText::_($_text));
 			}
 		}
 		return $_filter;

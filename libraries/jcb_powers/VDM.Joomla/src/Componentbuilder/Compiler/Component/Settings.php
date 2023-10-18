@@ -31,7 +31,7 @@ use VDM\Joomla\Utilities\StringHelper;
  * 
  * @since 3.2.0
  */
-class Settings
+final class Settings
 {
 	/**
 	 * The standard folders

@@ -52,7 +52,7 @@ class ComponentbuilderViewClass_extendings extends HtmlView
 		$this->canState = $this->canDo->get('class_extends.edit.state');
 		$this->canCreate = $this->canDo->get('class_extends.create');
 		$this->canDelete = $this->canDo->get('class_extends.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('class_extends.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

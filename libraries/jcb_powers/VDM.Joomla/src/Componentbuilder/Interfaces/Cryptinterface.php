@@ -34,10 +34,10 @@ interface Cryptinterface
 	 * @param   string     $string      The string to decrypt
 	 * @param   string     $key         The decryption key
 	 *
-	 * @return  string
+	 * @return  string|null
 	 * @since 3.2.0
 	 **/
-	public function decrypt(string $string, string $key): string;
+	public function decrypt(string $string, string $key): ?string;
 
 }
 

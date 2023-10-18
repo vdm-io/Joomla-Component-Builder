@@ -49,21 +49,21 @@ class JFormFieldCustomcodesfiltertarget extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_TARGET') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get custom_codesmodel
-			$model = ComponentbuilderHelper::getModel('custom_codes');
-			$results = array_unique($results);
-			foreach ($results as $target)
+			$_model = ComponentbuilderHelper::getModel('custom_codes');
+			$_results = array_unique($_results);
+			foreach ($_results as $target)
 			{
 				// Translate the target selection
-				$text = $model->selectionTranslation($target,'target');
+				$_text = $_model->selectionTranslation($target,'target');
 				// Now add the target and its text to the options array
-				$_filter[] = JHtml::_('select.option', $target, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $target, JText::_($_text));
 			}
 		}
 		return $_filter;

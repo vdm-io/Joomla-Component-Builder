@@ -521,7 +521,7 @@ class Get
 	 * The UIKIT component checker
 	 *
 	 * @var     array
-	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.uikit_comp');
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Uikit.Comp')->get($key);
 	 */
 	public $uikitComp = array();
 
@@ -545,7 +545,7 @@ class Get
 	 * The Google Chart Switch per view
 	 *
 	 * @var     array
-	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.google_chart');
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Google.Chart')->get($key);
 	 */
 	public $googleChart = [];
 
@@ -599,7 +599,7 @@ class Get
 	 * The site edit views
 	 *
 	 * @var     array
-	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.site_edit_view');
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Site.Edit.View')->get($key);
 	 */
 	public $siteEditView = [];
 
@@ -607,7 +607,7 @@ class Get
 	 * The admin list view filter type
 	 *
 	 * @var     array
-	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.admin_filter_type');
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($key);
 	 */
 	public $adminFilterType = array();
 
@@ -671,7 +671,7 @@ class Get
 	 * The Footable Script Builder
 	 *
 	 * @var     array
-	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.footable_scripts');
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Footable.Scripts')->get($key);
 	 */
 	public $footableScripts = [];
 
@@ -727,7 +727,7 @@ class Get
 	 * The custom alias builder
 	 *
 	 * @var     array
-	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.custom_alias');
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Custom.Alias')->get($key);
 	 */
 	public $customAliasBuilder = [];
 
@@ -762,7 +762,7 @@ class Get
 	 * Category other name bucket
 	 *
 	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Registry')->get('category.other.name');
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Category.Other.Name')->get($key);
 	 */
 	public $catOtherName = array();
 
@@ -770,7 +770,7 @@ class Get
 	 * The field relations values
 	 *
 	 * @var     array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.field_relations');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Field.Relations')->get($key);
 	 */
 	public $fieldRelations = array();
 
@@ -795,7 +795,7 @@ class Get
 	 * The list join fields
 	 *
 	 * @var     array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.list_join');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.List.Join')->get($key);
 	 */
 	public $listJoinBuilder = array();
 
@@ -803,7 +803,7 @@ class Get
 	 * The list head over ride
 	 *
 	 * @var     array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.list_head_override');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.List.Head.Override')->get($key);
 	 */
 	public $listHeadOverRide = array();
 
@@ -819,7 +819,7 @@ class Get
 	 * The custom admin view tabs
 	 *
 	 * @var     array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.custom_tabs');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Custom.Tabs')->get($key);
 	 */
 	public $customTabs = array();
 
@@ -843,7 +843,7 @@ class Get
 	 * The get Module Script Switch
 	 *
 	 * @var    array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.get_module');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Get.Module')->get($key);
 	 */
 	public $getModule = [];
 
@@ -851,7 +851,7 @@ class Get
 	 * The template data
 	 *
 	 * @var    array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.template_data');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Template.Data')->get($key);
 	 */
 	public $templateData = [];
 
@@ -859,7 +859,7 @@ class Get
 	 * The layout data
 	 *
 	 * @var    array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.layout_data');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Layout.Data')->get($key);
 	 */
 	public $layoutData = [];
 
@@ -907,7 +907,7 @@ class Get
 	 * The site main get
 	 *
 	 * @var    array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.site_main_get');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Site.Main.Get')->get($key);
 	 */
 	public $siteMainGet = [];
 
@@ -915,7 +915,7 @@ class Get
 	 * The site dynamic get
 	 *
 	 * @var    array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.site_dynamic_get');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Site.Dynamic.Get')->get($key);
 	 */
 	public $siteDynamicGet = [];
 
@@ -923,7 +923,7 @@ class Get
 	 * The get AS lookup
 	 *
 	 * @var    array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.get_as_lookup');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Get.As.Lookup')->get($key);
 	 */
 	public $getAsLookup = [];
 
@@ -931,7 +931,7 @@ class Get
 	 * The site fields
 	 *
 	 * @var    array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.site_fields');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Site.Fields')->get($key);
 	 */
 	public $siteFields = [];
 
@@ -963,7 +963,7 @@ class Get
 	 * The Library Manager
 	 *
 	 * @var    array
-	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.library_manager');
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Library.Manager')->get($key);
 	 */
 	public $libManager = [];
 
@@ -1017,7 +1017,7 @@ class Get
 	 * mysql table settings
 	 *
 	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Registry')->get('builder.mysql_table_setting');
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Mysql.Table.Setting')->get($key);
 	 */
 	public $mysqlTableSetting = [];
 
@@ -1039,7 +1039,7 @@ class Get
 		$this->joomlaVersion = CFactory::_('Config')->joomla_version;
 		// set the minfy switch of the JavaScript @deprecated
 		$this->minify = CFactory::_('Config')->get('minify', 0);
-		// set the global language @deprecated @deprecated
+		// set the global language @deprecated
 		$this->langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
 		// also set the helper class langTag (for safeStrings)
 		ComponentbuilderHelper::$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
@@ -1225,9 +1225,7 @@ class Get
 	 * @return  void
 	 * @deprecated 3.3 Use CFactory::_('Language')->set($target, $language, $string, $addPrefix);
 	 */
-	public function setLangContent($target, $language, $string,
-	                               $addPrefix = false
-	)
+	public function setLangContent($target, $language, $string, $addPrefix = false)
 	{
 		CFactory::_('Language')->set($target, $language, $string, $addPrefix);
 	}

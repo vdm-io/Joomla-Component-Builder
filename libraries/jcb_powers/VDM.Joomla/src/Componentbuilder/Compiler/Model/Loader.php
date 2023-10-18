@@ -12,9 +12,11 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\FootableScripts;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\GoogleChart;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\GetModule;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\UikitComp;
 use VDM\Joomla\Utilities\Component\Helper;
 
 
@@ -26,33 +28,64 @@ use VDM\Joomla\Utilities\Component\Helper;
 class Loader
 {
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * The compiler registry
+	 * The FootableScripts Class.
 	 *
-	 * @var    Registry
+	 * @var   FootableScripts
 	 * @since 3.2.0
 	 */
-	protected Registry $registry;
+	protected FootableScripts $footablescripts;
 
 	/**
-	 * Constructor
+	 * The GoogleChart Class.
 	 *
-	 * @param Config|null               $config           The compiler config object.
-	 * @param Registry|null              $registry        The compiler registry object.
+	 * @var   GoogleChart
+	 * @since 3.2.0
+	 */
+	protected GoogleChart $googlechart;
+
+	/**
+	 * The GetModule Class.
+	 *
+	 * @var   GetModule
+	 * @since 3.2.0
+	 */
+	protected GetModule $getmodule;
+
+	/**
+	 * The UikitComp Class.
+	 *
+	 * @var   UikitComp
+	 * @since 3.2.0
+	 */
+	protected UikitComp $uikitcomp;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Config            $config            The Config Class.
+	 * @param FootableScripts   $footablescripts   The FootableScripts Class.
+	 * @param GoogleChart       $googlechart       The GoogleChart Class.
+	 * @param GetModule         $getmodule         The GetModule Class.
+	 * @param UikitComp         $uikitcomp         The UikitComp Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null)
+	public function __construct(Config $config, FootableScripts $footablescripts,
+		GoogleChart $googlechart, GetModule $getmodule, UikitComp $uikitcomp)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
+		$this->config = $config;
+		$this->footablescripts = $footablescripts;
+		$this->googlechart = $googlechart;
+		$this->getmodule = $getmodule;
+		$this->uikitcomp = $uikitcomp;
 	}
 
 	/**
@@ -71,39 +104,33 @@ class Loader
 		$target = $target ?: $this->config->build_target;
 
 		// check for footable
-		if (!$this->registry->
-			exists('builder.footable_scripts.' . $target . '.' . $key))
+		if (!$this->footablescripts->exists($target . '.' . $key))
 		{
 			if ($this->getFootableScripts($content))
 			{
-				$this->registry->
-					set('builder.footable_scripts.' . $target . '.' . $key, true);
+				$this->footablescripts->set($target . '.' . $key, true);
 
 				$this->config->set('footable', true);
 			}
 		}
 
 		// check for google chart
-		if (!$this->registry->
-			exists('builder.google_chart.' . $target . '.' . $key))
+		if (!$this->googlechart->exists($target . '.' . $key))
 		{
 			if ($this->getGoogleChart($content))
 			{
-				$this->registry->
-					set('builder.google_chart.' . $target . '.' . $key, true);
+				$this->googlechart->set($target . '.' . $key, true);
 
 				$this->config->set('google_chart', true);
 			}
 		}
 
 		// check for get module
-		if (!$this->registry->
-			exists('builder.get_module.' . $target . '.' . $key))
+		if (!$this->getmodule->exists($target . '.' . $key))
 		{
 			if ($this->getGetModule($content))
 			{
-				$this->registry->
-					set('builder.get_module.' . $target . '.' . $key, true);
+				$this->getmodule->set($target . '.' . $key, true);
 			}
 		}
 	}
@@ -134,10 +161,10 @@ class Loader
 		{
 			// set uikit to views TODO: convert this getUikitComp to a class
 			if (($found = Helper::_('getUikitComp', 
-					[$content, (array) $this->registry->get('builder.uikit_comp.' . $key, [])]
+					[$content, $this->uikitcomp->get($key, [])]
 				)) !== false)
 			{
-				$this->registry->set('builder.uikit_comp.' . $key, $found);
+				$this->uikitcomp->set($key, $found);
 			}
 		}
 	}
@@ -180,6 +207,5 @@ class Loader
 	{
 		return strpos($content, 'Chartbuilder(') !== false;
 	}
-
 }
 

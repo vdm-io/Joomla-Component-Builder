@@ -52,7 +52,7 @@ class ComponentbuilderViewLanguage_translations extends HtmlView
 		$this->canState = $this->canDo->get('language_translation.edit.state');
 		$this->canCreate = $this->canDo->get('language_translation.create');
 		$this->canDelete = $this->canDo->get('language_translation.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('language_translation.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

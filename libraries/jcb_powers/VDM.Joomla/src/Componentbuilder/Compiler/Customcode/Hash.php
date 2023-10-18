@@ -73,6 +73,7 @@ class Hash
 			// update the script
 			return $this->placeholder->update($script, $locker);
 		}
+
 		// check if we should hash a file
 		if (strpos($script, 'HASH' . 'FILE((((') !== false)
 		{
@@ -84,8 +85,8 @@ class Hash
 			// convert them
 			foreach ($values as $path)
 			{
-				// we first get the file if it exist
-				if ($value = FileHelper::getContent($path))
+				// we first get the file if it exists
+				if (FileHelper::exists($path) && $value = FileHelper::getContent($path))
 				{
 					// now we hash the file content
 					$locker['HASH' . 'FILE((((' . $path . '))))']

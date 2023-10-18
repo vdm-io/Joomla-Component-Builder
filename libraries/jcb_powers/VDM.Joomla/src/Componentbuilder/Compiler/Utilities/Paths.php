@@ -12,11 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Component;
-use VDM\Joomla\Componentbuilder\Interfaces\Mappersingleinterface;
-use VDM\Joomla\Componentbuilder\Abstraction\MapperSingle;
+use VDM\Joomla\Abstraction\Registry;
 
 
 /**
@@ -24,7 +22,7 @@ use VDM\Joomla\Componentbuilder\Abstraction\MapperSingle;
  * 
  * @since 3.2.0
  */
-class Paths extends MapperSingle implements Mappersingleinterface
+class Paths extends Registry
 {
 	/**
 	 * Compiler Config
@@ -45,15 +43,15 @@ class Paths extends MapperSingle implements Mappersingleinterface
 	/**
 	 * Constructor
 	 *
-	 * @param Config|null        $config       The compiler config object.
-	 * @param Component|null     $component    The component class.
+	 * @param Config        $config       The compiler config object.
+	 * @param Component     $component    The component class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Component $component = null)
+	public function __construct(Config $config = null, Component $component = null)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->component = $component ?: Compiler::_('Component');
+		$this->config = $config;
+		$this->component = $component;
 
 		// set the template path
 		$this->setTemplatePath();
@@ -86,25 +84,12 @@ class Paths extends MapperSingle implements Mappersingleinterface
 	public function __get(string $key): string
 	{
 		// check if it has been set
-		if ($this->exist($key))
+		if ($this->exists($key))
 		{
 			return $this->get($key);
 		}
 
 		throw new \InvalidArgumentException(sprintf('Path %s could not be found in the Paths Class.', $key));
-	}
-
-	/**
-	 * Model the key
-	 *
-	 * @param   string   $key  The key to model
-	 *
-	 * @return  string
-	 * @since 3.2.0
-	 */
-	protected function key(string $key): string
-	{
-		return $key;
 	}
 
 	/**
@@ -199,6 +184,5 @@ class Paths extends MapperSingle implements Mappersingleinterface
 			)
 		);
 	}
-
 }
 

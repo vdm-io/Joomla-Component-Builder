@@ -49,21 +49,21 @@ class JFormFieldPowersfilterapproved extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_SUPER_POWER') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get powersmodel
-			$model = ComponentbuilderHelper::getModel('powers');
-			$results = array_unique($results);
-			foreach ($results as $approved)
+			$_model = ComponentbuilderHelper::getModel('powers');
+			$_results = array_unique($_results);
+			foreach ($_results as $approved)
 			{
 				// Translate the approved selection
-				$text = $model->selectionTranslation($approved,'approved');
+				$_text = $_model->selectionTranslation($approved,'approved');
 				// Now add the approved and its text to the options array
-				$_filter[] = JHtml::_('select.option', $approved, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $approved, JText::_($_text));
 			}
 		}
 		return $_filter;

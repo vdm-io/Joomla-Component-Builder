@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Component_updates Form Controller
@@ -62,7 +64,7 @@ class ComponentbuilderControllerComponent_updates extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('component_updates.create', $this->option);
 	}
 
@@ -85,7 +87,7 @@ class ComponentbuilderControllerComponent_updates extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('component_updates.access', 'com_componentbuilder.component_updates.' . (int) $recordId) &&  $user->authorise('component_updates.access', 'com_componentbuilder'));
+		$access = ($user->authorise('component_updates.access', 'com_componentbuilder.component_updates.' . (int) $recordId) && $user->authorise('component_updates.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;
@@ -332,9 +334,9 @@ class ComponentbuilderControllerComponent_updates extends FormController
 
 				$objectUpdate = new stdClass();
 				$objectUpdate->id = (int) $validData['joomla_component'];
-				if (ComponentbuilderHelper::checkArray($version_update)
+				if (UtilitiesArrayHelper::check($version_update)
 					&& ($component_version = end($version_update)['version'])
-					&& ComponentbuilderHelper::checkString($component_version))
+					&& StringHelper::check($component_version))
 				{
 					$objectUpdate->component_version = $component_version;
 				}

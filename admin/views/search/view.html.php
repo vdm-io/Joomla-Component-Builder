@@ -16,6 +16,7 @@ use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Filesystem\File;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 use Joomla\CMS\Form\Form;
+use VDM\Joomla\Utilities\ArrayHelper;
 
 /**
  * Componentbuilder Html View class for the Search
@@ -110,9 +111,9 @@ class ComponentbuilderViewSearch extends HtmlView
 	 */
 	public function getDynamicForm(): ?Form
 	{
-		if(ComponentbuilderHelper::checkArray($this->item) &&
-			ComponentbuilderHelper::checkArray($this->item['tables']) &&
-			ComponentbuilderHelper::checkArray($this->item['components']))
+		if(ArrayHelper::check($this->item) &&
+			ArrayHelper::check($this->item['tables']) &&
+			ArrayHelper::check($this->item['components']))
 		{
 			// start the form
 			$form = new Form('Search');
@@ -208,7 +209,7 @@ class ComponentbuilderViewSearch extends HtmlView
 				'name' => 'search_behaviour',
 				'label' => 'COM_COMPONENTBUILDER_BEHAVIOUR',
 				'description' => 'COM_COMPONENTBUILDER_SET_THE_SEARCH_BEHAVIOUR_HERE'];
-			if (ComponentbuilderHelper::checkArray($default))
+			if (ArrayHelper::check($default))
 			{
 				$attributes['default'] = implode(',', $default);
 			}
@@ -307,21 +308,24 @@ class ComponentbuilderViewSearch extends HtmlView
 	protected function setDocument()
 	{
 
-		// always make sure jquery is loaded.
-		JHtml::_('jquery.framework');
+		// Only load jQuery if needed. (default is true)
+		if ($this->params->get('add_jquery_framework', 1) == 1)
+		{
+			JHtml::_('jquery.framework');
+		}
 		// Load the header checker class.
 		require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );
 		// Initialize the header checker.
 		$HeaderCheck = new componentbuilderHeaderCheck;
 
 		// always load these files.
-		$this->document->addStyleSheet(JURI::root(true) . "/media/com_componentbuilder/datatable/css/datatables.min.css", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/css");
-		$this->document->addScript(JURI::root(true) . "/media/com_componentbuilder/datatable/js/pdfmake.min.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
-		$this->document->addScript(JURI::root(true) . "/media/com_componentbuilder/datatable/js/vfs_fonts.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
-		$this->document->addScript(JURI::root(true) . "/media/com_componentbuilder/datatable/js/datatables.min.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
+		JHtml::_('stylesheet', "media/com_componentbuilder/datatable/css/datatables.min.css", ['version' => 'auto']);
+		JHtml::_('script', "media/com_componentbuilder/datatable/js/pdfmake.min.js", ['version' => 'auto']);
+		JHtml::_('script', "media/com_componentbuilder/datatable/js/vfs_fonts.js", ['version' => 'auto']);
+		JHtml::_('script', "media/com_componentbuilder/datatable/js/datatables.min.js", ['version' => 'auto']);
 
 		// Add View JavaScript File
-		$this->document->addScript(JURI::root(true) . "/administrator/components/com_componentbuilder/assets/js/search.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
+		JHtml::_('script', "administrator/components/com_componentbuilder/assets/js/search.js", ['version' => 'auto']);
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -376,7 +380,7 @@ class ComponentbuilderViewSearch extends HtmlView
 			}
 		}
 		// add the document default css file
-		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/search.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		JHtml::_('stylesheet', 'administrator/components/com_componentbuilder/assets/css/search.css', ['version' => 'auto']);
 	}
 
 	/**

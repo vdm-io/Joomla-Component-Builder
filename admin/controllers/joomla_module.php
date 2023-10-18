@@ -62,7 +62,7 @@ class ComponentbuilderControllerJoomla_module extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('joomla_module.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerJoomla_module extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('joomla_module.access', 'com_componentbuilder.joomla_module.' . (int) $recordId) &&  $user->authorise('joomla_module.access', 'com_componentbuilder'));
+		$access = ($user->authorise('joomla_module.access', 'com_componentbuilder.joomla_module.' . (int) $recordId) && $user->authorise('joomla_module.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

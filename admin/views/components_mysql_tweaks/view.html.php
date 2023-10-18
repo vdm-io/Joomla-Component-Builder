@@ -52,7 +52,7 @@ class ComponentbuilderViewComponents_mysql_tweaks extends HtmlView
 		$this->canState = $this->canDo->get('component_mysql_tweaks.edit.state');
 		$this->canCreate = $this->canDo->get('component_mysql_tweaks.create');
 		$this->canDelete = $this->canDo->get('component_mysql_tweaks.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('component_mysql_tweaks.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

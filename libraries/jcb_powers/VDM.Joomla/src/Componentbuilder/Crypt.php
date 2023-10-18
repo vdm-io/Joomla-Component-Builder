@@ -127,11 +127,11 @@ class Crypt
 	 * @param   string        $method    The encryption method to use
 	 * @param   string|null   $default   The default password
 	 *
-	 * @return  string
+	 * @return  string|null
 	 * @since 3.2.0
 	 **/
 	public function decrypt(string $string, string $method,
-		?string $default = null): string
+		?string $default = null): ?string
 	{
 		if (($password = $this->getPassword($method, $default)) !== null
 			&& ($name = $this->getClassName($method)) !== null)
@@ -139,7 +139,7 @@ class Crypt
 			return $this->{$name}->decrypt($string, $password);
 		}
 
-		return $string;
+		return null;
 	}
 
 	/**
@@ -280,6 +280,5 @@ class Crypt
 
 		return $method;
 	}
-
 }
 

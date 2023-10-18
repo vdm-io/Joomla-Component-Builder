@@ -16,6 +16,7 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Language as CompilerLanguage;
 use VDM\Joomla\Componentbuilder\Compiler\Language\Extractor;
+use VDM\Joomla\Componentbuilder\Compiler\Language\Fieldset;
 
 
 /**
@@ -36,21 +37,24 @@ class Language implements ServiceProviderInterface
 	public function register(Container $container)
 	{
 		$container->alias(CompilerLanguage::class, 'Language')
-			->share('Language', [$this, 'getLanguage'], true);
+			->share('Language', [$this, 'getCompilerLanguage'], true);
 
 		$container->alias(Extractor::class, 'Language.Extractor')
-			->share('Language.Extractor', [$this, 'getLanguageExtractor'], true);
+			->share('Language.Extractor', [$this, 'getExtractor'], true);
+
+		$container->alias(Fieldset::class, 'Language.Fieldset')
+			->share('Language.Fieldset', [$this, 'getFieldset'], true);
 	}
 
 	/**
-	 * Get the Compiler Language
+	 * Get The Language Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  CompilerLanguage
 	 * @since 3.2.0
 	 */
-	public function getLanguage(Container $container): CompilerLanguage
+	public function getCompilerLanguage(Container $container): CompilerLanguage
 	{
 		return new CompilerLanguage(
 			$container->get('Config')
@@ -58,14 +62,14 @@ class Language implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Language Extractor
+	 * Get The Extractor Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Extractor
 	 * @since 3.2.0
 	 */
-	public function getLanguageExtractor(Container $container): Extractor
+	public function getExtractor(Container $container): Extractor
 	{
 		return new Extractor(
 			$container->get('Config'),
@@ -74,5 +78,22 @@ class Language implements ServiceProviderInterface
 		);
 	}
 
+	/**
+	 * Get The Fieldset Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Fieldset
+	 * @since 3.2.0
+	 */
+	public function getFieldset(Container $container): Fieldset
+	{
+		return new Fieldset(
+			$container->get('Language'),
+			$container->get('Compiler.Builder.Meta.Data'),
+			$container->get('Compiler.Builder.Access.Switch'),
+			$container->get('Compiler.Builder.Access.Switch.List')
+		);
+	}
 }
 

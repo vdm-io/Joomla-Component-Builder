@@ -27,7 +27,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
  * 
  * @since 3.2.0
  */
-class Dashboard
+final class Dashboard
 {
 	/**
 	 * The compiler registry
@@ -208,6 +208,5 @@ class Dashboard
 			}
 		}
 	}
-
 }
 

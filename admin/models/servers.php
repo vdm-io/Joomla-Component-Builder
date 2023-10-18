@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\FOF\Encrypt\AES;
 
 /**
  * Servers List Model
@@ -356,7 +357,7 @@ class ComponentbuilderModelServers extends ListModel
 				// Get the basic encryption key.
 				$basickey = ComponentbuilderHelper::getCryptKey('basic');
 				// Get the encryption object.
-				$basic = new FOFEncryptAes($basickey);
+				$basic = new AES($basickey);
 
 				// Set values to display correctly.
 				if (ComponentbuilderHelper::checkArray($items))

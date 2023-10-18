@@ -73,19 +73,22 @@ class Readme
 ╚═╝      ╚═════╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═╝
 ```"];
 		// add the class diagram
+		$parsed_class_code = [];
 		if (isset($power->parsed_class_code) && is_array($power->parsed_class_code))
 		{
-			$readme[] = "# " . $power->type . " " . $power->code_name . " (Details)";
-			$readme[] = "> namespace: **" . $power->_namespace . "**";
-			$readme[] = "```uml\n@startuml" . $this->plantuml->classDetailedDiagram(
-				['name' => $power->code_name, 'type' => $power->type],
-				$power->parsed_class_code
-			) . " \n@enduml\n```";
+			$parsed_class_code = $power->parsed_class_code;
 		}
-		else
+
+		$readme[] = "# " . $power->type . " " . $power->code_name . " (Details)";
+		$readme[] = "> namespace: **" . $power->_namespace . "**";
+		if ($power->extends != 0)
 		{
-			$readme[] = "> Error adding class diagram";
+			$readme[] = "> extends: **" . $power->extends_name . "**";
 		}
+		$readme[] = "```uml\n@startuml" . $this->plantuml->classDetailedDiagram(
+			['name' => $power->code_name, 'type' => $power->type],
+			$parsed_class_code
+		) . " \n@enduml\n```";
 
 		// yes you can remove this, but why?
 		$readme[] = "\n---\n```

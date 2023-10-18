@@ -29,12 +29,12 @@ class TypeName
 	/**
 	 * Get the field's actual type
 	 *
-	 * @param   object  $field  The field object
+	 * @param   array  $field  The field object
 	 *
 	 * @return  string   Success returns field type
 	 * @since 3.2.0
 	 */
-	public function get(&$field)
+	public function get(array &$field): string
 	{
 		// check if we have done this already
 		if (isset($field['type_name']))
@@ -44,13 +44,9 @@ class TypeName
 
 		// check that we have the properties
 		if (isset($field['settings'])
-			&& ObjectHelper::check(
-				$field['settings']
-			)
+			&& ObjectHelper::check($field['settings'])
 			&& isset($field['settings']->properties)
-			&& ArrayHelper::check(
-				$field['settings']->properties
-			))
+			&& ArrayHelper::check($field['settings']->properties))
 		{
 			// search for own custom fields
 			if (strpos((string) $field['settings']->type_name, '@') !== false)

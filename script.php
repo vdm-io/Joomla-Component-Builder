@@ -15,6 +15,11 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Installer\Adapter\ComponentAdapter;
+use VDM\Joomla\FOF\Encrypt\AES;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\GetHelper;
 JHTML::_('bootstrap.renderModal');
 
 /**
@@ -5691,28 +5696,28 @@ class com_componentbuilderInstallerScript
 						// Get the basic encryption.
 						$basickey = ComponentbuilderHelper::getCryptKey('basic');
 						// Get the encryption object.
-						$basic = new FOFEncryptAes($basickey, 128);
+						$basic = new AES($basickey, 128);
 						foreach ($rows as $row)
 						{
-							if (ComponentbuilderHelper::checkString($row->sales_server_ftp) || ComponentbuilderHelper::checkString($row->update_server_ftp))
+							if (StringHelper::check($row->sales_server_ftp) || StringHelper::check($row->update_server_ftp))
 							{
 								$updatevalue = null;
 								// update the update_server_ftp
-								if (ComponentbuilderHelper::checkString($row->update_server_ftp) && !is_numeric($row->update_server_ftp) && $basickey && $row->update_server_ftp === base64_encode(base64_decode($row->update_server_ftp, true)))
+								if (StringHelper::check($row->update_server_ftp) && !is_numeric($row->update_server_ftp) && $basickey && $row->update_server_ftp === base64_encode(base64_decode($row->update_server_ftp, true)))
 								{
 									$updatevalue = rtrim($basic->decryptString($row->update_server_ftp), "\0");
 								}
-								elseif (ComponentbuilderHelper::checkString($row->update_server_ftp))
+								elseif (StringHelper::check($row->update_server_ftp))
 								{
 									$updatevalue = $row->update_server_ftp;
 								}
 								$salesvalue = null;
 								// update the sales_server_ftp
-								if (ComponentbuilderHelper::checkString($row->sales_server_ftp) && !is_numeric($row->sales_server_ftp) && $basickey && $row->sales_server_ftp === base64_encode(base64_decode($row->sales_server_ftp, true)))
+								if (StringHelper::check($row->sales_server_ftp) && !is_numeric($row->sales_server_ftp) && $basickey && $row->sales_server_ftp === base64_encode(base64_decode($row->sales_server_ftp, true)))
 								{
 									$salesvalue = rtrim($basic->decryptString($row->sales_server_ftp), "\0");
 								}
-								elseif (ComponentbuilderHelper::checkString($row->sales_server_ftp))
+								elseif (StringHelper::check($row->sales_server_ftp))
 								{
 									$salesvalue = $row->sales_server_ftp;
 								}
@@ -5777,22 +5782,22 @@ class com_componentbuilderInstallerScript
 							{
 								// check if it has needed values (it should but just in case)
 								$continue = false;
-								if (isset($row->{$target}) && ComponentbuilderHelper::checkJson($row->{$target}))
+								if (isset($row->{$target}) && JsonHelper::check($row->{$target}))
 								{
 									// open the target and convert
 									$jsonArray = json_decode($row->{$target}, true);
 									// test if we can do conversion
 									$continue = true;
-									if (ComponentbuilderHelper::checkArray($jsonArray))
+									if (ArrayHelper::check($jsonArray))
 									{
 										foreach($field['check'] as $check)
 										{
-											if (!isset($jsonArray[$check]) || !ComponentbuilderHelper::checkArray($jsonArray[$check]))
+											if (!isset($jsonArray[$check]) || !ArrayHelper::check($jsonArray[$check]))
 											{
 												$continue = false;
 											}
 											// if found but not an array, then clear out the target
-											if (isset($jsonArray[$check]) && !ComponentbuilderHelper::checkArray($jsonArray[$check]))
+											if (isset($jsonArray[$check]) && !ArrayHelper::check($jsonArray[$check]))
 											{
 												$row->{$target} = '';
 												$update = true;
@@ -5813,7 +5818,7 @@ class com_componentbuilderInstallerScript
 									{
 										foreach ($values as $nr => $value)
 										{
-											if (!isset($bucket[$field['key'] . $nr]) || !ComponentbuilderHelper::checkArray($bucket[$field['key'] . $nr]))
+											if (!isset($bucket[$field['key'] . $nr]) || !ArrayHelper::check($bucket[$field['key'] . $nr]))
 											{
 												$bucket[$field['key'] . $nr] = array();
 											}
@@ -5954,7 +5959,7 @@ class com_componentbuilderInstallerScript
 							}
 						}
 						// do we still need to move any
-						if (ComponentbuilderHelper::checkArray($array))
+						if (ArrayHelper::check($array))
 						{
 							// move all diverged data
 							$query = $db->getQuery(true);
@@ -6005,7 +6010,7 @@ class com_componentbuilderInstallerScript
 							}
 						}
 						// now run query if needed
-						if (ComponentbuilderHelper::checkArray($drop))
+						if (ArrayHelper::check($drop))
 						{
 							// build query
 							$query = 'ALTER TABLE `#__componentbuilder_' . $table . '` DROP `' . implode('`, DROP `', $drop) . '`';
@@ -6095,7 +6100,10 @@ class com_componentbuilderInstallerScript
 					}
 				}
 			}
-
+			// path to the new compiler
+			$jcb_powers = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla/src/Componentbuilder';
+			// we always remove all the old files to avoid mismatching
+			ComponentbuilderHelper::removeFolder($jcb_powers);
 		}
 		// do any install needed
 		if ($type === 'install')
@@ -6342,7 +6350,7 @@ class com_componentbuilderInstallerScript
 			$field->type_title = 'Componentbuilder Field';
 			$field->type_alias = 'com_componentbuilder.field';
 			$field->table = '{"special": {"dbtable": "#__componentbuilder_field","key": "id","type": "Field","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$field->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "css_view","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","fieldtype":"fieldtype","datatype":"datatype","indexes":"indexes","null_switch":"null_switch","store":"store","on_get_model_field":"on_get_model_field","on_save_model_field":"on_save_model_field","initiator_on_get_model":"initiator_on_get_model","datalenght":"datalenght","css_view":"css_view","javascript_view_footer":"javascript_view_footer","css_views":"css_views","datadefault_other":"datadefault_other","datadefault":"datadefault","datalenght_other":"datalenght_other","javascript_views_footer":"javascript_views_footer","add_css_view":"add_css_view","xml":"xml","add_css_views":"add_css_views","add_javascript_view_footer":"add_javascript_view_footer","add_javascript_views_footer":"add_javascript_views_footer","initiator_on_save_model":"initiator_on_save_model","guid":"guid"}}';
+			$field->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "css_views","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","fieldtype":"fieldtype","datatype":"datatype","indexes":"indexes","null_switch":"null_switch","store":"store","on_save_model_field":"on_save_model_field","initiator_on_get_model":"initiator_on_get_model","initiator_on_save_model":"initiator_on_save_model","xml":"xml","datalenght":"datalenght","css_views":"css_views","css_view":"css_view","datadefault_other":"datadefault_other","datadefault":"datadefault","datalenght_other":"datalenght_other","on_get_model_field":"on_get_model_field","javascript_view_footer":"javascript_view_footer","javascript_views_footer":"javascript_views_footer","add_css_view":"add_css_view","add_css_views":"add_css_views","add_javascript_view_footer":"add_javascript_view_footer","add_javascript_views_footer":"add_javascript_views_footer","guid":"guid"}}';
 			$field->router = 'ComponentbuilderHelperRoute::getFieldRoute';
 			$field->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/field.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","xml"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","fieldtype","store","catid","add_css_view","add_css_views","add_javascript_view_footer","add_javascript_views_footer"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "fieldtype","targetTable": "#__componentbuilder_fieldtype","targetColumn": "id","displayColumn": "name"}]}';
 
@@ -6366,7 +6374,7 @@ class com_componentbuilderInstallerScript
 			$fieldtype->type_title = 'Componentbuilder Fieldtype';
 			$fieldtype->type_alias = 'com_componentbuilder.fieldtype';
 			$fieldtype->table = '{"special": {"dbtable": "#__componentbuilder_fieldtype","key": "id","type": "Fieldtype","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$fieldtype->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","store":"store","null_switch":"null_switch","indexes":"indexes","datadefault_other":"datadefault_other","datadefault":"datadefault","datalenght_other":"datalenght_other","short_description":"short_description","datatype":"datatype","has_defaults":"has_defaults","description":"description","datalenght":"datalenght","guid":"guid"}}';
+			$fieldtype->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","store":"store","null_switch":"null_switch","indexes":"indexes","datadefault_other":"datadefault_other","datadefault":"datadefault","short_description":"short_description","datatype":"datatype","has_defaults":"has_defaults","description":"description","datalenght":"datalenght","datalenght_other":"datalenght_other","guid":"guid"}}';
 			$fieldtype->router = 'ComponentbuilderHelperRoute::getFieldtypeRoute';
 			$fieldtype->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/fieldtype.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","store","has_defaults","catid"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
@@ -6738,7 +6746,7 @@ class com_componentbuilderInstallerScript
 			$query = $db->getQuery(true);
 			// Field to update.
 			$fields = array(
-				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","super_powers_documentation":"0","powers_repository":"0","super_powers_repositories":"0","approved_paths":"default","add_custom_gitea_url":"1","custom_gitea_url":"https://git.vdm.dev","super_powers_core":"joomla/super-powers","builder_gif_size":"480-272","compiler_plugin":["componentbuilderactionlogcompiler","componentbuilderfieldorderingcompiler","componentbuilderheaderscompiler","componentbuilderpowersautoloadercompiler","componentbuilderprivacycompiler"],"add_menu_prefix":"1","menu_prefix":"»","minify":"0","language":"en-GB","percentagelanguageadd":"30","assets_table_fix":"2","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","import_guid_only":"1","export_language_strings":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
+				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","super_powers_documentation":"0","powers_repository":"0","super_powers_repositories":"0","approved_paths":"default","add_custom_gitea_url":"1","custom_gitea_url":"https://git.vdm.dev","super_powers_core":"joomla/super-powers","builder_gif_size":"480-272","compiler_plugin":["componentbuilderactionlogcompiler","componentbuilderfieldorderingcompiler","componentbuilderheaderscompiler","componentbuilderpowersautoloadercompiler","componentbuilderprivacycompiler"],"add_menu_prefix":"1","menu_prefix":"»","minify":"0","language":"en-GB","percentagelanguageadd":"30","assets_table_fix":"2","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","import_guid_only":"1","export_language_strings":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","add_jquery_framework":"1","uikit_load":"1","uikit_min":"","uikit_style":""}'),
 			);
 			// Condition.
 			$conditions = array(
@@ -6755,7 +6763,7 @@ class com_componentbuilderInstallerScript
 			{
 				$rule_length = $db->loadResult();
 				// Check the size of the rules column
-				if ($rule_length <= 97760)
+				if ($rule_length <= 97600)
 				{
 					// Fix the assets table rules column size
 					$fix_rules_size = "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control. Enlarged to MEDIUMTEXT by JCB';";
@@ -8101,7 +8109,7 @@ class com_componentbuilderInstallerScript
 			$field->type_title = 'Componentbuilder Field';
 			$field->type_alias = 'com_componentbuilder.field';
 			$field->table = '{"special": {"dbtable": "#__componentbuilder_field","key": "id","type": "Field","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$field->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "css_view","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","fieldtype":"fieldtype","datatype":"datatype","indexes":"indexes","null_switch":"null_switch","store":"store","on_get_model_field":"on_get_model_field","on_save_model_field":"on_save_model_field","initiator_on_get_model":"initiator_on_get_model","datalenght":"datalenght","css_view":"css_view","javascript_view_footer":"javascript_view_footer","css_views":"css_views","datadefault_other":"datadefault_other","datadefault":"datadefault","datalenght_other":"datalenght_other","javascript_views_footer":"javascript_views_footer","add_css_view":"add_css_view","xml":"xml","add_css_views":"add_css_views","add_javascript_view_footer":"add_javascript_view_footer","add_javascript_views_footer":"add_javascript_views_footer","initiator_on_save_model":"initiator_on_save_model","guid":"guid"}}';
+			$field->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "css_views","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","fieldtype":"fieldtype","datatype":"datatype","indexes":"indexes","null_switch":"null_switch","store":"store","on_save_model_field":"on_save_model_field","initiator_on_get_model":"initiator_on_get_model","initiator_on_save_model":"initiator_on_save_model","xml":"xml","datalenght":"datalenght","css_views":"css_views","css_view":"css_view","datadefault_other":"datadefault_other","datadefault":"datadefault","datalenght_other":"datalenght_other","on_get_model_field":"on_get_model_field","javascript_view_footer":"javascript_view_footer","javascript_views_footer":"javascript_views_footer","add_css_view":"add_css_view","add_css_views":"add_css_views","add_javascript_view_footer":"add_javascript_view_footer","add_javascript_views_footer":"add_javascript_views_footer","guid":"guid"}}';
 			$field->router = 'ComponentbuilderHelperRoute::getFieldRoute';
 			$field->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/field.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","xml"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","fieldtype","store","catid","add_css_view","add_css_views","add_javascript_view_footer","add_javascript_views_footer"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "fieldtype","targetTable": "#__componentbuilder_fieldtype","targetColumn": "id","displayColumn": "name"}]}';
 
@@ -8159,7 +8167,7 @@ class com_componentbuilderInstallerScript
 			$fieldtype->type_title = 'Componentbuilder Fieldtype';
 			$fieldtype->type_alias = 'com_componentbuilder.fieldtype';
 			$fieldtype->table = '{"special": {"dbtable": "#__componentbuilder_fieldtype","key": "id","type": "Fieldtype","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$fieldtype->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","store":"store","null_switch":"null_switch","indexes":"indexes","datadefault_other":"datadefault_other","datadefault":"datadefault","datalenght_other":"datalenght_other","short_description":"short_description","datatype":"datatype","has_defaults":"has_defaults","description":"description","datalenght":"datalenght","guid":"guid"}}';
+			$fieldtype->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","store":"store","null_switch":"null_switch","indexes":"indexes","datadefault_other":"datadefault_other","datadefault":"datadefault","short_description":"short_description","datatype":"datatype","has_defaults":"has_defaults","description":"description","datalenght":"datalenght","datalenght_other":"datalenght_other","guid":"guid"}}';
 			$fieldtype->router = 'ComponentbuilderHelperRoute::getFieldtypeRoute';
 			$fieldtype->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/fieldtype.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","store","has_defaults","catid"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
@@ -9083,7 +9091,7 @@ class com_componentbuilderInstallerScript
 					{
 						foreach ($libraries as $id => $library)
 						{
-							if (!isset($updater[$row->id]) && ComponentbuilderHelper::checkString($row->url))
+							if (!isset($updater[$row->id]) && StringHelper::check($row->url))
 							{
 								foreach($library['have'] as $url)
 								{
@@ -9130,7 +9138,7 @@ class com_componentbuilderInstallerScript
 						}
 					}
 					// update if set
-					if (ComponentbuilderHelper::checkArray($updater))
+					if (ArrayHelper::check($updater))
 					{
 						foreach($updater as $item)
 						{
@@ -9149,7 +9157,7 @@ class com_componentbuilderInstallerScript
 				}
 			}
 			// set some defaults
-			if ((isset($this->setFtpValues) && ComponentbuilderHelper::checkArray($this->setFtpValues)) || (isset($this->setMoveValues) && ComponentbuilderHelper::checkArray($this->setMoveValues)))
+			if ((isset($this->setFtpValues) && ArrayHelper::check($this->setFtpValues)) || (isset($this->setMoveValues) && ArrayHelper::check($this->setMoveValues)))
 			{
 				// Get the date
 				$today = JFactory::getDate()->toSql();
@@ -9157,12 +9165,12 @@ class com_componentbuilderInstallerScript
 				$user = JFactory::getUser();
 			}
 			// check if we have stuff to move
-			if (isset($this->setMoveValues) && ComponentbuilderHelper::checkArray($this->setMoveValues))
+			if (isset($this->setMoveValues) && ArrayHelper::check($this->setMoveValues))
 			{
 				// moving data now... but first check if data not already set
 				foreach ($this->setMoveValues as $table => $items)
 				{
-					if (ComponentbuilderHelper::checkArray($items))
+					if (ArrayHelper::check($items))
 					{
 						foreach($items as $item)
 						{
@@ -9188,17 +9196,17 @@ class com_componentbuilderInstallerScript
 				}
 			}
 			// check if any links were found
-			if (isset($this->setFtpValues) && ComponentbuilderHelper::checkArray($this->setFtpValues))
+			if (isset($this->setFtpValues) && ArrayHelper::check($this->setFtpValues))
 			{
 				// build the storage buckets
 				foreach ($this->setFtpValues as $hash => $item)
 				{
 					// get host name
-					$hostusername = ComponentbuilderHelper::getBetween($item['ftp'], 'username=', '&');
+					$hostusername = GetHelper::between($item['ftp'], 'username=', '&');
 					// get key
 					$keys = explode('__', $hash);
 					$key = $keys[1];
-					if (ComponentbuilderHelper::checkString($hostusername) && $hostusername !== 'user@name.com' && strpos($hostusername, '@') !== false && strpos($hostusername, '.') !== false)
+					if (StringHelper::check($hostusername) && $hostusername !== 'user@name.com' && strpos($hostusername, '@') !== false && strpos($hostusername, '.') !== false)
 					{
 						$name = explode('.', $hostusername);
 						// Create an object.
@@ -9219,7 +9227,7 @@ class com_componentbuilderInstallerScript
 							// make sure the access of asset is set
 							ComponentbuilderHelper::setAsset($newId,'ftp');
 							// now update the components
-							if (ComponentbuilderHelper::checkArray($item['ids']))
+							if (ArrayHelper::check($item['ids']))
 							{
 								foreach ($item['ids'] as $compId)
 								{
@@ -9236,7 +9244,7 @@ class com_componentbuilderInstallerScript
 					else
 					{
 						// now update the components
-						if (ComponentbuilderHelper::checkArray($item['ids']))
+						if (ArrayHelper::check($item['ids']))
 						{
 							foreach ($item['ids'] as $compId)
 							{
@@ -9320,7 +9328,7 @@ class com_componentbuilderInstallerScript
 				function validateGUID ($guid)
 				{
 					// check if we have a string
-					if (ComponentbuilderHelper::checkString($guid))
+					if (StringHelper::check($guid))
 					{
 						return preg_match("/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i", $guid);
 					}
@@ -9429,7 +9437,7 @@ class com_componentbuilderInstallerScript
 			echo '<a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 3.1.24 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 3.1.26 Was Successful! Let us know if anything is not working as expected.</h3>';
 
 			// Set db if not set already.
 			if (!isset($db))

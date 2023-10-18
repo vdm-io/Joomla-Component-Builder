@@ -16,6 +16,11 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Admin_view Admin Model
@@ -249,7 +254,7 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'admin_view__'.$id);
 				ComponentbuilderHelper::set('admin_view__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -257,7 +262,7 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -599,7 +604,7 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'admin_view__'.$id);
 				ComponentbuilderHelper::set('admin_view__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -607,7 +612,7 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -785,7 +790,7 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
-		if (ComponentbuilderHelper::checkArray($editors))
+		if (UtilitiesArrayHelper::check($editors))
 		{
 			foreach ($editors as $editor)
 			{
@@ -800,7 +805,7 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 		// Only load the GUID if new item (or empty)
 		if (0 == $id || !($val = $form->getValue('guid')))
 		{
-			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
+			$form->setValue('guid', null, GuidHelper::get());
 		}
 
 		return $form;
@@ -864,7 +869,7 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('admin_view.edit.state', 'com_componentbuilder');
 	}
     
@@ -1030,7 +1035,7 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 		}
 
 		// we must also delete the linked tables found
-		if (ComponentbuilderHelper::checkArray($pks))
+		if (UtilitiesArrayHelper::check($pks))
 		{
 			$_tablesArray = array(
 				'admin_fields',
@@ -1072,7 +1077,7 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 		}
 
 		// we must also update all linked tables
-		if (ComponentbuilderHelper::checkArray($pks))
+		if (UtilitiesArrayHelper::check($pks))
 		{
 			$_tablesArray = array(
 				'admin_fields',
@@ -1482,7 +1487,7 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 		}
 
 		// if system name is empty create a system name from the name_single
-		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
+		if (empty($data['system_name']) || !UtilitiesStringHelper::check($data['system_name']))
 		{
 			$data['system_name'] = $data['name_single'];
 		}
@@ -1491,15 +1496,15 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 		if (empty($data['guid']) && $data['id'] > 0)
 		{
 			// get the existing one
-			$data['guid'] = (string) ComponentbuilderHelper::getVar('admin_view', $data['id'], 'id', 'guid');
-		}
-		// Set the GUID if empty or not valid
-		while (!ComponentbuilderHelper::validGUID($data['guid'], "admin_view", $data['id']))
-		{
-			// must always be set
-			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+			$data['guid'] = (string) GetHelper::var('admin_view', $data['id'], 'id', 'guid');
 		}
 
+		// Set the GUID if empty or not valid
+		while (!GuidHelper::valid($data['guid'], "admin_view", $data['id']))
+		{
+			// must always be set
+			$data['guid'] = (string) GuidHelper::get();
+		}
 
 		// Set the addpermissions items to data.
 		if (isset($data['addpermissions']) && is_array($data['addpermissions']))

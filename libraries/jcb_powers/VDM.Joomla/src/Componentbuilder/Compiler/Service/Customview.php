@@ -106,9 +106,9 @@ class Customview implements ServiceProviderInterface
 	{
 		return new DynamicgetSelection(
 			$container->get('Config'),
-			$container->get('Registry')
+			$container->get('Compiler.Builder.Get.As.Lookup'),
+			$container->get('Compiler.Builder.Site.Fields')
 		);
 	}
-
 }
 

@@ -62,7 +62,7 @@ class ComponentbuilderControllerLibrary extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('library.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerLibrary extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('library.access', 'com_componentbuilder.library.' . (int) $recordId) &&  $user->authorise('library.access', 'com_componentbuilder'));
+		$access = ($user->authorise('library.access', 'com_componentbuilder.library.' . (int) $recordId) && $user->authorise('library.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

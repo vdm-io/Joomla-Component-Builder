@@ -62,7 +62,7 @@ class ComponentbuilderControllerDynamic_get extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('dynamic_get.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerDynamic_get extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('dynamic_get.access', 'com_componentbuilder.dynamic_get.' . (int) $recordId) &&  $user->authorise('dynamic_get.access', 'com_componentbuilder'));
+		$access = ($user->authorise('dynamic_get.access', 'com_componentbuilder.dynamic_get.' . (int) $recordId) && $user->authorise('dynamic_get.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

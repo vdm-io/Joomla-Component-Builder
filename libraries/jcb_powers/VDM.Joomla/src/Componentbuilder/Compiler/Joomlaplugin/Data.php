@@ -285,7 +285,7 @@ class Data
 				$_backup_langPrefix = $this->config->lang_prefix;
 
 				// set some keys
-				$plugin->target_type = 'P|uG!n';
+				$plugin->target_type = 'pLuG!n';
 				$plugin->key         = $plugin->id . '_' . $plugin->target_type;
 
 				// update to point to plugin

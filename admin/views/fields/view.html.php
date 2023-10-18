@@ -52,7 +52,7 @@ class ComponentbuilderViewFields extends HtmlView
 		$this->canState = $this->canDo->get('field.edit.state');
 		$this->canCreate = $this->canDo->get('field.create');
 		$this->canDelete = $this->canDo->get('field.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('field.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

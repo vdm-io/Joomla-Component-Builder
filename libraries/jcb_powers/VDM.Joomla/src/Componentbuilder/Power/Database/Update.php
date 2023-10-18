@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Power\Database;
 
 
-use VDM\Joomla\Componentbuilder\Power\Model as Model;
-use VDM\Joomla\Componentbuilder\Database\Update as Database;
+use VDM\Joomla\Componentbuilder\Power\Model\Upsert as Model;
+use VDM\Joomla\Database\Update as Database;
 
 
 /**
@@ -155,6 +155,5 @@ final class Update
 		}
 		return false;
 	}
-
 }
 

@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 /**
  * Snippets Admin Controller
@@ -132,7 +133,7 @@ class ComponentbuilderControllerSnippets extends AdminController
 			// Sanitize the input
 			JArrayHelper::toInteger($pks);
 			// check if there is any selections
-			if (!ComponentbuilderHelper::checkArray($pks))
+			if (!UtilitiesArrayHelper::check($pks))
 			{
 				// Redirect to the list screen with error.
 				$message = JText::_('COM_COMPONENTBUILDER_NO_SNIPPETS_WERE_SELECTED_PLEASE_MAKE_A_SELECTION_AND_TRY_AGAIN');

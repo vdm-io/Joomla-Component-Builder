@@ -62,7 +62,7 @@ class ComponentbuilderControllerJoomla_plugin_group extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return parent::allowAdd($data);
 	}
 

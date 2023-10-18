@@ -62,7 +62,7 @@ class ComponentbuilderControllerComponent_files_folders extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('component_files_folders.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerComponent_files_folders extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('component_files_folders.access', 'com_componentbuilder.component_files_folders.' . (int) $recordId) &&  $user->authorise('component_files_folders.access', 'com_componentbuilder'));
+		$access = ($user->authorise('component_files_folders.access', 'com_componentbuilder.component_files_folders.' . (int) $recordId) && $user->authorise('component_files_folders.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

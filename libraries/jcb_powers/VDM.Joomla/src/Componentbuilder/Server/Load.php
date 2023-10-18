@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Server;
 
 
 use VDM\Joomla\Componentbuilder\Compiler\Factory;
-use VDM\Joomla\Componentbuilder\Database\Load as Database;
+use VDM\Joomla\Database\Load as Database;
 use VDM\Joomla\Componentbuilder\Server\Model\Load as Model;
 
 

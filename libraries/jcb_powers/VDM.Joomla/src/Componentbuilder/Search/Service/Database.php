@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Search\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Database\Load;
+use VDM\Joomla\Database\Load;
 use VDM\Joomla\Componentbuilder\Search\Database\Load as LoadDatabase;
 use VDM\Joomla\Componentbuilder\Search\Database\Insert as InsertDatabase;
 

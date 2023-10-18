@@ -62,7 +62,7 @@ class ComponentbuilderControllerSnippet extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return parent::allowAdd($data);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerSnippet extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('snippet.access', 'com_componentbuilder.snippet.' . (int) $recordId) &&  $user->authorise('snippet.access', 'com_componentbuilder'));
+		$access = ($user->authorise('snippet.access', 'com_componentbuilder.snippet.' . (int) $recordId) && $user->authorise('snippet.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

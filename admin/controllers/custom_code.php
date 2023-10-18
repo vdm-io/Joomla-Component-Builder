@@ -62,7 +62,7 @@ class ComponentbuilderControllerCustom_code extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('custom_code.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerCustom_code extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('custom_code.access', 'com_componentbuilder.custom_code.' . (int) $recordId) &&  $user->authorise('custom_code.access', 'com_componentbuilder'));
+		$access = ($user->authorise('custom_code.access', 'com_componentbuilder.custom_code.' . (int) $recordId) && $user->authorise('custom_code.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

@@ -62,7 +62,7 @@ class ComponentbuilderControllerServer extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('server.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerServer extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('server.access', 'com_componentbuilder.server.' . (int) $recordId) &&  $user->authorise('server.access', 'com_componentbuilder'));
+		$access = ($user->authorise('server.access', 'com_componentbuilder.server.' . (int) $recordId) && $user->authorise('server.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

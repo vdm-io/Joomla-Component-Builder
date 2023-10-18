@@ -66,15 +66,25 @@ class Updateserver
 			if (isset($update['change_log']) && StringHelper::check($update['change_log'])
 				&& isset($update['version']) && StringHelper::check($update['version']))
 			{
-				$bucket[] = '# v' . $update['version'] . PHP_EOL . PHP_EOL . $update['change_log'];
+				$bucket[] = [
+					'version'    => $update['version'],
+					'change_log' => '# v' . $update['version'] . PHP_EOL . PHP_EOL . $update['change_log']
+				];
 			}
 		}
 
-		if (ArrayHelper::check($bucket))
+		// Sort bucket by version, newest at the top
+		usort($bucket, function ($a, $b) {
+			return version_compare($b['version'], $a['version']);
+		});
+
+		// Extract change logs from sorted bucket
+		$sorted_change_logs = array_column($bucket, 'change_log');
+
+		if (ArrayHelper::check($sorted_change_logs))
 		{
-			$item->changelog = implode(PHP_EOL . PHP_EOL, $bucket);
+			$item->changelog = implode(PHP_EOL . PHP_EOL, $sorted_change_logs);
 		}
 	}
-
 }
 

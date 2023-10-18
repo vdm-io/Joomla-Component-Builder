@@ -11,6 +11,7 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+use VDM\Joomla\Utilities\StringHelper;
 
 $edit = "index.php?option=com_componentbuilder&view=templates&task=template.edit";
 
@@ -67,7 +68,7 @@ $edit = "index.php?option=com_componentbuilder&view=templates&task=template.edit
 			<?php else: ?>
 				<?php echo $this->escape($item->name); ?>
 			<?php endif; ?><br />
-	<code>&lt;?php echo $this->loadTemplate('<?php echo ComponentbuilderHelper::safeString($item->alias); ?>'); ?&gt;</code>
+	<code>&lt;?php echo $this->loadTemplate('<?php echo StringHelper::safe($item->alias); ?>'); ?&gt;</code>
 			</div>
 		</td>
 		<td class="hidden-phone">

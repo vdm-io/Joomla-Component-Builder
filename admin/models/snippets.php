@@ -14,6 +14,9 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Snippets List Model
@@ -53,15 +56,15 @@ class ComponentbuilderModelSnippets extends ListModel
 	public function shareSnippets($pks)
 	{
 		// setup the query
-		if (ComponentbuilderHelper::checkArray($pks))
+		if (UtilitiesArrayHelper::check($pks))
 		{
 			// Get the user object.
-			if (!ComponentbuilderHelper::checkObject($this->user))
+			if (!ObjectHelper::check($this->user))
 			{
 				$this->user = JFactory::getUser();
 			}
 			// Create a new query object.
-			if (!ComponentbuilderHelper::checkObject($this->_db))
+			if (!ObjectHelper::check($this->_db))
 			{
 				$this->_db = JFactory::getDBO();
 			}
@@ -99,7 +102,7 @@ class ComponentbuilderModelSnippets extends ListModel
 				// load the items from db
 				$items = $this->_db->loadObjectList();
 				// check if we have items
-				if (ComponentbuilderHelper::checkArray($items))
+				if (UtilitiesArrayHelper::check($items))
 				{
 					// get the shared paths
 					$this->fullPath = rtrim(ComponentbuilderHelper::getFolderPath('path', 'sharepath', JFactory::getConfig()->get('tmp_path')), '/') . '/snippets';
@@ -125,7 +128,7 @@ class ComponentbuilderModelSnippets extends ListModel
 						// just unlock the snippet
 						$item->snippet = base64_decode($item->snippet);
 						// build filename
-						$fileName = ComponentbuilderHelper::safeString($item->library . ' - (' . $item->type . ') ' . $item->name, 'filename', '', false) . '.json';
+						$fileName = StringHelper::safe($item->library . ' - (' . $item->type . ') ' . $item->name, 'filename', '', false) . '.json';
 						// if the snippet has its own contributor details set, then do not change
 						if (!strlen($item->contributor_company) || !strlen($item->contributor_name) || !strlen($item->contributor_email) || !strlen($item->contributor_website))
 						{

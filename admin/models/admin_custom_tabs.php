@@ -284,7 +284,7 @@ class ComponentbuilderModelAdmin_custom_tabs extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('admin_custom_tabs.edit.state', 'com_componentbuilder');
 	}
     

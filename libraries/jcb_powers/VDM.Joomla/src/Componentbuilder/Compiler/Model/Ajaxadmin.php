@@ -12,9 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteEditView;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Dispenser;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -42,43 +41,43 @@ class Ajaxadmin
 	];
 
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * The compiler registry
+	 * The SiteEditView Class.
 	 *
-	 * @var    Registry
+	 * @var   SiteEditView
 	 * @since 3.2.0
 	 */
-	protected Registry $registry;
+	protected SiteEditView $siteeditview;
 
 	/**
-	 * Compiler Customcode Dispenser
+	 * The Dispenser Class.
 	 *
-	 * @var    Dispenser
+	 * @var   Dispenser
 	 * @since 3.2.0
 	 */
 	protected Dispenser $dispenser;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null               $config           The compiler config object.
-	 * @param Registry|null             $registry         The compiler registry object.
-	 * @param Dispenser|null      $dispenser      The compiler customcode dispenser
+	 * @param Config         $config         The Config Class.
+	 * @param SiteEditView   $siteeditview   The SiteEditView Class.
+	 * @param Dispenser      $dispenser      The Dispenser Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null, ?Dispenser $dispenser = null)
+	public function __construct(Config $config, SiteEditView $siteeditview, Dispenser $dispenser)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->dispenser = $dispenser ?: Compiler::_('Customcode.Dispenser');
+		$this->config = $config;
+		$this->siteeditview = $siteeditview;
+		$this->dispenser = $dispenser;
 	}
 
 	/**
@@ -104,7 +103,7 @@ class Ajaxadmin
 
 			$add_ajax_site = false;
 
-			if ($this->registry->get('builder.site_edit_view.' . $item->id, false))
+			if ($this->siteeditview->exists($item->id))
 			{
 				// we should add this site ajax to front ajax
 				$add_ajax_site = true;
@@ -169,6 +168,5 @@ class Ajaxadmin
 			}
 		}
 	}
-
 }
 

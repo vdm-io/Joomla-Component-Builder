@@ -205,16 +205,19 @@ class Contents extends Api
 		// Build the request path.
 		$path = "/repos/{$owner}/{$repo}/contents";
 
+		// Get the URI with the specified path.
+		$uri = $this->uri->get($path);
+
 		// Add the 'ref' parameter if it's provided.
 		if ($ref !== null)
 		{
-			$this->uri->setVar('ref', $ref);
+			$uri->setVar('ref', $ref);
 		}
 
 		// Send the get request.
 		return $this->response->get(
 			$this->http->get(
-				$this->uri->get($path)
+				$uri
 			)
 		);
 	}
@@ -227,8 +230,8 @@ class Contents extends Api
 	 * @param   string       $filepath       The file path.
 	 * @param   string       $content        The file content.
 	 * @param   string       $message        The commit message.
-	 * @param   string       $branch         The branch name. Defaults to the repository's default branch.
 	 * @param   string       $sha            The blob SHA of the file.
+	 * @param   string       $branch         The branch name. Defaults to the repository's default branch.
 	 * @param   string|null  $authorName     The author name. Defaults to the authenticated user.
 	 * @param   string|null  $authorEmail    The author email. Defaults to the authenticated user.
 	 * @param   string|null  $committerName  The committer name. Defaults to the authenticated user.
@@ -248,8 +251,8 @@ class Contents extends Api
 		string $filepath,
 		string $content,
 		string $message,
-		string $branch = 'master',
 		string $sha,
+		string $branch = 'master',
 		?string $authorName = null,
 		?string $authorEmail = null,
 		?string $committerName = null,
@@ -504,6 +507,5 @@ class Contents extends Api
 			)
 		);
 	}
-
 }
 

@@ -13,29 +13,28 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Adminview;
 
 
 use Joomla\CMS\Factory;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Registry;
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Dispenser;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Customtabs;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Tabs;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Fields;
-use VDM\Joomla\Componentbuilder\Compiler\Model\Historyadminview;
+use VDM\Joomla\Componentbuilder\Compiler\Model\Historyadminview as History;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Permissions;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Conditions;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Relations;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Linkedviews;
-use VDM\Joomla\Componentbuilder\Compiler\Model\Javascriptadminview;
-use VDM\Joomla\Componentbuilder\Compiler\Model\Cssadminview;
-use VDM\Joomla\Componentbuilder\Compiler\Model\Phpadminview;
+use VDM\Joomla\Componentbuilder\Compiler\Model\Javascriptadminview as Javascript;
+use VDM\Joomla\Componentbuilder\Compiler\Model\Cssadminview as Css;
+use VDM\Joomla\Componentbuilder\Compiler\Model\Phpadminview as Php;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Custombuttons;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Customimportscripts;
-use VDM\Joomla\Componentbuilder\Compiler\Model\Ajaxadmin;
+use VDM\Joomla\Componentbuilder\Compiler\Model\Ajaxadmin as Ajax;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Customalias;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Sql;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Mysqlsettings;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteEditView;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -49,188 +48,180 @@ use VDM\Joomla\Utilities\ArrayHelper;
 class Data
 {
 	/**
-	 * Admin views
+	 * The Config Class.
 	 *
-	 * @var    array
-	 * @since 3.2.0
-	 */
-	protected array $data;
-
-	/**
-	 * Compiler Config
-	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * The compiler registry
+	 * The EventInterface Class.
 	 *
-	 * @var    Registry
+	 * @var   Event
 	 * @since 3.2.0
 	 */
-	protected Registry $registry;
+	protected Event $event;
 
 	/**
-	 * Compiler Event
+	 * The Placeholder Class.
 	 *
-	 * @var    EventInterface
-	 * @since 3.2.0
-	 */
-	protected EventInterface $event;
-
-	/**
-	 * Compiler Placeholder
-	 *
-	 * @var    Placeholder
+	 * @var   Placeholder
 	 * @since 3.2.0
 	 */
 	protected Placeholder $placeholder;
 
 	/**
-	 * Compiler Customcode Dispenser
+	 * The Dispenser Class.
 	 *
-	 * @var    Dispenser
+	 * @var   Dispenser
 	 * @since 3.2.0
 	 */
 	protected Dispenser $dispenser;
 
 	/**
-	 * The modelling customtabs
+	 * The Customtabs Class.
 	 *
-	 * @var    Customtabs
+	 * @var   Customtabs
 	 * @since 3.2.0
 	 */
 	protected Customtabs $customtabs;
 
 	/**
-	 * The modelling tabs
+	 * The Tabs Class.
 	 *
-	 * @var    Tabs
+	 * @var   Tabs
 	 * @since 3.2.0
 	 */
 	protected Tabs $tabs;
 
 	/**
-	 * The modelling fields
+	 * The Fields Class.
 	 *
-	 * @var    Fields
+	 * @var   Fields
 	 * @since 3.2.0
 	 */
 	protected Fields $fields;
 
 	/**
-	 * The modelling admin view history
+	 * The Historyadminview Class.
 	 *
-	 * @var    Historyadminview
+	 * @var   History
 	 * @since 3.2.0
 	 */
-	protected Historyadminview $history;
+	protected History $history;
 
 	/**
-	 * The modelling permissions
+	 * The Permissions Class.
 	 *
-	 * @var    Permissions
+	 * @var   Permissions
 	 * @since 3.2.0
 	 */
 	protected Permissions $permissions;
 
 	/**
-	 * The modelling conditions
+	 * The Conditions Class.
 	 *
-	 * @var    Conditions
+	 * @var   Conditions
 	 * @since 3.2.0
 	 */
 	protected Conditions $conditions;
 
 	/**
-	 * The modelling relations
+	 * The Relations Class.
 	 *
-	 * @var    Relations
+	 * @var   Relations
 	 * @since 3.2.0
 	 */
 	protected Relations $relations;
 
 	/**
-	 * The modelling linked views
+	 * The Linkedviews Class.
 	 *
-	 * @var    Linkedviews
+	 * @var   Linkedviews
 	 * @since 3.2.0
 	 */
 	protected Linkedviews $linkedviews;
 
 	/**
-	 * The modelling javascript
+	 * The Javascriptadminview Class.
 	 *
-	 * @var    Javascriptadminview
+	 * @var   Javascript
 	 * @since 3.2.0
 	 */
-	protected Javascriptadminview $javascript;
+	protected Javascript $javascript;
 
 	/**
-	 * The modelling css
+	 * The Cssadminview Class.
 	 *
-	 * @var    Cssadminview
+	 * @var   Css
 	 * @since 3.2.0
 	 */
-	protected Cssadminview $css;
+	protected Css $css;
 
 	/**
-	 * The modelling php admin view
+	 * The Phpadminview Class.
 	 *
-	 * @var    Phpadminview
+	 * @var   Php
 	 * @since 3.2.0
 	 */
-	protected Phpadminview $php;
+	protected Php $php;
 
 	/**
-	 * The modelling custom buttons
+	 * The Custombuttons Class.
 	 *
-	 * @var    Custombuttons
+	 * @var   Custombuttons
 	 * @since 3.2.0
 	 */
 	protected Custombuttons $custombuttons;
 
 	/**
-	 * The modelling custom import scripts
+	 * The Customimportscripts Class.
 	 *
-	 * @var    Customimportscripts
+	 * @var   Customimportscripts
 	 * @since 3.2.0
 	 */
 	protected Customimportscripts $customimportscripts;
 
 	/**
-	 * The modelling ajax
+	 * The Ajaxadmin Class.
 	 *
-	 * @var    Ajaxadmin
+	 * @var   Ajax
 	 * @since 3.2.0
 	 */
-	protected Ajaxadmin $ajax;
+	protected Ajax $ajax;
 
 	/**
-	 * The modelling custom alias
+	 * The Customalias Class.
 	 *
-	 * @var    Customalias
+	 * @var   Customalias
 	 * @since 3.2.0
 	 */
 	protected Customalias $customalias;
 
 	/**
-	 * The modelling sql
+	 * The Sql Class.
 	 *
-	 * @var    Sql
+	 * @var   Sql
 	 * @since 3.2.0
 	 */
 	protected Sql $sql;
 
 	/**
-	 * The modelling mysql settings
+	 * The Mysqlsettings Class.
 	 *
-	 * @var    Mysqlsettings
+	 * @var   Mysqlsettings
 	 * @since 3.2.0
 	 */
 	protected Mysqlsettings $mysqlsettings;
+
+	/**
+	 * The SiteEditView Class.
+	 *
+	 * @var   SiteEditView
+	 * @since 3.2.0
+	 */
+	protected SiteEditView $siteeditview;
 
 	/**
 	 * Database object to query local DB
@@ -241,66 +232,61 @@ class Data
 	protected \JDatabaseDriver $db;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null                 $config                 The compiler config object.
-	 * @param Registry|null               $registry               The compiler registry object.
-	 * @param EventInterface|null         $event                  The compiler event api object.
-	 * @param Placeholder|null            $placeholder            The compiler placeholder object.
-	 * @param Dispenser|null              $dispenser              The compiler customcode dispenser object.
-	 * @param Customtabs|null             $customtabs             The modelling customtabs object.
-	 * @param Tabs|null                   $tabs                   The modelling tabs object.
-	 * @param Fields|null                 $fields                 The modelling fields object.
-	 * @param Historyadminview|null       $history                The modelling admin view history object.
-	 * @param Permissions|null            $permissions            The modelling permissions object.
-	 * @param Conditions|null             $conditions             The modelling conditions object.
-	 * @param Relations|null              $relations              The modelling relations object.
-	 * @param Linkedviews|null            $linkedviews            The modelling linked views object.
-	 * @param Javascriptadminview|null    $javascript             The modelling javascript object.
-	 * @param Cssadminview|null           $css                    The modelling css object.
-	 * @param Phpadminview|null           $php                    The modelling php admin view object.
-	 * @param Custombuttons|null          $custombuttons          The modelling custom buttons object.
-	 * @param Customimportscripts|null    $customimportscripts    The modelling custom import scripts object.
-	 * @param Ajaxadmin|null              $ajax                   The modelling ajax object.
-	 * @param Customalias|null            $customalias            The modelling custom alias object.
-	 * @param Sql|null                    $sql                    The modelling sql object.
-	 * @param Mysqlsettings|null          $mysqlsettings          The modelling mysql settings object.
-	 * @param \JDatabaseDriver|null       $db                     The database object.
+	 * @param Config                $config                The Config Class.
+	 * @param Event                 $event                 The EventInterface Class.
+	 * @param Placeholder           $placeholder           The Placeholder Class.
+	 * @param Dispenser             $dispenser             The Dispenser Class.
+	 * @param Customtabs            $customtabs            The Customtabs Class.
+	 * @param Tabs                  $tabs                  The Tabs Class.
+	 * @param Fields                $fields                The Fields Class.
+	 * @param History               $history               The Historyadminview Class.
+	 * @param Permissions           $permissions           The Permissions Class.
+	 * @param Conditions            $conditions            The Conditions Class.
+	 * @param Relations             $relations             The Relations Class.
+	 * @param Linkedviews           $linkedviews           The Linkedviews Class.
+	 * @param Javascript            $javascript            The Javascriptadminview Class.
+	 * @param Css                   $css                   The Cssadminview Class.
+	 * @param Php                   $php                   The Phpadminview Class.
+	 * @param Custombuttons         $custombuttons         The Custombuttons Class.
+	 * @param Customimportscripts   $customimportscripts   The Customimportscripts Class.
+	 * @param Ajax                  $ajax                  The Ajaxadmin Class.
+	 * @param Customalias           $customalias           The Customalias Class.
+	 * @param Sql                   $sql                   The Sql Class.
+	 * @param Mysqlsettings         $mysqlsettings         The Mysqlsettings Class.
+	 * @param SiteEditView          $siteeditview          The SiteEditView Class.
+	 * @param \JDatabaseDriver|null $db                    The Database Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null,
-		?EventInterface $event = null, ?Placeholder $placeholder = null, ?Dispenser $dispenser = null,
-		?Customtabs $customtabs = null, ?Tabs $tabs = null, ?Fields $fields = null,
-		?Historyadminview $history = null, ?Permissions $permissions = null,
-		?Conditions $conditions = null, Relations $relations = null, ?Linkedviews $linkedviews = null,
-		?Javascriptadminview $javascript = null, ?Cssadminview $css = null, ?Phpadminview $php = null,
-		?Custombuttons $custombuttons = null, ?Customimportscripts $customimportscripts = null,
-		?Ajaxadmin $ajax = null, ?Customalias $customalias = null, ?Sql $sql = null,
-		?Mysqlsettings $mysqlsettings = null, ?\JDatabaseDriver $db = null)
+	public function __construct(Config $config, Event $event, Placeholder $placeholder, Dispenser $dispenser, Customtabs $customtabs, Tabs $tabs, Fields $fields,
+		History $history, Permissions $permissions, Conditions $conditions, Relations $relations, Linkedviews $linkedviews, Javascript $javascript,
+		Css $css, Php $php, Custombuttons $custombuttons, Customimportscripts $customimportscripts, Ajax $ajax, Customalias $customalias, Sql $sql,
+		Mysqlsettings $mysqlsettings, SiteEditView $siteeditview, ?\JDatabaseDriver $db = null)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->event = $event ?: Compiler::_('Event');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->dispenser = $dispenser ?: Compiler::_('Customcode.Dispenser');
-		$this->customtabs = $customtabs ?: Compiler::_('Model.Customtabs');
-		$this->tabs = $tabs ?: Compiler::_('Model.Tabs');
-		$this->fields = $fields ?: Compiler::_('Model.Fields');
-		$this->history = $history ?: Compiler::_('Model.Historyadminview');
-		$this->permissions = $permissions ?: Compiler::_('Model.Permissions');
-		$this->conditions = $conditions ?: Compiler::_('Model.Conditions');
-		$this->relations = $relations ?: Compiler::_('Model.Relations');
-		$this->linkedviews = $linkedviews ?: Compiler::_('Model.Linkedviews');
-		$this->javascript = $javascript ?: Compiler::_('Model.Javascriptadminview');
-		$this->css = $css ?: Compiler::_('Model.Cssadminview');
-		$this->php = $php ?: Compiler::_('Model.Phpadminview');
-		$this->custombuttons = $custombuttons ?: Compiler::_('Model.Custombuttons');
-		$this->customimportscripts = $customimportscripts ?: Compiler::_('Model.Customimportscripts');
-		$this->ajax = $ajax ?: Compiler::_('Model.Ajaxadmin');
-		$this->customalias = $customalias ?: Compiler::_('Model.Customalias');
-		$this->sql = $sql ?: Compiler::_('Model.Sql');
-		$this->mysqlsettings = $mysqlsettings ?: Compiler::_('Model.Mysqlsettings');
+		$this->config = $config;
+		$this->event = $event;
+		$this->placeholder = $placeholder;
+		$this->dispenser = $dispenser;
+		$this->customtabs = $customtabs;
+		$this->tabs = $tabs;
+		$this->fields = $fields;
+		$this->history = $history;
+		$this->permissions = $permissions;
+		$this->conditions = $conditions;
+		$this->relations = $relations;
+		$this->linkedviews = $linkedviews;
+		$this->javascript = $javascript;
+		$this->css = $css;
+		$this->php = $php;
+		$this->custombuttons = $custombuttons;
+		$this->customimportscripts = $customimportscripts;
+		$this->ajax = $ajax;
+		$this->customalias = $customalias;
+		$this->sql = $sql;
+		$this->mysqlsettings = $mysqlsettings;
+		$this->siteeditview = $siteeditview;
 		$this->db = $db ?: Factory::getDbo();
 	}
 
@@ -484,7 +470,7 @@ class Data
 
 			// set the lang target
 			$this->config->lang_target = 'admin';
-			if ($this->registry->get('builder.site_edit_view.' . $id, false))
+			if ($this->siteeditview->exists($id))
 			{
 				$this->config->lang_target = 'both';
 			}
@@ -540,6 +526,5 @@ class Data
 		// return the found view data
 		return $this->data[$id];
 	}
-
 }
 

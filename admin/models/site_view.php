@@ -16,6 +16,11 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Site_view Admin Model
@@ -169,7 +174,7 @@ class ComponentbuilderModelSite_view extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'site_view__'.$id);
 				ComponentbuilderHelper::set('site_view__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -177,7 +182,7 @@ class ComponentbuilderModelSite_view extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -339,7 +344,7 @@ class ComponentbuilderModelSite_view extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'site_view__'.$id);
 				ComponentbuilderHelper::set('site_view__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -347,7 +352,7 @@ class ComponentbuilderModelSite_view extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -510,7 +515,7 @@ class ComponentbuilderModelSite_view extends AdminModel
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
-		if (ComponentbuilderHelper::checkArray($editors))
+		if (UtilitiesArrayHelper::check($editors))
 		{
 			foreach ($editors as $editor)
 			{
@@ -525,9 +530,9 @@ class ComponentbuilderModelSite_view extends AdminModel
 		// Only load the GUID if new item (or empty)
 		if (0 == $id || !($val = $form->getValue('guid')))
 		{
-			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
+			$form->setValue('guid', null, GuidHelper::get());
 		}
-
+ 
 		return $form;
 	}
 
@@ -589,7 +594,7 @@ class ComponentbuilderModelSite_view extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return parent::canEditState($record);
 	}
     
@@ -859,7 +864,7 @@ class ComponentbuilderModelSite_view extends AdminModel
 			$this->canDo		= ComponentbuilderHelper::getActions('site_view');
 		}
 
-		if (!$this->canDo->get('core.create') || !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('core.create') && !$this->canDo->get('site_view.batch'))
 		{
 			return false;
 		}
@@ -1002,7 +1007,7 @@ class ComponentbuilderModelSite_view extends AdminModel
 			$this->canDo		= ComponentbuilderHelper::getActions('site_view');
 		}
 
-		if (!$this->canDo->get('core.edit') && !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('core.edit') && !$this->canDo->get('site_view.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
@@ -1115,44 +1120,44 @@ class ComponentbuilderModelSite_view extends AdminModel
 		// always reset the snippets
 		$data['snippet'] = 0;
 		// if system name is empty create from name
-		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
+		if (empty($data['system_name']) || !UtilitiesStringHelper::check($data['system_name']))
 		{
 			$data['system_name'] = $data['name'];
 		}
 		// if codename is empty create from name
-		if (empty($data['codename']) || !ComponentbuilderHelper::checkString($data['codename']))
+		if (empty($data['codename']) || !UtilitiesStringHelper::check($data['codename']))
 		{
-			$data['codename'] = ComponentbuilderHelper::safeString($data['name']);
+			$data['codename'] = UtilitiesStringHelper::safe($data['name']);
 		}
 		else
 		{
 			// always make safe string
-			$data['codename'] = ComponentbuilderHelper::safeString($data['codename']);
+			$data['codename'] = UtilitiesStringHelper::safe($data['codename']);
 		}
 		// if context is empty create from codename
-		if (empty($data['context']) || !ComponentbuilderHelper::checkString($data['context']))
+		if (empty($data['context']) || !UtilitiesStringHelper::check($data['context']))
 		{
 			$data['context'] = $data['codename'];
 		}
 		else
 		{
 			// always make safe string
-			$data['context'] = ComponentbuilderHelper::safeString($data['context']);
+			$data['context'] = UtilitiesStringHelper::safe($data['context']);
 		}
 
 		// Set the GUID if empty or not valid
 		if (empty($data['guid']) && $data['id'] > 0)
 		{
 			// get the existing one
-			$data['guid'] = (string) ComponentbuilderHelper::getVar('site_view', $data['id'], 'id', 'guid');
-		}
-		// Set the GUID if empty or not valid
-		while (!ComponentbuilderHelper::validGUID($data['guid'], "site_view", $data['id']))
-		{
-			// must always be set
-			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+			$data['guid'] = (string) GetHelper::var('site_view', $data['id'], 'id', 'guid');
 		}
 
+		// Set the GUID if empty or not valid
+		while (!GuidHelper::valid($data['guid'], "site_view", $data['id']))
+		{
+			// must always be set
+			$data['guid'] = (string) GuidHelper::get();
+		}
 
 		// Set the custom_get items to data.
 		if (isset($data['custom_get']) && is_array($data['custom_get']))

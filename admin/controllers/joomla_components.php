@@ -18,6 +18,7 @@ use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
 use VDM\Joomla\Utilities\ArrayHelper as JCBArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use Joomla\CMS\Language\Text;
+use VDM\Joomla\Utilities\ObjectHelper;
 
 /**
  * Joomla_components Admin Controller
@@ -135,7 +136,7 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 			// run expansion via API
 			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand');
 			// is there a message returned
-			if (!is_numeric($result) && ComponentbuilderHelper::checkString($result))
+			if (!is_numeric($result) && StringHelper::check($result))
 			{
 				$this->setRedirect($redirect_url, $result);
 				return true;
@@ -294,7 +295,7 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 	public function backup()
 	{
 		// get params first
-		if (!isset($this->params) || !ComponentbuilderHelper::checkObject($this->params))
+		if (!isset($this->params) || !ObjectHelper::check($this->params))
 		{
 			$this->params = JComponentHelper::getParams('com_componentbuilder');
 		}
@@ -314,54 +315,54 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 			// manual backup message
 			$backupNotice = array();
 			// get the data to export
-			if (ComponentbuilderHelper::checkArray($pks) && $model->getSmartExport($pks))
+			if (JCBArrayHelper::check($pks) && $model->getSmartExport($pks))
 			{
 				$backupNotice[] = JText::_('COM_COMPONENTBUILDER_BACKUP_WAS_DONE_SUCCESSFULLY');
 				$backupNoticeStatus = 'Success';
 				// set the key string
-				if (componentbuilderHelper::checkString($model->key) && strlen($model->key) == 32)
+				if (StringHelper::check($model->key) && strlen($model->key) == 32)
 				{
 					$textNotice = array();
 					$keyNotice = '<h1>' . JText::sprintf('COM_COMPONENTBUILDER_THE_PACKAGE_KEY_IS_CODESCODE', $model->key) . '</h1>';
 					$keyNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_YOUR_DATA_IS_ENCRYPTED_WITH_A_AES_TWO_HUNDRED_AND_FIFTY_SIX_BIT_ENCRYPTION_USING_THE_ABOVE_THIRTY_TWO_CHARACTER_KEY') . '</p>';
 					$textNotice[] = JText::sprintf('COM_COMPONENTBUILDER_THE_PACKAGE_KEY_IS_S', $model->key);
 					// set the package owner info
-					if ((isset($model->info['getKeyFrom']['company']) && componentbuilderHelper::checkString($model->info['getKeyFrom']['company'])) || (isset($model->info['getKeyFrom']['owner']) && componentbuilderHelper::checkString($model->info['getKeyFrom']['owner'])))
+					if ((isset($model->info['getKeyFrom']['company']) && StringHelper::check($model->info['getKeyFrom']['company'])) || (isset($model->info['getKeyFrom']['owner']) && StringHelper::check($model->info['getKeyFrom']['owner'])))
 					{
 						$ownerDetails = '<h2>' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS') . '</h2>';
 						$textNotice[] = '# ' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS');
 						$ownerDetails .= '<ul>';
-						if (isset($model->info['getKeyFrom']['company']) && componentbuilderHelper::checkString($model->info['getKeyFrom']['company']))
+						if (isset($model->info['getKeyFrom']['company']) && StringHelper::check($model->info['getKeyFrom']['company']))
 						{
 							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMCOMPANYEM_BSB', $model->info['getKeyFrom']['company']) . '</li>';
 							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_COMPANY_S', $model->info['getKeyFrom']['company']);
 						}
 						// add value only if set
-						if (isset($model->info['getKeyFrom']['owner']) && componentbuilderHelper::checkString($model->info['getKeyFrom']['owner']))
+						if (isset($model->info['getKeyFrom']['owner']) && StringHelper::check($model->info['getKeyFrom']['owner']))
 						{
 							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMOWNEREM_BSB', $model->info['getKeyFrom']['owner']) . '</li>';
 							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_OWNER_S', $model->info['getKeyFrom']['owner']);
 						}
 						// add value only if set
-						if (isset($model->info['getKeyFrom']['website']) && componentbuilderHelper::checkString($model->info['getKeyFrom']['website']))
+						if (isset($model->info['getKeyFrom']['website']) && StringHelper::check($model->info['getKeyFrom']['website']))
 						{
 							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMWEBSITEEM_BSB', $model->info['getKeyFrom']['website']) . '</li>';
 							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_WEBSITE_S', $model->info['getKeyFrom']['website']);
 						}
 						// add value only if set
-						if (isset($model->info['getKeyFrom']['email']) && componentbuilderHelper::checkString($model->info['getKeyFrom']['email']))
+						if (isset($model->info['getKeyFrom']['email']) && StringHelper::check($model->info['getKeyFrom']['email']))
 						{
 							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMEMAILEM_BSB', $model->info['getKeyFrom']['email']) . '</li>';
 							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_EMAIL_S', $model->info['getKeyFrom']['email']);
 						}
 						// add value only if set
-						if (isset($model->info['getKeyFrom']['license']) && componentbuilderHelper::checkString($model->info['getKeyFrom']['license']))
+						if (isset($model->info['getKeyFrom']['license']) && StringHelper::check($model->info['getKeyFrom']['license']))
 						{
 							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMLICENSEEM_BSB', $model->info['getKeyFrom']['license']) . '</li>';
 							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_LICENSE_S', $model->info['getKeyFrom']['license']);
 						}
 						// add value only if set
-						if (isset($model->info['getKeyFrom']['copyright']) && componentbuilderHelper::checkString($model->info['getKeyFrom']['copyright']))
+						if (isset($model->info['getKeyFrom']['copyright']) && StringHelper::check($model->info['getKeyFrom']['copyright']))
 						{
 							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMCOPYRIGHTEM_BSB', $model->info['getKeyFrom']['copyright']) . '</li>';
 							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_COPYRIGHT_S', $model->info['getKeyFrom']['copyright']);
@@ -417,12 +418,12 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 			{
 				$backupNotice[] = JText::_('COM_COMPONENTBUILDER_BACKUP_FAILED_PLEASE_TRY_AGAIN_IF_THE_ERROR_CONTINUE_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR');
 				$backupNoticeStatus = 'Error';
-				if (componentbuilderHelper::checkString($model->packagePath))
+				if (StringHelper::check($model->packagePath))
 				{
 					// clear all if not successful
 					ComponentbuilderHelper::removeFolder($model->packagePath);
 				}
-				if (componentbuilderHelper::checkString($model->zipPath))
+				if (StringHelper::check($model->zipPath))
 				{
 					// clear all if not successful
 					JFile::delete($model->zipPath);

@@ -52,7 +52,7 @@ class ComponentbuilderViewAdmins_fields_relations extends HtmlView
 		$this->canState = $this->canDo->get('admin_fields_relations.edit.state');
 		$this->canCreate = $this->canDo->get('admin_fields_relations.create');
 		$this->canDelete = $this->canDo->get('admin_fields_relations.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('admin_fields_relations.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

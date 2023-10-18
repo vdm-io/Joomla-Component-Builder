@@ -16,6 +16,13 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\String\FieldHelper;
+use VDM\Joomla\Utilities\String\TypeHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Field Admin Model
@@ -54,6 +61,8 @@ class ComponentbuilderModelField extends AdminModel
 				'indexes',
 				'null_switch',
 				'store',
+				'medium_encryption_note',
+				'basic_encryption_note',
 				'note_whmcs_encryption',
 				'note_expert_field_save_mode',
 				'initiator_on_save_model',
@@ -64,6 +73,12 @@ class ComponentbuilderModelField extends AdminModel
 			'fullwidth' => array(
 				'note_no_database_settings_needed',
 				'note_database_settings_needed'
+			)
+		),
+		'type_info' => array(
+			'fullwidth' => array(
+				'helpnote',
+				'xml'
 			)
 		),
 		'scripts' => array(
@@ -78,12 +93,6 @@ class ComponentbuilderModelField extends AdminModel
 				'javascript_view_footer',
 				'add_javascript_views_footer',
 				'javascript_views_footer'
-			)
-		),
-		'type_info' => array(
-			'fullwidth' => array(
-				'helpnote',
-				'xml'
 			)
 		)
 	);
@@ -150,7 +159,7 @@ class ComponentbuilderModelField extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'field__'.$id);
 				ComponentbuilderHelper::set('field__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -158,7 +167,7 @@ class ComponentbuilderModelField extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -199,12 +208,6 @@ class ComponentbuilderModelField extends AdminModel
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->on_get_model_field))
-			{
-				// base64 Decode on_get_model_field.
-				$item->on_get_model_field = base64_decode($item->on_get_model_field);
-			}
-
 			if (!empty($item->on_save_model_field))
 			{
 				// base64 Decode on_save_model_field.
@@ -217,16 +220,10 @@ class ComponentbuilderModelField extends AdminModel
 				$item->initiator_on_get_model = base64_decode($item->initiator_on_get_model);
 			}
 
-			if (!empty($item->css_view))
+			if (!empty($item->initiator_on_save_model))
 			{
-				// base64 Decode css_view.
-				$item->css_view = base64_decode($item->css_view);
-			}
-
-			if (!empty($item->javascript_view_footer))
-			{
-				// base64 Decode javascript_view_footer.
-				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
+				// base64 Decode initiator_on_save_model.
+				$item->initiator_on_save_model = base64_decode($item->initiator_on_save_model);
 			}
 
 			if (!empty($item->css_views))
@@ -235,16 +232,28 @@ class ComponentbuilderModelField extends AdminModel
 				$item->css_views = base64_decode($item->css_views);
 			}
 
+			if (!empty($item->css_view))
+			{
+				// base64 Decode css_view.
+				$item->css_view = base64_decode($item->css_view);
+			}
+
+			if (!empty($item->on_get_model_field))
+			{
+				// base64 Decode on_get_model_field.
+				$item->on_get_model_field = base64_decode($item->on_get_model_field);
+			}
+
+			if (!empty($item->javascript_view_footer))
+			{
+				// base64 Decode javascript_view_footer.
+				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
+			}
+
 			if (!empty($item->javascript_views_footer))
 			{
 				// base64 Decode javascript_views_footer.
 				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
-			}
-
-			if (!empty($item->initiator_on_save_model))
-			{
-				// base64 Decode initiator_on_save_model.
-				$item->initiator_on_save_model = base64_decode($item->initiator_on_save_model);
 			}
 
 			if (!empty($item->xml))
@@ -270,7 +279,7 @@ class ComponentbuilderModelField extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'field__'.$id);
 				ComponentbuilderHelper::set('field__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -278,7 +287,7 @@ class ComponentbuilderModelField extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -402,7 +411,7 @@ class ComponentbuilderModelField extends AdminModel
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
-		if (ComponentbuilderHelper::checkArray($editors))
+		if (UtilitiesArrayHelper::check($editors))
 		{
 			foreach ($editors as $editor)
 			{
@@ -417,7 +426,7 @@ class ComponentbuilderModelField extends AdminModel
 		// Only load the GUID if new item (or empty)
 		if (0 == $id || !($val = $form->getValue('guid')))
 		{
-			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
+			$form->setValue('guid', null, GuidHelper::get());
 		}
 
 		return $form;
@@ -481,7 +490,7 @@ class ComponentbuilderModelField extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('field.edit.state', 'com_componentbuilder');
 	}
     
@@ -1076,14 +1085,14 @@ class ComponentbuilderModelField extends AdminModel
 			$typephp[$x] = $input->get('property_type_php' . $x, null, 'RAW');
 		}
 		// make sure we have an array
-		if (ComponentbuilderHelper::checkArray($properties))
+		if (UtilitiesArrayHelper::check($properties))
 		{
 			// set the bucket
 			$bucket = array();
 			foreach($properties as $property)
 			{
 				// make sure we have the correct values
-				if (ComponentbuilderHelper::checkArray($property) && isset($property['name']) && ComponentbuilderHelper::checkString($property['name']) && (isset($property['value']) || 'default' === $property['name']))
+				if (UtilitiesArrayHelper::check($property) && isset($property['name']) && UtilitiesStringHelper::check($property['name']) && (isset($property['value']) || 'default' === $property['name']))
 				{
 					// some fixes, just in case (more can be added)
 					switch ($property['name'])
@@ -1097,11 +1106,11 @@ class ComponentbuilderModelField extends AdminModel
 							}
 							else
 							{
-								$property['value'] = ComponentbuilderHelper::safeFieldName($property['value']);
+								$property['value'] = FieldHelper::safe($property['value']);
 							}
 						break;
 						case 'type':
-							$property['value'] = ComponentbuilderHelper::safeTypeName($property['value']);
+							$property['value'] = TypeHelper::safe($property['value']);
 						break;
 					}
 					// load the property
@@ -1109,15 +1118,15 @@ class ComponentbuilderModelField extends AdminModel
 				}
 			}
 			// make sure we have an array
-			if (ComponentbuilderHelper::checkArray($extraproperties))
+			if (UtilitiesArrayHelper::check($extraproperties))
 			{
 				foreach($extraproperties as $xproperty)
 				{
 					// make sure we have the correct values
-					if (ComponentbuilderHelper::checkArray($xproperty) && isset($xproperty['name']) && ComponentbuilderHelper::checkString($xproperty['name']) && isset($xproperty['value']))
+					if (UtilitiesArrayHelper::check($xproperty) && isset($xproperty['name']) && UtilitiesStringHelper::check($xproperty['name']) && isset($xproperty['value']))
 					{
 						// load the extra property
-						$bucket[] = "\t" . ComponentbuilderHelper::safeString($xproperty['name']) . '="' . str_replace('"', "&quot;", $xproperty['value']) . '"';
+						$bucket[] = "\t" . UtilitiesStringHelper::safe($xproperty['name']) . '="' . str_replace('"', "&quot;", $xproperty['value']) . '"';
 					}
 				}
 			}
@@ -1125,14 +1134,14 @@ class ComponentbuilderModelField extends AdminModel
 			foreach ($typephp as $x => $phpvalue)
 			{
 				// make sure we have a string
-				if (ComponentbuilderHelper::checkString($phpvalue))
+				if (UtilitiesStringHelper::check($phpvalue))
 				{
 					// load the type_php property
 					$bucket[] = "\t" . 'type_php' . $x . '_1="__.o0=base64=Oo.__' . base64_encode($phpvalue) . '"';
 				}
 			}
 			// if the bucket has been loaded
-			if (ComponentbuilderHelper::checkArray($bucket))
+			if (UtilitiesArrayHelper::check($bucket))
 			{
 				$data['xml'] = "<field" . PHP_EOL . implode(PHP_EOL, $bucket) . PHP_EOL . "/>";
 			}
@@ -1142,26 +1151,20 @@ class ComponentbuilderModelField extends AdminModel
 		if (empty($data['guid']) && $data['id'] > 0)
 		{
 			// get the existing one
-			$data['guid'] = (string) ComponentbuilderHelper::getVar('field', $data['id'], 'id', 'guid');
-		}
-		// Set the GUID if empty or not valid
-		while (!ComponentbuilderHelper::validGUID($data['guid'], "field", $data['id']))
-		{
-			// must always be set
-			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+			$data['guid'] = (string) GetHelper::var('field', $data['id'], 'id', 'guid');
 		}
 
+		// Set the GUID if empty or not valid
+		while (!GuidHelper::valid($data['guid'], "field", $data['id']))
+		{
+			// must always be set
+			$data['guid'] = (string) GuidHelper::get();
+		}
 
 		// Set the xml string to JSON string.
 		if (isset($data['xml']))
 		{
 			$data['xml'] = (string) json_encode($data['xml']);
-		}
-
-		// Set the on_get_model_field string to base64 string.
-		if (isset($data['on_get_model_field']))
-		{
-			$data['on_get_model_field'] = base64_encode($data['on_get_model_field']);
 		}
 
 		// Set the on_save_model_field string to base64 string.
@@ -1176,16 +1179,10 @@ class ComponentbuilderModelField extends AdminModel
 			$data['initiator_on_get_model'] = base64_encode($data['initiator_on_get_model']);
 		}
 
-		// Set the css_view string to base64 string.
-		if (isset($data['css_view']))
+		// Set the initiator_on_save_model string to base64 string.
+		if (isset($data['initiator_on_save_model']))
 		{
-			$data['css_view'] = base64_encode($data['css_view']);
-		}
-
-		// Set the javascript_view_footer string to base64 string.
-		if (isset($data['javascript_view_footer']))
-		{
-			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
+			$data['initiator_on_save_model'] = base64_encode($data['initiator_on_save_model']);
 		}
 
 		// Set the css_views string to base64 string.
@@ -1194,16 +1191,28 @@ class ComponentbuilderModelField extends AdminModel
 			$data['css_views'] = base64_encode($data['css_views']);
 		}
 
+		// Set the css_view string to base64 string.
+		if (isset($data['css_view']))
+		{
+			$data['css_view'] = base64_encode($data['css_view']);
+		}
+
+		// Set the on_get_model_field string to base64 string.
+		if (isset($data['on_get_model_field']))
+		{
+			$data['on_get_model_field'] = base64_encode($data['on_get_model_field']);
+		}
+
+		// Set the javascript_view_footer string to base64 string.
+		if (isset($data['javascript_view_footer']))
+		{
+			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
+		}
+
 		// Set the javascript_views_footer string to base64 string.
 		if (isset($data['javascript_views_footer']))
 		{
 			$data['javascript_views_footer'] = base64_encode($data['javascript_views_footer']);
-		}
-
-		// Set the initiator_on_save_model string to base64 string.
-		if (isset($data['initiator_on_save_model']))
-		{
-			$data['initiator_on_save_model'] = base64_encode($data['initiator_on_save_model']);
 		}
         
 		// Set the Params Items to data

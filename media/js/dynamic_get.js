@@ -1576,7 +1576,7 @@ function getDynamicScripts(id){
 		var current_router_parse = jQuery('textarea#jform_php_router_parse').val();
 		// set the router parse method script
 		if(current_router_parse.length == 0){
-			getCodeFrom_server(1, 'routerparse', 'type', 'getDynamicScripts').done(function(result) {
+			getCodeFrom_server(1, 'routerparse', 'type', 'getDynamicScripts').then(function(result) {
 				if(result){
 					jQuery('textarea#jform_php_router_parse').val(result);
 				}
@@ -1585,20 +1585,29 @@ function getDynamicScripts(id){
 	}
 }
 
-function getCodeFrom_server(id, type, type_name, callingName){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && id > 0 && type.length > 0) {
-		var request = token + '=1&' + type_name + '=' + type + '&id=' + id;
+function getCodeFrom_server(id, type, type_name, callingName) {
+	var url = "index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod;
+	if (token.length > 0 && id > 0 && type.length > 0) {
+		url += '&' + token + '=1&' + type_name + '=' + type + '&id=' + id;
 	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
+	var getUrl = JRouter(url);
+	return fetch(getUrl, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	}).then(function(response) {
+		if (response.ok) {
+			return response.json();
+		} else {
+			throw new Error('Network response was not ok');
+		}
+	}).then(function(data) {
+		return data;
+	}).catch(function(error) {
+		console.error('There was a problem with the fetch operation:', error);
 	});
 }
-
 
 function getEditCustomCodeButtons_server(id){
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
@@ -1640,7 +1649,7 @@ function isObject(obj) {
 }
 
 function getLinked(){
-	getCodeFrom_server(1, 'type', 'type', 'getLinked').done(function(result) {
+	getCodeFrom_server(1, 'type', 'type', 'getLinked').then(function(result) {
 		if(result){
 			jQuery('#display_linked_to').html(result);
 		}

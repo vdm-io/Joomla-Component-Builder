@@ -12,10 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Power;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Power;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Content;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne as Content;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -29,27 +28,27 @@ use VDM\Joomla\Utilities\ArrayHelper;
 class Autoloader
 {
 	/**
-	 * Power Objects
+	 * The Power Class.
 	 *
-	 * @var    Power
+	 * @var   Power
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Power $power;
 
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Config $config;
 
 	/**
-	 * Compiler Content
+	 * The ContentOne Class.
 	 *
-	 * @var    Content
+	 * @var   Content
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Content $content;
 
 	/**
@@ -63,17 +62,17 @@ class Autoloader
 	/**
 	 * Constructor.
 	 *
-	 * @param Power|null       $power      The power object.
-	 * @param Config|null      $config     The compiler config object.
-	 * @param Content|null     $content    The compiler content object.
+	 * @param Power     $power     The Power Class.
+	 * @param Config    $config    The Config Class.
+	 * @param Content   $content   The ContentOne Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Power $power = null, ?Config $config = null, ?Content $content = null)
+	public function __construct(Power $power, Config $config, Content $content)
 	{
-		$this->power = $power ?: Compiler::_('Power');
-		$this->config = $config ?: Compiler::_('Config');
-		$this->content = $content ?: Compiler::_('Content');
+		$this->power = $power;
+		$this->config = $config;
+		$this->content = $content;
 
 		// reset all autoloaders power placeholders
 		$this->content->set('ADMIN_POWER_HELPER', '');
@@ -137,7 +136,7 @@ class Autoloader
 	 */
 	private function loadPluginAutoloader(): bool
 	{
-		return $this->content->exist('PLUGIN_POWER_AUTOLOADER');
+		return $this->content->exists('PLUGIN_POWER_AUTOLOADER');
 	}
 
 	/**
@@ -409,6 +408,5 @@ class Autoloader
 
 		return null;
 	}
-
 }
 

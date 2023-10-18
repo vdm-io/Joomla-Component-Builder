@@ -12,7 +12,8 @@
 namespace VDM\Joomla\Componentbuilder;
 
 
-use VDM\Joomla\Componentbuilder\Interfaces\Tableinterface;
+use VDM\Joomla\Interfaces\Tableinterface;
+use VDM\Joomla\Abstraction\BaseTable;
 
 
 /**
@@ -20,7 +21,7 @@ use VDM\Joomla\Componentbuilder\Interfaces\Tableinterface;
  * 
  * @since 3.2.0
  */
-class Table implements Tableinterface
+class Table extends BaseTable implements Tableinterface
 {
 	/**
 	 * All areas/views/tables with their field details
@@ -4294,15 +4295,6 @@ class Table implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Set Properties',
 			],
-			'on_get_model_field' => [
-				'name' => 'on_get_model_field',
-				'label' => 'COM_COMPONENTBUILDER_FIELD_ON_GET_MODEL_FIELD_LABEL',
-				'type' => 'textarea',
-				'title' => false,
-				'list' => 'fields',
-				'store' => 'base64',
-				'tab_name' => 'Database',
-			],
 			'on_save_model_field' => [
 				'name' => 'on_save_model_field',
 				'label' => 'COM_COMPONENTBUILDER_FIELD_ON_SAVE_MODEL_FIELD_LABEL',
@@ -4321,6 +4313,24 @@ class Table implements Tableinterface
 				'store' => 'base64',
 				'tab_name' => 'Database',
 			],
+			'initiator_on_save_model' => [
+				'name' => 'initiator_on_save_model',
+				'label' => 'COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_SAVE_MODEL_LABEL',
+				'type' => 'textarea',
+				'title' => false,
+				'list' => 'fields',
+				'store' => 'base64',
+				'tab_name' => 'Database',
+			],
+			'xml' => [
+				'name' => 'xml',
+				'label' => '',
+				'type' => 'hidden',
+				'title' => false,
+				'list' => 'fields',
+				'store' => 'json',
+				'tab_name' => 'Type Info',
+			],
 			'datalenght' => [
 				'name' => 'datalenght',
 				'label' => 'COM_COMPONENTBUILDER_FIELD_DATALENGHT_LABEL',
@@ -4330,27 +4340,18 @@ class Table implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Database',
 			],
-			'css_view' => [
-				'name' => 'css_view',
-				'label' => 'COM_COMPONENTBUILDER_FIELD_CSS_VIEW_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'fields',
-				'store' => 'base64',
-				'tab_name' => 'Scripts',
-			],
-			'javascript_view_footer' => [
-				'name' => 'javascript_view_footer',
-				'label' => 'COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEW_FOOTER_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'fields',
-				'store' => 'base64',
-				'tab_name' => 'Scripts',
-			],
 			'css_views' => [
 				'name' => 'css_views',
 				'label' => 'COM_COMPONENTBUILDER_FIELD_CSS_VIEWS_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'fields',
+				'store' => 'base64',
+				'tab_name' => 'Scripts',
+			],
+			'css_view' => [
+				'name' => 'css_view',
+				'label' => 'COM_COMPONENTBUILDER_FIELD_CSS_VIEW_LABEL',
 				'type' => 'editor',
 				'title' => false,
 				'list' => 'fields',
@@ -4384,6 +4385,24 @@ class Table implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Database',
 			],
+			'on_get_model_field' => [
+				'name' => 'on_get_model_field',
+				'label' => 'COM_COMPONENTBUILDER_FIELD_ON_GET_MODEL_FIELD_LABEL',
+				'type' => 'textarea',
+				'title' => false,
+				'list' => 'fields',
+				'store' => 'base64',
+				'tab_name' => 'Database',
+			],
+			'javascript_view_footer' => [
+				'name' => 'javascript_view_footer',
+				'label' => 'COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEW_FOOTER_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'fields',
+				'store' => 'base64',
+				'tab_name' => 'Scripts',
+			],
 			'javascript_views_footer' => [
 				'name' => 'javascript_views_footer',
 				'label' => 'COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEWS_FOOTER_LABEL',
@@ -4401,15 +4420,6 @@ class Table implements Tableinterface
 				'list' => 'fields',
 				'store' => NULL,
 				'tab_name' => 'Scripts',
-			],
-			'xml' => [
-				'name' => 'xml',
-				'label' => '',
-				'type' => 'hidden',
-				'title' => false,
-				'list' => 'fields',
-				'store' => 'json',
-				'tab_name' => 'Type Info',
 			],
 			'add_css_views' => [
 				'name' => 'add_css_views',
@@ -4437,15 +4447,6 @@ class Table implements Tableinterface
 				'list' => 'fields',
 				'store' => NULL,
 				'tab_name' => 'Scripts',
-			],
-			'initiator_on_save_model' => [
-				'name' => 'initiator_on_save_model',
-				'label' => 'COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_SAVE_MODEL_LABEL',
-				'type' => 'textarea',
-				'title' => false,
-				'list' => 'fields',
-				'store' => 'base64',
-				'tab_name' => 'Database',
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -4512,15 +4513,6 @@ class Table implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Database (defaults)',
 			],
-			'datalenght_other' => [
-				'name' => 'datalenght_other',
-				'label' => 'COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_LABEL',
-				'type' => 'text',
-				'title' => false,
-				'list' => 'fieldtypes',
-				'store' => NULL,
-				'tab_name' => 'Database (defaults)',
-			],
 			'short_description' => [
 				'name' => 'short_description',
 				'label' => 'COM_COMPONENTBUILDER_FIELDTYPE_SHORT_DESCRIPTION_LABEL',
@@ -4570,6 +4562,15 @@ class Table implements Tableinterface
 				'name' => 'datalenght',
 				'label' => 'COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_LABEL',
 				'type' => 'list',
+				'title' => false,
+				'list' => 'fieldtypes',
+				'store' => NULL,
+				'tab_name' => 'Database (defaults)',
+			],
+			'datalenght_other' => [
+				'name' => 'datalenght_other',
+				'label' => 'COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_OTHER_LABEL',
+				'type' => 'text',
 				'title' => false,
 				'list' => 'fieldtypes',
 				'store' => NULL,
@@ -5544,198 +5545,5 @@ class Table implements Tableinterface
 			],
 		],
 	];
-
-	/**
-	 * Get any value from a item/field/column of an area/view/table
-	 *          Example: $this->get('table_name', 'field_name', 'value_key');
-	 * Get an item/field/column of an area/view/table
-	 *          Example: $this->get('table_name', 'field_name');
-	 * Get all items/fields/columns of an area/view/table
-	 *          Example: $this->get('table_name');
-	 * Get all areas/views/tables with all their item/field/column details
-	 *          Example: $this->get('All');
-	 *
-	 * @param   string       $table  The table
-	 * @param   string|null  $field  The field
-	 * @param   string|null  $key    The value key
-	 *
-	 * @return  mixed
-	 * @since 3.2.0
-	 */
-	public function get(string $table, ?string $field = null, ?string $key = null)
-	{
-		// return the item/field/column of an area/view/table 
-		if (is_string($field) && is_string($key))
-		{
-			// return the value of a item/field/column of an area/view/table 
-			if (isset($this->tables[$table][$field][$key]))
-			{
-				return $this->tables[$table][$field][$key];
-			}
-			return null;
-		}
-		// return the item/field/column of an area/view/table 
-		elseif (is_string($field))
-		{
-			if (isset($this->tables[$table][$field]))
-			{
-				return $this->tables[$table][$field];
-			}
-			return null;
-		}
-		// return an area/view/table
-		elseif ($table !== 'All')
-		{
-			if (isset($this->tables[$table]))
-			{
-				return $this->tables[$table];
-			}
-			return null;
-		}
-
-		// return all
-		return $this->tables;
-	}
-
-	/**
-	 * Get title field from an area/view/table
-	 *
-	 * @param   string   $table  The area
-	 *
-	 * @return  ?array
-	 * @since 3.2.0
-	 */
-	public function title(string $table): ?array
-	{
-		// return the title item/field/column of an area/view/table 
-		if (($table = $this->get($table)) !== null)
-		{
-			foreach ($table as $item)
-			{
-				if ($item['title'])
-				{
-					return $item;
-				}
-			}
-		}
-
-		// none found
-		return null;
-	}
-
-	/**
-	 * Get title field name
-	 *
-	 * @param   string   $table  The area
-	 *
-	 * @return  string
-	 * @since 3.2.0
-	 */
-	public function titleName(string $table): string
-	{
-		// return the title name of an area/view/table
-		if (($field = $this->title($table)) !== null)
-		{
-			return $field['name'];
-		}
-
-		// none found default to ID
-		return 'id';
-	}
-
-	/**
-	 * Get all tables
-	 *
-	 * @return  array
-	 * @since 3.2.0
-	 */
-	public function tables(): array
-	{
-		// return all areas/views/tables
-		return array_keys($this->tables);
-	}
-
-	/**
-	 * Check if a table (and field) exist
-	 *
-	 * @param   string       $table  The area
-	 * @param   string|null  $field  The area
-	 *
-	 * @return  bool
-	 * @since 3.2.0
-	 */
-	public function exist(string $table, ?string $field = null): bool
-	{
-		if (isset($this->tables[$table]))
-		{
-			// if we have a field
-			if (is_string($field))
-			{
-				if (isset($this->tables[$table][$field]))
-				{
-					return true;
-				}
-			}
-			else
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Get all fields of an area/view/table
-	 *
-	 * @param   string  $table     The area
-	 * @param   bool    $default   Add the default fields
-	 *
-	 * @return  array|null   On success an array of fields
-	 * @since 3.2.0
-	 */
-	public function fields(string $table, bool $default = false): ?array
-	{
-		// return all fields of an area/view/table
-		if (($table = $this->get($table)) !== null)
-		{
-			if ($default)
-			{
-				return $this->addDefault(array_keys($table));
-			}
-			else
-			{
-				return array_keys($table);
-			}
-		}
-
-		// none found
-		return null;
-	}
-
-	/**
-	 * Add the default fields
-	 *
-	 * @param   array  $fields     The table dynamic fields
-	 *
-	 * @return  array   Fields (with defaults added)
-	 * @since 3.2.0
-	 */
-	protected function addDefault(array $fields): array
-	{
-		// add default fields
-		array_unshift($fields, 'id');
-		$fields[] = 'ordering';
-		$fields[] = 'published';
-		$fields[] = 'modified_by';
-		$fields[] = 'modified';
-		$fields[] = 'created_by';
-		$fields[] = 'created';
-		$fields[] = 'hits';
-		$fields[] = 'version';
-
-		return $fields;
-	}
-
 }
 

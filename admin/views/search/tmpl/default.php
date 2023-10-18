@@ -11,6 +11,7 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+use VDM\Joomla\Utilities\ArrayHelper;
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.formvalidator');
@@ -144,7 +145,7 @@ $search_value = $this->form->getField('search_value');
 	</form>
 	<?php endif; ?>
 </div>
-<?php if (isset($this->item['tables']) && ComponentbuilderHelper::checkArray($this->item['tables'])) : ?>
+<?php if (isset($this->item['tables']) && ArrayHelper::check($this->item['tables'])) : ?>
 <script>
 // To class="uk-autoload uk-progress" UIkit.notify
 

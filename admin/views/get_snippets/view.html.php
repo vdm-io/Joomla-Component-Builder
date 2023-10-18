@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Filesystem\File;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Componentbuilder Html View class for the Get_snippets
@@ -59,15 +61,18 @@ class ComponentbuilderViewGet_snippets extends HtmlView
 	protected function setDocument()
 	{
 
-		// always make sure jquery is loaded.
-		JHtml::_('jquery.framework');
+		// Only load jQuery if needed. (default is true)
+		if ($this->params->get('add_jquery_framework', 1) == 1)
+		{
+			JHtml::_('jquery.framework');
+		}
 		// Load the header checker class.
 		require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );
 		// Initialize the header checker.
 		$HeaderCheck = new componentbuilderHeaderCheck;
 
 		// Add View JavaScript File
-		$this->document->addScript(JURI::root(true) . "/administrator/components/com_componentbuilder/assets/js/get_snippets.js", (ComponentbuilderHelper::jVersion()->isCompatible("3.8.0")) ? array("version" => "auto") : "text/javascript");
+		JHtml::_('script', "administrator/components/com_componentbuilder/assets/js/get_snippets.js", ['version' => 'auto']);
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -121,12 +126,12 @@ class ComponentbuilderViewGet_snippets extends HtmlView
 			}
 		}
 		// load the local snippets
-		if (ComponentbuilderHelper::checkArray($this->items))
+		if (ArrayHelper::check($this->items))
 		{
 			$local_snippets = array();
 			foreach ($this->items as $item)
 			{
-				$path = ComponentbuilderHelper::safeString($item->library . ' - (' . $item->type . ') ' . $item->name, 'filename', '', false). '.json';
+				$path = StringHelper::safe($item->library . ' - (' . $item->type . ') ' . $item->name, 'filename', '', false). '.json';
 				$local_snippets[$path] = $item;
 			}
 		}
@@ -236,13 +241,13 @@ class ComponentbuilderViewGet_snippets extends HtmlView
 			}
 		");
 		// load the local snippets
-		if (ComponentbuilderHelper::checkArray($this->items))
+		if (ArrayHelper::check($this->items))
 		{
 			// Set the local snippets array
 			$this->document->addScriptDeclaration("var local_snippets = ". json_encode($local_snippets).";");
 		}
 		// add the document default css file
-		$this->document->addStyleSheet(JURI::root(true) .'/administrator/components/com_componentbuilder/assets/css/get_snippets.css', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		JHtml::_('stylesheet', 'administrator/components/com_componentbuilder/assets/css/get_snippets.css', ['version' => 'auto']);
 	}
 
 	/**

@@ -17,12 +17,11 @@ use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\File;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Component\Settings;
-use VDM\Joomla\Componentbuilder\Compiler\Content;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Compiler\Component\Settings;
 use VDM\Joomla\Componentbuilder\Compiler\Component;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne as Content;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Paths;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Files;
@@ -35,7 +34,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
  * 
  * @since 3.2.0
  */
-class Structuresingle
+final class Structuresingle
 {
 	/**
 	 * The new name
@@ -70,65 +69,65 @@ class Structuresingle
 	protected string $zipFullPath;
 
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * The compiler registry
+	 * The Registry Class.
 	 *
-	 * @var    Registry
+	 * @var   Registry
 	 * @since 3.2.0
 	 */
 	protected Registry $registry;
 
 	/**
-	 * Compiler Component Joomla Version Settings
+	 * The Settings Class.
 	 *
-	 * @var    Settings
+	 * @var   Settings
 	 * @since 3.2.0
 	 */
 	protected Settings $settings;
 
 	/**
-	 * Compiler Component
+	 * The Component Class.
 	 *
-	 * @var    Component
+	 * @var   Component
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Component $component;
 
 	/**
-	 * Compiler Content
+	 * The ContentOne Class.
 	 *
-	 * @var    Content
+	 * @var   Content
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Content $content;
 
 	/**
-	 * Compiler Counter
+	 * The Counter Class.
 	 *
-	 * @var    Counter
+	 * @var   Counter
 	 * @since 3.2.0
 	 */
 	protected Counter $counter;
 
 	/**
-	 * Compiler Paths
+	 * The Paths Class.
 	 *
-	 * @var    Paths
+	 * @var   Paths
 	 * @since 3.2.0
 	 */
 	protected Paths $paths;
 
 	/**
-	 * Compiler Utilities Files
+	 * The Files Class.
 	 *
-	 * @var    Files
+	 * @var   Files
 	 * @since 3.2.0
 	 */
 	protected Files $files;
@@ -142,34 +141,32 @@ class Structuresingle
 	protected CMSApplication $app;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null           $config           The compiler config object.
-	 * @param Registry|null         $registry         The compiler registry object.
-	 * @param Settings|null    	    $settings         The compiler component Joomla version settings object.
-	 * @param Component|null        $component        The component class.
-	 * @param Content|null          $content          The compiler content object.
-	 * @param Counter|null          $counter          The compiler counter object.
-	 * @param Paths|null            $paths            The compiler paths object.
-	 * @param Files|null            $files            The compiler files object.
-	 * @param CMSApplication|null   $app              The CMS Application object.
+	 * @param Config                $config      The Config Class.
+	 * @param Registry              $registry    The Registry Class.
+	 * @param Settings              $settings    The Settings Class.
+	 * @param Component             $component   The Component Class.
+	 * @param Content               $content     The ContentOne Class.
+	 * @param Counter               $counter     The Counter Class.
+	 * @param Paths                 $paths       The Paths Class.
+	 * @param Files                 $files       The Files Class.
+	 * @param CMSApplication|null   $app         The CMS Application object.
 	 *
-	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null,
-		?Settings $settings = null, ?Component $component = null,
-		?Content $content = null, ?Counter $counter = null, ?Paths $paths = null,
-		?Files $files = null, ?CMSApplication $app = null)
+	public function __construct(Config $config, Registry $registry, Settings $settings,
+		Component $component, Content $content, Counter $counter,
+		Paths $paths, Files $files, ?CMSApplication $app = null)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->settings = $settings ?: Compiler::_('Component.Settings');
-		$this->component = $component ?: Compiler::_('Component');
-		$this->content = $content ?: Compiler::_('Content');
-		$this->counter = $counter ?: Compiler::_('Utilities.Counter');
-		$this->paths = $paths ?: Compiler::_('Utilities.Paths');
-		$this->files = $files ?: Compiler::_('Utilities.Files');
+		$this->config = $config;
+		$this->registry = $registry;
+		$this->settings = $settings;
+		$this->component = $component;
+		$this->content = $content;
+		$this->counter = $counter;
+		$this->paths = $paths;
+		$this->files = $files;
 		$this->app = $app ?: Factory::getApplication();
 	}
 
@@ -256,7 +253,7 @@ class Structuresingle
 			) !== false
 			&& (strpos($licenseChecker, 'gpl') !== false
 			|| strpos(
-				$licenseChecker, 'General public license'
+				$licenseChecker, 'general public license'
 			) !== false))
 		{
 			return true;
@@ -619,6 +616,5 @@ class Structuresingle
 			);
 		}
 	}
-
 }
 

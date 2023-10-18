@@ -831,6 +831,5 @@ class Repository implements ServiceProviderInterface
 			$container->get('Gitea.Utilities.Response')
 		);
 	}
-
 }
 

@@ -12,13 +12,12 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Language;
 
 
+use VDM\Joomla\Componentbuilder\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Language;
+use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\GetHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
-use VDM\Joomla\Componentbuilder\Compiler\Language;
 
 
 /**
@@ -53,43 +52,44 @@ class Extractor
 	public array $langMatch = [];
 
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Config $config;
 
 	/**
-	 * Compiler Placeholder
+	 * The Language Class.
 	 *
-	 * @var    Placeholder
+	 * @var   Language
 	 * @since 3.2.0
-	 **/
-	protected Placeholder $placeholder;
+	 */
+	protected Language $language;
 
 	/**
-	 * Compiler Language
+	 * The Placeholder Class.
 	 *
-	 * @var    Language
+	 * @var   Placeholder
 	 * @since 3.2.0
-	 **/
-	protected Language $language;
+	 */
+	protected Placeholder $placeholder;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Config|null              $config           The compiler config object.
-	 * @param Language|null        $language      The compiler Language object.
-	 * @param Placeholder|null     $placeholder  The compiler placeholder object.
+	 * @param Config        $config        The Config Class.
+	 * @param Language      $language      The Language Class.
+	 * @param Placeholder   $placeholder   The Placeholder Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Language $language = null, ?Placeholder $placeholder = null)
+	public function __construct(Config $config, Language $language,
+		Placeholder $placeholder)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->language = $language ?: Compiler::_('Language');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
+		$this->config = $config;
+		$this->language = $language;
+		$this->placeholder = $placeholder;
 	}
 
 	/**
@@ -242,6 +242,5 @@ class Extractor
 
 		return $content;
 	}
-
 }
 

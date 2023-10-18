@@ -62,7 +62,7 @@ class ComponentbuilderControllerLibrary_files_folders_urls extends FormControlle
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('library_files_folders_urls.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerLibrary_files_folders_urls extends FormControlle
 
 
 		// Access check.
-		$access = ($user->authorise('library_files_folders_urls.access', 'com_componentbuilder.library_files_folders_urls.' . (int) $recordId) &&  $user->authorise('library_files_folders_urls.access', 'com_componentbuilder'));
+		$access = ($user->authorise('library_files_folders_urls.access', 'com_componentbuilder.library_files_folders_urls.' . (int) $recordId) && $user->authorise('library_files_folders_urls.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

@@ -49,21 +49,21 @@ class JFormFieldClassextendingsfilterextensiontype extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_TYPE') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get class_extendingsmodel
-			$model = ComponentbuilderHelper::getModel('class_extendings');
-			$results = array_unique($results);
-			foreach ($results as $extension_type)
+			$_model = ComponentbuilderHelper::getModel('class_extendings');
+			$_results = array_unique($_results);
+			foreach ($_results as $extension_type)
 			{
 				// Translate the extension_type selection
-				$text = $model->selectionTranslation($extension_type,'extension_type');
+				$_text = $_model->selectionTranslation($extension_type,'extension_type');
 				// Now add the extension_type and its text to the options array
-				$_filter[] = JHtml::_('select.option', $extension_type, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $extension_type, JText::_($_text));
 			}
 		}
 		return $_filter;

@@ -11,15 +11,17 @@
 
 // No direct access to this file
 defined('JPATH_BASE') or die('Restricted access');
+use VDM\Joomla\Utilities\StringHelper;
 
-$table_id = (isset($displayData['id'])) ? $displayData['id'] : ComponentbuilderHelper::randomkey(7);
+$table_id = (isset($displayData['id'])) ? $displayData['id'] : StringHelper::random(7);
 $name = (isset($displayData['name'])) ? $displayData['name'] : false;
+$table_class = (isset($displayData['table_class'])) ? $displayData['table_class'] : 'uk-table';
 $headers = (isset($displayData['headers'])) ? $displayData['headers'] : [JText::_('COM_COMPONENTBUILDER_NO'), JText::_('COM_COMPONENTBUILDER_HEADERS'), JText::_('COM_COMPONENTBUILDER_FOUND')];
 $items = (isset($displayData['items'])) ? $displayData['items'] : 6;
 
 ?>
 <div class="uk-overflow-auto">
-	<table id="<?php echo $table_id; ?>" class="uk-table">
+	<table id="<?php echo $table_id; ?>" class="<?php echo $table_class; ?>">
 		<thead>
 			<?php if (is_array($headers)): ?>
 				<?php if ($name): ?>
@@ -32,7 +34,7 @@ $items = (isset($displayData['items'])) ? $displayData['items'] : 6;
 					<?php 
 						if (is_numeric($code_name))
 						{
-							$code_name = ComponentbuilderHelper::safeString($header);
+							$code_name = StringHelper::safe($header);
 						}
  					?>
 					<th data-name="<?php echo $code_name; ?>"><?php echo $header; ?></th>
@@ -46,7 +48,7 @@ $items = (isset($displayData['items'])) ? $displayData['items'] : 6;
 				<?php endif; ?>
 				<tr style="position: absolute; top: -9999px; left: -9999px;">
 				<?php for( $row = 0; $row < $headers; $row++): ?>
-					<th><?php echo ComponentbuilderHelper::safeString($row); ?></th>
+					<th><?php echo StringHelper::safe($row); ?></th>
 				<?php endfor; ?>
 				</tr>
 			<?php endif; ?>

@@ -62,7 +62,7 @@ class ComponentbuilderControllerHelp_document extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('help_document.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerHelp_document extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('help_document.access', 'com_componentbuilder.help_document.' . (int) $recordId) &&  $user->authorise('help_document.access', 'com_componentbuilder'));
+		$access = ($user->authorise('help_document.access', 'com_componentbuilder.help_document.' . (int) $recordId) && $user->authorise('help_document.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

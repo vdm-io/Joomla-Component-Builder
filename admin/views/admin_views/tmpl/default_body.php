@@ -11,6 +11,7 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+use VDM\Joomla\Utilities\ArrayHelper;
 
 $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.edit";
 
@@ -72,7 +73,7 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 			</div>
 			<?php
 				// setup the buttons
-				if (!isset($_buttons) || !ComponentbuilderHelper::checkArray($_buttons))
+				if (!isset($_buttons) || !ArrayHelper::check($_buttons))
 				{
 					$_buttons = array(
 						array(

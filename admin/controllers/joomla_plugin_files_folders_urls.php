@@ -62,7 +62,7 @@ class ComponentbuilderControllerJoomla_plugin_files_folders_urls extends FormCon
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('joomla_plugin_files_folders_urls.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerJoomla_plugin_files_folders_urls extends FormCon
 
 
 		// Access check.
-		$access = ($user->authorise('joomla_plugin_files_folders_urls.access', 'com_componentbuilder.joomla_plugin_files_folders_urls.' . (int) $recordId) &&  $user->authorise('joomla_plugin_files_folders_urls.access', 'com_componentbuilder'));
+		$access = ($user->authorise('joomla_plugin_files_folders_urls.access', 'com_componentbuilder.joomla_plugin_files_folders_urls.' . (int) $recordId) && $user->authorise('joomla_plugin_files_folders_urls.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

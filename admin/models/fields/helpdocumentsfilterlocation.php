@@ -49,21 +49,21 @@ class JFormFieldHelpdocumentsfilterlocation extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_LOCATION') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get help_documentsmodel
-			$model = ComponentbuilderHelper::getModel('help_documents');
-			$results = array_unique($results);
-			foreach ($results as $location)
+			$_model = ComponentbuilderHelper::getModel('help_documents');
+			$_results = array_unique($_results);
+			foreach ($_results as $location)
 			{
 				// Translate the location selection
-				$text = $model->selectionTranslation($location,'location');
+				$_text = $_model->selectionTranslation($location,'location');
 				// Now add the location and its text to the options array
-				$_filter[] = JHtml::_('select.option', $location, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $location, JText::_($_text));
 			}
 		}
 		return $_filter;

@@ -62,7 +62,7 @@ class ComponentbuilderControllerValidation_rule extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('validation_rule.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerValidation_rule extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('validation_rule.access', 'com_componentbuilder.validation_rule.' . (int) $recordId) &&  $user->authorise('validation_rule.access', 'com_componentbuilder'));
+		$access = ($user->authorise('validation_rule.access', 'com_componentbuilder.validation_rule.' . (int) $recordId) && $user->authorise('validation_rule.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

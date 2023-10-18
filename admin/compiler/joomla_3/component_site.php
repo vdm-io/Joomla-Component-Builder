@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 ###BOM###
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die('Restricted access');###ADMIN_POWER_HELPER###
 
 ###SITE_COMPONENT_HEADER###
 

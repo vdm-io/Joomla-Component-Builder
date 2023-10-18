@@ -49,21 +49,21 @@ class JFormFieldDynamicgetsfiltergettype extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_GETTYPE') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get dynamic_getsmodel
-			$model = ComponentbuilderHelper::getModel('dynamic_gets');
-			$results = array_unique($results);
-			foreach ($results as $gettype)
+			$_model = ComponentbuilderHelper::getModel('dynamic_gets');
+			$_results = array_unique($_results);
+			foreach ($_results as $gettype)
 			{
 				// Translate the gettype selection
-				$text = $model->selectionTranslation($gettype,'gettype');
+				$_text = $_model->selectionTranslation($gettype,'gettype');
 				// Now add the gettype and its text to the options array
-				$_filter[] = JHtml::_('select.option', $gettype, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $gettype, JText::_($_text));
 			}
 		}
 		return $_filter;

@@ -271,7 +271,7 @@ class ComponentbuilderModelLanguage extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('language.edit.state', 'com_componentbuilder');
 	}
     

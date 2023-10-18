@@ -52,7 +52,7 @@ class ComponentbuilderViewPlaceholders extends HtmlView
 		$this->canState = $this->canDo->get('placeholder.edit.state');
 		$this->canCreate = $this->canDo->get('placeholder.create');
 		$this->canDelete = $this->canDo->get('placeholder.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('placeholder.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

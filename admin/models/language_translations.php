@@ -14,8 +14,11 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Componentbuilder\Utilities\FormHelper as JCBFormHelper;
+use VDM\Joomla\Utilities\FormHelper as JCBFormHelper;
 use VDM\Joomla\Componentbuilder\Utilities\FilterHelper as JCBFilterHelper;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\JsonHelper;
 
 /**
  * Language_translations List Model
@@ -218,12 +221,12 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 				// escape all strings if not being exported
 				if (!isset($_export))
 				{
-					$item->source = ComponentbuilderHelper::htmlEscape($item->source, 'UTF-8', true, 150);
+					$item->source = StringHelper::html($item->source, 'UTF-8', true, 150);
 				}
 			}
 		}
 			// prep the lang strings for export
-			if (isset($_export) && $_export && ComponentbuilderHelper::checkArray($items))
+			if (isset($_export) && $_export && UtilitiesArrayHelper::check($items))
 			{
 				// insure we have the same order in the languages
 				$languages = ComponentbuilderHelper::getVars('language', 1, 'published', 'langtag');
@@ -251,15 +254,15 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 							$item->{$lanTag} = '';
 						}
 						// now adapt the source
-						if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
+						if (isset($item->translation) && JsonHelper::check($item->translation))
 						{
 							$translations = json_decode($item->translation, true);
-							if (ComponentbuilderHelper::checkArray($translations))
+							if (UtilitiesArrayHelper::check($translations))
 							{
 								foreach ($translations as $language)
 								{
-									if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
-									&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+									if (isset($language['translation']) && StringHelper::check($language['translation'])
+									&& isset($language['language']) && StringHelper::check($language['language']))
 									{
 										$item->{$language['language']} = $language['translation'];
 									}
@@ -537,7 +540,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 						// escape all strings if not being exported
 						if (!isset($_export))
 						{
-							$item->source = ComponentbuilderHelper::htmlEscape($item->source, 'UTF-8', true, 150);
+							$item->source = StringHelper::html($item->source, 'UTF-8', true, 150);
 						}
 						// unset the values we don't want exported.
 						unset($item->asset_id);
@@ -553,7 +556,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 				}
 
 					// prep the lang strings for export
-			if (isset($_export) && $_export && ComponentbuilderHelper::checkArray($items))
+			if (isset($_export) && $_export && UtilitiesArrayHelper::check($items))
 			{
 				// insure we have the same order in the languages
 				$languages = ComponentbuilderHelper::getVars('language', 1, 'published', 'langtag');
@@ -581,15 +584,15 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 							$item->{$lanTag} = '';
 						}
 						// now adapt the source
-						if (isset($item->translation) && ComponentbuilderHelper::checkJson($item->translation))
+						if (isset($item->translation) && JsonHelper::check($item->translation))
 						{
 							$translations = json_decode($item->translation, true);
-							if (ComponentbuilderHelper::checkArray($translations))
+							if (UtilitiesArrayHelper::check($translations))
 							{
 								foreach ($translations as $language)
 								{
-									if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
-									&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+									if (isset($language['translation']) && StringHelper::check($language['translation'])
+									&& isset($language['language']) && StringHelper::check($language['language']))
 									{
 										$item->{$language['language']} = $language['translation'];
 									}
@@ -620,7 +623,7 @@ class ComponentbuilderModelLanguage_translations extends ListModel
 		$headers->id = 'id';
 		$headers->Source = 'Source';
 		// add the languages
-		if (ComponentbuilderHelper::checkArray($languages))
+		if (UtilitiesArrayHelper::check($languages))
 		{
 			foreach ($languages as $language)
 			{

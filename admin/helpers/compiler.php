@@ -107,7 +107,7 @@ class Compiler extends Infusion
 				CFactory::_('Utilities.Folder')->remove(CFactory::_('Utilities.Paths')->component_path . '/site');
 				// clear form component xml
 				$xmlPath        = CFactory::_('Utilities.Paths')->component_path . '/'
-					. CFactory::_('Content')->get('component') . '.xml';
+					. CFactory::_('Compiler.Builder.Content.One')->get('component') . '.xml';
 				$componentXML   = FileHelper::getContent($xmlPath);
 				$textToSite     = GetHelper::between(
 					$componentXML, '<files folder="site">', '</files>'
@@ -239,7 +239,7 @@ class Compiler extends Infusion
 				);
 			}
 			// set assets table rules column Warning
-			elseif ($this->accessSize >= 30)
+			elseif (CFactory::_('Utilities.Counter')->accessSize >= 30)
 			{
 				$this->app->enqueueMessage(
 					JText::_('<hr /><h3>Assets Table Warning</h3>'), 'Warning'
@@ -256,7 +256,7 @@ class Compiler extends Infusion
 			if (!$add_assets_table_fix && CFactory::_('Config')->add_assets_table_name_fix)
 			{
 				// only add if not already added
-				if ($this->accessSize < 30)
+				if (CFactory::_('Utilities.Counter')->accessSize < 30)
 				{
 					$this->app->enqueueMessage(
 						JText::_('<hr /><h3>Assets Table Warning</h3>'),
@@ -398,10 +398,7 @@ class Compiler extends Infusion
 			// now we do the dynamic files
 			foreach (CFactory::_('Utilities.Files')->get('dynamic') as $view => $files)
 			{
-				if (CFactory::_('Content')->exist_($view)
-					&& ArrayHelper::check(
-						CFactory::_('Content')->get_($view)
-					))
+				if (CFactory::_('Compiler.Builder.Content.Multi')->isArray($view))
 				{
 					foreach ($files as $file)
 					{
@@ -418,7 +415,7 @@ class Compiler extends Infusion
 					}
 				}
 				// free up some memory
-				CFactory::_('Content')->remove_($view);
+				CFactory::_('Compiler.Builder.Content.Multi')->remove($view);
 			}
 			// free up some memory
 			CFactory::_('Utilities.Files')->remove('dynamic');
@@ -496,7 +493,7 @@ class Compiler extends Infusion
 						}
 						// free up some memory
 						CFactory::_('Utilities.Files')->remove($module->key);
-						CFactory::_('Content')->remove_($module->key);
+						CFactory::_('Compiler.Builder.Content.Multi')->remove($module->key);
 					}
 				}
 			}
@@ -574,7 +571,7 @@ class Compiler extends Infusion
 						}
 						// free up some memory
 						CFactory::_('Utilities.Files')->remove($plugin->key);
-						CFactory::_('Content')->remove_($plugin->key);
+						CFactory::_('Compiler.Builder.Content.Multi')->remove($plugin->key);
 					}
 				}
 			}
@@ -599,7 +596,7 @@ class Compiler extends Infusion
 						}
 						// free up some memory
 						CFactory::_('Utilities.Files')->remove($power->key);
-						CFactory::_('Content')->remove_($power->key);
+						CFactory::_('Compiler.Builder.Content.Multi')->remove($power->key);
 					}
 				}
 			}
@@ -624,7 +621,7 @@ class Compiler extends Infusion
 						}
 						// free up some memory
 						CFactory::_('Utilities.Files')->remove($key);
-						CFactory::_('Content')->remove_($key);
+						CFactory::_('Compiler.Builder.Content.Multi')->remove($key);
 					}
 				}
 			}
@@ -653,7 +650,7 @@ class Compiler extends Infusion
 		);
 
 		// set the file name
-		CFactory::_('Content')->set('FILENAME', $name);
+		CFactory::_('Compiler.Builder.Content.One')->set('FILENAME', $name);
 
 		// check if the file should get PHP opening
 		$php = '';
@@ -682,14 +679,25 @@ class Compiler extends Infusion
 		}
 
 		// set the answer
-		$answer = CFactory::_('Placeholder')->update($string, CFactory::_('Content')->active, 3);
+		$answer = CFactory::_('Placeholder')->update($string, CFactory::_('Compiler.Builder.Content.One')->allActive(), 3);
 
 		// set the dynamic answer
 		if ($view)
 		{
-			$answer = CFactory::_('Placeholder')->update(
-				$answer, CFactory::_('Content')->get_($view), 3
-			);
+			$placeholders = CFactory::_('Compiler.Builder.Content.Multi')->get($view, []);
+			if (is_array($placeholders))
+			{
+				$answer = CFactory::_('Placeholder')->update(
+					$answer, $placeholders, 3
+				);
+			}
+			else
+			{
+				echo '<pre>';
+				var_dump($view, $placeholders);
+				exit;
+			}
+			unset($placeholders);
 		}
 
 		// check if this file needs extra care :)
@@ -862,15 +870,15 @@ class Compiler extends Infusion
 						$value = '@update number ' . $value . ' of this MVC';
 					}
 				}
-				CFactory::_('Content')->set($key, $value);
+				CFactory::_('Compiler.Builder.Content.One')->set($key, $value);
 			}
 
 			return true;
 		}
 		// else insure to reset to global
-		CFactory::_('Content')->set('CREATIONDATE', CFactory::_('Content')->get('GLOBALCREATIONDATE'));
-		CFactory::_('Content')->set('BUILDDATE', CFactory::_('Content')->get('GLOBALBUILDDATE'));
-		CFactory::_('Content')->set('VERSION', CFactory::_('Content')->get('GLOBALVERSION'));
+		CFactory::_('Compiler.Builder.Content.One')->set('CREATIONDATE', CFactory::_('Compiler.Builder.Content.One')->get('GLOBALCREATIONDATE'));
+		CFactory::_('Compiler.Builder.Content.One')->set('BUILDDATE', CFactory::_('Compiler.Builder.Content.One')->get('GLOBALBUILDDATE'));
+		CFactory::_('Compiler.Builder.Content.One')->set('VERSION', CFactory::_('Compiler.Builder.Content.One')->get('GLOBALVERSION'));
 	}
 
 	/**
@@ -897,8 +905,8 @@ class Compiler extends Infusion
 		// do a final run to update the readme file
 		$two = 0;
 		// counter data if not set already
-		if (!CFactory::_('Content')->exist('LINE_COUNT')
-			|| CFactory::_('Content')->get('LINE_COUNT') != CFactory::_('Utilities.Counter')->line)
+		if (!CFactory::_('Compiler.Builder.Content.One')->exists('LINE_COUNT')
+			|| CFactory::_('Compiler.Builder.Content.One')->get('LINE_COUNT') != CFactory::_('Utilities.Counter')->line)
 		{
 			CFactory::_('Utilities.Counter')->set();
 		}
@@ -926,7 +934,7 @@ class Compiler extends Infusion
 		// get the file
 		$string = FileHelper::getContent($path);
 		// update the file
-		$answer = CFactory::_('Placeholder')->update($string, CFactory::_('Content')->active);
+		$answer = CFactory::_('Placeholder')->update($string, CFactory::_('Compiler.Builder.Content.One')->allActive());
 		// add to zip array
 		CFactory::_('Utilities.File')->write($path, $answer);
 	}

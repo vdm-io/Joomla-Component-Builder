@@ -12,10 +12,10 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Adminview\Data as Adminview;
-use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Adminview\Data as Admin;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteEditView;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\AdminFilterType;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
@@ -29,43 +29,53 @@ use VDM\Joomla\Utilities\ObjectHelper;
 class Adminviews
 {
 	/**
-	 * Component Admin view Data
+	 * The Config Class.
 	 *
-	 * @var    Adminview
-	 * @since 3.2.0
-	 **/
-	protected Adminview $admin;
-
-	/**
-	 * Compiler registry
-	 *
-	 * @var    Registry
+	 * @var   Config
 	 * @since 3.2.0
 	 */
-	protected Registry $registry;
-
-	/**
-	 * Compiler Config
-	 *
-	 * @var    Config
-	 * @since 3.2.0
-	 **/
 	protected Config $config;
 
 	/**
-	 * Constructor
+	 * The Data Class.
 	 *
-	 * @param Adminview|null      $admin      The admin view data object.
-	 * @param Registry|null      $registry      The compiler registry object.
-	 * @param Config|null          $config          The compiler config object.
+	 * @var   Admin
+	 * @since 3.2.0
+	 */
+	protected Admin $admin;
+
+	/**
+	 * The SiteEditView Class.
+	 *
+	 * @var   SiteEditView
+	 * @since 3.2.0
+	 */
+	protected SiteEditView $siteeditview;
+
+	/**
+	 * The AdminFilterType Class.
+	 *
+	 * @var   AdminFilterType
+	 * @since 3.2.0
+	 */
+	protected AdminFilterType $adminfiltertype;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Config            $config            The Config Class.
+	 * @param Admin             $admin             The Data Class.
+	 * @param SiteEditView      $siteeditview      The SiteEditView Class.
+	 * @param AdminFilterType   $adminfiltertype   The AdminFilterType Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Adminview $admin = null, ?Registry $registry = null, ?Config $config = null)
+	public function __construct(Config $config, Admin $admin, SiteEditView $siteeditview, AdminFilterType $adminfiltertype)
 	{
-		$this->admin = $admin ?: Compiler::_('Adminview.Data');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->config = $config ?: Compiler::_('Config');
+		$this->config = $config;
+		$this->admin = $admin;
+		$this->siteeditview = $siteeditview;
+		$this->adminfiltertype = $adminfiltertype;
 	}
 
 	/**
@@ -125,11 +135,10 @@ class Adminviews
 
 					// check if we must add to site
 					if (isset($array['edit_create_site_view'])
-						&& is_numeric(
-							$array['edit_create_site_view']
-						) && $array['edit_create_site_view'] > 0)
+						&& is_numeric($array['edit_create_site_view'])
+						&& $array['edit_create_site_view'] > 0)
 					{
-						$this->registry->set('builder.site_edit_view.' . $array['adminview'], true);
+						$this->siteeditview->set($array['adminview'], true);
 						$this->config->lang_target = 'both';
 					}
 
@@ -159,17 +168,15 @@ class Adminviews
 						$array['view']
 					);
 
-					// set the filter option for this view
-					$this->registry-> // Side (old) [default for now]
-						set('builder.admin_filter_type.' . $array['settings']->name_list_code, 1);
+					// set the filter option for this view | Side (old) [default for now]
+					$this->adminfiltertype->set($array['settings']->name_list_code, 1);
 
 					if (isset($array['filter'])
 						&& is_numeric(
 							$array['filter']
 						) && $array['filter'] > 0)
 					{
-						$this->registry->
-							set('builder.admin_filter_type.' . $array['settings']->name_list_code,
+						$this->adminfiltertype->set($array['settings']->name_list_code,
 								(int) $array['filter']);
 					}
 
@@ -179,6 +186,5 @@ class Adminviews
 			);
 		}
 	}
-
 }
 

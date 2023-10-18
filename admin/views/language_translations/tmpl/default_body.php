@@ -11,6 +11,9 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 $edit = "index.php?option=com_componentbuilder&view=language_translations&task=language_translation.edit";
 
@@ -69,15 +72,15 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 			<?php endif; ?>
 			<?php
 			$langBucket = array();
-			if (ComponentbuilderHelper::checkJson($item->translation))
+			if (JsonHelper::check($item->translation))
 			{
 				$translations = json_decode($item->translation, true);
-				if (ComponentbuilderHelper::checkArray($translations))
+				if (ArrayHelper::check($translations))
 				{
 					foreach ($translations as $language)
 					{
-						if (isset($language['translation']) && ComponentbuilderHelper::checkString($language['translation'])
-						&& isset($language['language']) && ComponentbuilderHelper::checkString($language['language']))
+						if (isset($language['translation']) && StringHelper::check($language['translation'])
+						&& isset($language['language']) && StringHelper::check($language['language']))
 						{
 							$langBucket[$language['language']] = $language['language'];
 						}
@@ -87,11 +90,11 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 			// start how many usedin's
 			$counterUsedin = array();
 			// set how many components use this string
-			if (ComponentbuilderHelper::checkJson($item->components))
+			if (JsonHelper::check($item->components))
 			{
 				$item->components = json_decode($item->components, true);
 			}
-			if (($number = ComponentbuilderHelper::checkArray($item->components)) !== false)
+			if (($number = ArrayHelper::check($item->components)) !== false)
 			{
 				if ($number == 1)
 				{
@@ -103,11 +106,11 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 				}
 			}
 			// set how many modules use this string
-			if (ComponentbuilderHelper::checkJson($item->modules))
+			if (JsonHelper::check($item->modules))
 			{
 				$item->modules = json_decode($item->modules, true);
 			}
-			if (($number = ComponentbuilderHelper::checkArray($item->modules)) !== false)
+			if (($number = ArrayHelper::check($item->modules)) !== false)
 			{
 				if ($number == 1)
 				{
@@ -119,11 +122,11 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 				}
 			}
 			// set how many plugins use this string
-			if (ComponentbuilderHelper::checkJson($item->plugins))
+			if (JsonHelper::check($item->plugins))
 			{
 				$item->plugins = json_decode($item->plugins, true);
 			}
-			if (($number = ComponentbuilderHelper::checkArray($item->plugins)) !== false)
+			if (($number = ArrayHelper::check($item->plugins)) !== false)
 			{
 				if ($number == 1)
 				{
@@ -136,12 +139,12 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 			}
 			// build the numbers
 			$numbersUsedin = '';
-			if (ComponentbuilderHelper::checkArray($counterUsedin))
+			if (ArrayHelper::check($counterUsedin))
 			{
 				$numbersUsedin = '<br />' . JText::_('COM_COMPONENTBUILDER_USED_IN') . ' ' . implode('<br />', $counterUsedin);
 			}
 			// load the languages to the string
-			if (ComponentbuilderHelper::checkArray($langBucket))
+			if (ArrayHelper::check($langBucket))
 			{
 				echo '<br /><small>' . JText::_('COM_COMPONENTBUILDER_ALREADY_TRANSLATED_INTO') . ' <em>(' . implode(', ', $langBucket) . ')</em>' . $numbersUsedin . '</small>';
 			}

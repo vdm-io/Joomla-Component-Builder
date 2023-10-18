@@ -293,7 +293,7 @@ class ComponentbuilderModelHelp_document extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('help_document.edit.state', 'com_componentbuilder');
 	}
     

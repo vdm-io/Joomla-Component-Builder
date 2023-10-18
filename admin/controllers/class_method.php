@@ -62,7 +62,7 @@ class ComponentbuilderControllerClass_method extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('class_method.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerClass_method extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('class_method.access', 'com_componentbuilder.class_method.' . (int) $recordId) &&  $user->authorise('class_method.access', 'com_componentbuilder'));
+		$access = ($user->authorise('class_method.access', 'com_componentbuilder.class_method.' . (int) $recordId) && $user->authorise('class_method.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

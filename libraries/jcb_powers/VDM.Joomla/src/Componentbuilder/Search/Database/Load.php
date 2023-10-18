@@ -17,7 +17,7 @@ use VDM\Joomla\Componentbuilder\Search\Factory;
 use VDM\Joomla\Componentbuilder\Search\Config;
 use VDM\Joomla\Componentbuilder\Table;
 use VDM\Joomla\Componentbuilder\Search\Model\Load as Model;
-use VDM\Joomla\Componentbuilder\Database\Load as Database;
+use VDM\Joomla\Database\Load as Database;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\LoadInterface;
 
 

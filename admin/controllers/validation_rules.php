@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Validation_rules Admin Controller
@@ -131,7 +132,7 @@ class ComponentbuilderControllerValidation_rules extends AdminController
 			// run expansion via API
 			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand');
 			// is there a message returned
-			if (!is_numeric($result) && ComponentbuilderHelper::checkString($result))
+			if (!is_numeric($result) && StringHelper::check($result))
 			{
 				$this->setRedirect($redirect_url, $result);
 				return true;

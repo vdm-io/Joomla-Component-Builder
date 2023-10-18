@@ -12,9 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Templatelayout;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\LayoutData;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\TemplateData;
 use VDM\Joomla\Componentbuilder\Compiler\Alias\Data as Aliasdata;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
@@ -28,44 +28,53 @@ use VDM\Joomla\Utilities\GetHelper;
 class Data
 {
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * The compiler registry
+	 * The LayoutData Class.
 	 *
-	 * @var    Registry
+	 * @var   LayoutData
 	 * @since 3.2.0
 	 */
-	protected Registry $registry;
+	protected LayoutData $layoutdata;
 
 	/**
-	 * Compiler Alias Data
+	 * The TemplateData Class.
 	 *
-	 * @var    AliasData
+	 * @var   TemplateData
 	 * @since 3.2.0
 	 */
-	protected Aliasdata $alias;
+	protected TemplateData $templatedata;
 
 	/**
-	 * Constructor
+	 * The Data Class.
 	 *
-	 * @param Config|null        $config          The compiler config object.
-	 * @param Registry|null      $registry        The compiler registry object.
-	 * @param Aliasdata|null     $alias           The compiler alias data object.
+	 * @var   Aliasdata
+	 * @since 3.2.0
+	 */
+	protected Aliasdata $aliasdata;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Config         $config         The Config Class.
+	 * @param LayoutData     $layoutdata     The LayoutData Class.
+	 * @param TemplateData   $templatedata   The TemplateData Class.
+	 * @param Aliasdata      $aliasdata      The AliasData Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null,
-		?Aliasdata $alias = null)
+	public function __construct(Config $config, LayoutData $layoutdata, TemplateData $templatedata, Aliasdata $aliasdata)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->alias = $alias ?: Compiler::_('Alias.Data');
+		$this->config = $config;
+		$this->layoutdata = $layoutdata;
+		$this->templatedata = $templatedata;
+		$this->aliasdata = $aliasdata;
 	}
 
 	/**
@@ -119,17 +128,17 @@ class Data
 		{
 			foreach ($templates as $template)
 			{
-				if (!$this->registry->
-					get('builder.template_data.' . $this->config->build_target . '.' . $view . '.' . $template, null))
+				if (!$this->templatedata->
+					exists($this->config->build_target . '.' . $view . '.' . $template))
 				{
-					$data = $this->alias->get(
+					$data = $this->aliasdata->get(
 						$template, 'template', $view
 					);
 					if (ArrayHelper::check($data))
 					{
 						// load it to the template data array
-						$this->registry->
-							set('builder.template_data.' . $this->config->build_target . '.' . $view . '.' . $template, $data);
+						$this->templatedata->
+							set($this->config->build_target . '.' . $view . '.' . $template, $data);
 						// call self to get child data
 						$again[] = ['content' => $data['html'], 'view' => $view];
 						$again[] = ['content' => $data['php_view'], 'view' => $view];
@@ -137,8 +146,8 @@ class Data
 				}
 
 				// check if we have the template set (and nothing yet found)
-				if (!$found && $this->registry->
-					get('builder.template_data.' . $this->config->build_target . '.' . $view . '.' . $template, null))
+				if (!$found && $this->templatedata->
+					exists($this->config->build_target . '.' . $view . '.' . $template, null))
 				{
 					// something was found
 					$found = true;
@@ -186,20 +195,18 @@ class Data
 
 			foreach ($layouts as $layout)
 			{
-				if (!$this->registry->
-					get('builder.layout_data.' . $this->config->build_target . '.' . $layout, null))
+				if (!$this->layoutdata->exists($this->config->build_target . '.' . $layout))
 				{
-					$data = $this->alias->get($layout, 'layout', $view);
+					$data = $this->aliasdata->get($layout, 'layout', $view);
 					if (ArrayHelper::check($data))
 					{
 						// load it to the layout data array
-						$this->registry->
-							set('builder.layout_data.' . $this->config->build_target . '.' . $layout, $data);
+						$this->layoutdata->
+							set($this->config->build_target . '.' . $layout, $data);
 						// check if other target is set
 						if ($this->config->lang_target === 'both' && $_target)
 						{
-							$this->registry->
-								set('builder.layout_data.' . $_target . '.' . $layout, $data);
+							$this->layoutdata->set($_target . '.' . $layout, $data);
 						}
 						// call self to get child data
 						$again[] = ['content' => $data['html'], 'view' => $view];
@@ -208,8 +215,7 @@ class Data
 				}
 
 				// check if we have the layout set (and nothing yet found)
-				if (!$found && $this->registry->
-					get('builder.layout_data.' . $this->config->build_target . '.' . $layout, null))
+				if (!$found && $this->layoutdata->exists($this->config->build_target . '.' . $layout))
 				{
 					// something was found
 					$found = true;
@@ -231,6 +237,5 @@ class Data
 		// return the proof that something was found
 		return $found;
 	}
-
 }
 

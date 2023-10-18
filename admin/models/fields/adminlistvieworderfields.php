@@ -120,8 +120,17 @@ class JFormFieldAdminlistvieworderfields extends JFormFieldList
 					foreach($items as $item)
 					{
 						// get the field name (TODO this could slow down the system so we will need to improve on this)
-						$field_name = ComponentbuilderHelper::safeFieldName(ComponentbuilderHelper::getBetween(json_decode($item->xml),'name="','"'));
-						$options[] = JHtml::_('select.option', $item->id, $item->name . ' [ ' . $field_name . ' - ' . $item->type . ' ]');
+						if (isset($item->xml) && ComponentbuilderHelper::checkJson($item->xml))
+						{
+							$field_xml = json_decode($item->xml);
+							$field_name = ComponentbuilderHelper::getBetween($field_xml,'name="','"');
+							$field_name = ComponentbuilderHelper::safeFieldName($field_name);
+							$options[] = JHtml::_('select.option', $item->id, $item->name . ' [ ' . $field_name . ' - ' . $item->type . ' ]');
+						}
+						else
+						{
+							$options[] = JHtml::_('select.option', $item->id, $item->name . ' [ empty - ' . $item->type . ' ]');
+						}
 					}
 				}
 				return $options;

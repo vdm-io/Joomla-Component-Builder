@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 /**
  * Languages List Model
@@ -51,7 +52,7 @@ class ComponentbuilderModelLanguages extends ListModel
 		if ($languages = $this->getLanguages())
 		{
 			// make sure we have an array
-			if (ComponentbuilderHelper::checkArray($languages))
+			if (UtilitiesArrayHelper::check($languages))
 			{
 				// get the model
 				$model = ComponentbuilderHelper::getModel('language');

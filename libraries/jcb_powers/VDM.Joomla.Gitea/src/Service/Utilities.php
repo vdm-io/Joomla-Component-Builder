@@ -67,6 +67,5 @@ class Utilities implements ServiceProviderInterface
 	{
 		return new Response();
 	}
-
 }
 

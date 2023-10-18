@@ -33,11 +33,17 @@ class Createdate
 	 */
 	public function get(&$item): string
 	{
-		if (isset($item['settings']->created)
+		if (is_array($item) && isset($item['settings']) && isset($item['settings']->created)
 			&& StringHelper::check($item['settings']->created))
 		{
 			// first set the main date
 			$date = strtotime((string) $item['settings']->created);
+		}
+		elseif (is_object($item) && isset($item->created)
+			&& StringHelper::check($item->created))
+		{
+			// first set the main date
+			$date = strtotime((string) $item->created);
 		}
 		else
 		{

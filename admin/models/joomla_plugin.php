@@ -16,6 +16,12 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\String\ClassfunctionHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Joomla_plugin Admin Model
@@ -166,7 +172,7 @@ class ComponentbuilderModelJoomla_plugin extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_plugin__'.$id);
 				ComponentbuilderHelper::set('joomla_plugin__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -174,7 +180,7 @@ class ComponentbuilderModelJoomla_plugin extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -328,7 +334,7 @@ class ComponentbuilderModelJoomla_plugin extends AdminModel
 			else
 			{
 				// set the vast development method key
-				$this->vastDevMod = ComponentbuilderHelper::randomkey(50);
+				$this->vastDevMod = UtilitiesStringHelper::random(50);
 				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_plugin__'.$id);
 				ComponentbuilderHelper::set('joomla_plugin__'.$id, $this->vastDevMod);
 				// set a return value if found
@@ -336,7 +342,7 @@ class ComponentbuilderModelJoomla_plugin extends AdminModel
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
-				if (isset($item) && ComponentbuilderHelper::checkObject($item) && isset($item->guid)
+				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& method_exists('ComponentbuilderHelper', 'validGUID')
 					&& ComponentbuilderHelper::validGUID($item->guid))
 				{
@@ -462,7 +468,7 @@ class ComponentbuilderModelJoomla_plugin extends AdminModel
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
-		if (ComponentbuilderHelper::checkArray($editors))
+		if (UtilitiesArrayHelper::check($editors))
 		{
 			foreach ($editors as $editor)
 			{
@@ -477,9 +483,9 @@ class ComponentbuilderModelJoomla_plugin extends AdminModel
 		// Only load the GUID if new item (or empty)
 		if (0 == $id || !($val = $form->getValue('guid')))
 		{
-			$form->setValue('guid', null, ComponentbuilderHelper::GUID());
+			$form->setValue('guid', null, GuidHelper::get());
 		}
-
+ 
 		return $form;
 	}
 
@@ -541,7 +547,7 @@ class ComponentbuilderModelJoomla_plugin extends AdminModel
 				return false;
 			}
 		}
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('joomla_plugin.edit.state', 'com_componentbuilder');
 	}
     
@@ -707,7 +713,7 @@ class ComponentbuilderModelJoomla_plugin extends AdminModel
 		}
 
 		// we must also delete the linked tables found
-		if (ComponentbuilderHelper::checkArray($pks))
+		if (UtilitiesArrayHelper::check($pks))
 		{
 			// linked tables to update
 			$_tablesArray = array(
@@ -749,7 +755,7 @@ class ComponentbuilderModelJoomla_plugin extends AdminModel
 		}
 
 		// we must also update all linked tables
-		if (ComponentbuilderHelper::checkArray($pks))
+		if (UtilitiesArrayHelper::check($pks))
 		{
 			// linked tables to update
 			$_tablesArray = array(
@@ -1148,10 +1154,10 @@ class ComponentbuilderModelJoomla_plugin extends AdminModel
 		if (strpos($data['name'], '[[[') === false && strpos($data['name'], '###') === false)
 		{
 			// make sure the name is safe to be used as a function name
-			$data['name'] = ComponentbuilderHelper::safeClassFunctionName($data['name']);
+			$data['name'] = ClassfunctionHelper::safe($data['name']);
 		}
 		// if system name is empty create from name
-		if (empty($data['system_name']) || !ComponentbuilderHelper::checkString($data['system_name']))
+		if (empty($data['system_name']) || !UtilitiesStringHelper::check($data['system_name']))
 		{
 			$data['system_name'] = $data['name'];
 		}
@@ -1160,15 +1166,15 @@ class ComponentbuilderModelJoomla_plugin extends AdminModel
 		if (empty($data['guid']) && $data['id'] > 0)
 		{
 			// get the existing one
-			$data['guid'] = (string) ComponentbuilderHelper::getVar('joomla_plugin', $data['id'], 'id', 'guid');
-		}
-		// Set the GUID if empty or not valid
-		while (!ComponentbuilderHelper::validGUID($data['guid'], "joomla_plugin", $data['id']))
-		{
-			// must always be set
-			$data['guid'] = (string) ComponentbuilderHelper::GUID();
+			$data['guid'] = (string) GetHelper::var('joomla_plugin', $data['id'], 'id', 'guid');
 		}
 
+		// Set the GUID if empty or not valid
+		while (!GuidHelper::valid($data['guid'], "joomla_plugin", $data['id']))
+		{
+			// must always be set
+			$data['guid'] = (string) GuidHelper::get();
+		}
 
 		// Set the method_selection items to data.
 		if (isset($data['method_selection']) && is_array($data['method_selection']))

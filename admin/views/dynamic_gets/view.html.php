@@ -52,7 +52,7 @@ class ComponentbuilderViewDynamic_gets extends HtmlView
 		$this->canState = $this->canDo->get('dynamic_get.edit.state');
 		$this->canCreate = $this->canDo->get('dynamic_get.create');
 		$this->canDelete = $this->canDo->get('dynamic_get.delete');
-		$this->canBatch = $this->canDo->get('core.batch');
+		$this->canBatch = ($this->canDo->get('dynamic_get.batch') && $this->canDo->get('core.batch'));
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')

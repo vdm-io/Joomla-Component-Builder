@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Registry;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\LibraryManager;
 use VDM\Joomla\Componentbuilder\Compiler\Library\Data as Library;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -28,7 +28,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
 class Libraries
 {
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
 	 * @var   Config
 	 * @since 3.2.0
@@ -36,35 +36,35 @@ class Libraries
 	protected Config $config;
 
 	/**
-	 * Compiler Registry
+	 * The LibraryManager Class.
 	 *
-	 * @var    Registry
+	 * @var   LibraryManager
 	 * @since 3.2.0
 	 */
-	protected Registry $registry;
+	protected LibraryManager $librarymanager;
 
 	/**
-	 * Compiler Library Data
+	 * The Data Class.
 	 *
-	 * @var    Library
+	 * @var   Library
 	 * @since 3.2.0
 	 */
 	protected Library $library;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null      $config    The compiler config.
-	 * @param Registry|null    $registry   The compiler registry.
-	 * @param Library|null     $library    The compiler library data object.
+	 * @param Config           $config           The Config Class.
+	 * @param LibraryManager   $librarymanager   The LibraryManager Class.
+	 * @param Library          $library          The Data Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null, ?Library $library = null)
+	public function __construct(Config $config, LibraryManager $librarymanager, Library $library)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->library = $library ?: Compiler::_('Library.Data');
+		$this->config = $config;
+		$this->librarymanager = $librarymanager;
+		$this->library = $library;
 	}
 
 	/**
@@ -93,21 +93,18 @@ class Libraries
 		{
 			foreach ($item->libraries as $library)
 			{
-				if (!$this->registry->exists('builder.library_manager.' .
-					$target . '.' . $key . '.' . (int) $library) && $this->library->get((int) $library))
+				if (!$this->librarymanager->exists($target . '.' . $key . '.' . (int) $library)
+					&& $this->library->get((int) $library))
 				{
-					$this->registry->set('builder.library_manager.' .
-						$target . '.' . $key . '.' . (int) $library, true);
+					$this->librarymanager->set($target . '.' . $key . '.' . (int) $library, true);
 				}
 			}
 		}
 		elseif (is_numeric($item->libraries)
-			&& !$this->registry->exists('builder.library_manager.' .
-				$target . '.' . $key . '.' . (int) $item->libraries)
+			&& !$this->librarymanager->exists($target . '.' . $key . '.' . (int) $item->libraries)
 			&& $this->library->get((int) $item->libraries))
 		{
-			$this->registry->set('builder.library_manager.' .
-					$target . '.' . $key . '.' . (int) $item->libraries, true);
+			$this->librarymanager->set($target . '.' . $key . '.' . (int) $item->libraries, true);
 		}
 	}
 

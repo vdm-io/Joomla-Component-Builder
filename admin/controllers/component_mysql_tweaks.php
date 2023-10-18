@@ -62,7 +62,7 @@ class ComponentbuilderControllerComponent_mysql_tweaks extends FormController
 			return false;
 		}
 
-		// In the absense of better information, revert to the component permissions.
+		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('component_mysql_tweaks.create', $this->option);
 	}
 
@@ -85,7 +85,7 @@ class ComponentbuilderControllerComponent_mysql_tweaks extends FormController
 
 
 		// Access check.
-		$access = ($user->authorise('component_mysql_tweaks.access', 'com_componentbuilder.component_mysql_tweaks.' . (int) $recordId) &&  $user->authorise('component_mysql_tweaks.access', 'com_componentbuilder'));
+		$access = ($user->authorise('component_mysql_tweaks.access', 'com_componentbuilder.component_mysql_tweaks.' . (int) $recordId) && $user->authorise('component_mysql_tweaks.access', 'com_componentbuilder'));
 		if (!$access)
 		{
 			return false;

@@ -303,35 +303,12 @@ abstract class ###Component###Helper
 	 * @param   SimpleXMLElement   $xml      The XML element reference in which to inject a comment
 	 * @param   mixed              $node     A SimpleXMLElement node to append to the XML element reference, or a stdClass object containing a comment attribute to be injected before the XML node and a fieldXML attribute containing a SimpleXMLElement
 	 *
-	 * @return  null
-	 *
+	 * @return  void
+	 * @deprecated 3.3 Use Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::append($xml, $node);
 	 */
 	public static function xmlAppend(&$xml, $node)
 	{
-		if (!$node)
-		{
-			// element was not returned
-			return;
-		}
-		switch (get_class($node))
-		{
-			case 'stdClass':
-				if (property_exists($node, 'comment'))
-				{
-					self::xmlComment($xml, $node->comment);
-				}
-				if (property_exists($node, 'fieldXML'))
-				{
-					self::xmlAppend($xml, $node->fieldXML);
-				}
-				break;
-			case 'SimpleXMLElement':
-				$domXML = dom_import_simplexml($xml);
-				$domNode = dom_import_simplexml($node);
-				$domXML->appendChild($domXML->ownerDocument->importNode($domNode, true));
-				$xml = simplexml_import_dom($domXML);
-				break;
-		}
+		Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::append($xml, $node);
 	}
 
 	/**
@@ -340,16 +317,12 @@ abstract class ###Component###Helper
 	 * @param   SimpleXMLElement   $xml        The XML element reference in which to inject a comment
 	 * @param   string             $comment    The comment to inject
 	 *
-	 * @return  null
-	 *
+	 * @return  void
+	 * @deprecated 3.3 Use Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::comment($xml, $comment);
 	 */
 	public static function xmlComment(&$xml, $comment)
 	{
-		$domXML = dom_import_simplexml($xml);
-		$domComment = new DOMComment($comment);
-		$nodeTarget = $domXML->ownerDocument->importNode($domComment, true);
-		$domXML->appendChild($nodeTarget);
-		$xml = simplexml_import_dom($domXML);
+		Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::comment($xml, $comment);
 	}
 
 	/**
@@ -358,15 +331,12 @@ abstract class ###Component###Helper
 	 * @param   SimpleXMLElement   $xml          The XML element reference in which to inject a comment
 	 * @param   array              $attributes   The attributes to apply to the XML element
 	 *
-	 * @return  null
-	 *
+	 * @return  void
+	 * @deprecated 3.3 Use Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::attributes($xml, $attributes);
 	 */
 	public static function xmlAddAttributes(&$xml, $attributes = array())
 	{
-		foreach ($attributes as $key => $value)
-		{
-			$xml->addAttribute($key, $value);
-		}
+		Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::attributes($xml, $attributes);
 	}
 
 	/**
@@ -376,16 +346,11 @@ abstract class ###Component###Helper
 	 * @param   array              $options      The options to apply to the XML element
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3 Use Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::options($xml, $options);
 	 */
 	public static function xmlAddOptions(&$xml, $options = array())
 	{
-		foreach ($options as $key => $value)
-		{
-			$addOption = $xml->addChild('option');
-			$addOption->addAttribute('value', $key);
-			$addOption[] = $value;
-		}
+		Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::options($xml, $options);
 	}
 
 	/**
@@ -396,28 +361,11 @@ abstract class ###Component###Helper
 	 * @param   array      $options      The options to apply to the XML element
 	 *
 	 * @return  object
-	 *
+	 * @deprecated 3.3 Use Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::field($attributes, $default, $options);
 	 */
 	public static function getFieldObject(&$attributes, $default = '', $options = null)
 	{
-		// make sure we have attributes and a type value
-		if (self::checkArray($attributes) && isset($attributes['type']))
-		{
-			// make sure the form helper class is loaded
-			if (!method_exists('JFormHelper', 'loadFieldType'))
-			{
-				jimport('joomla.form.form');
-			}
-			// get field type
-			$field = JFormHelper::loadFieldType($attributes['type'], true);
-			// get field xml
-			$XML = self::getFieldXML($attributes, $options);
-			// setup the field
-			$field->setup($XML, $default);
-			// return the field object
-			return $field;
-		}
-		return false;
+		return Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::field($attributes, $default, $options);
 	}
 
 	/**
@@ -427,27 +375,11 @@ abstract class ###Component###Helper
 	 * @param   array      $options      The options to apply to the XML element
 	 *
 	 * @return  object
-	 *
+	 * @deprecated 3.3 Use Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::xml($attributes, $options);
 	 */
 	public static function getFieldXML(&$attributes, $options = null)
 	{
-		// make sure we have attributes and a type value
-		if (self::checkArray($attributes))
-		{
-			// start field xml
-			$XML = new SimpleXMLElement('<field/>');
-			// load the attributes
-			self::xmlAddAttributes($XML, $attributes);
-			// check if we have options
-			if (self::checkArray($options))
-			{
-				// load the options
-				self::xmlAddOptions($XML, $options);
-			}
-			// return the field xml
-			return $XML;
-		}
-		return false;
+		return Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::xml($attributes, $options);
 	}
 
 	/**

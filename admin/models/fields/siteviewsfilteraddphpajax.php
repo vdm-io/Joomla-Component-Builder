@@ -49,21 +49,21 @@ class JFormFieldSiteviewsfilteraddphpajax extends JFormFieldList
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
-		$results = $db->loadColumn();
+		$_results = $db->loadColumn();
 		$_filter = array();
 		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ADD_PHP_AJAX') . ' -');
 
-		if ($results)
+		if ($_results)
 		{
 			// get site_viewsmodel
-			$model = ComponentbuilderHelper::getModel('site_views');
-			$results = array_unique($results);
-			foreach ($results as $add_php_ajax)
+			$_model = ComponentbuilderHelper::getModel('site_views');
+			$_results = array_unique($_results);
+			foreach ($_results as $add_php_ajax)
 			{
 				// Translate the add_php_ajax selection
-				$text = $model->selectionTranslation($add_php_ajax,'add_php_ajax');
+				$_text = $_model->selectionTranslation($add_php_ajax,'add_php_ajax');
 				// Now add the add_php_ajax and its text to the options array
-				$_filter[] = JHtml::_('select.option', $add_php_ajax, JText::_($text));
+				$_filter[] = JHtml::_('select.option', $add_php_ajax, JText::_($_text));
 			}
 		}
 		return $_filter;

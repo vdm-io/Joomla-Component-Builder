@@ -13,6 +13,8 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\View\HtmlView;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Componentbuilder Import_joomla_components Html View
@@ -342,7 +344,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 		}
 		elseif ('vdm_package' === $type && in_array('vdm', $this->directories) && $vdmListObjects = ComponentbuilderHelper::getGithubRepoFileList('vdmGithubPackages', ComponentbuilderHelper::$vdmGithubPackagesUrl))
 		{
-			if (ComponentbuilderHelper::checkArray($vdmListObjects))
+			if (ArrayHelper::check($vdmListObjects))
 			{
 				// get the vdm_package list field
 				$vdm_package = JFormHelper::loadFieldType('list',true);
@@ -386,7 +388,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 		}
 		elseif ('jcb_package' === $type && in_array('jcb', $this->directories)  && $jcbListObjects = ComponentbuilderHelper::getGithubRepoFileList('communityGithubPackages', ComponentbuilderHelper::$jcbGithubPackagesUrl))
 		{
-			if (ComponentbuilderHelper::checkArray($jcbListObjects))
+			if (ArrayHelper::check($jcbListObjects))
 			{
 				// get the jcb_package list field
 				$jcb_package = JFormHelper::loadFieldType('list',true);
@@ -434,7 +436,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 	public function setPackageName($name)
 	{
 		// return the name
-		return ComponentbuilderHelper::safeString( preg_replace('/(?<!^)([A-Z])/', '-\ \1', str_replace(array('.zip', 'JCB_'), '', $name)), 'W');
+		return StringHelper::safe( preg_replace('/(?<!^)([A-Z])/', '-\ \1', str_replace(array('.zip', 'JCB_'), '', $name)), 'W');
 	}
 
 	/**

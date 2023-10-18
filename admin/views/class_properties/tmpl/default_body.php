@@ -11,6 +11,7 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+use VDM\Joomla\Utilities\StringHelper;
 
 $edit = "index.php?option=com_componentbuilder&view=class_properties&task=class_property.edit";
 
@@ -73,7 +74,7 @@ $edit = "index.php?option=com_componentbuilder&view=class_properties&task=class_
 			<?php echo JText::_($item->visibility); ?>
 		</td>
 		<td class="hidden-phone">
-			<div><?php if (isset($item->joomla_plugin_group) && ComponentbuilderHelper::checkString($item->joomla_plugin_group)): ?>
+			<div><?php if (isset($item->joomla_plugin_group) && StringHelper::check($item->joomla_plugin_group)): ?>
 	
 			<?php echo JText::_($item->extension_type); ?> <?php echo JText::_('COM_COMPONENTBUILDER_GROUP'); ?>: <b>
 			<?php echo $this->escape($item->joomla_plugin_group_name); ?></b>

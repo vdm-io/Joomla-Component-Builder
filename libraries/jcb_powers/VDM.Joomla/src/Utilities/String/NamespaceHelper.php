@@ -25,47 +25,43 @@ abstract class NamespaceHelper
 	/**
 	 * Making namespace safe
 	 *
-	 * @input    string   $string           The you would like to make safe
-	 * @input    bool     $removeNumbers    The switch to remove numbers
+	 * @param  string   $string    The namespace string you would like to make safe
 	 *
-	 * @returns string on success
-	 * 
+	 * @return string on success
 	 * @since  3.0.9
 	 */
-	public static function safe(string $string, bool $removeNumbers = true): string
+	public static function safe(string $string): string
 	{
-		// 0nly continue if we have a string with length
-		if (StringHelper::check($string))
+		// Remove leading and trailing backslashes
+		$string = trim($string, '\\');
+
+		// Split the string into namespace segments
+		$segments = explode('\\', $string);
+
+		foreach ($segments as &$segment)
 		{
-			// make sure it has not numbers
-			if ($removeNumbers)
+			// Check if segment starts with a number
+			if (preg_match("/^\d/", $segment))
 			{
-				$string = StringHelper::numbers($string);
+				// Extract the starting number(s)
+				preg_match("/^\d+/", $segment, $matches);
+
+				if (isset($matches[0]))
+				{
+					$numberWord = StringHelper::numbers($matches[0]);
+					$segment = str_replace($matches[0], $numberWord, $segment);
+				}
 			}
 
 			// Transliterate string TODO: look again as this makes it lowercase
-			// $string = StringHelper::transliterate($string);
+			// $segment = StringHelper::transliterate($segment);
 
-			// first remove all [\] backslashes
-			$string = str_replace('\\', '+', (string) $string);
-
-			// remove all and keep only characters and [\] backslashes inside of the string
-			if ($removeNumbers)
-			{
-				$string = trim( preg_replace("/[^A-Za-z\+]/", '', $string), '+');
-			}
-			else
-			{
-				$string = trim( preg_replace("/[^A-Za-z0-9\+]/", '', $string), '+');
-			}
-
-			// place the [\] backslashes back
-			return trim( preg_replace("/\++/", '\\', $string));
+			// Make sure segment only contains valid characters
+			$segment = preg_replace("/[^A-Za-z0-9]/", '', $segment);
 		}
 
-		// not a string
-		return '';
+		// Join the namespace segments back together
+		return implode('\\', $segments);
 	}
-
 }
 

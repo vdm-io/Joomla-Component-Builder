@@ -78,8 +78,8 @@ class Infusion extends Interpretation
 		{
 			// for plugin event TODO change event api signatures
 			$placeholders = CFactory::_('Placeholder')->active;
-			$fileContentStatic = CFactory::_('Content')->active;
-			$fileContentDynamic = CFactory::_('Content')->_active;
+			$fileContentStatic = CFactory::_('Compiler.Builder.Content.One')->allActive();
+			$fileContentDynamic = CFactory::_('Compiler.Builder.Content.Multi')->allActive();
 			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onBeforeBuildFilesContent
 			CFactory::_('Event')->trigger(
@@ -93,62 +93,62 @@ class Infusion extends Interpretation
 			unset($placeholders);
 
 			// COMPONENT
-			CFactory::_('Content')->set('COMPONENT', CFactory::_('Placeholder')->get('COMPONENT'));
+			CFactory::_('Compiler.Builder.Content.One')->set('COMPONENT', CFactory::_('Placeholder')->get('COMPONENT'));
 
 			// Component
-			CFactory::_('Content')->set('Component', CFactory::_('Placeholder')->get('Component'));
+			CFactory::_('Compiler.Builder.Content.One')->set('Component', CFactory::_('Placeholder')->get('Component'));
 
 			// component
-			CFactory::_('Content')->set('component', CFactory::_('Placeholder')->get('component'));
+			CFactory::_('Compiler.Builder.Content.One')->set('component', CFactory::_('Placeholder')->get('component'));
 
 			// COMPANYNAME
 			$companyname = CFactory::_('Component')->get('companyname');
-			CFactory::_('Content')->set('COMPANYNAME', trim(
+			CFactory::_('Compiler.Builder.Content.One')->set('COMPANYNAME', trim(
 				(string) JFilterOutput::cleanText($companyname)
 			));
 
 			// CREATIONDATE
-			CFactory::_('Content')->set('CREATIONDATE',
+			CFactory::_('Compiler.Builder.Content.One')->set('CREATIONDATE',
 				JFactory::getDate(CFactory::_('Component')->get('created'))->format(
 				'jS F, Y'
 			));
-			CFactory::_('Content')->set('GLOBALCREATIONDATE',
-				CFactory::_('Content')->get('CREATIONDATE'));
+			CFactory::_('Compiler.Builder.Content.One')->set('GLOBALCREATIONDATE',
+				CFactory::_('Compiler.Builder.Content.One')->get('CREATIONDATE'));
 
 			// BUILDDATE
-			CFactory::_('Content')->set('BUILDDATE', JFactory::getDate(
+			CFactory::_('Compiler.Builder.Content.One')->set('BUILDDATE', JFactory::getDate(
 				CFactory::_('Config')->get('build_date', 'now'))->format('jS F, Y'));
-			CFactory::_('Content')->set('GLOBALBUILDDATE',
-				CFactory::_('Content')->get('BUILDDATE'));
+			CFactory::_('Compiler.Builder.Content.One')->set('GLOBALBUILDDATE',
+				CFactory::_('Compiler.Builder.Content.One')->get('BUILDDATE'));
 
 			// AUTHOR
 			$author = CFactory::_('Component')->get('author');
-			CFactory::_('Content')->set('AUTHOR', trim(
+			CFactory::_('Compiler.Builder.Content.One')->set('AUTHOR', trim(
 				(string) JFilterOutput::cleanText($author)
 			));
 
 			// AUTHOREMAIL
-			CFactory::_('Content')->set('AUTHOREMAIL', trim((string) CFactory::_('Component')->get('email', '')));
+			CFactory::_('Compiler.Builder.Content.One')->set('AUTHOREMAIL', trim((string) CFactory::_('Component')->get('email', '')));
 
 			// AUTHORWEBSITE
-			CFactory::_('Content')->set('AUTHORWEBSITE', trim((string) CFactory::_('Component')->get('website', '')));
+			CFactory::_('Compiler.Builder.Content.One')->set('AUTHORWEBSITE', trim((string) CFactory::_('Component')->get('website', '')));
 
 			// COPYRIGHT
-			CFactory::_('Content')->set('COPYRIGHT', trim((string) CFactory::_('Component')->get('copyright', '')));
+			CFactory::_('Compiler.Builder.Content.One')->set('COPYRIGHT', trim((string) CFactory::_('Component')->get('copyright', '')));
 
 			// LICENSE
-			CFactory::_('Content')->set('LICENSE', trim((string) CFactory::_('Component')->get('license', '')));
+			CFactory::_('Compiler.Builder.Content.One')->set('LICENSE', trim((string) CFactory::_('Component')->get('license', '')));
 
 			// VERSION
-			CFactory::_('Content')->set('VERSION', trim((string) CFactory::_('Component')->get('component_version', '')));
+			CFactory::_('Compiler.Builder.Content.One')->set('VERSION', trim((string) CFactory::_('Component')->get('component_version', '')));
 			// set the actual global version
-			CFactory::_('Content')->set('ACTUALVERSION', CFactory::_('Content')->get('VERSION'));
+			CFactory::_('Compiler.Builder.Content.One')->set('ACTUALVERSION', CFactory::_('Compiler.Builder.Content.One')->get('VERSION'));
 
 			// do some Tweaks to the version based on selected options
-			if (strpos((string) CFactory::_('Content')->get('VERSION'), '.') !== false)
+			if (strpos((string) CFactory::_('Compiler.Builder.Content.One')->get('VERSION'), '.') !== false)
 			{
 				$versionArray = explode(
-					'.', (string) CFactory::_('Content')->get('VERSION')
+					'.', (string) CFactory::_('Compiler.Builder.Content.One')->get('VERSION')
 				);
 			}
 			// load only first two values
@@ -157,7 +157,7 @@ class Infusion extends Interpretation
 					$versionArray
 				) && CFactory::_('Component')->get('mvc_versiondate', 0) == 2)
 			{
-				CFactory::_('Content')->set('VERSION', $versionArray[0] . '.' . $versionArray[1] . '.x');
+				CFactory::_('Compiler.Builder.Content.One')->set('VERSION', $versionArray[0] . '.' . $versionArray[1] . '.x');
 			}
 			// load only the first value
 			elseif (isset($versionArray)
@@ -165,148 +165,148 @@ class Infusion extends Interpretation
 					$versionArray
 				) && CFactory::_('Component')->get('mvc_versiondate', 0) == 3)
 			{
-				CFactory::_('Content')->set('VERSION', $versionArray[0] . '.x.x');
+				CFactory::_('Compiler.Builder.Content.One')->set('VERSION', $versionArray[0] . '.x.x');
 			}
 			unset($versionArray);
 
 			// set the global version in case			
-			CFactory::_('Content')->set('GLOBALVERSION', CFactory::_('Content')->get('VERSION'));
+			CFactory::_('Compiler.Builder.Content.One')->set('GLOBALVERSION', CFactory::_('Compiler.Builder.Content.One')->get('VERSION'));
 
 			// set the joomla target xml version
-			CFactory::_('Content')->set('XMLVERSION', CFactory::_('Config')->joomla_versions[CFactory::_('Config')->joomla_version]['xml_version']);
+			CFactory::_('Compiler.Builder.Content.One')->set('XMLVERSION', CFactory::_('Config')->joomla_versions[CFactory::_('Config')->joomla_version]['xml_version']);
 
 			// Component_name
 			$name = CFactory::_('Component')->get('name');
-			CFactory::_('Content')->set('Component_name', JFilterOutput::cleanText($name));
+			CFactory::_('Compiler.Builder.Content.One')->set('Component_name', JFilterOutput::cleanText($name));
 
 			// SHORT_DISCRIPTION
 			$short_description = CFactory::_('Component')->get('short_description');
-			CFactory::_('Content')->set('SHORT_DESCRIPTION', trim(
+			CFactory::_('Compiler.Builder.Content.One')->set('SHORT_DESCRIPTION', trim(
 				(string) JFilterOutput::cleanText(
 					$short_description
 				)
 			));
 
 			// DESCRIPTION
-			CFactory::_('Content')->set('DESCRIPTION', trim((string) CFactory::_('Component')->get('description')));
+			CFactory::_('Compiler.Builder.Content.One')->set('DESCRIPTION', trim((string) CFactory::_('Component')->get('description')));
 
 			// COMP_IMAGE_TYPE
-			CFactory::_('Content')->set('COMP_IMAGE_TYPE', $this->setComponentImageType(CFactory::_('Component')->get('image')));
+			CFactory::_('Compiler.Builder.Content.One')->set('COMP_IMAGE_TYPE', $this->setComponentImageType(CFactory::_('Component')->get('image')));
 
 			// ACCESS_SECTIONS
-			CFactory::_('Content')->set('ACCESS_SECTIONS', $this->setAccessSections());
+			CFactory::_('Compiler.Builder.Content.One')->set('ACCESS_SECTIONS', $this->setAccessSections());
 
 			// CONFIG_FIELDSETS
 			$keepLang   = CFactory::_('Config')->lang_target;
 			CFactory::_('Config')->lang_target = 'admin';
 
 			// start loading the category tree scripts
-			CFactory::_('Content')->set('CATEGORY_CLASS_TREES', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('CATEGORY_CLASS_TREES', '');
 			// run the field sets for first time
 			$this->setConfigFieldsets(1);
 			CFactory::_('Config')->lang_target = $keepLang;
 
 			// ADMINJS
-			CFactory::_('Content')->set('ADMINJS',
+			CFactory::_('Compiler.Builder.Content.One')->set('ADMINJS',
 				CFactory::_('Placeholder')->update_(
 				CFactory::_('Customcode.Dispenser')->hub['component_js']
 			));
 			// SITEJS
-			CFactory::_('Content')->set('SITEJS',
+			CFactory::_('Compiler.Builder.Content.One')->set('SITEJS',
 				CFactory::_('Placeholder')->update_(
 				CFactory::_('Customcode.Dispenser')->hub['component_js']
 			));
 
 			// ADMINCSS
-			CFactory::_('Content')->set('ADMINCSS',
+			CFactory::_('Compiler.Builder.Content.One')->set('ADMINCSS',
 				CFactory::_('Placeholder')->update_(
 				CFactory::_('Customcode.Dispenser')->hub['component_css_admin']
 			));
 			// SITECSS
-			CFactory::_('Content')->set('SITECSS',
+			CFactory::_('Compiler.Builder.Content.One')->set('SITECSS',
 				CFactory::_('Placeholder')->update_(
 				CFactory::_('Customcode.Dispenser')->hub['component_css_site']
 			));
 
 			// CUSTOM_HELPER_SCRIPT
-			CFactory::_('Content')->set('CUSTOM_HELPER_SCRIPT',
+			CFactory::_('Compiler.Builder.Content.One')->set('CUSTOM_HELPER_SCRIPT',
 				CFactory::_('Placeholder')->update_(
 				CFactory::_('Customcode.Dispenser')->hub['component_php_helper_admin']
 			));
 
 			// BOTH_CUSTOM_HELPER_SCRIPT
-			CFactory::_('Content')->set('BOTH_CUSTOM_HELPER_SCRIPT',
+			CFactory::_('Compiler.Builder.Content.One')->set('BOTH_CUSTOM_HELPER_SCRIPT',
 				CFactory::_('Placeholder')->update_(
 				CFactory::_('Customcode.Dispenser')->hub['component_php_helper_both']
 			));
 
 			// ADMIN_GLOBAL_EVENT_HELPER
-			if (!CFactory::_('Content')->exist('ADMIN_GLOBAL_EVENT'))
+			if (!CFactory::_('Compiler.Builder.Content.One')->exists('ADMIN_GLOBAL_EVENT'))
 			{
-				CFactory::_('Content')->set('ADMIN_GLOBAL_EVENT', '');
+				CFactory::_('Compiler.Builder.Content.One')->set('ADMIN_GLOBAL_EVENT', '');
 			}
-			if (!CFactory::_('Content')->exist('ADMIN_GLOBAL_EVENT_HELPER'))
+			if (!CFactory::_('Compiler.Builder.Content.One')->exists('ADMIN_GLOBAL_EVENT_HELPER'))
 			{
-				CFactory::_('Content')->set('ADMIN_GLOBAL_EVENT_HELPER', '');
+				CFactory::_('Compiler.Builder.Content.One')->set('ADMIN_GLOBAL_EVENT_HELPER', '');
 			}
 			// now load the data for the global event if needed
 			if (CFactory::_('Component')->get('add_admin_event', 0) == 1)
 			{
 				// ADMIN_GLOBAL_EVENT
-				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT', PHP_EOL . PHP_EOL . '// Trigger the Global Admin Event');
-				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT',
-					PHP_EOL . CFactory::_('Content')->get('Component')
+				CFactory::_('Compiler.Builder.Content.One')->add('ADMIN_GLOBAL_EVENT', PHP_EOL . PHP_EOL . '// Trigger the Global Admin Event');
+				CFactory::_('Compiler.Builder.Content.One')->add('ADMIN_GLOBAL_EVENT',
+					PHP_EOL . CFactory::_('Compiler.Builder.Content.One')->get('Component')
 					. 'Helper::globalEvent($document);');
 				// ADMIN_GLOBAL_EVENT_HELPER
-				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . PHP_EOL . Indent::_(1) . '/**');
-				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER',
+				CFactory::_('Compiler.Builder.Content.One')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . PHP_EOL . Indent::_(1) . '/**');
+				CFactory::_('Compiler.Builder.Content.One')->add('ADMIN_GLOBAL_EVENT_HELPER',
 					PHP_EOL . Indent::_(1)
 					. '*	The Global Admin Event Method.');
-				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '**/');
-				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER',
+				CFactory::_('Compiler.Builder.Content.One')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '**/');
+				CFactory::_('Compiler.Builder.Content.One')->add('ADMIN_GLOBAL_EVENT_HELPER',
 					PHP_EOL . Indent::_(1)
 					. 'public static function globalEvent($document)');
-				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '{');
-				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER',
+				CFactory::_('Compiler.Builder.Content.One')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '{');
+				CFactory::_('Compiler.Builder.Content.One')->add('ADMIN_GLOBAL_EVENT_HELPER',
 					PHP_EOL . CFactory::_('Placeholder')->update_(
 						CFactory::_('Customcode.Dispenser')->hub['component_php_admin_event']
 					));
-				CFactory::_('Content')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '}');
+				CFactory::_('Compiler.Builder.Content.One')->add('ADMIN_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '}');
 			}
 
 			// now load the readme file if needed
 			if (CFactory::_('Component')->get('addreadme', 0) == 1)
 			{
-				CFactory::_('Content')->add('EXSTRA_ADMIN_FILES',
+				CFactory::_('Compiler.Builder.Content.One')->add('EXSTRA_ADMIN_FILES',
 					PHP_EOL . Indent::_(3)
 					. "<filename>README.txt</filename>");
 			}
 
 			// HELPER_CREATEUSER
-			CFactory::_('Content')->add('HELPER_CREATEUSER',
+			CFactory::_('Compiler.Builder.Content.One')->add('HELPER_CREATEUSER',
 				$this->setCreateUserHelperMethod(
 				CFactory::_('Component')->get('creatuserhelper')
 			));
 
 			// HELP
-			CFactory::_('Content')->set('HELP', $this->noHelp());
+			CFactory::_('Compiler.Builder.Content.One')->set('HELP', $this->noHelp());
 			// HELP_SITE
-			CFactory::_('Content')->set('HELP_SITE', $this->noHelp());
+			CFactory::_('Compiler.Builder.Content.One')->set('HELP_SITE', $this->noHelp());
 
 			// build route parse switch
-			CFactory::_('Content')->set('ROUTER_PARSE_SWITCH', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('ROUTER_PARSE_SWITCH', '');
 			// build route views
-			CFactory::_('Content')->set('ROUTER_BUILD_VIEWS', '');
+			CFactory::_('Compiler.Builder.Content.One')->set('ROUTER_BUILD_VIEWS', '');
 
 			// add the helper emailer if set
-			CFactory::_('Content')->set('HELPER_EMAIL', $this->addEmailHelper());
+			CFactory::_('Compiler.Builder.Content.One')->set('HELPER_EMAIL', $this->addEmailHelper());
 
 			// load the global placeholders
 			foreach (CFactory::_('Component.Placeholder')->get() as $globalPlaceholder =>
 				$gloabalValue
 			)
 			{
-				CFactory::_('Content')->set($globalPlaceholder, $gloabalValue);
+				CFactory::_('Compiler.Builder.Content.One')->set($globalPlaceholder, $gloabalValue);
 			}
 
 			// reset view array
@@ -364,8 +364,8 @@ class Infusion extends Interpretation
 
 					// for plugin event TODO change event api signatures
 					$placeholders = CFactory::_('Placeholder')->active;
-					$fileContentStatic = CFactory::_('Content')->active;
-					$fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentStatic = CFactory::_('Compiler.Builder.Content.One')->allActive();
+					$fileContentDynamic = CFactory::_('Compiler.Builder.Content.Multi')->allActive();
 					// Trigger Event: jcb_ce_onBeforeBuildAdminEditViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildAdminEditViewContent',
@@ -381,38 +381,41 @@ class Infusion extends Interpretation
 					unset($placeholders);
 
 					// FIELDSETS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'FIELDSETS', $this->setFieldSet(
-						$view, CFactory::_('Config')->component_code_name,
-						$nameSingleCode,
-						$nameListCode
-					));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|FIELDSETS',
+						CFactory::_('Compiler.Creator.Fieldset')->get(
+							$view,
+							CFactory::_('Config')->component_code_name,
+							$nameSingleCode,
+							$nameListCode
+						)
+					);
 
 					// ACCESSCONTROL <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'ACCESSCONTROL', $this->setFieldSetAccessControl(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ACCESSCONTROL', $this->setFieldSetAccessControl(
 						$nameSingleCode
 					));
 
 					// LINKEDVIEWITEMS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'LINKEDVIEWITEMS', '');
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|LINKEDVIEWITEMS', '');
 
 					// ADDTOOLBAR <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'ADDTOOLBAR', $this->setAddToolBar($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADDTOOLBAR', $this->setAddToolBar($view));
 
 					// set the script for this view
 					$this->buildTheViewScript($view);
 
 					// VIEW_SCRIPT
-					CFactory::_('Content')->set_($nameSingleCode, 'VIEW_SCRIPT', $this->setViewScript(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|VIEW_SCRIPT', $this->setViewScript(
 						$nameSingleCode, 'fileScript'
 					));
 
 					// EDITBODYSCRIPT
-					CFactory::_('Content')->set_($nameSingleCode, 'EDITBODYSCRIPT', $this->setViewScript(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|EDITBODYSCRIPT', $this->setViewScript(
 						$nameSingleCode, 'footerScript'
 					));
 
 					// AJAXTOKE <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'AJAXTOKE', $this->setAjaxToke(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|AJAXTOKE', $this->setAjaxToke(
 						$nameSingleCode
 					));
 
@@ -423,7 +426,7 @@ class Infusion extends Interpretation
 						false
 					))
 					{
-						CFactory::_('Content')->set_($nameSingleCode, 'DOCUMENT_CUSTOM_PHP', str_replace(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|DOCUMENT_CUSTOM_PHP', str_replace(
 							'$document->', '$this->document->', (string) $phpDocument
 						));
 						// clear some memory
@@ -431,80 +434,80 @@ class Infusion extends Interpretation
 					}
 					else
 					{
-						CFactory::_('Content')->set_($nameSingleCode, 'DOCUMENT_CUSTOM_PHP', '');
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|DOCUMENT_CUSTOM_PHP', '');
 					}
 					// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'LINKEDVIEWTABLESCRIPTS', '');
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|LINKEDVIEWTABLESCRIPTS', '');
 
 					// VALIDATEFIX <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'VALIDATIONFIX', $this->setValidationFix(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|VALIDATIONFIX', $this->setValidationFix(
 						$nameSingleCode,
-						CFactory::_('Content')->get('Component')
+						CFactory::_('Compiler.Builder.Content.One')->get('Component')
 					));
 
 					// EDITBODY <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'EDITBODY', $this->setEditBody($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|EDITBODY', $this->setEditBody($view));
 
 					// EDITBODYFADEIN <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'EDITBODYFADEIN', $this->setFadeInEfect($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|EDITBODYFADEIN', $this->setFadeInEfect($view));
 
 					// JTABLECONSTRUCTOR <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'JTABLECONSTRUCTOR', $this->setJtableConstructor(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JTABLECONSTRUCTOR', $this->setJtableConstructor(
 						$nameSingleCode
 					));
 
 					// JTABLEALIASCATEGORY <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'JTABLEALIASCATEGORY', $this->setJtableAliasCategory(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JTABLEALIASCATEGORY', $this->setJtableAliasCategory(
 						$nameSingleCode
 					));
 
 					// METHOD_GET_ITEM <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'METHOD_GET_ITEM', $this->setMethodGetItem(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|METHOD_GET_ITEM', $this->setMethodGetItem(
 						$nameSingleCode
 					));
 
 					// LINKEDVIEWGLOBAL <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'LINKEDVIEWGLOBAL', '');
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|LINKEDVIEWGLOBAL', '');
 
 					// LINKEDVIEWMETHODS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'LINKEDVIEWMETHODS', '');
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|LINKEDVIEWMETHODS', '');
 
 					// JMODELADMIN_BEFORE_DELETE <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_BEFORE_DELETE', CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JMODELADMIN_BEFORE_DELETE', CFactory::_('Customcode.Dispenser')->get(
 						'php_before_delete',
 						$nameSingleCode, PHP_EOL
 					));
 
 					// JMODELADMIN_AFTER_DELETE <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_AFTER_DELETE', CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JMODELADMIN_AFTER_DELETE', CFactory::_('Customcode.Dispenser')->get(
 						'php_after_delete', $nameSingleCode,
 						PHP_EOL . PHP_EOL
 					));
 
 					// JMODELADMIN_BEFORE_DELETE <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_BEFORE_PUBLISH', CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JMODELADMIN_BEFORE_PUBLISH', CFactory::_('Customcode.Dispenser')->get(
 						'php_before_publish',
 						$nameSingleCode, PHP_EOL
 					));
 
 					// JMODELADMIN_AFTER_DELETE <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_AFTER_PUBLISH', CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JMODELADMIN_AFTER_PUBLISH', CFactory::_('Customcode.Dispenser')->get(
 						'php_after_publish',
 						$nameSingleCode, PHP_EOL . PHP_EOL
 					));
 
 					// CHECKBOX_SAVE <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'CHECKBOX_SAVE', $this->setCheckboxSave(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|CHECKBOX_SAVE', $this->setCheckboxSave(
 						$nameSingleCode
 					));
 
 					// METHOD_ITEM_SAVE <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'METHOD_ITEM_SAVE', $this->setMethodItemSave(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|METHOD_ITEM_SAVE', $this->setMethodItemSave(
 						$nameSingleCode
 					));
 
 					// POSTSAVEHOOK <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'POSTSAVEHOOK', CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|POSTSAVEHOOK', CFactory::_('Customcode.Dispenser')->get(
 						'php_postsavehook', $nameSingleCode,
 						PHP_EOL, null,
 						true, PHP_EOL . Indent::_(2) . "return;",
@@ -512,7 +515,7 @@ class Infusion extends Interpretation
 					));
 
 					// VIEWCSS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameSingleCode, 'VIEWCSS', CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|VIEWCSS', CFactory::_('Customcode.Dispenser')->get(
 						'css_view', $nameSingleCode, '',
 						null, true
 					));
@@ -522,64 +525,64 @@ class Infusion extends Interpretation
 						&& is_numeric($view['edit_create_site_view'])
 						&& $view['edit_create_site_view'] > 0)
 					{
-						CFactory::_('Content')->set_($nameSingleCode, 'SITE_VIEWCSS', CFactory::_('Content')->get_($nameSingleCode,'VIEWCSS'));
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|SITE_VIEWCSS', CFactory::_('Compiler.Builder.Content.Multi')->get($nameSingleCode . '|VIEWCSS', ''));
 						// check if we should add a create menu
 						if ($view['edit_create_site_view'] == 2)
 						{
 							// SITE_MENU_XML <<<DYNAMIC>>>
-							CFactory::_('Content')->set_($nameSingleCode, 'SITE_MENU_XML', $this->setAdminViewMenu(
+							CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|SITE_MENU_XML', $this->setAdminViewMenu(
 								$nameSingleCode, $view
 							));
 						}
 						// SITE_ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-						CFactory::_('Content')->set_($nameSingleCode, 'SITE_ADMIN_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|SITE_ADMIN_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
 							'site.admin.view.controller',
 							$nameSingleCode
 						));
 						// SITE_ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-						CFactory::_('Content')->set_($nameSingleCode, 'SITE_ADMIN_VIEW_MODEL_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|SITE_ADMIN_VIEW_MODEL_HEADER', $this->setFileHeader(
 							'site.admin.view.model',
 							$nameSingleCode
 						));
 						// SITE_ADMIN_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-						CFactory::_('Content')->set_($nameSingleCode, 'SITE_ADMIN_VIEW_HTML_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|SITE_ADMIN_VIEW_HTML_HEADER', $this->setFileHeader(
 							'site.admin.view.html',
 							$nameSingleCode
 						));
 						// SITE_ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
-						CFactory::_('Content')->set_($nameSingleCode, 'SITE_ADMIN_VIEW_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|SITE_ADMIN_VIEW_HEADER', $this->setFileHeader(
 							'site.admin.view',
 							$nameSingleCode
 						));
 					}
 
 					// TABLAYOUTFIELDSARRAY <<<DYNAMIC>>> add the tab layout fields array to the model
-					CFactory::_('Content')->set_($nameSingleCode, 'TABLAYOUTFIELDSARRAY', $this->getTabLayoutFieldsArray(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|TABLAYOUTFIELDSARRAY', $this->getTabLayoutFieldsArray(
 						$nameSingleCode
 					));
 
 					// ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-					CFactory::_('Content')->set_($nameSingleCode, 'ADMIN_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADMIN_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
 						'admin.view.controller',
 						$nameSingleCode
 					));
 					// ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-					CFactory::_('Content')->set_($nameSingleCode, 'ADMIN_VIEW_MODEL_HEADER', $this->setFileHeader(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADMIN_VIEW_MODEL_HEADER', $this->setFileHeader(
 						'admin.view.model', $nameSingleCode
 					));
 					// ADMIN_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-					CFactory::_('Content')->set_($nameSingleCode, 'ADMIN_VIEW_HTML_HEADER', $this->setFileHeader(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADMIN_VIEW_HTML_HEADER', $this->setFileHeader(
 						'admin.view.html', $nameSingleCode
 					));
 					// ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
-					CFactory::_('Content')->set_($nameSingleCode, 'ADMIN_VIEW_HEADER', $this->setFileHeader(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADMIN_VIEW_HEADER', $this->setFileHeader(
 						'admin.view', $nameSingleCode
 					));
 
 					// for plugin event TODO change event api signatures
 					$placeholders = CFactory::_('Placeholder')->active;
-					$fileContentStatic = CFactory::_('Content')->active;
-					$fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentStatic = CFactory::_('Compiler.Builder.Content.One')->allActive();
+					$fileContentDynamic = CFactory::_('Compiler.Builder.Content.Multi')->allActive();
 					// Trigger Event: jcb_ce_onAfterBuildAdminEditViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildAdminEditViewContent',
@@ -601,12 +604,12 @@ class Infusion extends Interpretation
 					CFactory::_('Config')->lang_target = 'admin';
 
 					// ICOMOON <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'ICOMOON', $view['icomoon']);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ICOMOON', $view['icomoon']);
 
 					// for plugin event TODO change event api signatures
 					$placeholders = CFactory::_('Placeholder')->active;
-					$fileContentStatic = CFactory::_('Content')->active;
-					$fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentStatic = CFactory::_('Compiler.Builder.Content.One')->allActive();
+					$fileContentDynamic = CFactory::_('Compiler.Builder.Content.Multi')->allActive();
 					// Trigger Event: jcb_ce_onBeforeBuildAdminListViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildAdminListViewContent',
@@ -647,182 +650,182 @@ class Infusion extends Interpretation
 					if (isset($view['checkin']) && $view['checkin'] == 1)
 					{
 						// AUTOCHECKIN <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($nameListCode, 'AUTOCHECKIN', $this->setAutoCheckin(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|AUTOCHECKIN', $this->setAutoCheckin(
 							$nameSingleCode,
 							CFactory::_('Config')->component_code_name
 						));
 						// CHECKINCALL <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($nameListCode, 'CHECKINCALL', $this->setCheckinCall());
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|CHECKINCALL', $this->setCheckinCall());
 					}
 					else
 					{
 						// AUTOCHECKIN <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($nameListCode, 'AUTOCHECKIN', '');
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|AUTOCHECKIN', '');
 						// CHECKINCALL <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($nameListCode, 'CHECKINCALL', '');
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|CHECKINCALL', '');
 					}
 					// admin list file contnet
-					CFactory::_('Content')->set_($nameListCode, 'ADMIN_JAVASCRIPT_FILE', $this->setViewScript(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_JAVASCRIPT_FILE', $this->setViewScript(
 						$nameListCode, 'list_fileScript'
 					));
 					// ADMIN_CUSTOM_BUTTONS_LIST
-					CFactory::_('Content')->set_($nameListCode, 'ADMIN_CUSTOM_BUTTONS_LIST', $this->setCustomButtons($view, 3, Indent::_(1)));
-					CFactory::_('Content')->set_($nameListCode, 'ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST', $this->setFunctionOnlyButtons(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_CUSTOM_BUTTONS_LIST', $this->setCustomButtons($view, 3, Indent::_(1)));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST', $this->setFunctionOnlyButtons(
 						$nameListCode
 					));
 
 					// GET_ITEMS_METHOD_STRING_FIX <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'GET_ITEMS_METHOD_STRING_FIX', $this->setGetItemsMethodStringFix(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|GET_ITEMS_METHOD_STRING_FIX', $this->setGetItemsMethodStringFix(
 						$nameSingleCode,
 						$nameListCode,
-						CFactory::_('Content')->get('Component')
+						CFactory::_('Compiler.Builder.Content.One')->get('Component')
 					));
 
 					// GET_ITEMS_METHOD_AFTER_ALL <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'GET_ITEMS_METHOD_AFTER_ALL', CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|GET_ITEMS_METHOD_AFTER_ALL', CFactory::_('Customcode.Dispenser')->get(
 						'php_getitems_after_all',
 						$nameSingleCode, PHP_EOL
 					));
 
 					// SELECTIONTRANSLATIONFIX <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'SELECTIONTRANSLATIONFIX', $this->setSelectionTranslationFix(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|SELECTIONTRANSLATIONFIX', $this->setSelectionTranslationFix(
 						$nameListCode,
-						CFactory::_('Content')->get('Component')
+						CFactory::_('Compiler.Builder.Content.One')->get('Component')
 					));
 
 					// SELECTIONTRANSLATIONFIXFUNC <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'SELECTIONTRANSLATIONFIXFUNC', $this->setSelectionTranslationFixFunc(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|SELECTIONTRANSLATIONFIXFUNC', $this->setSelectionTranslationFixFunc(
 						$nameListCode,
-						CFactory::_('Content')->get('Component')
+						CFactory::_('Compiler.Builder.Content.One')->get('Component')
 					));
 
 					// FILTER_FIELDS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'FILTER_FIELDS', $this->setFilterFieldsArray(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|FILTER_FIELDS', $this->setFilterFieldsArray(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// STOREDID <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'STOREDID', $this->setStoredId(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|STOREDID', $this->setStoredId(
 						$nameSingleCode, $nameListCode
 					));
 
 					// POPULATESTATE <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'POPULATESTATE', $this->setPopulateState(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|POPULATESTATE', $this->setPopulateState(
 						$nameSingleCode, $nameListCode
 					));
 
 					// SORTFIELDS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'SORTFIELDS', $this->setSortFields(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|SORTFIELDS', $this->setSortFields(
 						$nameListCode
 					));
 
 					// CATEGORY_VIEWS
-					CFactory::_('Content')->add('ROUTER_CATEGORY_VIEWS',
+					CFactory::_('Compiler.Builder.Content.One')->add('ROUTER_CATEGORY_VIEWS',
 						$this->setRouterCategoryViews(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// FILTERFIELDDISPLAYHELPER <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'FILTERFIELDDISPLAYHELPER', $this->setFilterFieldSidebarDisplayHelper(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|FILTERFIELDDISPLAYHELPER', $this->setFilterFieldSidebarDisplayHelper(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// BATCHDISPLAYHELPER <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'BATCHDISPLAYHELPER', $this->setBatchDisplayHelper(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|BATCHDISPLAYHELPER', $this->setBatchDisplayHelper(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// FILTERFUNCTIONS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'FILTERFUNCTIONS', $this->setFilterFieldHelper(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|FILTERFUNCTIONS', $this->setFilterFieldHelper(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// FIELDFILTERSETS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_('filter_' . $nameListCode,'FIELDFILTERSETS',
+					CFactory::_('Compiler.Builder.Content.Multi')->set('filter_' . $nameListCode . '|FIELDFILTERSETS',
 						$this->setFieldFilterSet(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// FIELDLISTSETS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_('filter_' . $nameListCode, 'FIELDLISTSETS',
+					CFactory::_('Compiler.Builder.Content.Multi')->set('filter_' . $nameListCode . '|FIELDLISTSETS',
 						$this->setFieldFilterListSet(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// LISTQUERY <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'LISTQUERY', $this->setListQuery(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|LISTQUERY', $this->setListQuery(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// MODELEXPORTMETHOD <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'MODELEXPORTMETHOD', $this->setGetItemsModelMethod(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|MODELEXPORTMETHOD', $this->setGetItemsModelMethod(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// MODELEXIMPORTMETHOD <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'CONTROLLEREXIMPORTMETHOD', $this->setControllerEximportMethod(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|CONTROLLEREXIMPORTMETHOD', $this->setControllerEximportMethod(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// EXPORTBUTTON <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'EXPORTBUTTON', $this->setExportButton(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|EXPORTBUTTON', $this->setExportButton(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// IMPORTBUTTON <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'IMPORTBUTTON', $this->setImportButton(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|IMPORTBUTTON', $this->setImportButton(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// VIEWS_DEFAULT_BODY <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'VIEWS_DEFAULT_BODY', $this->setDefaultViewsBody(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|VIEWS_DEFAULT_BODY', $this->setDefaultViewsBody(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// LISTHEAD <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'LISTHEAD', $this->setListHead(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|LISTHEAD', $this->setListHead(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// LISTBODY <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'LISTBODY', $this->setListBody(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|LISTBODY', $this->setListBody(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// LISTCOLNR <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'LISTCOLNR', $this->setListColnr(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|LISTCOLNR', $this->setListColnr(
 						$nameListCode
 					));
 
 					// JVIEWLISTCANDO <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'JVIEWLISTCANDO', $this->setJviewListCanDo(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|JVIEWLISTCANDO', $this->setJviewListCanDo(
 						$nameSingleCode,
 						$nameListCode
 					));
 
 					// VIEWSCSS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'VIEWSCSS', CFactory::_('Customcode.Dispenser')->get(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|VIEWSCSS', CFactory::_('Customcode.Dispenser')->get(
 						'css_views', $nameSingleCode, '',
 						null, true
 					));
 
 					// ADMIN_DIPLAY_METHOD <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($nameListCode, 'ADMIN_DIPLAY_METHOD', $this->setAdminViewDisplayMethod(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_DIPLAY_METHOD', $this->setAdminViewDisplayMethod(
 						$nameListCode
 					));
 
@@ -844,38 +847,38 @@ class Infusion extends Interpretation
 							// minify the script
 							$footerScript = Minify::js($footerScript);
 						}
-						CFactory::_('Content')->set_($nameListCode, 'VIEWS_FOOTER_SCRIPT', PHP_EOL . '<script type="text/javascript">'
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|VIEWS_FOOTER_SCRIPT', PHP_EOL . '<script type="text/javascript">'
 							. $footerScript . "</script>");
 						// clear some memory
 						unset($footerScript);
 					}
 					else
 					{
-						CFactory::_('Content')->set_($nameListCode, 'VIEWS_FOOTER_SCRIPT', '');
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|VIEWS_FOOTER_SCRIPT', '');
 					}
 
 					// ADMIN_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-					CFactory::_('Content')->set_($nameListCode, 'ADMIN_VIEWS_CONTROLLER_HEADER', $this->setFileHeader(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_VIEWS_CONTROLLER_HEADER', $this->setFileHeader(
 						'admin.views.controller',
 						$nameListCode
 					));
 					// ADMIN_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-					CFactory::_('Content')->set_($nameListCode, 'ADMIN_VIEWS_MODEL_HEADER', $this->setFileHeader(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_VIEWS_MODEL_HEADER', $this->setFileHeader(
 						'admin.views.model', $nameListCode
 					));
 					// ADMIN_VIEWS_HTML_HEADER <<<DYNAMIC>>> add the header details for the views
-					CFactory::_('Content')->set_($nameListCode, 'ADMIN_VIEWS_HTML_HEADER', $this->setFileHeader(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_VIEWS_HTML_HEADER', $this->setFileHeader(
 						'admin.views.html', $nameListCode
 					));
 					// ADMIN_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the views
-					CFactory::_('Content')->set_($nameListCode, 'ADMIN_VIEWS_HEADER', $this->setFileHeader(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_VIEWS_HEADER', $this->setFileHeader(
 						'admin.views', $nameListCode
 					));
 
 					// for plugin event TODO change event api signatures
 					$placeholders = CFactory::_('Placeholder')->active;
-					$fileContentStatic = CFactory::_('Content')->active;
-					$fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentStatic = CFactory::_('Compiler.Builder.Content.One')->allActive();
+					$fileContentDynamic = CFactory::_('Compiler.Builder.Content.Multi')->allActive();
 					// Trigger Event: jcb_ce_onAfterBuildAdminListViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildAdminListViewContent',
@@ -892,96 +895,96 @@ class Infusion extends Interpretation
 				}
 
 				// set u fields used in batch
-				CFactory::_('Content')->set_($nameSingleCode, 'UNIQUEFIELDS', $this->setUniqueFields(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|UNIQUEFIELDS', $this->setUniqueFields(
 					$nameSingleCode
 				));
 
 				// TITLEALIASFIX <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'TITLEALIASFIX', $this->setAliasTitleFix(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|TITLEALIASFIX', $this->setAliasTitleFix(
 					$nameSingleCode
 				));
 
 				// GENERATENEWTITLE <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'GENERATENEWTITLE', $this->setGenerateNewTitle(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|GENERATENEWTITLE', $this->setGenerateNewTitle(
 					$nameSingleCode
 				));
 
 				// GENERATENEWALIAS <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'GENERATENEWALIAS', $this->setGenerateNewAlias(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|GENERATENEWALIAS', $this->setGenerateNewAlias(
 					$nameSingleCode
 				));
 
 				// MODEL_BATCH_COPY <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'MODEL_BATCH_COPY', $this->setBatchCopy($nameSingleCode));
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|MODEL_BATCH_COPY', $this->setBatchCopy($nameSingleCode));
 
 				// MODEL_BATCH_MOVE <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'MODEL_BATCH_MOVE', $this->setBatchMove($nameSingleCode));
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|MODEL_BATCH_MOVE', $this->setBatchMove($nameSingleCode));
 
 				// BATCH_ONCLICK_CANCEL_SCRIPT <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameListCode, 'BATCH_ONCLICK_CANCEL_SCRIPT', ''); // TODO <-- must still be build
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|BATCH_ONCLICK_CANCEL_SCRIPT', ''); // TODO <-- must still be build
 
 				// JCONTROLLERFORM_ALLOWADD <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'JCONTROLLERFORM_ALLOWADD', $this->setJcontrollerAllowAdd(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JCONTROLLERFORM_ALLOWADD', $this->setJcontrollerAllowAdd(
 					$nameSingleCode,
 					$nameListCode
 				));
 
 				// JCONTROLLERFORM_BEFORECANCEL <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'JCONTROLLERFORM_BEFORECANCEL', CFactory::_('Customcode.Dispenser')->get(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JCONTROLLERFORM_BEFORECANCEL', CFactory::_('Customcode.Dispenser')->get(
 					'php_before_cancel', $nameSingleCode,
 					PHP_EOL, null, false,
 					''
 				));
 
 				// JCONTROLLERFORM_AFTERCANCEL <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'JCONTROLLERFORM_AFTERCANCEL', CFactory::_('Customcode.Dispenser')->get(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JCONTROLLERFORM_AFTERCANCEL', CFactory::_('Customcode.Dispenser')->get(
 					'php_after_cancel', $nameSingleCode,
 					PHP_EOL, null, false,
 					''
 				));
 
 				// JCONTROLLERFORM_ALLOWEDIT <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'JCONTROLLERFORM_ALLOWEDIT', $this->setJcontrollerAllowEdit(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JCONTROLLERFORM_ALLOWEDIT', $this->setJcontrollerAllowEdit(
 					$nameSingleCode,
 					$nameListCode
 				));
 
 				// JMODELADMIN_GETFORM <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_GETFORM', $this->setJmodelAdminGetForm(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JMODELADMIN_GETFORM', $this->setJmodelAdminGetForm(
 					$nameSingleCode,
 					$nameListCode
 				));
 
 				// JMODELADMIN_ALLOWEDIT <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_ALLOWEDIT', $this->setJmodelAdminAllowEdit(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JMODELADMIN_ALLOWEDIT', $this->setJmodelAdminAllowEdit(
 					$nameSingleCode,
 					$nameListCode
 				));
 
 				// JMODELADMIN_CANDELETE <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_CANDELETE', $this->setJmodelAdminCanDelete(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JMODELADMIN_CANDELETE', $this->setJmodelAdminCanDelete(
 					$nameSingleCode,
 					$nameListCode
 				));
 
 				// JMODELADMIN_CANEDITSTATE <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameSingleCode, 'JMODELADMIN_CANEDITSTATE', $this->setJmodelAdminCanEditState(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JMODELADMIN_CANEDITSTATE', $this->setJmodelAdminCanEditState(
 					$nameSingleCode,
 					$nameListCode
 				));
 
 				// set custom admin view Toolbare buttons
 				// CUSTOM_ADMIN_DYNAMIC_BUTTONS  <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameListCode, 'CUSTOM_ADMIN_DYNAMIC_BUTTONS', $this->setCustomAdminDynamicButton(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|CUSTOM_ADMIN_DYNAMIC_BUTTONS', $this->setCustomAdminDynamicButton(
 					$nameListCode
 				));
 				// CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER  <<<DYNAMIC>>>
-				CFactory::_('Content')->set_($nameListCode, 'CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER', $this->setCustomAdminDynamicButtonController(
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|CUSTOM_ADMIN_DYNAMIC_BUTTONS_CONTROLLER', $this->setCustomAdminDynamicButtonController(
 					$nameListCode
 				));
 
 				// set helper router
-				CFactory::_('Content')->add('ROUTEHELPER',
+				CFactory::_('Compiler.Builder.Content.One')->add('ROUTEHELPER',
 					$this->setRouterHelp(
 					$nameSingleCode,
 					$nameListCode
@@ -994,18 +997,18 @@ class Infusion extends Interpretation
 					&& $view['edit_create_site_view'] > 0)
 				{
 					// add needed router stuff for front edit views
-					CFactory::_('Content')->add('ROUTER_PARSE_SWITCH',
+					CFactory::_('Compiler.Builder.Content.One')->add('ROUTER_PARSE_SWITCH',
 						$this->routerParseSwitch(
 						$nameSingleCode, null, false
 					));
-					CFactory::_('Content')->add('ROUTER_BUILD_VIEWS',
+					CFactory::_('Compiler.Builder.Content.One')->add('ROUTER_BUILD_VIEWS',
 						$this->routerBuildViews(
 						$nameSingleCode
 					));
 				}
 
 				// ACCESS_SECTIONS
-				CFactory::_('Content')->add('ACCESS_SECTIONS',
+				CFactory::_('Compiler.Builder.Content.One')->add('ACCESS_SECTIONS',
 					$this->setAccessSectionsCategory(
 					$nameSingleCode,
 					$nameListCode
@@ -1014,13 +1017,13 @@ class Infusion extends Interpretation
 				if (isset($view['joomla_fields'])
 					&& $view['joomla_fields'] == 1)
 				{
-					CFactory::_('Content')->add('ACCESS_SECTIONS', $this->setAccessSectionsJoomlaFields());
+					CFactory::_('Compiler.Builder.Content.One')->add('ACCESS_SECTIONS', $this->setAccessSectionsJoomlaFields());
 				}
 
 				// for plugin event TODO change event api signatures
 				$placeholders = CFactory::_('Placeholder')->active;
-				$fileContentStatic = CFactory::_('Content')->active;
-				$fileContentDynamic = CFactory::_('Content')->_active;
+				$fileContentStatic = CFactory::_('Compiler.Builder.Content.One')->allActive();
+				$fileContentDynamic = CFactory::_('Compiler.Builder.Content.Multi')->allActive();
 				// Trigger Event: jcb_ce_onAfterBuildAdminViewContent
 				CFactory::_('Event')->trigger(
 					'jcb_ce_onAfterBuildAdminViewContent',
@@ -1037,7 +1040,7 @@ class Infusion extends Interpretation
 			}
 
 			// all fields stored in database
-			CFactory::_('Content')->set('ALL_COMPONENT_FIELDS', CFactory::_('Registry')->varExport('all_component_fields', 1));
+			CFactory::_('Compiler.Builder.Content.One')->set('ALL_COMPONENT_FIELDS', CFactory::_('Compiler.Builder.Component.Fields')->varExport(null, 1));
 
 			// setup the layouts
 			$this->setCustomViewLayouts();
@@ -1051,13 +1054,13 @@ class Infusion extends Interpretation
 				foreach (CFactory::_('Component')->get('custom_admin_views') as $view)
 				{
 					// for single views
-					CFactory::_('Content')->set_($view['settings']->code, 'SView', $view['settings']->Code);
-					CFactory::_('Content')->set_($view['settings']->code, 'sview', $view['settings']->code);
-					CFactory::_('Content')->set_($view['settings']->code, 'SVIEW', $view['settings']->CODE);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SView', $view['settings']->Code);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|sview', $view['settings']->code);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SVIEW', $view['settings']->CODE);
 					// for list views
-					CFactory::_('Content')->set_($view['settings']->code, 'SViews', $view['settings']->Code);
-					CFactory::_('Content')->set_($view['settings']->code, 'sviews', $view['settings']->code);
-					CFactory::_('Content')->set_($view['settings']->code, 'SVIEWS', $view['settings']->CODE);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SViews', $view['settings']->Code);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|sviews', $view['settings']->code);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SVIEWS', $view['settings']->CODE);
 					// add to lang array
 					CFactory::_('Language')->set(
 						CFactory::_('Config')->lang_target,
@@ -1070,7 +1073,7 @@ class Infusion extends Interpretation
 						. '_DESC', $view['settings']->description
 					);
 					// ICOMOON <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'ICOMOON', $view['icomoon']);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|ICOMOON', $view['icomoon']);
 
 					// set placeholders
 					CFactory::_('Placeholder')->set('SView', $view['settings']->Code);
@@ -1083,8 +1086,8 @@ class Infusion extends Interpretation
 
 					// for plugin event TODO change event api signatures
 					$placeholders = CFactory::_('Placeholder')->active;
-					$fileContentStatic = CFactory::_('Content')->active;
-					$fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentStatic = CFactory::_('Compiler.Builder.Content.One')->allActive();
+					$fileContentDynamic = CFactory::_('Compiler.Builder.Content.Multi')->allActive();
 					// Trigger Event: jcb_ce_onBeforeBuildCustomAdminViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildCustomAdminViewContent',
@@ -1108,12 +1111,12 @@ class Infusion extends Interpretation
 						&& CFactory::_('Registry')->get('build.dashboard', '') === $view['settings']->code)
 					{
 						// HIDEMAINMENU <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'HIDEMAINMENU', '');
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|HIDEMAINMENU', '');
 					}
 					else
 					{
 						// HIDEMAINMENU <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'HIDEMAINMENU', PHP_EOL . Indent::_(2) . '//' . Line::_(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|HIDEMAINMENU', PHP_EOL . Indent::_(2) . '//' . Line::_(
 								__LINE__,__CLASS__
 							) . " hide the main menu"
 							. PHP_EOL . Indent::_(2)
@@ -1123,19 +1126,19 @@ class Infusion extends Interpretation
 					if ($view['settings']->main_get->gettype == 1)
 					{
 						// CUSTOM_ADMIN_BEFORE_GET_ITEM <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_BEFORE_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_BEFORE_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitem',
 							$view['settings']->code, '', null, true
 						));
 
 						// CUSTOM_ADMIN_GET_ITEM <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_GET_ITEM', $this->setCustomViewGetItem(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_GET_ITEM', $this->setCustomViewGetItem(
 							$view['settings']->main_get,
 							$view['settings']->code, Indent::_(2)
 						));
 
 						// CUSTOM_ADMIN_AFTER_GET_ITEM <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_AFTER_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_AFTER_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitem',
 							$view['settings']->code, '', null, true
 						));
@@ -1143,65 +1146,65 @@ class Infusion extends Interpretation
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
 						// CUSTOM_ADMIN_GET_LIST_QUERY <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_GET_LIST_QUERY', $this->setCustomViewListQuery(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_GET_LIST_QUERY', $this->setCustomViewListQuery(
 							$view['settings']->main_get, $view['settings']->code
 						));
 
 						// CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY', CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_CUSTOM_BEFORE_LIST_QUERY', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_getlistquery',
 							$view['settings']->code, PHP_EOL, null, true
 						));
 
 						// CUSTOM_ADMIN_BEFORE_GET_ITEMS <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_BEFORE_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_BEFORE_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitems',
 							$view['settings']->code, PHP_EOL, null, true
 						));
 
 						// CUSTOM_ADMIN_GET_ITEMS <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_GET_ITEMS', $this->setCustomViewGetItems(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_GET_ITEMS', $this->setCustomViewGetItems(
 							$view['settings']->main_get, $view['settings']->code
 						));
 
 						// CUSTOM_ADMIN_AFTER_GET_ITEMS <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_AFTER_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_AFTER_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitems',
 							$view['settings']->code, PHP_EOL, null, true
 						));
 					}
 
 					// CUSTOM_ADMIN_CUSTOM_METHODS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_CUSTOM_METHODS', $this->setCustomViewCustomItemMethods(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_CUSTOM_METHODS', $this->setCustomViewCustomItemMethods(
 						$view['settings']->main_get, $view['settings']->code
 					));
-					CFactory::_('Content')->add_($view['settings']->code, 'CUSTOM_ADMIN_CUSTOM_METHODS',
+					CFactory::_('Compiler.Builder.Content.Multi')->add($view['settings']->code . '|CUSTOM_ADMIN_CUSTOM_METHODS',
 						$this->setCustomViewCustomMethods(
 							$view, $view['settings']->code
-						)
+						). false
 					);
 					// CUSTOM_ADMIN_DIPLAY_METHOD <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_DIPLAY_METHOD', $this->setCustomViewDisplayMethod($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_DIPLAY_METHOD', $this->setCustomViewDisplayMethod($view));
 					// set document details
 					$this->setPrepareDocument($view);
 					// CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS', $this->setCustomViewExtraDisplayMethods($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS', $this->setCustomViewExtraDisplayMethods($view));
 					// CUSTOM_ADMIN_CODE_BODY <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_CODE_BODY', $this->setCustomViewCodeBody($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_CODE_BODY', $this->setCustomViewCodeBody($view));
 					// CUSTOM_ADMIN_BODY <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_BODY', $this->setCustomViewBody($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_BODY', $this->setCustomViewBody($view));
 					// CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT', $this->setCustomViewSubmitButtonScript($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT', $this->setCustomViewSubmitButtonScript($view));
 
 					// setup the templates
 					$this->setCustomViewTemplateBody($view);
 
 					// set the site form if needed
-					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_TOP_FORM', $this->setCustomViewForm(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_TOP_FORM', $this->setCustomViewForm(
 						$view['settings']->code,
 						$view['settings']->main_get->gettype, 1
 					));
-					CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_BOTTOM_FORM', $this->setCustomViewForm(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_BOTTOM_FORM', $this->setCustomViewForm(
 						$view['settings']->code,
 						$view['settings']->main_get->gettype, 2
 					));
@@ -1210,48 +1213,48 @@ class Infusion extends Interpretation
 					if ($view['settings']->main_get->gettype == 1)
 					{
 						// CUSTOM_ADMIN_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
 							'custom.admin.view.controller',
 							$view['settings']->code
 						));
 						// CUSTOM_ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEW_MODEL_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_VIEW_MODEL_HEADER', $this->setFileHeader(
 							'custom.admin.view.model', $view['settings']->code
 						));
 						// CUSTOM_ADMIN_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEW_HTML_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_VIEW_HTML_HEADER', $this->setFileHeader(
 							'custom.admin.view.html', $view['settings']->code
 						));
 						// CUSTOM_ADMIN_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEW_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_VIEW_HEADER', $this->setFileHeader(
 							'custom.admin.view', $view['settings']->code
 						));
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
 						// CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER', $this->setFileHeader(
 							'custom.admin.views.controller',
 							$view['settings']->code
 						));
 						// CUSTOM_ADMIN_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEWS_MODEL_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_VIEWS_MODEL_HEADER', $this->setFileHeader(
 							'custom.admin.views.model', $view['settings']->code
 						));
 						// CUSTOM_ADMIN_VIEWS_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEWS_HTML_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_VIEWS_HTML_HEADER', $this->setFileHeader(
 							'custom.admin.views.html', $view['settings']->code
 						));
 						// CUSTOM_ADMIN_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the view
-						CFactory::_('Content')->set_($view['settings']->code, 'CUSTOM_ADMIN_VIEWS_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_VIEWS_HEADER', $this->setFileHeader(
 							'custom.admin.views', $view['settings']->code
 						));
 					}
 
 					// for plugin event TODO change event api signatures
 					$placeholders = CFactory::_('Placeholder')->active;
-					$fileContentStatic = CFactory::_('Content')->active;
-					$fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentStatic = CFactory::_('Compiler.Builder.Content.One')->allActive();
+					$fileContentDynamic = CFactory::_('Compiler.Builder.Content.Multi')->allActive();
 					// Trigger Event: jcb_ce_onAfterBuildCustomAdminViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildCustomAdminViewContent',
@@ -1271,58 +1274,58 @@ class Infusion extends Interpretation
 			}
 
 			// ADMIN_HELPER_CLASS_HEADER
-			CFactory::_('Content')->set('ADMIN_HELPER_CLASS_HEADER',
+			CFactory::_('Compiler.Builder.Content.One')->set('ADMIN_HELPER_CLASS_HEADER',
 				$this->setFileHeader(
 				'admin.helper', 'admin'
 			));
 
 			// ADMIN_COMPONENT_HEADER
-			CFactory::_('Content')->set('ADMIN_COMPONENT_HEADER',
+			CFactory::_('Compiler.Builder.Content.One')->set('ADMIN_COMPONENT_HEADER',
 				$this->setFileHeader(
 				'admin.component', 'admin'
 			));
 
 			// SITE_HELPER_CLASS_HEADER
-			CFactory::_('Content')->set('SITE_HELPER_CLASS_HEADER',
+			CFactory::_('Compiler.Builder.Content.One')->set('SITE_HELPER_CLASS_HEADER',
 				$this->setFileHeader(
 				'site.helper', 'site'
 			));
 
 			// SITE_COMPONENT_HEADER
-			CFactory::_('Content')->set('SITE_COMPONENT_HEADER',
+			CFactory::_('Compiler.Builder.Content.One')->set('SITE_COMPONENT_HEADER',
 				$this->setFileHeader(
 				'site.component', 'site'
 			));
 
 			// HELPER_EXEL
-			CFactory::_('Content')->set('HELPER_EXEL', $this->setHelperExelMethods());
+			CFactory::_('Compiler.Builder.Content.One')->set('HELPER_EXEL', $this->setHelperExelMethods());
 
 			// VIEWARRAY
-			CFactory::_('Content')->set('VIEWARRAY', PHP_EOL . implode("," . PHP_EOL, $viewarray));
+			CFactory::_('Compiler.Builder.Content.One')->set('VIEWARRAY', PHP_EOL . implode("," . PHP_EOL, $viewarray));
 
 			// CUSTOM_ADMIN_EDIT_VIEW_ARRAY
-			CFactory::_('Content')->set('SITE_EDIT_VIEW_ARRAY', PHP_EOL . implode("," . PHP_EOL, $site_edit_view_array));
+			CFactory::_('Compiler.Builder.Content.One')->set('SITE_EDIT_VIEW_ARRAY', PHP_EOL . implode("," . PHP_EOL, $site_edit_view_array));
 
 			// MAINMENUS
-			CFactory::_('Content')->set('MAINMENUS', $this->setMainMenus());
+			CFactory::_('Compiler.Builder.Content.One')->set('MAINMENUS', $this->setMainMenus());
 
 			// SUBMENU
-			CFactory::_('Content')->set('SUBMENU', $this->setSubMenus());
+			CFactory::_('Compiler.Builder.Content.One')->set('SUBMENU', $this->setSubMenus());
 
 			// GET_CRYPT_KEY
-			CFactory::_('Content')->set('GET_CRYPT_KEY', $this->setGetCryptKey());
+			CFactory::_('Compiler.Builder.Content.One')->set('GET_CRYPT_KEY', $this->setGetCryptKey());
 
 			// set the license locker
 			$this->setLockLicense();
 
 			// CONTRIBUTORS
-			CFactory::_('Content')->set('CONTRIBUTORS', $this->theContributors);
+			CFactory::_('Compiler.Builder.Content.One')->set('CONTRIBUTORS', $this->theContributors);
 
 			// INSTALL
-			CFactory::_('Content')->set('INSTALL', $this->setInstall());
+			CFactory::_('Compiler.Builder.Content.One')->set('INSTALL', $this->setInstall());
 
 			// UNINSTALL
-			CFactory::_('Content')->set('UNINSTALL', $this->setUninstall());
+			CFactory::_('Compiler.Builder.Content.One')->set('UNINSTALL', $this->setUninstall());
 
 			// UPDATE_VERSION_MYSQL
 			$this->setVersionController();
@@ -1331,36 +1334,36 @@ class Infusion extends Interpretation
 			if (!CFactory::_('Registry')->get('build.dashboard'))
 			{
 				// DASHBOARDVIEW
-				CFactory::_('Content')->set('DASHBOARDVIEW', CFactory::_('Config')->component_code_name);
+				CFactory::_('Compiler.Builder.Content.One')->set('DASHBOARDVIEW', CFactory::_('Config')->component_code_name);
 
 				// DASHBOARDICONS
-				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASHBOARDICONS', $this->setDashboardIcons());
+				CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '|DASHBOARDICONS', $this->setDashboardIcons());
 
 				// DASHBOARDICONACCESS
-				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASHBOARDICONACCESS', $this->setDashboardIconAccess());
+				CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '|DASHBOARDICONACCESS', $this->setDashboardIconAccess());
 
 				// DASH_MODEL_METHODS
-				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_MODEL_METHODS', $this->setDashboardModelMethods());
+				CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '|DASH_MODEL_METHODS', $this->setDashboardModelMethods());
 
 				// DASH_GET_CUSTOM_DATA
-				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_GET_CUSTOM_DATA', $this->setDashboardGetCustomData());
+				CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '|DASH_GET_CUSTOM_DATA', $this->setDashboardGetCustomData());
 
 				// DASH_DISPLAY_DATA
-				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_DISPLAY_DATA', $this->setDashboardDisplayData());
+				CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '|DASH_DISPLAY_DATA', $this->setDashboardDisplayData());
 
 				// DASH_VIEW_HEADER
-				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_VIEW_HEADER', $this->setFileHeader('dashboard.view', 'dashboard'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '|DASH_VIEW_HEADER', $this->setFileHeader('dashboard.view', 'dashboard'));
 				// DASH_VIEW_HTML_HEADER
-				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_VIEW_HTML_HEADER', $this->setFileHeader('dashboard.view.html', 'dashboard'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '|DASH_VIEW_HTML_HEADER', $this->setFileHeader('dashboard.view.html', 'dashboard'));
 				// DASH_MODEL_HEADER
-				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_MODEL_HEADER', $this->setFileHeader('dashboard.model', 'dashboard'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '|DASH_MODEL_HEADER', $this->setFileHeader('dashboard.model', 'dashboard'));
 				// DASH_CONTROLLER_HEADER
-				CFactory::_('Content')->set_(CFactory::_('Config')->component_code_name, 'DASH_CONTROLLER_HEADER', $this->setFileHeader('dashboard.controller', 'dashboard'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '|DASH_CONTROLLER_HEADER', $this->setFileHeader('dashboard.controller', 'dashboard'));
 			}
 			else
 			{
 				// DASHBOARDVIEW
-				CFactory::_('Content')->set('DASHBOARDVIEW', CFactory::_('Registry')->get('build.dashboard'));
+				CFactory::_('Compiler.Builder.Content.One')->set('DASHBOARDVIEW', CFactory::_('Registry')->get('build.dashboard'));
 			}
 
 			// add import
@@ -1370,23 +1373,23 @@ class Infusion extends Interpretation
 				$target = array('admin' => 'import');
 				CFactory::_('Utilities.Structure')->build($target, 'import');
 				// IMPORT_EXT_METHOD <<<DYNAMIC>>>
-				CFactory::_('Content')->set_('import', 'IMPORT_EXT_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+				CFactory::_('Compiler.Builder.Content.Multi')->set('import' . '|IMPORT_EXT_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 						ComponentbuilderHelper::getDynamicScripts('ext')
 					));
 				// IMPORT_SETDATA_METHOD <<<DYNAMIC>>>
-				CFactory::_('Content')->set_('import', 'IMPORT_SETDATA_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+				CFactory::_('Compiler.Builder.Content.Multi')->set('import' . '|IMPORT_SETDATA_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 						ComponentbuilderHelper::getDynamicScripts('setdata')
 					));
 				// IMPORT_SAVE_METHOD <<<DYNAMIC>>>
-				CFactory::_('Content')->set_('import', 'IMPORT_SAVE_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
+				CFactory::_('Compiler.Builder.Content.Multi')->set('import' . '|IMPORT_SAVE_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 						ComponentbuilderHelper::getDynamicScripts('save')
 					));
 				// IMPORT_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-				CFactory::_('Content')->set_('import', 'IMPORT_CONTROLLER_HEADER', $this->setFileHeader(
+				CFactory::_('Compiler.Builder.Content.Multi')->set('import' . '|IMPORT_CONTROLLER_HEADER', $this->setFileHeader(
 					'import.controller', 'import'
 				));
 				// IMPORT_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-				CFactory::_('Content')->set_('import', 'IMPORT_MODEL_HEADER', $this->setFileHeader(
+				CFactory::_('Compiler.Builder.Content.Multi')->set('import' . '|IMPORT_MODEL_HEADER', $this->setFileHeader(
 					'import.model', 'import'
 				));
 			}
@@ -1398,12 +1401,12 @@ class Infusion extends Interpretation
 				$target = array('admin' => 'ajax');
 				CFactory::_('Utilities.Structure')->build($target, 'ajax');
 				// set the controller
-				CFactory::_('Content')->set_('ajax', 'REGISTER_AJAX_TASK', $this->setRegisterAjaxTask('admin'));
-				CFactory::_('Content')->set_('ajax', 'AJAX_INPUT_RETURN', $this->setAjaxInputReturn('admin'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set('ajax' . '|REGISTER_AJAX_TASK', $this->setRegisterAjaxTask('admin'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set('ajax' . '|AJAX_INPUT_RETURN', $this->setAjaxInputReturn('admin'));
 				// set the model header
-				CFactory::_('Content')->set_('ajax', 'AJAX_ADMIN_MODEL_HEADER', $this->setFileHeader('ajax.admin.model', 'ajax'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set('ajax' . '|AJAX_ADMIN_MODEL_HEADER', $this->setFileHeader('ajax.admin.model', 'ajax'));
 				// set the module
-				CFactory::_('Content')->set_('ajax', 'AJAX_MODEL_METHODS', $this->setAjaxModelMethods('admin'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set('ajax' . '|AJAX_MODEL_METHODS', $this->setAjaxModelMethods('admin'));
 			}
 
 			// ensure that the site ajax model and controller is set if needed
@@ -1413,12 +1416,12 @@ class Infusion extends Interpretation
 				$target = array('site' => 'ajax');
 				CFactory::_('Utilities.Structure')->build($target, 'ajax');
 				// set the controller
-				CFactory::_('Content')->set_('ajax', 'REGISTER_SITE_AJAX_TASK', $this->setRegisterAjaxTask('site'));
-				CFactory::_('Content')->set_('ajax', 'AJAX_SITE_INPUT_RETURN', $this->setAjaxInputReturn('site'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set('ajax' . '|REGISTER_SITE_AJAX_TASK', $this->setRegisterAjaxTask('site'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set('ajax' . '|AJAX_SITE_INPUT_RETURN', $this->setAjaxInputReturn('site'));
 				// set the model header
-				CFactory::_('Content')->set_('ajax', 'AJAX_SITE_MODEL_HEADER', $this->setFileHeader('ajax.site.model', 'ajax'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set('ajax' . '|AJAX_SITE_MODEL_HEADER', $this->setFileHeader('ajax.site.model', 'ajax'));
 				// set the module
-				CFactory::_('Content')->set_('ajax', 'AJAX_SITE_MODEL_METHODS', $this->setAjaxModelMethods('site'));
+				CFactory::_('Compiler.Builder.Content.Multi')->set('ajax' . '|AJAX_SITE_MODEL_METHODS', $this->setAjaxModelMethods('site'));
 			}
 
 			// build the validation rules
@@ -1430,9 +1433,9 @@ class Infusion extends Interpretation
 					$target = array('admin' => 'a_rule_zi');
 					CFactory::_('Utilities.Structure')->build($target, 'rule', $rule);
 					// set the JFormRule Name
-					CFactory::_('Content')->set_('a_rule_zi_' . $rule, 'Name', ucfirst((string) $rule));
+					CFactory::_('Compiler.Builder.Content.Multi')->set('a_rule_zi_' . $rule . '|Name', ucfirst((string) $rule));
 					// set the JFormRule PHP
-					CFactory::_('Content')->set_('a_rule_zi_' . $rule, 'VALIDATION_RULE_METHODS', PHP_EOL . $_php);
+					CFactory::_('Compiler.Builder.Content.Multi')->set('a_rule_zi_' . $rule . '|VALIDATION_RULE_METHODS', PHP_EOL . $_php);
 				}
 			}
 
@@ -1469,11 +1472,11 @@ class Infusion extends Interpretation
 				foreach (CFactory::_('Component')->get('site_views') as $view)
 				{
 					// for list views
-					CFactory::_('Content')->set_($view['settings']->code, 'SViews', $view['settings']->Code);
-					CFactory::_('Content')->set_($view['settings']->code, 'sviews', $view['settings']->code);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SViews', $view['settings']->Code);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|sviews', $view['settings']->code);
 					// for single views
-					CFactory::_('Content')->set_($view['settings']->code, 'SView', $view['settings']->Code);
-					CFactory::_('Content')->set_($view['settings']->code, 'sview', $view['settings']->code);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SView', $view['settings']->Code);
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|sview', $view['settings']->code);
 
 					// set placeholders
 					CFactory::_('Placeholder')->set('SView', $view['settings']->Code);
@@ -1486,8 +1489,8 @@ class Infusion extends Interpretation
 
 					// for plugin event TODO change event api signatures
 					$placeholders = CFactory::_('Placeholder')->active;
-					$fileContentStatic = CFactory::_('Content')->active;
-					$fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentStatic = CFactory::_('Compiler.Builder.Content.One')->allActive();
+					$fileContentDynamic = CFactory::_('Compiler.Builder.Content.Multi')->allActive();
 					// Trigger Event: jcb_ce_onBeforeBuildSiteViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onBeforeBuildSiteViewContent',
@@ -1510,46 +1513,46 @@ class Infusion extends Interpretation
 					if (isset($view['default_view'])
 						&& $view['default_view'] == 1)
 					{
-						CFactory::_('Content')->set('SITE_DEFAULT_VIEW', $view['settings']->code);
+						CFactory::_('Compiler.Builder.Content.One')->set('SITE_DEFAULT_VIEW', $view['settings']->code);
 					}
 					// add site menu
 					if (isset($view['menu']) && $view['menu'] == 1)
 					{
 						// SITE_MENU_XML <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_MENU_XML', $this->setCustomViewMenu($view));
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_MENU_XML', $this->setCustomViewMenu($view));
 					}
 
 					// insure the needed route helper is loaded
-					CFactory::_('Content')->add('ROUTEHELPER',
+					CFactory::_('Compiler.Builder.Content.One')->add('ROUTEHELPER',
 						$this->setRouterHelp(
 						$view['settings']->code, $view['settings']->code, true
 					));
 					// build route details
-					CFactory::_('Content')->add('ROUTER_PARSE_SWITCH',
+					CFactory::_('Compiler.Builder.Content.One')->add('ROUTER_PARSE_SWITCH',
 						$this->routerParseSwitch(
 						$view['settings']->code, $view
 					));
-					CFactory::_('Content')->add('ROUTER_BUILD_VIEWS', $this->routerBuildViews($view['settings']->code));
+					CFactory::_('Compiler.Builder.Content.One')->add('ROUTER_BUILD_VIEWS', $this->routerBuildViews($view['settings']->code));
 
 					if ($view['settings']->main_get->gettype == 1)
 					{
 						// set user permission access check USER_PERMISSION_CHECK_ACCESS <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'USER_PERMISSION_CHECK_ACCESS', $this->setUserPermissionCheckAccess($view, 1));
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|USER_PERMISSION_CHECK_ACCESS', $this->setUserPermissionCheckAccess($view, 1));
 
 						// SITE_BEFORE_GET_ITEM <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_BEFORE_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_BEFORE_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitem',
 							$view['settings']->code, '', null, true
 						));
 
 						// SITE_GET_ITEM <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_GET_ITEM', $this->setCustomViewGetItem(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_GET_ITEM', $this->setCustomViewGetItem(
 							$view['settings']->main_get,
 							$view['settings']->code, Indent::_(2)
 						));
 
 						// SITE_AFTER_GET_ITEM <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_AFTER_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_AFTER_GET_ITEM', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitem',
 							$view['settings']->code, '', null, true
 						));
@@ -1557,25 +1560,25 @@ class Infusion extends Interpretation
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
 						// set user permission access check USER_PERMISSION_CHECK_ACCESS <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'USER_PERMISSION_CHECK_ACCESS', $this->setUserPermissionCheckAccess($view, 2));
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|USER_PERMISSION_CHECK_ACCESS', $this->setUserPermissionCheckAccess($view, 2));
 						// SITE_GET_LIST_QUERY <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_GET_LIST_QUERY', $this->setCustomViewListQuery(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_GET_LIST_QUERY', $this->setCustomViewListQuery(
 							$view['settings']->main_get, $view['settings']->code
 						));
 
 						// SITE_BEFORE_GET_ITEMS <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_BEFORE_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_BEFORE_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_before_getitems',
 							$view['settings']->code, PHP_EOL, null, true
 						));
 
 						// SITE_GET_ITEMS <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_GET_ITEMS', $this->setCustomViewGetItems(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_GET_ITEMS', $this->setCustomViewGetItems(
 							$view['settings']->main_get, $view['settings']->code
 						));
 
 						// SITE_AFTER_GET_ITEMS <<<DYNAMIC>>>
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_AFTER_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_AFTER_GET_ITEMS', CFactory::_('Customcode.Dispenser')->get(
 							CFactory::_('Config')->build_target . '_php_after_getitems',
 							$view['settings']->code, PHP_EOL, null, true
 						));
@@ -1592,34 +1595,34 @@ class Infusion extends Interpretation
 						. '_DESC', $view['settings']->description
 					);
 					// SITE_CUSTOM_METHODS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'SITE_CUSTOM_METHODS', $this->setCustomViewCustomItemMethods(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_CUSTOM_METHODS', $this->setCustomViewCustomItemMethods(
 						$view['settings']->main_get, $view['settings']->code
 					));
-					CFactory::_('Content')->add_($view['settings']->code, 'SITE_CUSTOM_METHODS',
+					CFactory::_('Compiler.Builder.Content.Multi')->add($view['settings']->code . '|SITE_CUSTOM_METHODS',
 						$this->setCustomViewCustomMethods(
 							$view, $view['settings']->code
-						)
+						), false
 					);
 					// SITE_DIPLAY_METHOD <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'SITE_DIPLAY_METHOD', $this->setCustomViewDisplayMethod($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_DIPLAY_METHOD', $this->setCustomViewDisplayMethod($view));
 					// set document details
 					$this->setPrepareDocument($view);
 					// SITE_EXTRA_DIPLAY_METHODS <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'SITE_EXTRA_DIPLAY_METHODS', $this->setCustomViewExtraDisplayMethods($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_EXTRA_DIPLAY_METHODS', $this->setCustomViewExtraDisplayMethods($view));
 					// SITE_CODE_BODY <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'SITE_CODE_BODY', $this->setCustomViewCodeBody($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_CODE_BODY', $this->setCustomViewCodeBody($view));
 					// SITE_BODY <<<DYNAMIC>>>
-					CFactory::_('Content')->set_($view['settings']->code, 'SITE_BODY', $this->setCustomViewBody($view));
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_BODY', $this->setCustomViewBody($view));
 
 					// setup the templates
 					$this->setCustomViewTemplateBody($view);
 
 					// set the site form if needed
-					CFactory::_('Content')->set_($view['settings']->code, 'SITE_TOP_FORM', $this->setCustomViewForm(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_TOP_FORM', $this->setCustomViewForm(
 						$view['settings']->code,
 						$view['settings']->main_get->gettype, 1
 					));
-					CFactory::_('Content')->set_($view['settings']->code, 'SITE_BOTTOM_FORM', $this->setCustomViewForm(
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_BOTTOM_FORM', $this->setCustomViewForm(
 						$view['settings']->code,
 						$view['settings']->main_get->gettype, 2
 					));
@@ -1634,20 +1637,20 @@ class Infusion extends Interpretation
 							&& $view['settings']->php_controller != '//')
 						{
 							// SITE_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
-							CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
+							CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
 								'site.view.controller', $view['settings']->code
 							));
 						}
 						// SITE_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEW_MODEL_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_VIEW_MODEL_HEADER', $this->setFileHeader(
 							'site.view.model', $view['settings']->code
 						));
 						// SITE_VIEW_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEW_HTML_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_VIEW_HTML_HEADER', $this->setFileHeader(
 							'site.view.html', $view['settings']->code
 						));
 						// SITE_VIEW_HEADER <<<DYNAMIC>>> add the header details for the view
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEW_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_VIEW_HEADER', $this->setFileHeader(
 							'site.view', $view['settings']->code
 						));
 					}
@@ -1660,28 +1663,28 @@ class Infusion extends Interpretation
 							&& $view['settings']->php_controller != '//')
 						{
 							// SITE_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the model
-							CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
+							CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_VIEW_CONTROLLER_HEADER', $this->setFileHeader(
 								'site.views.controller', $view['settings']->code
 							));
 						}
 						// SITE_VIEWS_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEWS_MODEL_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_VIEWS_MODEL_HEADER', $this->setFileHeader(
 							'site.views.model', $view['settings']->code
 						));
 						// SITE_VIEWS_HTML_HEADER <<<DYNAMIC>>> add the header details for the view
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEWS_HTML_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_VIEWS_HTML_HEADER', $this->setFileHeader(
 							'site.views.html', $view['settings']->code
 						));
 						// SITE_VIEWS_HEADER <<<DYNAMIC>>> add the header details for the view
-						CFactory::_('Content')->set_($view['settings']->code, 'SITE_VIEWS_HEADER', $this->setFileHeader(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_VIEWS_HEADER', $this->setFileHeader(
 							'site.views', $view['settings']->code
 						));
 					}
 
 					// for plugin event TODO change event api signatures
 					$placeholders = CFactory::_('Placeholder')->active;
-					$fileContentStatic = CFactory::_('Content')->active;
-					$fileContentDynamic = CFactory::_('Content')->_active;
+					$fileContentStatic = CFactory::_('Compiler.Builder.Content.One')->allActive();
+					$fileContentDynamic = CFactory::_('Compiler.Builder.Content.Multi')->allActive();
 					// Trigger Event: jcb_ce_onAfterBuildSiteViewContent
 					CFactory::_('Event')->trigger(
 						'jcb_ce_onAfterBuildSiteViewContent',
@@ -1709,106 +1712,106 @@ class Infusion extends Interpretation
 			{
 				CFactory::_('Config')->build_target = 'site';
 				// if no default site view was set, the redirect to root
-				if (!CFactory::_('Content')->exist('SITE_DEFAULT_VIEW'))
+				if (!CFactory::_('Compiler.Builder.Content.One')->exists('SITE_DEFAULT_VIEW'))
 				{
-					CFactory::_('Content')->set('SITE_DEFAULT_VIEW', '');
+					CFactory::_('Compiler.Builder.Content.One')->set('SITE_DEFAULT_VIEW', '');
 				}
 				// set site custom script to helper class
 				// SITE_CUSTOM_HELPER_SCRIPT
-				CFactory::_('Content')->set('SITE_CUSTOM_HELPER_SCRIPT',
+				CFactory::_('Compiler.Builder.Content.One')->set('SITE_CUSTOM_HELPER_SCRIPT',
 					CFactory::_('Placeholder')->update_(
 					CFactory::_('Customcode.Dispenser')->hub['component_php_helper_site']
 				));
 				// SITE_GLOBAL_EVENT_HELPER
-				if (!CFactory::_('Content')->exist('SITE_GLOBAL_EVENT'))
+				if (!CFactory::_('Compiler.Builder.Content.One')->exists('SITE_GLOBAL_EVENT'))
 				{
-					CFactory::_('Content')->set('SITE_GLOBAL_EVENT', '');
+					CFactory::_('Compiler.Builder.Content.One')->set('SITE_GLOBAL_EVENT', '');
 				}
-				if (!CFactory::_('Content')->exist('SITE_GLOBAL_EVENT_HELPER'))
+				if (!CFactory::_('Compiler.Builder.Content.One')->exists('SITE_GLOBAL_EVENT_HELPER'))
 				{
-					CFactory::_('Content')->set('SITE_GLOBAL_EVENT_HELPER', '');
+					CFactory::_('Compiler.Builder.Content.One')->set('SITE_GLOBAL_EVENT_HELPER', '');
 				}
 				// now load the data for the global event if needed
 				if (CFactory::_('Component')->get('add_site_event', 0) == 1)
 				{
-					CFactory::_('Content')->add('SITE_GLOBAL_EVENT', PHP_EOL . PHP_EOL . '// Trigger the Global Site Event');
-					CFactory::_('Content')->add('SITE_GLOBAL_EVENT',
-						PHP_EOL . CFactory::_('Content')->get('Component')
+					CFactory::_('Compiler.Builder.Content.One')->add('SITE_GLOBAL_EVENT', PHP_EOL . PHP_EOL . '// Trigger the Global Site Event');
+					CFactory::_('Compiler.Builder.Content.One')->add('SITE_GLOBAL_EVENT',
+						PHP_EOL . CFactory::_('Compiler.Builder.Content.One')->get('Component')
 						. 'Helper::globalEvent($document);');
 					// SITE_GLOBAL_EVENT_HELPER
-					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . PHP_EOL . Indent::_(1) . '/**');
-					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER',
+					CFactory::_('Compiler.Builder.Content.One')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . PHP_EOL . Indent::_(1) . '/**');
+					CFactory::_('Compiler.Builder.Content.One')->add('SITE_GLOBAL_EVENT_HELPER',
 						PHP_EOL . Indent::_(1)
 						. '*	The Global Site Event Method.');
-					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '**/');
-					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER',
+					CFactory::_('Compiler.Builder.Content.One')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '**/');
+					CFactory::_('Compiler.Builder.Content.One')->add('SITE_GLOBAL_EVENT_HELPER',
 						PHP_EOL . Indent::_(1)
 						. 'public static function globalEvent($document)');
-					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '{');
-					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER',
+					CFactory::_('Compiler.Builder.Content.One')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '{');
+					CFactory::_('Compiler.Builder.Content.One')->add('SITE_GLOBAL_EVENT_HELPER',
 						PHP_EOL . CFactory::_('Placeholder')->update_(
 							CFactory::_('Customcode.Dispenser')->hub['component_php_site_event']
 						));
-					CFactory::_('Content')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '}');
+					CFactory::_('Compiler.Builder.Content.One')->add('SITE_GLOBAL_EVENT_HELPER', PHP_EOL . Indent::_(1) . '}');
 				}
 			}
 
 			// PREINSTALLSCRIPT
-			CFactory::_('Content')->add('PREINSTALLSCRIPT',
+			CFactory::_('Compiler.Builder.Content.One')->add('PREINSTALLSCRIPT',
 				CFactory::_('Customcode.Dispenser')->get(
 				'php_preflight', 'install', PHP_EOL, null, true
 			));
 
 			// PREUPDATESCRIPT
-			CFactory::_('Content')->add('PREUPDATESCRIPT',
+			CFactory::_('Compiler.Builder.Content.One')->add('PREUPDATESCRIPT',
 				CFactory::_('Customcode.Dispenser')->get(
 				'php_preflight', 'update', PHP_EOL, null, true
 			));
 
 			// POSTINSTALLSCRIPT
-			CFactory::_('Content')->add('POSTINSTALLSCRIPT', $this->setPostInstallScript());
+			CFactory::_('Compiler.Builder.Content.One')->add('POSTINSTALLSCRIPT', $this->setPostInstallScript());
 
 			// POSTUPDATESCRIPT
-			CFactory::_('Content')->add('POSTUPDATESCRIPT', $this->setPostUpdateScript());
+			CFactory::_('Compiler.Builder.Content.One')->add('POSTUPDATESCRIPT', $this->setPostUpdateScript());
 
 			// UNINSTALLSCRIPT
-			CFactory::_('Content')->add('UNINSTALLSCRIPT', $this->setUninstallScript());
+			CFactory::_('Compiler.Builder.Content.One')->add('UNINSTALLSCRIPT', $this->setUninstallScript());
 
 			// MOVEFOLDERSSCRIPT
-			CFactory::_('Content')->set('MOVEFOLDERSSCRIPT', $this->setMoveFolderScript());
+			CFactory::_('Compiler.Builder.Content.One')->set('MOVEFOLDERSSCRIPT', $this->setMoveFolderScript());
 
 			// MOVEFOLDERSMETHOD
-			CFactory::_('Content')->set('MOVEFOLDERSMETHOD', $this->setMoveFolderMethod());
+			CFactory::_('Compiler.Builder.Content.One')->set('MOVEFOLDERSMETHOD', $this->setMoveFolderMethod());
 
 			// HELPER_UIKIT
-			CFactory::_('Content')->set('HELPER_UIKIT', $this->setUikitHelperMethods());
+			CFactory::_('Compiler.Builder.Content.One')->set('HELPER_UIKIT', $this->setUikitHelperMethods());
 
 			// CONFIG_FIELDSETS
-			CFactory::_('Content')->set('CONFIG_FIELDSETS', implode(PHP_EOL, $this->configFieldSets));
+			CFactory::_('Compiler.Builder.Content.One')->set('CONFIG_FIELDSETS', implode(PHP_EOL, $this->configFieldSets));
 
 			// check if this has been set
-			if (!CFactory::_('Content')->exist('ROUTER_BUILD_VIEWS')
+			if (!CFactory::_('Compiler.Builder.Content.One')->exists('ROUTER_BUILD_VIEWS')
 				|| !StringHelper::check(
-					CFactory::_('Content')->get('ROUTER_BUILD_VIEWS')
+					CFactory::_('Compiler.Builder.Content.One')->get('ROUTER_BUILD_VIEWS')
 				))
 			{
-				CFactory::_('Content')->set('ROUTER_BUILD_VIEWS', 0);
+				CFactory::_('Compiler.Builder.Content.One')->set('ROUTER_BUILD_VIEWS', 0);
 			}
 			else
 			{
-				CFactory::_('Content')->set('ROUTER_BUILD_VIEWS', '(' . CFactory::_('Content')->get('ROUTER_BUILD_VIEWS') . ')');
+				CFactory::_('Compiler.Builder.Content.One')->set('ROUTER_BUILD_VIEWS', '(' . CFactory::_('Compiler.Builder.Content.One')->get('ROUTER_BUILD_VIEWS') . ')');
 			}
 
 			// README
 			if (CFactory::_('Component')->get('addreadme'))
 			{
-				CFactory::_('Content')->set('README', CFactory::_('Component')->get('readme'));
+				CFactory::_('Compiler.Builder.Content.One')->set('README', CFactory::_('Component')->get('readme'));
 			}
 
 			// CHANGELOG
 			if (($changelog = CFactory::_('Component')->get('changelog')) !== null)
 			{
-				CFactory::_('Content')->set('CHANGELOG', $changelog);
+				CFactory::_('Compiler.Builder.Content.One')->set('CHANGELOG', $changelog);
 			}
 
 			// Infuse POWERS
@@ -1835,23 +1838,25 @@ class Infusion extends Interpretation
 						$this->langPrefix = $module->lang_prefix;
 						CFactory::_('Config')->set('lang_prefix', $module->lang_prefix);
 						// MODCODE
-						CFactory::_('Content')->set_($module->key, 'MODCODE', $this->getModCode($module));
+						CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|MODCODE', $this->getModCode($module));
 						// DYNAMICGET
-						CFactory::_('Content')->set_($module->key, 'DYNAMICGETS', $this->setCustomViewCustomMethods(
+						CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|DYNAMICGETS', $this->setCustomViewCustomMethods(
 							$module, $module->key
 						));
 						// HELPERCODE
 						if ($module->add_class_helper >= 1)
 						{
-							CFactory::_('Content')->set_($module->key, 'HELPERCODE', $this->getModHelperCode($module));
+							CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|HELPERCODE', $this->getModHelperCode($module));
 						}
 						// MODDEFAULT
-						CFactory::_('Content')->set_($module->key, 'MODDEFAULT', $this->getModDefault($module, $module->key));
+						CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|MODDEFAULT', $this->getModDefault($module, $module->key));
+						// MODDEFAULT_XXX
+						$this->setModTemplates($module);
 						// only add install script if needed
 						if ($module->add_install_script)
 						{
 							// INSTALLCLASS
-							CFactory::_('Content')->set_($module->key, 'INSTALLCLASS', CFactory::_('Extension.InstallScript')->get($module));
+							CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|INSTALLCLASS', CFactory::_('Extension.InstallScript')->get($module));
 						}
 						// FIELDSET
 						if (isset($module->form_files)
@@ -1866,8 +1871,8 @@ class Infusion extends Interpretation
 									foreach ($fieldsets as $fieldset => $fields)
 									{
 										// FIELDSET_ . $file.$field_name.$fieldset
-										CFactory::_('Content')->set_($module->key,
-											'FIELDSET_' . $file . $field_name . $fieldset,
+										CFactory::_('Compiler.Builder.Content.Multi')->set($module->key .
+											'|FIELDSET_' . $file . $field_name . $fieldset,
 											$this->getExtensionFieldsetXML(
 												$module, $fields
 											)
@@ -1877,7 +1882,7 @@ class Infusion extends Interpretation
 							}
 						}
 						// MAINXML
-						CFactory::_('Content')->set_($module->key, 'MAINXML', $this->getModuleMainXML($module));
+						CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|MAINXML', $this->getModuleMainXML($module));
 						// Trigger Event: jcb_ce_onAfterInfuseModuleData
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterInfuseModuleData',
@@ -1903,12 +1908,12 @@ class Infusion extends Interpretation
 						$this->langPrefix = $plugin->lang_prefix;
 						CFactory::_('Config')->set('lang_prefix', $plugin->lang_prefix);
 						// MAINCLASS
-						CFactory::_('Content')->set_($plugin->key, 'MAINCLASS', $this->getPluginMainClass($plugin));
+						CFactory::_('Compiler.Builder.Content.Multi')->set($plugin->key . '|MAINCLASS', $this->getPluginMainClass($plugin));
 						// only add install script if needed
 						if ($plugin->add_install_script)
 						{
 							// INSTALLCLASS
-							CFactory::_('Content')->set_($plugin->key, 'INSTALLCLASS', CFactory::_('Extension.InstallScript')->get($plugin));
+							CFactory::_('Compiler.Builder.Content.Multi')->set($plugin->key . '|INSTALLCLASS', CFactory::_('Extension.InstallScript')->get($plugin));
 						}
 						// FIELDSET
 						if (isset($plugin->form_files)
@@ -1923,8 +1928,8 @@ class Infusion extends Interpretation
 									foreach ($fieldsets as $fieldset => $fields)
 									{
 										// FIELDSET_ . $file.$field_name.$fieldset
-										CFactory::_('Content')->set_($plugin->key,
-											'FIELDSET_' . $file . $field_name . $fieldset,
+										CFactory::_('Compiler.Builder.Content.Multi')->set($plugin->key .
+											'|FIELDSET_' . $file . $field_name . $fieldset,
 											$this->getExtensionFieldsetXML(
 												$plugin, $fields
 											)
@@ -1934,7 +1939,7 @@ class Infusion extends Interpretation
 							}
 						}
 						// MAINXML
-						CFactory::_('Content')->set_($plugin->key, 'MAINXML', $this->getPluginMainXML($plugin));
+						CFactory::_('Compiler.Builder.Content.Multi')->set($plugin->key . '|MAINXML', $this->getPluginMainXML($plugin));
 						// Trigger Event: jcb_ce_onAfterInfusePluginData
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterInfusePluginData',
@@ -1950,8 +1955,8 @@ class Infusion extends Interpretation
 			CFactory::_('Config')->set('lang_prefix', $_backup_langPrefix);
 			// for plugin event TODO change event api signatures
 			$placeholders = CFactory::_('Placeholder')->active;
-			$fileContentStatic = CFactory::_('Content')->active;
-			$fileContentDynamic = CFactory::_('Content')->_active;
+			$fileContentStatic = CFactory::_('Compiler.Builder.Content.One')->allActive();
+			$fileContentDynamic = CFactory::_('Compiler.Builder.Content.Multi')->allActive();
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterBuildFilesContent',
@@ -2020,30 +2025,30 @@ class Infusion extends Interpretation
 		// view <<<DYNAMIC>>>
 		if (isset($nameSingleCode))
 		{
-			CFactory::_('Content')->set_($nameSingleCode, 'view', $nameSingleCode);
-			CFactory::_('Content')->set_($nameSingleCode, 'VIEW', $name_single_uppercase);
-			CFactory::_('Content')->set_($nameSingleCode, 'View', $name_single_first_uppercase);
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|view', $nameSingleCode);
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|VIEW', $name_single_uppercase);
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|View', $name_single_first_uppercase);
 
 			if (isset($nameListCode))
 			{
-				CFactory::_('Content')->set_($nameListCode, 'view', $nameSingleCode);
-				CFactory::_('Content')->set_($nameListCode, 'VIEW', $name_single_uppercase);
-				CFactory::_('Content')->set_($nameListCode, 'View', $name_single_first_uppercase);
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|view', $nameSingleCode);
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|VIEW', $name_single_uppercase);
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|View', $name_single_first_uppercase);
 			}
 		}
 
 		// views <<<DYNAMIC>>>
 		if (isset($nameListCode))
 		{
-			CFactory::_('Content')->set_($nameListCode, 'views', $nameListCode);
-			CFactory::_('Content')->set_($nameListCode, 'VIEWS', $name_list_uppercase);
-			CFactory::_('Content')->set_($nameListCode, 'Views', $name_list_first_uppercase);
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|views', $nameListCode);
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|VIEWS', $name_list_uppercase);
+			CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|Views', $name_list_first_uppercase);
 
 			if (isset($nameSingleCode))
 			{
-				CFactory::_('Content')->set_($nameSingleCode, 'views', $nameListCode);
-				CFactory::_('Content')->set_($nameSingleCode, 'VIEWS', $name_list_uppercase);
-				CFactory::_('Content')->set_($nameSingleCode, 'Views', $name_list_first_uppercase);
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|views', $nameListCode);
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|VIEWS', $name_list_uppercase);
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|Views', $name_list_first_uppercase);
 			}
 		}
 	}

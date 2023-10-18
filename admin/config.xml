@@ -289,6 +289,18 @@
 		name="uikit_config"
 		label="COM_COMPONENTBUILDER_CONFIG_UIKIT_LABEL"
 		description="COM_COMPONENTBUILDER_CONFIG_UIKIT_DESC">
+		<field name="add_jquery_framework"
+			type="radio"
+			label="COM_COMPONENTBUILDER_CONFIG_JQUERY_LOAD_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_JQUERY_LOAD_DESC"
+			class="btn-group btn-group-yesno"
+			default="">
+			<!-- Option Set. -->
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_JQUERY_REMOVE</option>"
+			<option value="1">
+				COM_COMPONENTBUILDER_CONFIG_JQUERY_LOAD</option>"
+		</field>
 		<field name="uikit_load"
 			type="radio"
 			label="COM_COMPONENTBUILDER_CONFIG_UIKIT_LOAD_LABEL"

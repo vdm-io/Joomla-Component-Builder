@@ -76,9 +76,19 @@ class Jcb implements ServiceProviderInterface
 	 */
 	public function getHttp(Container $container): Http
 	{
-		return new Http(
-			Helper::getParams('com_componentbuilder')->get('gitea_token')
-		);
+		$add_gitea_url = Helper::getParams('com_componentbuilder')->get('add_custom_gitea_url', 1);
+		if ($add_gitea_url == 2)
+		{
+			return new Http(
+				Helper::getParams('com_componentbuilder')->get('custom_gitea_token')
+			);
+		}
+		else
+		{
+			return new Http(
+				Helper::getParams('com_componentbuilder')->get('gitea_token')
+			);
+		}
 	}
 
 }
