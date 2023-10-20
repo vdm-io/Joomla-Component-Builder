@@ -1,3 +1,8 @@
+# v3.1.27
+
+- Adds better remote repository management for the super power features.
+- Fixes #1014 so that powers are added to components.
+
 # v3.1.26
 
 - Fixed changelog direction so newest changes is listed at top of the file.

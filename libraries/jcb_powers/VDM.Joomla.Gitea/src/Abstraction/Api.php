@@ -86,5 +86,15 @@ abstract class Api
 		}
 	}
 
+	/**
+	 * Get the API url
+	 *
+	 * @return  string
+	 * @since   3.2.0
+	 **/
+	public function api()
+	{
+		return $this->uri->api();
+	}
 }
 

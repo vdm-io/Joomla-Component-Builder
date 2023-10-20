@@ -73,6 +73,5 @@ final class Http extends JoomlaHttp
 
 		$this->setOption('headers', $headers);
 	}
-
 }
 

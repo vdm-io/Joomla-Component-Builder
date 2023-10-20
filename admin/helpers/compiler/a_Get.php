@@ -1144,6 +1144,22 @@ class Get
 			));
 		}
 
+		// FOR THE HELPER CLASS POWERS
+		// Utilities String Helper
+		CFactory::_('Power')->get('1f28cb53-60d9-4db1-b517-3c7dc6b429ef', 1);
+		// Utilities Array Helper
+		CFactory::_('Power')->get('0a59c65c-9daf-4bc9-baf4-e063ff9e6a8a', 1);
+		// Utilities Component Helper
+		CFactory::_('Power')->get('640b5352-fb09-425f-a26e-cd44eda03f15', 1);
+		// Utilities Object Helper
+		CFactory::_('Power')->get('91004529-94a9-4590-b842-e7c6b624ecf5', 1);
+		// Utilities GetHelper
+		CFactory::_('Power')->get('db87c339-5bb6-4291-a7ef-2c48ea1b06bc', 1);
+		// Utilities Json Helper
+		CFactory::_('Power')->get('	4b225c51-d293-48e4-b3f6-5136cf5c3f18', 1);
+		// Utilities FormHelper
+		CFactory::_('Power')->get('1198aecf-84c6-45d2-aea8-d531aa4afdfa', 1);
+
 		// load powers *+*+*+*+*+*+*+*
 		CFactory::_('Power')->load($this->linkedPowers);
 		// load any other super powers that was found

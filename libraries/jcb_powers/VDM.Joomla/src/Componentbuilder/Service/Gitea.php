@@ -57,7 +57,7 @@ class Gitea implements ServiceProviderInterface
 		$gitea_url = $container->get('Config')->get('custom_gitea_url');
 
 		// only load this if we have a custom URL set
-		if ($add_gitea_url == 2 && is_string($gitea_url) && strpos($gitea_url, 'http') !== false)
+		if ($add_gitea_url == 2 && !empty($gitea_url) && strpos($gitea_url, 'http') !== false)
 		{
 			return new Uri($gitea_url);
 		}

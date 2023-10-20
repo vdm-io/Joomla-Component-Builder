@@ -112,6 +112,66 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * Get super power core organisation
+	 *
+	 * @return  string   The super power core organisation
+	 * @since 3.2.0
+	 */
+	protected function getSuperpowerscoreorganisation(): string
+	{
+		// the VDM default organisation is [joomla]
+		$organisation = 'joomla';
+
+		if ($this->add_custom_gitea_url == 2)
+		{
+			return $this->params->get('super_powers_core_organisation', $organisation);
+		}
+
+		return $organisation;
+	}
+
+	/**
+	 * Get super power init repos
+	 *
+	 * @return  array The init repositories on Gitea
+	 * @since 3.2.0
+	 */
+	protected function getSuperpowersinitrepos(): array
+	{
+		// some defaults repos we need by JCB
+		$repos = [];
+
+		// only add custom init with custom gitea
+		$paths = null;
+		if ($this->add_custom_gitea_url == 2)
+		{
+			$paths = $this->params->get('super_powers_init_repos');
+		}
+
+		if (!empty($paths) && is_array($paths))
+		{
+			foreach ($paths as $path)
+			{
+				$owner = $path->owner ?? null;
+				$repo = $path->repo ?? null;
+				if ($owner !== null && $repo !== null)
+				{
+					// we make sure to get only the objects
+					$repos = ["{$owner}.{$repo}" => $path] + $repos;
+				}
+			}
+		}
+		else
+		{
+			$repos[$this->super_powers_core_organisation . '.super-powers'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'super-powers', 'branch' => 'master'];
+			$repos[$this->super_powers_core_organisation . '.gitea'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'gitea', 'branch' => 'master'];
+			$repos[$this->super_powers_core_organisation . '.openai'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'openai', 'branch' => 'master'];
+		}
+
+		return $repos;
+	}
+
+	/**
 	 * get temporary path
 	 *
 	 * @return  string  The temporary path
@@ -177,10 +237,7 @@ class Config extends BaseConfig
 	protected function getApprovedpaths(): array
 	{
 		// some defaults repos we need by JCB
-		$approved = [];
-		$approved['joomla.super-powers'] = (object) ['owner' => 'joomla', 'repo' => 'super-powers', 'branch' => 'master'];
-		$approved['joomla.gitea'] = (object) ['owner' => 'joomla', 'repo' => 'gitea', 'branch' => 'master'];
-		$approved['joomla.openai'] = (object) ['owner' => 'joomla', 'repo' => 'openai', 'branch' => 'master'];
+		$approved = $this->super_powers_init_repos;
 
 		if (!$this->add_own_powers)
 		{

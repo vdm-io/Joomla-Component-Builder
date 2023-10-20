@@ -112,6 +112,73 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * Get super power core organisation
+	 *
+	 * @return  string   The super power core organisation
+	 * @since 3.2.0
+	 */
+	protected function getSuperpowerscoreorganisation(): string
+	{
+		// the VDM default organisation is [joomla]
+		$organisation = 'joomla';
+
+		if ($this->add_custom_gitea_url == 2)
+		{
+			return $this->params->get('super_powers_core_organisation', $organisation);
+		}
+
+		return $organisation;
+	}
+
+	/**
+	 * Get super power core repos
+	 *
+	 * @return  array The core repositories on Gitea
+	 * @since 3.2.0
+	 */
+	protected function getSuperpowerscorerepos(): array
+	{
+		// some defaults repos we need by JCB
+		$repos = [];
+
+		// only add custom init with custom gitea
+		$paths = null;
+		if ($this->add_custom_gitea_url == 2)
+		{
+			$paths = $this->params->get('super_powers_core_repos');
+		}
+
+		if (!empty($paths) && is_array($paths))
+		{
+			foreach ($paths as $path)
+			{
+				$owner = $path->owner ?? null;
+				$repo = $path->repo ?? null;
+				if ($owner !== null && $repo !== null)
+				{
+					// we make sure to get only the objects
+					$repos = ["{$owner}.{$repo}" => $path] + $repos;
+				}
+			}
+		}
+		else
+		{
+			$repos[$this->super_powers_core_organisation . '.super-powers'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'super-powers', 'branch' => 'master'];
+			$repos[$this->super_powers_core_organisation . '.jcb-compiler'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'jcb-compiler', 'branch' => 'master'];
+			$repos[$this->super_powers_core_organisation . '.jcb-packager'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'jcb-packager', 'branch' => 'master'];
+			$repos[$this->super_powers_core_organisation . '.phpseclib'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'phpseclib', 'branch' => 'master'];
+			$repos[$this->super_powers_core_organisation . '.search'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'search', 'branch' => 'master'];
+			$repos[$this->super_powers_core_organisation . '.gitea'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'gitea', 'branch' => 'master'];
+			$repos[$this->super_powers_core_organisation . '.openai'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'openai', 'branch' => 'master'];
+			$repos[$this->super_powers_core_organisation . '.minify'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'minify', 'branch' => 'master'];
+			$repos[$this->super_powers_core_organisation . '.psr'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'psr', 'branch' => 'master'];
+			$repos[$this->super_powers_core_organisation . '.fof'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'fof', 'branch' => 'master'];
+		}
+
+		return $repos;
+	}
+
+	/**
 	 * get add contributors switch
 	 *
 	 * @return  bool  Add contributors switch
@@ -630,20 +697,11 @@ class Config extends BaseConfig
 	protected function getApprovedpaths(): array
 	{
 		// some defaults repos we need by JCB
-		$approved = [];
-		$approved['joomla.super-powers'] = (object) ['owner' => 'joomla', 'repo' => 'super-powers', 'branch' => 'master'];
-		$approved['joomla.jcb-compiler'] = (object) ['owner' => 'joomla', 'repo' => 'jcb-compiler', 'branch' => 'master'];
-		$approved['joomla.phpseclib'] = (object) ['owner' => 'joomla', 'repo' => 'phpseclib', 'branch' => 'master'];
-		$approved['joomla.search'] = (object) ['owner' => 'joomla', 'repo' => 'search', 'branch' => 'master'];
-		$approved['joomla.gitea'] = (object) ['owner' => 'joomla', 'repo' => 'gitea', 'branch' => 'master'];
-		$approved['joomla.openai'] = (object) ['owner' => 'joomla', 'repo' => 'openai', 'branch' => 'master'];
-		$approved['joomla.minify'] = (object) ['owner' => 'joomla', 'repo' => 'minify', 'branch' => 'master'];
-		$approved['joomla.psr'] = (object) ['owner' => 'joomla', 'repo' => 'psr', 'branch' => 'master'];
-		$approved['joomla.fof'] = (object) ['owner' => 'joomla', 'repo' => 'fof', 'branch' => 'master'];
+		$approved = $this->super_powers_core_repos;
 
 		if (!$this->add_own_powers)
 		{
-			return $approved;
+			return array_values($approved);
 		}
 
 		$paths = $this->params->get('approved_paths');
@@ -762,6 +820,7 @@ class Config extends BaseConfig
 	{
 		// get posted value
 		$value = $this->input->post->get('add_placeholders', 2, 'INT');
+
 		// get global value
 		if ($value > 1)
 		{
@@ -780,6 +839,7 @@ class Config extends BaseConfig
 	{
 		// get posted value
 		$value = $this->input->post->get('powers', 2, 'INT');
+
 		// get global value
 		if ($value > 1)
 		{
@@ -946,6 +1006,5 @@ class Config extends BaseConfig
 	{
 		return 2; // default is version 2
 	}
-
 }
 

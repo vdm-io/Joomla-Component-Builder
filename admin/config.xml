@@ -872,6 +872,23 @@
 			autocomplete="off"
 			showon="add_custom_gitea_url:2"
 		/>
+		<!-- Super_powers_core_organisation_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="super_powers_core_organisation_note" label="COM_COMPONENTBUILDER_CONFIG_SUPER_POWERS_CORE_ORGANISATION_NOTE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_SUPER_POWERS_CORE_ORGANISATION_NOTE_DESCRIPTION" heading="h4" class="alert alert-success super_powers_core_organisation_note" showon="add_custom_gitea_url:2" />
+		<!-- Super_powers_core_organisation Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="super_powers_core_organisation"
+			label="COM_COMPONENTBUILDER_CONFIG_SUPER_POWERS_CORE_ORGANISATION_LABEL"
+			size="70"
+			maxlength="150"
+			default="joomla"
+			description="COM_COMPONENTBUILDER_CONFIG_SUPER_POWERS_CORE_ORGANISATION_DESCRIPTION"
+			class="text_area"
+			filter="WORD"
+			hint="COM_COMPONENTBUILDER_CONFIG_SUPER_POWERS_CORE_ORGANISATION_HINT"
+			autocomplete="on"
+			showon="add_custom_gitea_url:2"
+		/>
 		<!-- Super_powers_core Field. Type: Text. (joomla) -->
 		<field
 			type="text"

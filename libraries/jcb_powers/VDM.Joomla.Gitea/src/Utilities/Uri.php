@@ -135,6 +135,5 @@ final class Uri
 	{
 		$this->version = $version;
 	}
-
 }
 

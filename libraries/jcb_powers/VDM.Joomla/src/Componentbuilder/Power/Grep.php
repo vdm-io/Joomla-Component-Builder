@@ -347,7 +347,7 @@ final class Grep
 		catch (\Exception $e)
 		{
 			$this->app->enqueueMessage(
-				Text::sprintf('COM_COMPONENTBUILDER_PSUPER_POWERB_REPOSITORY_AT_BGITVDMDEVSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $path->path, $e->getMessage()),
+				Text::sprintf('COM_COMPONENTBUILDER_PSUPER_POWERB_REPOSITORY_AT_BSSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $this->contents->api(), $path->path, $e->getMessage()),
 				'Error'
 			);
 
@@ -375,7 +375,7 @@ final class Grep
 		catch (\Exception $e)
 		{
 			$this->app->enqueueMessage(
-				Text::sprintf('COM_COMPONENTBUILDER_PFILE_AT_BGITEAREMOTESB_GAVE_THE_FOLLOWING_ERRORBR_SP', $path, $e->getMessage()),
+				Text::sprintf('COM_COMPONENTBUILDER_PFILE_AT_BSSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $this->contents->api(), $path, $e->getMessage()),
 				'Error'
 			);
 

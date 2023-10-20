@@ -12,7 +12,6 @@
 namespace VDM\Joomla\Utilities\String;
 
 
-use Joomla\CMS\Component\ComponentHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\Component\Helper;
 
@@ -98,6 +97,5 @@ abstract class FieldHelper
 		// use the default (original behavior/convention)
 		return StringHelper::safe($string);
 	}
-
 }
 
