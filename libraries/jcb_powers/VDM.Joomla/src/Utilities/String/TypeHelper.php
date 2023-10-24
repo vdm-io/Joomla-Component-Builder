@@ -65,7 +65,7 @@ abstract class TypeHelper
 				$string = StringHelper::transliterate($string);
 
 				// remove all and keep only characters and numbers and point (TODO just one point)
-				$string = trim(preg_replace("/[^A-Za-z0-9\.]/", '', (string) $string));
+				$string = trim(preg_replace("/[^A-Za-z0-9_\.]/", '', (string) $string));
 
 				// best is to return lower (for all string equality in compiler)
 				return strtolower($string);

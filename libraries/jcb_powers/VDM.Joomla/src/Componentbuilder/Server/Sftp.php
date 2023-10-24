@@ -12,6 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Server;
 
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Application\CMSApplication;
 use phpseclib3\Net\SFTP as SftpClient;
 use VDM\Joomla\Componentbuilder\Crypt\KeyLoader;
 use VDM\Joomla\Utilities\StringHelper;
@@ -52,15 +55,25 @@ class Sftp implements Serverinterface
 	protected ?object $details = null;
 
 	/**
+	 * Application object.
+	 *
+	 * @var    CMSApplication
+	 * @since 3.2.0
+	 **/
+	protected CMSApplication $app;
+
+	/**
 	 * Constructor
 	 *
 	 * @param KeyLoader    $key   The key loader object.
+	 * @param CMSApplication|null     $app          The app object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(KeyLoader $key)
+	public function __construct(KeyLoader $key, ?CMSApplication $app = null)
 	{
 		$this->key = $key;
+		$this->app = $app ?: Factory::getApplication();
 	}
 
 	/**
@@ -106,10 +119,21 @@ class Sftp implements Serverinterface
 				StringHelper::check($this->details->path) &&
 				$this->details->path !== '/')
 			{
-				$path = '/' . trim((string) $this->details->path, '/');
+				$path = trim((string) $this->details->path);
+				$path = '/' . trim($path, '/') . '/';
 			}
 
-			return $this->client->put($path . '/' . $fileName, $data);
+			try
+			{
+				return $this->client->put($path . trim($fileName), $data);
+			}
+			catch(\Exception $e)
+			{
+				$this->app->enqueueMessage(
+					Text::sprintf('COM_COMPONENTBUILDER_MOVING_OF_THE_S_FAILED', $fileName) . ': ' . $e->getMessage(),
+					'Error'
+				);
+			}
 		}
 
 		return false;
@@ -147,24 +171,23 @@ class Sftp implements Serverinterface
 			isset($this->details->username) && StringHelper::check($this->details->username))
 		{
 			// insure the port is set
-			$port = (isset($this->details->port) && is_numeric($this->details->port) && $this->details->port > 0)
-					? (int) $this->details->port : 22;
+			$port = (int)($this->details->port ?? 22);
 
 			// open the connection
 			$sftp = new SftpClient($this->details->host, $port);
 
 			// set the passphrase if it exist
-			$passphrase = $this->details->secret ?? null;
+			$passphrase = (isset($this->details->secret) && StringHelper::check(trim($this->details->secret))) ? trim($this->details->secret) : false;
 
 			// set the password if it exist
-			$password = $this->details->password ?? null;
+			$password = (isset($this->details->password) && StringHelper::check(trim($this->details->password))) ? trim($this->details->password) : false;
 
 			// now login based on authentication type
 			$key = null;
 			switch($this->details->authentication)
 			{
 				case 1: // password
-					$key = $this->details->password ?? null;
+					$key = $password ?? null;
 					$password = null;
 				break;
 				case 2: // private key file
@@ -172,28 +195,77 @@ class Sftp implements Serverinterface
 					if (isset($this->details->private) && StringHelper::check($this->details->private) &&
 						($private_key = FileHelper::getContent($this->details->private, null)) !== null)
 					{
-						$key = $this->key::load($private_key, $passphrase);
+						try
+						{
+							$key = $this->key::load(trim($private_key), $passphrase);
+						}
+						catch(\Exception $e)
+						{
+							$this->app->enqueueMessage(
+								Text::_('COM_COMPONENTBUILDER_LOADING_THE_PRIVATE_KEY_FILE_FAILED') . ': ' . $e->getMessage(),
+								'Error'
+							);
+							$key = null;
+						}
 					}
 				break;
 				case 4: // private key field
 				case 5: // both password and private key field
 					if (isset($this->details->private_key) && StringHelper::check($this->details->private_key))
 					{
-						$key = $this->key::load($this->details->private_key, $passphrase);
+						try
+						{
+							$key = $this->key::load(trim($this->details->private_key), $passphrase);
+						}
+						catch(\Exception $e)
+						{
+							$this->app->enqueueMessage(
+								Text::_('COM_COMPONENTBUILDER_LOADING_THE_PRIVATE_KEY_TEXT_FAILED') . ': ' . $e->getMessage(),
+								'Error'
+							);
+							$key = null;
+						}
 					}
 				break;
 			}
 
+			// remove any null bites from the username
+			$this->details->username = trim($this->details->username);
+
 			// login
-			if ((!empty($key) && !empty($password) && $sftp->login($this->details->username, $key, $password)) ||
-				(!empty($key) && $sftp->login($this->details->username, $key)))
+			if (!empty($key) && !empty($password))
 			{
-				return $sftp;
+				try
+				{
+					$sftp->login($this->details->username, $key, $password);
+					return $sftp;
+				}
+				catch(\Exception $e)
+				{
+					$this->app->enqueueMessage(
+						Text::_('COM_COMPONENTBUILDER_LOGIN_FAILED') . ': ' . $e->getMessage(),
+						'Error'
+					);
+				}
+			}
+			elseif (!empty($key))
+			{
+				try
+				{
+					$sftp->login($this->details->username, $key);
+					return $sftp;
+				}
+				catch(\Exception $e)
+				{
+					$this->app->enqueueMessage(
+						Text::_('COM_COMPONENTBUILDER_LOGIN_FAILED') . ': ' . $e->getMessage(),
+						'Error'
+					);
+				}
 			}
 		}
 
 		return null;
 	}
-
 }
 

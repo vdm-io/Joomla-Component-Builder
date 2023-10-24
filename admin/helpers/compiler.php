@@ -90,15 +90,26 @@ class Compiler extends Infusion
 			// set some folder paths in relation to distribution
 			if (CFactory::_('Config')->backup)
 			{
-				$this->backupPath         = $this->params->get(
+				$this->backupPath = $this->params->get(
 					'backup_folder_path', $this->tempPath
 				);
+				// see if component has overriding options set
+				if (CFactory::_('Component')->get('add_backup_folder_path', 0) == 1)
+				{
+					$this->backupPath = CFactory::_('Component')->get('backup_folder_path', $this->backupPath);
+				}
 				$this->dynamicIntegration = true;
 			}
 			// set local repos switch
 			if (CFactory::_('Config')->repository)
 			{
 				$this->repoPath = $this->params->get('git_folder_path', null);
+
+				// see if component has overriding options set
+				if (CFactory::_('Component')->get('add_git_folder_path', 0) == 1)
+				{
+					$this->repoPath = CFactory::_('Component')->get('git_folder_path', $this->repoPath);
+				}
 			}
 			// remove site folder if not needed (TODO add check if custom script was moved to site folder then we must do a more complex cleanup here)
 			if (CFactory::_('Config')->remove_site_folder && CFactory::_('Config')->remove_site_edit_folder)
@@ -733,6 +744,7 @@ class Compiler extends Infusion
 	{
 		// move the component update server to host
 		if (CFactory::_('Component')->get('add_update_server', 0) == 1
+			&& CFactory::_('Component')->get('update_server_target', 0) == 1
 			&& isset($this->updateServerFileName)
 			&& $this->dynamicIntegration)
 		{
@@ -982,7 +994,14 @@ class Compiler extends Infusion
 			// remove old data
 			CFactory::_('Utilities.Folder')->remove($repoFullPath, CFactory::_('Component')->get('toignore'));
 			// set the new data
-			Folder::copy(CFactory::_('Utilities.Paths')->component_path, $repoFullPath, '', true);
+			try {
+				Folder::copy(CFactory::_('Utilities.Paths')->component_path, $repoFullPath, '', true);
+			} catch (\RuntimeException $e) {
+				$this->app->enqueueMessage(
+					JText::_('We where was unable to transfer the component to the git repository:') . ' ' . $e->getMessage()
+					, 'Error'
+				);
+			}
 			// Trigger Event: jcb_ce_onAfterUpdateRepo
 			CFactory::_('Event')->trigger(
 				'jcb_ce_onAfterUpdateRepo',
@@ -1015,9 +1034,16 @@ class Compiler extends Infusion
 							$repoFullPath, CFactory::_('Component')->get('toignore')
 						);
 						// set the new data
-						Folder::copy(
-							$module->folder_path, $repoFullPath, '', true
-						);
+						try {
+							Folder::copy(
+								$module->folder_path, $repoFullPath, '', true
+							);
+						} catch (\RuntimeException $e) {
+							$this->app->enqueueMessage(
+								JText::sprintf('We where was unable to transfer the (%s) module to the git repository:', $module->name) . ' ' . $e->getMessage()
+								, 'Error'
+							);
+						}
 						// Trigger Event: jcb_ce_onAfterUpdateRepo
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterUpdateRepo',
@@ -1052,9 +1078,16 @@ class Compiler extends Infusion
 							$repoFullPath, CFactory::_('Component')->get('toignore')
 						);
 						// set the new data
-						Folder::copy(
-							$plugin->folder_path, $repoFullPath, '', true
-						);
+						try {
+							Folder::copy(
+								$plugin->folder_path, $repoFullPath, '', true
+							);
+						} catch (\RuntimeException $e) {
+							$this->app->enqueueMessage(
+								JText::sprintf('We where was unable to transfer the (%s) plugin to the git repository:', $plugin->name) . ' ' . $e->getMessage()
+								, 'Error'
+							);
+						}
 						// Trigger Event: jcb_ce_onAfterUpdateRepo
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onAfterUpdateRepo',
@@ -1088,7 +1121,8 @@ class Compiler extends Infusion
 		);
 		//create the zip file
 		if (FileHelper::zip(
-			CFactory::_('Utilities.Paths')->component_path, $this->filepath['component']
+			CFactory::_('Utilities.Paths')->component_path,
+			$this->filepath['component']
 		))
 		{
 			// now move to backup if zip was made and backup is required
@@ -1096,18 +1130,26 @@ class Compiler extends Infusion
 			{
 				// Trigger Event: jcb_ce_onBeforeBackupZip
 				CFactory::_('Event')->trigger(
-					'jcb_ce_onBeforeBackupZip', array(&$component_context,
-					                                  &$this->filepath['component'],
-					                                  &$this->tempPath,
-					                                  &$this->backupPath,
-					                                  &$this->componentData)
-				);
+					'jcb_ce_onBeforeBackupZip',[
+						&$component_context,
+						&$this->filepath['component'],
+						&$this->tempPath,
+						&$this->backupPath,
+						&$this->componentData
+				]);
 				// copy the zip to backup path
-				File::copy(
-					$this->filepath['component'],
-					$this->backupPath . '/' . CFactory::_('Utilities.Paths')->component_backup_name
-					. '.zip'
-				);
+				try {
+					File::copy(
+						$this->filepath['component'],
+						$this->backupPath . '/' . CFactory::_('Utilities.Paths')->component_backup_name
+						. '.zip'
+					);
+				} catch (\RuntimeException $e) {
+					$this->app->enqueueMessage(
+						JText::_('We where was unable to transfer the component ZIP file to the backup folder:') . ' ' . $e->getMessage()
+						, 'Error'
+					);
+				}
 			}
 			// move to sales server host
 			if (CFactory::_('Component')->get('add_sales_server', 0) == 1
@@ -1205,13 +1247,19 @@ class Compiler extends Infusion
 								      &$module)
 							);
 							// copy the zip to backup path
-							File::copy(
-								$this->filepath['modules'][$module->id],
-								$this->backupPath . '/' . $module->zip_name
-								. '.zip'
-							);
+							try {
+								File::copy(
+									$this->filepath['modules'][$module->id],
+									$this->backupPath . '/' . $module->zip_name
+									. '.zip'
+								);
+							} catch (\RuntimeException $e) {
+								$this->app->enqueueMessage(
+									JText::sprintf('We where was unable to transfer the (%s) module zip file to the backup folder:', $module->name) . ' ' . $e->getMessage()
+									, 'Error'
+								);
+							}
 						}
-
 						// move to sales server host
 						if ($module->add_sales_server == 1)
 						{
@@ -1307,11 +1355,18 @@ class Compiler extends Infusion
 								      &$plugin)
 							);
 							// copy the zip to backup path
-							File::copy(
-								$this->filepath['plugins'][$plugin->id],
-								$this->backupPath . '/' . $plugin->zip_name
-								. '.zip'
-							);
+							try {
+								File::copy(
+									$this->filepath['plugins'][$plugin->id],
+									$this->backupPath . '/' . $plugin->zip_name
+									. '.zip'
+								);
+							} catch (\RuntimeException $e) {
+								$this->app->enqueueMessage(
+									JText::sprintf('We where was unable to transfer the (%s) plugin zip file to the backup folder:', $plugin->name) . ' ' . $e->getMessage()
+									, 'Error'
+								);
+							}
 						}
 
 						// move to sales server host

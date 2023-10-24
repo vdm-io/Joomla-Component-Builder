@@ -1,3 +1,9 @@
+# v3.1.28
+
+- Updates PHPSecLib.
+- Fixed connection failure to remote server.
+- Adds overriding of back-folder and git-folder on component level.
+
 # v3.1.27
 
 - Adds better remote repository management for the super power features.

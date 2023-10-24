@@ -111,6 +111,17 @@ final class Uri
 	}
 
 	/**
+	 * Get the URL of the API
+	 *
+	 * @return  string|null
+	 * @since   3.2.0
+	 **/
+	public function getUrl(): ?string
+	{
+		return $this->url ?? null;
+	}
+
+	/**
 	 * Set the endpoint of the API
 	 *
 	 * @param   string   $endpoint   endpoint to your gitea API

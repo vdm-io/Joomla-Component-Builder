@@ -1156,7 +1156,7 @@ class Get
 		// Utilities GetHelper
 		CFactory::_('Power')->get('db87c339-5bb6-4291-a7ef-2c48ea1b06bc', 1);
 		// Utilities Json Helper
-		CFactory::_('Power')->get('	4b225c51-d293-48e4-b3f6-5136cf5c3f18', 1);
+		CFactory::_('Power')->get('4b225c51-d293-48e4-b3f6-5136cf5c3f18', 1);
 		// Utilities FormHelper
 		CFactory::_('Power')->get('1198aecf-84c6-45d2-aea8-d531aa4afdfa', 1);
 

@@ -1181,7 +1181,7 @@ class Interpretation extends Fields
 			$update_['version'] = CFactory::_('Component')->get('old_component_version');
 			// setup SQL
 			$update_['mysql'] = trim(
-				implode(PHP_EOL . PHP_EOL, CFactory::_('Compiler.Builder.Update.Mysql')->active)
+				implode(PHP_EOL . PHP_EOL, CFactory::_('Compiler.Builder.Update.Mysql')->allActive())
 			);
 			// setup URL
 			if (isset($this->lastupdateURL))
@@ -1248,7 +1248,7 @@ class Interpretation extends Fields
 		{
 			$searchMySQL = preg_replace('/\s+/', '', (string) $update['mysql']);
 			// add the updates to the SQL only if not found
-			foreach (CFactory::_('Compiler.Builder.Update.Mysql')->active as $search => $query)
+			foreach (CFactory::_('Compiler.Builder.Update.Mysql')->allActive() as $search => $query)
 			{
 				if (strpos($searchMySQL, $search) === false)
 				{

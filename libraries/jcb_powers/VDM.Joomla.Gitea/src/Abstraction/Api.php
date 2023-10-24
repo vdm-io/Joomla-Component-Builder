@@ -49,6 +49,22 @@ abstract class Api
 	protected Response $response;
 
 	/**
+	 * The Url string
+	 *
+	 * @var    string|null
+	 * @since 3.2.0
+	 */
+	protected ?string $url = null;
+
+	/**
+	 * The token string
+	 *
+	 * @var    string|null
+	 * @since 3.2.0
+	 */
+	protected ?string $token = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   Http        $http       The http class.
@@ -67,14 +83,31 @@ abstract class Api
 	/**
 	 * Load/Reload API.
 	 *
-	 * @param   string|null        $url          The url.
-	 * @param   token|null        $token      The token.
+	 * @param   string|null     $url          The url.
+	 * @param   token|null     $token      The token.
+	 * @param   bool             $backup   The backup swapping switch.
 	 *
 	 * @return  void
 	 * @since   3.2.0
 	 **/
-	public function load_(?string $url = null, ?string $token = null)
+	public function load_(?string $url = null, ?string $token = null, bool $backup = true): void
 	{
+		// we keep the old values
+		// so we can reset after our call
+		// for the rest of the container
+		if ($backup)
+		{
+			if ($url !== null)
+			{
+				$this->url = $this->uri->getUrl();
+			}
+
+			if ($token !== null)
+			{
+				$this->token = $this->http->getToken();
+			}
+		}
+
 		if ($url !== null)
 		{
 			$this->uri->setUrl($url);
@@ -83,6 +116,27 @@ abstract class Api
 		if ($token !== null)
 		{
 			$this->http->setToken($token);
+		}
+	}
+
+	/**
+	 * Reset to previous toke, url it set
+	 *
+	 * @return  void
+	 * @since   3.2.0
+	 **/
+	public function reset_(): void
+	{
+		if ($this->url !== null)
+		{
+			$this->uri->setUrl($this->url);
+			$this->url = null;
+		}
+
+		if ($this->token !== null)
+		{
+			$this->http->setToken($this->token);
+			$this->token = null;
 		}
 	}
 

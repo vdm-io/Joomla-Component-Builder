@@ -24,6 +24,14 @@ use Joomla\Registry\Registry;
 final class Http extends JoomlaHttp
 {
 	/**
+	 * The token
+	 *
+	 * @var    string
+	 * @since 3.2.0
+	 */
+	protected string $_token_; // to avoid collusions (but allow swapping)
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   string|null     $token     The Gitea API token.
@@ -45,6 +53,7 @@ final class Http extends JoomlaHttp
 		if (is_string($token))
 		{
 			$config['headers']['Authorization'] = 'token ' . $token;
+			$this->_token_ = $token;
 		}
 
 		$options = new Registry($config);
@@ -60,7 +69,7 @@ final class Http extends JoomlaHttp
 	 *
 	 * @since   3.2.0
 	 **/
-	public function setToken(string $token)
+	public function setToken(string $token): void
 	{
 		// get the current headers
 		$headers = (array) $this->getOption('headers', [
@@ -70,8 +79,20 @@ final class Http extends JoomlaHttp
 
 		// add the token
 		$headers['Authorization'] = 'token ' . $token;
+		$this->_token_ = $token;
 
 		$this->setOption('headers', $headers);
+	}
+
+	/**
+	 * Get the Token.
+	 *
+	 * @return  string|null
+	 * @since   3.2.0
+	 **/
+	public function getToken(): ?string
+	{
+		return $this->_token_ ?? null;
 	}
 }
 

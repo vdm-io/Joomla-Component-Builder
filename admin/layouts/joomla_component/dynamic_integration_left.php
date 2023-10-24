@@ -34,7 +34,13 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'note_update_server_note_other',
 	'update_server',
 	'add_sales_server',
-	'sales_server'
+	'sales_server',
+	'add_backup_folder_path',
+	'note_backup_folder_path',
+	'backup_folder_path',
+	'add_git_folder_path',
+	'note_git_folder_path',
+	'git_folder_path'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();
